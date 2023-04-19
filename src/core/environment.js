@@ -3,14 +3,14 @@ import * as THREE from 'three';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import { MRElement } from './MRElement.js'
 
-class Environment extends MRElement {
+export class Environment extends MRElement {
 
     constructor() {
       super()
       Object.defineProperty(this, "isEnvironment", { value: true, writable: false })
 
       this.environment = this
-      this.systems = {} // systemName : System
+      this.systems = new Set() // systemName : System
 
       this.scene = new THREE.Scene()
       this.app   = new THREE.Scene()
@@ -69,6 +69,14 @@ class Environment extends MRElement {
       window.removeEventListener( 'resize', this.onWindowResize )
     }
 
+    registerSystem(system){
+      this.systems.add(system)
+    }
+
+    unregisterSystem(system){
+      this.systems.delete(system)
+    }
+
     add(entity){
       this.app.add(entity.object3D)
     }
@@ -78,7 +86,7 @@ class Environment extends MRElement {
     }
 
     mutatedAttribute(mutation){
-      
+
     }
 
     mutatedChildList(mutation) {
@@ -95,6 +103,12 @@ class Environment extends MRElement {
     }
 
     render () {
+
+      for (const system of this.systems) {
+        system.registry.forEach(entity => {
+          system.update(entity)
+        });
+      }
 
       this.renderer.render( this.app, this.user )
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { MRElement } from './MRElement.js'
 
-class Entity extends MRElement {
+export class Entity extends MRElement {
 
     constructor() {
       super();
