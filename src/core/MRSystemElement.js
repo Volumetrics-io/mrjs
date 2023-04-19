@@ -7,17 +7,13 @@ export class MRSystemElement extends HTMLElement {
 		this.environment = null
         // Need a way to register and deregister systems per environment
 		this.registry = new Set()
+
+		this.componentName = `comp-${this.nodeName.split('-')[1].toLowerCase()}`
+
+		this.onAttach = this.onAttach.bind(this)
+		this.onUpdate = this.onUpdate.bind(this)
+		this.onDetatch = this.onDetatch.bind(this)
     }
-
-	register(entity) {
-		this.registry.add(entity)
-		this.attached(entity)
-	}
-
-	unregister(entity) {
-		this.registry.delete(entity)
-		this.attached(entity)
-	}
 
     // Called per frame
 	update (entity) {
@@ -25,13 +21,31 @@ export class MRSystemElement extends HTMLElement {
 	}
 
 	// called when the component is initialized
-	attached (entity) {
-		console.log(`attached ${entity}`);
+	attachedComponent (entity) {
+		console.log(`attached ${this.componentName} ${entity.getAttribute(this.componentName)}`);
+	}
+
+	updatedComponent (entity) {
+		console.log(`updated ${this.componentName} ${entity.getAttribute(this.componentName)}`);
 	}
 
 	// called when the component is removed
-	detached (entity) {
-		console.log(`detached ${entity}`);
+	detachedComponent (entity) {
+		console.log(`detached ${this.componentName}`);
+	}
+
+	onAttach(event) {
+		this.registry.add(event.detail)
+		this.attachedComponent(event.detail)
+	}
+
+	onUpdate(event) {
+		this.updatedComponent(event.detail)
+	}
+
+	onDetatch(event) {
+		this.registry.delete(event.detail)
+		this.detachedComponent(event.detail)
 	}
 
 	connectedCallback() {
@@ -40,20 +54,23 @@ export class MRSystemElement extends HTMLElement {
 		this.environment = this.parentElement
 		this.environment.registerSystem(this)
 
-		console.log(`component: [comp-${this.nodeName.split('-')[1].toLowerCase()}]`);
+		this.environment.addEventListener(`${this.componentName}-attached`, this.onAttach)
+		this.environment.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+		this.environment.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
-		let entities = document.querySelectorAll(`[comp-${this.nodeName.split('-')[1].toLowerCase()}]`)
+		let entities = document.querySelectorAll(`[${this.componentName}]`)
 		for(const entity of entities) {
-			console.log(entity);
 			if (!(entity instanceof Entity)) { return }
-			this.register(entity)
+			this.registry.add(entity)
 		}
-
-		console.log(this.registry);
 	}
 
 	disconnectedCallback() {
 		console.log('disconnected system');
 		this.environment.unregisterSystem(this)
+
+		this.environment.removeEventListener(`${this.componentName}-attached`)
+		this.environment.removeEventListener(`${this.componentName}-updated`)
+		this.environment.removeEventListener(`${this.componentName}-detached`)
 	}
 }

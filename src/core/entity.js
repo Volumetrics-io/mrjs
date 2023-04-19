@@ -9,7 +9,9 @@ export class Entity extends MRElement {
       Object.defineProperty(this, "isEnvironment", { value: false, writable: false })
 
       this.object3D = new THREE.Object3D()
-      this.components = []
+      this.components = new Set()
+
+      this.componentMutated = this.componentMutated.bind(this)
 
     }
 
@@ -28,7 +30,7 @@ export class Entity extends MRElement {
 
         for (const attr of this.attributes) {
             if (!attr.name.includes('comp-')) { continue }
-            this.components.push(attr)
+            this.components.add(attr.name)
         }
     }
 
@@ -48,9 +50,18 @@ export class Entity extends MRElement {
         }
     }
 
-    componentMutated(mutation) {
-        console.log(mutation);
+    componentMutated(componentName) {
+        let component = this.attributes.getNamedItem(componentName)
+        if (!component) {
+            this.components.delete(componentName)
+            this.dispatchEvent(new CustomEvent(`${componentName}-detached`, { bubbles: true, detail: this }))
 
+        } else if (!this.components.has(componentName)) {
+            this.components.add(componentName)
+            this.dispatchEvent(new CustomEvent(`${componentName}-attached`, { bubbles: true, detail: this }))
+        } else {
+            this.dispatchEvent(new CustomEvent(`${componentName}-updated`, { bubbles: true, detail: this }))
+        }
     }
 
     add(entity){
