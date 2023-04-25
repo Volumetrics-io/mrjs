@@ -52733,12 +52733,16 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
 
 
 class Panel extends Entity {
-    static get observedAttributes() { return ['width', 'height', 'depth', 'color']; }
+    static get observedAttributes() { return ['width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
 
-        // this.object3D.geometry = UIPlane(1, 1, 0.2, 18)
+        this.width = 1
+        this.height = 1
+        this.radius = 0.2
+        this.smoothness = 18
+
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new MeshStandardMaterial( {
             color: Math.random() * 0xffffff,
@@ -52753,14 +52757,22 @@ class Panel extends Entity {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case 'width':
-                this.object3D.scale.setX(newValue)
+                this.width = newValue
                 break;
             case 'height':
-                this.object3D.scale.setY(newValue)
+                this.height = newValue
+                break;
+            case 'corner-radius':
+                this.radius = newValue
+                break;
+            case 'smoothness':
+                this.smoothness = newValue
                 break;
             default:
                 break;
         }
+
+        this.object3D.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
     }
 }
 
