@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MRElement } from './MRElement.js'
 
 export class Entity extends MRElement {
+    static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
 
     constructor() {
       super();
@@ -74,4 +75,4 @@ export class Entity extends MRElement {
 
 }
 
-customElements.define('mr-entity', Entity);
+customElements.get('mr-entity') || customElements.define('mr-entity', Entity);

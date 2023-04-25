@@ -120,4 +120,4 @@ export class Environment extends MRElement {
     }
 }
 
-customElements.define('mr-env', Environment);
+customElements.get('mr-env') || customElements.define('mr-env', Environment);
