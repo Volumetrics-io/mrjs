@@ -1,5 +1,6 @@
 ("use strict")
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import { MRElement } from './MRElement.js'
 
@@ -17,6 +18,11 @@ export class Environment extends MRElement {
 
       this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } )
       this.user = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
+      this.user.position.set( 0, 0, 3 );
+
+      const light = new THREE.AmbientLight( 0xffffff );
+			this.app.add( light );
+
       this.render = this.render.bind(this)
       this.onWindowResize = this.onWindowResize.bind(this)
 
@@ -53,7 +59,12 @@ export class Environment extends MRElement {
 
       this.renderer.setPixelRatio( window.devicePixelRatio )
       this.renderer.setSize( window.innerWidth, window.innerHeight )
+      this.renderer.outputEncoding = THREE.sRGBEncoding;
       this.renderer.xr.enabled = true
+
+      const controls = new OrbitControls( this.user, this.renderer.domElement );
+			controls.minDistance = 0;
+			controls.maxDistance = 8;
 
       document.body.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
@@ -115,9 +126,9 @@ export class Environment extends MRElement {
       this.renderer.autoClear = false;
       this.renderer.clearDepth()
 
-      this.renderer.render( this.scene, this.user )
+      // this.renderer.render( this.scene, this.user )
 
     }
 }
 
-customElements.define('mr-env', Environment);
+customElements.get('mr-env') || customElements.define('mr-env', Environment);

@@ -1,5 +1,5 @@
-import { Environment } from "./Environment.js"
-import { Entity } from "./Entity.js"
+import { Environment } from "./environment.js"
+import { Entity } from "./entity.js"
 
 export class MRSystemElement extends HTMLElement {
     constructor() {

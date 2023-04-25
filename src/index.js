@@ -1,8 +1,14 @@
 // CORE
 import './core/MRElement.js'
 import './core/MRSystemElement.js'
-import './core/Environment.js'
-import './core/Entity.js'
+import './core/environment.js'
+import './core/entity.js'
+
+// GEOMETRY
+import './geometry/UIPlane.js'
+
+// UI
+import './entities/Panel.js'
 
 
 // TEST
