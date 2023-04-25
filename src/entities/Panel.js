@@ -15,7 +15,7 @@ class Panel extends Entity {
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new THREE.MeshStandardMaterial( {
-            color: Math.random() * 0xffffff,
+            color: 0xecf0f1,
             roughness: 0.7,
             metalness: 0.0,
             side: 2
@@ -37,6 +37,9 @@ class Panel extends Entity {
                 break;
             case 'smoothness':
                 this.smoothness = newValue
+                break;
+            case 'color':
+                this.object3D.material.color.setStyle(newValue)
                 break;
             default:
                 break;

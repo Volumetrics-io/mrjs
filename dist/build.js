@@ -52345,7 +52345,7 @@ class Environment extends MRElement {
       this.user = new PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
 
-      const light = new AmbientLight( 0x404040 );
+      const light = new AmbientLight( 0xffffff );
 			this.app.add( light );
 
       this.render = this.render.bind(this)
@@ -52458,6 +52458,11 @@ class Environment extends MRElement {
 
 customElements.get('mr-env') || customElements.define('mr-env', Environment);
 ;// CONCATENATED MODULE: ./src/utils/parser.js
+
+
+function parseHexColor(str) {
+    return `0x${str.split('#')[0]}`
+}
 
 function parseVector(str) {
     return str.split(' ').map(Number)
@@ -52745,7 +52750,7 @@ class Panel extends Entity {
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new MeshStandardMaterial( {
-            color: Math.random() * 0xffffff,
+            color: 0xecf0f1,
             roughness: 0.7,
             metalness: 0.0,
             side: 2
@@ -52767,6 +52772,9 @@ class Panel extends Entity {
                 break;
             case 'smoothness':
                 this.smoothness = newValue
+                break;
+            case 'color':
+                this.object3D.material.color.setStyle(newValue)
                 break;
             default:
                 break;

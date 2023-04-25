@@ -20,7 +20,7 @@ export class Environment extends MRElement {
       this.user = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
 
-      const light = new THREE.AmbientLight( 0x404040 );
+      const light = new THREE.AmbientLight( 0xffffff );
 			this.app.add( light );
 
       this.render = this.render.bind(this)
