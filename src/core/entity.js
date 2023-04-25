@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { setTransformValues } from '../utils/parser.js';
 import { MRElement } from './MRElement.js'
 
 export class Entity extends MRElement {
@@ -9,7 +10,7 @@ export class Entity extends MRElement {
 
       Object.defineProperty(this, "isEnvironment", { value: false, writable: false })
 
-      this.object3D = new THREE.Object3D()
+      this.object3D = new THREE.Group()
       this.components = new Set()
 
       this.componentMutated = this.componentMutated.bind(this)
@@ -25,6 +26,8 @@ export class Entity extends MRElement {
         } else {
             this.environment = this.parentElement.environment
         }
+
+        setTransformValues(this)
 
         this.observer = new MutationObserver(this.mutationCallback)
         this.observer.observe(this, { attributes: true });
