@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import { MRElement } from './MRElement.js'
+import { MRHands } from '../interaction/hands.js'
 
 export class Environment extends MRElement {
 
@@ -16,7 +17,7 @@ export class Environment extends MRElement {
       this.scene = new THREE.Scene()
       this.app   = new THREE.Scene()
 
-      this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } )
+      this.renderer = new THREE.WebGLRenderer( { antialias: true} )
       this.user = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
 
@@ -26,8 +27,7 @@ export class Environment extends MRElement {
       this.render = this.render.bind(this)
       this.onWindowResize = this.onWindowResize.bind(this)
 
-      this.ARButton = ARButton.createButton( this.renderer )
-
+      this.ARButton = ARButton.createButton( this.renderer, { requiredFeatures: [ 'hand-tracking' ] } )
     }
 
     connectedCallback() {
@@ -68,6 +68,16 @@ export class Environment extends MRElement {
 
       document.body.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
+
+      this.hands = new MRHands(this.renderer)
+
+      console.log(this.hands.leftMesh);
+      // this.hands.leftMesh.material.colorWrite = false; // <===
+
+      // this.hands.rightMesh.material.colorWrite = false; // <===
+
+      this.hands.addHandsTo(this.scene)
+
 
       this.renderer.setAnimationLoop( this.render )
 
@@ -126,8 +136,7 @@ export class Environment extends MRElement {
       this.renderer.autoClear = false;
       this.renderer.clearDepth()
 
-      // this.renderer.render( this.scene, this.user )
-
+      this.renderer.render( this.scene, this.user )
     }
 }
 
