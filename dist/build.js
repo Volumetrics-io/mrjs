@@ -59028,11 +59028,11 @@ class XRHandModelFactory {
 
 
 class MRHands {
-    static controllerModelFactory
-	static handModelFactory
-
 
     constructor(renderer){
+
+        this.leftMesh
+        this.rightMesh
 
         this.leftController  = renderer.xr.getController( 0 );
         this.rightController = renderer.xr.getController( 1 );
@@ -59048,12 +59048,18 @@ class MRHands {
 
 		this.leftHand.add( this.leftModel );
 
+        this.onConnected = this.onConnected.bind(this)
+
+        this.leftHand.addEventListener('connected', this.onConnected)
+
         this.rightGrip = renderer.xr.getControllerGrip( 1 );
         this.rightGrip.add( this.controllerModelFactory.createControllerModel( this.rightGrip ) );
 
         this.rightHand = renderer.xr.getHand( 1 );
         this.rightModel = this.handModelFactory.createHandModel( this.rightHand, 'mesh' )
         this.rightHand.add( this.rightModel );
+
+        this.rightHand.addEventListener('connected', this.onConnected)
     }
 
     addHandsTo(scene){
@@ -59067,9 +59073,20 @@ class MRHands {
         scene.add(this.rightHand)
     }
 
-    onHandConnected(event) {
-        console.log(this.hands.leftModel);
-      }
+    onConnected(event){
+
+        if (event.data.handedness == 'left' && this.leftMesh == null) {
+            this.leftMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
+            this.leftMesh.material.colorWrite = false
+            this.leftMesh.renderOrder = 2;
+        }
+
+        if (event.data.handedness == 'right' && this.rightMesh == null) {
+            this.rightMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
+            this.rightMesh.material.colorWrite = false
+            this.rightMesh.renderOrder = 2;
+        }
+    }
 }
 ;// CONCATENATED MODULE: ./src/core/environment.js
 
@@ -59091,12 +59108,25 @@ class Environment extends MRElement {
       this.scene = new Scene()
       this.app   = new Scene()
 
-      this.renderer = new WebGLRenderer( { antialias: true} )
+      this.renderer = new WebGLRenderer( { antialias: true, alpha: true} )
       this.user = new PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
 
-      const light = new AmbientLight( 0xffffff );
-			this.app.add( light );
+      const sceneLight = new AmbientLight( 0xffffff );
+			this.scene.add( sceneLight );
+
+      const appLight = new AmbientLight( 0xffffff );
+			this.app.add( appLight );
+
+      this.shadowLight = new DirectionalLight( 0xffffff );
+      this.shadowLight.position.set(0, 1, 1)
+      this.shadowLight.castShadow = true;
+      this.shadowLight.shadow.camera.top = 2;
+      this.shadowLight.shadow.camera.bottom = - 2;
+      this.shadowLight.shadow.camera.right = 2;
+      this.shadowLight.shadow.camera.left = - 2;
+      this.shadowLight.shadow.mapSize.set( 4096, 4096 );
+			this.app.add( this.shadowLight );
 
       this.render = this.render.bind(this)
       this.onWindowResize = this.onWindowResize.bind(this)
@@ -59133,6 +59163,8 @@ class Environment extends MRElement {
 
       this.renderer.setPixelRatio( window.devicePixelRatio )
       this.renderer.setSize( window.innerWidth, window.innerHeight )
+      this.renderer.autoClear = false;
+      this.renderer.shadowMap.enabled = true;
       this.renderer.outputEncoding = sRGBEncoding;
       this.renderer.xr.enabled = true
 
@@ -59143,15 +59175,8 @@ class Environment extends MRElement {
       document.body.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
 
-      this.hands = new MRHands(this.renderer)
-
-      console.log(this.hands.leftMesh);
-      // this.hands.leftMesh.material.colorWrite = false; // <===
-
-      // this.hands.rightMesh.material.colorWrite = false; // <===
-
-      this.hands.addHandsTo(this.scene)
-
+      this.appHands = new MRHands(this.renderer)
+      this.appHands.addHandsTo(this.app)
 
       this.renderer.setAnimationLoop( this.render )
 
@@ -59205,9 +59230,10 @@ class Environment extends MRElement {
         });
       }
 
+      this.shadowLight.target = this.user
+
       this.renderer.render( this.app, this.user )
 
-      this.renderer.autoClear = false;
       this.renderer.clearDepth()
 
       this.renderer.render( this.scene, this.user )
@@ -59510,6 +59536,8 @@ class Panel extends Entity {
         } );
 
         this.object3D = new Mesh( this.geometry, this.material );
+        this.object3D.receiveShadow = true;
+        this.object3D.renderOrder = 3
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

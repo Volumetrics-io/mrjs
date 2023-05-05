@@ -3,11 +3,11 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
 export class MRHands {
-    static controllerModelFactory
-	static handModelFactory
-
 
     constructor(renderer){
+
+        this.leftMesh
+        this.rightMesh
 
         this.leftController  = renderer.xr.getController( 0 );
         this.rightController = renderer.xr.getController( 1 );
@@ -23,12 +23,18 @@ export class MRHands {
 
 		this.leftHand.add( this.leftModel );
 
+        this.onConnected = this.onConnected.bind(this)
+
+        this.leftHand.addEventListener('connected', this.onConnected)
+
         this.rightGrip = renderer.xr.getControllerGrip( 1 );
         this.rightGrip.add( this.controllerModelFactory.createControllerModel( this.rightGrip ) );
 
         this.rightHand = renderer.xr.getHand( 1 );
         this.rightModel = this.handModelFactory.createHandModel( this.rightHand, 'mesh' )
         this.rightHand.add( this.rightModel );
+
+        this.rightHand.addEventListener('connected', this.onConnected)
     }
 
     addHandsTo(scene){
@@ -42,7 +48,18 @@ export class MRHands {
         scene.add(this.rightHand)
     }
 
-    onHandConnected(event) {
-        console.log(this.hands.leftModel);
-      }
+    onConnected(event){
+
+        if (event.data.handedness == 'left' && this.leftMesh == null) {
+            this.leftMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
+            this.leftMesh.material.colorWrite = false
+            this.leftMesh.renderOrder = 2;
+        }
+
+        if (event.data.handedness == 'right' && this.rightMesh == null) {
+            this.rightMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
+            this.rightMesh.material.colorWrite = false
+            this.rightMesh.renderOrder = 2;
+        }
+    }
 }
