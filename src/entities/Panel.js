@@ -22,6 +22,8 @@ class Panel extends Entity {
         } );
 
         this.object3D = new THREE.Mesh( this.geometry, this.material );
+        this.object3D.receiveShadow = true;
+        this.object3D.renderOrder = 3
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
