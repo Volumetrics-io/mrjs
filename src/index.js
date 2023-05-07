@@ -9,6 +9,7 @@ import './geometry/UIPlane.js'
 
 // UI
 import './entities/Panel.js'
+import './entities/Surface.js'
 
 
 // TEST

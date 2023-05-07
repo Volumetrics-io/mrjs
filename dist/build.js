@@ -59031,6 +59031,13 @@ class MRHands {
 
     constructor(renderer){
 
+        this.leftPinch = false
+        this.rightPinch = false
+        this.doublePinch = false
+
+        this.doublePinchObject = new Object3D()
+        this.doublePinchObject.name = 'doublepinchtracker'
+
         this.leftMesh
         this.rightMesh
 
@@ -59048,10 +59055,6 @@ class MRHands {
 
 		this.leftHand.add( this.leftModel );
 
-        this.onConnected = this.onConnected.bind(this)
-
-        this.leftHand.addEventListener('connected', this.onConnected)
-
         this.rightGrip = renderer.xr.getControllerGrip( 1 );
         this.rightGrip.add( this.controllerModelFactory.createControllerModel( this.rightGrip ) );
 
@@ -59059,7 +59062,17 @@ class MRHands {
         this.rightModel = this.handModelFactory.createHandModel( this.rightHand, 'mesh' )
         this.rightHand.add( this.rightModel );
 
+        this.onConnected = this.onConnected.bind(this)
+        this.onPinch = this.onPinch.bind(this)
+
+        this.leftHand.addEventListener('connected', this.onConnected)
         this.rightHand.addEventListener('connected', this.onConnected)
+
+        this.leftHand.addEventListener('pinchstart', this.onPinch)
+        this.rightHand.addEventListener('pinchstart', this.onPinch)
+
+        this.leftHand.addEventListener('pinchend', this.onPinch)
+        this.rightHand.addEventListener('pinchend', this.onPinch)
     }
 
     addHandsTo(scene){
@@ -59071,6 +59084,8 @@ class MRHands {
 
         scene.add(this.leftHand)
         scene.add(this.rightHand)
+
+        scene.add(this.doublePinchObject)
     }
 
     onConnected(event){
@@ -59086,6 +59101,69 @@ class MRHands {
             this.rightMesh.material.colorWrite = false
             this.rightMesh.renderOrder = 2;
         }
+    }
+
+    getJointPosition(handedness, jointName) {
+        let result = new three_module_Vector3()
+
+        let hand = handedness == 'left' ? this.leftMesh : this.rightMesh
+        let joint = hand.skeleton.getBoneByName(jointName)
+
+        if (joint == null) { return result }
+
+        joint.getWorldPosition(result)
+
+        return result
+    }
+
+    getPinchPosition(handedness){
+        let index = this.getJointPosition(handedness, 'index-finger-tip')
+        let thumb = this.getJointPosition(handedness, 'thumb-tip')
+        return index.lerp(thumb, 0.5)
+    }
+
+    onPinch(event) {
+
+        if (event.handedness == 'left') {
+            this.leftPinch = event.type == 'pinchstart'
+        }
+
+        if (event.handedness == 'right') {
+            this.rightPinch = event.type == 'pinchstart'
+        }
+
+        if (this.rightPinch && this.leftPinch) {
+            this.doublePinch = true
+            document.dispatchEvent(new CustomEvent(`doublepinchstart`, { bubbles: true, detail: this }))
+        } else if (this.doublePinch) {
+            this.doublePinch = false
+            document.dispatchEvent(new CustomEvent(`doublepinchended`, { bubbles: true, detail: this }))
+        }
+    }
+
+    update() {
+        if (this.doublePinch){
+            let leftPosition = this.getPinchPosition('left')
+            let rightPosition = this.getPinchPosition('right')
+            document.dispatchEvent(new CustomEvent(`doublepinch`, { bubbles: true, detail: { 
+              leftPosition: leftPosition,
+              rightPosition: rightPosition,
+              center: leftPosition.lerp(rightPosition, 0.5),
+              distance: leftPosition.distanceTo(rightPosition)      
+            }}))
+          } else if (this.leftPinch) {
+            let position = this.getPinchPosition('left')
+            document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
+              handedness: 'left',
+              position: position      
+            }}))
+          } else if (this.leftPinch) {
+            let position = this.getPinchPosition('right')
+            document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
+              handedness: 'right',
+              position: position      
+            }}))
+          }
     }
 }
 ;// CONCATENATED MODULE: ./src/core/environment.js
@@ -59230,6 +59308,8 @@ class Environment extends MRElement {
         });
       }
 
+      this.appHands.update()
+
       this.shadowLight.target = this.user
 
       this.renderer.render( this.app, this.user )
@@ -59285,6 +59365,9 @@ class Entity extends MRElement {
       this.object3D = new Group()
       this.components = new Set()
 
+      this.object3D.receiveShadow = true;
+      this.object3D.renderOrder = 3
+
       this.componentMutated = this.componentMutated.bind(this)
 
     }
@@ -59293,10 +59376,8 @@ class Entity extends MRElement {
         if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
         this.parentElement.add(this)
 
-        if (this.parentElement.isEnvironment) {
-            this.environment = this.parentElement
-        } else {
-            this.environment = this.parentElement.environment
+        if (this.parentElement.user) {
+            this.user = this.parentElement.user
         }
 
         setTransformValues(this)
@@ -59341,6 +59422,8 @@ class Entity extends MRElement {
     }
 
     add(entity){
+        entity.object3D.receiveShadow = true;
+        entity.object3D.renderOrder = 3
         this.object3D.add(entity.object3D)
     }
 
@@ -59566,6 +59649,114 @@ class Panel extends Entity {
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
+;// CONCATENATED MODULE: ./src/entities/Surface.js
+
+
+
+const QUAD_PINCH_THRESHOLD = 0.03
+
+class Surface extends Entity {
+    constructor(aspectRatio = 1.77777778){
+        super()
+
+        this.rotationPlane = new Group()
+        this.group = new Group()
+        this.horizontal = new Quaternion()
+        this.vertical = new Quaternion()
+
+        this.horizontal.setFromAxisAngle([1, 0, 0], 0)
+        this.vertical.setFromAxisAngle([1, 0, 0], Math.PI / 2)
+
+        this.object3D.add(this.rotationPlane)
+        this.rotationPlane.add(this.group)
+
+        this.rotationPlane.receiveShadow = true;
+        this.rotationPlane.renderOrder = 3
+
+        this.group.receiveShadow = true;
+        this.group.renderOrder = 3
+
+        this.aspectRatio = aspectRatio
+        this.placed = false
+        this.width  = 0.0
+        this.height = 0.0
+        this.worldPosition = new three_module_Vector3()
+        this.lookPosition = new three_module_Vector3()
+
+        this.material = new MeshStandardMaterial( {
+            color: 0x3498db,
+            roughness: 0.0,
+            metalness: 0.7,
+            transparent: true,
+            opacity: 0.7,
+            side: 2
+        } );
+
+        this.geometry = new PlaneGeometry( this.aspectRatio / 100, 0.01 );
+
+        this.mesh = new Mesh(this.geometry, this.material)
+
+        this.onDoublePinch = this.onDoublePinch.bind(this)
+        this.onDoublePinchEnded = this.onDoublePinchEnded.bind(this)
+
+        document.addEventListener('doublepinch', this.onDoublePinch)
+        document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+    }
+
+    add(entity){
+        this.group.add(entity.object3D)
+        entity.object3D.receiveShadow = true;
+        entity.object3D.renderOrder = 3
+    }
+
+    remove(entity){
+        this.group.remove(entity.object3D)
+    }
+
+    onDoublePinch(event) {
+        this.user.getWorldPosition(this.worldPosition)
+        this.lookPosition.copy(this.worldPosition)
+
+        this.lookPosition.setY(event.detail.center.y)
+
+        if(this.mesh.parent == null) {
+            this.group.add(this.mesh)
+        }
+
+            this.object3D.position.setX(event.detail.center.x)
+            this.object3D.position.setY(event.detail.center.y)
+            this.object3D.position.setZ(event.detail.center.z)
+            this.width = 2 * event.detail.distance
+            this.height = this.width / this.aspectRatio
+            this.mesh.geometry  = new PlaneGeometry( this.width, this.height );
+
+            this.object3D.lookAt(this.lookPosition)
+
+            this.setRotation(Math.abs(event.detail.center.y - this.worldPosition.y), 0.3)
+
+    }
+
+    setRotation(delta, threshold) {
+        if (delta < threshold) {
+            this.group.position.setY(0)
+            this.rotationPlane.rotation.x = 0 
+        } else {
+            this.group.position.setY(-this.height / 2)
+            this.rotationPlane.rotation.x = (Math.PI / 2)
+
+        }
+    }
+
+    onDoublePinchEnded(event) {
+        console.log(this.object3D);
+        this.placed = true
+        this.mesh.removeFromParent()
+        // document.removeEventListener('doublepinch', this.onDoublePinch)
+        // document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
+    }
+}
+
+customElements.get('mr-surface') || customElements.define('mr-surface', Surface);
 ;// CONCATENATED MODULE: ./src/component-systems/testSystem.js
 
 
@@ -59592,6 +59783,7 @@ customElements.define('mr-test-system', TestSystem);
 
 
 // UI
+
 
 
 
