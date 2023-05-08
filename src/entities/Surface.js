@@ -105,7 +105,6 @@ class Surface extends Entity {
     }
 
     onDoublePinchEnded(event) {
-        console.log(this.object3D);
         this.mesh.removeFromParent()
         this.translation.add(this.group)
         document.removeEventListener('doublepinch', this.onDoublePinch)

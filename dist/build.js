@@ -59755,13 +59755,16 @@ class Surface extends Entity {
         }
     }
 
+    editPosition(){
+        document.addEventListener('doublepinch', this.onDoublePinch)
+        document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+    }
+
     onDoublePinchEnded(event) {
-        console.log(this.object3D);
-        this.placed = true
         this.mesh.removeFromParent()
         this.translation.add(this.group)
-        // document.removeEventListener('doublepinch', this.onDoublePinch)
-        // document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
+        document.removeEventListener('doublepinch', this.onDoublePinch)
+        document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
     }
 }
 
