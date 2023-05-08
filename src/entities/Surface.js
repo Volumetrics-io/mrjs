@@ -88,7 +88,7 @@ class Surface extends Entity {
             this.group.position.setY(0)
             this.rotationPlane.rotation.x = 0 
         } else {
-            this.group.position.setY(-this.height / 2)
+            this.group.position.setY(-this.aspectRatio / 2)
             this.rotationPlane.rotation.x = (Math.PI / 2)
 
         }
