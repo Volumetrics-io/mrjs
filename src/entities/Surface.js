@@ -41,7 +41,7 @@ class Surface extends Entity {
             side: 2
         } );
 
-        this.geometry = new THREE.PlaneGeometry( this.aspectRatio / 100, 0.01 );
+        this.geometry = UIPlane(1, this.aspectRatio, 0.02, 18)
 
         this.mesh = new THREE.Mesh(this.geometry, this.material)
 
@@ -75,9 +75,7 @@ class Surface extends Entity {
             this.object3D.position.setX(event.detail.center.x)
             this.object3D.position.setY(event.detail.center.y)
             this.object3D.position.setZ(event.detail.center.z)
-            this.width = 2 * event.detail.distance
-            this.height = this.width / this.aspectRatio
-            this.mesh.geometry  = UIPlane(this.width, this.height, 0.02 * this.width, 18)
+            this.object3D.scale.setScalar(event.detail.distance)
 
             this.object3D.lookAt(this.lookPosition)
 
