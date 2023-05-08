@@ -139,6 +139,8 @@ export class Environment extends MRElement {
         });
       }
 
+      this.appHands.update()
+
       this.shadowLight.target = this.user
 
       this.renderer.render( this.app, this.user )

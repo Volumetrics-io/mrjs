@@ -13,6 +13,9 @@ export class Entity extends MRElement {
       this.object3D = new THREE.Group()
       this.components = new Set()
 
+      this.object3D.receiveShadow = true;
+      this.object3D.renderOrder = 3
+
       this.componentMutated = this.componentMutated.bind(this)
 
     }
@@ -21,10 +24,8 @@ export class Entity extends MRElement {
         if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
         this.parentElement.add(this)
 
-        if (this.parentElement.isEnvironment) {
-            this.environment = this.parentElement
-        } else {
-            this.environment = this.parentElement.environment
+        if (this.parentElement.user) {
+            this.user = this.parentElement.user
         }
 
         setTransformValues(this)
@@ -69,6 +70,8 @@ export class Entity extends MRElement {
     }
 
     add(entity){
+        entity.object3D.receiveShadow = true;
+        entity.object3D.renderOrder = 3
         this.object3D.add(entity.object3D)
     }
 

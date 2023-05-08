@@ -3,11 +3,12 @@ import { Entity } from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js';
 
 class Panel extends Entity {
-    static get observedAttributes() { return ['width', 'height', 'corner-radius', 'smoothness', 'color']; }
+    static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
 
+        this.fitToParent = false
         this.width = 1
         this.height = 1
         this.radius = 0.2
@@ -29,6 +30,9 @@ class Panel extends Entity {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case 'width':
+                if (this.fitToParent) {
+
+                }
                 this.width = newValue
                 break;
             case 'height':
