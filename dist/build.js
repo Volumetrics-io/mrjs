@@ -59600,11 +59600,12 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
 
 
 class Panel extends Entity {
-    static get observedAttributes() { return ['width', 'height', 'corner-radius', 'smoothness', 'color']; }
+    static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
 
+        this.fitToParent = false
         this.width = 1
         this.height = 1
         this.radius = 0.2
@@ -59626,6 +59627,9 @@ class Panel extends Entity {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case 'width':
+                if (this.fitToParent) {
+
+                }
                 this.width = newValue
                 break;
             case 'height':
@@ -59661,6 +59665,7 @@ class Surface extends Entity {
         super()
 
         this.rotationPlane = new Group()
+        this.translation = new Group()
         this.group = new Group()
         this.horizontal = new Quaternion()
         this.vertical = new Quaternion()
@@ -59669,13 +59674,13 @@ class Surface extends Entity {
         this.vertical.setFromAxisAngle([1, 0, 0], Math.PI / 2)
 
         this.object3D.add(this.rotationPlane)
-        this.rotationPlane.add(this.group)
+        this.rotationPlane.add(this.translation)
 
         this.rotationPlane.receiveShadow = true;
         this.rotationPlane.renderOrder = 3
 
-        this.group.receiveShadow = true;
-        this.group.renderOrder = 3
+        this.translation.receiveShadow = true;
+        this.translation.renderOrder = 3
 
         this.aspectRatio = aspectRatio
         this.placed = false
@@ -59693,7 +59698,7 @@ class Surface extends Entity {
             side: 2
         } );
 
-        this.geometry = new PlaneGeometry( this.aspectRatio / 100, 0.01 );
+        this.geometry = UIPlane(this.aspectRatio, 1, 0.02, 18)
 
         this.mesh = new Mesh(this.geometry, this.material)
 
@@ -59721,15 +59726,17 @@ class Surface extends Entity {
         this.lookPosition.setY(event.detail.center.y)
 
         if(this.mesh.parent == null) {
-            this.group.add(this.mesh)
+            this.translation.add(this.mesh)
+        }
+
+        if(this.group.parent != null) {
+            this.group.removeFromParent()
         }
 
             this.object3D.position.setX(event.detail.center.x)
             this.object3D.position.setY(event.detail.center.y)
             this.object3D.position.setZ(event.detail.center.z)
-            this.width = 2 * event.detail.distance
-            this.height = this.width / this.aspectRatio
-            this.mesh.geometry  = UIPlane(this.width, this.height, 0.02 * this.width, 18)
+            this.object3D.scale.setScalar(event.detail.distance)
 
             this.object3D.lookAt(this.lookPosition)
 
@@ -59739,10 +59746,10 @@ class Surface extends Entity {
 
     setRotation(delta, threshold) {
         if (delta < threshold) {
-            this.group.position.setY(0)
+            this.translation.position.setY(0)
             this.rotationPlane.rotation.x = 0 
         } else {
-            this.group.position.setY(-this.height / 2)
+            this.translation.position.setY(-0.5)
             this.rotationPlane.rotation.x = (Math.PI / 2)
 
         }
@@ -59752,6 +59759,7 @@ class Surface extends Entity {
         console.log(this.object3D);
         this.placed = true
         this.mesh.removeFromParent()
+        this.translation.add(this.group)
         // document.removeEventListener('doublepinch', this.onDoublePinch)
         // document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
     }
