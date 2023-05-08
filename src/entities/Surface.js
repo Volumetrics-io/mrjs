@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from '../core/entity.js'
+import { UIPlane } from '../geometry/UIPlane.js';
 
 const QUAD_PINCH_THRESHOLD = 0.03
 
@@ -76,7 +77,7 @@ class Surface extends Entity {
             this.object3D.position.setZ(event.detail.center.z)
             this.width = 2 * event.detail.distance
             this.height = this.width / this.aspectRatio
-            this.mesh.geometry  = new THREE.PlaneGeometry( this.width, this.height );
+            this.mesh.geometry  = UIPlane(this.width, this.height, 0.02 * this.width, 18)
 
             this.object3D.lookAt(this.lookPosition)
 
