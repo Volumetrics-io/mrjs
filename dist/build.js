@@ -63996,7 +63996,7 @@ class Surface extends Entity {
     setRotation(delta, threshold) {
         if (delta < threshold) {
             this.translation.position.setY(0)
-            this.rotationPlane.rotation.x = 0 
+            this.rotationPlane.rotation.x = Math.PI
         } else {
             this.translation.position.setY(-0.5)
             this.rotationPlane.rotation.x = (Math.PI / 2)
