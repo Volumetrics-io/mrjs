@@ -9,8 +9,7 @@ export class MaterialHelper {
     static createMaterial(type, materialString) {
         let parameters = MaterialHelper.parseMaterialString(materialString)
         let result = MaterialHelper.initMaterial(type.split('mat-')[1], parameters)
-        result.receiveShadow = true
-        console.log(result);
+        if (result.opacity < 1) { result.transparent = true }
         return result
     }
 
