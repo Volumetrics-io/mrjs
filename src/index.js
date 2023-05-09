@@ -1,3 +1,6 @@
+// UTILS
+import './utils/extensions.js'
+
 // CORE
 import './core/MRElement.js'
 import './core/MRSystemElement.js'
