@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { setTransformValues } from '../utils/parser.js';
 import { MRElement } from './MRElement.js'
+import { MaterialHelper } from '../utils/materialHelper.js';
 
 export class Entity extends MRElement {
     static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
@@ -34,8 +35,11 @@ export class Entity extends MRElement {
         this.observer.observe(this, { attributes: true });
 
         for (const attr of this.attributes) {
-            if (!attr.name.includes('comp-')) { continue }
-            this.components.add(attr.name)
+            if (attr.name.startsWith('comp-')) { 
+                this.components.add(attr.name)
+            }else if (attr.name.startsWith('mat-')) {
+                this.object3D.material = MaterialHelper.createMaterial(attr.name, attr.value)
+            }
         }
     }
 
@@ -49,8 +53,11 @@ export class Entity extends MRElement {
 
     mutationCallback = (mutationList, observer) => {
         for (const mutation of mutationList) { 
-            if (mutation.type === "attributes") { 
+            if (mutation.type != "attributes") { continue }
+            if (mutation.attributeName.startsWith('comp-')) { 
                 this.componentMutated(mutation.attributeName)
+            } else if (mutation.attributeName.startsWith('mat-')) {
+                this.object3D.material = MaterialHelper.createMaterial(mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }
