@@ -44,7 +44,7 @@ export class Entity extends MRElement {
                     MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
                     break;
                 case 'tex':
-                    
+                    MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
                     break;
             
                 default:
