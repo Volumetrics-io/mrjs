@@ -1,4 +1,3 @@
-import { json } from 'd3';
 import * as THREE from 'three';
 
 // example MaterialString
@@ -6,19 +5,28 @@ import * as THREE from 'three';
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
 export class MaterialHelper {
-    static createMaterial(type, materialString) {
-        let parameters = MaterialHelper.parseMaterialString(materialString)
-        let result = MaterialHelper.initMaterial(type.split('mat-')[1], parameters)
+    static applyMaterial(object, materialType, parameterString) {
+        let parameters = MaterialHelper.parseParameterString(parameterString)
+        let result = MaterialHelper.initMaterial(materialType.split('mat-')[1], parameters)
         if (result.opacity < 1) { result.transparent = true }
-        return result
+        object.material = result
     }
 
-    static applyTexture(materialString) {
+    static applyTexture(object, textureType, parameterString) {
+        let src = parameterString.split(':')[1].trim()
+        let typeArray = textureType.split('-')
+        let result = MaterialHelper.initTexture(typeArray[1], src)
+
+        if (typeArray.length < 3) {
+            object.material.map = result
+        } else {
+            MaterialHelper.applyMap(object, typeArray[2], result)
+        }
 
     }
 
-    static parseMaterialString(materialString) {
-        let jsonString = materialString.replaceAll(';', ',')
+    static parseParameterString(parameterString) {
+        let jsonString = parameterString.replaceAll(';', ',')
         jsonString = jsonString.spliceSplit(0, 0, '{')
 
         if (jsonString.slice(-1) == ',') {
@@ -73,6 +81,59 @@ export class MaterialHelper {
                 return new THREE.Sprite()
             default:
                 return new THREE.MeshPhongMaterial(parameters)
+        }
+    }
+
+    static initTexture(type, src){
+        switch (type) {
+            case 'basic':
+                return new THREE.TextureLoader().load(src)
+            case 'canvas':
+                return new THREE.CanvasTexture(src)
+            case 'compressed':
+                return new THREE.CompressedTextureLoader().load(src)                
+            case 'video':
+                let videosrc = document.getElementById(src);
+                return new THREE.VideoTexture(videosrc)
+            default:
+                return new THREE.TextureLoader().load(src)
+        }
+    }
+
+    static applyMap(object, type, texture) {
+        switch (type) {
+            case 'alpha':
+                object.material.alphaMap = texture
+                break;
+            case 'ao':
+                object.material.aoMap = texture
+                break;
+            case 'bump':
+                object.material.bumpMap = texture
+                break;
+            case 'displacement':
+                object.material.displacementMap = texture
+                break;
+            case 'emissive':
+                object.material.emissiveMap = texture
+                break;
+            case 'env':
+                object.material.envMap = texture
+                break;
+            case 'light':
+                object.material.lightMap = texture
+                break;
+            case 'metalness':
+                object.material.metalnessMap = texture
+                break;
+            case 'normal':
+                object.material.normalMap = texture
+                break;
+            case 'roughness':
+                object.material.roughnessMap = texture
+                break;
+            default:
+                object.material.map = texture
         }
     }
 }
