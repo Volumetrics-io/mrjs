@@ -35,10 +35,20 @@ export class Entity extends MRElement {
         this.observer.observe(this, { attributes: true });
 
         for (const attr of this.attributes) {
-            if (attr.name.startsWith('comp-')) { 
-                this.components.add(attr.name)
-            }else if (attr.name.startsWith('mat-')) {
-                this.object3D.material = MaterialHelper.createMaterial(attr.name, attr.value)
+
+            switch (attr.name.split('-')[0]) {
+                case 'comp':
+                    this.components.add(attr.name)
+                    break;
+                case 'mat':
+                    MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+                    break;
+                case 'tex':
+                    
+                    break;
+            
+                default:
+                    break;
             }
         }
     }
@@ -57,7 +67,7 @@ export class Entity extends MRElement {
             if (mutation.attributeName.startsWith('comp-')) { 
                 this.componentMutated(mutation.attributeName)
             } else if (mutation.attributeName.startsWith('mat-')) {
-                this.object3D.material = MaterialHelper.createMaterial(mutation.attributeName, this.getAttribute(mutation.attributeName))
+                MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }

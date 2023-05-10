@@ -63521,11 +63521,11 @@ function defaultConstrain(transform, extent, translateExtent) {
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
 class MaterialHelper {
-    static createMaterial(type, materialString) {
-        let parameters = MaterialHelper.parseMaterialString(materialString)
-        let result = MaterialHelper.initMaterial(type.split('mat-')[1], parameters)
+    static applyMaterial(object, materialType, parameterString) {
+        let parameters = MaterialHelper.parseMaterialString(parameterString)
+        let result = MaterialHelper.initMaterial(materialType.split('mat-')[1], parameters)
         if (result.opacity < 1) { result.transparent = true }
-        return result
+        object.material = result
     }
 
     static applyTexture(materialString) {
@@ -63629,10 +63629,20 @@ class Entity extends MRElement {
         this.observer.observe(this, { attributes: true });
 
         for (const attr of this.attributes) {
-            if (attr.name.startsWith('comp-')) { 
-                this.components.add(attr.name)
-            }else if (attr.name.startsWith('mat-')) {
-                this.object3D.material = MaterialHelper.createMaterial(attr.name, attr.value)
+
+            switch (attr.name.split('-')[0]) {
+                case 'comp':
+                    this.components.add(attr.name)
+                    break;
+                case 'mat':
+                    MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+                    break;
+                case 'tex':
+                    
+                    break;
+            
+                default:
+                    break;
             }
         }
     }
@@ -63651,7 +63661,7 @@ class Entity extends MRElement {
             if (mutation.attributeName.startsWith('comp-')) { 
                 this.componentMutated(mutation.attributeName)
             } else if (mutation.attributeName.startsWith('mat-')) {
-                this.object3D.material = MaterialHelper.createMaterial(mutation.attributeName, this.getAttribute(mutation.attributeName))
+                MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }

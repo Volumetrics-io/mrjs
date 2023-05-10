@@ -6,11 +6,11 @@ import * as THREE from 'three';
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
 export class MaterialHelper {
-    static createMaterial(type, materialString) {
-        let parameters = MaterialHelper.parseMaterialString(materialString)
-        let result = MaterialHelper.initMaterial(type.split('mat-')[1], parameters)
+    static applyMaterial(object, materialType, parameterString) {
+        let parameters = MaterialHelper.parseMaterialString(parameterString)
+        let result = MaterialHelper.initMaterial(materialType.split('mat-')[1], parameters)
         if (result.opacity < 1) { result.transparent = true }
-        return result
+        object.material = result
     }
 
     static applyTexture(materialString) {
