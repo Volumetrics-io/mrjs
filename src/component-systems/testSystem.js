@@ -11,4 +11,4 @@ class TestSystem extends MRSystemElement {
 	}
 }
 
-customElements.define('mr-test-system', TestSystem);
+customElements.get('mr-test-system') || customElements.define('mr-test-system', TestSystem);
