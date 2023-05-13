@@ -39,10 +39,494 @@ String.prototype.spliceSplit = function(index, count, add) {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
+  "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
+  "MRSystemElement": () => (/* reexport */ MRSystemElement_namespaceObject["default"]),
+  "Panel": () => (/* reexport */ Panel),
+  "THREE": () => (/* reexport */ three_module_namespaceObject),
+  "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
+});
+
+// NAMESPACE OBJECT: ./src/core/MRElement.js
+var MRElement_namespaceObject = {};
+__webpack_require__.r(MRElement_namespaceObject);
+__webpack_require__.d(MRElement_namespaceObject, {
+  "Z": () => (MRElement)
+});
+
+// NAMESPACE OBJECT: ./node_modules/three/build/three.module.js
+var three_module_namespaceObject = {};
+__webpack_require__.r(three_module_namespaceObject);
+__webpack_require__.d(three_module_namespaceObject, {
+  "ACESFilmicToneMapping": () => (ACESFilmicToneMapping),
+  "AddEquation": () => (AddEquation),
+  "AddOperation": () => (AddOperation),
+  "AdditiveAnimationBlendMode": () => (AdditiveAnimationBlendMode),
+  "AdditiveBlending": () => (AdditiveBlending),
+  "AlphaFormat": () => (AlphaFormat),
+  "AlwaysDepth": () => (AlwaysDepth),
+  "AlwaysStencilFunc": () => (AlwaysStencilFunc),
+  "AmbientLight": () => (AmbientLight),
+  "AmbientLightProbe": () => (AmbientLightProbe),
+  "AnimationAction": () => (AnimationAction),
+  "AnimationClip": () => (AnimationClip),
+  "AnimationLoader": () => (AnimationLoader),
+  "AnimationMixer": () => (AnimationMixer),
+  "AnimationObjectGroup": () => (AnimationObjectGroup),
+  "AnimationUtils": () => (AnimationUtils),
+  "ArcCurve": () => (ArcCurve),
+  "ArrayCamera": () => (ArrayCamera),
+  "ArrowHelper": () => (ArrowHelper),
+  "Audio": () => (Audio),
+  "AudioAnalyser": () => (AudioAnalyser),
+  "AudioContext": () => (AudioContext),
+  "AudioListener": () => (AudioListener),
+  "AudioLoader": () => (AudioLoader),
+  "AxesHelper": () => (AxesHelper),
+  "BackSide": () => (BackSide),
+  "BasicDepthPacking": () => (BasicDepthPacking),
+  "BasicShadowMap": () => (BasicShadowMap),
+  "Bone": () => (Bone),
+  "BooleanKeyframeTrack": () => (BooleanKeyframeTrack),
+  "Box2": () => (Box2),
+  "Box3": () => (Box3),
+  "Box3Helper": () => (Box3Helper),
+  "BoxBufferGeometry": () => (BoxBufferGeometry),
+  "BoxGeometry": () => (BoxGeometry),
+  "BoxHelper": () => (BoxHelper),
+  "BufferAttribute": () => (three_module_BufferAttribute),
+  "BufferGeometry": () => (three_module_BufferGeometry),
+  "BufferGeometryLoader": () => (BufferGeometryLoader),
+  "ByteType": () => (ByteType),
+  "Cache": () => (Cache),
+  "Camera": () => (Camera),
+  "CameraHelper": () => (CameraHelper),
+  "CanvasTexture": () => (CanvasTexture),
+  "CapsuleBufferGeometry": () => (CapsuleBufferGeometry),
+  "CapsuleGeometry": () => (CapsuleGeometry),
+  "CatmullRomCurve3": () => (CatmullRomCurve3),
+  "CineonToneMapping": () => (CineonToneMapping),
+  "CircleBufferGeometry": () => (CircleBufferGeometry),
+  "CircleGeometry": () => (CircleGeometry),
+  "ClampToEdgeWrapping": () => (ClampToEdgeWrapping),
+  "Clock": () => (Clock),
+  "Color": () => (Color),
+  "ColorKeyframeTrack": () => (ColorKeyframeTrack),
+  "ColorManagement": () => (ColorManagement),
+  "CompressedArrayTexture": () => (CompressedArrayTexture),
+  "CompressedTexture": () => (CompressedTexture),
+  "CompressedTextureLoader": () => (CompressedTextureLoader),
+  "ConeBufferGeometry": () => (ConeBufferGeometry),
+  "ConeGeometry": () => (ConeGeometry),
+  "CubeCamera": () => (CubeCamera),
+  "CubeReflectionMapping": () => (CubeReflectionMapping),
+  "CubeRefractionMapping": () => (CubeRefractionMapping),
+  "CubeTexture": () => (CubeTexture),
+  "CubeTextureLoader": () => (CubeTextureLoader),
+  "CubeUVReflectionMapping": () => (CubeUVReflectionMapping),
+  "CubicBezierCurve": () => (CubicBezierCurve),
+  "CubicBezierCurve3": () => (CubicBezierCurve3),
+  "CubicInterpolant": () => (CubicInterpolant),
+  "CullFaceBack": () => (CullFaceBack),
+  "CullFaceFront": () => (CullFaceFront),
+  "CullFaceFrontBack": () => (CullFaceFrontBack),
+  "CullFaceNone": () => (CullFaceNone),
+  "Curve": () => (Curve),
+  "CurvePath": () => (CurvePath),
+  "CustomBlending": () => (CustomBlending),
+  "CustomToneMapping": () => (CustomToneMapping),
+  "CylinderBufferGeometry": () => (CylinderBufferGeometry),
+  "CylinderGeometry": () => (CylinderGeometry),
+  "Cylindrical": () => (Cylindrical),
+  "Data3DTexture": () => (Data3DTexture),
+  "DataArrayTexture": () => (DataArrayTexture),
+  "DataTexture": () => (DataTexture),
+  "DataTextureLoader": () => (DataTextureLoader),
+  "DataUtils": () => (DataUtils),
+  "DecrementStencilOp": () => (DecrementStencilOp),
+  "DecrementWrapStencilOp": () => (DecrementWrapStencilOp),
+  "DefaultLoadingManager": () => (DefaultLoadingManager),
+  "DepthFormat": () => (DepthFormat),
+  "DepthStencilFormat": () => (DepthStencilFormat),
+  "DepthTexture": () => (DepthTexture),
+  "DirectionalLight": () => (DirectionalLight),
+  "DirectionalLightHelper": () => (DirectionalLightHelper),
+  "DiscreteInterpolant": () => (DiscreteInterpolant),
+  "DisplayP3ColorSpace": () => (DisplayP3ColorSpace),
+  "DodecahedronBufferGeometry": () => (DodecahedronBufferGeometry),
+  "DodecahedronGeometry": () => (DodecahedronGeometry),
+  "DoubleSide": () => (DoubleSide),
+  "DstAlphaFactor": () => (DstAlphaFactor),
+  "DstColorFactor": () => (DstColorFactor),
+  "DynamicCopyUsage": () => (DynamicCopyUsage),
+  "DynamicDrawUsage": () => (DynamicDrawUsage),
+  "DynamicReadUsage": () => (DynamicReadUsage),
+  "EdgesGeometry": () => (EdgesGeometry),
+  "EllipseCurve": () => (EllipseCurve),
+  "EqualDepth": () => (EqualDepth),
+  "EqualStencilFunc": () => (EqualStencilFunc),
+  "EquirectangularReflectionMapping": () => (EquirectangularReflectionMapping),
+  "EquirectangularRefractionMapping": () => (EquirectangularRefractionMapping),
+  "Euler": () => (Euler),
+  "EventDispatcher": () => (EventDispatcher),
+  "ExtrudeBufferGeometry": () => (ExtrudeBufferGeometry),
+  "ExtrudeGeometry": () => (ExtrudeGeometry),
+  "FileLoader": () => (FileLoader),
+  "Float16BufferAttribute": () => (Float16BufferAttribute),
+  "Float32BufferAttribute": () => (three_module_Float32BufferAttribute),
+  "Float64BufferAttribute": () => (Float64BufferAttribute),
+  "FloatType": () => (FloatType),
+  "Fog": () => (Fog),
+  "FogExp2": () => (FogExp2),
+  "FramebufferTexture": () => (FramebufferTexture),
+  "FrontSide": () => (FrontSide),
+  "Frustum": () => (Frustum),
+  "GLBufferAttribute": () => (GLBufferAttribute),
+  "GLSL1": () => (GLSL1),
+  "GLSL3": () => (GLSL3),
+  "GreaterDepth": () => (GreaterDepth),
+  "GreaterEqualDepth": () => (GreaterEqualDepth),
+  "GreaterEqualStencilFunc": () => (GreaterEqualStencilFunc),
+  "GreaterStencilFunc": () => (GreaterStencilFunc),
+  "GridHelper": () => (GridHelper),
+  "Group": () => (Group),
+  "HalfFloatType": () => (HalfFloatType),
+  "HemisphereLight": () => (HemisphereLight),
+  "HemisphereLightHelper": () => (HemisphereLightHelper),
+  "HemisphereLightProbe": () => (HemisphereLightProbe),
+  "IcosahedronBufferGeometry": () => (IcosahedronBufferGeometry),
+  "IcosahedronGeometry": () => (IcosahedronGeometry),
+  "ImageBitmapLoader": () => (ImageBitmapLoader),
+  "ImageLoader": () => (ImageLoader),
+  "ImageUtils": () => (ImageUtils),
+  "IncrementStencilOp": () => (IncrementStencilOp),
+  "IncrementWrapStencilOp": () => (IncrementWrapStencilOp),
+  "InstancedBufferAttribute": () => (three_module_InstancedBufferAttribute),
+  "InstancedBufferGeometry": () => (InstancedBufferGeometry),
+  "InstancedInterleavedBuffer": () => (InstancedInterleavedBuffer),
+  "InstancedMesh": () => (InstancedMesh),
+  "Int16BufferAttribute": () => (Int16BufferAttribute),
+  "Int32BufferAttribute": () => (Int32BufferAttribute),
+  "Int8BufferAttribute": () => (Int8BufferAttribute),
+  "IntType": () => (IntType),
+  "InterleavedBuffer": () => (three_module_InterleavedBuffer),
+  "InterleavedBufferAttribute": () => (three_module_InterleavedBufferAttribute),
+  "Interpolant": () => (Interpolant),
+  "InterpolateDiscrete": () => (InterpolateDiscrete),
+  "InterpolateLinear": () => (InterpolateLinear),
+  "InterpolateSmooth": () => (InterpolateSmooth),
+  "InvertStencilOp": () => (InvertStencilOp),
+  "KeepStencilOp": () => (KeepStencilOp),
+  "KeyframeTrack": () => (KeyframeTrack),
+  "LOD": () => (LOD),
+  "LatheBufferGeometry": () => (LatheBufferGeometry),
+  "LatheGeometry": () => (LatheGeometry),
+  "Layers": () => (Layers),
+  "LessDepth": () => (LessDepth),
+  "LessEqualDepth": () => (LessEqualDepth),
+  "LessEqualStencilFunc": () => (LessEqualStencilFunc),
+  "LessStencilFunc": () => (LessStencilFunc),
+  "Light": () => (Light),
+  "LightProbe": () => (LightProbe),
+  "Line": () => (Line),
+  "Line3": () => (Line3),
+  "LineBasicMaterial": () => (LineBasicMaterial),
+  "LineCurve": () => (LineCurve),
+  "LineCurve3": () => (LineCurve3),
+  "LineDashedMaterial": () => (LineDashedMaterial),
+  "LineLoop": () => (LineLoop),
+  "LineSegments": () => (LineSegments),
+  "LinearEncoding": () => (LinearEncoding),
+  "LinearFilter": () => (LinearFilter),
+  "LinearInterpolant": () => (LinearInterpolant),
+  "LinearMipMapLinearFilter": () => (LinearMipMapLinearFilter),
+  "LinearMipMapNearestFilter": () => (LinearMipMapNearestFilter),
+  "LinearMipmapLinearFilter": () => (LinearMipmapLinearFilter),
+  "LinearMipmapNearestFilter": () => (LinearMipmapNearestFilter),
+  "LinearSRGBColorSpace": () => (LinearSRGBColorSpace),
+  "LinearToneMapping": () => (LinearToneMapping),
+  "Loader": () => (Loader),
+  "LoaderUtils": () => (LoaderUtils),
+  "LoadingManager": () => (LoadingManager),
+  "LoopOnce": () => (LoopOnce),
+  "LoopPingPong": () => (LoopPingPong),
+  "LoopRepeat": () => (LoopRepeat),
+  "LuminanceAlphaFormat": () => (LuminanceAlphaFormat),
+  "LuminanceFormat": () => (LuminanceFormat),
+  "MOUSE": () => (MOUSE),
+  "Material": () => (Material),
+  "MaterialLoader": () => (MaterialLoader),
+  "MathUtils": () => (MathUtils),
+  "Matrix3": () => (Matrix3),
+  "Matrix4": () => (Matrix4),
+  "MaxEquation": () => (MaxEquation),
+  "Mesh": () => (Mesh),
+  "MeshBasicMaterial": () => (MeshBasicMaterial),
+  "MeshDepthMaterial": () => (MeshDepthMaterial),
+  "MeshDistanceMaterial": () => (MeshDistanceMaterial),
+  "MeshLambertMaterial": () => (MeshLambertMaterial),
+  "MeshMatcapMaterial": () => (MeshMatcapMaterial),
+  "MeshNormalMaterial": () => (MeshNormalMaterial),
+  "MeshPhongMaterial": () => (MeshPhongMaterial),
+  "MeshPhysicalMaterial": () => (MeshPhysicalMaterial),
+  "MeshStandardMaterial": () => (MeshStandardMaterial),
+  "MeshToonMaterial": () => (MeshToonMaterial),
+  "MinEquation": () => (MinEquation),
+  "MirroredRepeatWrapping": () => (MirroredRepeatWrapping),
+  "MixOperation": () => (MixOperation),
+  "MultiplyBlending": () => (MultiplyBlending),
+  "MultiplyOperation": () => (MultiplyOperation),
+  "NearestFilter": () => (NearestFilter),
+  "NearestMipMapLinearFilter": () => (NearestMipMapLinearFilter),
+  "NearestMipMapNearestFilter": () => (NearestMipMapNearestFilter),
+  "NearestMipmapLinearFilter": () => (NearestMipmapLinearFilter),
+  "NearestMipmapNearestFilter": () => (NearestMipmapNearestFilter),
+  "NeverDepth": () => (NeverDepth),
+  "NeverStencilFunc": () => (NeverStencilFunc),
+  "NoBlending": () => (NoBlending),
+  "NoColorSpace": () => (NoColorSpace),
+  "NoToneMapping": () => (NoToneMapping),
+  "NormalAnimationBlendMode": () => (NormalAnimationBlendMode),
+  "NormalBlending": () => (NormalBlending),
+  "NotEqualDepth": () => (NotEqualDepth),
+  "NotEqualStencilFunc": () => (NotEqualStencilFunc),
+  "NumberKeyframeTrack": () => (NumberKeyframeTrack),
+  "Object3D": () => (Object3D),
+  "ObjectLoader": () => (ObjectLoader),
+  "ObjectSpaceNormalMap": () => (ObjectSpaceNormalMap),
+  "OctahedronBufferGeometry": () => (OctahedronBufferGeometry),
+  "OctahedronGeometry": () => (OctahedronGeometry),
+  "OneFactor": () => (OneFactor),
+  "OneMinusDstAlphaFactor": () => (OneMinusDstAlphaFactor),
+  "OneMinusDstColorFactor": () => (OneMinusDstColorFactor),
+  "OneMinusSrcAlphaFactor": () => (OneMinusSrcAlphaFactor),
+  "OneMinusSrcColorFactor": () => (OneMinusSrcColorFactor),
+  "OrthographicCamera": () => (OrthographicCamera),
+  "PCFShadowMap": () => (PCFShadowMap),
+  "PCFSoftShadowMap": () => (PCFSoftShadowMap),
+  "PMREMGenerator": () => (PMREMGenerator),
+  "Path": () => (Path),
+  "PerspectiveCamera": () => (PerspectiveCamera),
+  "Plane": () => (Plane),
+  "PlaneBufferGeometry": () => (PlaneBufferGeometry),
+  "PlaneGeometry": () => (PlaneGeometry),
+  "PlaneHelper": () => (PlaneHelper),
+  "PointLight": () => (PointLight),
+  "PointLightHelper": () => (PointLightHelper),
+  "Points": () => (Points),
+  "PointsMaterial": () => (PointsMaterial),
+  "PolarGridHelper": () => (PolarGridHelper),
+  "PolyhedronBufferGeometry": () => (PolyhedronBufferGeometry),
+  "PolyhedronGeometry": () => (PolyhedronGeometry),
+  "PositionalAudio": () => (PositionalAudio),
+  "PropertyBinding": () => (PropertyBinding),
+  "PropertyMixer": () => (PropertyMixer),
+  "QuadraticBezierCurve": () => (QuadraticBezierCurve),
+  "QuadraticBezierCurve3": () => (QuadraticBezierCurve3),
+  "Quaternion": () => (Quaternion),
+  "QuaternionKeyframeTrack": () => (QuaternionKeyframeTrack),
+  "QuaternionLinearInterpolant": () => (QuaternionLinearInterpolant),
+  "RED_GREEN_RGTC2_Format": () => (RED_GREEN_RGTC2_Format),
+  "RED_RGTC1_Format": () => (RED_RGTC1_Format),
+  "REVISION": () => (REVISION),
+  "RGBADepthPacking": () => (RGBADepthPacking),
+  "RGBAFormat": () => (RGBAFormat),
+  "RGBAIntegerFormat": () => (RGBAIntegerFormat),
+  "RGBA_ASTC_10x10_Format": () => (RGBA_ASTC_10x10_Format),
+  "RGBA_ASTC_10x5_Format": () => (RGBA_ASTC_10x5_Format),
+  "RGBA_ASTC_10x6_Format": () => (RGBA_ASTC_10x6_Format),
+  "RGBA_ASTC_10x8_Format": () => (RGBA_ASTC_10x8_Format),
+  "RGBA_ASTC_12x10_Format": () => (RGBA_ASTC_12x10_Format),
+  "RGBA_ASTC_12x12_Format": () => (RGBA_ASTC_12x12_Format),
+  "RGBA_ASTC_4x4_Format": () => (RGBA_ASTC_4x4_Format),
+  "RGBA_ASTC_5x4_Format": () => (RGBA_ASTC_5x4_Format),
+  "RGBA_ASTC_5x5_Format": () => (RGBA_ASTC_5x5_Format),
+  "RGBA_ASTC_6x5_Format": () => (RGBA_ASTC_6x5_Format),
+  "RGBA_ASTC_6x6_Format": () => (RGBA_ASTC_6x6_Format),
+  "RGBA_ASTC_8x5_Format": () => (RGBA_ASTC_8x5_Format),
+  "RGBA_ASTC_8x6_Format": () => (RGBA_ASTC_8x6_Format),
+  "RGBA_ASTC_8x8_Format": () => (RGBA_ASTC_8x8_Format),
+  "RGBA_BPTC_Format": () => (RGBA_BPTC_Format),
+  "RGBA_ETC2_EAC_Format": () => (RGBA_ETC2_EAC_Format),
+  "RGBA_PVRTC_2BPPV1_Format": () => (RGBA_PVRTC_2BPPV1_Format),
+  "RGBA_PVRTC_4BPPV1_Format": () => (RGBA_PVRTC_4BPPV1_Format),
+  "RGBA_S3TC_DXT1_Format": () => (RGBA_S3TC_DXT1_Format),
+  "RGBA_S3TC_DXT3_Format": () => (RGBA_S3TC_DXT3_Format),
+  "RGBA_S3TC_DXT5_Format": () => (RGBA_S3TC_DXT5_Format),
+  "RGB_ETC1_Format": () => (RGB_ETC1_Format),
+  "RGB_ETC2_Format": () => (RGB_ETC2_Format),
+  "RGB_PVRTC_2BPPV1_Format": () => (RGB_PVRTC_2BPPV1_Format),
+  "RGB_PVRTC_4BPPV1_Format": () => (RGB_PVRTC_4BPPV1_Format),
+  "RGB_S3TC_DXT1_Format": () => (RGB_S3TC_DXT1_Format),
+  "RGFormat": () => (RGFormat),
+  "RGIntegerFormat": () => (RGIntegerFormat),
+  "RawShaderMaterial": () => (RawShaderMaterial),
+  "Ray": () => (Ray),
+  "Raycaster": () => (Raycaster),
+  "RectAreaLight": () => (RectAreaLight),
+  "RedFormat": () => (RedFormat),
+  "RedIntegerFormat": () => (RedIntegerFormat),
+  "ReinhardToneMapping": () => (ReinhardToneMapping),
+  "RepeatWrapping": () => (RepeatWrapping),
+  "ReplaceStencilOp": () => (ReplaceStencilOp),
+  "ReverseSubtractEquation": () => (ReverseSubtractEquation),
+  "RingBufferGeometry": () => (RingBufferGeometry),
+  "RingGeometry": () => (RingGeometry),
+  "SIGNED_RED_GREEN_RGTC2_Format": () => (SIGNED_RED_GREEN_RGTC2_Format),
+  "SIGNED_RED_RGTC1_Format": () => (SIGNED_RED_RGTC1_Format),
+  "SRGBColorSpace": () => (SRGBColorSpace),
+  "Scene": () => (Scene),
+  "ShaderChunk": () => (ShaderChunk),
+  "ShaderLib": () => (ShaderLib),
+  "ShaderMaterial": () => (ShaderMaterial),
+  "ShadowMaterial": () => (ShadowMaterial),
+  "Shape": () => (Shape),
+  "ShapeBufferGeometry": () => (ShapeBufferGeometry),
+  "ShapeGeometry": () => (ShapeGeometry),
+  "ShapePath": () => (ShapePath),
+  "ShapeUtils": () => (ShapeUtils),
+  "ShortType": () => (ShortType),
+  "Skeleton": () => (Skeleton),
+  "SkeletonHelper": () => (SkeletonHelper),
+  "SkinnedMesh": () => (SkinnedMesh),
+  "Source": () => (Source),
+  "Sphere": () => (Sphere),
+  "SphereBufferGeometry": () => (SphereBufferGeometry),
+  "SphereGeometry": () => (SphereGeometry),
+  "Spherical": () => (Spherical),
+  "SphericalHarmonics3": () => (SphericalHarmonics3),
+  "SplineCurve": () => (SplineCurve),
+  "SpotLight": () => (SpotLight),
+  "SpotLightHelper": () => (SpotLightHelper),
+  "Sprite": () => (Sprite),
+  "SpriteMaterial": () => (SpriteMaterial),
+  "SrcAlphaFactor": () => (SrcAlphaFactor),
+  "SrcAlphaSaturateFactor": () => (SrcAlphaSaturateFactor),
+  "SrcColorFactor": () => (SrcColorFactor),
+  "StaticCopyUsage": () => (StaticCopyUsage),
+  "StaticDrawUsage": () => (StaticDrawUsage),
+  "StaticReadUsage": () => (StaticReadUsage),
+  "StereoCamera": () => (StereoCamera),
+  "StreamCopyUsage": () => (StreamCopyUsage),
+  "StreamDrawUsage": () => (StreamDrawUsage),
+  "StreamReadUsage": () => (StreamReadUsage),
+  "StringKeyframeTrack": () => (StringKeyframeTrack),
+  "SubtractEquation": () => (SubtractEquation),
+  "SubtractiveBlending": () => (SubtractiveBlending),
+  "TOUCH": () => (TOUCH),
+  "TangentSpaceNormalMap": () => (TangentSpaceNormalMap),
+  "TetrahedronBufferGeometry": () => (TetrahedronBufferGeometry),
+  "TetrahedronGeometry": () => (TetrahedronGeometry),
+  "Texture": () => (Texture),
+  "TextureLoader": () => (TextureLoader),
+  "TorusBufferGeometry": () => (TorusBufferGeometry),
+  "TorusGeometry": () => (TorusGeometry),
+  "TorusKnotBufferGeometry": () => (TorusKnotBufferGeometry),
+  "TorusKnotGeometry": () => (TorusKnotGeometry),
+  "Triangle": () => (Triangle),
+  "TriangleFanDrawMode": () => (TriangleFanDrawMode),
+  "TriangleStripDrawMode": () => (TriangleStripDrawMode),
+  "TrianglesDrawMode": () => (TrianglesDrawMode),
+  "TubeBufferGeometry": () => (TubeBufferGeometry),
+  "TubeGeometry": () => (TubeGeometry),
+  "TwoPassDoubleSide": () => (TwoPassDoubleSide),
+  "UVMapping": () => (UVMapping),
+  "Uint16BufferAttribute": () => (Uint16BufferAttribute),
+  "Uint32BufferAttribute": () => (Uint32BufferAttribute),
+  "Uint8BufferAttribute": () => (Uint8BufferAttribute),
+  "Uint8ClampedBufferAttribute": () => (Uint8ClampedBufferAttribute),
+  "Uniform": () => (Uniform),
+  "UniformsGroup": () => (UniformsGroup),
+  "UniformsLib": () => (UniformsLib),
+  "UniformsUtils": () => (UniformsUtils),
+  "UnsignedByteType": () => (UnsignedByteType),
+  "UnsignedInt248Type": () => (UnsignedInt248Type),
+  "UnsignedIntType": () => (UnsignedIntType),
+  "UnsignedShort4444Type": () => (UnsignedShort4444Type),
+  "UnsignedShort5551Type": () => (UnsignedShort5551Type),
+  "UnsignedShortType": () => (UnsignedShortType),
+  "VSMShadowMap": () => (VSMShadowMap),
+  "Vector2": () => (Vector2),
+  "Vector3": () => (three_module_Vector3),
+  "Vector4": () => (Vector4),
+  "VectorKeyframeTrack": () => (VectorKeyframeTrack),
+  "VideoTexture": () => (VideoTexture),
+  "WebGL1Renderer": () => (WebGL1Renderer),
+  "WebGL3DRenderTarget": () => (WebGL3DRenderTarget),
+  "WebGLArrayRenderTarget": () => (WebGLArrayRenderTarget),
+  "WebGLCubeRenderTarget": () => (WebGLCubeRenderTarget),
+  "WebGLMultipleRenderTargets": () => (WebGLMultipleRenderTargets),
+  "WebGLRenderTarget": () => (WebGLRenderTarget),
+  "WebGLRenderer": () => (WebGLRenderer),
+  "WebGLUtils": () => (WebGLUtils),
+  "WireframeGeometry": () => (WireframeGeometry),
+  "WrapAroundEnding": () => (WrapAroundEnding),
+  "ZeroCurvatureEnding": () => (ZeroCurvatureEnding),
+  "ZeroFactor": () => (ZeroFactor),
+  "ZeroSlopeEnding": () => (ZeroSlopeEnding),
+  "ZeroStencilOp": () => (ZeroStencilOp),
+  "_SRGBAFormat": () => (_SRGBAFormat),
+  "sRGBEncoding": () => (sRGBEncoding)
+});
+
+// NAMESPACE OBJECT: ./src/core/entity.js
+var entity_namespaceObject = {};
+__webpack_require__.r(entity_namespaceObject);
+__webpack_require__.d(entity_namespaceObject, {
+  "J": () => (Entity)
+});
+
+// NAMESPACE OBJECT: ./src/core/MRSystemElement.js
+var MRSystemElement_namespaceObject = {};
+__webpack_require__.r(MRSystemElement_namespaceObject);
+__webpack_require__.d(MRSystemElement_namespaceObject, {
+  "Z": () => (MRSystemElement)
+});
+
+// NAMESPACE OBJECT: ./src/geometry/UIPlane.js
+var UIPlane_namespaceObject = {};
+__webpack_require__.r(UIPlane_namespaceObject);
+__webpack_require__.d(UIPlane_namespaceObject, {
+  "J": () => (UIPlane)
+});
 
 // EXTERNAL MODULE: ./src/utils/extensions.js
 var extensions = __webpack_require__(629);
@@ -2985,7 +3469,7 @@ class DataArrayTexture extends Texture {
 
 }
 
-class WebGLArrayRenderTarget extends (/* unused pure expression or super */ null && (WebGLRenderTarget)) {
+class WebGLArrayRenderTarget extends WebGLRenderTarget {
 
 	constructor( width = 1, height = 1, depth = 1 ) {
 
@@ -3034,7 +3518,7 @@ class Data3DTexture extends Texture {
 
 }
 
-class WebGL3DRenderTarget extends (/* unused pure expression or super */ null && (WebGLRenderTarget)) {
+class WebGL3DRenderTarget extends WebGLRenderTarget {
 
 	constructor( width = 1, height = 1, depth = 1 ) {
 
@@ -3052,7 +3536,7 @@ class WebGL3DRenderTarget extends (/* unused pure expression or super */ null &&
 
 }
 
-class WebGLMultipleRenderTargets extends (/* unused pure expression or super */ null && (WebGLRenderTarget)) {
+class WebGLMultipleRenderTargets extends WebGLRenderTarget {
 
 	constructor( width = 1, height = 1, count = 1, options = {} ) {
 
@@ -10007,7 +10491,7 @@ class three_module_BufferAttribute {
 
 //
 
-class Int8BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Int8BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10017,7 +10501,7 @@ class Int8BufferAttribute extends (/* unused pure expression or super */ null &&
 
 }
 
-class Uint8BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Uint8BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10027,7 +10511,7 @@ class Uint8BufferAttribute extends (/* unused pure expression or super */ null &
 
 }
 
-class Uint8ClampedBufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Uint8ClampedBufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10037,7 +10521,7 @@ class Uint8ClampedBufferAttribute extends (/* unused pure expression or super */
 
 }
 
-class Int16BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Int16BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10057,7 +10541,7 @@ class Uint16BufferAttribute extends three_module_BufferAttribute {
 
 }
 
-class Int32BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Int32BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10077,7 +10561,7 @@ class Uint32BufferAttribute extends three_module_BufferAttribute {
 
 }
 
-class Float16BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Float16BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -10240,7 +10724,7 @@ class three_module_Float32BufferAttribute extends three_module_BufferAttribute {
 
 }
 
-class Float64BufferAttribute extends (/* unused pure expression or super */ null && (three_module_BufferAttribute)) {
+class Float64BufferAttribute extends three_module_BufferAttribute {
 
 	constructor( array, itemSize, normalized ) {
 
@@ -30663,7 +31147,7 @@ function transformVertex( vertexPosition, mvPosition, center, scale, sin, cos ) 
 const _v1$2 = /*@__PURE__*/ new three_module_Vector3();
 const _v2$1 = /*@__PURE__*/ new three_module_Vector3();
 
-class LOD extends (/* unused pure expression or super */ null && (Object3D)) {
+class LOD extends Object3D {
 
 	constructor() {
 
@@ -32192,7 +32676,7 @@ class VideoTexture extends Texture {
 
 }
 
-class FramebufferTexture extends (/* unused pure expression or super */ null && (Texture)) {
+class FramebufferTexture extends Texture {
 
 	constructor( width, height, format ) {
 
@@ -32238,7 +32722,7 @@ class CompressedTexture extends Texture {
 
 }
 
-class CompressedArrayTexture extends (/* unused pure expression or super */ null && (CompressedTexture)) {
+class CompressedArrayTexture extends CompressedTexture {
 
 	constructor( mipmaps, width, height, depth, format, type ) {
 
@@ -41433,7 +41917,7 @@ class FileLoader extends Loader {
 
 }
 
-class AnimationLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class AnimationLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -41705,7 +42189,7 @@ class ImageLoader extends Loader {
 
 }
 
-class CubeTextureLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class CubeTextureLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -41761,7 +42245,7 @@ class CubeTextureLoader extends (/* unused pure expression or super */ null && (
  * Sub classes have to implement the parse() method which will be used in load().
  */
 
-class DataTextureLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class DataTextureLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -41951,7 +42435,7 @@ class Light extends Object3D {
 
 }
 
-class HemisphereLight extends (/* unused pure expression or super */ null && (Light)) {
+class HemisphereLight extends Light {
 
 	constructor( skyColor, groundColor, intensity ) {
 
@@ -42436,7 +42920,7 @@ class AmbientLight extends Light {
 
 }
 
-class RectAreaLight extends (/* unused pure expression or super */ null && (Light)) {
+class RectAreaLight extends Light {
 
 	constructor( color, intensity, width = 10, height = 10 ) {
 
@@ -42729,7 +43213,7 @@ class SphericalHarmonics3 {
 
 }
 
-class LightProbe extends (/* unused pure expression or super */ null && (Light)) {
+class LightProbe extends Light {
 
 	constructor( sh = new SphericalHarmonics3(), intensity = 1 ) {
 
@@ -42772,7 +43256,7 @@ class LightProbe extends (/* unused pure expression or super */ null && (Light))
 
 }
 
-class MaterialLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class MaterialLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -43172,7 +43656,7 @@ class LoaderUtils {
 
 }
 
-class InstancedBufferGeometry extends (/* unused pure expression or super */ null && (three_module_BufferGeometry)) {
+class InstancedBufferGeometry extends three_module_BufferGeometry {
 
 	constructor() {
 
@@ -43209,7 +43693,7 @@ class InstancedBufferGeometry extends (/* unused pure expression or super */ nul
 
 }
 
-class BufferGeometryLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class BufferGeometryLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -43420,7 +43904,7 @@ class BufferGeometryLoader extends (/* unused pure expression or super */ null &
 
 }
 
-class ObjectLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class ObjectLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -44567,7 +45051,7 @@ class AudioContext {
 
 }
 
-class AudioLoader extends (/* unused pure expression or super */ null && (Loader)) {
+class AudioLoader extends Loader {
 
 	constructor( manager ) {
 
@@ -44621,7 +45105,7 @@ class AudioLoader extends (/* unused pure expression or super */ null && (Loader
 
 }
 
-class HemisphereLightProbe extends (/* unused pure expression or super */ null && (LightProbe)) {
+class HemisphereLightProbe extends LightProbe {
 
 	constructor( skyColor, groundColor, intensity = 1 ) {
 
@@ -44646,7 +45130,7 @@ class HemisphereLightProbe extends (/* unused pure expression or super */ null &
 
 }
 
-class AmbientLightProbe extends (/* unused pure expression or super */ null && (LightProbe)) {
+class AmbientLightProbe extends LightProbe {
 
 	constructor( color, intensity = 1 ) {
 
@@ -44836,7 +45320,7 @@ const _quaternion$1 = /*@__PURE__*/ new Quaternion();
 const _scale$1 = /*@__PURE__*/ new three_module_Vector3();
 const _orientation$1 = /*@__PURE__*/ new three_module_Vector3();
 
-class AudioListener extends (/* unused pure expression or super */ null && (Object3D)) {
+class AudioListener extends Object3D {
 
 	constructor() {
 
@@ -44961,7 +45445,7 @@ class AudioListener extends (/* unused pure expression or super */ null && (Obje
 
 }
 
-class Audio extends (/* unused pure expression or super */ null && (Object3D)) {
+class Audio extends Object3D {
 
 	constructor( listener ) {
 
@@ -45359,7 +45843,7 @@ const _quaternion = /*@__PURE__*/ new Quaternion();
 const _scale = /*@__PURE__*/ new three_module_Vector3();
 const _orientation = /*@__PURE__*/ new three_module_Vector3();
 
-class PositionalAudio extends (/* unused pure expression or super */ null && (Audio)) {
+class PositionalAudio extends Audio {
 
 	constructor( listener ) {
 
@@ -47638,7 +48122,7 @@ class AnimationAction {
 const _controlInterpolantsResultBuffer = new Float32Array( 1 );
 
 
-class AnimationMixer extends (/* unused pure expression or super */ null && (EventDispatcher)) {
+class AnimationMixer extends EventDispatcher {
 
 	constructor( root ) {
 
@@ -48413,7 +48897,7 @@ class Uniform {
 
 let id = 0;
 
-class UniformsGroup extends (/* unused pure expression or super */ null && (EventDispatcher)) {
+class UniformsGroup extends EventDispatcher {
 
 	constructor() {
 
@@ -48499,7 +48983,7 @@ class UniformsGroup extends (/* unused pure expression or super */ null && (Even
 
 }
 
-class InstancedInterleavedBuffer extends (/* unused pure expression or super */ null && (three_module_InterleavedBuffer)) {
+class InstancedInterleavedBuffer extends three_module_InterleavedBuffer {
 
 	constructor( array, stride, meshPerAttribute = 1 ) {
 
@@ -49166,7 +49650,7 @@ class Line3 {
 
 const _vector$3 = /*@__PURE__*/ new three_module_Vector3();
 
-class SpotLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class SpotLightHelper extends Object3D {
 
 	constructor( light, color ) {
 
@@ -49254,7 +49738,7 @@ const _boneMatrix = /*@__PURE__*/ new Matrix4();
 const _matrixWorldInv = /*@__PURE__*/ new Matrix4();
 
 
-class SkeletonHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class SkeletonHelper extends LineSegments {
 
 	constructor( object ) {
 
@@ -49367,7 +49851,7 @@ function getBoneList( object ) {
 
 }
 
-class PointLightHelper extends (/* unused pure expression or super */ null && (Mesh)) {
+class PointLightHelper extends Mesh {
 
 	constructor( light, sphereSize, color ) {
 
@@ -49457,7 +49941,7 @@ const _vector$1 = /*@__PURE__*/ new three_module_Vector3();
 const _color1 = /*@__PURE__*/ new Color();
 const _color2 = /*@__PURE__*/ new Color();
 
-class HemisphereLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class HemisphereLightHelper extends Object3D {
 
 	constructor( light, size, color ) {
 
@@ -49531,7 +50015,7 @@ class HemisphereLightHelper extends (/* unused pure expression or super */ null 
 
 }
 
-class GridHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class GridHelper extends LineSegments {
 
 	constructor( size = 10, divisions = 10, color1 = 0x444444, color2 = 0x888888 ) {
 
@@ -49579,7 +50063,7 @@ class GridHelper extends (/* unused pure expression or super */ null && (LineSeg
 
 }
 
-class PolarGridHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class PolarGridHelper extends LineSegments {
 
 	constructor( radius = 10, sectors = 16, rings = 8, divisions = 64, color1 = 0x444444, color2 = 0x888888 ) {
 
@@ -49671,7 +50155,7 @@ const _v1 = /*@__PURE__*/ new three_module_Vector3();
 const _v2 = /*@__PURE__*/ new three_module_Vector3();
 const _v3 = /*@__PURE__*/ new three_module_Vector3();
 
-class DirectionalLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class DirectionalLightHelper extends Object3D {
 
 	constructor( light, size, color ) {
 
@@ -49761,7 +50245,7 @@ const _camera = /*@__PURE__*/ new Camera();
  *		https://github.com/evanw/lightgl.js/blob/master/tests/shadowmap.html
  */
 
-class CameraHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class CameraHelper extends LineSegments {
 
 	constructor( camera ) {
 
@@ -50013,7 +50497,7 @@ function setPoint( point, pointMap, geometry, camera, x, y, z ) {
 
 const _box = /*@__PURE__*/ new Box3();
 
-class BoxHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class BoxHelper extends LineSegments {
 
 	constructor( object, color = 0xffff00 ) {
 
@@ -50116,7 +50600,7 @@ class BoxHelper extends (/* unused pure expression or super */ null && (LineSegm
 
 }
 
-class Box3Helper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class Box3Helper extends LineSegments {
 
 	constructor( box, color = 0xffff00 ) {
 
@@ -50165,7 +50649,7 @@ class Box3Helper extends (/* unused pure expression or super */ null && (LineSeg
 
 }
 
-class PlaneHelper extends (/* unused pure expression or super */ null && (Line)) {
+class PlaneHelper extends Line {
 
 	constructor( plane, size = 1, hex = 0xffff00 ) {
 
@@ -50223,7 +50707,7 @@ class PlaneHelper extends (/* unused pure expression or super */ null && (Line))
 const _axis = /*@__PURE__*/ new three_module_Vector3();
 let _lineGeometry, _coneGeometry;
 
-class ArrowHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class ArrowHelper extends Object3D {
 
 	// dir is assumed to be normalized
 
@@ -50322,7 +50806,7 @@ class ArrowHelper extends (/* unused pure expression or super */ null && (Object
 
 }
 
-class AxesHelper extends (/* unused pure expression or super */ null && (LineSegments)) {
+class AxesHelper extends LineSegments {
 
 	constructor( size = 1 ) {
 
@@ -50666,7 +51150,7 @@ class ShapePath {
 
 }
 
-class BoxBufferGeometry extends (/* unused pure expression or super */ null && (BoxGeometry)) { // @deprecated, r144
+class BoxBufferGeometry extends BoxGeometry { // @deprecated, r144
 
 	constructor( width, height, depth, widthSegments, heightSegments, depthSegments ) {
 
@@ -50678,7 +51162,7 @@ class BoxBufferGeometry extends (/* unused pure expression or super */ null && (
 
 }
 
-class CapsuleBufferGeometry extends (/* unused pure expression or super */ null && (CapsuleGeometry)) { // @deprecated, r144
+class CapsuleBufferGeometry extends CapsuleGeometry { // @deprecated, r144
 
 	constructor( radius, length, capSegments, radialSegments ) {
 
@@ -50689,7 +51173,7 @@ class CapsuleBufferGeometry extends (/* unused pure expression or super */ null 
 
 }
 
-class CircleBufferGeometry extends (/* unused pure expression or super */ null && (CircleGeometry)) { // @deprecated, r144
+class CircleBufferGeometry extends CircleGeometry { // @deprecated, r144
 
 	constructor( radius, segments, thetaStart, thetaLength ) {
 
@@ -50700,7 +51184,7 @@ class CircleBufferGeometry extends (/* unused pure expression or super */ null &
 
 }
 
-class ConeBufferGeometry extends (/* unused pure expression or super */ null && (ConeGeometry)) { // @deprecated, r144
+class ConeBufferGeometry extends ConeGeometry { // @deprecated, r144
 
 	constructor( radius, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength ) {
 
@@ -50711,7 +51195,7 @@ class ConeBufferGeometry extends (/* unused pure expression or super */ null && 
 
 }
 
-class CylinderBufferGeometry extends (/* unused pure expression or super */ null && (CylinderGeometry)) { // @deprecated, r144
+class CylinderBufferGeometry extends CylinderGeometry { // @deprecated, r144
 
 	constructor( radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength ) {
 
@@ -50722,7 +51206,7 @@ class CylinderBufferGeometry extends (/* unused pure expression or super */ null
 
 }
 
-class DodecahedronBufferGeometry extends (/* unused pure expression or super */ null && (DodecahedronGeometry)) { // @deprecated, r144
+class DodecahedronBufferGeometry extends DodecahedronGeometry { // @deprecated, r144
 
 	constructor( radius, detail ) {
 
@@ -50733,7 +51217,7 @@ class DodecahedronBufferGeometry extends (/* unused pure expression or super */ 
 
 }
 
-class ExtrudeBufferGeometry extends (/* unused pure expression or super */ null && (ExtrudeGeometry)) { // @deprecated, r144
+class ExtrudeBufferGeometry extends ExtrudeGeometry { // @deprecated, r144
 
 	constructor( shapes, options ) {
 
@@ -50744,7 +51228,7 @@ class ExtrudeBufferGeometry extends (/* unused pure expression or super */ null 
 
 }
 
-class IcosahedronBufferGeometry extends (/* unused pure expression or super */ null && (IcosahedronGeometry)) { // @deprecated, r144
+class IcosahedronBufferGeometry extends IcosahedronGeometry { // @deprecated, r144
 
 	constructor( radius, detail ) {
 
@@ -50755,7 +51239,7 @@ class IcosahedronBufferGeometry extends (/* unused pure expression or super */ n
 
 }
 
-class LatheBufferGeometry extends (/* unused pure expression or super */ null && (LatheGeometry)) { // @deprecated, r144
+class LatheBufferGeometry extends LatheGeometry { // @deprecated, r144
 
 	constructor( points, segments, phiStart, phiLength ) {
 
@@ -50766,7 +51250,7 @@ class LatheBufferGeometry extends (/* unused pure expression or super */ null &&
 
 }
 
-class OctahedronBufferGeometry extends (/* unused pure expression or super */ null && (OctahedronGeometry)) { // @deprecated, r144
+class OctahedronBufferGeometry extends OctahedronGeometry { // @deprecated, r144
 
 	constructor( radius, detail ) {
 
@@ -50777,7 +51261,7 @@ class OctahedronBufferGeometry extends (/* unused pure expression or super */ nu
 
 }
 
-class PlaneBufferGeometry extends (/* unused pure expression or super */ null && (PlaneGeometry)) { // @deprecated, r144
+class PlaneBufferGeometry extends PlaneGeometry { // @deprecated, r144
 
 	constructor( width, height, widthSegments, heightSegments ) {
 
@@ -50788,7 +51272,7 @@ class PlaneBufferGeometry extends (/* unused pure expression or super */ null &&
 
 }
 
-class PolyhedronBufferGeometry extends (/* unused pure expression or super */ null && (PolyhedronGeometry)) { // @deprecated, r144
+class PolyhedronBufferGeometry extends PolyhedronGeometry { // @deprecated, r144
 
 	constructor( vertices, indices, radius, detail ) {
 
@@ -50799,7 +51283,7 @@ class PolyhedronBufferGeometry extends (/* unused pure expression or super */ nu
 
 }
 
-class RingBufferGeometry extends (/* unused pure expression or super */ null && (RingGeometry)) { // @deprecated, r144
+class RingBufferGeometry extends RingGeometry { // @deprecated, r144
 
 	constructor( innerRadius, outerRadius, thetaSegments, phiSegments, thetaStart, thetaLength ) {
 
@@ -50810,7 +51294,7 @@ class RingBufferGeometry extends (/* unused pure expression or super */ null && 
 
 }
 
-class ShapeBufferGeometry extends (/* unused pure expression or super */ null && (ShapeGeometry)) { // @deprecated, r144
+class ShapeBufferGeometry extends ShapeGeometry { // @deprecated, r144
 
 	constructor( shapes, curveSegments ) {
 
@@ -50821,7 +51305,7 @@ class ShapeBufferGeometry extends (/* unused pure expression or super */ null &&
 
 }
 
-class SphereBufferGeometry extends (/* unused pure expression or super */ null && (SphereGeometry)) { // @deprecated, r144
+class SphereBufferGeometry extends SphereGeometry { // @deprecated, r144
 
 	constructor( radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength ) {
 
@@ -50832,7 +51316,7 @@ class SphereBufferGeometry extends (/* unused pure expression or super */ null &
 
 }
 
-class TetrahedronBufferGeometry extends (/* unused pure expression or super */ null && (TetrahedronGeometry)) { // @deprecated, r144
+class TetrahedronBufferGeometry extends TetrahedronGeometry { // @deprecated, r144
 
 	constructor( radius, detail ) {
 
@@ -50843,7 +51327,7 @@ class TetrahedronBufferGeometry extends (/* unused pure expression or super */ n
 
 }
 
-class TorusBufferGeometry extends (/* unused pure expression or super */ null && (TorusGeometry)) { // @deprecated, r144
+class TorusBufferGeometry extends TorusGeometry { // @deprecated, r144
 
 	constructor( radius, tube, radialSegments, tubularSegments, arc ) {
 
@@ -50854,7 +51338,7 @@ class TorusBufferGeometry extends (/* unused pure expression or super */ null &&
 
 }
 
-class TorusKnotBufferGeometry extends (/* unused pure expression or super */ null && (TorusKnotGeometry)) { // @deprecated, r144
+class TorusKnotBufferGeometry extends TorusKnotGeometry { // @deprecated, r144
 
 	constructor( radius, tube, tubularSegments, radialSegments, p, q ) {
 
@@ -50865,7 +51349,7 @@ class TorusKnotBufferGeometry extends (/* unused pure expression or super */ nul
 
 }
 
-class TubeBufferGeometry extends (/* unused pure expression or super */ null && (TubeGeometry)) { // @deprecated, r144
+class TubeBufferGeometry extends TubeGeometry { // @deprecated, r144
 
 	constructor( path, tubularSegments, radius, radialSegments, closed ) {
 
@@ -59151,6 +59635,7 @@ class MRHands {
         let result = new three_module_Vector3()
 
         let hand = handedness == 'left' ? this.leftMesh : this.rightMesh
+        if (!hand) { return result}
         let joint = hand.skeleton.getBoneByName(jointName)
 
         if (joint == null) { return result }
@@ -59170,10 +59655,20 @@ class MRHands {
 
         if (event.handedness == 'left') {
             this.leftPinch = event.type == 'pinchstart'
+            let position = this.getPinchPosition('left')
+            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
+                handedness: 'left',
+                position: position      
+            }}))
         }
 
         if (event.handedness == 'right') {
             this.rightPinch = event.type == 'pinchstart'
+            let position = this.getPinchPosition('right')
+            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
+                handedness: 'right',
+                position: position      
+            }}))
         }
 
         if (this.rightPinch && this.leftPinch) {
@@ -59201,7 +59696,7 @@ class MRHands {
               handedness: 'left',
               position: position      
             }}))
-          } else if (this.leftPinch) {
+          } else if (this.rightPinch) {
             let position = this.getPinchPosition('right')
             document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
               handedness: 'right',
@@ -59984,7 +60479,7 @@ class TestSystem extends MRSystemElement {
 	}
 }
 
-customElements.define('mr-test-system', TestSystem);
+customElements.get('mr-test-system') || customElements.define('mr-test-system', TestSystem);
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
 
@@ -60005,7 +60500,25 @@ customElements.define('mr-test-system', TestSystem);
 
 // TEST
 
+
+//   EXPORTS
+
+
+
+
+// CORE
+
+
+
+
+// GEOMETRY
+
+// UI
+
 })();
 
+var __webpack_export_target__ = window;
+for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
+if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
 /******/ })()
 ;

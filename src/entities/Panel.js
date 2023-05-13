@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Entity } from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js';
 
-class Panel extends Entity {
+export default class Panel extends Entity {
     static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
