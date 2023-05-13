@@ -17,3 +17,18 @@ import './entities/Surface.js'
 
 // TEST
 import './component-systems/testSystem.js'
+
+//   EXPORTS
+
+export * as THREE from 'three';
+
+
+// CORE
+export {default as MRElement} from './core/MRElement.js'
+export {default as MRSystemElement} from './core/MRSystemElement.js'
+export {default as Entity} from './core/entity.js'
+
+// GEOMETRY
+export {default as UIPlane} from './geometry/UIPlane.js'
+// UI
+export {default as Panel} from './entities/Panel.js'

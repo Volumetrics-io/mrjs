@@ -82,6 +82,7 @@ export class MRHands {
         let result = new THREE.Vector3()
 
         let hand = handedness == 'left' ? this.leftMesh : this.rightMesh
+        if (!hand) { return result}
         let joint = hand.skeleton.getBoneByName(jointName)
 
         if (joint == null) { return result }
@@ -101,10 +102,20 @@ export class MRHands {
 
         if (event.handedness == 'left') {
             this.leftPinch = event.type == 'pinchstart'
+            let position = this.getPinchPosition('left')
+            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
+                handedness: 'left',
+                position: position      
+            }}))
         }
 
         if (event.handedness == 'right') {
             this.rightPinch = event.type == 'pinchstart'
+            let position = this.getPinchPosition('right')
+            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
+                handedness: 'right',
+                position: position      
+            }}))
         }
 
         if (this.rightPinch && this.leftPinch) {
@@ -132,7 +143,7 @@ export class MRHands {
               handedness: 'left',
               position: position      
             }}))
-          } else if (this.leftPinch) {
+          } else if (this.rightPinch) {
             let position = this.getPinchPosition('right')
             document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
               handedness: 'right',
