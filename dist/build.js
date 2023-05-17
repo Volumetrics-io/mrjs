@@ -68164,7 +68164,7 @@ class Panel extends entity_Entity {
         this.fitToParent = false
         this.width = 1
         this.height = 1
-        this.radius = 0.2
+        this.radius = 0.05
         this.smoothness = 18
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
@@ -68335,25 +68335,10 @@ class DOMPanel extends Panel {
         super()
 
         this.html = document.createElement('div')
-
-        this.onPinch = this.onPinch.bind(this)
-        this.onPinchEnd = this.onPinchEnd.bind(this)
-
-        document.addEventListener('pinch', this.onPinch)
-        document.addEventListener('pinchend', this.onPinchEnd)
     }
 
     connected(){
         this.createTexture()
-    }
-
-    onPinchEnd(event){
-        this.drawFlag = false
-     }
-
-
-    onPinch(event){
-       
     }
 
     createTexture(){
