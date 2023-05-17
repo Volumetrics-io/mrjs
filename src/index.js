@@ -14,9 +14,7 @@ import './geometry/UIPlane.js'
 import './entities/Panel.js'
 import './entities/Surface.js'
 
-
-// TEST
-import './component-systems/testSystem.js'
+import './entities/DOMPanel.js'
 
 //   EXPORTS
 

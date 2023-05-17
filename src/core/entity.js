@@ -38,7 +38,7 @@ export class Entity extends MRElement {
 
             switch (attr.name.split('-')[0]) {
                 case 'comp':
-                    this.components.add(attr.name)
+                    this.componentMutated(attr.name)
                     break;
                 case 'mat':
                     MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
@@ -51,7 +51,12 @@ export class Entity extends MRElement {
                     break;
             }
         }
+
+        this.connected()
     }
+
+    connected(){}
+    disconnected(){}
 
     disconnectedCallback() {
         if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
@@ -59,6 +64,8 @@ export class Entity extends MRElement {
 
         this.environment = null
         this.observer.disconnect()
+
+        this.disconnected()
     }
 
     mutationCallback = (mutationList, observer) => {
@@ -79,6 +86,7 @@ export class Entity extends MRElement {
             this.dispatchEvent(new CustomEvent(`${componentName}-detached`, { bubbles: true, detail: this }))
 
         } else if (!this.components.has(componentName)) {
+            console.log(componentName);
             this.components.add(componentName)
             this.dispatchEvent(new CustomEvent(`${componentName}-attached`, { bubbles: true, detail: this }))
         } else {
