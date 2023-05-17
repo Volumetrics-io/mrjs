@@ -21,6 +21,7 @@ class TextAreaPanel extends Panel {
 
         document.addEventListener( 'keydown', (event) => {
             console.log('keydown');
+            event.preventDefault()
             this.KeyboardInput.handleInput(event)
         });
 
