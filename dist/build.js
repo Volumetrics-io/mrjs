@@ -68325,43 +68325,9 @@ customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 // EXTERNAL MODULE: ./node_modules/html2canvas/dist/html2canvas.js
 var html2canvas = __webpack_require__(120);
 var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
-;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+;// CONCATENATED MODULE: ./src/textures/HTMLTexture.js
 
 
-
-
-class DOMPanel extends Panel {
-    constructor(){
-        super()
-
-        this.html = document.createElement('div')
-    }
-
-    connected(){
-        this.createTexture()
-    }
-
-    createTexture(){
-        if(!this.html) { return }
-		let width = this.width * 256
-		let height = this.height * 256
-        let texture = new HTMLTexture( this, width, height);
-
-		this.setAttribute('style', `width: ${width}px;
-                                    height: ${height}px;
-                                    padding: 10px;
-                                    display: flex;
-                                    align-items: stretch;
-									background-color: ${this.color ? this.color : '#fff'}`)
-
-        if (this.object3D.material) {
-            this.object3D.material.map = texture
-        } else {
-            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
-        }
-    }
-
-}
 
 // Borrowed from HTMLMesh: https://github.com/mrdoob/three.js/blob/674400e2ccf07f5fe81c287c294f0e15a199100d/examples/jsm/interactive/HTMLMesh.js#L11
 
@@ -68440,6 +68406,42 @@ class HTMLTexture extends CanvasTexture {
 		super.dispose();
 
 	}
+
+}
+;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+
+
+
+class DOMPanel extends Panel {
+    constructor(){
+        super()
+
+        this.html = document.createElement('div')
+    }
+
+    connected(){
+        this.createTexture()
+    }
+
+    createTexture(){
+        if(!this.html) { return }
+		let width = this.width * 256
+		let height = this.height * 256
+        let texture = new HTMLTexture( this, width, height);
+
+		this.setAttribute('style', `width: ${width}px;
+                                    height: ${height}px;
+                                    padding: 10px;
+                                    display: flex;
+                                    align-items: stretch;
+									background-color: ${this.color ? this.color : '#fff'}`)
+
+        if (this.object3D.material) {
+            this.object3D.material.map = texture
+        } else {
+            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
+        }
+    }
 
 }
 
