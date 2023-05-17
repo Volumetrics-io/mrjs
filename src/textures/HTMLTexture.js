@@ -16,10 +16,11 @@ export default class HTMLTexture extends CanvasTexture {
 		super( canvas );
 
 		this.html = html;
-		this.canvas = canvas
+		this.htmlCanvas = canvas
+		this.context = canvas.getContext('2d');
 
-		this.canvas.width = width
-        this.canvas.height = height
+		this.htmlCanvas.width = width
+        this.htmlCanvas.height = height
 
 		this.anisotropy = 16;
 		this.colorSpace = SRGBColorSpace;
@@ -60,8 +61,12 @@ export default class HTMLTexture extends CanvasTexture {
 
 	update() {
 		console.log('update');
-
-		html2canvas(this.html, {canvas: this.canvas, scale: 1}).then((canvas) => {
+		html2canvas(this.html, {canvas: this.htmlCanvas, 
+			scale: 1, 
+			allowTaint: false,
+			ignoreElements: (node) => {
+			return node.nodeName === 'IFRAME';
+		  }}).then((canvas) => {
 			this.needsUpdate = true
 			this.scheduleUpdate = null;
 

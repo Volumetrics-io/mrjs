@@ -15,6 +15,7 @@ import './entities/Panel.js'
 import './entities/Surface.js'
 
 import './entities/DOMPanel.js'
+import './entities/TextAreaPanel.js'
 
 //   EXPORTS
 

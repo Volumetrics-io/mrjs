@@ -45,7 +45,20 @@ export class Environment extends MRElement {
 
     connectedCallback() {
       this.init()
-      this.setAttribute('style', 'position: absolute; z-index: -1;')
+      document.documentElement.setAttribute('style',`
+        bottom: 0;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;`)
+
+      document.body.setAttribute('style', `
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      width: 100%;`)
+      this.setAttribute('style', 'position: absolute;')
       this.observer = new MutationObserver(this.mutationCallback)
       this.observer.observe(this, { attributes: true, childList: true });
 
@@ -87,8 +100,10 @@ export class Environment extends MRElement {
       renderStyle += "background-color: #fff;"
 
       this.renderer.domElement.setAttribute('style', renderStyle)
+      this.setAttribute('data-html2canvas-ignore', true)
+      this.ARButton.setAttribute('data-html2canvas-ignore', true)
 
-      document.body.appendChild(this.renderer.domElement)
+      this.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
 
       this.appHands = new MRHands(this.renderer)
