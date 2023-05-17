@@ -30,9 +30,6 @@ export default class Panel extends Entity {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case 'width':
-                if (this.fitToParent) {
-
-                }
                 this.width = newValue
                 break;
             case 'height':

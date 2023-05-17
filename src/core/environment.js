@@ -45,6 +45,7 @@ export class Environment extends MRElement {
 
     connectedCallback() {
       this.init()
+      this.setAttribute('style', 'position: absolute; z-index: -1;')
       this.observer = new MutationObserver(this.mutationCallback)
       this.observer.observe(this, { attributes: true, childList: true });
 
@@ -80,6 +81,12 @@ export class Environment extends MRElement {
       const controls = new OrbitControls( this.user, this.renderer.domElement );
 			controls.minDistance = 0;
 			controls.maxDistance = 8;
+
+      let renderStyle = this.renderer.domElement.getAttribute('style')
+
+      renderStyle += "background-color: #fff;"
+
+      this.renderer.domElement.setAttribute('style', renderStyle)
 
       document.body.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
