@@ -9,18 +9,21 @@
 
 
   </head>
-  <body>
+  <body >
     <mr-env>
-        <mr-dom-panel width="1.7777778">
-            <div contenteditable="true" 
-                 style="height: 100%;
-                        inline-size: 100px;">
-            <pre style="height: 100%; white-space: pre-wrap;"><code>
-asfaf
-asad
-            </code></pre>
-            </div>
-        </mr-dom-panel>
+      <mr-surface>
+        <mr-entity id="test">
+<mr-panel></mr-panel>
+        </mr-entity>
+  
+          <mr-texteditor
+          src="test"
+          orientation="90 25 0"
+          position="-1.2 0.7 1"
+          height="1.33333333">
+          </mr-texteditor>
+      </mr-surface>
+      
     </mr-env>
   </body>
 

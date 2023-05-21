@@ -67598,7 +67598,20 @@ class environment_Environment extends MRElement {
 
     connectedCallback() {
       this.init()
-      this.setAttribute('style', 'position: absolute; z-index: -1;')
+      document.documentElement.setAttribute('style',`
+        bottom: 0;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;`)
+
+      document.body.setAttribute('style', `
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+      width: 100%;`)
+      this.setAttribute('style', 'position: absolute;')
       this.observer = new MutationObserver(this.mutationCallback)
       this.observer.observe(this, { attributes: true, childList: true });
 
@@ -67640,8 +67653,10 @@ class environment_Environment extends MRElement {
       renderStyle += "background-color: #fff;"
 
       this.renderer.domElement.setAttribute('style', renderStyle)
+      this.setAttribute('data-html2canvas-ignore', true)
+      this.ARButton.setAttribute('data-html2canvas-ignore', true)
 
-      document.body.appendChild(this.renderer.domElement)
+      this.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
 
       this.appHands = new MRHands(this.renderer)
@@ -67942,8 +67957,10 @@ class entity_Entity extends MRElement {
     disconnected(){}
 
     disconnectedCallback() {
-        if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
-        this.parentElement.remove(this)
+        while(this.object3D.parent) {
+            this.object3D.removeFromParent()
+        }
+        console.log('removed');
 
         this.environment = null
         this.observer.disconnect()
@@ -67958,6 +67975,8 @@ class entity_Entity extends MRElement {
                 this.componentMutated(mutation.attributeName)
             } else if (mutation.attributeName.startsWith('mat-')) {
                 MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
+            } else if (mutation.attributeName.startsWith('tex-')) {
+                MaterialHelper.applyTexture(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }
@@ -68156,7 +68175,7 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
 
 
 class Panel extends entity_Entity {
-    static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
+    static get observedAttributes() { return [ 'orientation', 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
@@ -68166,6 +68185,7 @@ class Panel extends entity_Entity {
         this.height = 1
         this.radius = 0.05
         this.smoothness = 18
+        this.euler = new Euler();
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new MeshStandardMaterial( {
@@ -68181,7 +68201,12 @@ class Panel extends entity_Entity {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        console.log('fired');
         switch (name) {
+            case 'orientation':
+                this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))
+                this.object3D.setRotationFromEuler(this.euler)
+                break;
             case 'width':
                 this.width = newValue
                 break;
@@ -68325,43 +68350,9 @@ customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 // EXTERNAL MODULE: ./node_modules/html2canvas/dist/html2canvas.js
 var html2canvas = __webpack_require__(120);
 var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
-;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+;// CONCATENATED MODULE: ./src/textures/HTMLTexture.js
 
 
-
-
-class DOMPanel extends Panel {
-    constructor(){
-        super()
-
-        this.html = document.createElement('div')
-    }
-
-    connected(){
-        this.createTexture()
-    }
-
-    createTexture(){
-        if(!this.html) { return }
-		let width = this.width * 256
-		let height = this.height * 256
-        let texture = new HTMLTexture( this, width, height);
-
-		this.setAttribute('style', `width: ${width}px;
-                                    height: ${height}px;
-                                    padding: 10px;
-                                    display: flex;
-                                    align-items: stretch;
-									background-color: ${this.color ? this.color : '#fff'}`)
-
-        if (this.object3D.material) {
-            this.object3D.material.map = texture
-        } else {
-            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
-        }
-    }
-
-}
 
 // Borrowed from HTMLMesh: https://github.com/mrdoob/three.js/blob/674400e2ccf07f5fe81c287c294f0e15a199100d/examples/jsm/interactive/HTMLMesh.js#L11
 
@@ -68374,10 +68365,11 @@ class HTMLTexture extends CanvasTexture {
 		super( canvas );
 
 		this.html = html;
-		this.canvas = canvas
+		this.htmlCanvas = canvas
+		this.context = canvas.getContext('2d');
 
-		this.canvas.width = width
-        this.canvas.height = height
+		this.htmlCanvas.width = width
+        this.htmlCanvas.height = height
 
 		this.anisotropy = 16;
 		this.colorSpace = SRGBColorSpace;
@@ -68418,8 +68410,12 @@ class HTMLTexture extends CanvasTexture {
 
 	update() {
 		console.log('update');
-
-		html2canvas_default()(this.html, {canvas: this.canvas, scale: 1}).then((canvas) => {
+		html2canvas_default()(this.html, {canvas: this.htmlCanvas, 
+			scale: 1, 
+			allowTaint: false,
+			ignoreElements: (node) => {
+			return node.nodeName === 'IFRAME';
+		  }}).then((canvas) => {
 			this.needsUpdate = true
 			this.scheduleUpdate = null;
 
@@ -68442,8 +68438,306 @@ class HTMLTexture extends CanvasTexture {
 	}
 
 }
+;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+
+
+
+class DOMPanel extends Panel {
+    constructor(){
+        super()
+
+        this.html = document.createElement('div')
+    }
+
+    connected(){
+        this.createTexture()
+    }
+
+    createTexture(){
+        if(!this.html) { return }
+		let width = this.width * 256
+		let height = this.height * 256
+        let texture = new HTMLTexture( this, width, height);
+
+		this.setAttribute('style', `width: ${width}px;
+                                    height: ${height}px;
+                                    padding: 10px;
+                                    display: flex;
+                                    align-items: stretch;
+									background-color: ${this.color ? this.color : '#fff'}`)
+
+        if (this.object3D.material) {
+            this.object3D.material.map = texture
+        } else {
+            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
+        }
+    }
+
+}
 
 customElements.get('mr-dom-panel') || customElements.define('mr-dom-panel', DOMPanel);
+;// CONCATENATED MODULE: ./src/interaction/KeyboardInput.js
+// `element.focus()` freezes the animations loop (A truly insane bug)
+// Until that's fixed (if ever), we've implemented our own keyboard handler to be used with keydown events.
+//
+// But it's also an opportunity to eventually add support for keybindings?
+
+// TODOs
+//
+// - Insertion
+// - deletion
+// - enter
+// - tab
+// - arrow keys
+//   - left & right
+//   - up & down
+
+
+class KeyboardInput {
+
+    constructor(element) {
+        this.element = element
+        this.rawText = element.textContent
+        this.meta = false
+        this.currentIndex = 0
+    }
+
+    setFocus(element){
+        if (this.element == element) { return }
+        this.element = element
+        this.currentIndex = this.element.textContent.length
+        this.setCursorPosition(this.currentIndex, this.currentIndex)
+
+    }
+
+    handleInput(keyEvent) {
+        switch (keyEvent.key) {
+            case 'Meta':
+                this.meta ^= true
+                break;
+
+            case 'Control':
+                
+                break;
+            case 'Alt':
+                
+                break;
+
+            case 'Shift':
+                break;
+
+            case 'Enter':
+                if(keyEvent.type == 'keyup') { return }
+                this.spliceSplit(this.currentIndex, 0, '\n')
+                this.currentIndex += 1
+                break;
+            
+            case 'Backspace':
+                if(keyEvent.type == 'keyup') { return }
+                if ( this.currentIndex == 0) { return }
+                this.spliceSplit(this.currentIndex - 1, 1, '')
+                this.currentIndex -= 1
+                break;
+
+            case 'Tab':
+                if(keyEvent.type == 'keyup') { return }
+                this.element.textContent += '\t'
+                break;
+            
+            case 'ArrowLeft':
+                if ( this.currentIndex == 0) { return }
+                if(keyEvent.type == 'keyup') { return }
+                this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
+                break;
+        
+            case 'ArrowRight':
+                if ( this.currentIndex == this.element.textContent.length) { return }
+                if(keyEvent.type == 'keyup') { return }
+                this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
+                break;
+            case 'ArrowUp':
+                if ( this.currentIndex == 0) { return }
+                if(keyEvent.type == 'keyup') { return }
+
+                let oneLineBack = this.element.textContent.lastIndexOf('\n', this.currentIndex - 1)
+                let twoLinesBack = this.element.textContent.lastIndexOf('\n', this.oneLineBack - 1)
+                let newUpIndex = (this.currentIndex - oneLineBack) + twoLinesBack
+
+                newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack
+
+                this.setCursorPosition(this.currentIndex, newUpIndex)
+                break;
+            case 'ArrowDown':
+                if (this.currentIndex == this.element.textContent.length) { return }
+                if(keyEvent.type == 'keyup') { return }
+                let prevLine = this.element.textContent.lastIndexOf('\n', this.currentIndex - 1)
+                let nextLine = this.element.textContent.indexOf('\n', this.currentIndex + 1)
+                let lineAfter = this.element.textContent.indexOf('\n', nextLine + 1)
+                let newDownIndex = (this.currentIndex - prevLine) + nextLine
+
+                newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
+                newDownIndex = newDownIndex < this.element.textContent.length - 1 ? newDownIndex : this.element.textContent.length - 1
+                newDownIndex = newDownIndex > 0 ? newDownIndex : this.element.textContent.length - 1
+                
+                this.setCursorPosition(this.currentIndex, newDownIndex)
+                break;
+            default:
+                if(keyEvent.type == 'keyup') { return }
+                this.spliceSplit(this.currentIndex, 0, keyEvent.key)
+                this.currentIndex += 1
+
+                break;
+        }
+        console.log(this.currentIndex);
+        console.log(this.element.textContent);
+    }
+
+    setCursorPosition(oldIndex, newIndex){
+        console.log(`old: ${oldIndex} new: ${newIndex}`);
+        if (oldIndex == newIndex){ return }
+        if (newIndex < 0){ return }
+        this.spliceSplit(oldIndex, 1, '')
+        this.spliceSplit(newIndex, 0, '|')
+        this.currentIndex = newIndex
+
+    }
+
+    spliceSplit(index, count, add) {
+        var ar = this.element.textContent.split('');
+        ar.splice(index, count, add);
+        this.element.textContent = ar.join('');
+      }
+
+}
+
+
+;// CONCATENATED MODULE: ./src/entities/TextAreaPanel.js
+
+
+
+
+class TextAreaPanel extends Panel {
+    constructor(){
+        super()
+
+        this.textAreaDiv = document.createElement('div')
+        this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
+    }
+
+    connected(){
+        document.body.append(this.textAreaDiv)
+        this.createTexture()
+
+        this.addEventListener( 'mousedown', this.onEvent );
+		this.addEventListener( 'mousemove', this.onEvent );
+		this.addEventListener( 'mouseup', this.onEvent );
+		this.addEventListener( 'click', this.onEvent );
+
+        document.addEventListener( 'keydown', (event) => {
+            console.log('keydown');
+            event.preventDefault()
+            this.KeyboardInput.handleInput(event)
+        });
+
+    }
+
+    onEvent = (event) => {
+        this.object3D.material.map.dispatchDOMEvent( event );
+    }
+
+    createTexture(){
+		let width = this.width * 256
+		let height = this.height * 256
+        let texture = new HTMLTexture( this.textAreaDiv, width, height);
+
+        this.textAreaDiv.setAttribute('contenteditable', true)
+		this.textAreaDiv.setAttribute('style', `width: ${width}px;
+                                    height: ${height}px;
+                                    padding: 10px;
+                                    display: block;
+                                    white-space: pre-wrap;
+                                    overflow: scroll;
+									background-color: ${this.color ? this.color : '#fff'}`)
+
+        if (this.object3D.material) {
+            this.object3D.material.map = texture
+        } else {
+            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
+        }
+    }
+
+}
+
+customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
+;// CONCATENATED MODULE: ./src/entities/TextEditorPanel.js
+
+
+
+
+class TextEditorPanel extends Panel {
+    constructor(){
+        super()
+
+        this.textAreaDiv = document.createElement('div')
+        this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
+    }
+
+    connected(){
+        document.body.append(this.textAreaDiv)
+        let srcTag = this.getAttribute('src')
+        this.src = document.querySelector(`#${srcTag}`)
+        this.textAreaDiv.textContent = this.src.innerHTML
+        this.createTexture()
+
+        this.addEventListener( 'mousedown', this.onEvent );
+		this.addEventListener( 'mousemove', this.onEvent );
+		this.addEventListener( 'mouseup', this.onEvent );
+		this.addEventListener( 'click', this.onEvent );
+
+        document.addEventListener( 'keydown', (event) => {
+            console.log('keydown');
+            event.preventDefault()
+            this.KeyboardInput.handleInput(event)
+            let cleanedText = this.textAreaDiv.textContent.replace('|', '')
+            if (this.src.innerHTML !== cleanedText) {
+                this.src.innerHTML = cleanedText
+            }
+            
+        });
+
+    }
+
+    onEvent = (event) => {
+        this.object3D.material.map.dispatchDOMEvent( event );
+    }
+
+    createTexture(){
+		let width = this.width * 256
+		let height = this.height * 256
+        let texture = new HTMLTexture( this.textAreaDiv, width, height);
+
+        this.textAreaDiv.setAttribute('contenteditable', true)
+		this.textAreaDiv.setAttribute('style', `width: ${width}px;
+                                    height: ${height}px;
+                                    padding: 10px;
+                                    display: block;
+                                    white-space: pre-wrap;
+                                    overflow: scroll;
+                                    font-family: monospace;
+                                    font-size: 6pt;
+                                    color: brown;
+									background-color: ${this.color ? this.color : '#090909'}`)
+
+        if (this.object3D.material) {
+            this.object3D.material.map = texture
+        } else {
+            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
+        }
+    }
+
+}
+
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditorPanel);
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
 
@@ -68458,6 +68752,8 @@ customElements.get('mr-dom-panel') || customElements.define('mr-dom-panel', DOMP
 
 
 // UI
+
+
 
 
 
