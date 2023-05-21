@@ -59,8 +59,10 @@ export class Entity extends MRElement {
     disconnected(){}
 
     disconnectedCallback() {
-        if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
-        this.parentElement.remove(this)
+        while(this.object3D.parent) {
+            this.object3D.removeFromParent()
+        }
+        console.log('removed');
 
         this.environment = null
         this.observer.disconnect()
@@ -75,6 +77,8 @@ export class Entity extends MRElement {
                 this.componentMutated(mutation.attributeName)
             } else if (mutation.attributeName.startsWith('mat-')) {
                 MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
+            } else if (mutation.attributeName.startsWith('tex-')) {
+                MaterialHelper.applyTexture(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }

@@ -67957,8 +67957,10 @@ class entity_Entity extends MRElement {
     disconnected(){}
 
     disconnectedCallback() {
-        if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
-        this.parentElement.remove(this)
+        while(this.object3D.parent) {
+            this.object3D.removeFromParent()
+        }
+        console.log('removed');
 
         this.environment = null
         this.observer.disconnect()
@@ -67973,6 +67975,8 @@ class entity_Entity extends MRElement {
                 this.componentMutated(mutation.attributeName)
             } else if (mutation.attributeName.startsWith('mat-')) {
                 MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
+            } else if (mutation.attributeName.startsWith('tex-')) {
+                MaterialHelper.applyTexture(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
             }
         }
     }
@@ -68171,7 +68175,7 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
 
 
 class Panel extends entity_Entity {
-    static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
+    static get observedAttributes() { return [ 'orientation', 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
@@ -68181,6 +68185,7 @@ class Panel extends entity_Entity {
         this.height = 1
         this.radius = 0.05
         this.smoothness = 18
+        this.euler = new Euler();
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new MeshStandardMaterial( {
@@ -68196,7 +68201,12 @@ class Panel extends entity_Entity {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        console.log('fired');
         switch (name) {
+            case 'orientation':
+                this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))
+                this.object3D.setRotationFromEuler(this.euler)
+                break;
             case 'width':
                 this.width = newValue
                 break;
@@ -68632,7 +68642,6 @@ class TextAreaPanel extends Panel {
     }
 
     onEvent = (event) => {
-        console.log('click');
         this.object3D.material.map.dispatchDOMEvent( event );
     }
 
@@ -68660,6 +68669,75 @@ class TextAreaPanel extends Panel {
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
+;// CONCATENATED MODULE: ./src/entities/TextEditorPanel.js
+
+
+
+
+class TextEditorPanel extends Panel {
+    constructor(){
+        super()
+
+        this.textAreaDiv = document.createElement('div')
+        this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
+    }
+
+    connected(){
+        document.body.append(this.textAreaDiv)
+        let srcTag = this.getAttribute('src')
+        this.src = document.querySelector(`#${srcTag}`)
+        this.textAreaDiv.textContent = this.src.innerHTML
+        this.createTexture()
+
+        this.addEventListener( 'mousedown', this.onEvent );
+		this.addEventListener( 'mousemove', this.onEvent );
+		this.addEventListener( 'mouseup', this.onEvent );
+		this.addEventListener( 'click', this.onEvent );
+
+        document.addEventListener( 'keydown', (event) => {
+            console.log('keydown');
+            event.preventDefault()
+            this.KeyboardInput.handleInput(event)
+            let cleanedText = this.textAreaDiv.textContent.replace('|', '')
+            if (this.src.innerHTML !== cleanedText) {
+                this.src.innerHTML = cleanedText
+            }
+            
+        });
+
+    }
+
+    onEvent = (event) => {
+        this.object3D.material.map.dispatchDOMEvent( event );
+    }
+
+    createTexture(){
+		let width = this.width * 256
+		let height = this.height * 256
+        let texture = new HTMLTexture( this.textAreaDiv, width, height);
+
+        this.textAreaDiv.setAttribute('contenteditable', true)
+		this.textAreaDiv.setAttribute('style', `width: ${width}px;
+                                    height: ${height}px;
+                                    padding: 10px;
+                                    display: block;
+                                    white-space: pre-wrap;
+                                    overflow: scroll;
+                                    font-family: monospace;
+                                    font-size: 6pt;
+                                    color: brown;
+									background-color: ${this.color ? this.color : '#090909'}`)
+
+        if (this.object3D.material) {
+            this.object3D.material.map = texture
+        } else {
+            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
+        }
+    }
+
+}
+
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditorPanel);
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
 
@@ -68674,6 +68752,7 @@ customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAr
 
 
 // UI
+
 
 
 

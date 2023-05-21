@@ -3,7 +3,7 @@ import { Entity } from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js';
 
 export default class Panel extends Entity {
-    static get observedAttributes() { return [ 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
+    static get observedAttributes() { return [ 'orientation', 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
 
     constructor(){
         super()
@@ -13,6 +13,7 @@ export default class Panel extends Entity {
         this.height = 1
         this.radius = 0.05
         this.smoothness = 18
+        this.euler = new THREE.Euler();
 
         this.geometry = UIPlane(1, 1, 0.2, 18)
         this.material = new THREE.MeshStandardMaterial( {
@@ -28,7 +29,12 @@ export default class Panel extends Entity {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        console.log('fired');
         switch (name) {
+            case 'orientation':
+                this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))
+                this.object3D.setRotationFromEuler(this.euler)
+                break;
             case 'width':
                 this.width = newValue
                 break;
