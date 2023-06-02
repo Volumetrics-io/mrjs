@@ -68347,6 +68347,76 @@ class Surface extends entity_Entity {
 }
 
 customElements.get('mr-surface') || customElements.define('mr-surface', Surface);
+;// CONCATENATED MODULE: ./src/entities/Volume.js
+
+
+
+
+class Volume extends entity_Entity {
+
+    constructor(){
+        super()
+
+        this.width = 1
+        this.depth = 1
+        this.height = this.width
+        this.object3D.receiveShadow = true;
+        this.object3D.renderOrder = 3
+    }
+
+    connected(){
+        if(this.parentElement instanceof Surface) {
+            this.width = this.parentElement.width
+            this.depth = this.parentElement.height
+            this.height = this.width
+            this.object3D.position.setY(this.depth / 2)
+        }
+    }
+
+    add(entity){
+        this.object3D.add(entity.object3D)
+        let wall = entity.getAttribute('snap-to')
+        if (wall) {
+            this.snapChildToWall(wall, entity.object3D.position)
+            console.log(entity.object3D.position);
+        }
+    }
+
+    snapChildToWall(key, vector){
+        switch (key) {
+            // bottom
+            case 'bottom':
+                vector.setY(-this.height / 2)
+                break; 
+            // left        
+            case 'left':
+                vector.setX(-this.width / 2)
+                break;
+            // back
+            case 'back':
+                vector.setZ(this.depth / 2)
+                break;
+            // right
+            case 'right':
+                vector.setX(this.width / 2)
+                break;
+            // front
+            case 'front':
+                vector.setZ(-this.depth / 2)
+                break;
+            // top
+            case 'top':
+                vector.setY(this.height / 2)
+                break;
+            // default to floor
+            default:
+                vector.setY(-this.height / 2)
+                break;
+        }
+    }
+}
+
+customElements.get('mr-volume') || customElements.define('mr-volume', Volume);
 // EXTERNAL MODULE: ./node_modules/html2canvas/dist/html2canvas.js
 var html2canvas = __webpack_require__(120);
 var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
@@ -68752,6 +68822,7 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 
 
 // UI
+
 
 
 
