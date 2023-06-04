@@ -4,7 +4,7 @@ import { UIPlane } from '../geometry/UIPlane.js';
 
 const QUAD_PINCH_THRESHOLD = 0.03
 
-class Surface extends Entity {
+export class Surface extends Entity {
     constructor(aspectRatio = 1.77777778){
         super()
 

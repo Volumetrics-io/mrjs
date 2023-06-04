@@ -13,6 +13,7 @@ import './geometry/UIPlane.js'
 // UI
 import './entities/Panel.js'
 import './entities/Surface.js'
+import './entities/Volume.js'
 
 import './entities/DOMPanel.js'
 import './entities/TextAreaPanel.js'
