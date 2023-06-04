@@ -68187,7 +68187,7 @@ class Panel extends entity_Entity {
         this.smoothness = 18
         this.euler = new Euler();
 
-        this.geometry = UIPlane(1, 1, 0.2, 18)
+        this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
         this.material = new MeshStandardMaterial( {
             color: 0xecf0f1,
             roughness: 0.7,
