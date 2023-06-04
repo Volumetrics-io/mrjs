@@ -1,8 +1,8 @@
-import Panel from './Panel.js'
-import HTMLTexture from '../textures/HTMLTexture.js'
-import KeyboardInput from '../interaction/KeyboardInput.js'
+import Panel from '../../core/Panel.js'
+import HTMLTexture from '../../textures/HTMLTexture.js'
+import KeyboardInput from '../../interaction/KeyboardInput.js'
 
-export class TextEditorPanel extends Panel {
+export class TextAreaPanel extends Panel {
     constructor(){
         super()
 
@@ -12,9 +12,6 @@ export class TextEditorPanel extends Panel {
 
     connected(){
         document.body.append(this.textAreaDiv)
-        let srcTag = this.getAttribute('src')
-        this.src = document.querySelector(`#${srcTag}`)
-        this.textAreaDiv.textContent = this.src.innerHTML
         this.createTexture()
 
         this.addEventListener( 'mousedown', this.onEvent );
@@ -26,11 +23,6 @@ export class TextEditorPanel extends Panel {
             console.log('keydown');
             event.preventDefault()
             this.KeyboardInput.handleInput(event)
-            let cleanedText = this.textAreaDiv.textContent.replace('|', '')
-            if (this.src.innerHTML !== cleanedText) {
-                this.src.innerHTML = cleanedText
-            }
-            
         });
 
     }
@@ -51,10 +43,7 @@ export class TextEditorPanel extends Panel {
                                     display: block;
                                     white-space: pre-wrap;
                                     overflow: scroll;
-                                    font-family: monospace;
-                                    font-size: 6pt;
-                                    color: brown;
-									background-color: ${this.color ? this.color : '#090909'}`)
+									background-color: ${this.color ? this.color : '#fff'}`)
 
         if (this.object3D.material) {
             this.object3D.material.map = texture
@@ -65,4 +54,4 @@ export class TextEditorPanel extends Panel {
 
 }
 
-customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditorPanel);
+customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);

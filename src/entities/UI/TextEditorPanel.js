@@ -1,8 +1,8 @@
-import Panel from './Panel.js'
+import Panel from '../core/Panel.js'
 import HTMLTexture from '../textures/HTMLTexture.js'
 import KeyboardInput from '../interaction/KeyboardInput.js'
 
-export class TextAreaPanel extends Panel {
+export class TextEditorPanel extends Panel {
     constructor(){
         super()
 
@@ -12,6 +12,9 @@ export class TextAreaPanel extends Panel {
 
     connected(){
         document.body.append(this.textAreaDiv)
+        let srcTag = this.getAttribute('src')
+        this.src = document.querySelector(`#${srcTag}`)
+        this.textAreaDiv.textContent = this.src.innerHTML
         this.createTexture()
 
         this.addEventListener( 'mousedown', this.onEvent );
@@ -23,6 +26,11 @@ export class TextAreaPanel extends Panel {
             console.log('keydown');
             event.preventDefault()
             this.KeyboardInput.handleInput(event)
+            let cleanedText = this.textAreaDiv.textContent.replace('|', '')
+            if (this.src.innerHTML !== cleanedText) {
+                this.src.innerHTML = cleanedText
+            }
+            
         });
 
     }
@@ -43,7 +51,10 @@ export class TextAreaPanel extends Panel {
                                     display: block;
                                     white-space: pre-wrap;
                                     overflow: scroll;
-									background-color: ${this.color ? this.color : '#fff'}`)
+                                    font-family: monospace;
+                                    font-size: 6pt;
+                                    color: brown;
+									background-color: ${this.color ? this.color : '#090909'}`)
 
         if (this.object3D.material) {
             this.object3D.material.map = texture
@@ -54,4 +65,4 @@ export class TextAreaPanel extends Panel {
 
 }
 
-customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditorPanel);

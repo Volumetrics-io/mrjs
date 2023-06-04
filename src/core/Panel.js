@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Entity } from '../core/entity.js'
+import { Entity } from './entity.js'
 import { UIPlane } from '../geometry/UIPlane.js';
 
 export default class Panel extends Entity {

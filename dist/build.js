@@ -68169,7 +68169,7 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
     return geometry;	
     
 }
-;// CONCATENATED MODULE: ./src/entities/Panel.js
+;// CONCATENATED MODULE: ./src/core/Panel.js
 
 
 
@@ -68508,7 +68508,7 @@ class HTMLTexture extends CanvasTexture {
 	}
 
 }
-;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/DOMPanel.js
 
 
 

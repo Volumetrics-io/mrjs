@@ -1,5 +1,5 @@
-import Panel from './Panel.js'
-import HTMLTexture from '../textures/HTMLTexture.js'
+import Panel from '../../core/Panel.js'
+import HTMLTexture from '../../textures/HTMLTexture.js'
 
 class DOMPanel extends Panel {
     constructor(){
