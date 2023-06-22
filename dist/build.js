@@ -68394,7 +68394,7 @@ class Volume extends entity_Entity {
                 break;
             // back
             case 'back':
-                vector.setZ(this.depth / 2)
+                vector.setZ(-this.depth / 2)
                 break;
             // right
             case 'right':
@@ -68402,7 +68402,7 @@ class Volume extends entity_Entity {
                 break;
             // front
             case 'front':
-                vector.setZ(-this.depth / 2)
+                vector.setZ(this.depth / 2)
                 break;
             // top
             case 'top':
@@ -68482,7 +68482,6 @@ class HTMLTexture extends CanvasTexture {
 		console.log('update');
 		html2canvas_default()(this.html, {canvas: this.htmlCanvas, 
 			scale: 1, 
-			allowTaint: false,
 			ignoreElements: (node) => {
 			return node.nodeName === 'IFRAME';
 		  }}).then((canvas) => {
@@ -68681,7 +68680,7 @@ class KeyboardInput {
 }
 
 
-;// CONCATENATED MODULE: ./src/entities/TextAreaPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/TextAreaPanel.js
 
 
 
@@ -68739,7 +68738,7 @@ class TextAreaPanel extends Panel {
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
-;// CONCATENATED MODULE: ./src/entities/TextEditorPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/TextEditorPanel.js
 
 
 

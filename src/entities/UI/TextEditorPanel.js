@@ -1,6 +1,6 @@
-import Panel from '../core/Panel.js'
-import HTMLTexture from '../textures/HTMLTexture.js'
-import KeyboardInput from '../interaction/KeyboardInput.js'
+import Panel from '../../core/Panel.js'
+import HTMLTexture from '../../textures/HTMLTexture.js'
+import KeyboardInput from '../../interaction/KeyboardInput.js'
 
 export class TextEditorPanel extends Panel {
     constructor(){
