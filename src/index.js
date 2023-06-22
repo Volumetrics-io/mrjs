@@ -11,13 +11,13 @@ import './core/entity.js'
 import './geometry/UIPlane.js'
 
 // UI
-import './entities/Panel.js'
+import './core/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'
 
-import './entities/DOMPanel.js'
-import './entities/TextAreaPanel.js'
-import './entities/TextEditorPanel.js'
+import './entities/UI/DOMPanel.js'
+import './entities/UI/TextAreaPanel.js'
+import './entities/UI/TextEditorPanel.js'
 
 //   EXPORTS
 
@@ -32,4 +32,4 @@ export {default as Entity} from './core/entity.js'
 // GEOMETRY
 export {default as UIPlane} from './geometry/UIPlane.js'
 // UI
-export {default as Panel} from './entities/Panel.js'
+export {default as Panel} from './core/Panel.js'

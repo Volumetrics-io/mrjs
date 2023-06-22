@@ -44,7 +44,7 @@ export default class Volume extends Entity {
                 break;
             // back
             case 'back':
-                vector.setZ(this.depth / 2)
+                vector.setZ(-this.depth / 2)
                 break;
             // right
             case 'right':
@@ -52,7 +52,7 @@ export default class Volume extends Entity {
                 break;
             // front
             case 'front':
-                vector.setZ(-this.depth / 2)
+                vector.setZ(this.depth / 2)
                 break;
             // top
             case 'top':

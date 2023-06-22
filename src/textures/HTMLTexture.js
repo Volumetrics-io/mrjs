@@ -63,7 +63,6 @@ export default class HTMLTexture extends CanvasTexture {
 		console.log('update');
 		html2canvas(this.html, {canvas: this.htmlCanvas, 
 			scale: 1, 
-			allowTaint: false,
 			ignoreElements: (node) => {
 			return node.nodeName === 'IFRAME';
 		  }}).then((canvas) => {

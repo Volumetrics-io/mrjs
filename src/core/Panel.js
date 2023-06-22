@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Entity } from '../core/entity.js'
+import { Entity } from './entity.js'
 import { UIPlane } from '../geometry/UIPlane.js';
 
 export default class Panel extends Entity {
@@ -15,7 +15,7 @@ export default class Panel extends Entity {
         this.smoothness = 18
         this.euler = new THREE.Euler();
 
-        this.geometry = UIPlane(1, 1, 0.2, 18)
+        this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
         this.material = new THREE.MeshStandardMaterial( {
             color: 0xecf0f1,
             roughness: 0.7,

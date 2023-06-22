@@ -68169,7 +68169,7 @@ function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
     return geometry;	
     
 }
-;// CONCATENATED MODULE: ./src/entities/Panel.js
+;// CONCATENATED MODULE: ./src/core/Panel.js
 
 
 
@@ -68187,7 +68187,7 @@ class Panel extends entity_Entity {
         this.smoothness = 18
         this.euler = new Euler();
 
-        this.geometry = UIPlane(1, 1, 0.2, 18)
+        this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
         this.material = new MeshStandardMaterial( {
             color: 0xecf0f1,
             roughness: 0.7,
@@ -68394,7 +68394,7 @@ class Volume extends entity_Entity {
                 break;
             // back
             case 'back':
-                vector.setZ(this.depth / 2)
+                vector.setZ(-this.depth / 2)
                 break;
             // right
             case 'right':
@@ -68402,7 +68402,7 @@ class Volume extends entity_Entity {
                 break;
             // front
             case 'front':
-                vector.setZ(-this.depth / 2)
+                vector.setZ(this.depth / 2)
                 break;
             // top
             case 'top':
@@ -68482,7 +68482,6 @@ class HTMLTexture extends CanvasTexture {
 		console.log('update');
 		html2canvas_default()(this.html, {canvas: this.htmlCanvas, 
 			scale: 1, 
-			allowTaint: false,
 			ignoreElements: (node) => {
 			return node.nodeName === 'IFRAME';
 		  }}).then((canvas) => {
@@ -68508,7 +68507,7 @@ class HTMLTexture extends CanvasTexture {
 	}
 
 }
-;// CONCATENATED MODULE: ./src/entities/DOMPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/DOMPanel.js
 
 
 
@@ -68681,7 +68680,7 @@ class KeyboardInput {
 }
 
 
-;// CONCATENATED MODULE: ./src/entities/TextAreaPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/TextAreaPanel.js
 
 
 
@@ -68739,7 +68738,7 @@ class TextAreaPanel extends Panel {
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
-;// CONCATENATED MODULE: ./src/entities/TextEditorPanel.js
+;// CONCATENATED MODULE: ./src/entities/UI/TextEditorPanel.js
 
 
 
