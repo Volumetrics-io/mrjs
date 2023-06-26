@@ -16,10 +16,13 @@ export default class Volume extends Entity {
 
     connected(){
         if(this.parentElement instanceof Surface) {
-            this.width = this.parentElement.width
-            this.depth = this.parentElement.height
-            this.height = this.width
-            this.object3D.position.setY(this.depth / 2)
+            this.parentElement.addEventListener('surfaceplaced', () => {
+                this.width = this.parentElement.width
+                this.depth = this.parentElement.height
+                this.height = this.parentElement.height
+                this.object3D.position.setY(this.depth / 2)
+                this.arrangeChildren()
+            })
         }
     }
 
@@ -30,6 +33,17 @@ export default class Volume extends Entity {
             this.snapChildToWall(wall, entity.object3D.position)
             console.log(entity.object3D.position);
         }
+    }
+
+    arrangeChildren() {
+        let children = [...this.children]
+        children.forEach(child => {
+            let wall = child.getAttribute('snap-to')
+        if (wall) {
+            this.snapChildToWall(wall, child.object3D.position)
+            console.log(child.object3D.position);
+        }
+        });
     }
 
     snapChildToWall(key, vector){
