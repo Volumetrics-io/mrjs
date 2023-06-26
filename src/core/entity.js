@@ -29,6 +29,8 @@ export class Entity extends MRElement {
             this.user = this.parentElement.user
         }
 
+        this.object3D.userData.element = this
+
         setTransformValues(this)
 
         this.observer = new MutationObserver(this.mutationCallback)

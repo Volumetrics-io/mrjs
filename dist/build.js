@@ -67395,93 +67395,76 @@ class XRHandModelFactory {
 
 
 
-;// CONCATENATED MODULE: ./src/interaction/hands.js
+;// CONCATENATED MODULE: ./src/interaction/hand.js
 
 
 
 
-class MRHands {
+const HOVER_DISTANCE = 0.05
+const PINCH_DISTANCE = 0.02
 
-    constructor(renderer){
+const HAND_MAPPING = {
+    'left': 0,
+    'right': 1
+}
 
-        this.leftPinch = false
-        this.rightPinch = false
-        this.doublePinch = false
+class MRHand {
+    constructor(handedness, renderer) {
+        this.handedness = handedness
+        this.pinch = false
+        this.hover = false
 
-        this.doublePinchObject = new Object3D()
-        this.doublePinchObject.name = 'doublepinchtracker'
-
-        this.leftMesh
-        this.rightMesh
-
-        this.leftController  = renderer.xr.getController( 0 );
-        this.rightController = renderer.xr.getController( 1 );
+        this.hoverInitPosition = new three_module_Vector3()
+        this.hoverPosition = new three_module_Vector3()
 
         this.controllerModelFactory = new XRControllerModelFactory()
         this.handModelFactory = new XRHandModelFactory()
 
-        this.leftGrip = renderer.xr.getControllerGrip( 0 );
-		this.leftGrip.add( this.controllerModelFactory.createControllerModel( this.leftGrip ) );
+        this.mesh
+        this.controller = renderer.xr.getController( HAND_MAPPING[handedness] );
 
-        this.leftHand = renderer.xr.getHand( 0 );
-        this.leftModel = this.handModelFactory.createHandModel( this.leftHand, 'mesh' )
+        this.grip = renderer.xr.getControllerGrip( HAND_MAPPING[handedness] );
+        this.grip.add( this.controllerModelFactory.createControllerModel( this.grip ) );
 
-		this.leftHand.add( this.leftModel );
+        this.hand = renderer.xr.getHand( HAND_MAPPING[handedness] );
+        this.model = this.handModelFactory.createHandModel( this.hand, 'mesh' )
 
-        this.rightGrip = renderer.xr.getControllerGrip( 1 );
-        this.rightGrip.add( this.controllerModelFactory.createControllerModel( this.rightGrip ) );
+		this.hand.add( this.model );
 
-        this.rightHand = renderer.xr.getHand( 1 );
-        this.rightModel = this.handModelFactory.createHandModel( this.rightHand, 'mesh' )
-        this.rightHand.add( this.rightModel );
-
-        this.onConnected = this.onConnected.bind(this)
-        this.onPinch = this.onPinch.bind(this)
-
-        this.leftHand.addEventListener('connected', this.onConnected)
-        this.rightHand.addEventListener('connected', this.onConnected)
-
-        this.leftHand.addEventListener('pinchstart', this.onPinch)
-        this.rightHand.addEventListener('pinchstart', this.onPinch)
-
-        this.leftHand.addEventListener('pinchend', this.onPinch)
-        this.rightHand.addEventListener('pinchend', this.onPinch)
+        this.hand.addEventListener('connected', this.onConnected)
+        this.hand.addEventListener('pinchstart', this.onPinch)
+        this.hand.addEventListener('pinchend', this.onPinch)
     }
 
-    addHandsTo(scene){
-        scene.add(this.leftController)
-        scene.add(this.rightController) 
+    addToScene(scene){
+        scene.add(this.controller)
+        scene.add(this.grip)
+        scene.add(this.hand)
 
-        scene.add(this.leftGrip)
-        scene.add(this.rightGrip)
-
-        scene.add(this.leftHand)
-        scene.add(this.rightHand)
-
-        scene.add(this.doublePinchObject)
     }
 
-    onConnected(event){
-
-        if (event.data.handedness == 'left' && this.leftMesh == null) {
-            this.leftMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
-            this.leftMesh.material.colorWrite = false
-            this.leftMesh.renderOrder = 2;
-        }
-
-        if (event.data.handedness == 'right' && this.rightMesh == null) {
-            this.rightMesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
-            this.rightMesh.material.colorWrite = false
-            this.rightMesh.renderOrder = 2;
+    onConnected = (event) => {
+        if (event.data.handedness == this.handedness && this.mesh == null) {
+            this.mesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
+            this.mesh.material.colorWrite = false
+            this.mesh.renderOrder = 2;
         }
     }
 
-    getJointPosition(handedness, jointName) {
+    onPinch = (event) => {
+        this.pinch = event.type == 'pinchstart'
+        let position = this.getCursorPosition()
+        document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
+            handedness: this.handedness,
+            position: position
+        }}))
+    }
+
+    getJointPosition(jointName) {
         let result = new three_module_Vector3()
 
-        let hand = handedness == 'left' ? this.leftMesh : this.rightMesh
-        if (!hand) { return result}
-        let joint = hand.skeleton.getBoneByName(jointName)
+        if (!this.mesh) { return result }
+        let joint = this.mesh.skeleton.getBoneByName(jointName)
 
         if (joint == null) { return result }
 
@@ -67490,64 +67473,143 @@ class MRHands {
         return result
     }
 
-    getPinchPosition(handedness){
-        let index = this.getJointPosition(handedness, 'index-finger-tip')
-        let thumb = this.getJointPosition(handedness, 'thumb-tip')
+    getCursorPosition(){
+        let index = this.getJointPosition('index-finger-tip')
+        let thumb = this.getJointPosition('thumb-tip')
         return index.lerp(thumb, 0.5)
     }
 
-    onPinch(event) {
+    checkForHover() {
+        let index = this.getJointPosition('index-finger-tip')
+        let thumb = this.getJointPosition('thumb-tip')
+        let distance = index.distanceTo(thumb)
 
-        if (event.handedness == 'left') {
-            this.leftPinch = event.type == 'pinchstart'
-            let position = this.getPinchPosition('left')
-            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
-                handedness: 'left',
-                position: position      
-            }}))
+        if (distance > PINCH_DISTANCE && distance < HOVER_DISTANCE) {
+            if(!this.hover) {
+                this.hoverInitPosition = this.getCursorPosition()
+                this.hover = true
+            }
+            this.hoverPosition.copy(this.getCursorPosition()).sub(this.hoverInitPosition)
+        } else {
+            this.hover = false
         }
 
-        if (event.handedness == 'right') {
-            this.rightPinch = event.type == 'pinchstart'
-            let position = this.getPinchPosition('right')
-            document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
-                handedness: 'right',
-                position: position      
-            }}))
-        }
+        return this.hover
+    }
+}
+;// CONCATENATED MODULE: ./src/interaction/SpatialControls.js
 
-        if (this.rightPinch && this.leftPinch) {
-            this.doublePinch = true
-            document.dispatchEvent(new CustomEvent(`doublepinchstart`, { bubbles: true, detail: this }))
-        } else if (this.doublePinch) {
-            this.doublePinch = false
-            document.dispatchEvent(new CustomEvent(`doublepinchended`, { bubbles: true, detail: this }))
+
+
+const SpatialControls_HOVER_DISTANCE = 0.05
+const SpatialControls_PINCH_DISTANCE = 0.02
+
+class SpatialControls {
+
+    constructor(renderer, scene){
+
+        this.scene = scene
+
+        this.leftPinch = false
+        this.rightPinch = false
+        this.doublePinch = false
+
+        this.currentHoverObject
+
+
+        this.leftHand = new MRHand('left', renderer)
+        this.rightHand = new MRHand('right', renderer)
+
+        this.leftHand.addToScene(scene)
+        this.rightHand.addToScene(scene)
+
+    }
+
+    handleHover(hand) {
+        let closest
+        let closestDistance = 10000
+
+        let selectable = this.getSelectable()
+
+        selectable.forEach((object) => {
+            let distance = hand.hoverPosition.normalize().distanceTo(object.position.normalize())
+            if ( distance < closestDistance) {
+                closestDistance = distance
+                closest = object
+            }
+        })
+
+        if (closest && closest != this.currentHoverObject) {
+            if ( this.currentHoverObject ) {
+                this.currentHoverObject.userData.element.dispatchEvent(new CustomEvent(`hoverend`))
+            }
+            closest.userData.element.dispatchEvent(new CustomEvent(`hoverstart`))
+            this.currentHoverObject = closest
         }
     }
 
+    getSelectable(){
+        let selectable = []
+        this.scene.traverseVisible( (object) => {
+            if ( !object.userData.element ) { return }
+            if ( !object.userData.element.classList.contains('selectable') ) { return }
+            selectable.push(object)
+        })
+        return selectable
+    }
+
+    // TODO: per frame events seem kinda sketchy, there should be a better solution wit
     update() {
-        if (this.doublePinch){
-            let leftPosition = this.getPinchPosition('left')
-            let rightPosition = this.getPinchPosition('right')
-            document.dispatchEvent(new CustomEvent(`doublepinch`, { bubbles: true, detail: { 
-              leftPosition: leftPosition,
-              rightPosition: rightPosition,
-              center: leftPosition.lerp(rightPosition, 0.5),
-              distance: leftPosition.distanceTo(rightPosition)      
-            }}))
-          } else if (this.leftPinch) {
-            let position = this.getPinchPosition('left')
+        if (this.leftHand.pinch && this.rightHand.pinch){
+            let leftPosition = this.leftHand.getCursorPosition()
+            let rightPosition = this.rightHand.getCursorPosition()
+
+            let eventDetails = {
+                leftPosition: leftPosition,
+                rightPosition: rightPosition,
+                center: leftPosition.lerp(rightPosition, 0.5),
+                distance: leftPosition.distanceTo(rightPosition)      
+            }
+
+            if (!this.doublePinch) {
+                this.doublePinch = true
+                document.dispatchEvent(new CustomEvent(`doublepinchstart`, { bubbles: true, detail: eventDetails}))
+            }
+
+            document.dispatchEvent(new CustomEvent(`doublepinch`, { bubbles: true, detail: eventDetails}))
+        } else if (this.leftHand.pinch) {
             document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
-              handedness: 'left',
-              position: position      
+                handedness: 'left',
+                position: this.leftHand.getCursorPosition()      
             }}))
-          } else if (this.rightPinch) {
-            let position = this.getPinchPosition('right')
+        } else if (this.rightHand.pinch) {
             document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
-              handedness: 'right',
-              position: position      
+                handedness: 'right',
+                position: this.rightHand.getCursorPosition()      
             }}))
-          }
+        } else if (this.doublePinch) {
+            this.doublePinch = false
+
+            let leftPosition = this.leftHand.getCursorPosition()
+            let rightPosition = this.rightHand.getCursorPosition()
+
+            let eventDetails = {
+                leftPosition: leftPosition,
+                rightPosition: rightPosition,
+                center: leftPosition.lerp(rightPosition, 0.5),
+                distance: leftPosition.distanceTo(rightPosition)      
+            }
+
+            document.dispatchEvent(new CustomEvent(`doublepinchended`, { bubbles: true, detail: eventDetails }))
+
+        }
+
+        if (this.leftHand.checkForHover()){
+            this.handleHover(this.leftHand)
+        }
+        if (this.rightHand.checkForHover()){
+            this.handleHover(this.rightHand)
+        }
     }
 }
 ;// CONCATENATED MODULE: ./src/core/environment.js
@@ -67567,15 +67629,11 @@ class environment_Environment extends MRElement {
       this.environment = this
       this.systems = new Set() // systemName : System
 
-      this.scene = new Scene()
       this.app   = new Scene()
 
       this.renderer = new WebGLRenderer( { antialias: true, alpha: true} )
       this.user = new PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
-
-      const sceneLight = new AmbientLight( 0xffffff );
-			this.scene.add( sceneLight );
 
       const appLight = new AmbientLight( 0xffffff );
 			this.app.add( appLight );
@@ -67644,9 +67702,9 @@ class environment_Environment extends MRElement {
       this.renderer.outputEncoding = sRGBEncoding;
       this.renderer.xr.enabled = true
 
-      const controls = new OrbitControls( this.user, this.renderer.domElement );
-			controls.minDistance = 0;
-			controls.maxDistance = 8;
+      const orbitControls = new OrbitControls( this.user, this.renderer.domElement );
+			orbitControls.minDistance = 0;
+			orbitControls.maxDistance = 8;
 
       let renderStyle = this.renderer.domElement.getAttribute('style')
 
@@ -67659,8 +67717,7 @@ class environment_Environment extends MRElement {
       this.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
 
-      this.appHands = new MRHands(this.renderer)
-      this.appHands.addHandsTo(this.app)
+      this.spatialControls = new SpatialControls(this.renderer, this.app)
 
       this.renderer.setAnimationLoop( this.render )
 
@@ -67714,15 +67771,12 @@ class environment_Environment extends MRElement {
         });
       }
 
-      this.appHands.update()
+      this.spatialControls.update()
 
       this.shadowLight.target = this.user
 
       this.renderer.render( this.app, this.user )
 
-      this.renderer.clearDepth()
-
-      this.renderer.render( this.scene, this.user )
     }
 }
 
@@ -67926,6 +67980,8 @@ class entity_Entity extends MRElement {
         if (this.parentElement.user) {
             this.user = this.parentElement.user
         }
+
+        this.object3D.userData.element = this
 
         setTransformValues(this)
 
@@ -68201,7 +68257,6 @@ class Panel extends entity_Entity {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('fired');
         switch (name) {
             case 'orientation':
                 this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))
@@ -68262,8 +68317,8 @@ class Surface extends entity_Entity {
 
         this.aspectRatio = aspectRatio
         this.placed = false
-        this.width  = 0.0
-        this.height = 0.0
+        this.width  = this.aspectRatio
+        this.height = 1
         this.worldPosition = new three_module_Vector3()
         this.lookPosition = new three_module_Vector3()
 
@@ -68289,8 +68344,6 @@ class Surface extends entity_Entity {
 
     add(entity){
         this.group.add(entity.object3D)
-        entity.object3D.receiveShadow = true;
-        entity.object3D.renderOrder = 3
     }
 
     remove(entity){
@@ -68339,6 +68392,7 @@ class Surface extends entity_Entity {
     }
 
     onDoublePinchEnded(event) {
+        this.dispatchEvent(new CustomEvent(`surfaceplaced`))
         this.mesh.removeFromParent()
         this.translation.add(this.group)
         document.removeEventListener('doublepinch', this.onDoublePinch)
@@ -68366,10 +68420,13 @@ class Volume extends entity_Entity {
 
     connected(){
         if(this.parentElement instanceof Surface) {
-            this.width = this.parentElement.width
-            this.depth = this.parentElement.height
-            this.height = this.width
-            this.object3D.position.setY(this.depth / 2)
+            this.parentElement.addEventListener('surfaceplaced', () => {
+                this.width = this.parentElement.width
+                this.depth = this.parentElement.height
+                this.height = this.parentElement.height
+                this.object3D.position.setY(this.depth / 2)
+                this.arrangeChildren()
+            })
         }
     }
 
@@ -68380,6 +68437,17 @@ class Volume extends entity_Entity {
             this.snapChildToWall(wall, entity.object3D.position)
             console.log(entity.object3D.position);
         }
+    }
+
+    arrangeChildren() {
+        let children = [...this.children]
+        children.forEach(child => {
+            let wall = child.getAttribute('snap-to')
+        if (wall) {
+            this.snapChildToWall(wall, child.object3D.position)
+            console.log(child.object3D.position);
+        }
+        });
     }
 
     snapChildToWall(key, vector){

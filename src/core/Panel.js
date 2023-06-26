@@ -29,7 +29,6 @@ export default class Panel extends Entity {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('fired');
         switch (name) {
             case 'orientation':
                 this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import { MRElement } from './MRElement.js'
-import { MRHands } from '../interaction/hands.js'
+import { SpatialControls } from '../interaction/SpatialControls.js'
 
 export class Environment extends MRElement {
 
@@ -14,15 +14,11 @@ export class Environment extends MRElement {
       this.environment = this
       this.systems = new Set() // systemName : System
 
-      this.scene = new THREE.Scene()
       this.app   = new THREE.Scene()
 
       this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true} )
       this.user = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
       this.user.position.set( 0, 0, 3 );
-
-      const sceneLight = new THREE.AmbientLight( 0xffffff );
-			this.scene.add( sceneLight );
 
       const appLight = new THREE.AmbientLight( 0xffffff );
 			this.app.add( appLight );
@@ -91,9 +87,9 @@ export class Environment extends MRElement {
       this.renderer.outputEncoding = THREE.sRGBEncoding;
       this.renderer.xr.enabled = true
 
-      const controls = new OrbitControls( this.user, this.renderer.domElement );
-			controls.minDistance = 0;
-			controls.maxDistance = 8;
+      const orbitControls = new OrbitControls( this.user, this.renderer.domElement );
+			orbitControls.minDistance = 0;
+			orbitControls.maxDistance = 8;
 
       let renderStyle = this.renderer.domElement.getAttribute('style')
 
@@ -106,8 +102,7 @@ export class Environment extends MRElement {
       this.appendChild(this.renderer.domElement)
       document.body.appendChild( this.ARButton )
 
-      this.appHands = new MRHands(this.renderer)
-      this.appHands.addHandsTo(this.app)
+      this.spatialControls = new SpatialControls(this.renderer, this.app)
 
       this.renderer.setAnimationLoop( this.render )
 
@@ -161,15 +156,12 @@ export class Environment extends MRElement {
         });
       }
 
-      this.appHands.update()
+      this.spatialControls.update()
 
       this.shadowLight.target = this.user
 
       this.renderer.render( this.app, this.user )
 
-      this.renderer.clearDepth()
-
-      this.renderer.render( this.scene, this.user )
     }
 }
 

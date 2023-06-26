@@ -28,8 +28,8 @@ export class Surface extends Entity {
 
         this.aspectRatio = aspectRatio
         this.placed = false
-        this.width  = 0.0
-        this.height = 0.0
+        this.width  = this.aspectRatio
+        this.height = 1
         this.worldPosition = new THREE.Vector3()
         this.lookPosition = new THREE.Vector3()
 
@@ -55,8 +55,6 @@ export class Surface extends Entity {
 
     add(entity){
         this.group.add(entity.object3D)
-        entity.object3D.receiveShadow = true;
-        entity.object3D.renderOrder = 3
     }
 
     remove(entity){
@@ -105,6 +103,7 @@ export class Surface extends Entity {
     }
 
     onDoublePinchEnded(event) {
+        this.dispatchEvent(new CustomEvent(`surfaceplaced`))
         this.mesh.removeFromParent()
         this.translation.add(this.group)
         document.removeEventListener('doublepinch', this.onDoublePinch)
