@@ -1,13 +1,10 @@
-
 class Container extends Entity {
-    constructor(){
-        super()
+  constructor() {
+    super()
+  }
 
-    }
-
-    connected(){
-    }
-
+  connected() {}
 }
 
-customElements.get('mr-container') || customElements.define('mr-container', Container);
+customElements.get('mr-container') ||
+  customElements.define('mr-container', Container)

@@ -21,15 +21,14 @@ import './entities/UI/TextEditorPanel.js'
 
 //   EXPORTS
 
-export * as THREE from 'three';
-
+export * as THREE from 'three'
 
 // CORE
-export {default as MRElement} from './core/MRElement.js'
-export {default as MRSystemElement} from './core/MRSystemElement.js'
-export {default as Entity} from './core/entity.js'
+export { default as MRElement } from './core/MRElement.js'
+export { default as MRSystemElement } from './core/MRSystemElement.js'
+export { default as Entity } from './core/entity.js'
 
 // GEOMETRY
-export {default as UIPlane} from './geometry/UIPlane.js'
+export { default as UIPlane } from './geometry/UIPlane.js'
 // UI
-export {default as Panel} from './core/Panel.js'
+export { default as Panel } from './core/Panel.js'

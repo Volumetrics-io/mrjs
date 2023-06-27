@@ -1,18 +1,13 @@
-import * as THREE from 'three';
+import * as THREE from 'three'
 
 export class MRElement extends HTMLElement {
+  constructor() {
+    super()
+    this.environment = null
+    this.observer = null
+  }
 
-    constructor() {
-      super();
-      this.environment = null
-      this.observer = null
+  add(entity) {}
 
-    }
-
-    add(entity){
-    }
-
-    remove(entity){
-    }
-
+  remove(entity) {}
 }
