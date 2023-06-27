@@ -7840,11 +7840,12 @@
 /***/ 629:
 /***/ (() => {
 
-String.prototype.spliceSplit = function(index, count, add) {
-    var ar = this.split('');
-    ar.splice(index, count, add);
-    return ar.join('');
-  }
+String.prototype.spliceSplit = function (index, count, add) {
+  const ar = this.split('')
+  ar.splice(index, count, add)
+  return ar.join('')
+}
+
 
 /***/ })
 
@@ -8379,21 +8380,17 @@ var extensions = __webpack_require__(629);
 
 
 class MRElement extends HTMLElement {
+  constructor() {
+    super()
+    this.environment = null
+    this.observer = null
+  }
 
-    constructor() {
-      super();
-      this.environment = null
-      this.observer = null
+  add(entity) {}
 
-    }
-
-    add(entity){
-    }
-
-    remove(entity){
-    }
-
+  remove(entity) {}
 }
+
 ;// CONCATENATED MODULE: ./node_modules/three/build/three.module.js
 /**
  * @license
@@ -67404,99 +67401,110 @@ const HOVER_DISTANCE = 0.05
 const PINCH_DISTANCE = 0.02
 
 const HAND_MAPPING = {
-    'left': 0,
-    'right': 1
+  left: 0,
+  right: 1,
 }
 
 class MRHand {
-    constructor(handedness, renderer) {
-        this.handedness = handedness
-        this.pinch = false
-        this.hover = false
+  constructor(handedness, renderer) {
+    this.handedness = handedness
+    this.pinch = false
+    this.hover = false
 
-        this.hoverInitPosition = new three_module_Vector3()
-        this.hoverPosition = new three_module_Vector3()
+    this.hoverInitPosition = new three_module_Vector3()
+    this.hoverPosition = new three_module_Vector3()
 
-        this.controllerModelFactory = new XRControllerModelFactory()
-        this.handModelFactory = new XRHandModelFactory()
+    this.controllerModelFactory = new XRControllerModelFactory()
+    this.handModelFactory = new XRHandModelFactory()
 
-        this.mesh
-        this.controller = renderer.xr.getController( HAND_MAPPING[handedness] );
+    this.mesh
+    this.controller = renderer.xr.getController(HAND_MAPPING[handedness])
 
-        this.grip = renderer.xr.getControllerGrip( HAND_MAPPING[handedness] );
-        this.grip.add( this.controllerModelFactory.createControllerModel( this.grip ) );
+    this.grip = renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
+    this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
 
-        this.hand = renderer.xr.getHand( HAND_MAPPING[handedness] );
-        this.model = this.handModelFactory.createHandModel( this.hand, 'mesh' )
+    this.hand = renderer.xr.getHand(HAND_MAPPING[handedness])
+    this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
 
-		this.hand.add( this.model );
+    this.hand.add(this.model)
 
-        this.hand.addEventListener('connected', this.onConnected)
-        this.hand.addEventListener('pinchstart', this.onPinch)
-        this.hand.addEventListener('pinchend', this.onPinch)
+    this.hand.addEventListener('connected', this.onConnected)
+    this.hand.addEventListener('pinchstart', this.onPinch)
+    this.hand.addEventListener('pinchend', this.onPinch)
+  }
+
+  addToScene(scene) {
+    scene.add(this.controller)
+    scene.add(this.grip)
+    scene.add(this.hand)
+  }
+
+  onConnected = (event) => {
+    if (event.data.handedness == this.handedness && this.mesh == null) {
+      this.mesh = event.target.getObjectByProperty('type', 'SkinnedMesh')
+      this.mesh.material.colorWrite = false
+      this.mesh.renderOrder = 2
+    }
+  }
+
+  onPinch = (event) => {
+    this.pinch = event.type == 'pinchstart'
+    const position = this.getCursorPosition()
+    document.dispatchEvent(
+      new CustomEvent(event.type, {
+        bubbles: true,
+        detail: {
+          handedness: this.handedness,
+          position,
+        },
+      })
+    )
+  }
+
+  getJointPosition(jointName) {
+    const result = new three_module_Vector3()
+
+    if (!this.mesh) {
+      return result
+    }
+    const joint = this.mesh.skeleton.getBoneByName(jointName)
+
+    if (joint == null) {
+      return result
     }
 
-    addToScene(scene){
-        scene.add(this.controller)
-        scene.add(this.grip)
-        scene.add(this.hand)
+    joint.getWorldPosition(result)
 
+    return result
+  }
+
+  getCursorPosition() {
+    const index = this.getJointPosition('index-finger-tip')
+    const thumb = this.getJointPosition('thumb-tip')
+    return index.lerp(thumb, 0.5)
+  }
+
+  checkForHover() {
+    const index = this.getJointPosition('index-finger-tip')
+    const thumb = this.getJointPosition('thumb-tip')
+    const distance = index.distanceTo(thumb)
+
+    if (distance > PINCH_DISTANCE && distance < HOVER_DISTANCE) {
+      if (!this.hover) {
+        this.hoverInitPosition = this.getCursorPosition()
+        this.hover = true
+      }
+      this.hoverPosition
+        .copy(this.getCursorPosition())
+        .sub(this.hoverInitPosition)
+    } else {
+      this.hover = false
     }
 
-    onConnected = (event) => {
-        if (event.data.handedness == this.handedness && this.mesh == null) {
-            this.mesh = event.target.getObjectByProperty( 'type', 'SkinnedMesh' );
-            this.mesh.material.colorWrite = false
-            this.mesh.renderOrder = 2;
-        }
-    }
-
-    onPinch = (event) => {
-        this.pinch = event.type == 'pinchstart'
-        let position = this.getCursorPosition()
-        document.dispatchEvent(new CustomEvent(event.type, { bubbles: true, detail: { 
-            handedness: this.handedness,
-            position: position
-        }}))
-    }
-
-    getJointPosition(jointName) {
-        let result = new three_module_Vector3()
-
-        if (!this.mesh) { return result }
-        let joint = this.mesh.skeleton.getBoneByName(jointName)
-
-        if (joint == null) { return result }
-
-        joint.getWorldPosition(result)
-
-        return result
-    }
-
-    getCursorPosition(){
-        let index = this.getJointPosition('index-finger-tip')
-        let thumb = this.getJointPosition('thumb-tip')
-        return index.lerp(thumb, 0.5)
-    }
-
-    checkForHover() {
-        let index = this.getJointPosition('index-finger-tip')
-        let thumb = this.getJointPosition('thumb-tip')
-        let distance = index.distanceTo(thumb)
-
-        if (distance > PINCH_DISTANCE && distance < HOVER_DISTANCE) {
-            if(!this.hover) {
-                this.hoverInitPosition = this.getCursorPosition()
-                this.hover = true
-            }
-            this.hoverPosition.copy(this.getCursorPosition()).sub(this.hoverInitPosition)
-        } else {
-            this.hover = false
-        }
-
-        return this.hover
-    }
+    return this.hover
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/interaction/SpatialControls.js
 
 
@@ -67505,310 +67513,347 @@ const SpatialControls_HOVER_DISTANCE = 0.05
 const SpatialControls_PINCH_DISTANCE = 0.02
 
 class SpatialControls {
+  constructor(renderer, scene) {
+    this.scene = scene
 
-    constructor(renderer, scene){
+    this.leftPinch = false
+    this.rightPinch = false
+    this.doublePinch = false
 
-        this.scene = scene
+    this.currentHoverObject
 
-        this.leftPinch = false
-        this.rightPinch = false
-        this.doublePinch = false
+    this.leftHand = new MRHand('left', renderer)
+    this.rightHand = new MRHand('right', renderer)
 
-        this.currentHoverObject
+    this.leftHand.addToScene(scene)
+    this.rightHand.addToScene(scene)
+  }
 
+  handleHover(hand) {
+    let closest
+    let closestDistance = 10000
 
-        this.leftHand = new MRHand('left', renderer)
-        this.rightHand = new MRHand('right', renderer)
+    const selectable = this.getSelectable()
 
-        this.leftHand.addToScene(scene)
-        this.rightHand.addToScene(scene)
+    selectable.forEach((object) => {
+      const distance = hand.hoverPosition
+        .normalize()
+        .distanceTo(object.position.normalize())
+      if (distance < closestDistance) {
+        closestDistance = distance
+        closest = object
+      }
+    })
 
+    if (closest && closest != this.currentHoverObject) {
+      if (this.currentHoverObject) {
+        this.currentHoverObject.userData.element.dispatchEvent(
+          new CustomEvent(`hoverend`)
+        )
+      }
+      closest.userData.element.dispatchEvent(new CustomEvent(`hoverstart`))
+      this.currentHoverObject = closest
     }
+  }
 
-    handleHover(hand) {
-        let closest
-        let closestDistance = 10000
+  getSelectable() {
+    const selectable = []
+    this.scene.traverseVisible((object) => {
+      if (!object.userData.element) {
+        return
+      }
+      if (!object.userData.element.classList.contains('selectable')) {
+        return
+      }
+      selectable.push(object)
+    })
+    return selectable
+  }
 
-        let selectable = this.getSelectable()
+  // TODO: per frame events seem kinda sketchy, there should be a better solution wit
+  update() {
+    if (this.leftHand.pinch && this.rightHand.pinch) {
+      const leftPosition = this.leftHand.getCursorPosition()
+      const rightPosition = this.rightHand.getCursorPosition()
 
-        selectable.forEach((object) => {
-            let distance = hand.hoverPosition.normalize().distanceTo(object.position.normalize())
-            if ( distance < closestDistance) {
-                closestDistance = distance
-                closest = object
-            }
+      const eventDetails = {
+        leftPosition,
+        rightPosition,
+        center: leftPosition.lerp(rightPosition, 0.5),
+        distance: leftPosition.distanceTo(rightPosition),
+      }
+
+      if (!this.doublePinch) {
+        this.doublePinch = true
+        document.dispatchEvent(
+          new CustomEvent(`doublepinchstart`, {
+            bubbles: true,
+            detail: eventDetails,
+          })
+        )
+      }
+
+      document.dispatchEvent(
+        new CustomEvent(`doublepinch`, { bubbles: true, detail: eventDetails })
+      )
+    } else if (this.leftHand.pinch) {
+      document.dispatchEvent(
+        new CustomEvent(`pinch`, {
+          bubbles: true,
+          detail: {
+            handedness: 'left',
+            position: this.leftHand.getCursorPosition(),
+          },
         })
-
-        if (closest && closest != this.currentHoverObject) {
-            if ( this.currentHoverObject ) {
-                this.currentHoverObject.userData.element.dispatchEvent(new CustomEvent(`hoverend`))
-            }
-            closest.userData.element.dispatchEvent(new CustomEvent(`hoverstart`))
-            this.currentHoverObject = closest
-        }
-    }
-
-    getSelectable(){
-        let selectable = []
-        this.scene.traverseVisible( (object) => {
-            if ( !object.userData.element ) { return }
-            if ( !object.userData.element.classList.contains('selectable') ) { return }
-            selectable.push(object)
+      )
+    } else if (this.rightHand.pinch) {
+      document.dispatchEvent(
+        new CustomEvent(`pinch`, {
+          bubbles: true,
+          detail: {
+            handedness: 'right',
+            position: this.rightHand.getCursorPosition(),
+          },
         })
-        return selectable
+      )
+    } else if (this.doublePinch) {
+      this.doublePinch = false
+
+      const leftPosition = this.leftHand.getCursorPosition()
+      const rightPosition = this.rightHand.getCursorPosition()
+
+      const eventDetails = {
+        leftPosition,
+        rightPosition,
+        center: leftPosition.lerp(rightPosition, 0.5),
+        distance: leftPosition.distanceTo(rightPosition),
+      }
+
+      document.dispatchEvent(
+        new CustomEvent(`doublepinchended`, {
+          bubbles: true,
+          detail: eventDetails,
+        })
+      )
     }
 
-    // TODO: per frame events seem kinda sketchy, there should be a better solution wit
-    update() {
-        if (this.leftHand.pinch && this.rightHand.pinch){
-            let leftPosition = this.leftHand.getCursorPosition()
-            let rightPosition = this.rightHand.getCursorPosition()
-
-            let eventDetails = {
-                leftPosition: leftPosition,
-                rightPosition: rightPosition,
-                center: leftPosition.lerp(rightPosition, 0.5),
-                distance: leftPosition.distanceTo(rightPosition)      
-            }
-
-            if (!this.doublePinch) {
-                this.doublePinch = true
-                document.dispatchEvent(new CustomEvent(`doublepinchstart`, { bubbles: true, detail: eventDetails}))
-            }
-
-            document.dispatchEvent(new CustomEvent(`doublepinch`, { bubbles: true, detail: eventDetails}))
-        } else if (this.leftHand.pinch) {
-            document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
-                handedness: 'left',
-                position: this.leftHand.getCursorPosition()      
-            }}))
-        } else if (this.rightHand.pinch) {
-            document.dispatchEvent(new CustomEvent(`pinch`, { bubbles: true, detail: { 
-                handedness: 'right',
-                position: this.rightHand.getCursorPosition()      
-            }}))
-        } else if (this.doublePinch) {
-            this.doublePinch = false
-
-            let leftPosition = this.leftHand.getCursorPosition()
-            let rightPosition = this.rightHand.getCursorPosition()
-
-            let eventDetails = {
-                leftPosition: leftPosition,
-                rightPosition: rightPosition,
-                center: leftPosition.lerp(rightPosition, 0.5),
-                distance: leftPosition.distanceTo(rightPosition)      
-            }
-
-            document.dispatchEvent(new CustomEvent(`doublepinchended`, { bubbles: true, detail: eventDetails }))
-
-        }
-
-        if (this.leftHand.checkForHover()){
-            this.handleHover(this.leftHand)
-        }
-        if (this.rightHand.checkForHover()){
-            this.handleHover(this.rightHand)
-        }
+    if (this.leftHand.checkForHover()) {
+      this.handleHover(this.leftHand)
     }
+    if (this.rightHand.checkForHover()) {
+      this.handleHover(this.rightHand)
+    }
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/core/environment.js
 
-;
 
 
 
 
+
+('use strict')
 
 class environment_Environment extends MRElement {
+  constructor() {
+    super()
+    Object.defineProperty(this, 'isEnvironment', {
+      value: true,
+      writable: false,
+    })
 
-    constructor() {
-      super()
-      Object.defineProperty(this, "isEnvironment", { value: true, writable: false })
+    this.environment = this
+    this.systems = new Set() // systemName : System
 
-      this.environment = this
-      this.systems = new Set() // systemName : System
+    this.app = new Scene()
 
-      this.app   = new Scene()
+    this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    this.user = new PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.01,
+      20
+    )
+    this.user.position.set(0, 0, 3)
 
-      this.renderer = new WebGLRenderer( { antialias: true, alpha: true} )
-      this.user = new PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 )
-      this.user.position.set( 0, 0, 3 );
+    const appLight = new AmbientLight(0xffffff)
+    this.app.add(appLight)
 
-      const appLight = new AmbientLight( 0xffffff );
-			this.app.add( appLight );
+    this.shadowLight = new DirectionalLight(0xffffff)
+    this.shadowLight.position.set(0, 1, 1)
+    this.shadowLight.castShadow = true
+    this.shadowLight.shadow.camera.top = 2
+    this.shadowLight.shadow.camera.bottom = -2
+    this.shadowLight.shadow.camera.right = 2
+    this.shadowLight.shadow.camera.left = -2
+    this.shadowLight.shadow.mapSize.set(4096, 4096)
+    this.app.add(this.shadowLight)
 
-      this.shadowLight = new DirectionalLight( 0xffffff );
-      this.shadowLight.position.set(0, 1, 1)
-      this.shadowLight.castShadow = true;
-      this.shadowLight.shadow.camera.top = 2;
-      this.shadowLight.shadow.camera.bottom = - 2;
-      this.shadowLight.shadow.camera.right = 2;
-      this.shadowLight.shadow.camera.left = - 2;
-      this.shadowLight.shadow.mapSize.set( 4096, 4096 );
-			this.app.add( this.shadowLight );
+    this.render = this.render.bind(this)
+    this.onWindowResize = this.onWindowResize.bind(this)
 
-      this.render = this.render.bind(this)
-      this.onWindowResize = this.onWindowResize.bind(this)
+    this.ARButton = ARButton.createButton(this.renderer, {
+      requiredFeatures: ['hand-tracking'],
+    })
+  }
 
-      this.ARButton = ARButton.createButton( this.renderer, { requiredFeatures: [ 'hand-tracking' ] } )
-    }
-
-    connectedCallback() {
-      this.init()
-      document.documentElement.setAttribute('style',`
+  connectedCallback() {
+    this.init()
+    document.documentElement.setAttribute(
+      'style',
+      `
         bottom: 0;
         left: 0;
         position: fixed;
         right: 0;
-        top: 0;`)
+        top: 0;`
+    )
 
-      document.body.setAttribute('style', `
+    document.body.setAttribute(
+      'style',
+      `
       height: 100%;
       margin: 0;
       overflow: hidden;
       padding: 0;
-      width: 100%;`)
-      this.setAttribute('style', 'position: absolute;')
-      this.observer = new MutationObserver(this.mutationCallback)
-      this.observer.observe(this, { attributes: true, childList: true });
+      width: 100%;`
+    )
+    this.setAttribute('style', 'position: absolute;')
+    this.observer = new MutationObserver(this.mutationCallback)
+    this.observer.observe(this, { attributes: true, childList: true })
+  }
 
-    }
+  disconnectedCallback() {
+    this.denit()
 
-    disconnectedCallback() {
-      this.denit()
+    this.environment = null
+    this.observer.disconnect()
+  }
 
-      this.environment = null
-      this.observer.disconnect()
-    }
-
-    mutationCallback = (mutationList, observer) => {
-        for (const mutation of mutationList) {
-          if (mutation.type === "childList") { 
-            this.mutatedChildList(mutation)
-          }
-          if (mutation.type === "attributes") { 
-              this.mutatedAttribute(mutation)
-          }
-        }
-    }
-
-    init(){
-
-      this.renderer.setPixelRatio( window.devicePixelRatio )
-      this.renderer.setSize( window.innerWidth, window.innerHeight )
-      this.renderer.autoClear = false;
-      this.renderer.shadowMap.enabled = true;
-      this.renderer.outputEncoding = sRGBEncoding;
-      this.renderer.xr.enabled = true
-
-      const orbitControls = new OrbitControls( this.user, this.renderer.domElement );
-			orbitControls.minDistance = 0;
-			orbitControls.maxDistance = 8;
-
-      let renderStyle = this.renderer.domElement.getAttribute('style')
-
-      renderStyle += "background-color: #fff;"
-
-      this.renderer.domElement.setAttribute('style', renderStyle)
-      this.setAttribute('data-html2canvas-ignore', true)
-      this.ARButton.setAttribute('data-html2canvas-ignore', true)
-
-      this.appendChild(this.renderer.domElement)
-      document.body.appendChild( this.ARButton )
-
-      this.spatialControls = new SpatialControls(this.renderer, this.app)
-
-      this.renderer.setAnimationLoop( this.render )
-
-      window.addEventListener( 'resize', this.onWindowResize )
-    }
-
-    denit() {
-      document.body.removeChild(this.renderer.domElement)
-      document.body.removeChild( this.ARButton )
-      window.removeEventListener( 'resize', this.onWindowResize )
-    }
-
-    registerSystem(system){
-      this.systems.add(system)
-    }
-
-    unregisterSystem(system){
-      this.systems.delete(system)
-    }
-
-    add(entity){
-      this.app.add(entity.object3D)
-    }
-
-    remove(entity){
-      this.app.remove(entity.object3D)
-    }
-
-    mutatedAttribute(mutation){
-
-    }
-
-    mutatedChildList(mutation) {
-      
-    }
-
-    onWindowResize() {
-
-      this.user.aspect = window.innerWidth / window.innerHeight
-      this.user.updateProjectionMatrix();
-
-      this.renderer.setSize( window.innerWidth, window.innerHeight )
-
-    }
-
-    render () {
-
-      for (const system of this.systems) {
-        system.registry.forEach(entity => {
-          system.update(entity)
-        });
+  mutationCallback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === 'childList') {
+        this.mutatedChildList(mutation)
       }
-
-      this.spatialControls.update()
-
-      this.shadowLight.target = this.user
-
-      this.renderer.render( this.app, this.user )
-
+      if (mutation.type === 'attributes') {
+        this.mutatedAttribute(mutation)
+      }
     }
+  }
+
+  init() {
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.autoClear = false
+    this.renderer.shadowMap.enabled = true
+    this.renderer.outputEncoding = sRGBEncoding
+    this.renderer.xr.enabled = true
+
+    const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+    orbitControls.minDistance = 0
+    orbitControls.maxDistance = 8
+
+    let renderStyle = this.renderer.domElement.getAttribute('style')
+
+    renderStyle += 'background-color: #fff;'
+
+    this.renderer.domElement.setAttribute('style', renderStyle)
+    this.setAttribute('data-html2canvas-ignore', true)
+    this.ARButton.setAttribute('data-html2canvas-ignore', true)
+
+    this.appendChild(this.renderer.domElement)
+    document.body.appendChild(this.ARButton)
+
+    this.spatialControls = new SpatialControls(this.renderer, this.app)
+
+    this.renderer.setAnimationLoop(this.render)
+
+    window.addEventListener('resize', this.onWindowResize)
+  }
+
+  denit() {
+    document.body.removeChild(this.renderer.domElement)
+    document.body.removeChild(this.ARButton)
+    window.removeEventListener('resize', this.onWindowResize)
+  }
+
+  registerSystem(system) {
+    this.systems.add(system)
+  }
+
+  unregisterSystem(system) {
+    this.systems.delete(system)
+  }
+
+  add(entity) {
+    this.app.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.app.remove(entity.object3D)
+  }
+
+  mutatedAttribute(mutation) {}
+
+  mutatedChildList(mutation) {}
+
+  onWindowResize() {
+    this.user.aspect = window.innerWidth / window.innerHeight
+    this.user.updateProjectionMatrix()
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+  }
+
+  render() {
+    for (const system of this.systems) {
+      system.registry.forEach((entity) => {
+        system.update(entity)
+      })
+    }
+
+    this.spatialControls.update()
+
+    this.shadowLight.target = this.user
+
+    this.renderer.render(this.app, this.user)
+  }
 }
 
-customElements.get('mr-env') || customElements.define('mr-env', environment_Environment);
+customElements.get('mr-env') || customElements.define('mr-env', environment_Environment)
+
 ;// CONCATENATED MODULE: ./src/utils/parser.js
 
+
 function parseVector(str) {
-    return str.split(' ').map(Number)
+  return str.split(' ').map(Number)
 }
 
-function parser_radToDeg(val) { return val * Math.PI/180}
-
-function setTransformValues(entity){
-    let position = entity.getAttribute('position')
-    let scale = entity.getAttribute('scale')
-    let rotation = entity.getAttribute('rotation')
-
-    if (position) {
-        entity.object3D.position.fromArray(parseVector(position))
-    }
-
-    if (scale) {
-        entity.object3D.scale.fromArray(parseVector(scale))
-    }
-
-    if (rotation) {
-        let euler = new Euler()
-        let array = parseVector(rotation).map(parser_radToDeg)
-        euler.fromArray(array)
-        entity.object3D.setRotationFromEuler(euler)
-    }
+function parser_radToDeg(val) {
+  return (val * Math.PI) / 180
 }
+
+function setTransformValues(entity) {
+  const position = entity.getAttribute('position')
+  const scale = entity.getAttribute('scale')
+  const rotation = entity.getAttribute('rotation')
+
+  if (position) {
+    entity.object3D.position.fromArray(parseVector(position))
+  }
+
+  if (scale) {
+    entity.object3D.scale.fromArray(parseVector(scale))
+  }
+
+  if (rotation) {
+    const euler = new Euler()
+    const array = parseVector(rotation).map(parser_radToDeg)
+    euler.fromArray(array)
+    entity.object3D.setRotationFromEuler(euler)
+  }
+}
+
 ;// CONCATENATED MODULE: ./src/utils/materialHelper.js
 
 
@@ -67817,138 +67862,144 @@ function setTransformValues(entity){
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
 class MaterialHelper {
-    static applyMaterial(object, materialType, parameterString) {
-        let parameters = MaterialHelper.parseParameterString(parameterString)
-        let result = MaterialHelper.initMaterial(materialType.split('mat-')[1], parameters)
-        if (result.opacity < 1) { result.transparent = true }
-        object.material = result
+  static applyMaterial(object, materialType, parameterString) {
+    const parameters = MaterialHelper.parseParameterString(parameterString)
+    const result = MaterialHelper.initMaterial(
+      materialType.split('mat-')[1],
+      parameters
+    )
+    if (result.opacity < 1) {
+      result.transparent = true
     }
+    object.material = result
+  }
 
-    static applyTexture(object, textureType, parameterString) {
-        let src = parameterString.split(':')[1].trim()
-        let typeArray = textureType.split('-')
-        let result = MaterialHelper.initTexture(typeArray[1], src)
+  static applyTexture(object, textureType, parameterString) {
+    const src = parameterString.split(':')[1].trim()
+    const typeArray = textureType.split('-')
+    const result = MaterialHelper.initTexture(typeArray[1], src)
 
-        if (typeArray.length < 3) {
-            object.material.map = result
-        } else {
-            MaterialHelper.applyMap(object, typeArray[2], result)
-        }
-
+    if (typeArray.length < 3) {
+      object.material.map = result
+    } else {
+      MaterialHelper.applyMap(object, typeArray[2], result)
     }
+  }
 
-    static parseParameterString(parameterString) {
-        let jsonString = parameterString.replaceAll(';', ',')
-        jsonString = jsonString.spliceSplit(0, 0, '{')
+  static parseParameterString(parameterString) {
+    let jsonString = parameterString.replaceAll(';', ',')
+    jsonString = jsonString.spliceSplit(0, 0, '{')
 
-        if (jsonString.slice(-1) == ',') {
-            jsonString = jsonString.spliceSplit(-1, 1, '')
-        }
-        jsonString += '}'
-        jsonString = jsonString.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2":')
-                            .replace(/(['"])?([a-zA-Z]+)(['"])?/g, '"$2"')
-                            .replaceAll('"true"', 'true')
-
-        console.log(jsonString);
-
-        return JSON.parse(jsonString)
+    if (jsonString.slice(-1) == ',') {
+      jsonString = jsonString.spliceSplit(-1, 1, '')
     }
+    jsonString += '}'
+    jsonString = jsonString
+      .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2":')
+      .replace(/(['"])?([a-zA-Z]+)(['"])?/g, '"$2"')
+      .replaceAll('"true"', 'true')
 
-    static initMaterial(type, parameters){
-        console.log(type);
-        switch (type) {
-            case 'basic':
-                return new three_module_MeshBasicMaterial(parameters)
-            case 'depth':
-                return new MeshDepthMaterial(parameters)
-            case 'distance':
-                return new MeshDistanceMaterial(parameters)
-            case 'lambert':
-                return new MeshLambertMaterial(parameters)
-            case 'line-basic':
-                return new LineBasicMaterial(parameters)
-            case 'line-dashed':
-                return new LineDashedMaterial(parameters)
-            case 'matcap':
-                return new MeshMatcapMaterial(parameters)
-            case 'normal':
-                return new MeshNormalMaterial(parameters)
-            case 'phong':
-                return new MeshPhongMaterial(parameters)
-            case 'physical':
-                return new MeshPhysicalMaterial(parameters)
-            case 'standard':
-                return new MeshStandardMaterial(parameters)
-            case 'toon':
-                return new MeshToonMaterial(parameters)
-            case 'points':
-                return new PointsMaterial(parameters)
-            case 'raw-shader':
-                return new RawShaderMaterial(parameters)
-            case 'shader':
-                return new ShaderMaterial(parameters)
-            case 'shadow':
-                return new ShadowMaterial(parameters)
-            case 'sprite':
-                return new Sprite()
-            default:
-                return new MeshPhongMaterial(parameters)
-        }
-    }
+    console.log(jsonString)
 
-    static initTexture(type, src){
-        switch (type) {
-            case 'basic':
-                return new TextureLoader().load(src)
-            case 'canvas':
-                return new CanvasTexture(src)
-            case 'compressed':
-                return new CompressedTextureLoader().load(src)                
-            case 'video':
-                let videosrc = document.getElementById(src);
-                return new VideoTexture(videosrc)
-            default:
-                return new TextureLoader().load(src)
-        }
-    }
+    return JSON.parse(jsonString)
+  }
 
-    static applyMap(object, type, texture) {
-        switch (type) {
-            case 'alpha':
-                object.material.alphaMap = texture
-                break;
-            case 'ao':
-                object.material.aoMap = texture
-                break;
-            case 'bump':
-                object.material.bumpMap = texture
-                break;
-            case 'displacement':
-                object.material.displacementMap = texture
-                break;
-            case 'emissive':
-                object.material.emissiveMap = texture
-                break;
-            case 'env':
-                object.material.envMap = texture
-                break;
-            case 'light':
-                object.material.lightMap = texture
-                break;
-            case 'metalness':
-                object.material.metalnessMap = texture
-                break;
-            case 'normal':
-                object.material.normalMap = texture
-                break;
-            case 'roughness':
-                object.material.roughnessMap = texture
-                break;
-            default:
-                object.material.map = texture
-        }
+  static initMaterial(type, parameters) {
+    console.log(type)
+    switch (type) {
+      case 'basic':
+        return new three_module_MeshBasicMaterial(parameters)
+      case 'depth':
+        return new MeshDepthMaterial(parameters)
+      case 'distance':
+        return new MeshDistanceMaterial(parameters)
+      case 'lambert':
+        return new MeshLambertMaterial(parameters)
+      case 'line-basic':
+        return new LineBasicMaterial(parameters)
+      case 'line-dashed':
+        return new LineDashedMaterial(parameters)
+      case 'matcap':
+        return new MeshMatcapMaterial(parameters)
+      case 'normal':
+        return new MeshNormalMaterial(parameters)
+      case 'phong':
+        return new MeshPhongMaterial(parameters)
+      case 'physical':
+        return new MeshPhysicalMaterial(parameters)
+      case 'standard':
+        return new MeshStandardMaterial(parameters)
+      case 'toon':
+        return new MeshToonMaterial(parameters)
+      case 'points':
+        return new PointsMaterial(parameters)
+      case 'raw-shader':
+        return new RawShaderMaterial(parameters)
+      case 'shader':
+        return new ShaderMaterial(parameters)
+      case 'shadow':
+        return new ShadowMaterial(parameters)
+      case 'sprite':
+        return new Sprite()
+      default:
+        return new MeshPhongMaterial(parameters)
     }
+  }
+
+  static initTexture(type, src) {
+    switch (type) {
+      case 'basic':
+        return new TextureLoader().load(src)
+      case 'canvas':
+        return new CanvasTexture(src)
+      case 'compressed':
+        return new CompressedTextureLoader().load(src)
+      case 'video':
+        const videosrc = document.getElementById(src)
+        return new VideoTexture(videosrc)
+      default:
+        return new TextureLoader().load(src)
+    }
+  }
+
+  static applyMap(object, type, texture) {
+    switch (type) {
+      case 'alpha':
+        object.material.alphaMap = texture
+        break
+      case 'ao':
+        object.material.aoMap = texture
+        break
+      case 'bump':
+        object.material.bumpMap = texture
+        break
+      case 'displacement':
+        object.material.displacementMap = texture
+        break
+      case 'emissive':
+        object.material.emissiveMap = texture
+        break
+      case 'env':
+        object.material.envMap = texture
+        break
+      case 'light':
+        object.material.lightMap = texture
+        break
+      case 'metalness':
+        object.material.metalnessMap = texture
+        break
+      case 'normal':
+        object.material.normalMap = texture
+        break
+      case 'roughness':
+        object.material.roughnessMap = texture
+        break
+      default:
+        object.material.map = texture
+    }
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/core/entity.js
 
 
@@ -67956,336 +68007,430 @@ class MaterialHelper {
 
 
 class entity_Entity extends MRElement {
-    static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
+  static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
 
-    constructor() {
-      super();
+  constructor() {
+    super()
 
-      Object.defineProperty(this, "isEnvironment", { value: false, writable: false })
+    Object.defineProperty(this, 'isEnvironment', {
+      value: false,
+      writable: false,
+    })
 
-      this.object3D = new Group()
-      this.components = new Set()
+    this.object3D = new Group()
+    this.components = new Set()
 
-      this.object3D.receiveShadow = true;
-      this.object3D.renderOrder = 3
+    this.object3D.receiveShadow = true
+    this.object3D.renderOrder = 3
 
-      this.componentMutated = this.componentMutated.bind(this)
+    this.componentMutated = this.componentMutated.bind(this)
+  }
 
+  connectedCallback() {
+    if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
+      return
+    }
+    this.parentElement.add(this)
+
+    if (this.parentElement.user) {
+      this.user = this.parentElement.user
     }
 
-    connectedCallback() {
-        if (!this.parentElement.tagName.toLowerCase().includes('mr-')) { return }
-        this.parentElement.add(this)
+    this.object3D.userData.element = this
 
-        if (this.parentElement.user) {
-            this.user = this.parentElement.user
-        }
+    setTransformValues(this)
 
-        this.object3D.userData.element = this
+    this.observer = new MutationObserver(this.mutationCallback)
+    this.observer.observe(this, { attributes: true })
 
-        setTransformValues(this)
+    for (const attr of this.attributes) {
+      switch (attr.name.split('-')[0]) {
+        case 'comp':
+          this.componentMutated(attr.name)
+          break
+        case 'mat':
+          MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+          break
+        case 'tex':
+          MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
+          break
 
-        this.observer = new MutationObserver(this.mutationCallback)
-        this.observer.observe(this, { attributes: true });
-
-        for (const attr of this.attributes) {
-
-            switch (attr.name.split('-')[0]) {
-                case 'comp':
-                    this.componentMutated(attr.name)
-                    break;
-                case 'mat':
-                    MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
-                    break;
-                case 'tex':
-                    MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
-                    break;
-            
-                default:
-                    break;
-            }
-        }
-
-        this.connected()
+        default:
+          break
+      }
     }
 
-    connected(){}
-    disconnected(){}
+    this.connected()
+  }
 
-    disconnectedCallback() {
-        while(this.object3D.parent) {
-            this.object3D.removeFromParent()
-        }
-        console.log('removed');
+  connected() {}
 
-        this.environment = null
-        this.observer.disconnect()
+  disconnected() {}
 
-        this.disconnected()
+  disconnectedCallback() {
+    while (this.object3D.parent) {
+      this.object3D.removeFromParent()
     }
+    console.log('removed')
 
-    mutationCallback = (mutationList, observer) => {
-        for (const mutation of mutationList) { 
-            if (mutation.type != "attributes") { continue }
-            if (mutation.attributeName.startsWith('comp-')) { 
-                this.componentMutated(mutation.attributeName)
-            } else if (mutation.attributeName.startsWith('mat-')) {
-                MaterialHelper.applyMaterial(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
-            } else if (mutation.attributeName.startsWith('tex-')) {
-                MaterialHelper.applyTexture(this.object3D, mutation.attributeName, this.getAttribute(mutation.attributeName))
-            }
-        }
+    this.environment = null
+    this.observer.disconnect()
+
+    this.disconnected()
+  }
+
+  mutationCallback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type != 'attributes') {
+        continue
+      }
+      if (mutation.attributeName.startsWith('comp-')) {
+        this.componentMutated(mutation.attributeName)
+      } else if (mutation.attributeName.startsWith('mat-')) {
+        MaterialHelper.applyMaterial(
+          this.object3D,
+          mutation.attributeName,
+          this.getAttribute(mutation.attributeName)
+        )
+      } else if (mutation.attributeName.startsWith('tex-')) {
+        MaterialHelper.applyTexture(
+          this.object3D,
+          mutation.attributeName,
+          this.getAttribute(mutation.attributeName)
+        )
+      }
     }
+  }
 
-    componentMutated(componentName) {
-        let component = this.attributes.getNamedItem(componentName)
-        if (!component) {
-            this.components.delete(componentName)
-            this.dispatchEvent(new CustomEvent(`${componentName}-detached`, { bubbles: true, detail: this }))
-
-        } else if (!this.components.has(componentName)) {
-            console.log(componentName);
-            this.components.add(componentName)
-            this.dispatchEvent(new CustomEvent(`${componentName}-attached`, { bubbles: true, detail: this }))
-        } else {
-            this.dispatchEvent(new CustomEvent(`${componentName}-updated`, { bubbles: true, detail: this }))
-        }
+  componentMutated(componentName) {
+    const component = this.attributes.getNamedItem(componentName)
+    if (!component) {
+      this.components.delete(componentName)
+      this.dispatchEvent(
+        new CustomEvent(`${componentName}-detached`, {
+          bubbles: true,
+          detail: this,
+        })
+      )
+    } else if (!this.components.has(componentName)) {
+      console.log(componentName)
+      this.components.add(componentName)
+      this.dispatchEvent(
+        new CustomEvent(`${componentName}-attached`, {
+          bubbles: true,
+          detail: this,
+        })
+      )
+    } else {
+      this.dispatchEvent(
+        new CustomEvent(`${componentName}-updated`, {
+          bubbles: true,
+          detail: this,
+        })
+      )
     }
+  }
 
-    add(entity){
-        entity.object3D.receiveShadow = true;
-        entity.object3D.renderOrder = 3
-        this.object3D.add(entity.object3D)
-    }
+  add(entity) {
+    entity.object3D.receiveShadow = true
+    entity.object3D.renderOrder = 3
+    this.object3D.add(entity.object3D)
+  }
 
-    remove(entity){
-        this.object3D.remove(entity.object3D)
-    }
-
+  remove(entity) {
+    this.object3D.remove(entity.object3D)
+  }
 }
 
-customElements.get('mr-entity') || customElements.define('mr-entity', entity_Entity);
+customElements.get('mr-entity') || customElements.define('mr-entity', entity_Entity)
+
 ;// CONCATENATED MODULE: ./src/core/MRSystemElement.js
 
 
 
 class MRSystemElement extends HTMLElement {
-    constructor() {
-		super()
-		this.environment = null
-        // Need a way to register and deregister systems per environment
-		this.registry = new Set()
+  constructor() {
+    super()
+    this.environment = null
+    // Need a way to register and deregister systems per environment
+    this.registry = new Set()
 
-		this.componentName = `comp-${this.nodeName.split('-')[1].toLowerCase()}`
+    this.componentName = `comp-${this.nodeName.split('-')[1].toLowerCase()}`
 
-		this.onAttach = this.onAttach.bind(this)
-		this.onUpdate = this.onUpdate.bind(this)
-		this.onDetatch = this.onDetatch.bind(this)
+    this.onAttach = this.onAttach.bind(this)
+    this.onUpdate = this.onUpdate.bind(this)
+    this.onDetatch = this.onDetatch.bind(this)
+  }
+
+  // Called per frame
+  update(entity) {
+    console.log(`update ${entity}`)
+  }
+
+  // called when the component is initialized
+  attachedComponent(entity) {
+    console.log(
+      `attached ${this.componentName} ${entity.getAttribute(
+        this.componentName
+      )}`
+    )
+  }
+
+  updatedComponent(entity) {
+    console.log(
+      `updated ${this.componentName} ${entity.getAttribute(this.componentName)}`
+    )
+  }
+
+  // called when the component is removed
+  detachedComponent(entity) {
+    console.log(`detached ${this.componentName}`)
+  }
+
+  onAttach(event) {
+    this.registry.add(event.detail)
+    this.attachedComponent(event.detail)
+  }
+
+  onUpdate(event) {
+    this.updatedComponent(event.detail)
+  }
+
+  onDetatch(event) {
+    this.registry.delete(event.detail)
+    this.detachedComponent(event.detail)
+  }
+
+  connectedCallback() {
+    if (!(this.parentElement instanceof Environment)) {
+      return
     }
 
-    // Called per frame
-	update (entity) {
-		console.log(`update ${entity}`);
-	}
+    this.environment = this.parentElement
+    this.environment.registerSystem(this)
 
-	// called when the component is initialized
-	attachedComponent (entity) {
-		console.log(`attached ${this.componentName} ${entity.getAttribute(this.componentName)}`);
-	}
+    this.environment.addEventListener(
+      `${this.componentName}-attached`,
+      this.onAttach
+    )
+    this.environment.addEventListener(
+      `${this.componentName}-updated`,
+      this.onUpdate
+    )
+    this.environment.addEventListener(
+      `${this.componentName}-detached`,
+      this.onDetatch
+    )
 
-	updatedComponent (entity) {
-		console.log(`updated ${this.componentName} ${entity.getAttribute(this.componentName)}`);
-	}
+    const entities = document.querySelectorAll(`[${this.componentName}]`)
+    for (const entity of entities) {
+      if (!(entity instanceof Entity)) {
+        return
+      }
+      this.registry.add(entity)
+    }
+  }
 
-	// called when the component is removed
-	detachedComponent (entity) {
-		console.log(`detached ${this.componentName}`);
-	}
+  disconnectedCallback() {
+    console.log('disconnected system')
+    this.environment.unregisterSystem(this)
 
-	onAttach(event) {
-		this.registry.add(event.detail)
-		this.attachedComponent(event.detail)
-	}
-
-	onUpdate(event) {
-		this.updatedComponent(event.detail)
-	}
-
-	onDetatch(event) {
-		this.registry.delete(event.detail)
-		this.detachedComponent(event.detail)
-	}
-
-	connectedCallback() {
-		if (!(this.parentElement instanceof Environment)) { return }
-
-		this.environment = this.parentElement
-		this.environment.registerSystem(this)
-
-		this.environment.addEventListener(`${this.componentName}-attached`, this.onAttach)
-		this.environment.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-		this.environment.addEventListener(`${this.componentName}-detached`, this.onDetatch)
-
-		let entities = document.querySelectorAll(`[${this.componentName}]`)
-		for(const entity of entities) {
-			if (!(entity instanceof Entity)) { return }
-			this.registry.add(entity)
-		}
-	}
-
-	disconnectedCallback() {
-		console.log('disconnected system');
-		this.environment.unregisterSystem(this)
-
-		this.environment.removeEventListener(`${this.componentName}-attached`)
-		this.environment.removeEventListener(`${this.componentName}-updated`)
-		this.environment.removeEventListener(`${this.componentName}-detached`)
-	}
+    this.environment.removeEventListener(`${this.componentName}-attached`)
+    this.environment.removeEventListener(`${this.componentName}-updated`)
+    this.environment.removeEventListener(`${this.componentName}-detached`)
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
-function UIPlane( w, h, r, s ) { // width, height, radius corner, smoothness
-			
-    // helper const's
-    const wi = w / 2 - r;		// inner width
-    const hi = h / 2 - r;		// inner height
-    const w2 = w / 2;			// half width
-    const h2 = h / 2;			// half height
-    const ul = r / w;			// u left
-    const ur = ( w - r ) / w;	// u right
-    const vl = r / h;			// v low
-    const vh = ( h - r ) / h;	// v high	
-    
-    let positions = [
-    
-        wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0
-        
-    ];
-    
-    let uvs = [
-        
-        ur, vh, ul, vh, ul, vl, ur, vl
-        
-    ];
-    
-    let n = [
-        
-        3 * ( s + 1 ) + 3,  3 * ( s + 1 ) + 4,  s + 4,  s + 5,
-        2 * ( s + 1 ) + 4,  2,  1,  2 * ( s + 1 ) + 3,
-        3,  4 * ( s + 1 ) + 3,  4, 0
-        
-    ];
-    
-    let indices = [
-        
-        n[0], n[1], n[2],  n[0], n[2],  n[3],
-        n[4], n[5], n[6],  n[4], n[6],  n[7],
-        n[8], n[9], n[10], n[8], n[10], n[11]
-        
-    ];
-    
-    let phi, cos, sin, xc, yc, uc, vc, idx;
-    
-    for ( let i = 0; i < 4; i ++ ) {
-    
-        xc = i < 1 || i > 2 ? wi : -wi;
-        yc = i < 2 ? hi : -hi;
-        
-        uc = i < 1 || i > 2 ? ur : ul;
-        vc = i < 2 ? vh : vl;
-            
-        for ( let j = 0; j <= s; j ++ ) {
-        
-            phi = Math.PI / 2  *  ( i + j / s );
-            cos = Math.cos( phi );
-            sin = Math.sin( phi );
 
-            positions.push( xc + r * cos, yc + r * sin, 0 );
+function UIPlane(w, h, r, s) {
+  // width, height, radius corner, smoothness
 
-            uvs.push( uc + ul * cos, vc + vl * sin );
-                    
-            if ( j < s ) {
-            
-                idx =  ( s + 1 ) * i + j + 4;
-                indices.push( i, idx, idx + 1 );
-                
-            }
-            
-        }
-        
+  // helper const's
+  const wi = w / 2 - r // inner width
+  const hi = h / 2 - r // inner height
+  const w2 = w / 2 // half width
+  const h2 = h / 2 // half height
+  const ul = r / w // u left
+  const ur = (w - r) / w // u right
+  const vl = r / h // v low
+  const vh = (h - r) / h // v high
+
+  const positions = [wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0]
+
+  const uvs = [ur, vh, ul, vh, ul, vl, ur, vl]
+
+  const n = [
+    3 * (s + 1) + 3,
+    3 * (s + 1) + 4,
+    s + 4,
+    s + 5,
+    2 * (s + 1) + 4,
+    2,
+    1,
+    2 * (s + 1) + 3,
+    3,
+    4 * (s + 1) + 3,
+    4,
+    0,
+  ]
+
+  const indices = [
+    n[0],
+    n[1],
+    n[2],
+    n[0],
+    n[2],
+    n[3],
+    n[4],
+    n[5],
+    n[6],
+    n[4],
+    n[6],
+    n[7],
+    n[8],
+    n[9],
+    n[10],
+    n[8],
+    n[10],
+    n[11],
+  ]
+
+  let phi
+  let cos
+  let sin
+  let xc
+  let yc
+  let uc
+  let vc
+  let idx
+
+  for (let i = 0; i < 4; i++) {
+    xc = i < 1 || i > 2 ? wi : -wi
+    yc = i < 2 ? hi : -hi
+
+    uc = i < 1 || i > 2 ? ur : ul
+    vc = i < 2 ? vh : vl
+
+    for (let j = 0; j <= s; j++) {
+      phi = (Math.PI / 2) * (i + j / s)
+      cos = Math.cos(phi)
+      sin = Math.sin(phi)
+
+      positions.push(xc + r * cos, yc + r * sin, 0)
+
+      uvs.push(uc + ul * cos, vc + vl * sin)
+
+      if (j < s) {
+        idx = (s + 1) * i + j + 4
+        indices.push(i, idx, idx + 1)
+      }
     }
-        
-    const geometry = new three_module_BufferGeometry( );
-    geometry.setIndex( new three_module_BufferAttribute( new Uint32Array( indices ), 1 ) );
-    geometry.setAttribute( 'position', new three_module_BufferAttribute( new Float32Array( positions ), 3 ) );
-    geometry.setAttribute( 'uv', new three_module_BufferAttribute( new Float32Array( uvs ), 2 ) );
-    geometry.computeBoundingBox();
-     geometry.computeVertexNormals();
-    
-    return geometry;	
-    
+  }
+
+  const geometry = new three_module_BufferGeometry()
+  geometry.setIndex(new three_module_BufferAttribute(new Uint32Array(indices), 1))
+  geometry.setAttribute(
+    'position',
+    new three_module_BufferAttribute(new Float32Array(positions), 3)
+  )
+  geometry.setAttribute(
+    'uv',
+    new three_module_BufferAttribute(new Float32Array(uvs), 2)
+  )
+  geometry.computeBoundingBox()
+  geometry.computeVertexNormals()
+
+  return geometry
 }
+
 ;// CONCATENATED MODULE: ./src/core/Panel.js
 
 
 
 
 class Panel extends entity_Entity {
-    static get observedAttributes() { return [ 'orientation', 'width', 'height', 'corner-radius', 'smoothness', 'color']; }
+  static get observedAttributes() {
+    return [
+      'orientation',
+      'width',
+      'height',
+      'corner-radius',
+      'smoothness',
+      'color',
+    ]
+  }
 
-    constructor(){
-        super()
+  constructor() {
+    super()
 
-        this.fitToParent = false
-        this.width = 1
-        this.height = 1
-        this.radius = 0.05
-        this.smoothness = 18
-        this.euler = new Euler();
+    this.fitToParent = false
+    this.width = 1
+    this.height = 1
+    this.radius = 0.05
+    this.smoothness = 18
+    this.euler = new Euler()
 
-        this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
-        this.material = new MeshStandardMaterial( {
-            color: 0xecf0f1,
-            roughness: 0.7,
-            metalness: 0.0,
-            side: 2
-        } );
+    this.geometry = UIPlane(
+      this.width,
+      this.height,
+      this.radius,
+      this.smoothness
+    )
+    this.material = new MeshStandardMaterial({
+      color: 0xecf0f1,
+      roughness: 0.7,
+      metalness: 0.0,
+      side: 2,
+    })
 
-        this.object3D = new Mesh( this.geometry, this.material );
-        this.object3D.receiveShadow = true;
-        this.object3D.renderOrder = 3
+    this.object3D = new Mesh(this.geometry, this.material)
+    this.object3D.receiveShadow = true
+    this.object3D.renderOrder = 3
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'orientation':
+        this.euler.fromArray(
+          newValue
+            .split(' ')
+            .map(Number)
+            .map((x) => x * (Math.PI / 180))
+        )
+        this.object3D.setRotationFromEuler(this.euler)
+        break
+      case 'width':
+        this.width = newValue
+        break
+      case 'height':
+        this.height = newValue
+        break
+      case 'corner-radius':
+        this.radius = newValue
+        break
+      case 'smoothness':
+        this.smoothness = newValue
+        break
+      case 'color':
+        this.object3D.material.color.setStyle(newValue)
+        break
+      default:
+        break
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case 'orientation':
-                this.euler.fromArray(newValue.split(' ').map(Number).map(x => x * (Math.PI/180)))
-                this.object3D.setRotationFromEuler(this.euler)
-                break;
-            case 'width':
-                this.width = newValue
-                break;
-            case 'height':
-                this.height = newValue
-                break;
-            case 'corner-radius':
-                this.radius = newValue
-                break;
-            case 'smoothness':
-                this.smoothness = newValue
-                break;
-            case 'color':
-                this.object3D.material.color.setStyle(newValue)
-                break;
-            default:
-                break;
-        }
-
-        this.object3D.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
-    }
+    this.object3D.geometry = UIPlane(
+      this.width,
+      this.height,
+      this.radius,
+      this.smoothness
+    )
+  }
 }
 
-customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
+customElements.get('mr-panel') || customElements.define('mr-panel', Panel)
+
 ;// CONCATENATED MODULE: ./src/entities/Surface.js
 
 
@@ -68294,197 +68439,199 @@ customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
 const QUAD_PINCH_THRESHOLD = 0.03
 
 class Surface extends entity_Entity {
-    constructor(aspectRatio = 1.77777778){
-        super()
+  constructor(aspectRatio = 1.77777778) {
+    super()
 
-        this.rotationPlane = new Group()
-        this.translation = new Group()
-        this.group = new Group()
-        this.horizontal = new Quaternion()
-        this.vertical = new Quaternion()
+    this.rotationPlane = new Group()
+    this.translation = new Group()
+    this.group = new Group()
+    this.horizontal = new Quaternion()
+    this.vertical = new Quaternion()
 
-        this.horizontal.setFromAxisAngle([1, 0, 0], 0)
-        this.vertical.setFromAxisAngle([1, 0, 0], Math.PI / 2)
+    this.horizontal.setFromAxisAngle([1, 0, 0], 0)
+    this.vertical.setFromAxisAngle([1, 0, 0], Math.PI / 2)
 
-        this.object3D.add(this.rotationPlane)
-        this.rotationPlane.add(this.translation)
+    this.object3D.add(this.rotationPlane)
+    this.rotationPlane.add(this.translation)
 
-        this.rotationPlane.receiveShadow = true;
-        this.rotationPlane.renderOrder = 3
+    this.rotationPlane.receiveShadow = true
+    this.rotationPlane.renderOrder = 3
 
-        this.translation.receiveShadow = true;
-        this.translation.renderOrder = 3
+    this.translation.receiveShadow = true
+    this.translation.renderOrder = 3
 
-        this.aspectRatio = aspectRatio
-        this.placed = false
-        this.width  = this.aspectRatio
-        this.height = 1
-        this.worldPosition = new three_module_Vector3()
-        this.lookPosition = new three_module_Vector3()
+    this.aspectRatio = aspectRatio
+    this.placed = false
+    this.width = this.aspectRatio
+    this.height = 1
+    this.worldPosition = new three_module_Vector3()
+    this.lookPosition = new three_module_Vector3()
 
-        this.material = new MeshStandardMaterial( {
-            color: 0x3498db,
-            roughness: 0.0,
-            metalness: 0.7,
-            transparent: true,
-            opacity: 0.7,
-            side: 2
-        } );
+    this.material = new MeshStandardMaterial({
+      color: 0x3498db,
+      roughness: 0.0,
+      metalness: 0.7,
+      transparent: true,
+      opacity: 0.7,
+      side: 2,
+    })
 
-        this.geometry = UIPlane(this.aspectRatio, 1, 0.02, 18)
+    this.geometry = UIPlane(this.aspectRatio, 1, 0.02, 18)
 
-        this.mesh = new Mesh(this.geometry, this.material)
+    this.mesh = new Mesh(this.geometry, this.material)
 
-        this.onDoublePinch = this.onDoublePinch.bind(this)
-        this.onDoublePinchEnded = this.onDoublePinchEnded.bind(this)
+    this.onDoublePinch = this.onDoublePinch.bind(this)
+    this.onDoublePinchEnded = this.onDoublePinchEnded.bind(this)
 
-        document.addEventListener('doublepinch', this.onDoublePinch)
-        document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+    document.addEventListener('doublepinch', this.onDoublePinch)
+    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+  }
+
+  add(entity) {
+    this.group.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.group.remove(entity.object3D)
+  }
+
+  onDoublePinch(event) {
+    this.user.getWorldPosition(this.worldPosition)
+    this.lookPosition.copy(this.worldPosition)
+
+    this.lookPosition.setY(event.detail.center.y)
+
+    if (this.mesh.parent == null) {
+      this.translation.add(this.mesh)
     }
 
-    add(entity){
-        this.group.add(entity.object3D)
+    if (this.group.parent != null) {
+      this.group.removeFromParent()
     }
 
-    remove(entity){
-        this.group.remove(entity.object3D)
+    this.object3D.position.setX(event.detail.center.x)
+    this.object3D.position.setY(event.detail.center.y)
+    this.object3D.position.setZ(event.detail.center.z)
+    this.object3D.scale.setScalar(event.detail.distance)
+
+    this.object3D.lookAt(this.lookPosition)
+
+    this.setRotation(
+      Math.abs(event.detail.center.y - this.worldPosition.y),
+      0.3
+    )
+  }
+
+  setRotation(delta, threshold) {
+    if (delta < threshold) {
+      this.translation.position.setY(0)
+      this.rotationPlane.rotation.x = 0
+    } else {
+      this.translation.position.setY(0.5)
+      this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
+  }
 
-    onDoublePinch(event) {
-        this.user.getWorldPosition(this.worldPosition)
-        this.lookPosition.copy(this.worldPosition)
+  editPosition() {
+    document.addEventListener('doublepinch', this.onDoublePinch)
+    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+  }
 
-        this.lookPosition.setY(event.detail.center.y)
-
-        if(this.mesh.parent == null) {
-            this.translation.add(this.mesh)
-        }
-
-        if(this.group.parent != null) {
-            this.group.removeFromParent()
-        }
-
-            this.object3D.position.setX(event.detail.center.x)
-            this.object3D.position.setY(event.detail.center.y)
-            this.object3D.position.setZ(event.detail.center.z)
-            this.object3D.scale.setScalar(event.detail.distance)
-
-            this.object3D.lookAt(this.lookPosition)
-
-            this.setRotation(Math.abs(event.detail.center.y - this.worldPosition.y), 0.3)
-
-    }
-
-    setRotation(delta, threshold) {
-        if (delta < threshold) {
-            this.translation.position.setY(0)
-            this.rotationPlane.rotation.x = 0
-        } else {
-            this.translation.position.setY(0.5)
-            this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
-
-        }
-    }
-
-    editPosition(){
-        document.addEventListener('doublepinch', this.onDoublePinch)
-        document.addEventListener('doublepinchended', this.onDoublePinchEnded)
-    }
-
-    onDoublePinchEnded(event) {
-        this.dispatchEvent(new CustomEvent(`surfaceplaced`))
-        this.mesh.removeFromParent()
-        this.translation.add(this.group)
-        document.removeEventListener('doublepinch', this.onDoublePinch)
-        document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
-    }
+  onDoublePinchEnded(event) {
+    this.dispatchEvent(new CustomEvent(`surfaceplaced`))
+    this.mesh.removeFromParent()
+    this.translation.add(this.group)
+    document.removeEventListener('doublepinch', this.onDoublePinch)
+    document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
+  }
 }
 
-customElements.get('mr-surface') || customElements.define('mr-surface', Surface);
+customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
+
 ;// CONCATENATED MODULE: ./src/entities/Volume.js
 
 
 
 
 class Volume extends entity_Entity {
+  constructor() {
+    super()
 
-    constructor(){
-        super()
+    this.width = 1
+    this.depth = 1
+    this.height = this.width
+    this.object3D.receiveShadow = true
+    this.object3D.renderOrder = 3
+  }
 
-        this.width = 1
-        this.depth = 1
-        this.height = this.width
-        this.object3D.receiveShadow = true;
-        this.object3D.renderOrder = 3
+  connected() {
+    if (this.parentElement instanceof Surface) {
+      this.parentElement.addEventListener('surfaceplaced', () => {
+        this.width = this.parentElement.width
+        this.depth = this.parentElement.height
+        this.height = this.parentElement.height
+        this.object3D.position.setY(this.depth / 2)
+        this.arrangeChildren()
+      })
     }
+  }
 
-    connected(){
-        if(this.parentElement instanceof Surface) {
-            this.parentElement.addEventListener('surfaceplaced', () => {
-                this.width = this.parentElement.width
-                this.depth = this.parentElement.height
-                this.height = this.parentElement.height
-                this.object3D.position.setY(this.depth / 2)
-                this.arrangeChildren()
-            })
-        }
+  add(entity) {
+    this.object3D.add(entity.object3D)
+    const wall = entity.getAttribute('snap-to')
+    if (wall) {
+      this.snapChildToWall(wall, entity.object3D.position)
+      console.log(entity.object3D.position)
     }
+  }
 
-    add(entity){
-        this.object3D.add(entity.object3D)
-        let wall = entity.getAttribute('snap-to')
-        if (wall) {
-            this.snapChildToWall(wall, entity.object3D.position)
-            console.log(entity.object3D.position);
-        }
-    }
+  arrangeChildren() {
+    const children = [...this.children]
+    children.forEach((child) => {
+      const wall = child.getAttribute('snap-to')
+      if (wall) {
+        this.snapChildToWall(wall, child.object3D.position)
+        console.log(child.object3D.position)
+      }
+    })
+  }
 
-    arrangeChildren() {
-        let children = [...this.children]
-        children.forEach(child => {
-            let wall = child.getAttribute('snap-to')
-        if (wall) {
-            this.snapChildToWall(wall, child.object3D.position)
-            console.log(child.object3D.position);
-        }
-        });
+  snapChildToWall(key, vector) {
+    switch (key) {
+      // bottom
+      case 'bottom':
+        vector.setY(-this.height / 2)
+        break
+      // left
+      case 'left':
+        vector.setX(-this.width / 2)
+        break
+      // back
+      case 'back':
+        vector.setZ(-this.depth / 2)
+        break
+      // right
+      case 'right':
+        vector.setX(this.width / 2)
+        break
+      // front
+      case 'front':
+        vector.setZ(this.depth / 2)
+        break
+      // top
+      case 'top':
+        vector.setY(this.height / 2)
+        break
+      // default to floor
+      default:
+        vector.setY(-this.height / 2)
+        break
     }
-
-    snapChildToWall(key, vector){
-        switch (key) {
-            // bottom
-            case 'bottom':
-                vector.setY(-this.height / 2)
-                break; 
-            // left        
-            case 'left':
-                vector.setX(-this.width / 2)
-                break;
-            // back
-            case 'back':
-                vector.setZ(-this.depth / 2)
-                break;
-            // right
-            case 'right':
-                vector.setX(this.width / 2)
-                break;
-            // front
-            case 'front':
-                vector.setZ(this.depth / 2)
-                break;
-            // top
-            case 'top':
-                vector.setY(this.height / 2)
-                break;
-            // default to floor
-            default:
-                vector.setY(-this.height / 2)
-                break;
-        }
-    }
+  }
 }
 
-customElements.get('mr-volume') || customElements.define('mr-volume', Volume);
+customElements.get('mr-volume') || customElements.define('mr-volume', Volume)
+
 // EXTERNAL MODULE: ./node_modules/html2canvas/dist/html2canvas.js
 var html2canvas = __webpack_require__(120);
 var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
@@ -68495,124 +68642,123 @@ var html2canvas_default = /*#__PURE__*/__webpack_require__.n(html2canvas);
 // Borrowed from HTMLMesh: https://github.com/mrdoob/three.js/blob/674400e2ccf07f5fe81c287c294f0e15a199100d/examples/jsm/interactive/HTMLMesh.js#L11
 
 class HTMLTexture extends CanvasTexture {
+  constructor(html, width, height) {
+    const canvas = document.createElement('canvas')
 
-	constructor( html, width, height) {
+    super(canvas)
 
-		let canvas = document.createElement('canvas')
+    this.html = html
+    this.htmlCanvas = canvas
+    this.context = canvas.getContext('2d')
 
-		super( canvas );
+    this.htmlCanvas.width = width
+    this.htmlCanvas.height = height
 
-		this.html = html;
-		this.htmlCanvas = canvas
-		this.context = canvas.getContext('2d');
+    this.anisotropy = 16
+    this.colorSpace = SRGBColorSpace
+    this.minFilter = LinearFilter
+    this.magFilter = LinearFilter
+    console.log('init observer')
+    this.update()
 
-		this.htmlCanvas.width = width
-        this.htmlCanvas.height = height
+    // Create an observer on the this.html, and run html2canvas update in the next loop
+    const observer = new MutationObserver((mutationList, observer) => {
+      console.log('observing')
 
-		this.anisotropy = 16;
-		this.colorSpace = SRGBColorSpace;
-		this.minFilter = LinearFilter;
-		this.magFilter = LinearFilter;
-		console.log('init observer');
-		this.update()
+      if (!this.scheduleUpdate) {
+        // ideally should use xr.requestAnimationFrame, here setTimeout to avoid passing the renderer
+        this.scheduleUpdate = setTimeout(() => this.update(), 16)
+      }
+    })
 
-		// Create an observer on the this.html, and run html2canvas update in the next loop
-		const observer = new MutationObserver( (mutationList, observer) => {
-			console.log('observing');
+    const config = {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    }
+    observer.observe(this.html, config)
 
-			if ( ! this.scheduleUpdate ) {
+    this.observer = observer
+  }
 
-				// ideally should use xr.requestAnimationFrame, here setTimeout to avoid passing the renderer
-				this.scheduleUpdate = setTimeout( () => this.update(), 16 );
+  dispatchDOMEvent(event) {
+    if (event.data) {
+      htmlevent(this.this.html, event.type, event.data.x, event.data.y)
+    }
+  }
 
-			}
+  update() {
+    console.log('update')
+    html2canvas_default()(this.html, {
+      canvas: this.htmlCanvas,
+      scale: 1,
+      ignoreElements: (node) => node.nodeName === 'IFRAME',
+    }).then((canvas) => {
+      this.needsUpdate = true
+      this.scheduleUpdate = null
+    })
+  }
 
-		} );
+  dispose() {
+    if (this.observer) {
+      this.observer.disconnect()
+    }
 
-		const config = { attributes: true, childList: true, subtree: true, characterData: true };
-		observer.observe( this.html, config );
+    this.scheduleUpdate = clearTimeout(this.scheduleUpdate)
 
-		this.observer = observer;
-
-	}
-
-	dispatchDOMEvent( event ) {
-
-		if ( event.data ) {
-
-			htmlevent( this.this.html, event.type, event.data.x, event.data.y );
-
-		}
-
-	}
-
-	update() {
-		console.log('update');
-		html2canvas_default()(this.html, {canvas: this.htmlCanvas, 
-			scale: 1, 
-			ignoreElements: (node) => {
-			return node.nodeName === 'IFRAME';
-		  }}).then((canvas) => {
-			this.needsUpdate = true
-			this.scheduleUpdate = null;
-
-		  });
-
-	}
-
-	dispose() {
-
-		if ( this.observer ) {
-
-			this.observer.disconnect();
-
-		}
-
-		this.scheduleUpdate = clearTimeout( this.scheduleUpdate );
-
-		super.dispose();
-
-	}
-
+    super.dispose()
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/entities/UI/DOMPanel.js
 
 
 
 class DOMPanel extends Panel {
-    constructor(){
-        super()
+  constructor() {
+    super()
 
-        this.html = document.createElement('div')
+    this.html = document.createElement('div')
+  }
+
+  connected() {
+    this.createTexture()
+  }
+
+  createTexture() {
+    if (!this.html) {
+      return
     }
+    const width = this.width * 256
+    const height = this.height * 256
+    const texture = new HTMLTexture(this, width, height)
 
-    connected(){
-        this.createTexture()
-    }
-
-    createTexture(){
-        if(!this.html) { return }
-		let width = this.width * 256
-		let height = this.height * 256
-        let texture = new HTMLTexture( this, width, height);
-
-		this.setAttribute('style', `width: ${width}px;
+    this.setAttribute(
+      'style',
+      `width: ${width}px;
                                     height: ${height}px;
                                     padding: 10px;
                                     display: flex;
                                     align-items: stretch;
-									background-color: ${this.color ? this.color : '#fff'}`)
+									background-color: ${this.color ? this.color : '#fff'}`
+    )
 
-        if (this.object3D.material) {
-            this.object3D.material.map = texture
-        } else {
-            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
-        }
+    if (this.object3D.material) {
+      this.object3D.material.map = texture
+    } else {
+      this.object3D.material = new MeshBasicMaterial({
+        map: texture,
+        toneMapped: false,
+        transparent: true,
+      })
     }
-
+  }
 }
 
-customElements.get('mr-dom-panel') || customElements.define('mr-dom-panel', DOMPanel);
+customElements.get('mr-dom-panel') ||
+  customElements.define('mr-dom-panel', DOMPanel)
+
 ;// CONCATENATED MODULE: ./src/interaction/KeyboardInput.js
 // `element.focus()` freezes the animations loop (A truly insane bug)
 // Until that's fixed (if ever), we've implemented our own keyboard handler to be used with keydown events.
@@ -68629,124 +68775,164 @@ customElements.get('mr-dom-panel') || customElements.define('mr-dom-panel', DOMP
 //   - left & right
 //   - up & down
 
-
 class KeyboardInput {
+  constructor(element) {
+    this.element = element
+    this.rawText = element.textContent
+    this.meta = false
+    this.currentIndex = 0
+  }
 
-    constructor(element) {
-        this.element = element
-        this.rawText = element.textContent
-        this.meta = false
-        this.currentIndex = 0
+  setFocus(element) {
+    if (this.element == element) {
+      return
     }
+    this.element = element
+    this.currentIndex = this.element.textContent.length
+    this.setCursorPosition(this.currentIndex, this.currentIndex)
+  }
 
-    setFocus(element){
-        if (this.element == element) { return }
-        this.element = element
-        this.currentIndex = this.element.textContent.length
-        this.setCursorPosition(this.currentIndex, this.currentIndex)
+  handleInput(keyEvent) {
+    switch (keyEvent.key) {
+      case 'Meta':
+        this.meta ^= true
+        break
 
-    }
+      case 'Control':
+        break
+      case 'Alt':
+        break
 
-    handleInput(keyEvent) {
-        switch (keyEvent.key) {
-            case 'Meta':
-                this.meta ^= true
-                break;
+      case 'Shift':
+        break
 
-            case 'Control':
-                
-                break;
-            case 'Alt':
-                
-                break;
-
-            case 'Shift':
-                break;
-
-            case 'Enter':
-                if(keyEvent.type == 'keyup') { return }
-                this.spliceSplit(this.currentIndex, 0, '\n')
-                this.currentIndex += 1
-                break;
-            
-            case 'Backspace':
-                if(keyEvent.type == 'keyup') { return }
-                if ( this.currentIndex == 0) { return }
-                this.spliceSplit(this.currentIndex - 1, 1, '')
-                this.currentIndex -= 1
-                break;
-
-            case 'Tab':
-                if(keyEvent.type == 'keyup') { return }
-                this.element.textContent += '\t'
-                break;
-            
-            case 'ArrowLeft':
-                if ( this.currentIndex == 0) { return }
-                if(keyEvent.type == 'keyup') { return }
-                this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
-                break;
-        
-            case 'ArrowRight':
-                if ( this.currentIndex == this.element.textContent.length) { return }
-                if(keyEvent.type == 'keyup') { return }
-                this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
-                break;
-            case 'ArrowUp':
-                if ( this.currentIndex == 0) { return }
-                if(keyEvent.type == 'keyup') { return }
-
-                let oneLineBack = this.element.textContent.lastIndexOf('\n', this.currentIndex - 1)
-                let twoLinesBack = this.element.textContent.lastIndexOf('\n', this.oneLineBack - 1)
-                let newUpIndex = (this.currentIndex - oneLineBack) + twoLinesBack
-
-                newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack
-
-                this.setCursorPosition(this.currentIndex, newUpIndex)
-                break;
-            case 'ArrowDown':
-                if (this.currentIndex == this.element.textContent.length) { return }
-                if(keyEvent.type == 'keyup') { return }
-                let prevLine = this.element.textContent.lastIndexOf('\n', this.currentIndex - 1)
-                let nextLine = this.element.textContent.indexOf('\n', this.currentIndex + 1)
-                let lineAfter = this.element.textContent.indexOf('\n', nextLine + 1)
-                let newDownIndex = (this.currentIndex - prevLine) + nextLine
-
-                newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
-                newDownIndex = newDownIndex < this.element.textContent.length - 1 ? newDownIndex : this.element.textContent.length - 1
-                newDownIndex = newDownIndex > 0 ? newDownIndex : this.element.textContent.length - 1
-                
-                this.setCursorPosition(this.currentIndex, newDownIndex)
-                break;
-            default:
-                if(keyEvent.type == 'keyup') { return }
-                this.spliceSplit(this.currentIndex, 0, keyEvent.key)
-                this.currentIndex += 1
-
-                break;
+      case 'Enter':
+        if (keyEvent.type == 'keyup') {
+          return
         }
-        console.log(this.currentIndex);
-        console.log(this.element.textContent);
+        this.spliceSplit(this.currentIndex, 0, '\n')
+        this.currentIndex += 1
+        break
+
+      case 'Backspace':
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        if (this.currentIndex == 0) {
+          return
+        }
+        this.spliceSplit(this.currentIndex - 1, 1, '')
+        this.currentIndex -= 1
+        break
+
+      case 'Tab':
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        this.element.textContent += '\t'
+        break
+
+      case 'ArrowLeft':
+        if (this.currentIndex == 0) {
+          return
+        }
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
+        break
+
+      case 'ArrowRight':
+        if (this.currentIndex == this.element.textContent.length) {
+          return
+        }
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
+        break
+      case 'ArrowUp':
+        if (this.currentIndex == 0) {
+          return
+        }
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+
+        const oneLineBack = this.element.textContent.lastIndexOf(
+          '\n',
+          this.currentIndex - 1
+        )
+        const twoLinesBack = this.element.textContent.lastIndexOf(
+          '\n',
+          this.oneLineBack - 1
+        )
+        let newUpIndex = this.currentIndex - oneLineBack + twoLinesBack
+
+        newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack
+
+        this.setCursorPosition(this.currentIndex, newUpIndex)
+        break
+      case 'ArrowDown':
+        if (this.currentIndex == this.element.textContent.length) {
+          return
+        }
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        const prevLine = this.element.textContent.lastIndexOf(
+          '\n',
+          this.currentIndex - 1
+        )
+        const nextLine = this.element.textContent.indexOf(
+          '\n',
+          this.currentIndex + 1
+        )
+        const lineAfter = this.element.textContent.indexOf('\n', nextLine + 1)
+        let newDownIndex = this.currentIndex - prevLine + nextLine
+
+        newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
+        newDownIndex =
+          newDownIndex < this.element.textContent.length - 1
+            ? newDownIndex
+            : this.element.textContent.length - 1
+        newDownIndex =
+          newDownIndex > 0 ? newDownIndex : this.element.textContent.length - 1
+
+        this.setCursorPosition(this.currentIndex, newDownIndex)
+        break
+      default:
+        if (keyEvent.type == 'keyup') {
+          return
+        }
+        this.spliceSplit(this.currentIndex, 0, keyEvent.key)
+        this.currentIndex += 1
+
+        break
     }
+    console.log(this.currentIndex)
+    console.log(this.element.textContent)
+  }
 
-    setCursorPosition(oldIndex, newIndex){
-        console.log(`old: ${oldIndex} new: ${newIndex}`);
-        if (oldIndex == newIndex){ return }
-        if (newIndex < 0){ return }
-        this.spliceSplit(oldIndex, 1, '')
-        this.spliceSplit(newIndex, 0, '|')
-        this.currentIndex = newIndex
-
+  setCursorPosition(oldIndex, newIndex) {
+    console.log(`old: ${oldIndex} new: ${newIndex}`)
+    if (oldIndex == newIndex) {
+      return
     }
+    if (newIndex < 0) {
+      return
+    }
+    this.spliceSplit(oldIndex, 1, '')
+    this.spliceSplit(newIndex, 0, '|')
+    this.currentIndex = newIndex
+  }
 
-    spliceSplit(index, count, add) {
-        var ar = this.element.textContent.split('');
-        ar.splice(index, count, add);
-        this.element.textContent = ar.join('');
-      }
-
+  spliceSplit(index, count, add) {
+    const ar = this.element.textContent.split('')
+    ar.splice(index, count, add)
+    this.element.textContent = ar.join('')
+  }
 }
-
 
 ;// CONCATENATED MODULE: ./src/entities/UI/TextAreaPanel.js
 
@@ -68754,107 +68940,114 @@ class KeyboardInput {
 
 
 class TextAreaPanel extends Panel {
-    constructor(){
-        super()
+  constructor() {
+    super()
 
-        this.textAreaDiv = document.createElement('div')
-        this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
-    }
+    this.textAreaDiv = document.createElement('div')
+    this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
+  }
 
-    connected(){
-        document.body.append(this.textAreaDiv)
-        this.createTexture()
+  connected() {
+    document.body.append(this.textAreaDiv)
+    this.createTexture()
 
-        this.addEventListener( 'mousedown', this.onEvent );
-		this.addEventListener( 'mousemove', this.onEvent );
-		this.addEventListener( 'mouseup', this.onEvent );
-		this.addEventListener( 'click', this.onEvent );
+    this.addEventListener('mousedown', this.onEvent)
+    this.addEventListener('mousemove', this.onEvent)
+    this.addEventListener('mouseup', this.onEvent)
+    this.addEventListener('click', this.onEvent)
 
-        document.addEventListener( 'keydown', (event) => {
-            console.log('keydown');
-            event.preventDefault()
-            this.KeyboardInput.handleInput(event)
-        });
+    document.addEventListener('keydown', (event) => {
+      console.log('keydown')
+      event.preventDefault()
+      this.KeyboardInput.handleInput(event)
+    })
+  }
 
-    }
+  onEvent = (event) => {
+    this.object3D.material.map.dispatchDOMEvent(event)
+  }
 
-    onEvent = (event) => {
-        this.object3D.material.map.dispatchDOMEvent( event );
-    }
+  createTexture() {
+    const width = this.width * 256
+    const height = this.height * 256
+    const texture = new HTMLTexture(this.textAreaDiv, width, height)
 
-    createTexture(){
-		let width = this.width * 256
-		let height = this.height * 256
-        let texture = new HTMLTexture( this.textAreaDiv, width, height);
-
-        this.textAreaDiv.setAttribute('contenteditable', true)
-		this.textAreaDiv.setAttribute('style', `width: ${width}px;
+    this.textAreaDiv.setAttribute('contenteditable', true)
+    this.textAreaDiv.setAttribute(
+      'style',
+      `width: ${width}px;
                                     height: ${height}px;
                                     padding: 10px;
                                     display: block;
                                     white-space: pre-wrap;
                                     overflow: scroll;
-									background-color: ${this.color ? this.color : '#fff'}`)
+									background-color: ${this.color ? this.color : '#fff'}`
+    )
 
-        if (this.object3D.material) {
-            this.object3D.material.map = texture
-        } else {
-            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
-        }
+    if (this.object3D.material) {
+      this.object3D.material.map = texture
+    } else {
+      this.object3D.material = new MeshBasicMaterial({
+        map: texture,
+        toneMapped: false,
+        transparent: true,
+      })
     }
-
+  }
 }
 
-customElements.get('mr-textarea') || customElements.define('mr-textarea', TextAreaPanel);
+customElements.get('mr-textarea') ||
+  customElements.define('mr-textarea', TextAreaPanel)
+
 ;// CONCATENATED MODULE: ./src/entities/UI/TextEditorPanel.js
 
 
 
 
 class TextEditorPanel extends Panel {
-    constructor(){
-        super()
+  constructor() {
+    super()
 
-        this.textAreaDiv = document.createElement('div')
-        this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
-    }
+    this.textAreaDiv = document.createElement('div')
+    this.KeyboardInput = new KeyboardInput(this.textAreaDiv)
+  }
 
-    connected(){
-        document.body.append(this.textAreaDiv)
-        let srcTag = this.getAttribute('src')
-        this.src = document.querySelector(`#${srcTag}`)
-        this.textAreaDiv.textContent = this.src.innerHTML
-        this.createTexture()
+  connected() {
+    document.body.append(this.textAreaDiv)
+    const srcTag = this.getAttribute('src')
+    this.src = document.querySelector(`#${srcTag}`)
+    this.textAreaDiv.textContent = this.src.innerHTML
+    this.createTexture()
 
-        this.addEventListener( 'mousedown', this.onEvent );
-		this.addEventListener( 'mousemove', this.onEvent );
-		this.addEventListener( 'mouseup', this.onEvent );
-		this.addEventListener( 'click', this.onEvent );
+    this.addEventListener('mousedown', this.onEvent)
+    this.addEventListener('mousemove', this.onEvent)
+    this.addEventListener('mouseup', this.onEvent)
+    this.addEventListener('click', this.onEvent)
 
-        document.addEventListener( 'keydown', (event) => {
-            console.log('keydown');
-            event.preventDefault()
-            this.KeyboardInput.handleInput(event)
-            let cleanedText = this.textAreaDiv.textContent.replace('|', '')
-            if (this.src.innerHTML !== cleanedText) {
-                this.src.innerHTML = cleanedText
-            }
-            
-        });
+    document.addEventListener('keydown', (event) => {
+      console.log('keydown')
+      event.preventDefault()
+      this.KeyboardInput.handleInput(event)
+      const cleanedText = this.textAreaDiv.textContent.replace('|', '')
+      if (this.src.innerHTML !== cleanedText) {
+        this.src.innerHTML = cleanedText
+      }
+    })
+  }
 
-    }
+  onEvent = (event) => {
+    this.object3D.material.map.dispatchDOMEvent(event)
+  }
 
-    onEvent = (event) => {
-        this.object3D.material.map.dispatchDOMEvent( event );
-    }
+  createTexture() {
+    const width = this.width * 256
+    const height = this.height * 256
+    const texture = new HTMLTexture(this.textAreaDiv, width, height)
 
-    createTexture(){
-		let width = this.width * 256
-		let height = this.height * 256
-        let texture = new HTMLTexture( this.textAreaDiv, width, height);
-
-        this.textAreaDiv.setAttribute('contenteditable', true)
-		this.textAreaDiv.setAttribute('style', `width: ${width}px;
+    this.textAreaDiv.setAttribute('contenteditable', true)
+    this.textAreaDiv.setAttribute(
+      'style',
+      `width: ${width}px;
                                     height: ${height}px;
                                     padding: 10px;
                                     display: block;
@@ -68863,18 +69056,24 @@ class TextEditorPanel extends Panel {
                                     font-family: monospace;
                                     font-size: 6pt;
                                     color: brown;
-									background-color: ${this.color ? this.color : '#090909'}`)
+									background-color: ${this.color ? this.color : '#090909'}`
+    )
 
-        if (this.object3D.material) {
-            this.object3D.material.map = texture
-        } else {
-            this.object3D.material = new MeshBasicMaterial( { map: texture, toneMapped: false, transparent: true } );
-        }
+    if (this.object3D.material) {
+      this.object3D.material.map = texture
+    } else {
+      this.object3D.material = new MeshBasicMaterial({
+        map: texture,
+        toneMapped: false,
+        transparent: true,
+      })
     }
-
+  }
 }
 
-customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditorPanel);
+customElements.get('mr-texteditor') ||
+  customElements.define('mr-texteditor', TextEditorPanel)
+
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
 
@@ -68901,7 +69100,6 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 
 
 
-
 // CORE
 
 
@@ -68910,6 +69108,7 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 // GEOMETRY
 
 // UI
+
 
 })();
 

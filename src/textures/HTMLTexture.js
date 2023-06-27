@@ -1,90 +1,74 @@
-import {
-	CanvasTexture,
-	LinearFilter,
-	SRGBColorSpace
-} from 'three';
+import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three'
 import html2canvas from 'html2canvas'
 
 // Borrowed from HTMLMesh: https://github.com/mrdoob/three.js/blob/674400e2ccf07f5fe81c287c294f0e15a199100d/examples/jsm/interactive/HTMLMesh.js#L11
 
 export default class HTMLTexture extends CanvasTexture {
+  constructor(html, width, height) {
+    const canvas = document.createElement('canvas')
 
-	constructor( html, width, height) {
+    super(canvas)
 
-		let canvas = document.createElement('canvas')
+    this.html = html
+    this.htmlCanvas = canvas
+    this.context = canvas.getContext('2d')
 
-		super( canvas );
+    this.htmlCanvas.width = width
+    this.htmlCanvas.height = height
 
-		this.html = html;
-		this.htmlCanvas = canvas
-		this.context = canvas.getContext('2d');
+    this.anisotropy = 16
+    this.colorSpace = SRGBColorSpace
+    this.minFilter = LinearFilter
+    this.magFilter = LinearFilter
+    console.log('init observer')
+    this.update()
 
-		this.htmlCanvas.width = width
-        this.htmlCanvas.height = height
+    // Create an observer on the this.html, and run html2canvas update in the next loop
+    const observer = new MutationObserver((mutationList, observer) => {
+      console.log('observing')
 
-		this.anisotropy = 16;
-		this.colorSpace = SRGBColorSpace;
-		this.minFilter = LinearFilter;
-		this.magFilter = LinearFilter;
-		console.log('init observer');
-		this.update()
+      if (!this.scheduleUpdate) {
+        // ideally should use xr.requestAnimationFrame, here setTimeout to avoid passing the renderer
+        this.scheduleUpdate = setTimeout(() => this.update(), 16)
+      }
+    })
 
-		// Create an observer on the this.html, and run html2canvas update in the next loop
-		const observer = new MutationObserver( (mutationList, observer) => {
-			console.log('observing');
+    const config = {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    }
+    observer.observe(this.html, config)
 
-			if ( ! this.scheduleUpdate ) {
+    this.observer = observer
+  }
 
-				// ideally should use xr.requestAnimationFrame, here setTimeout to avoid passing the renderer
-				this.scheduleUpdate = setTimeout( () => this.update(), 16 );
+  dispatchDOMEvent(event) {
+    if (event.data) {
+      htmlevent(this.this.html, event.type, event.data.x, event.data.y)
+    }
+  }
 
-			}
+  update() {
+    console.log('update')
+    html2canvas(this.html, {
+      canvas: this.htmlCanvas,
+      scale: 1,
+      ignoreElements: (node) => node.nodeName === 'IFRAME',
+    }).then((canvas) => {
+      this.needsUpdate = true
+      this.scheduleUpdate = null
+    })
+  }
 
-		} );
+  dispose() {
+    if (this.observer) {
+      this.observer.disconnect()
+    }
 
-		const config = { attributes: true, childList: true, subtree: true, characterData: true };
-		observer.observe( this.html, config );
+    this.scheduleUpdate = clearTimeout(this.scheduleUpdate)
 
-		this.observer = observer;
-
-	}
-
-	dispatchDOMEvent( event ) {
-
-		if ( event.data ) {
-
-			htmlevent( this.this.html, event.type, event.data.x, event.data.y );
-
-		}
-
-	}
-
-	update() {
-		console.log('update');
-		html2canvas(this.html, {canvas: this.htmlCanvas, 
-			scale: 1, 
-			ignoreElements: (node) => {
-			return node.nodeName === 'IFRAME';
-		  }}).then((canvas) => {
-			this.needsUpdate = true
-			this.scheduleUpdate = null;
-
-		  });
-
-	}
-
-	dispose() {
-
-		if ( this.observer ) {
-
-			this.observer.disconnect();
-
-		}
-
-		this.scheduleUpdate = clearTimeout( this.scheduleUpdate );
-
-		super.dispose();
-
-	}
-
+    super.dispose()
+  }
 }
