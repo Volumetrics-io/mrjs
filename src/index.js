@@ -19,6 +19,9 @@ import './entities/UI/DOMPanel.js'
 import './entities/UI/TextAreaPanel.js'
 import './entities/UI/TextEditorPanel.js'
 
+// UI: LAYOUT
+import './entities/layout/Row.js'
+
 //   EXPORTS
 
 export * as THREE from 'three'
