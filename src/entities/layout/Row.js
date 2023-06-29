@@ -4,15 +4,18 @@ class Row extends Entity {
     constructor() {
       super()
       this.shuttle = new THREE.Group() // will shift based on bounding box width
-      this.bbox = new THREE.Box3()
-      this.dimensions = new THREE.Vector3()
+      this.object3D.userData.bbox = new THREE.Box3()
+      this.object3D.userData.size = new THREE.Vector3()
       this.accumulatedX = 0
       this.object3D.add(this.shuttle)
     }
 
+    connected(){
+        this.update()
+    }
+
     add(entity){
         this.shuttle.add(entity.object3D)
-
         this.update()
     }
 
@@ -21,8 +24,13 @@ class Row extends Entity {
         this.update()
     }
 
+    mutated = (mutation) => {
+       if( mutation.addedNodes.length ) {
+        this.update()
+       }
+    }
+
     update(){
-        console.log('update');
         this.accumulatedX = 0
         this.shuttle.children.forEach((child) => {
             if (!child.userData.size) {
@@ -34,11 +42,10 @@ class Row extends Entity {
             child.position.setX(this.accumulatedX + ((child.userData.size.x / 2) * child.scale.x))
             this.accumulatedX += child.userData.size.x * child.scale.x
 
-            console.log(child.scale);
         })
-        this.bbox.setFromObject(this.shuttle)
-        this.bbox.getSize(this.dimensions)
-        this.object3D.position.setX(-this.dimensions.x/2)
+        this.object3D.userData.bbox.setFromObject(this.shuttle)
+        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
+        this.shuttle.position.setX(-this.object3D.userData.size.x/2)
     }
   }
   

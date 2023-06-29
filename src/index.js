@@ -21,6 +21,7 @@ import './entities/UI/TextEditorPanel.js'
 
 // UI: LAYOUT
 import './entities/layout/Row.js'
+import './entities/layout/Column.js'
 
 //   EXPORTS
 

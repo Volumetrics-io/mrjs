@@ -10,12 +10,35 @@
   </head>
   <body >
     <mr-env>
-        <mr-row>
-            <mr-panel id="red" class="selectable" color="red" scale="0.2 0.2 0.2"></mr-panel>
-            <mr-panel id="yellow" class="selectable" color="yellow" scale="0.5 0.5 0.4"></mr-panel>
-            <mr-panel id="green" class="selectable" color="green" scale="0.8 0.8 0.4"></mr-panel>
-            <mr-panel id="blue" class="selectable" color="blue" width="2"></mr-panel>
-        </mr-row>
+        <mr-surface>
+            <mr-volume>
+                <mr-row snap-to="back">
+                    <mr-column>
+                        <mr-panel color="orange" height="4"></mr-panel>
+                    </mr-column>
+                    <mr-column>
+                        <mr-row>
+                            <mr-panel  color="green"></mr-panel> 
+                            <mr-panel  color="blue"></mr-panel>
+                            <mr-panel  color="red"></mr-panel>
+                        </mr-row>
+                        <mr-row>
+                            <mr-panel  color="blue"></mr-panel>
+                            <mr-panel  color="red"></mr-panel>
+                            <mr-panel  color="yellow"></mr-panel>
+                        </mr-row>
+                        <mr-row>
+                            <mr-panel  color="red"></mr-panel>
+                            <mr-panel  color="yellow"></mr-panel>
+                            <mr-panel  color="green"></mr-panel> 
+                        </mr-row>
+                        <mr-row>
+                            <mr-panel color="purple" width="3" ></mr-panel>
+                        </mr-row>
+                    </mr-column>
+                </mr-row>
+            </mr-volume>
+        </mr-surface>
     </mr-env>
   </body>
 
