@@ -15,11 +15,17 @@ export default class Volume extends Entity {
 
   connected() {
     if (this.parentElement instanceof Surface) {
-      this.parentElement.addEventListener('surfaceplaced', () => {
+      this.parentElement.addEventListener('surfaceplaced', (event) => {
         this.width = this.parentElement.width
         this.depth = this.parentElement.height
         this.height = this.parentElement.height
-        this.object3D.position.setY(this.depth / 2)
+        console.log(event.detail);
+        if (event.detail.orientation == 'horizontal') {
+          this.object3D.position.setY(this.depth / 2)
+          this.object3D.rotation.x = 3 * (Math.PI / 2)
+        } else {
+          this.object3D.rotation.x = 0
+        }
         this.arrangeChildren()
       })
     }

@@ -11,11 +11,8 @@ export class Surface extends Entity {
     this.rotationPlane = new THREE.Group()
     this.translation = new THREE.Group()
     this.group = new THREE.Group()
-    this.horizontal = new THREE.Quaternion()
-    this.vertical = new THREE.Quaternion()
+    this.orientation = 'horizontal'
 
-    this.horizontal.setFromAxisAngle([1, 0, 0], 0)
-    this.vertical.setFromAxisAngle([1, 0, 0], Math.PI / 2)
 
     this.object3D.add(this.rotationPlane)
     this.rotationPlane.add(this.translation)
@@ -90,9 +87,11 @@ export class Surface extends Entity {
 
   setRotation(delta, threshold) {
     if (delta < threshold) {
+      this.orientation = 'vertical'
       this.translation.position.setY(0)
       this.rotationPlane.rotation.x = 0
     } else {
+      this.orientation = 'horizontal'
       this.translation.position.setY(0.5)
       this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
@@ -104,7 +103,7 @@ export class Surface extends Entity {
   }
 
   onDoublePinchEnded(event) {
-    this.dispatchEvent(new CustomEvent(`surfaceplaced`))
+    this.dispatchEvent(new CustomEvent(`surfaceplaced`, { bubbles: true, detail: { orientation: this.orientation }}))
     this.mesh.removeFromParent()
     this.translation.add(this.group)
     document.removeEventListener('doublepinch', this.onDoublePinch)
