@@ -3,7 +3,6 @@ class Container extends Entity {
     super()
   }
 
-  connected() {}
 }
 
 customElements.get('mr-container') ||

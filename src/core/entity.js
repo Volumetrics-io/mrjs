@@ -38,7 +38,7 @@ export class Entity extends MRElement {
     setTransformValues(this)
 
     this.observer = new MutationObserver(this.mutationCallback)
-    this.observer.observe(this, { attributes: true })
+    this.observer.observe(this, { attributes: true, childList: true })
 
     for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
@@ -64,6 +64,8 @@ export class Entity extends MRElement {
 
   disconnected() {}
 
+  mutated = (mutation) => {}
+
   disconnectedCallback() {
     while (this.object3D.parent) {
       this.object3D.removeFromParent()
@@ -78,6 +80,8 @@ export class Entity extends MRElement {
 
   mutationCallback = (mutationList, observer) => {
     for (const mutation of mutationList) {
+        this.mutated(mutation)
+
       if (mutation.type != 'attributes') {
         continue
       }
