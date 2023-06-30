@@ -12,29 +12,29 @@
     <mr-env>
         <mr-surface>
             <mr-volume>
-                <mr-panel color="blue" snap-to="bottom" rotation="90 0 0"></mr-panel>
+                <mr-panel class="selectable" color="blue" snap-to="bottom" rotation="90 0 0"></mr-panel>
                 <mr-row snap-to="back">
                     <mr-column>
-                        <mr-panel color="orange" height="4"></mr-panel>
+                        <mr-panel class="selectable" color="orange" height="4"></mr-panel>
                     </mr-column>
                     <mr-column>
                         <mr-row>
-                            <mr-panel  color="green"></mr-panel> 
-                            <mr-panel  color="blue"></mr-panel>
-                            <mr-panel  color="red"></mr-panel>
+                            <mr-panel class="selectable" color="green"></mr-panel> 
+                            <mr-panel class="selectable" color="blue"></mr-panel>
+                            <mr-panel class="selectable" color="red"></mr-panel>
                         </mr-row>
                         <mr-row>
-                            <mr-panel  color="blue"></mr-panel>
-                            <mr-panel  color="red"></mr-panel>
-                            <mr-panel  color="yellow"></mr-panel>
+                            <mr-panel class="selectable" color="blue"></mr-panel>
+                            <mr-panel class="selectable" color="red"></mr-panel>
+                            <mr-panel class="selectable" color="yellow"></mr-panel>
                         </mr-row>
                         <mr-row>
-                            <mr-panel  color="red"></mr-panel>
-                            <mr-panel  color="yellow"></mr-panel>
-                            <mr-panel  color="green"></mr-panel> 
+                            <mr-panel class="selectable" color="red"></mr-panel>
+                            <mr-panel class="selectable" color="yellow"></mr-panel>
+                            <mr-panel class="selectable" color="green"></mr-panel> 
                         </mr-row>
                         <mr-row>
-                            <mr-panel color="purple" width="3" ></mr-panel>
+                            <mr-panel class="selectable" color="purple" width="3" ></mr-panel>
                         </mr-row>
                     </mr-column>
                 </mr-row>
@@ -44,5 +44,17 @@
   </body>
 
   <footer>
+    <script type="module">
+
+        document.addEventListener('hoverstart', (event) => {
+            event.target.object3D.scale.setScalar(0.8)
+            event.target.object3D.position.setZ(-0.1)
+        })
+
+        document.addEventListener('hoverend', (event) => {
+            event.target.object3D.scale.setScalar(1)
+            event.target.object3D.position.setZ(0)
+        })
+    </script>
   </footer>
 </html>
