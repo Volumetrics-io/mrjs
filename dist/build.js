@@ -67521,6 +67521,7 @@ class SpatialControls {
     this.doublePinch = false
 
     this.currentHoverObject
+    this.objectPosition = new three_module_Vector3()
 
     this.leftHand = new MRHand('left', renderer)
     this.rightHand = new MRHand('right', renderer)
@@ -67536,9 +67537,10 @@ class SpatialControls {
     const selectable = this.getSelectable()
 
     selectable.forEach((object) => {
+      object.getWorldPosition(this.objectPosition)
       const distance = hand.hoverPosition
         .normalize()
-        .distanceTo(object.position.normalize())
+        .distanceTo(this.objectPosition)
       if (distance < closestDistance) {
         closestDistance = distance
         closest = object
@@ -67548,10 +67550,10 @@ class SpatialControls {
     if (closest && closest != this.currentHoverObject) {
       if (this.currentHoverObject) {
         this.currentHoverObject.userData.element.dispatchEvent(
-          new CustomEvent(`hoverend`)
+          new CustomEvent(`hoverend`, {bubbles: true})
         )
       }
-      closest.userData.element.dispatchEvent(new CustomEvent(`hoverstart`))
+      closest.userData.element.dispatchEvent(new CustomEvent(`hoverstart`, {bubbles: true}))
       this.currentHoverObject = closest
     }
   }
