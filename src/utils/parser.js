@@ -28,3 +28,26 @@ export function setTransformValues(entity) {
     entity.object3D.setRotationFromEuler(euler)
   }
 }
+
+
+export function parseComponentString(compString) {
+  const regexPattern = /(\w+):\s*([^;]+)/g;
+  const jsonObject = {};
+
+  let match;
+  while ((match = regexPattern.exec(inputString)) !== null) {
+    const key = match[1].trim();
+    let value = match[2].trim();
+
+    // Check value type and convert if necessary
+    if (/^\d+(\.\d+)?$/.test(value)) {
+      value = parseFloat(value);
+    } else if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+
+    jsonObject[key] = value;
+  }
+}

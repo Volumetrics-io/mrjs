@@ -41,17 +41,15 @@ export class System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity) {
+  attachedComponent(entity, component) {
     console.log(
-      `attached ${this.componentName} ${entity.getAttribute(
-        this.componentName
-      )}`
+      `attached ${this.componentName} ${component}}`
     )
   }
 
-  updatedComponent(entity) {
+  updatedComponent(entity, component) {
     console.log(
-      `updated ${this.componentName} ${entity.getAttribute(this.componentName)}`
+      `updated ${this.componentName} ${component}}`
     )
   }
 
@@ -61,17 +59,17 @@ export class System {
   }
 
   onAttach = (event) => {
-    this.registry.add(event.detail)
-    this.attachedComponent(event.detail)
+    this.registry.add(event.detail.entity)
+    this.attachedComponent(event.detail.entity, event.detail.component)
   }
 
   onUpdate = (event) => {
-    this.updatedComponent(event.detail)
+    this.updatedComponent(event.detail.entity, event.detail.component)
   }
 
   onDetatch = (event) => {
-    this.registry.delete(event.detail)
-    this.detachedComponent(event.detail)
+    this.registry.delete(event.detail.entity)
+    this.detachedComponent(event.detail.entity)
   }
 
   disconnectedCallback() {

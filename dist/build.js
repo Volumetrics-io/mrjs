@@ -59266,6 +59266,28 @@ function setTransformValues(entity) {
   }
 }
 
+
+function parseComponentString(compString) {
+  const regexPattern = /(\w+):\s*([^;]+)/g;
+  const jsonObject = {};
+
+  let match;
+  while ((match = regexPattern.exec(inputString)) !== null) {
+    const key = match[1].trim();
+    let value = match[2].trim();
+
+    // Check value type and convert if necessary
+    if (/^\d+(\.\d+)?$/.test(value)) {
+      value = parseFloat(value);
+    } else if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+
+    jsonObject[key] = value;
+  }
+}
 ;// CONCATENATED MODULE: ./src/utils/materialHelper.js
 
 
@@ -59431,6 +59453,8 @@ class Entity extends MRElement {
 
     this.object3D = new Group()
     this.components = new Set()
+    this.object3D.userData.bbox = new Box3()
+    this.object3D.userData.size = new three_module_Vector3()
 
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
@@ -59449,6 +59473,13 @@ class Entity extends MRElement {
     }
 
     this.object3D.userData.element = this
+
+    this.object3D.userData.bbox = new Box3()
+    this.object3D.userData.size = new three_module_Vector3()
+
+    this.object3D.userData.bbox.setFromObject(this.object3D)
+    
+    this.object3D.userData.bbox.getSize(this.object3D.userData.size)
 
     setTransformValues(this)
 
@@ -59519,22 +59550,22 @@ class Entity extends MRElement {
   }
 
   componentMutated(componentName) {
-    const component = this.attributes.getNamedItem(componentName)
+    const component = this.getAttribute(componentName)
     if (!component) {
       this.components.delete(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-detached`, {
           bubbles: true,
-          detail: this,
+          detail: {entity: this, component: component}
         })
       )
     } else if (!this.components.has(componentName)) {
-      console.log(componentName)
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
           bubbles: true,
           detail: this,
+          detail: {entity: this, component: component}
         })
       )
     } else {
@@ -59542,6 +59573,7 @@ class Entity extends MRElement {
         new CustomEvent(`${componentName}-updated`, {
           bubbles: true,
           detail: this,
+          detail: {entity: this, component: component}
         })
       )
     }
@@ -59604,17 +59636,15 @@ class System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity) {
+  attachedComponent(entity, component) {
     console.log(
-      `attached ${this.componentName} ${entity.getAttribute(
-        this.componentName
-      )}`
+      `attached ${this.componentName} ${component}}`
     )
   }
 
-  updatedComponent(entity) {
+  updatedComponent(entity, component) {
     console.log(
-      `updated ${this.componentName} ${entity.getAttribute(this.componentName)}`
+      `updated ${this.componentName} ${component}}`
     )
   }
 
@@ -59624,17 +59654,17 @@ class System {
   }
 
   onAttach = (event) => {
-    this.registry.add(event.detail)
-    this.attachedComponent(event.detail)
+    this.registry.add(event.detail.entity)
+    this.attachedComponent(event.detail.entity, event.detail.component)
   }
 
   onUpdate = (event) => {
-    this.updatedComponent(event.detail)
+    this.updatedComponent(event.detail.entity, event.detail.component)
   }
 
   onDetatch = (event) => {
-    this.registry.delete(event.detail)
-    this.detachedComponent(event.detail)
+    this.registry.delete(event.detail.entity)
+    this.detachedComponent(event.detail.entity)
   }
 
   disconnectedCallback() {
@@ -68080,7 +68110,7 @@ class PhysicsSystem extends System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity) {
+  attachedComponent(entity, component) {
     console.log(
       `attached ${this.componentName} ${entity.getAttribute(
         this.componentName
@@ -68088,7 +68118,7 @@ class PhysicsSystem extends System {
     )
   }
 
-  updatedComponent(entity) {
+  updatedComponent(entity, component) {
     console.log(
       `updated ${this.componentName} ${entity.getAttribute(this.componentName)}`
     )

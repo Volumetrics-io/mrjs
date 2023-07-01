@@ -9,7 +9,7 @@ export class PhysicsSystem extends System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity) {
+  attachedComponent(entity, component) {
     console.log(
       `attached ${this.componentName} ${entity.getAttribute(
         this.componentName
@@ -17,7 +17,7 @@ export class PhysicsSystem extends System {
     )
   }
 
-  updatedComponent(entity) {
+  updatedComponent(entity, component) {
     console.log(
       `updated ${this.componentName} ${entity.getAttribute(this.componentName)}`
     )
