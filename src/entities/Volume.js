@@ -19,10 +19,10 @@ export default class Volume extends Entity {
         this.width = this.parentElement.width
         this.depth = this.parentElement.height
         this.height = this.parentElement.height
-        console.log(event.detail);
+        console.log(event.detail)
         if (event.detail.orientation == 'horizontal') {
           this.object3D.position.setZ(this.depth / 2)
-          this.object3D.rotation.x = (Math.PI / 2)
+          this.object3D.rotation.x = Math.PI / 2
         } else {
           this.object3D.rotation.x = 0
         }

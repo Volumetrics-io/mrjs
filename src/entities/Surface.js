@@ -13,7 +13,6 @@ export class Surface extends Entity {
     this.group = new THREE.Group()
     this.orientation = 'horizontal'
 
-
     this.object3D.add(this.rotationPlane)
     this.rotationPlane.add(this.translation)
 
@@ -103,7 +102,12 @@ export class Surface extends Entity {
   }
 
   onDoublePinchEnded(event) {
-    this.dispatchEvent(new CustomEvent(`surfaceplaced`, { bubbles: true, detail: { orientation: this.orientation }}))
+    this.dispatchEvent(
+      new CustomEvent(`surfaceplaced`, {
+        bubbles: true,
+        detail: { orientation: this.orientation },
+      })
+    )
     this.mesh.removeFromParent()
     this.translation.add(this.group)
     document.removeEventListener('doublepinch', this.onDoublePinch)

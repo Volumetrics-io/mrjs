@@ -4,7 +4,9 @@ export class System {
   constructor() {
     this.environment = document.querySelector('mr-env')
 
-    if(!this.environment) { return }
+    if (!this.environment) {
+      return
+    }
     // Need a way to register and deregister systems per environment
     this.registry = new Set()
 
@@ -41,16 +43,12 @@ export class System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity, component) {
-    console.log(
-      `attached ${this.componentName} ${component}}`
-    )
+  attachedComponent(entity, componentString) {
+    console.log(`attached ${this.componentName} ${componentString}}`)
   }
 
-  updatedComponent(entity, component) {
-    console.log(
-      `updated ${this.componentName} ${component}}`
-    )
+  updatedComponent(entity, componentString) {
+    console.log(`updated ${this.componentName} ${componentString}}`)
   }
 
   // called when the component is removed
@@ -72,11 +70,30 @@ export class System {
     this.detachedComponent(event.detail.entity)
   }
 
-  disconnectedCallback() {
-    this.environment.unregisterSystem(this)
+  // lol chatGPT made this.
+  parseComponentString(compString) {
+    const regexPattern = /(\w+):\s*([^;]+)/g
+    const jsonObject = {}
 
-    this.environment.removeEventListener(`${this.componentName}-attached`)
-    this.environment.removeEventListener(`${this.componentName}-updated`)
-    this.environment.removeEventListener(`${this.componentName}-detached`)
+    let match
+    while ((match = regexPattern.exec(compString)) !== null) {
+      const key = match[1].trim()
+      let value = match[2].trim()
+
+      // Check value type and convert if necessary
+      if (value.includes(' ')) {
+        value = value.split(' ').map((v) => parseFloat(v))
+      } else if (/^\d+(\.\d+)?$/.test(value)) {
+        value = parseFloat(value)
+      } else if (value === 'true') {
+        value = true
+      } else if (value === 'false') {
+        value = false
+      }
+
+      jsonObject[key] = value
+    }
+
+    return jsonObject
   }
 }

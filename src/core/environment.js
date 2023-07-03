@@ -5,7 +5,7 @@ import { MRElement } from './MRElement.js'
 import { SpatialControls } from '../interaction/SpatialControls.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 
-('use strict')
+;('use strict')
 
 export class Environment extends MRElement {
   constructor() {
@@ -74,7 +74,8 @@ export class Environment extends MRElement {
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
-    this.registerSystem(new PhysicsSystem())
+    this.physicsSystem = new PhysicsSystem()
+    this.registerSystem(this.physicsSystem)
   }
 
   disconnectedCallback() {
