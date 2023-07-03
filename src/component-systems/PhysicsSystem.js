@@ -1,6 +1,9 @@
 import * as THREE from 'three'
 import * as AmmoLib from 'ammo.js'
 import { System } from '../core/System.js'
+import { Surface } from '../entities/Surface.js'
+import { Entity } from '../core/entity.js'
+import Volume from '../entities/Volume.js'
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -8,13 +11,18 @@ import { System } from '../core/System.js'
 // if shape and body are not defined, they default to the geometry
 // of the entity, if there is no geometry, there is no physics defined
 // on the entity.
+//
+// Alternatively, you can also expressly attatch a comp-physics 
+// attribute for more detailed control.
 export class PhysicsSystem extends System {
   constructor() {
     super()
     this.ammoInitizialed = false
     this.gravity = 9.8
+
     this.tempTransform
     this.tempPosition = new THREE.Vector3()
+    this.tempMotionState
     this.cache = []
     AmmoLib().then((Ammo) => {
       Ammo = Ammo
@@ -24,14 +32,45 @@ export class PhysicsSystem extends System {
       this.tempTransform = new Ammo.btTransform()
       this.tempTransform.setIdentity()
 
+      let entities = this.environment.querySelectorAll('*')
+
+      for (let entity of entities) {
+        if (entity instanceof Surface || entity instanceof Volume) { continue }
+        if (!(entity instanceof Entity)) { continue }
+        if (entity.physicsData.none) { continue }
+        this.registry.add(entity)
+
+        this.initPhysicsBody(entity, entity.physicsData)
+
+      }
+
       for (const pair of this.cache) {
         this.initPhysicsBody(pair.entity, pair.data)
       }
     })
   }
 
-  update() {
-    if (!this.ammoInitizialed) {
+  update(deltaTime) {
+    if (!this.ammoInitizialed) { return }
+
+    this.physicsWorld.stepSimulation( deltaTime, 10 );
+
+
+    for (let entity of this.registry) {
+
+        let ms = entity.object3D.userData.physicsBody.getMotionState();
+
+        if ( ms ) {
+
+            ms.getWorldTransform( this.tempTransform );
+            const p = this.tempTransform.getOrigin();
+            const q = this.tempTransform.getRotation();
+            entity.object3D.position.set( p.x(), p.y(), p.z() );
+            entity.object3D.quaternion.set( q.x(), q.y(), q.z(), q.w() );
+
+            //console.log(entity.object3D.position);
+
+        }
     }
   }
 
@@ -54,6 +93,8 @@ export class PhysicsSystem extends System {
   }
 
   initPhysicsWorld = () => {
+    this.tempTransform = new Ammo.btTransform();
+
     this.collisionConfiguration = new Ammo.btDefaultCollisionConfiguration()
     this.dispatcher = new Ammo.btCollisionDispatcher(
       this.collisionConfiguration
@@ -96,7 +137,7 @@ export class PhysicsSystem extends System {
 
     entity.object3D.getWorldPosition(this.tempPosition)
 
-    if ( data.offset ) { this.tempPosition.add(data.offset) }
+    if ( data.offset ) { this.tempPosition.add(new THREE.Vector3().fromArray(data.offset)) }
 
     transform.setOrigin(new Ammo.btVector3(...this.tempPosition))
     transform.setRotation(new Ammo.btQuaternion(...entity.object3D.quaternion))

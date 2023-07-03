@@ -40,6 +40,15 @@ export default class Panel extends Entity {
     this.object3D = new THREE.Mesh(this.geometry, this.material)
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
+
+    //physics
+
+    this.physicsData = {
+      shape: 'box',
+      size: [this.width, this.height, 0.01],
+      mass: 0,
+      offset: [0, 0, 0.025]
+    }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {

@@ -22,6 +22,8 @@ export class Entity extends MRElement {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
+    this.physicsData = {}
+
     this.componentMutated = this.componentMutated.bind(this)
   }
 

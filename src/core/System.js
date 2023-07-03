@@ -38,7 +38,7 @@ export class System {
   }
 
   // Called per frame
-  update() {
+  update(deltaTime) {
     console.log(`update ${this.systemName} System`)
   }
 
