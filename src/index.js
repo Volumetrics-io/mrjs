@@ -3,9 +3,12 @@ import './utils/extensions.js'
 
 // CORE
 import './core/MRElement.js'
-import './core/MRSystemElement.js'
+import './core/System.js'
 import './core/environment.js'
 import './core/entity.js'
+
+// SYSTEMS
+import './component-systems/PhysicsSystem.js'
 
 // GEOMETRY
 import './geometry/UIPlane.js'
@@ -24,12 +27,12 @@ import './entities/layout/Row.js'
 import './entities/layout/Column.js'
 
 //   EXPORTS
-
 export * as THREE from 'three'
+export * as Ammo from 'three/examples/jsm/libs/ammo.wasm.js'
 
 // CORE
 export { default as MRElement } from './core/MRElement.js'
-export { default as MRSystemElement } from './core/MRSystemElement.js'
+export { default as MRSystemElement } from './core/System.js'
 export { default as Entity } from './core/entity.js'
 
 // GEOMETRY

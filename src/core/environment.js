@@ -3,9 +3,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
 import { SpatialControls } from '../interaction/SpatialControls.js'
-;
+import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 
-('use strict')
+;('use strict')
 
 export class Environment extends MRElement {
   constructor() {
@@ -15,8 +15,10 @@ export class Environment extends MRElement {
       writable: false,
     })
 
+    this.clock = new THREE.Clock()
+
     this.environment = this
-    this.systems = new Set() // systemName : System
+    this.systems = new Set()
 
     this.app = new THREE.Scene()
 
@@ -74,6 +76,7 @@ export class Environment extends MRElement {
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
+    this.physicsSystem = new PhysicsSystem()
   }
 
   disconnectedCallback() {
@@ -158,10 +161,10 @@ export class Environment extends MRElement {
   }
 
   render() {
+    const deltaTime = this.clock.getDelta();
+
     for (const system of this.systems) {
-      system.registry.forEach((entity) => {
-        system.update(entity)
-      })
+      system.update(deltaTime)
     }
 
     this.spatialControls.update()

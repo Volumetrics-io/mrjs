@@ -16,9 +16,13 @@ export class Entity extends MRElement {
 
     this.object3D = new THREE.Group()
     this.components = new Set()
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
 
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
+
+    this.physicsData = {}
 
     this.componentMutated = this.componentMutated.bind(this)
   }
@@ -34,6 +38,13 @@ export class Entity extends MRElement {
     }
 
     this.object3D.userData.element = this
+
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+
+    this.object3D.userData.bbox.setFromObject(this.object3D)
+
+    this.object3D.userData.bbox.getSize(this.object3D.userData.size)
 
     setTransformValues(this)
 
@@ -80,7 +91,7 @@ export class Entity extends MRElement {
 
   mutationCallback = (mutationList, observer) => {
     for (const mutation of mutationList) {
-        this.mutated(mutation)
+      this.mutated(mutation)
 
       if (mutation.type != 'attributes') {
         continue
@@ -104,22 +115,22 @@ export class Entity extends MRElement {
   }
 
   componentMutated(componentName) {
-    const component = this.attributes.getNamedItem(componentName)
+    const component = this.getAttribute(componentName)
     if (!component) {
       this.components.delete(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-detached`, {
           bubbles: true,
-          detail: this,
+          detail: { entity: this, component },
         })
       )
     } else if (!this.components.has(componentName)) {
-      console.log(componentName)
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
           bubbles: true,
           detail: this,
+          detail: { entity: this, component },
         })
       )
     } else {
@@ -127,6 +138,7 @@ export class Entity extends MRElement {
         new CustomEvent(`${componentName}-updated`, {
           bubbles: true,
           detail: this,
+          detail: { entity: this, component },
         })
       )
     }
