@@ -3,6 +3,8 @@ import * as AmmoLib from 'ammo.js'
 import { System } from '../core/System.js'
 import { Surface } from '../entities/Surface.js'
 import { Entity } from '../core/entity.js'
+import { Row } from '../entities/layout/Row.js'
+import { Column } from '../entities/layout/Column.js'
 import Volume from '../entities/Volume.js'
 
 // The physics system functions differently from other systems,
@@ -22,6 +24,7 @@ export class PhysicsSystem extends System {
 
     this.tempTransform
     this.tempPosition = new THREE.Vector3()
+    this.tempLocalPosition = new THREE.Vector3()
     this.tempMotionState
     this.cache = []
     AmmoLib().then((Ammo) => {
@@ -36,6 +39,7 @@ export class PhysicsSystem extends System {
 
       for (let entity of entities) {
         if (entity instanceof Surface || entity instanceof Volume) { continue }
+        if (entity instanceof Row || entity instanceof Column) { continue }
         if (!(entity instanceof Entity)) { continue }
         if (entity.physicsData.none) { continue }
         this.registry.add(entity)
@@ -65,10 +69,15 @@ export class PhysicsSystem extends System {
             ms.getWorldTransform( this.tempTransform );
             const p = this.tempTransform.getOrigin();
             const q = this.tempTransform.getRotation();
-            entity.object3D.position.set( p.x(), p.y(), p.z() );
+            this.tempPosition.set( p.x(), p.y(), p.z() );
+
+            if (entity.object3D.parent){
+                entity.object3D.parent.worldToLocal(this.tempPosition)
+            }
+
+            entity.object3D.position.copy( this.tempPosition );
             entity.object3D.quaternion.set( q.x(), q.y(), q.z(), q.w() );
 
-            //console.log(entity.object3D.position);
 
         }
     }
@@ -136,8 +145,6 @@ export class PhysicsSystem extends System {
     transform.setIdentity()
 
     entity.object3D.getWorldPosition(this.tempPosition)
-
-    if ( data.offset ) { this.tempPosition.add(new THREE.Vector3().fromArray(data.offset)) }
 
     transform.setOrigin(new Ammo.btVector3(...this.tempPosition))
     transform.setRotation(new Ammo.btQuaternion(...entity.object3D.quaternion))

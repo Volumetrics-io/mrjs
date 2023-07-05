@@ -1,6 +1,6 @@
 import { Entity } from '../../core/entity'
 
-class Column extends Entity {
+export class Column extends Entity {
   constructor() {
     super()
     this.shuttle = new THREE.Group() // will shift based on bounding box width
