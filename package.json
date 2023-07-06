@@ -32,6 +32,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "ammo.js": "github:kripken/ammo.js",
     "babel-eslint": "^10.1.0",
     "html2canvas": "^1.4.1",
     "prettier": "^2.8.8",
