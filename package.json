@@ -36,6 +36,7 @@
     "html2canvas": "^1.4.1",
     "prettier": "^2.8.8",
     "prettier-eslint-cli": "^7.1.0",
-    "three": "^0.151.3"
+    "three": "^0.151.3",
+    "troika-three-text": "^0.48.0-unicode.1"
   }
 }

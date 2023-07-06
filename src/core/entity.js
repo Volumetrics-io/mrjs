@@ -68,6 +68,15 @@ export class Entity extends MRElement {
       }
     }
 
+    if (this.innerText.length > 0) {
+      this.dispatchEvent(
+        new CustomEvent(`has-text`, {
+          bubbles: true,
+          detail: { entity: this },
+        })
+      )
+    }
+
     this.connected()
   }
 
@@ -129,7 +138,6 @@ export class Entity extends MRElement {
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
           bubbles: true,
-          detail: this,
           detail: { entity: this, component },
         })
       )
