@@ -22,8 +22,11 @@ export class TextSystem extends System {
         entity.textObj.text = entity.textContent.trim()
 
         let style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
+
         style.maxWidth = style.maxWidth ?? entity.width ?? 1
-        style.width = style.width ?? entity.width ?? 1
+        style.maxWidth -= entity.radius * 2 ?? 0
+
+        style.width = entity.width ?? 1
         let height = entity.height ?? 1
         entity.textObj.position.setY(height / 2)
 
