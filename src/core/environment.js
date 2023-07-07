@@ -29,7 +29,7 @@ export class Environment extends MRElement {
       0.01,
       20
     )
-    this.user.position.set(0, 0, 3)
+    this.user.position.set(0, 0, 1)
 
     const appLight = new THREE.AmbientLight(0xffffff)
     this.app.add(appLight)
