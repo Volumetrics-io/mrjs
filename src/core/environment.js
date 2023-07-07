@@ -4,8 +4,8 @@ import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
 import { SpatialControls } from '../interaction/SpatialControls.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
-
-;('use strict')
+import { TextSystem } from '../component-systems/TextSystem.js'
+('use strict')
 
 export class Environment extends MRElement {
   constructor() {
@@ -29,7 +29,7 @@ export class Environment extends MRElement {
       0.01,
       20
     )
-    this.user.position.set(0, 0, 3)
+    this.user.position.set(0, 0, 1)
 
     const appLight = new THREE.AmbientLight(0xffffff)
     this.app.add(appLight)
@@ -77,6 +77,7 @@ export class Environment extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
     this.physicsSystem = new PhysicsSystem()
+    this.textSystem = new TextSystem()
   }
 
   disconnectedCallback() {
