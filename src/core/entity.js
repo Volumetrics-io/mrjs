@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { setTransformValues } from '../utils/parser.js'
+import { parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 import { MaterialHelper } from '../utils/materialHelper.js'
 
@@ -22,7 +22,17 @@ export class Entity extends MRElement {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
-    this.physicsData = {}
+    this.scale = 1
+
+
+    this.physics = {}
+    this.physics.body = null
+
+    this.physics.data = {
+      shape: 'box',
+      size: [0.001, 0.001, 0.001],
+      mass: 0
+    }
 
     this.componentMutated = this.componentMutated.bind(this)
   }
@@ -32,6 +42,11 @@ export class Entity extends MRElement {
       return
     }
     this.parentElement.add(this)
+
+    this.parent = this.parentElement
+
+    //if (this.parent) { this.scale *= this.parent.scale ?? 1}
+
 
     if (this.parentElement.user) {
       this.user = this.parentElement.user
@@ -45,8 +60,6 @@ export class Entity extends MRElement {
     this.object3D.userData.bbox.setFromObject(this.object3D)
 
     this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-
-    setTransformValues(this)
 
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
@@ -70,7 +83,10 @@ export class Entity extends MRElement {
 
     this.connected()
 
-    setTimeout(this.checkForText, 0);
+    setTimeout(() => {
+      this.checkForText()
+      this.setTransformValues()
+    }, 10);
   }
 
   checkForText = () => {
@@ -127,6 +143,34 @@ export class Entity extends MRElement {
     }
   }
 
+  setTransformValues() {
+    const position = this.getAttribute('position')
+    const scale = this.getAttribute('scale')
+    const rotation = this.getAttribute('rotation')
+  
+    if (position) {
+      this.object3D.position.fromArray(parseVector(position))
+    }
+  
+    if (scale) {
+
+      this.scale *= scale
+      this.object3D.scale.setScalar(scale)
+      this.traverse((entity) => {
+
+        entity.physics.data.size = entity.physics.data.size.map((x) => { return x * scale })
+        entity.physics.data.update = true
+      })
+    }
+  
+    if (rotation) {
+      const euler = new THREE.Euler()
+      const array = parseVector(rotation).map(radToDeg)
+      euler.fromArray(array)
+      this.object3D.setRotationFromEuler(euler)
+    }
+  }
+
   componentMutated(componentName) {
     const component = this.getAttribute(componentName)
     if (!component) {
@@ -164,6 +208,16 @@ export class Entity extends MRElement {
 
   remove(entity) {
     this.object3D.remove(entity.object3D)
+  }
+
+  traverse(callBack) {
+    callBack(this)
+    let children = Array.from(this.children)
+    for (let child of children) {
+        // if o is an object, traverse it again
+        if (!child instanceof Entity) { continue }
+        child.traverse(callBack)
+    }
   }
 }
 

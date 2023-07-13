@@ -47,6 +47,14 @@ export class Surface extends Entity {
 
     document.addEventListener('doublepinch', this.onDoublePinch)
     document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+
+    this.translation.add(this.group)
+    this.translation.visible = false
+
+    setTimeout(() => {
+      this.mesh.removeFromParent()
+      this.translation.visible = true
+    }, 1000);
   }
 
   add(entity) {
@@ -74,7 +82,6 @@ export class Surface extends Entity {
     this.object3D.position.setX(event.detail.center.x)
     this.object3D.position.setY(event.detail.center.y)
     this.object3D.position.setZ(event.detail.center.z)
-    this.object3D.scale.setScalar(event.detail.distance)
 
     this.object3D.lookAt(this.lookPosition)
 

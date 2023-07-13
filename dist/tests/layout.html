@@ -10,20 +10,20 @@
   </head>
   <body >
     <mr-env>
+        <mr-surface id="L1" scale="0.5">
             <mr-volume>
-                <mr-panel class="selectable" color="blue" snap-to="bottom" rotation="90 0 0"></mr-panel>
-                <mr-row snap-to="back">
+                <mr-row id="L2" scale="1.2" >
                     <mr-column>
-                        <mr-panel class="selectable" color="orange" height="4"></mr-panel>
+                        <mr-panel class="selectable" color="grey" height="4"></mr-panel>
                     </mr-column>
                     <mr-column>
-                        <mr-row>
-                            <mr-panel class="selectable" color="green"></mr-panel> 
+                        <mr-row id="L3" scale="0.5">
+                            <mr-panel class="selectable" color="orange"></mr-panel> 
                             <mr-panel class="selectable" color="blue"></mr-panel>
                             <mr-panel class="selectable" color="red"></mr-panel>
                         </mr-row>
                         <mr-row>
-                            <mr-panel class="selectable" color="blue"></mr-panel>
+                            <mr-panel class="selectable" color="cyan"></mr-panel>
                             <mr-panel class="selectable" color="red"></mr-panel>
                             <mr-panel class="selectable" color="yellow"></mr-panel>
                         </mr-row>
@@ -38,6 +38,7 @@
                     </mr-column>
                 </mr-row>
             </mr-volume>
+        </mr-surface>
     </mr-env>
   </body>
 

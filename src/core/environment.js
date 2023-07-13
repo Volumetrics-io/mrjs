@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import  Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
@@ -22,6 +23,11 @@ export class Environment extends MRElement {
 
     this.app = new THREE.Scene()
 
+    this.stats = new Stats();
+    this.stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( this.stats.dom );
+
+
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.user = new THREE.PerspectiveCamera(
       70,
@@ -29,7 +35,7 @@ export class Environment extends MRElement {
       0.01,
       20
     )
-    this.user.position.set(0, 0, 1)
+    this.user.position.set(0, 0, 2)
 
     const appLight = new THREE.AmbientLight(0xffffff)
     this.app.add(appLight)
@@ -76,6 +82,7 @@ export class Environment extends MRElement {
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
+
     this.physicsSystem = new PhysicsSystem()
     this.textSystem = new TextSystem()
   }
@@ -164,9 +171,11 @@ export class Environment extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta();
 
+    this.stats.begin();
     for (const system of this.systems) {
       system.update(deltaTime)
     }
+    this.stats.end();
 
     this.spatialControls.update()
 
