@@ -51,6 +51,7 @@ export class Surface extends Entity {
     this.translation.add(this.group)
     this.translation.visible = false
 
+    
     setTimeout(() => {
       this.mesh.removeFromParent()
       this.translation.visible = true

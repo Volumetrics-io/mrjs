@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import  Stats from 'stats.js'
+import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
@@ -7,7 +7,8 @@ import { SpatialControls } from '../interaction/SpatialControls.js'
 import { TransformSystem } from '../component-systems/TransformSystem.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 import { TextSystem } from '../component-systems/TextSystem.js'
-('use strict')
+
+;('use strict')
 
 export class Environment extends MRElement {
   constructor() {
@@ -24,10 +25,9 @@ export class Environment extends MRElement {
 
     this.app = new THREE.Scene()
 
-    this.stats = new Stats();
-    this.stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild( this.stats.dom );
-
+    this.stats = new Stats()
+    this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(this.stats.dom)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.user = new THREE.PerspectiveCamera(
@@ -84,13 +84,12 @@ export class Environment extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    document.addEventListener("DOMContentLoaded", (event) => {
+    document.addEventListener('DOMContentLoaded', (event) => {
       this.transformSystem = new TransformSystem()
       this.physicsSystem = new PhysicsSystem()
-    });
+    })
 
     this.textSystem = new TextSystem()
-
   }
 
   disconnectedCallback() {
@@ -175,13 +174,13 @@ export class Environment extends MRElement {
   }
 
   render() {
-    const deltaTime = this.clock.getDelta();
+    const deltaTime = this.clock.getDelta()
 
-    this.stats.begin();
+    this.stats.begin()
     for (const system of this.systems) {
       system.update(deltaTime)
     }
-    this.stats.end();
+    this.stats.end()
 
     this.spatialControls.update()
 

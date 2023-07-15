@@ -24,14 +24,13 @@ export class Entity extends MRElement {
 
     this.scale = 1
 
-
     this.physics = {}
     this.physics.body = null
 
     this.physics.data = {
       shape: 'box',
       size: [0.001, 0.001, 0.001],
-      mass: 0
+      mass: 0,
     }
 
     this.componentMutated = this.componentMutated.bind(this)
@@ -45,8 +44,7 @@ export class Entity extends MRElement {
 
     this.parent = this.parentElement
 
-    //if (this.parent) { this.scale *= this.parent.scale ?? 1}
-
+    // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
     if (this.parentElement.user) {
       this.user = this.parentElement.user
@@ -83,9 +81,9 @@ export class Entity extends MRElement {
 
     this.connected()
 
-    document.addEventListener("DOMContentLoaded", (event) => {
+    document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
-    });
+    })
   }
 
   checkForText = () => {
@@ -146,21 +144,22 @@ export class Entity extends MRElement {
     const position = this.getAttribute('position')
     const scale = this.getAttribute('scale')
     const rotation = this.getAttribute('rotation')
-  
+
     if (position) {
       this.object3D.position.fromArray(parseVector(position))
     }
-  
-    if (scale) {
 
+    if (scale) {
       this.scale *= scale
       this.object3D.scale.setScalar(scale)
       this.traverse((entity) => {
-        entity.physics.data.size = entity.physics.data.size.map((x) => { return x * scale })
+        entity.physics.data.size = entity.physics.data.size.map(
+          (x) => x * scale
+        )
         entity.physics.data.update = true
       })
     }
-  
+
     if (rotation) {
       const euler = new THREE.Euler()
       const array = parseVector(rotation).map(radToDeg)
@@ -210,11 +209,13 @@ export class Entity extends MRElement {
 
   traverse(callBack) {
     callBack(this)
-    let children = Array.from(this.children)
-    for (let child of children) {
-        // if o is an object, traverse it again
-        if (!child instanceof Entity) { continue }
-        child.traverse(callBack)
+    const children = Array.from(this.children)
+    for (const child of children) {
+      // if o is an object, traverse it again
+      if (!child instanceof Entity) {
+        continue
+      }
+      child.traverse(callBack)
     }
   }
 }
