@@ -24,10 +24,12 @@ export class TextSystem extends System {
         let style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
 
         style.maxWidth = style.maxWidth ?? entity.width ?? 1
-        style.maxWidth -= entity.radius * 2 ?? 0
+        let radius = entity.radius ?? 0
+        style.maxWidth -= radius * 2
 
         style.width = entity.width ?? 1
         let height = entity.height ?? 1
+        height -= radius * 2
         entity.textObj.position.setY(height / 2)
 
         style.clipRect = [-style.maxWidth / 2, -height, style.maxWidth / 2, 0]

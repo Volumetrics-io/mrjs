@@ -63,6 +63,7 @@ export class PhysicsSystem extends System {
 
           if (entity.physics.data.update){
             this.updatePhysicsBody(entity, ms)
+            if (this.debug){ this.updateDebugViz(entity) }
             entity.physics.data.update = false
             
           }
@@ -177,6 +178,10 @@ export class PhysicsSystem extends System {
       // Recursively translate the parent-child structure for the child object
       this.cloneHierarchy(entity, transform);  
     }
+  }
+
+  updateDebugViz(entity){
+    entity.debugViz.geometry = new THREE.BoxGeometry(entity.physics.data.size[0], entity.physics.data.size[1], entity.physics.data.size[2]); 
   }
   
 

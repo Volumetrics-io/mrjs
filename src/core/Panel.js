@@ -82,7 +82,7 @@ export default class Panel extends Entity {
         break
     }
 
-    this.physics.data.size = [this.width, this.height, 0.01]
+    this.physics.data.size = [this.width * this.scale, this.height * this.scale, 0.01]
     this.physics.data.update = true
 
     this.object3D.geometry = UIPlane(

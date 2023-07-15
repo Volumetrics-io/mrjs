@@ -83,10 +83,9 @@ export class Entity extends MRElement {
 
     this.connected()
 
-    setTimeout(() => {
+    document.addEventListener("DOMContentLoaded", (event) => {
       this.checkForText()
-      this.setTransformValues()
-    }, 10);
+    });
   }
 
   checkForText = () => {
@@ -157,7 +156,6 @@ export class Entity extends MRElement {
       this.scale *= scale
       this.object3D.scale.setScalar(scale)
       this.traverse((entity) => {
-
         entity.physics.data.size = entity.physics.data.size.map((x) => { return x * scale })
         entity.physics.data.update = true
       })

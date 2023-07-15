@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
 import { SpatialControls } from '../interaction/SpatialControls.js'
+import { TransformSystem } from '../component-systems/TransformSystem.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 import { TextSystem } from '../component-systems/TextSystem.js'
 ('use strict')
@@ -83,8 +84,13 @@ export class Environment extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    this.physicsSystem = new PhysicsSystem()
+    document.addEventListener("DOMContentLoaded", (event) => {
+      this.transformSystem = new TransformSystem()
+      this.physicsSystem = new PhysicsSystem()
+    });
+
     this.textSystem = new TextSystem()
+
   }
 
   disconnectedCallback() {
