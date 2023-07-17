@@ -1,12 +1,9 @@
 import * as THREE from 'three'
-import * as AmmoLib from 'ammo.js'
 import { System } from '../core/System.js'
-import { Surface } from '../entities/Surface.js'
 import { Entity } from '../core/entity.js'
-import { Row } from '../entities/layout/Row.js'
-import { Column } from '../entities/layout/Column.js'
-import Volume from '../entities/Volume.js'
 import { Environment } from '../core/environment.js'
+import { parseVector } from '../utils/parser.js'
+
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -20,42 +17,46 @@ import { Environment } from '../core/environment.js'
 export class PhysicsSystem extends System {
   constructor() {
     super()
-    this.ammoInitizialed = false
     this.gravity = 9.8
-    this.debug = true
+    this.debug = this.environment.debug
 
-    this.tempTransform
-    this.tempAmmoPosition
+    this.tempAmmoPosition = new Ammo.btVector3()
     this.tempPosition = new THREE.Vector3()
+    this.tempQuaternion = new THREE.Quaternion()
     this.cache = []
-    AmmoLib().then((Ammo) => {
-      Ammo = Ammo
-      this.initPhysicsWorld()
-      this.ammoInitizialed = true
+    this.initPhysicsWorld()
+    this.ammoInitizialed = true
 
-      this.tempTransform = new Ammo.btTransform()
-      this.tempTransform.setIdentity()
+    this.tempEntityTransform = new Ammo.btTransform()
+    this.tempEntityTransform.setIdentity()
 
-      const entities = this.environment.querySelectorAll('*')
+    this.tempFrameA = new Ammo.btTransform()
+    this.tempFrameA.setIdentity()
+    this.tempFrameB = new Ammo.btTransform()
+    this.tempFrameB.setIdentity()
 
-      for (const entity of entities) {
-        if (!(entity.parent instanceof Environment)) {
-          continue
-        }
+    const entities = this.environment.querySelectorAll('*')
 
-        this.cloneHierarchy(entity)
+    for (const entity of entities) {
+      if (!(entity instanceof Entity)) {
+        continue
       }
+      this.initTransform(entity)
+    }
 
-      if (this.debug) {
-        this.visualizePhysicsWorld()
+    for (const entity of entities) {
+      if (!(entity.parent instanceof Environment)) {
+        continue
       }
-    })
+      this.cloneHierarchy(entity)
+    }
+
+    if (this.debug) {
+      this.visualizePhysicsWorld()
+    }
   }
 
   update(deltaTime) {
-    if (!this.ammoInitizialed) {
-      return
-    }
 
     this.physicsWorld.stepSimulation(deltaTime, 10)
 
@@ -71,29 +72,57 @@ export class PhysicsSystem extends System {
           entity.physics.data.update = false
         }
 
-        ms.getWorldTransform(this.tempTransform)
-        const p = this.tempTransform.getOrigin()
-        const q = this.tempTransform.getRotation()
+        entity.object3D.getWorldPosition(this.tempPosition)
+        entity.object3D.getWorldQuaternion(this.tempQuaternion)
+        this.tempEntityTransform.setOrigin(new Ammo.btVector3(...this.tempPosition));
+        this.tempEntityTransform.setRotation(new Ammo.btQuaternion(...this.tempQuaternion))
+
+        ms.setWorldTransform(this.tempEntityTransform)
+        ms.getWorldTransform(this.tempEntityTransform)
+        const p = this.tempEntityTransform.getOrigin()
+        const q = this.tempEntityTransform.getRotation()
         this.tempPosition.set(p.x(), p.y(), p.z())
 
         if (this.debug) {
           entity.debugViz.position.copy(this.tempPosition)
-          entity.debugViz.quaternion.set(-q.x(), -q.y(), q.z(), q.w())
+          entity.debugViz.quaternion.set(q.x(), q.y(), q.z(), q.w())
         }
-
-        if (entity.object3D.parent) {
-          entity.object3D.parent.worldToLocal(this.tempPosition)
-        }
-
-        entity.object3D.position.copy(this.tempPosition)
-        entity.object3D.quaternion.set(-q.x(), -q.y(), q.z(), q.w())
       }
     }
   }
 
-  initPhysicsWorld = () => {
-    this.tempTransform = new Ammo.btTransform()
+  initTransform(entity) {
+    const position = entity.getAttribute('position')
+    const scale = entity.getAttribute('scale')
+    const rotation = entity.getAttribute('rotation')
 
+    entity.width = entity.getAttribute('width') ?? entity.parent.width
+    entity.height = entity.getAttribute('height') ?? 1
+    entity.radius =
+      entity.getAttribute('corner-radius') ?? entity.parent.radius ?? 0
+
+    if (position) {
+      entity.object3D.position.fromArray(parseVector(position))
+    }
+
+    if (scale) {
+      entity.scale *= scale
+      entity.object3D.scale.setScalar(scale)
+      entity.traverse((child) => {
+        child.physics.data.size = child.physics.data.size.map((x) => x * scale)
+        child.physics.data.update = true
+      })
+    }
+
+    if (rotation) {
+      const euler = new THREE.Euler()
+      const array = parseVector(rotation).map(radToDeg)
+      euler.fromArray(array)
+      entity.object3D.setRotationFromEuler(euler)
+    }
+  }
+
+  initPhysicsWorld = () => {
     this.collisionConfiguration = new Ammo.btDefaultCollisionConfiguration()
     this.dispatcher = new Ammo.btCollisionDispatcher(
       this.collisionConfiguration
@@ -124,7 +153,6 @@ export class PhysicsSystem extends System {
       ) // New size for the box shape
       collisionShape.setHalfExtentsWithMargin(newSize)
     }
-    // TODO: more collision shape support
   }
 
   createCollisionShape(data) {
@@ -165,31 +193,33 @@ export class PhysicsSystem extends System {
     entity.physics.body = new Ammo.btRigidBody(rbInfo)
   }
 
-  cloneHierarchy(parentEntity, parentTransform) {
+  cloneHierarchy(entity, parentTransform) {
     // Create Ammo.js motion state for the parent object
     const transform = new Ammo.btTransform()
     transform.setIdentity()
-    transform.setFromOpenGLMatrix(parentEntity.object3D.matrixWorld.elements)
+    entity.object3D.getWorldPosition(this.tempPosition)
+    transform.setOrigin(new Ammo.btVector3(...this.tempPosition));
+    transform.setRotation(new Ammo.btQuaternion(...entity.object3D.quaternion))
 
-    this.createRigidBody(parentEntity, transform)
-    this.physicsWorld.addRigidBody(parentEntity.physics.body)
-    this.registry.add(parentEntity)
-    if (parentEntity.parent.physics) {
-      parentEntity.physics.constraint = new Ammo.btGeneric6DofConstraint(
-        parentEntity.parent.physics.body,
-        parentEntity.physics.body,
+    this.createRigidBody(entity, transform)
+    this.physicsWorld.addRigidBody(entity.physics.body)
+    this.registry.add(entity)
+    if (entity.parent.physics) {
+      entity.physics.constraint = new Ammo.btGeneric6DofConstraint(
+        entity.parent.physics.body,
+        entity.physics.body,
         parentTransform,
         transform,
         true
       )
-      this.physicsWorld.addConstraint(parentEntity.physics.constraint)
+      this.physicsWorld.addConstraint(entity.physics.constraint)
     }
 
     // Iterate through the children of the parent object
-    const children = Array.from(parentEntity.children)
-    for (const entity of children) {
+    const children = Array.from(entity.children)
+    for (const childEntity of children) {
       // Recursively translate the parent-child structure for the child object
-      this.cloneHierarchy(entity, transform)
+      this.cloneHierarchy(childEntity, transform)
     }
   }
 

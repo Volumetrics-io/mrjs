@@ -1,10 +1,10 @@
 import * as THREE from 'three'
+import * as AmmoLib from 'ammo.js'
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
 import { SpatialControls } from '../interaction/SpatialControls.js'
-import { TransformSystem } from '../component-systems/TransformSystem.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 import { TextSystem } from '../component-systems/TextSystem.js'
 
@@ -80,13 +80,17 @@ export class Environment extends MRElement {
       padding: 0;
       width: 100%;`
     )
+
+    this.debug = this.getAttribute('debug') ?? false
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      this.transformSystem = new TransformSystem()
-      this.physicsSystem = new PhysicsSystem()
+      AmmoLib().then((Ammo) => {
+        Ammo = Ammo
+        this.physicsSystem = new PhysicsSystem()
+      })
     })
 
     this.textSystem = new TextSystem()

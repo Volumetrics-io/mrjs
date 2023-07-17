@@ -27,7 +27,7 @@ export class TextSystem extends System {
 
     style.width = entity.width ?? 1
     let height = entity.height ?? 1
-    height -= radius * 2
+    height -= radius
     entity.textObj.position.setY(height / 2)
 
     style.clipRect = [-style.maxWidth / 2, -height, style.maxWidth / 2, 0]
