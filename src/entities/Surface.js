@@ -47,6 +47,22 @@ export class Surface extends Entity {
 
     document.addEventListener('doublepinch', this.onDoublePinch)
     document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+
+    this.translation.add(this.group)
+    this.group.visible = false
+
+    // setTimeout(() => {
+    //   this.scale = 0.8
+    //   this.object3D.scale.setScalar(this.scale)
+    //   this.translation.position.setY(0.5)
+    //   this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
+    //   this.traverse((entity) => {
+    //     entity.physics.data.size = entity.physics.data.size.map(
+    //       (x) => x * this.scale
+    //     )
+    //     entity.physics.data.update = true
+    //   })
+    // }, 3000);
   }
 
   add(entity) {
@@ -67,14 +83,13 @@ export class Surface extends Entity {
       this.translation.add(this.mesh)
     }
 
-    if (this.group.parent != null) {
-      this.group.removeFromParent()
-    }
 
     this.object3D.position.setX(event.detail.center.x)
     this.object3D.position.setY(event.detail.center.y)
     this.object3D.position.setZ(event.detail.center.z)
-    this.object3D.scale.setScalar(event.detail.distance)
+
+    this.scale = event.detail.distance
+    this.object3D.scale.setScalar(this.scale)
 
     this.object3D.lookAt(this.lookPosition)
 
@@ -109,7 +124,13 @@ export class Surface extends Entity {
       })
     )
     this.mesh.removeFromParent()
-    this.translation.add(this.group)
+    this.group.visible = true
+    this.traverse((entity) => {
+      entity.physics.data.size = entity.physics.data.size.map(
+        (x) => x * this.scale
+      )
+      entity.physics.data.update = true
+    })
     document.removeEventListener('doublepinch', this.onDoublePinch)
     document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
   }
