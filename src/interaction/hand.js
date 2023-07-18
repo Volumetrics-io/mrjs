@@ -11,7 +11,7 @@ const HAND_MAPPING = {
 }
 
 export class MRHand {
-  constructor(handedness, renderer) {
+  constructor(handedness, environment) {
     this.handedness = handedness
     this.pinch = false
     this.hover = false
@@ -23,33 +23,30 @@ export class MRHand {
     this.handModelFactory = new XRHandModelFactory()
 
     this.mesh
-    this.controller = renderer.xr.getController(HAND_MAPPING[handedness])
+    this.controller = environment.renderer.xr.getController(HAND_MAPPING[handedness])
 
-    this.grip = renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
+    this.grip = environment.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
     this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
 
-    this.hand = renderer.xr.getHand(HAND_MAPPING[handedness])
+    this.hand = environment.renderer.xr.getHand(HAND_MAPPING[handedness])
     this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
 
     this.hand.add(this.model)
 
-    this.hand.addEventListener('connected', this.onConnected)
     this.hand.addEventListener('pinchstart', this.onPinch)
     this.hand.addEventListener('pinchend', this.onPinch)
+
+    environment.app.add(this.controller)
+    environment.app.add(this.grip)
+    environment.app.add(this.hand)
   }
 
-  addToScene(scene) {
-    scene.add(this.controller)
-    scene.add(this.grip)
-    scene.add(this.hand)
-  }
-
-  onConnected = (event) => {
-    if (event.data.handedness == this.handedness && this.mesh == null) {
-      this.mesh = event.target.getObjectByProperty('type', 'SkinnedMesh')
-      this.mesh.material.colorWrite = false
-      this.mesh.renderOrder = 2
-    }
+  setMesh = () => {
+    if(this.mesh) { return }
+    this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
+    if(!this.mesh) { return }
+    this.mesh.material.colorWrite = false
+    this.mesh.renderOrder = 2
   }
 
   onPinch = (event) => {
@@ -87,25 +84,5 @@ export class MRHand {
     const index = this.getJointPosition('index-finger-tip')
     const thumb = this.getJointPosition('thumb-tip')
     return index.lerp(thumb, 0.5)
-  }
-
-  checkForHover() {
-    const index = this.getJointPosition('index-finger-tip')
-    const thumb = this.getJointPosition('thumb-tip')
-    const distance = index.distanceTo(thumb)
-
-    if (distance > PINCH_DISTANCE && distance < HOVER_DISTANCE) {
-      if (!this.hover) {
-        this.hoverInitPosition = this.getCursorPosition()
-        this.hover = true
-      }
-      this.hoverPosition
-        .copy(this.getCursorPosition())
-        .sub(this.hoverInitPosition)
-    } else {
-      this.hover = false
-    }
-
-    return this.hover
   }
 }
