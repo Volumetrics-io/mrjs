@@ -20,6 +20,14 @@ export class SpatialControls {
 
     this.leftHand.addToScene(scene)
     this.rightHand.addToScene(scene)
+
+    this.roiBox = new THREE.Box3()
+
+    const geometry = new THREE.SphereGeometry(0.01)
+    const material = new THREE.MeshBasicMaterial()
+    material.color.setStyle('red')
+
+    this.cursor = new THREE.Mesh(geometry, material)
   }
 
   handleHover(hand) {

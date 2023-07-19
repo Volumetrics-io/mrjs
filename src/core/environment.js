@@ -8,7 +8,8 @@ import { SpatialControls } from '../interaction/SpatialControls.js'
 import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
 import { TextSystem } from '../component-systems/TextSystem.js'
 
-;('use strict')
+;import { ControlSystem } from '../component-systems/ControlSystem.js'
+('use strict')
 
 export class Environment extends MRElement {
   constructor() {
@@ -92,7 +93,7 @@ export class Environment extends MRElement {
         this.physicsSystem = new PhysicsSystem()
       })
     })
-
+    this.controlSystem = new ControlSystem()
     this.textSystem = new TextSystem()
   }
 
@@ -136,8 +137,6 @@ export class Environment extends MRElement {
 
     this.appendChild(this.renderer.domElement)
     document.body.appendChild(this.ARButton)
-
-    this.spatialControls = new SpatialControls(this.renderer, this.app)
 
     this.renderer.setAnimationLoop(this.render)
 
@@ -185,8 +184,6 @@ export class Environment extends MRElement {
       system.update(deltaTime)
     }
     this.stats.end()
-
-    this.spatialControls.update()
 
     this.shadowLight.target = this.user
 
