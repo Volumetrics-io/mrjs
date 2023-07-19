@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { System } from '../core/System.js'
 import { Entity } from '../core/entity.js'
-import { MRApp } from '../core/environment.js'
+import { MRApp } from '../core/MRApp.js'
 import { parseVector } from '../utils/parser.js'
 
 
