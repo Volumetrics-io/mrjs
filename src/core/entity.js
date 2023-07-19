@@ -9,7 +9,7 @@ export class Entity extends MRElement {
   constructor() {
     super()
 
-    Object.defineProperty(this, 'isEnvironment', {
+    Object.defineProperty(this, 'isApp', {
       value: false,
       writable: false,
     })

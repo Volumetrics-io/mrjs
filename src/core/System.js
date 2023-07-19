@@ -2,9 +2,9 @@ import { Entity } from './entity.js'
 
 export class System {
   constructor() {
-    this.environment = document.querySelector('mr-env')
+    this.app = document.querySelector('mr-app')
 
-    if (!this.environment) {
+    if (!this.app) {
       return
     }
     // Need a way to register and deregister systems per environment
@@ -13,17 +13,17 @@ export class System {
     this.systemName = this.constructor.name.toLowerCase().split('system')[0]
     this.componentName = `comp-${this.systemName}`
 
-    this.environment.registerSystem(this)
+    this.app.registerSystem(this)
 
-    this.environment.addEventListener(
+    this.app.addEventListener(
       `${this.componentName}-attached`,
       this.onAttach
     )
-    this.environment.addEventListener(
+    this.app.addEventListener(
       `${this.componentName}-updated`,
       this.onUpdate
     )
-    this.environment.addEventListener(
+    this.app.addEventListener(
       `${this.componentName}-detached`,
       this.onDetatch
     )

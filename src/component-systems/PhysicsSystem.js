@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { System } from '../core/System.js'
 import { Entity } from '../core/entity.js'
-import { Environment } from '../core/environment.js'
+import { MRApp } from '../core/MRApp.js'
 import { parseVector } from '../utils/parser.js'
 
 
@@ -18,7 +18,7 @@ export class PhysicsSystem extends System {
   constructor() {
     super()
     this.gravity = 9.8
-    this.debug = this.environment.debug
+    this.debug = this.app.debug
 
     this.tempAmmoPosition = new Ammo.btVector3()
     this.tempPosition = new THREE.Vector3()
@@ -35,7 +35,7 @@ export class PhysicsSystem extends System {
     this.tempFrameB = new Ammo.btTransform()
     this.tempFrameB.setIdentity()
 
-    const entities = this.environment.querySelectorAll('*')
+    const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
       if (!(entity instanceof Entity)) {
@@ -45,7 +45,7 @@ export class PhysicsSystem extends System {
     }
 
     for (const entity of entities) {
-      if (!(entity.parent instanceof Environment)) {
+      if (!(entity.parent instanceof MRApp)) {
         continue
       }
       this.cloneHierarchy(entity)
@@ -242,7 +242,7 @@ export class PhysicsSystem extends System {
       const material = new THREE.MeshBasicMaterial({ wireframe: true })
       material.color.setStyle('blue')
       entity.debugViz = new THREE.Mesh(geometry, material)
-      this.environment.app.add(entity.debugViz)
+      this.app.app.add(entity.debugViz)
     }
   }
 }
