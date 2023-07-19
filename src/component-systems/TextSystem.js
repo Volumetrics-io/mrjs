@@ -7,7 +7,7 @@ import { parseAttributeString } from '../utils/parser'
 export class TextSystem extends System {
   constructor() {
     super()
-    this.environment.addEventListener('has-text', this.addText)
+    this.app.addEventListener('has-text', this.addText)
   }
 
   update(deltaTime) {}

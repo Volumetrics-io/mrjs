@@ -6,8 +6,8 @@ import { System } from '../core/System'
 export class ControlSystem extends System {
     constructor(){
         super()
-        this.leftHand = new MRHand('left', this.environment)
-        this.rightHand = new MRHand('right', this.environment)
+        this.leftHand = new MRHand('left', this.app)
+        this.rightHand = new MRHand('right', this.app)
 
         const geometry = new THREE.SphereGeometry(0.01)
         const material = new THREE.MeshBasicMaterial()
