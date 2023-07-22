@@ -11,7 +11,7 @@ const HAND_MAPPING = {
 }
 
 export class MRHand {
-  constructor(handedness, environment) {
+  constructor(handedness, app) {
     this.handedness = handedness
     this.pinch = false
     this.hover = false
@@ -23,12 +23,12 @@ export class MRHand {
     this.handModelFactory = new XRHandModelFactory()
 
     this.mesh
-    this.controller = environment.renderer.xr.getController(HAND_MAPPING[handedness])
+    this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness])
 
-    this.grip = environment.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
+    this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
     this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
 
-    this.hand = environment.renderer.xr.getHand(HAND_MAPPING[handedness])
+    this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness])
     this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
 
     this.hand.add(this.model)
@@ -36,15 +36,19 @@ export class MRHand {
     this.hand.addEventListener('pinchstart', this.onPinch)
     this.hand.addEventListener('pinchend', this.onPinch)
 
-    environment.app.add(this.controller)
-    environment.app.add(this.grip)
-    environment.app.add(this.hand)
+    app.scene.add(this.controller)
+    app.scene.add(this.grip)
+    app.scene.add(this.hand)
   }
 
   setMesh = () => {
-    if(this.mesh) { return }
+    if (this.mesh) {
+      return
+    }
     this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
-    if(!this.mesh) { return }
+    if (!this.mesh) {
+      return
+    }
     this.mesh.material.colorWrite = false
     this.mesh.renderOrder = 2
   }

@@ -4,11 +4,11 @@ import './utils/extensions.js'
 // CORE
 import './core/MRElement.js'
 import './core/System.js'
-import './core/environment.js'
+import './core/MRApp.js'
 import './core/entity.js'
 
 // SYSTEMS
-import './component-systems/PhysicsSystem.js'
+import './component-systems/RapierPhysicsSystem.js'
 
 // GEOMETRY
 import './geometry/UIPlane.js'

@@ -1,30 +1,31 @@
 import * as THREE from 'three'
-import * as AmmoLib from 'ammo.js'
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
-import { SpatialControls } from '../interaction/SpatialControls.js'
-import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
+
+// built in Systems
 import { TextSystem } from '../component-systems/TextSystem.js'
+import { ControlSystem } from '../component-systems/ControlSystem.js'
+import {
+  RAPIER,
+  RapierPhysicsSystem,
+} from '../component-systems/RapierPhysicsSystem.js'
 
-;import { ControlSystem } from '../component-systems/ControlSystem.js'
-('use strict')
+;('use strict')
 
-export class Environment extends MRElement {
+export class MRApp extends MRElement {
   constructor() {
     super()
-    Object.defineProperty(this, 'isEnvironment', {
+    Object.defineProperty(this, 'isApp', {
       value: true,
       writable: false,
     })
 
     this.clock = new THREE.Clock()
-
-    this.environment = this
     this.systems = new Set()
 
-    this.app = new THREE.Scene()
+    this.scene = new THREE.Scene()
 
     this.stats = new Stats()
     this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -40,7 +41,7 @@ export class Environment extends MRElement {
     this.user.position.set(0, 0, 2)
 
     const appLight = new THREE.AmbientLight(0xffffff)
-    this.app.add(appLight)
+    this.scene.add(appLight)
 
     this.shadowLight = new THREE.DirectionalLight(0xffffff)
     this.shadowLight.position.set(0, 1, 1)
@@ -50,7 +51,7 @@ export class Environment extends MRElement {
     this.shadowLight.shadow.camera.right = 2
     this.shadowLight.shadow.camera.left = -2
     this.shadowLight.shadow.mapSize.set(4096, 4096)
-    this.app.add(this.shadowLight)
+    this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -88,9 +89,11 @@ export class Environment extends MRElement {
     this.observer.observe(this, { attributes: true, childList: true })
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      AmmoLib().then((Ammo) => {
-        Ammo = Ammo
-        this.physicsSystem = new PhysicsSystem()
+      import('@dimforge/rapier3d').then((rap) => {
+        RAPIER = rap
+        this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
+        // Run the simulation.
+        this.physicsSystem = new RapierPhysicsSystem()
       })
     })
     this.controlSystem = new ControlSystem()
@@ -99,8 +102,6 @@ export class Environment extends MRElement {
 
   disconnectedCallback() {
     this.denit()
-
-    this.environment = null
     this.observer.disconnect()
   }
 
@@ -158,11 +159,11 @@ export class Environment extends MRElement {
   }
 
   add(entity) {
-    this.app.add(entity.object3D)
+    this.scene.add(entity.object3D)
   }
 
   remove(entity) {
-    this.app.remove(entity.object3D)
+    this.scene.remove(entity.object3D)
   }
 
   mutatedAttribute(mutation) {}
@@ -187,8 +188,8 @@ export class Environment extends MRElement {
 
     this.shadowLight.target = this.user
 
-    this.renderer.render(this.app, this.user)
+    this.renderer.render(this.scene, this.user)
   }
 }
 
-customElements.get('mr-env') || customElements.define('mr-env', Environment)
+customElements.get('mr-app') || customElements.define('mr-app', MRApp)

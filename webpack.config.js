@@ -12,6 +12,10 @@ module.exports = {
     minimize: false,
   },
 
+  experiments: {
+    asyncWebAssembly: true,
+  },
+
   resolve: {
     fallback: {
       fs: false,
