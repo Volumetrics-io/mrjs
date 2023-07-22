@@ -15,18 +15,9 @@ export class System {
 
     this.app.registerSystem(this)
 
-    this.app.addEventListener(
-      `${this.componentName}-attached`,
-      this.onAttach
-    )
-    this.app.addEventListener(
-      `${this.componentName}-updated`,
-      this.onUpdate
-    )
-    this.app.addEventListener(
-      `${this.componentName}-detached`,
-      this.onDetatch
-    )
+    this.app.addEventListener(`${this.componentName}-attached`, this.onAttach)
+    this.app.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+    this.app.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
     const entities = document.querySelectorAll(`[${this.componentName}]`)
     for (const entity of entities) {

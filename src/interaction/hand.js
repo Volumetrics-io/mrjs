@@ -42,9 +42,13 @@ export class MRHand {
   }
 
   setMesh = () => {
-    if(this.mesh) { return }
+    if (this.mesh) {
+      return
+    }
     this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
-    if(!this.mesh) { return }
+    if (!this.mesh) {
+      return
+    }
     this.mesh.material.colorWrite = false
     this.mesh.renderOrder = 2
   }

@@ -83,7 +83,6 @@ export class Surface extends Entity {
       this.translation.add(this.mesh)
     }
 
-
     this.object3D.position.setX(event.detail.center.x)
     this.object3D.position.setY(event.detail.center.y)
     this.object3D.position.setZ(event.detail.center.z)

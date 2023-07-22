@@ -1,15 +1,18 @@
 import * as THREE from 'three'
-import * as AmmoLib from 'ammo.js'
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
 import { MRElement } from './MRElement.js'
-import { SpatialControls } from '../interaction/SpatialControls.js'
-import { PhysicsSystem } from '../component-systems/PhysicsSystem.js'
-import { TextSystem } from '../component-systems/TextSystem.js'
 
-;import { ControlSystem } from '../component-systems/ControlSystem.js'
-('use strict')
+// built in Systems
+import { TextSystem } from '../component-systems/TextSystem.js'
+import { ControlSystem } from '../component-systems/ControlSystem.js'
+import {
+  RAPIER,
+  RapierPhysicsSystem,
+} from '../component-systems/RapierPhysicsSystem.js'
+
+;('use strict')
 
 export class MRApp extends MRElement {
   constructor() {
@@ -86,9 +89,11 @@ export class MRApp extends MRElement {
     this.observer.observe(this, { attributes: true, childList: true })
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      AmmoLib().then((Ammo) => {
-        Ammo = Ammo
-        this.physicsSystem = new PhysicsSystem()
+      import('@dimforge/rapier3d').then((rap) => {
+        RAPIER = rap
+        this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
+        // Run the simulation.
+        this.physicsSystem = new RapierPhysicsSystem()
       })
     })
     this.controlSystem = new ControlSystem()

@@ -8,7 +8,7 @@ import './core/MRApp.js'
 import './core/entity.js'
 
 // SYSTEMS
-import './component-systems/PhysicsSystem.js'
+import './component-systems/RapierPhysicsSystem.js'
 
 // GEOMETRY
 import './geometry/UIPlane.js'

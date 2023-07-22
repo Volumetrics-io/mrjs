@@ -42,14 +42,6 @@ export default class Panel extends Entity {
     this.object3D.renderOrder = 3
 
     // physics
-
-    this.physics.data = {
-      shape: 'box',
-      size: [this.width, this.height, 0.01],
-      mass: 0,
-      offset: [0, 0, 0.025],
-      update: false,
-    }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -81,13 +73,6 @@ export default class Panel extends Entity {
       default:
         break
     }
-
-    this.physics.data.size = [
-      this.width * this.scale,
-      this.height * this.scale,
-      0.01,
-    ]
-    this.physics.data.update = true
 
     this.object3D.geometry = UIPlane(
       this.width,

@@ -24,15 +24,6 @@ export class Entity extends MRElement {
 
     this.scale = 1
 
-    this.physics = {}
-    this.physics.body = null
-
-    this.physics.data = {
-      shape: 'box',
-      size: [0.001, 0.001, 0.001],
-      mass: 0,
-    }
-
     this.componentMutated = this.componentMutated.bind(this)
   }
 
@@ -137,34 +128,6 @@ export class Entity extends MRElement {
           this.getAttribute(mutation.attributeName)
         )
       }
-    }
-  }
-
-  setTransformValues() {
-    const position = this.getAttribute('position')
-    const scale = this.getAttribute('scale')
-    const rotation = this.getAttribute('rotation')
-
-    if (position) {
-      this.object3D.position.fromArray(parseVector(position))
-    }
-
-    if (scale) {
-      this.scale *= scale
-      this.object3D.scale.setScalar(scale)
-      this.traverse((entity) => {
-        entity.physics.data.size = entity.physics.data.size.map(
-          (x) => x * scale
-        )
-        entity.physics.data.update = true
-      })
-    }
-
-    if (rotation) {
-      const euler = new THREE.Euler()
-      const array = parseVector(rotation).map(radToDeg)
-      euler.fromArray(array)
-      this.object3D.setRotationFromEuler(euler)
     }
   }
 
