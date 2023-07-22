@@ -21,7 +21,6 @@ export class RapierPhysicsSystem extends System {
     this.tempWorldPosition = new THREE.Vector3()
     this.tempWorldScale = new THREE.Vector3()
     this.tempWorldQuaternion = new THREE.Quaternion()
-    this.tempWorldMatrix = new THREE.Matrix4()
     this.tempHalfExtents = new THREE.Vector3()
 
     const entities = this.app.querySelectorAll('*')
