@@ -45,8 +45,6 @@ export class RapierPhysicsSystem extends System {
       const geometry = new THREE.BufferGeometry()
       this.lines = new THREE.LineSegments(geometry, material)
       this.app.scene.add(this.lines)
-
-      this.updateDebugRenderer()
     }
   }
 
@@ -140,6 +138,7 @@ export class RapierPhysicsSystem extends System {
   }
 
   updateDebugRenderer() {
+    if(!this.debug) { return }
     const buffers = this.app.physicsWorld.debugRender()
     this.lines.geometry.setAttribute(
       'position',
