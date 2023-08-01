@@ -74712,7 +74712,6 @@ class RapierPhysicsSystem extends System {
     this.tempWorldPosition = new three_module_Vector3()
     this.tempWorldScale = new three_module_Vector3()
     this.tempWorldQuaternion = new Quaternion()
-    this.tempWorldMatrix = new three_module_Matrix4()
     this.tempHalfExtents = new three_module_Vector3()
 
     const entities = this.app.querySelectorAll('*')
@@ -74737,8 +74736,6 @@ class RapierPhysicsSystem extends System {
       const geometry = new three_module_BufferGeometry()
       this.lines = new LineSegments(geometry, material)
       this.app.scene.add(this.lines)
-
-      this.updateDebugRenderer()
     }
   }
 
@@ -74832,6 +74829,7 @@ class RapierPhysicsSystem extends System {
   }
 
   updateDebugRenderer() {
+    if(!this.debug) { return }
     const buffers = this.app.physicsWorld.debugRender()
     this.lines.geometry.setAttribute(
       'position',
