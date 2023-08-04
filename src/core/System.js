@@ -30,7 +30,6 @@ export class System {
 
   // Called per frame
   update(deltaTime) {
-    console.log(`update ${this.systemName} System`)
   }
 
   // called when the component is initialized

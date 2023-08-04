@@ -51704,152 +51704,6 @@ if ( typeof window !== 'undefined' ) {
 
 
 
-;// CONCATENATED MODULE: ./src/utils/materialHelper.js
-
-
-// example MaterialString
-// mat-phong
-// "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
-
-class MaterialHelper {
-  static applyMaterial(object, materialType, parameterString) {
-    const parameters = MaterialHelper.parseParameterString(parameterString)
-    const result = MaterialHelper.initMaterial(
-      materialType.split('mat-')[1],
-      parameters
-    )
-    if (result.opacity < 1) {
-      result.transparent = true
-    }
-    object.material = result
-  }
-
-  static applyTexture(object, textureType, parameterString) {
-    const src = parameterString.split(':')[1].trim()
-    const typeArray = textureType.split('-')
-    const result = MaterialHelper.initTexture(typeArray[1], src)
-
-    if (typeArray.length < 3) {
-      object.material.map = result
-    } else {
-      MaterialHelper.applyMap(object, typeArray[2], result)
-    }
-  }
-
-  static parseParameterString(parameterString) {
-    let jsonString = parameterString.replaceAll(';', ',')
-    jsonString = jsonString.spliceSplit(0, 0, '{')
-
-    if (jsonString.slice(-1) == ',') {
-      jsonString = jsonString.spliceSplit(-1, 1, '')
-    }
-    jsonString += '}'
-    jsonString = jsonString
-      .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2":')
-      .replace(/(['"])?([a-zA-Z]+)(['"])?/g, '"$2"')
-      .replaceAll('"true"', 'true')
-
-    console.log(jsonString)
-
-    return JSON.parse(jsonString)
-  }
-
-  static initMaterial(type, parameters) {
-    console.log(type)
-    switch (type) {
-      case 'basic':
-        return new MeshBasicMaterial(parameters)
-      case 'depth':
-        return new MeshDepthMaterial(parameters)
-      case 'distance':
-        return new MeshDistanceMaterial(parameters)
-      case 'lambert':
-        return new MeshLambertMaterial(parameters)
-      case 'line-basic':
-        return new LineBasicMaterial(parameters)
-      case 'line-dashed':
-        return new LineDashedMaterial(parameters)
-      case 'matcap':
-        return new MeshMatcapMaterial(parameters)
-      case 'normal':
-        return new MeshNormalMaterial(parameters)
-      case 'phong':
-        return new MeshPhongMaterial(parameters)
-      case 'physical':
-        return new MeshPhysicalMaterial(parameters)
-      case 'standard':
-        return new MeshStandardMaterial(parameters)
-      case 'toon':
-        return new MeshToonMaterial(parameters)
-      case 'points':
-        return new PointsMaterial(parameters)
-      case 'raw-shader':
-        return new RawShaderMaterial(parameters)
-      case 'shader':
-        return new ShaderMaterial(parameters)
-      case 'shadow':
-        return new ShadowMaterial(parameters)
-      case 'sprite':
-        return new Sprite()
-      default:
-        return new MeshPhongMaterial(parameters)
-    }
-  }
-
-  static initTexture(type, src) {
-    switch (type) {
-      case 'basic':
-        return new TextureLoader().load(src)
-      case 'canvas':
-        return new CanvasTexture(src)
-      case 'compressed':
-        return new CompressedTextureLoader().load(src)
-      case 'video':
-        const videosrc = document.getElementById(src)
-        return new VideoTexture(videosrc)
-      default:
-        return new TextureLoader().load(src)
-    }
-  }
-
-  static applyMap(object, type, texture) {
-    switch (type) {
-      case 'alpha':
-        object.material.alphaMap = texture
-        break
-      case 'ao':
-        object.material.aoMap = texture
-        break
-      case 'bump':
-        object.material.bumpMap = texture
-        break
-      case 'displacement':
-        object.material.displacementMap = texture
-        break
-      case 'emissive':
-        object.material.emissiveMap = texture
-        break
-      case 'env':
-        object.material.envMap = texture
-        break
-      case 'light':
-        object.material.lightMap = texture
-        break
-      case 'metalness':
-        object.material.metalnessMap = texture
-        break
-      case 'normal':
-        object.material.normalMap = texture
-        break
-      case 'roughness':
-        object.material.roughnessMap = texture
-        break
-      default:
-        object.material.map = texture
-    }
-  }
-}
-
 ;// CONCATENATED MODULE: ./src/core/entity.js
 
 
@@ -51876,6 +51730,8 @@ class Entity extends MRElement {
     this.object3D.renderOrder = 3
 
     this.scale = 1
+    this.width = 1
+    this.height = 1
 
     this.componentMutated = this.componentMutated.bind(this)
   }
@@ -51911,11 +51767,11 @@ class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
-        case 'mat':
-          MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+        case 'width':
+          this.width = parseFloat(attr.value)
           break
-        case 'tex':
-          MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
+        case 'height':
+          this.height = parseFloat(attr.value)
           break
 
         default:
@@ -51968,18 +51824,6 @@ class Entity extends MRElement {
       }
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
-      } else if (mutation.attributeName.startsWith('mat-')) {
-        MaterialHelper.applyMaterial(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
-      } else if (mutation.attributeName.startsWith('tex-')) {
-        MaterialHelper.applyTexture(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
       }
     }
   }
@@ -52071,7 +51915,6 @@ class System {
 
   // Called per frame
   update(deltaTime) {
-    console.log(`update ${this.systemName} System`)
   }
 
   // called when the component is initialized
@@ -67006,6 +66849,135 @@ class RapierPhysicsSystem extends System {
   }
 }
 
+;// CONCATENATED MODULE: ./src/entities/layout/Column.js
+
+
+class Column extends Entity {
+  constructor() {
+    super()
+    this.shuttle = new THREE.Group() // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+    this.object3D.add(this.shuttle)
+    this.rows = 0
+    this.height = 'auto'
+    this.width = 'auto'
+  }
+
+  add(entity) {
+    this.shuttle.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.shuttle.remove(entity.object3D)
+  }
+
+  getRowCount(){
+    const children = Array.from(this.children)
+    for (const child of children) {
+        if (!child instanceof Entity) { continue }
+        this.rows += child.height == 'auto' ? 1 : child.height
+      }
+  }
+}
+
+customElements.get('mr-column') || customElements.define('mr-column', Column)
+
+;// CONCATENATED MODULE: ./src/entities/layout/Row.js
+
+
+class Row extends Entity {
+  constructor() {
+    super()
+    this.shuttle = new THREE.Group() // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+    this.object3D.add(this.shuttle)
+    this.columns = 0
+    this.width = 'auto'
+    this.height = 'auto'
+  }
+
+  add(entity) {
+    this.shuttle.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.shuttle.remove(entity.object3D)
+  }
+
+  getColumnCount(){
+    const children = Array.from(this.children)
+    for (const child of children) {
+        if (!child instanceof Entity) { continue }
+        this.columns += child.width == 'auto' ? 1 : child.width
+    }
+  }
+}
+
+customElements.get('mr-row') || customElements.define('mr-row', Row)
+
+;// CONCATENATED MODULE: ./src/component-systems/LayoutSystem.js
+
+
+
+
+
+class LayoutSystem extends System {
+    constructor(){
+        super()
+
+        this.app.addEventListener('container-mutated', this.updateLayout)
+        this.app.addEventListener('column-mutated', this.adjustColumn)
+        this.app.addEventListener('row-mutated', this.adjustRow)
+    }
+
+    updateLayout = (event) => {
+        this.adjustContent(event.target, event.target.width, event.target.height)
+    }
+
+    adjustContent = (entity, width, height) => {
+        
+        if (entity instanceof Column) { this.adjustColumn(entity, height) }
+        else if (entity instanceof Row) { this.adjustRow(entity, width) }
+
+        const children = Array.from(entity.children)
+        for (const child of children) {
+            if (!child instanceof Entity) { continue }
+            let childWidth = entity.width == 'auto' ? width : entity.width
+            let childHeight = entity.height == 'auto' ? height : entity.height
+            this.adjustContent(child, childWidth, childHeight)
+        }
+    }
+
+    adjustColumn = (column, height) => {
+        column.getRowCount()
+        let rowHeight = (height / column.rows)
+        const children = Array.from(column.children)
+        this.accumulatedY = 0
+        for (const index in children) {
+            let child = children[index]
+            let childHeight = child.height == 'auto' ? 1 : child.height
+            child.object3D.position.setY( this.accumulatedY - childHeight * (rowHeight / 2))
+            this.accumulatedY -= childHeight * rowHeight
+        }
+        column.shuttle.position.setY(-this.accumulatedY / 2)
+    }
+
+    adjustRow = (row, width) => {
+        row.getColumnCount()
+        let colWidth = (width / row.columns)
+        const children = Array.from(row.children)
+        this.accumulatedX = 0
+        for (const index in children) {
+            let child = children[index]
+            let childWidth = child.width == 'auto' ? 1 : child.width
+            child.object3D.position.setX( this.accumulatedX + childWidth * (colWidth / 2))
+            this.accumulatedX += childWidth * colWidth
+        }
+        row.shuttle.position.setX(-this.accumulatedX / 2)
+    }
+}
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -67014,6 +66986,7 @@ class RapierPhysicsSystem extends System {
 
 
 // built in Systems
+
 
 
 ('use strict')
@@ -67101,6 +67074,7 @@ class MRApp extends MRElement {
       })
     })
     this.controlSystem = new ControlSystem()
+    this.layoutSystem = new LayoutSystem
     this.textSystem = new TextSystem()
   }
 
@@ -67361,16 +67335,16 @@ class Panel extends Entity {
         this.object3D.setRotationFromEuler(this.euler)
         break
       case 'width':
-        this.width = newValue
+        this.width = parseFloat(newValue)
         break
       case 'height':
-        this.height = newValue
+        this.height = parseFloat(newValue)
         break
       case 'corner-radius':
-        this.radius = newValue
+        this.radius = parseFloat(newValue)
         break
       case 'smoothness':
-        this.smoothness = newValue
+        this.smoothness = parseFloat(newValue)
         break
       case 'color':
         this.object3D.material.color.setStyle(newValue)
@@ -67620,116 +67594,24 @@ class Volume extends Entity {
 
 customElements.get('mr-volume') || customElements.define('mr-volume', Volume)
 
-;// CONCATENATED MODULE: ./src/entities/layout/Row.js
+;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 
-class Row extends Entity {
+class Container extends Entity {
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.accumulatedX = 0
-    this.object3D.add(this.shuttle)
-  }
+    this.width = 1
+    this.height = 1
+    console.log('init');
 
-  connected() {
-    this.update()
-  }
-
-  add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
-  }
-
-  remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
-  }
-
-  mutated = (mutation) => {
-    if (mutation.addedNodes.length) {
-      this.update()
-    }
-  }
-
-  update() {
-    this.accumulatedX = 0
-    this.shuttle.children.forEach((child) => {
-      if (!child.userData.size) {
-        child.userData.size = new THREE.Vector3()
-        child.userData.bbox = new THREE.Box3()
-        child.userData.bbox.setFromObject(child)
-        child.userData.bbox.getSize(child.userData.size)
-      }
-      child.position.setX(
-        this.accumulatedX + (child.userData.size.x / 2) * child.scale.x
-      )
-      this.accumulatedX += child.userData.size.x * child.scale.x
+    document.addEventListener('DOMContentLoaded', (event) => {
+    this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
-    this.object3D.userData.bbox.setFromObject(this.shuttle)
-    this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-    this.shuttle.position.setX(-this.object3D.userData.size.x / 2)
   }
 }
 
-customElements.get('mr-row') || customElements.define('mr-row', Row)
-
-;// CONCATENATED MODULE: ./src/entities/layout/Column.js
-
-
-class Column extends Entity {
-  constructor() {
-    super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.accumulatedY = 0
-    this.object3D.add(this.shuttle)
-  }
-
-  connected() {
-    this.update()
-  }
-
-  mutated = (mutation) => {
-    if (mutation.addedNodes.length) {
-      this.update()
-    }
-  }
-
-  add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
-  }
-
-  remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
-  }
-
-  update() {
-    this.accumulatedY = 0
-    this.shuttle.children.forEach((child) => {
-      if (!child.userData.size) {
-        child.userData.size = new THREE.Vector3()
-        child.userData.bbox = new THREE.Box3()
-        child.userData.bbox.setFromObject(child)
-        child.userData.bbox.getSize(child.userData.size)
-      }
-
-      child.position.setY(
-        this.accumulatedY - (child.userData.size.y / 2) * child.scale.y
-      )
-      this.accumulatedY -= child.userData.size.y * child.scale.y
-    })
-    this.object3D.userData.bbox.setFromObject(this.shuttle)
-    this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-    this.shuttle.position.setY(this.object3D.userData.size.y / 2)
-  }
-}
-
-customElements.get('mr-column') || customElements.define('mr-column', Column)
+customElements.get('mr-container') ||
+  customElements.define('mr-container', Container)
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/libs/ammo.wasm.js
 
@@ -68568,6 +68450,7 @@ if (typeof exports === 'object' && typeof module === 'object')
 // SYSTEMS
 
 
+
 // GEOMETRY
 
 
@@ -68577,6 +68460,7 @@ if (typeof exports === 'object' && typeof module === 'object')
 
 
 // UI: LAYOUT
+
 
 
 

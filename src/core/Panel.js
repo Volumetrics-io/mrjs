@@ -56,16 +56,16 @@ export default class Panel extends Entity {
         this.object3D.setRotationFromEuler(this.euler)
         break
       case 'width':
-        this.width = newValue
+        this.width = parseFloat(newValue)
         break
       case 'height':
-        this.height = newValue
+        this.height = parseFloat(newValue)
         break
       case 'corner-radius':
-        this.radius = newValue
+        this.radius = parseFloat(newValue)
         break
       case 'smoothness':
-        this.smoothness = newValue
+        this.smoothness = parseFloat(newValue)
         break
       case 'color':
         this.object3D.material.color.setStyle(newValue)

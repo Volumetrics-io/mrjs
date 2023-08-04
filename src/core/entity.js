@@ -23,6 +23,8 @@ export class Entity extends MRElement {
     this.object3D.renderOrder = 3
 
     this.scale = 1
+    this.width = 1
+    this.height = 1
 
     this.componentMutated = this.componentMutated.bind(this)
   }
@@ -58,11 +60,11 @@ export class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
-        case 'mat':
-          MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+        case 'width':
+          this.width = parseFloat(attr.value)
           break
-        case 'tex':
-          MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
+        case 'height':
+          this.height = parseFloat(attr.value)
           break
 
         default:
@@ -115,18 +117,6 @@ export class Entity extends MRElement {
       }
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
-      } else if (mutation.attributeName.startsWith('mat-')) {
-        MaterialHelper.applyMaterial(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
-      } else if (mutation.attributeName.startsWith('tex-')) {
-        MaterialHelper.applyTexture(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
       }
     }
   }
