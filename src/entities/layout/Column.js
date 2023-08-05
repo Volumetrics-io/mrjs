@@ -8,8 +8,6 @@ export class Column extends Entity {
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
     this.rows = 0
-    this.height = 'auto'
-    this.width = 'auto'
   }
 
   add(entity) {
@@ -24,7 +22,7 @@ export class Column extends Entity {
     const children = Array.from(this.children)
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.rows += child.height == 'auto' ? 1 : child.height
+        this.rows += child.computedHeight
       }
   }
 }

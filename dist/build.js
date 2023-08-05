@@ -51704,6 +51704,169 @@ if ( typeof window !== 'undefined' ) {
 
 
 
+;// CONCATENATED MODULE: ./src/utils/parser.js
+
+
+function parseVector(str) {
+  return str.split(' ').map(Number)
+}
+
+function parser_radToDeg(val) {
+  return (val * Math.PI) / 180
+}
+
+function setTransformValues(entity) {
+  const position = entity.getAttribute('position')
+  const scale = entity.getAttribute('scale')
+  const rotation = entity.getAttribute('rotation')
+
+  if (position) {
+    entity.object3D.position.fromArray(parseVector(position))
+  }
+
+  if (scale) {
+    entity.object3D.scale.fromArray(parseVector(scale))
+  }
+
+  if (rotation) {
+    const euler = new THREE.Euler()
+    const array = parseVector(rotation).map(parser_radToDeg)
+    euler.fromArray(array)
+    entity.object3D.setRotationFromEuler(euler)
+  }
+}
+
+function parseAttributeString(attrString) {
+  const regexPattern = /(\w+):\s*([^;]+)/g
+  const jsonObject = {}
+
+  let match
+  while ((match = regexPattern.exec(attrString)) !== null) {
+    const key = match[1].trim()
+    let value = match[2].trim()
+
+    // Check value type and convert if necessary
+    if (value.includes(' ')) {
+      value = value.split(' ').map((v) => parseFloat(v))
+    } else if (/^\d+(\.\d+)?$/.test(value)) {
+      value = parseFloat(value)
+    } else if (value === 'true') {
+      value = true
+    } else if (value === 'false') {
+      value = false
+    }
+
+    jsonObject[key] = value
+  }
+
+  return jsonObject
+}
+
+;// CONCATENATED MODULE: ./src/datatypes/BodyOffset.js
+class BodyOffset {
+
+    constructor(callback) {
+        this.callback = callback
+    }
+
+    #top = 0
+    set top(value){
+        this.#top = value
+        this.callback()
+    }
+    get top() {
+        return this.#top
+    }
+
+    #right = 0
+    set right(value){
+        this.#right = value
+        this.callback()
+    }
+    get right() {
+        return this.#right
+    }
+
+    #bottom = 0
+    set bottom(value){
+        this.#bottom = value
+        this.callback()
+    }
+    get bottom() {
+        return this.#bottom
+    }
+
+    #left = 0
+    set left(value){
+        this.#left = value
+        this.callback()
+    }
+    get left() {
+        return this.#left
+    }
+
+    set vertical(value){
+        this.#top = value
+        this.#bottom = value
+        this.callback()
+    }
+
+    get vertical(){
+        return this.#top + this.#bottom
+    }
+    
+    set horizontal(value){
+        this.#right = value
+        this.#left = value
+        this.callback()
+    }
+
+    get horizontal(){
+        return this.#right + this.#left
+    }
+
+    set all(value) {
+        this.#top = value
+        this.#right = value
+        this.#bottom = value
+        this.#left = value
+        this.callback()
+    }
+
+    setFromVector(vector) {
+        switch (vector.length) {
+            case 1:
+                this.#top = vector[0]
+                this.#right = vector[0]
+                this.#bottom = vector[0]
+                this.#left = vector[0]
+                break;
+            case 2:
+                this.#top = vector[0]
+                this.#right = vector[1]
+                this.#bottom = vector[0]
+                this.#left = vector[1]
+                break;
+            case 3:
+                this.#top = vector[0]
+                this.#right = vector[1]
+                this.#left = vector[1]
+                this.#bottom = vector[2]
+                break;
+            case 4:
+                this.#top = vector[0]
+                this.#right = vector[1]
+                this.#bottom = vector[2]
+                this.#left = vector[3]
+                break;
+            default:
+                break;
+        }
+
+        this.callback
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/core/entity.js
 
 
@@ -51712,6 +51875,50 @@ if ( typeof window !== 'undefined' ) {
 
 class Entity extends MRElement {
   static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
+
+  #width = 'auto'
+  set width(value) {
+    this.#width = value
+    this.dimensionsUpdate()
+  }
+  get width() {
+    return this.#width
+  }
+
+  get computedWidth() {
+    let computed = this.#width == 'auto' ? 1 : this.#width
+    return computed + this.margin.horizontal
+  }
+
+  #height = 'auto'
+  set height(value) {
+    this.#height = value
+    this.dimensionsUpdate()
+  }
+  get height() {
+    return this.#height
+  }
+
+  get computedHeight() {
+    let computed = this.#height == 'auto' ? 1 : this.#height
+    return computed + this.margin.vertical
+  }
+
+  #zOffeset = 0.001
+  set zOffeset(value) {
+    this.#zOffeset = value
+  }
+  get zOffeset() {
+    return this.#zOffeset
+  }
+
+  margin = new BodyOffset(this.dimensionsUpdate)
+
+  padding = new BodyOffset(this.dimensionsUpdate)
+
+  dimensionsUpdate = () => {
+    this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
+  }
 
   constructor() {
     super()
@@ -51730,8 +51937,6 @@ class Entity extends MRElement {
     this.object3D.renderOrder = 3
 
     this.scale = 1
-    this.width = 1
-    this.height = 1
 
     this.componentMutated = this.componentMutated.bind(this)
   }
@@ -51772,6 +51977,12 @@ class Entity extends MRElement {
           break
         case 'height':
           this.height = parseFloat(attr.value)
+          break
+        case 'margin':
+          this.margin.setFromVector(parseVector(attr.value))
+          break
+        case 'padding':
+          this.padding.setFromVector(parseVector(attr.value))
           break
 
         default:
@@ -59759,64 +59970,6 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
-;// CONCATENATED MODULE: ./src/utils/parser.js
-
-
-function parseVector(str) {
-  return str.split(' ').map(Number)
-}
-
-function parser_radToDeg(val) {
-  return (val * Math.PI) / 180
-}
-
-function setTransformValues(entity) {
-  const position = entity.getAttribute('position')
-  const scale = entity.getAttribute('scale')
-  const rotation = entity.getAttribute('rotation')
-
-  if (position) {
-    entity.object3D.position.fromArray(parseVector(position))
-  }
-
-  if (scale) {
-    entity.object3D.scale.fromArray(parseVector(scale))
-  }
-
-  if (rotation) {
-    const euler = new THREE.Euler()
-    const array = parseVector(rotation).map(parser_radToDeg)
-    euler.fromArray(array)
-    entity.object3D.setRotationFromEuler(euler)
-  }
-}
-
-function parseAttributeString(attrString) {
-  const regexPattern = /(\w+):\s*([^;]+)/g
-  const jsonObject = {}
-
-  let match
-  while ((match = regexPattern.exec(attrString)) !== null) {
-    const key = match[1].trim()
-    let value = match[2].trim()
-
-    // Check value type and convert if necessary
-    if (value.includes(' ')) {
-      value = value.split(' ').map((v) => parseFloat(v))
-    } else if (/^\d+(\.\d+)?$/.test(value)) {
-      value = parseFloat(value)
-    } else if (value === 'true') {
-      value = true
-    } else if (value === 'false') {
-      value = false
-    }
-
-    jsonObject[key] = value
-  }
-
-  return jsonObject
-}
-
 ;// CONCATENATED MODULE: ./src/component-systems/TextSystem.js
 
 
@@ -59841,12 +59994,16 @@ class TextSystem extends System {
 
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
 
-    style.maxWidth = style.maxWidth ?? entity.width ?? 1
+    let width = entity.width == 'auto' ? 1 : entity.width
+    width = width ?? 1
+    let height = entity.height == 'auto' ? 1 : entity.height
+    height = height ?? 1
+
+    style.width = width
+    style.maxWidth = style.maxWidth ?? width ?? 1
     const radius = entity.radius ?? 0
     style.maxWidth -= radius * 2
 
-    style.width = entity.width ?? 1
-    let height = entity.height ?? 1
     height -= radius
     entity.textObj.position.setY(height / 2)
 
@@ -66764,8 +66921,6 @@ class RapierPhysicsSystem extends System {
     const scale = entity.getAttribute('scale')
     const rotation = entity.getAttribute('rotation')
 
-    entity.width = entity.getAttribute('width') ?? entity.parent.width
-    entity.height = entity.getAttribute('height') ?? 1
     entity.radius =
       entity.getAttribute('corner-radius') ?? entity.parent.radius ?? 0
 
@@ -66860,8 +67015,6 @@ class Column extends Entity {
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
     this.rows = 0
-    this.height = 'auto'
-    this.width = 'auto'
   }
 
   add(entity) {
@@ -66876,7 +67029,7 @@ class Column extends Entity {
     const children = Array.from(this.children)
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.rows += child.height == 'auto' ? 1 : child.height
+        this.rows += child.computedHeight
       }
   }
 }
@@ -66894,8 +67047,6 @@ class Row extends Entity {
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
     this.columns = 0
-    this.width = 'auto'
-    this.height = 'auto'
   }
 
   add(entity) {
@@ -66938,8 +67089,14 @@ class LayoutSystem extends System {
 
     adjustContent = (entity, width, height) => {
         
-        if (entity instanceof Column) { this.adjustColumn(entity, height) }
-        else if (entity instanceof Row) { this.adjustRow(entity, width) }
+        if (entity instanceof Column) { 
+            entity.width = entity.width == 'auto' ? width : entity.width
+            this.adjustColumn(entity, height) 
+        }
+        else if (entity instanceof Row) { 
+            entity.height = entity.height == 'auto' ? height : entity.height
+            this.adjustRow(entity, width) 
+        }
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -66957,9 +67114,14 @@ class LayoutSystem extends System {
         this.accumulatedY = 0
         for (const index in children) {
             let child = children[index]
-            let childHeight = child.height == 'auto' ? 1 : child.height
-            child.object3D.position.setY( this.accumulatedY - childHeight * (rowHeight / 2))
-            this.accumulatedY -= childHeight * rowHeight
+            this.accumulatedY -= child.margin.top
+            child.height = child.height == 'auto' ? rowHeight : child.height * rowHeight
+            child.object3D.position.setY( this.accumulatedY - child.height / 2)
+            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.margin.bottom
+
+            // fill parent
+            child.width = child.width == 'auto' ? column.width : child.width
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -66971,9 +67133,14 @@ class LayoutSystem extends System {
         this.accumulatedX = 0
         for (const index in children) {
             let child = children[index]
-            let childWidth = child.width == 'auto' ? 1 : child.width
-            child.object3D.position.setX( this.accumulatedX + childWidth * (colWidth / 2))
-            this.accumulatedX += childWidth * colWidth
+            this.accumulatedX += child.margin.left
+            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
+            child.object3D.position.setX( this.accumulatedX + child.width / 2)
+            this.accumulatedX += child.width
+            this.accumulatedX += child.margin.right
+
+             // fill parent
+             child.height = child.height == 'auto' ? row.height : child.height
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
@@ -67175,8 +67342,13 @@ customElements.get('mr-app') || customElements.define('mr-app', MRApp)
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
 
-function UIPlane(w, h, r, s) {
+function UIPlane(width, height, r, s) {
   // width, height, radius corner, smoothness
+
+  let w = width == 'auto' ? 1 : width
+  let h = height == 'auto' ? 1 : height
+
+  if(!w || !h || !r || !s) { return }
 
   // helper const's
   const wi = w / 2 - r // inner width
@@ -67292,15 +67464,39 @@ class Panel extends Entity {
       'color',
     ]
   }
+  radius = 0.05
+  smoothness = 18
+
+  set height(value) {
+    super.height = value
+    this.updatePlane()
+    
+  }
+  get height() {
+    return super.height
+  }
+
+  set width(value) {
+    super.width = value
+    this.updatePlane()
+  }
+  get width() {
+    return super.width
+  }
+
+  updatePlane() {
+    this.object3D.geometry = UIPlane(
+      this.width,
+      this.height,
+      this.radius,
+      this.smoothness
+    )
+  }
 
   constructor() {
     super()
 
     this.fitToParent = false
-    this.width = 1
-    this.height = 1
-    this.radius = 0.05
-    this.smoothness = 18
     this.euler = new Euler()
 
     this.geometry = UIPlane(
@@ -67602,7 +67798,6 @@ class Container extends Entity {
     super()
     this.width = 1
     this.height = 1
-    console.log('init');
 
     document.addEventListener('DOMContentLoaded', (event) => {
     this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))

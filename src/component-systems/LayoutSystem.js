@@ -18,8 +18,14 @@ export class LayoutSystem extends System {
 
     adjustContent = (entity, width, height) => {
         
-        if (entity instanceof Column) { this.adjustColumn(entity, height) }
-        else if (entity instanceof Row) { this.adjustRow(entity, width) }
+        if (entity instanceof Column) { 
+            entity.width = entity.width == 'auto' ? width : entity.width
+            this.adjustColumn(entity, height) 
+        }
+        else if (entity instanceof Row) { 
+            entity.height = entity.height == 'auto' ? height : entity.height
+            this.adjustRow(entity, width) 
+        }
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -37,9 +43,14 @@ export class LayoutSystem extends System {
         this.accumulatedY = 0
         for (const index in children) {
             let child = children[index]
-            let childHeight = child.height == 'auto' ? 1 : child.height
-            child.object3D.position.setY( this.accumulatedY - childHeight * (rowHeight / 2))
-            this.accumulatedY -= childHeight * rowHeight
+            this.accumulatedY -= child.margin.top
+            child.height = child.height == 'auto' ? rowHeight : child.height * rowHeight
+            child.object3D.position.setY( this.accumulatedY - child.height / 2)
+            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.margin.bottom
+
+            // fill parent
+            child.width = child.width == 'auto' ? column.width : child.width
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -51,9 +62,14 @@ export class LayoutSystem extends System {
         this.accumulatedX = 0
         for (const index in children) {
             let child = children[index]
-            let childWidth = child.width == 'auto' ? 1 : child.width
-            child.object3D.position.setX( this.accumulatedX + childWidth * (colWidth / 2))
-            this.accumulatedX += childWidth * colWidth
+            this.accumulatedX += child.margin.left
+            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
+            child.object3D.position.setX( this.accumulatedX + child.width / 2)
+            this.accumulatedX += child.width
+            this.accumulatedX += child.margin.right
+
+             // fill parent
+             child.height = child.height == 'auto' ? row.height : child.height
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }

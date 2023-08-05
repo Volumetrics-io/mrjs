@@ -1,7 +1,12 @@
 import * as THREE from 'three'
 
-export function UIPlane(w, h, r, s) {
+export function UIPlane(width, height, r, s) {
   // width, height, radius corner, smoothness
+
+  let w = width == 'auto' ? 1 : width
+  let h = height == 'auto' ? 1 : height
+
+  if(!w || !h || !r || !s) { return }
 
   // helper const's
   const wi = w / 2 - r // inner width

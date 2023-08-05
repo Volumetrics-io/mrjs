@@ -66,8 +66,6 @@ export class RapierPhysicsSystem extends System {
     const scale = entity.getAttribute('scale')
     const rotation = entity.getAttribute('rotation')
 
-    entity.width = entity.getAttribute('width') ?? entity.parent.width
-    entity.height = entity.getAttribute('height') ?? 1
     entity.radius =
       entity.getAttribute('corner-radius') ?? entity.parent.radius ?? 0
 

@@ -8,8 +8,6 @@ export class Row extends Entity {
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
     this.columns = 0
-    this.width = 'auto'
-    this.height = 'auto'
   }
 
   add(entity) {

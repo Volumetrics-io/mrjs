@@ -13,15 +13,39 @@ export default class Panel extends Entity {
       'color',
     ]
   }
+  radius = 0.05
+  smoothness = 18
+
+  set height(value) {
+    super.height = value
+    this.updatePlane()
+    
+  }
+  get height() {
+    return super.height
+  }
+
+  set width(value) {
+    super.width = value
+    this.updatePlane()
+  }
+  get width() {
+    return super.width
+  }
+
+  updatePlane() {
+    this.object3D.geometry = UIPlane(
+      this.width,
+      this.height,
+      this.radius,
+      this.smoothness
+    )
+  }
 
   constructor() {
     super()
 
     this.fitToParent = false
-    this.width = 1
-    this.height = 1
-    this.radius = 0.05
-    this.smoothness = 18
     this.euler = new THREE.Euler()
 
     this.geometry = UIPlane(

@@ -5,7 +5,6 @@ export class Container extends Entity {
     super()
     this.width = 1
     this.height = 1
-    console.log('init');
 
     document.addEventListener('DOMContentLoaded', (event) => {
     this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
