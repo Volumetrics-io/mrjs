@@ -52126,12 +52126,12 @@ class System {
   }
 
   // called when the component is initialized
-  attachedComponent(entity, componentString) {
-    console.log(`attached ${this.componentName} ${componentString}}`)
+  attachedComponent(entity, data) {
+    console.log(`attached ${this.componentName} ${data}}`)
   }
 
-  updatedComponent(entity, componentString) {
-    console.log(`updated ${this.componentName} ${componentString}}`)
+  updatedComponent(entity, data) {
+    console.log(`updated ${this.componentName} ${data}}`)
   }
 
   // called when the component is removed
@@ -52141,11 +52141,13 @@ class System {
 
   onAttach = (event) => {
     this.registry.add(event.detail.entity)
-    this.attachedComponent(event.detail.entity, event.detail.component)
+    let data = this.parseComponentString(event.detail.component)
+    this.attachedComponent(event.detail.entity, data)
   }
 
   onUpdate = (event) => {
-    this.updatedComponent(event.detail.entity, event.detail.component)
+    let data = this.parseComponentString(event.detail.component)
+    this.updatedComponent(event.detail.entity, data)
   }
 
   onDetatch = (event) => {
