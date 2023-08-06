@@ -4,7 +4,7 @@ An extendable WebComponents library for the Spatial Web
 
 ## Overview
 
-MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time implementing the basics and more time building their app.
+MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
 # Features
 
@@ -54,6 +54,8 @@ MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web 
 
 ## Hand Interaction
 
+(touch and point/pinch interaction is currently disabled while transitioning to physics based gestures)
+
 _**ADD GIF OF HAND INTERACTIONS**_
 
 ## 3D Content
@@ -74,7 +76,7 @@ _**Currently unimplemented but here's the markup**_
 ```
 ## Built-in Physics Engine
 
-Rapier.js is fully integrated out of the box, and powers hand interactions through collision detection, but can also support other common features such as:
+Rapier.js is fully integrated out of the box. We use it to power collision based hand-interactions, but ot also support other common features such as:
 
 - Gravity
 - Rag doll physics
@@ -85,7 +87,7 @@ Rapier.js is fully integrated out of the box, and powers hand interactions throu
 
 ## Extendable
 
-Built on top of THREE.js & WebComponents, with a built in ECS, MR.js provides a familiar interface to create custom Elements that can be reused through out your app.
+Built on top of THREE.js & WebComponents, and a built in ECS, MR.js provides a familiar interface to create custom Elements that can be reused through out your app.
 
 ### ECS
 
@@ -93,7 +95,7 @@ MR.js is designed from the ground up using the Entity-Component-System Architect
 
 #### Entity
 
-an Entity is an object. it has only the most fundamental data attributes such as a unique identifier, a THREE.js Object3D, and a physics body, and dimension data such as width and scale.
+an Entity is an object. It stores only the most fundamental data, such as a unique identifier, a THREE.js Object3D, a physics body, and dimension data such as width and scale.
 
 Any `mr-*` tag within the `mr-app` is an Entity. `mr-entity` is the spatail equivalent of a `div`.
 
@@ -164,3 +166,13 @@ class OrbitSystem extends System{
     }
 }
 ```
+
+Note: the mapping between components and systems is 1-to-1, and the naming convention (`comp-<name>` and `<Name>System`) is strictly enforced. components can only be modified by their matching system. You can also implement a System to do per frame logic without using components, but it's not recommended.
+
+# Installation
+
+`npm install volumetrics-io/mr.js`
+
+# run locally
+
+`npm run build`
