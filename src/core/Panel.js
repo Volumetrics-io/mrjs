@@ -5,7 +5,6 @@ import { UIPlane } from '../geometry/UIPlane.js'
 export default class Panel extends Entity {
   static get observedAttributes() {
     return [
-      'orientation',
       'width',
       'height',
       'corner-radius',
@@ -45,9 +44,6 @@ export default class Panel extends Entity {
   constructor() {
     super()
 
-    this.fitToParent = false
-    this.euler = new THREE.Euler()
-
     this.geometry = UIPlane(
       this.width,
       this.height,
@@ -65,20 +61,11 @@ export default class Panel extends Entity {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
-    // physics
   }
 
+  // TODO: Switch to overriding MutationCallback instead
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
-      case 'orientation':
-        this.euler.fromArray(
-          newValue
-            .split(' ')
-            .map(Number)
-            .map((x) => x * (Math.PI / 180))
-        )
-        this.object3D.setRotationFromEuler(this.euler)
-        break
       case 'width':
         this.width = parseFloat(newValue)
         break

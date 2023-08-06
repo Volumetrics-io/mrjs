@@ -1,7 +1,5 @@
-import * as THREE from 'three'
 import { Text } from 'troika-three-text'
 import { System } from '../core/System'
-import { Entity } from '../core/entity'
 import { parseAttributeString } from '../utils/parser'
 
 export class TextSystem extends System {

@@ -4,7 +4,6 @@ import { MRElement } from './MRElement.js'
 import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
-  static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
 
   #width = 'auto'
   set width(value) {
@@ -114,7 +113,6 @@ export class Entity extends MRElement {
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
           break
-
         default:
           break
       }
@@ -148,7 +146,6 @@ export class Entity extends MRElement {
     while (this.object3D.parent) {
       this.object3D.removeFromParent()
     }
-    console.log('removed')
 
     this.environment = null
     this.observer.disconnect()

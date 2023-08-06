@@ -64,36 +64,17 @@ export class MRApp extends MRElement {
 
   connectedCallback() {
     this.init()
-    document.documentElement.setAttribute(
-      'style',
-      `
-        bottom: 0;
-        left: 0;
-        position: fixed;
-        right: 0;
-        top: 0;`
-    )
-
-    document.body.setAttribute(
-      'style',
-      `
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      width: 100%;`
-    )
 
     this.debug = this.getAttribute('debug') ?? false
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
+    // initialize built in Systems
     document.addEventListener('DOMContentLoaded', (event) => {
       import('@dimforge/rapier3d').then((rap) => {
         RAPIER = rap
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
-        // Run the simulation.
         this.physicsSystem = new RapierPhysicsSystem()
       })
     })
@@ -118,6 +99,16 @@ export class MRApp extends MRElement {
     }
   }
 
+  // TODO: These are for toggling debug and app level flags in realtime. 
+  //       Currently only 'debug' is implemented. but we should add:
+  //       - stats
+  //       - lighting
+  //       - controllers
+  //       - ?
+  mutatedAttribute(mutation) {}
+
+  mutatedChildList(mutation) {}
+
   init() {
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -131,12 +122,6 @@ export class MRApp extends MRElement {
     orbitControls.maxDistance = 8
 
     let renderStyle = this.renderer.domElement.getAttribute('style')
-
-    renderStyle += 'background-color: #fff;'
-
-    this.renderer.domElement.setAttribute('style', renderStyle)
-    this.setAttribute('data-html2canvas-ignore', true)
-    this.ARButton.setAttribute('data-html2canvas-ignore', true)
 
     this.appendChild(this.renderer.domElement)
     document.body.appendChild(this.ARButton)
@@ -167,10 +152,6 @@ export class MRApp extends MRElement {
   remove(entity) {
     this.scene.remove(entity.object3D)
   }
-
-  mutatedAttribute(mutation) {}
-
-  mutatedChildList(mutation) {}
 
   onWindowResize() {
     this.user.aspect = window.innerWidth / window.innerHeight
