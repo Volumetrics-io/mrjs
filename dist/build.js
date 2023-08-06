@@ -51874,7 +51874,6 @@ class BodyOffset {
 
 
 class Entity extends MRElement {
-  static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
 
   #width = 'auto'
   set width(value) {
@@ -51984,7 +51983,6 @@ class Entity extends MRElement {
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
           break
-
         default:
           break
       }
@@ -52018,7 +52016,6 @@ class Entity extends MRElement {
     while (this.object3D.parent) {
       this.object3D.removeFromParent()
     }
-    console.log('removed')
 
     this.environment = null
     this.observer.disconnect()
@@ -59975,8 +59972,6 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
-
-
 class TextSystem extends System {
   constructor() {
     super()
@@ -67210,36 +67205,17 @@ class MRApp extends MRElement {
 
   connectedCallback() {
     this.init()
-    document.documentElement.setAttribute(
-      'style',
-      `
-        bottom: 0;
-        left: 0;
-        position: fixed;
-        right: 0;
-        top: 0;`
-    )
-
-    document.body.setAttribute(
-      'style',
-      `
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      width: 100%;`
-    )
 
     this.debug = this.getAttribute('debug') ?? false
     this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
+    // initialize built in Systems
     document.addEventListener('DOMContentLoaded', (event) => {
       __webpack_require__.e(/* import() */ 87).then(__webpack_require__.bind(__webpack_require__, 87)).then((rap) => {
         RAPIER = rap
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
-        // Run the simulation.
         this.physicsSystem = new RapierPhysicsSystem()
       })
     })
@@ -67264,6 +67240,16 @@ class MRApp extends MRElement {
     }
   }
 
+  // TODO: These are for toggling debug and app level flags in realtime. 
+  //       Currently only 'debug' is implemented. but we should add:
+  //       - stats
+  //       - lighting
+  //       - controllers
+  //       - ?
+  mutatedAttribute(mutation) {}
+
+  mutatedChildList(mutation) {}
+
   init() {
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -67277,12 +67263,6 @@ class MRApp extends MRElement {
     orbitControls.maxDistance = 8
 
     let renderStyle = this.renderer.domElement.getAttribute('style')
-
-    renderStyle += 'background-color: #fff;'
-
-    this.renderer.domElement.setAttribute('style', renderStyle)
-    this.setAttribute('data-html2canvas-ignore', true)
-    this.ARButton.setAttribute('data-html2canvas-ignore', true)
 
     this.appendChild(this.renderer.domElement)
     document.body.appendChild(this.ARButton)
@@ -67313,10 +67293,6 @@ class MRApp extends MRElement {
   remove(entity) {
     this.scene.remove(entity.object3D)
   }
-
-  mutatedAttribute(mutation) {}
-
-  mutatedChildList(mutation) {}
 
   onWindowResize() {
     this.user.aspect = window.innerWidth / window.innerHeight
@@ -67459,7 +67435,6 @@ function UIPlane(width, height, r, s) {
 class Panel extends Entity {
   static get observedAttributes() {
     return [
-      'orientation',
       'width',
       'height',
       'corner-radius',
@@ -67499,9 +67474,6 @@ class Panel extends Entity {
   constructor() {
     super()
 
-    this.fitToParent = false
-    this.euler = new Euler()
-
     this.geometry = UIPlane(
       this.width,
       this.height,
@@ -67519,20 +67491,11 @@ class Panel extends Entity {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
-    // physics
   }
 
+  // TODO: Switch to overriding MutationCallback instead
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
-      case 'orientation':
-        this.euler.fromArray(
-          newValue
-            .split(' ')
-            .map(Number)
-            .map((x) => x * (Math.PI / 180))
-        )
-        this.object3D.setRotationFromEuler(this.euler)
-        break
       case 'width':
         this.width = parseFloat(newValue)
         break
