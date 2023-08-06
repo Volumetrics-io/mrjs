@@ -9,68 +9,23 @@
 
   </head>
   <body >
-    <mr-env>
-        <mr-surface>
-            <mr-volume>
-                <mr-column snap-to="back">
-                    <mr-panel width="1.75" height="0.2" corner-radius="0.05" text-style="size: 0.1; vertical: top">
-                        This is an example of layout!
-                    </mr-panel>
-                    <mr-panel width="3" height="2" corner-radius="0.1" color="lightgrey">
-                            <mr-panel
-                            id="controlpanel"
-                            color="grey" 
-                            width="1.7" 
-                            height="3.2" 
-                            corner-radius="0.2" 
-                            scale="0.12" 
-                            position="-1.51 0.01 0.01">
-                                <mr-column position="0 0 0.011">
-                                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" width="1.5" corner-radius="0.25" color="grey">test</mr-panel> 
-                                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" width="1.5" corner-radius="0.25" color="grey">test</mr-panel>
-                                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" width="1.5" corner-radius="0.25" color="grey">test</mr-panel>
-                                </mr-column>
-                            </mr-panel>
-                            <mr-row position="0 0 0.001">
-                                <mr-panel text-style="size: 0.07; vertical: top" width="1.5" height="2">
-                                    Deserunt ad eiusmod do reprehenderit minim elit esse. Laborum laborum consectetur exercitation minim incididunt aliquip enim nulla velit qui occaecat aute in. Enim duis fugiat qui ullamco nulla nostrud id velit. Et tempor exercitation culpa exercitation exercitation in fugiat occaecat mollit quis est velit. Amet proident velit sunt officia irure laborum adipisicing nostrud. Culpa enim nulla anim qui eu est pariatur ut do pariatur consectetur. Fugiat occaecat in Lorem aliqua nulla Lorem commodo non sint ipsum duis labore excepteur laboris.
-    
-    Mollit culpa sunt Lorem fugiat sint reprehenderit quis laborum et minim. Cupidatat elit ad eu dolor fugiat esse tempor laborum elit. Irure officia reprehenderit nisi nisi irure. Nisi sit ullamco velit esse labore eiusmod veniam cillum. Fugiat enim cupidatat ullamco culpa velit reprehenderit labore voluptate sit. Laboris pariatur laborum aliqua aute.
-    
-    Voluptate do in sint magna. Cupidatat ad irure nulla nulla eu veniam velit eu. Voluptate minim labore eiusmod ut laboris officia laborum. Occaecat dolor labore reprehenderit enim esse minim pariatur esse. Et proident mollit officia eiusmod nulla consequat dolor et eiusmod ut nostrud nulla.
-    
-    Pariatur anim adipisicing minim amet nisi exercitation anim dolore sit dolor deserunt commodo ea culpa. Deserunt incididunt culpa duis sunt ipsum sunt. Officia ut consectetur laboris velit dolore ea.
-    
-    Ad est dolor ipsum reprehenderit culpa culpa incididunt in minim dolore est velit nostrud nulla. Occaecat enim proident labore elit do officia officia adipisicing veniam adipisicing consequat. Deserunt sit do officia consectetur deserunt sit esse consequat. Sunt nisi ullamco minim pariatur veniam elit consequat.
-                                </mr-panel>
-                                <mr-column>
-                                    <mr-panel text-style="size: 0.07; vertical: top" width="1.5" height="1">
-                                        Enim proident ipsum sunt aliqua nostrud excepteur non quis reprehenderit aute exercitation ad enim. Sint id ipsum anim aliqua et tempor officia id ullamco sint ut in dolore duis. Aliqua velit culpa ut consequat non amet laborum occaecat. Duis anim non ex aute non ut.
-                                    </mr-panel>
-                                    <mr-panel text-style="size: 0.07; vertical: top" width="1.5" height="1">
-                                        Sint ad labore proident minim ullamco. Laborum aute cillum ut eiusmod irure esse qui amet esse occaecat cillum. Adipisicing duis excepteur ea incididunt laboris qui elit irure qui ut adipisicing aliquip consequat minim. Qui nostrud enim aute ipsum. Anim ut officia ea reprehenderit consectetur magna. Ipsum sit quis do nisi cillum eu enim esse irure. Nisi tempor laborum laboris amet nisi adipisicing sunt reprehenderit laboris non adipisicing.
-                                    </mr-panel>
-                                </mr-column>
-                            </mr-row>
-                        </mr-panel>
-                    </mr-column>
-            </mr-volume>
-        </mr-surface>
-    </mr-env>
+    <mr-app>
+        <mr-container width="4" height="5">
+            <mr-column>
+                <mr-panel color="red"></mr-panel>
+                <mr-panel margin="0.2 0" width="2" color="green"></mr-panel>
+                <mr-row>
+                  <mr-panel color="blue"></mr-panel>
+                  <mr-panel color="yellow"></mr-panel>
+                </mr-row>
+                <mr-row height="2">
+                  <mr-panel color="orange"></mr-panel>
+                  <mr-panel color="purple"></mr-panel>
+                  <mr-panel color="magenta"></mr-panel>
+                  <mr-panel color="grey"></mr-panel>
+                </mr-row>
+            </mr-column>
+        </mr-container>
+    </mr-app>
   </body>
-
-  <footer>
-    <script type="module">
-
-        document.addEventListener('hoverstart', (event) => {
-            event.target.object3D.scale.setScalar(0.8)
-            event.target.object3D.position.setZ(-0.1)
-        })
-
-        document.addEventListener('hoverend', (event) => {
-            event.target.object3D.scale.setScalar(1)
-            event.target.object3D.position.setZ(0)
-        })
-    </script>
-  </footer>
 </html>

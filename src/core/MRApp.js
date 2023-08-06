@@ -12,7 +12,8 @@ import {
   RapierPhysicsSystem,
 } from '../component-systems/RapierPhysicsSystem.js'
 
-;('use strict')
+;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
+('use strict')
 
 export class MRApp extends MRElement {
   constructor() {
@@ -97,6 +98,7 @@ export class MRApp extends MRElement {
       })
     })
     this.controlSystem = new ControlSystem()
+    this.layoutSystem = new LayoutSystem
     this.textSystem = new TextSystem()
   }
 

@@ -1,10 +1,54 @@
 import * as THREE from 'three'
 import { parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
-import { MaterialHelper } from '../utils/materialHelper.js'
+import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
   static DEFAULT_ATTRIBUTES = ['position', 'scale', 'rotation']
+
+  #width = 'auto'
+  set width(value) {
+    this.#width = value
+    this.dimensionsUpdate()
+  }
+  get width() {
+    return this.#width
+  }
+
+  get computedWidth() {
+    let computed = this.#width == 'auto' ? 1 : this.#width
+    return computed + this.margin.horizontal
+  }
+
+  #height = 'auto'
+  set height(value) {
+    this.#height = value
+    this.dimensionsUpdate()
+  }
+  get height() {
+    return this.#height
+  }
+
+  get computedHeight() {
+    let computed = this.#height == 'auto' ? 1 : this.#height
+    return computed + this.margin.vertical
+  }
+
+  #zOffeset = 0.001
+  set zOffeset(value) {
+    this.#zOffeset = value
+  }
+  get zOffeset() {
+    return this.#zOffeset
+  }
+
+  margin = new BodyOffset(this.dimensionsUpdate)
+
+  padding = new BodyOffset(this.dimensionsUpdate)
+
+  dimensionsUpdate = () => {
+    this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
+  }
 
   constructor() {
     super()
@@ -58,11 +102,17 @@ export class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
-        case 'mat':
-          MaterialHelper.applyMaterial(this.object3D, attr.name, attr.value)
+        case 'width':
+          this.width = parseFloat(attr.value)
           break
-        case 'tex':
-          MaterialHelper.applyTexture(this.object3D, attr.name, attr.value)
+        case 'height':
+          this.height = parseFloat(attr.value)
+          break
+        case 'margin':
+          this.margin.setFromVector(parseVector(attr.value))
+          break
+        case 'padding':
+          this.padding.setFromVector(parseVector(attr.value))
           break
 
         default:
@@ -115,18 +165,6 @@ export class Entity extends MRElement {
       }
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
-      } else if (mutation.attributeName.startsWith('mat-')) {
-        MaterialHelper.applyMaterial(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
-      } else if (mutation.attributeName.startsWith('tex-')) {
-        MaterialHelper.applyTexture(
-          this.object3D,
-          mutation.attributeName,
-          this.getAttribute(mutation.attributeName)
-        )
       }
     }
   }

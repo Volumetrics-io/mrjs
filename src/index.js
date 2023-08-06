@@ -9,6 +9,7 @@ import './core/entity.js'
 
 // SYSTEMS
 import './component-systems/RapierPhysicsSystem.js'
+import './component-systems/LayoutSystem.js'
 
 // GEOMETRY
 import './geometry/UIPlane.js'
@@ -18,11 +19,8 @@ import './core/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'
 
-import './entities/UI/DOMPanel.js'
-import './entities/UI/TextAreaPanel.js'
-import './entities/UI/TextEditorPanel.js'
-
 // UI: LAYOUT
+import './entities/layout/Container.js'
 import './entities/layout/Row.js'
 import './entities/layout/Column.js'
 
