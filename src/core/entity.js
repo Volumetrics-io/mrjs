@@ -78,7 +78,7 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'visibility: hidden;')
+    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 

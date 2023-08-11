@@ -51948,7 +51948,7 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'visibility: hidden;')
+    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -59986,7 +59986,6 @@ class TextSystem extends System {
     for( const entity of this.registry) {
       let text = entity.textContent.trim()
       if (entity.textObj.text != text) {
-        console.log('new text');
         entity.textObj.text = text.length > 0 ? text : ' '
         entity.textObj.sync()
       }
