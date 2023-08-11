@@ -68,6 +68,7 @@ export class Entity extends MRElement {
     this.scale = 1
 
     this.componentMutated = this.componentMutated.bind(this)
+
   }
 
   connectedCallback() {
@@ -77,6 +78,7 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
+    this.setAttribute('style', 'visibility: hidden;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 

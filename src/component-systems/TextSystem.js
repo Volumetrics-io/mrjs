@@ -8,7 +8,15 @@ export class TextSystem extends System {
     this.app.addEventListener('has-text', this.addText)
   }
 
-  update(deltaTime) {}
+  update(deltaTime) {
+    for( const entity of this.registry) {
+      let text = entity.textContent.trim()
+      if (entity.textObj.text != text) {
+        entity.textObj.text = text.length > 0 ? text : ' '
+        entity.textObj.sync()
+      }
+    }
+  }
 
   addText = (event) => {
     const { entity } = event.detail

@@ -51938,6 +51938,7 @@ class Entity extends MRElement {
     this.scale = 1
 
     this.componentMutated = this.componentMutated.bind(this)
+
   }
 
   connectedCallback() {
@@ -51947,6 +51948,7 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
+    this.setAttribute('style', 'visibility: hidden;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -59980,7 +59982,16 @@ class TextSystem extends System {
     this.app.addEventListener('has-text', this.addText)
   }
 
-  update(deltaTime) {}
+  update(deltaTime) {
+    for( const entity of this.registry) {
+      let text = entity.textContent.trim()
+      if (entity.textObj.text != text) {
+        console.log('new text');
+        entity.textObj.text = text.length > 0 ? text : ' '
+        entity.textObj.sync()
+      }
+    }
+  }
 
   addText = (event) => {
     const { entity } = event.detail
