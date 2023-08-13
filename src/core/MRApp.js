@@ -76,9 +76,9 @@ export class MRApp extends MRElement {
         RAPIER = rap
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
+        this.controlSystem = new ControlSystem()
       })
     })
-    this.controlSystem = new ControlSystem()
     this.layoutSystem = new LayoutSystem
     this.textSystem = new TextSystem()
   }

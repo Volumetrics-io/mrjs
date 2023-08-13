@@ -21,5 +21,8 @@ export class ControlSystem extends System {
   update(deltaTime) {
     this.leftHand.setMesh()
     this.rightHand.setMesh()
+
+    this.leftHand.updatePhysicsBodies()
+    this.rightHand.updatePhysicsBodies()
   }
 }

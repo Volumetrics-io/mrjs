@@ -66728,127 +66728,6 @@ class XRHandModelFactory {
 
 
 
-;// CONCATENATED MODULE: ./src/interaction/hand.js
-
-
-
-
-const HOVER_DISTANCE = 0.05
-const PINCH_DISTANCE = 0.02
-
-const HAND_MAPPING = {
-  left: 0,
-  right: 1,
-}
-
-class MRHand {
-  constructor(handedness, app) {
-    this.handedness = handedness
-    this.pinch = false
-    this.hover = false
-
-    this.hoverInitPosition = new three_module_Vector3()
-    this.hoverPosition = new three_module_Vector3()
-
-    this.controllerModelFactory = new XRControllerModelFactory()
-    this.handModelFactory = new XRHandModelFactory()
-
-    this.mesh
-    this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness])
-
-    this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
-    this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
-
-    this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness])
-    this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
-
-    this.hand.add(this.model)
-
-    this.hand.addEventListener('pinchstart', this.onPinch)
-    this.hand.addEventListener('pinchend', this.onPinch)
-
-    app.scene.add(this.controller)
-    app.scene.add(this.grip)
-    app.scene.add(this.hand)
-  }
-
-  setMesh = () => {
-    if (this.mesh) {
-      return
-    }
-    this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
-    if (!this.mesh) {
-      return
-    }
-    this.mesh.material.colorWrite = false
-    this.mesh.renderOrder = 2
-  }
-
-  onPinch = (event) => {
-    this.pinch = event.type == 'pinchstart'
-    const position = this.getCursorPosition()
-    document.dispatchEvent(
-      new CustomEvent(event.type, {
-        bubbles: true,
-        detail: {
-          handedness: this.handedness,
-          position,
-        },
-      })
-    )
-  }
-
-  getJointPosition(jointName) {
-    const result = new three_module_Vector3()
-
-    if (!this.mesh) {
-      return result
-    }
-    const joint = this.mesh.skeleton.getBoneByName(jointName)
-
-    if (joint == null) {
-      return result
-    }
-
-    joint.getWorldPosition(result)
-
-    return result
-  }
-
-  getCursorPosition() {
-    const index = this.getJointPosition('index-finger-tip')
-    const thumb = this.getJointPosition('thumb-tip')
-    return index.lerp(thumb, 0.5)
-  }
-}
-
-;// CONCATENATED MODULE: ./src/component-systems/ControlSystem.js
-
-
-
-
-class ControlSystem extends System {
-  constructor() {
-    super()
-    this.leftHand = new MRHand('left', this.app)
-    this.rightHand = new MRHand('right', this.app)
-
-    const geometry = new SphereGeometry(0.01)
-    const material = new MeshBasicMaterial()
-    material.color.setStyle('red')
-
-    this.leftCursor = new three_module_Mesh(geometry, material)
-    this.rightCursor = new three_module_Mesh(geometry, material)
-
-    this.ROI = new Box3()
-  }
-
-  update(deltaTime) {
-    this.leftHand.setMesh()
-    this.rightHand.setMesh()
-  }
-}
-
 ;// CONCATENATED MODULE: ./src/component-systems/RapierPhysicsSystem.js
 
 
@@ -66998,6 +66877,211 @@ class RapierPhysicsSystem extends System {
       'color',
       new three_module_BufferAttribute(buffers.colors, 4)
     )
+  }
+}
+
+;// CONCATENATED MODULE: ./src/interaction/hand.js
+
+
+
+
+
+const HOVER_DISTANCE = 0.05
+const PINCH_DISTANCE = 0.02
+
+const joints = [
+  'wrist',
+  'thumb-metacarpal',
+  'thumb-phalanx-proximal',
+  'thumb-phalanx-distal',
+  'thumb-tip',
+  'index-finger-metacarpal',
+  'index-finger-phalanx-proximal',
+  'index-finger-phalanx-intermediate',
+  'index-finger-phalanx-distal',
+  'index-finger-tip',
+  'middle-finger-metacarpal',
+  'middle-finger-phalanx-proximal',
+  'middle-finger-phalanx-intermediate',
+  'middle-finger-phalanx-distal',
+  'middle-finger-tip',
+  'ring-finger-metacarpal',
+  'ring-finger-phalanx-proximal',
+  'ring-finger-phalanx-intermediate',
+  'ring-finger-phalanx-distal',
+  'ring-finger-tip',
+  'pinky-finger-metacarpal',
+  'pinky-finger-phalanx-proximal',
+  'pinky-finger-phalanx-intermediate',
+  'pinky-finger-phalanx-distal',
+  'pinky-finger-tip',
+];
+
+const HAND_MAPPING = {
+  left: 0,
+  right: 1,
+}
+
+class MRHand {
+  constructor(handedness, app) {
+    this.handedness = handedness
+    this.pinch = false
+    this.hover = false
+
+    this.jointPhysicsBodies = {}
+
+    this.tempJointPosition = new three_module_Vector3()
+    this.tempJointOrientation = new Quaternion()
+
+    this.hoverInitPosition = new three_module_Vector3()
+    this.hoverPosition = new three_module_Vector3()
+
+    this.controllerModelFactory = new XRControllerModelFactory()
+    this.handModelFactory = new XRHandModelFactory()
+
+    this.mesh
+    this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness])
+
+    this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
+    this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
+
+    this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness])
+    this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
+
+    this.hand.add(this.model)
+
+    this.hand.addEventListener('pinchstart', this.onPinch)
+    this.hand.addEventListener('pinchend', this.onPinch)
+
+    app.scene.add(this.controller)
+    app.scene.add(this.grip)
+    app.scene.add(this.hand)
+    this.initPhysicsBodies(app)
+  }
+
+  initPhysicsBodies(app){
+    for(const joint of joints) {
+      this.tempJointPosition = this.getJointPosition(joint)
+      this.tempJointOrientation = this.getJointOrientation(joint)
+      const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
+        ...this.tempJointPosition
+      )
+
+      const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+
+      this.jointPhysicsBodies[joint] = {body: app.physicsWorld.createRigidBody(rigidBodyDesc)}
+      this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation)
+
+      this.jointPhysicsBodies[joint].collider = app.physicsWorld.createCollider(
+        colliderDesc,
+        this.jointPhysicsBodies[joint].body
+      )
+    }
+  }
+
+  updatePhysicsBodies() {
+    for(const joint of joints) {
+      this.tempJointPosition = this.getJointPosition(joint)
+      this.tempJointOrientation = this.getJointOrientation(joint)
+      this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true)
+      this.jointPhysicsBodies[joint].body.setRotation(this.tempJointOrientation, true)
+    }
+  }
+
+  setMesh = () => {
+    if (this.mesh) {
+      return
+    }
+    this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
+    if (!this.mesh) {
+      return
+    }
+    this.mesh.material.colorWrite = false
+    this.mesh.renderOrder = 2
+  }
+
+  onPinch = (event) => {
+    this.pinch = event.type == 'pinchstart'
+    const position = this.getCursorPosition()
+    document.dispatchEvent(
+      new CustomEvent(event.type, {
+        bubbles: true,
+        detail: {
+          handedness: this.handedness,
+          position,
+        },
+      })
+    )
+  }
+
+  getJointOrientation(jointName){
+    const result = new Quaternion()
+
+    if (!this.mesh) {
+      return result
+    }
+    const joint = this.mesh.skeleton.getBoneByName(jointName)
+
+    if (joint == null) {
+      return result
+    }
+
+    joint.getWorldQuaternion(result)
+
+    return result
+  }
+
+  getJointPosition(jointName) {
+    const result = new three_module_Vector3()
+
+    if (!this.mesh) {
+      return result
+    }
+    const joint = this.mesh.skeleton.getBoneByName(jointName)
+
+    if (joint == null) {
+      return result
+    }
+
+    joint.getWorldPosition(result)
+
+    return result
+  }
+
+  getCursorPosition() {
+    const index = this.getJointPosition('index-finger-tip')
+    const thumb = this.getJointPosition('thumb-tip')
+    return index.lerp(thumb, 0.5)
+  }
+}
+
+;// CONCATENATED MODULE: ./src/component-systems/ControlSystem.js
+
+
+
+
+class ControlSystem extends System {
+  constructor() {
+    super()
+    this.leftHand = new MRHand('left', this.app)
+    this.rightHand = new MRHand('right', this.app)
+
+    const geometry = new SphereGeometry(0.01)
+    const material = new MeshBasicMaterial()
+    material.color.setStyle('red')
+
+    this.leftCursor = new three_module_Mesh(geometry, material)
+    this.rightCursor = new three_module_Mesh(geometry, material)
+
+    this.ROI = new Box3()
+  }
+
+  update(deltaTime) {
+    this.leftHand.setMesh()
+    this.rightHand.setMesh()
+
+    this.leftHand.updatePhysicsBodies()
+    this.rightHand.updatePhysicsBodies()
   }
 }
 
@@ -67219,9 +67303,9 @@ class MRApp extends MRElement {
         RAPIER = rap
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
+        this.controlSystem = new ControlSystem()
       })
     })
-    this.controlSystem = new ControlSystem()
     this.layoutSystem = new LayoutSystem
     this.textSystem = new TextSystem()
   }
