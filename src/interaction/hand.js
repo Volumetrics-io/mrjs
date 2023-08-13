@@ -80,7 +80,7 @@ export class MRHand {
     for(const joint of joints) {
       this.tempJointPosition = this.getJointPosition(joint)
       this.tempJointOrientation = this.getJointOrientation(joint)
-      const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
+      const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
         ...this.tempJointPosition
       )
 
@@ -93,6 +93,10 @@ export class MRHand {
         colliderDesc,
         this.jointPhysicsBodies[joint].body
       )
+
+      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
+        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+      this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     }
   }
 

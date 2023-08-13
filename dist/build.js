@@ -66754,6 +66754,8 @@ class RapierPhysicsSystem extends System {
     this.tempWorldQuaternion = new Quaternion()
     this.tempHalfExtents = new three_module_Vector3()
 
+    this.eventQueue = new RAPIER.EventQueue(true);
+
     const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
@@ -66780,7 +66782,13 @@ class RapierPhysicsSystem extends System {
   }
 
   update(deltaTime) {
-    this.app.physicsWorld.step()
+    this.app.physicsWorld.step(this.eventQueue);
+
+    this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+      /* Handle the collision event. */
+      console.log(handle1);
+      console.log(handle2);
+    });
 
     for (const entity of this.registry) {
       if (entity.physics.update) {
@@ -66845,6 +66853,11 @@ class RapierPhysicsSystem extends System {
       colliderDesc,
       entity.physics.body
     )
+
+    entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
+      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+    entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+   
   }
 
   updateBody(entity) {
@@ -66963,7 +66976,7 @@ class MRHand {
     for(const joint of joints) {
       this.tempJointPosition = this.getJointPosition(joint)
       this.tempJointOrientation = this.getJointOrientation(joint)
-      const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
+      const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
         ...this.tempJointPosition
       )
 
@@ -66976,6 +66989,10 @@ class MRHand {
         colliderDesc,
         this.jointPhysicsBodies[joint].body
       )
+
+      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
+        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+      this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     }
   }
 
