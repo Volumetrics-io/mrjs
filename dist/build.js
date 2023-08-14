@@ -51927,6 +51927,8 @@ class Entity extends MRElement {
       writable: false,
     })
 
+    this.focused = false
+
     this.object3D = new Group()
     this.components = new Set()
     this.object3D.userData.bbox = new Box3()
@@ -66736,6 +66738,10 @@ class XRHandModelFactory {
 
 let RAPIER = null
 
+const JOINT_COLLIDER_HANDLE_NAMES = {}
+const COLLIDER_ENTITY_MAP = {}
+
+
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
 // shape, body, mass, etc are definied as attributes.
@@ -66756,6 +66762,7 @@ class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
+
     const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
@@ -66770,7 +66777,7 @@ class RapierPhysicsSystem extends System {
       this.registry.add(entity)
     }
 
-    if (this.debug) {
+    if (this.debug && this.debug == "true") {
       const material = new LineBasicMaterial({
         color: 0xffffff,
         vertexColors: true,
@@ -66786,8 +66793,18 @@ class RapierPhysicsSystem extends System {
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       /* Handle the collision event. */
-      console.log(handle1);
-      console.log(handle2);
+      let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1] ?? JOINT_COLLIDER_HANDLE_NAMES[handle2]
+      let entity =  COLLIDER_ENTITY_MAP[handle1] ??  COLLIDER_ENTITY_MAP[handle2]
+      if (joint && entity){
+        entity.dispatchEvent(
+          new CustomEvent(`touch-${started ? 'start' : 'end'}`, {
+            bubbles: true,
+            detail: {
+              joint: joint
+            },
+          })
+        )
+      }
     });
 
     for (const entity of this.registry) {
@@ -66854,10 +66871,12 @@ class RapierPhysicsSystem extends System {
       entity.physics.body
     )
 
+    COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity
+
     entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
       RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
     entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-   
+
   }
 
   updateBody(entity) {
@@ -66880,7 +66899,7 @@ class RapierPhysicsSystem extends System {
   }
 
   updateDebugRenderer() {
-    if(!this.debug) { return }
+    if(!this.debug || this.debug == "false") { return }
     const buffers = this.app.physicsWorld.debugRender()
     this.lines.geometry.setAttribute(
       'position',
@@ -66943,8 +66962,12 @@ class MRHand {
 
     this.jointPhysicsBodies = {}
 
+    this.identityPosition = new three_module_Vector3()
+
     this.tempJointPosition = new three_module_Vector3()
     this.tempJointOrientation = new Quaternion()
+
+    this.orientationOffset = new Quaternion( 0.7071068, 0, 0, 0.7071068)
 
     this.hoverInitPosition = new three_module_Vector3()
     this.hoverPosition = new three_module_Vector3()
@@ -66980,7 +67003,13 @@ class MRHand {
         ...this.tempJointPosition
       )
 
-      const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+      let colliderDesc
+
+      if( joint.includes('tip') ){
+        colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+      } else {
+        colliderDesc = RAPIER.ColliderDesc.capsule(0.01, 0.01)
+      }
 
       this.jointPhysicsBodies[joint] = {body: app.physicsWorld.createRigidBody(rigidBodyDesc)}
       this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation)
@@ -66990,9 +67019,17 @@ class MRHand {
         this.jointPhysicsBodies[joint].body
       )
 
-      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
+      this.jointPhysicsBodies[joint].body.enableCcd(true);
+
+      // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to join collisions
+      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+
+      if( joint.includes('tip') ){
+        JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
+      }
+
     }
   }
 
@@ -67000,8 +67037,15 @@ class MRHand {
     for(const joint of joints) {
       this.tempJointPosition = this.getJointPosition(joint)
       this.tempJointOrientation = this.getJointOrientation(joint)
+
+      if( !joint.includes('tip') ){
+        this.tempJointOrientation.multiply(this.orientationOffset)
+      }
+
       this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true)
       this.jointPhysicsBodies[joint].body.setRotation(this.tempJointOrientation, true)
+
+      
     }
   }
 
@@ -67052,15 +67096,21 @@ class MRHand {
     const result = new three_module_Vector3()
 
     if (!this.mesh) {
+      result.addScalar(10000)
       return result
     }
     const joint = this.mesh.skeleton.getBoneByName(jointName)
 
     if (joint == null) {
+      result.addScalar(10000)
       return result
     }
 
     joint.getWorldPosition(result)
+
+    if (result.equals(this.identityPosition)) {
+      result.addScalar(10000)
+    }
 
     return result
   }

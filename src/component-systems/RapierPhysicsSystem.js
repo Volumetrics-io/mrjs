@@ -5,6 +5,10 @@ import { parseVector } from '../utils/parser.js'
 
 export let RAPIER = null
 
+export const JOINT_COLLIDER_HANDLE_NAMES = {}
+export const COLLIDER_ENTITY_MAP = {}
+
+
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
 // shape, body, mass, etc are definied as attributes.
@@ -25,6 +29,7 @@ export class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
+
     const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
@@ -39,7 +44,7 @@ export class RapierPhysicsSystem extends System {
       this.registry.add(entity)
     }
 
-    if (this.debug) {
+    if (this.debug && this.debug == "true") {
       const material = new THREE.LineBasicMaterial({
         color: 0xffffff,
         vertexColors: true,
@@ -55,8 +60,18 @@ export class RapierPhysicsSystem extends System {
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       /* Handle the collision event. */
-      console.log(handle1);
-      console.log(handle2);
+      let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1] ?? JOINT_COLLIDER_HANDLE_NAMES[handle2]
+      let entity =  COLLIDER_ENTITY_MAP[handle1] ??  COLLIDER_ENTITY_MAP[handle2]
+      if (joint && entity){
+        entity.dispatchEvent(
+          new CustomEvent(`touch-${started ? 'start' : 'end'}`, {
+            bubbles: true,
+            detail: {
+              joint: joint
+            },
+          })
+        )
+      }
     });
 
     for (const entity of this.registry) {
@@ -123,10 +138,12 @@ export class RapierPhysicsSystem extends System {
       entity.physics.body
     )
 
+    COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity
+
     entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
       RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
     entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-   
+
   }
 
   updateBody(entity) {
@@ -149,7 +166,7 @@ export class RapierPhysicsSystem extends System {
   }
 
   updateDebugRenderer() {
-    if(!this.debug) { return }
+    if(!this.debug || this.debug == "false") { return }
     const buffers = this.app.physicsWorld.debugRender()
     this.lines.geometry.setAttribute(
       'position',
