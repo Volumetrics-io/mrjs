@@ -8,7 +8,6 @@ export let RAPIER = null
 export const JOINT_COLLIDER_HANDLE_NAMES = {}
 export const COLLIDER_ENTITY_MAP = {}
 
-
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
 // shape, body, mass, etc are definied as attributes.
