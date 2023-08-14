@@ -10,27 +10,9 @@
   </head>
   <body >
     <mr-app debug="true">
-        <mr-container width="3" height="2" position="0 0 0">
-            <mr-panel
-            id="controlpanel"
-            color="grey" 
-            width="1.7" 
-            height="3.2" 
-            corner-radius="0.2" 
-            scale="0.12" 
-            position="-1.51 0.01 0.01">
-                <mr-column>
-                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" corner-radius="0.25" color="grey">test</mr-panel> 
-                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" corner-radius="0.25" color="grey">test</mr-panel>
-                    <mr-panel text-style="size: 0.5; vertical: top" class="selectable" corner-radius="0.25" color="grey">test</mr-panel>
-                </mr-column>
-            </mr-panel>
+        <mr-container scale="0.3" width="1" height="1.33333" position="0 -0.2 -0.5">
             <mr-column>
-                <mr-panel width="1.75" height="0.1"  margin="0.05" text-style="size: 0.1; vertical: top">
-                    This is an example of layout!
-                </mr-panel>
-                <mr-row>
-                    <mr-panel text-style="size: 0.07; vertical: top">
+                    <mr-panel text-style="size: 0.035; vertical: top">
                         Deserunt ad eiusmod do reprehenderit minim elit esse. Laborum laborum consectetur exercitation minim incididunt aliquip enim nulla velit qui occaecat aute in. Enim duis fugiat qui ullamco nulla nostrud id velit. Et tempor exercitation culpa exercitation exercitation in fugiat occaecat mollit quis est velit. Amet proident velit sunt officia irure laborum adipisicing nostrud. Culpa enim nulla anim qui eu est pariatur ut do pariatur consectetur. Fugiat occaecat in Lorem aliqua nulla Lorem commodo non sint ipsum duis labore excepteur laboris.
 
 Mollit culpa sunt Lorem fugiat sint reprehenderit quis laborum et minim. Cupidatat elit ad eu dolor fugiat esse tempor laborum elit. Irure officia reprehenderit nisi nisi irure. Nisi sit ullamco velit esse labore eiusmod veniam cillum. Fugiat enim cupidatat ullamco culpa velit reprehenderit labore voluptate sit. Laboris pariatur laborum aliqua aute.
@@ -41,15 +23,6 @@ Pariatur anim adipisicing minim amet nisi exercitation anim dolore sit dolor des
 
 Ad est dolor ipsum reprehenderit culpa culpa incididunt in minim dolore est velit nostrud nulla. Occaecat enim proident labore elit do officia officia adipisicing veniam adipisicing consequat. Deserunt sit do officia consectetur deserunt sit esse consequat. Sunt nisi ullamco minim pariatur veniam elit consequat.
                     </mr-panel>
-                    <mr-column >
-                        <mr-panel text-style="size: 0.07; vertical: top" >
-                            Enim proident ipsum sunt aliqua nostrud excepteur non quis reprehenderit aute exercitation ad enim. Sint id ipsum anim aliqua et tempor officia id ullamco sint ut in dolore duis. Aliqua velit culpa ut consequat non amet laborum occaecat. Duis anim non ex aute non ut.
-                        </mr-panel>
-                        <mr-panel text-style="size: 0.07; vertical: top">
-                            Sint ad labore proident minim ullamco. Laborum aute cillum ut eiusmod irure esse qui amet esse occaecat cillum. Adipisicing duis excepteur ea incididunt laboris qui elit irure qui ut adipisicing aliquip consequat minim. Qui nostrud enim aute ipsum. Anim ut officia ea reprehenderit consectetur magna. Ipsum sit quis do nisi cillum eu enim esse irure. Nisi tempor laborum laboris amet nisi adipisicing sunt reprehenderit laboris non adipisicing.
-                        </mr-panel>
-                    </mr-column>
-                </mr-row>
                 </mr-column>
         </mr-container>
     </mr-app>
@@ -58,16 +31,8 @@ Ad est dolor ipsum reprehenderit culpa culpa incididunt in minim dolore est veli
   <footer>
     <script type="module">
 
-        document.addEventListener('hoverstart', (event) => {
-            event.target.object3D.scale.setScalar(1.2)
-            let position = event.target.object3D.position
-            position.setZ(position.z + 0.1)
-            
-        })
-
-        document.addEventListener('hoverend', (event) => {
-            event.target.object3D.scale.setScalar(1)
-            position.setZ(position.z - 0.1)
+        document.addEventListener('touch-start', (event) => {
+            console.log('touched');
         })
     </script>
   </footer>
