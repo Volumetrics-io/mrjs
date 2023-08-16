@@ -22,10 +22,35 @@ export class TextInputSystem extends System {
       if (entity.focused && this.focus != entity) {
         if(this.focus) { this.focus.focused = false }
         this.focus = entity
+        this.getSourceText(this.focus)
       } else if(!this.focus.focused) {
         this.focus = null
       }
     }
+  }
+
+
+  getSourceText(entity) {
+    let result 
+    let src = entity.getAttribute('src')
+    console.log(src);
+    result = document.getElementById(src)
+    console.log(result);
+    if ( result ) { 
+      entity.textContent = result.innerHTML 
+    }
+
+    // TODO: load from file
+    
+  }
+
+  // NOT USED YET
+  updateSourceText(src, text) {
+    let source 
+    source = document.getElementById(src)
+    if ( source ) { source.textContent = text }
+
+    // TODO: update file
   }
 
   

@@ -10,13 +10,24 @@
   </head>
   <body >
     <mr-app>
-        <mr-container position="0 -0.2 -0.5" scale="0.3" width="2" height="2.66666">
-            <mr-panel>
-                <mr-texteditor corner-radius="0.05" text-style="size: 0.07; vertical: top">
-                    test
-                </mr-texteditor>
-            </mr-panel>
-        </mr-container>
+        <mr-volume position="0 0 0">
+            <mr-container scale="0.5" width="2" height="2.66666" snap-to="left">
+                <mr-panel corner-radius="0.05">
+                    <mr-texteditor src="dev" text-style="size: 0.03; vertical: top">
+                    </mr-texteditor>
+                </mr-panel>
+            </mr-container>
+    
+            <mr-entity id="dev" snap-to="back">
+<mr-container scale="0.7" width="1.333" height="1">
+    <mr-row>
+        <mr-panel width="0.25" margin="0 0.02 0 0"></mr-panel>
+        <mr-panel width="0.75"></mr-panel>
+    </mr-row>
+</mr-container>
+            </mr-entity>
+        </mr-volume>
+        
     </mr-app>
   </body>
 

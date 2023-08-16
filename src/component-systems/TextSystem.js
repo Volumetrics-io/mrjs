@@ -36,7 +36,8 @@ export class TextSystem extends System {
     if (!entity.textObj) { 
       entity.textObj = new Text()
       entity.object3D.add(entity.textObj)
-      entity.textObj.text = entity.textContent.trim()
+      let text = entity.textContent.trim()
+      entity.textObj.text = text.length > 0 ? text : ' '
     }
 
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}

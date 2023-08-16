@@ -58763,7 +58763,8 @@ class TextSystem extends System {
     if (!entity.textObj) { 
       entity.textObj = new Text()
       entity.object3D.add(entity.textObj)
-      entity.textObj.text = entity.textContent.trim()
+      let text = entity.textContent.trim()
+      entity.textObj.text = text.length > 0 ? text : ' '
     }
 
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
@@ -66095,10 +66096,34 @@ class TextInputSystem extends System {
       if (entity.focused && this.focus != entity) {
         if(this.focus) { this.focus.focused = false }
         this.focus = entity
+        this.getSourceText(this.focus)
       } else if(!this.focus.focused) {
         this.focus = null
       }
     }
+  }
+
+
+  getSourceText(entity) {
+    let result 
+    let src = entity.getAttribute('src')
+    console.log(src);
+    result = document.getElementById(src)
+    console.log(result);
+    if ( result ) { 
+      entity.textContent = result.innerHTML 
+    }
+
+    // TODO: load from file
+    
+  }
+
+  updateSourceText(src, text) {
+    let source 
+    source = document.getElementById(src)
+    if ( source ) { source.textContent = text }
+
+    // TODO: update file
   }
 
   
