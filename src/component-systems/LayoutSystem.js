@@ -13,7 +13,7 @@ export class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
-        this.adjustContent(event.target, event.target.width, event.target.height)
+        this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
     }
 
     adjustContent = (entity, width, height) => {
@@ -25,6 +25,9 @@ export class LayoutSystem extends System {
         else if (entity instanceof Row) { 
             entity.height = entity.height == 'auto' ? height : entity.height
             this.adjustRow(entity, width) 
+        } else {
+            entity.width = entity.width == 'auto' ? width : entity.width
+            entity.height = entity.height == 'auto' ? height : entity.height
         }
 
         /// Set Z-index
@@ -33,8 +36,8 @@ export class LayoutSystem extends System {
         const children = Array.from(entity.children)
         for (const child of children) {
             if (!child instanceof Entity) { continue }
-            let childWidth = entity.width == 'auto' ? width : entity.width
-            let childHeight = entity.height == 'auto' ? height : entity.height
+            let childWidth = entity.computedInternalWidth
+            let childHeight = entity.computedInternalHeight
             this.adjustContent(child, childWidth, childHeight)
         }
     }

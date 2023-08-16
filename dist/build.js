@@ -51772,7 +51772,7 @@ class BodyOffset {
     #top = 0
     set top(value){
         this.#top = value
-        this.callback()
+        this.callback
     }
     get top() {
         return this.#top
@@ -51781,7 +51781,7 @@ class BodyOffset {
     #right = 0
     set right(value){
         this.#right = value
-        this.callback()
+        this.callback
     }
     get right() {
         return this.#right
@@ -51790,7 +51790,7 @@ class BodyOffset {
     #bottom = 0
     set bottom(value){
         this.#bottom = value
-        this.callback()
+        this.callback
     }
     get bottom() {
         return this.#bottom
@@ -51799,7 +51799,7 @@ class BodyOffset {
     #left = 0
     set left(value){
         this.#left = value
-        this.callback()
+        this.callback
     }
     get left() {
         return this.#left
@@ -51808,7 +51808,7 @@ class BodyOffset {
     set vertical(value){
         this.#top = value
         this.#bottom = value
-        this.callback()
+        this.callback
     }
 
     get vertical(){
@@ -51818,7 +51818,7 @@ class BodyOffset {
     set horizontal(value){
         this.#right = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     get horizontal(){
@@ -51830,7 +51830,7 @@ class BodyOffset {
         this.#right = value
         this.#bottom = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     setFromVector(vector) {
@@ -51889,6 +51889,11 @@ class Entity extends MRElement {
     return computed + this.margin.horizontal
   }
 
+  get computedInternalWidth() {
+    let computed = this.#width == 'auto' ? 1 : this.#width
+    return computed - this.padding.horizontal
+  }
+
   #height = 'auto'
   set height(value) {
     this.#height = value
@@ -51901,6 +51906,11 @@ class Entity extends MRElement {
   get computedHeight() {
     let computed = this.#height == 'auto' ? 1 : this.#height
     return computed + this.margin.vertical
+  }
+
+  get computedInternalHeight() {
+    let computed = this.#height == 'auto' ? 1 : this.#height
+    return computed - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -65984,7 +65994,7 @@ class Row extends Entity {
     const children = Array.from(this.children)
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.columns += child.width == 'auto' ? 1 : child.width
+        this.columns += child.computedWidth
     }
   }
 }
@@ -66007,7 +66017,7 @@ class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
-        this.adjustContent(event.target, event.target.width, event.target.height)
+        this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
     }
 
     adjustContent = (entity, width, height) => {
@@ -66019,6 +66029,9 @@ class LayoutSystem extends System {
         else if (entity instanceof Row) { 
             entity.height = entity.height == 'auto' ? height : entity.height
             this.adjustRow(entity, width) 
+        } else {
+            entity.width = entity.width == 'auto' ? width : entity.width
+            entity.height = entity.height == 'auto' ? height : entity.height
         }
 
         /// Set Z-index
@@ -66027,8 +66040,8 @@ class LayoutSystem extends System {
         const children = Array.from(entity.children)
         for (const child of children) {
             if (!child instanceof Entity) { continue }
-            let childWidth = entity.width == 'auto' ? width : entity.width
-            let childHeight = entity.height == 'auto' ? height : entity.height
+            let childWidth = entity.computedInternalWidth
+            let childHeight = entity.computedInternalHeight
             this.adjustContent(child, childWidth, childHeight)
         }
     }
@@ -66084,7 +66097,6 @@ class TextInputSystem extends System {
     const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
-      console.log(entity);
       if (entity instanceof MRInput) {
         this.registry.add(entity)
       }
@@ -66107,9 +66119,7 @@ class TextInputSystem extends System {
   getSourceText(entity) {
     let result 
     let src = entity.getAttribute('src')
-    console.log(src);
     result = document.getElementById(src)
-    console.log(result);
     if ( result ) { 
       entity.textContent = result.innerHTML 
     }
@@ -66118,6 +66128,7 @@ class TextInputSystem extends System {
     
   }
 
+  // NOT USED YET
   updateSourceText(src, text) {
     let source 
     source = document.getElementById(src)
@@ -66289,16 +66300,16 @@ class MRApp extends MRElement {
     document.body.appendChild(this.stats.dom)
 
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
-    // this.user = new THREE.PerspectiveCamera(
-    //   70,
-    //   window.innerWidth / window.innerHeight,
-    //   0.01,
-    //   20
-    // )
+    this.user = new PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.01,
+      20
+    )
 
-    this.user = new OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
+    // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
 
-    this.user.position.set(0, 0, 2)
+    this.user.position.set(0, 0, 1)
 
     const appLight = new AmbientLight(0xffffff)
     this.scene.add(appLight)
@@ -66626,6 +66637,7 @@ class Panel extends Entity {
         break
       case 'corner-radius':
         this.radius = parseFloat(newValue)
+        this.padding.all = this.radius
         break
       case 'smoothness':
         this.smoothness = parseFloat(newValue)

@@ -38,16 +38,16 @@ export class MRApp extends MRElement {
     document.body.appendChild(this.stats.dom)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    // this.user = new THREE.PerspectiveCamera(
-    //   70,
-    //   window.innerWidth / window.innerHeight,
-    //   0.01,
-    //   20
-    // )
+    this.user = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.01,
+      20
+    )
 
-    this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
+    // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
 
-    this.user.position.set(0, 0, 2)
+    this.user.position.set(0, 0, 1)
 
     const appLight = new THREE.AmbientLight(0xffffff)
     this.scene.add(appLight)

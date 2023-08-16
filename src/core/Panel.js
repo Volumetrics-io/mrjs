@@ -74,6 +74,7 @@ export default class Panel extends Entity {
         break
       case 'corner-radius':
         this.radius = parseFloat(newValue)
+        this.padding.all = this.radius
         break
       case 'smoothness':
         this.smoothness = parseFloat(newValue)

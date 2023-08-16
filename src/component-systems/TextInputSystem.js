@@ -10,7 +10,6 @@ export class TextInputSystem extends System {
     const entities = this.app.querySelectorAll('*')
 
     for (const entity of entities) {
-      console.log(entity);
       if (entity instanceof MRInput) {
         this.registry.add(entity)
       }
@@ -33,9 +32,7 @@ export class TextInputSystem extends System {
   getSourceText(entity) {
     let result 
     let src = entity.getAttribute('src')
-    console.log(src);
     result = document.getElementById(src)
-    console.log(result);
     if ( result ) { 
       entity.textContent = result.innerHTML 
     }
