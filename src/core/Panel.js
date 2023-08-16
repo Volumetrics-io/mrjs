@@ -12,7 +12,7 @@ export default class Panel extends Entity {
       'color',
     ]
   }
-  radius = 0.05
+  radius = 0.02
   smoothness = 18
 
   set height(value) {

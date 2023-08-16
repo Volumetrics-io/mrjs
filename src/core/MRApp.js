@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
+import { VRButton } from 'three/addons/webxr/VRButton.js'
 import { MRElement } from './MRElement.js'
 
 // built in Systems
@@ -13,6 +14,7 @@ import {
 } from '../component-systems/RapierPhysicsSystem.js'
 
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
+import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 ('use strict')
 
 export class MRApp extends MRElement {
@@ -23,9 +25,12 @@ export class MRApp extends MRElement {
       writable: false,
     })
 
+    this.SCREEN_WIDTH = window.innerWidth / 1000
+		this.SCREEN_HEIGHT = window.innerHeight / 1000
+
+
     this.clock = new THREE.Clock()
     this.systems = new Set()
-
     this.scene = new THREE.Scene()
 
     this.stats = new Stats()
@@ -33,12 +38,15 @@ export class MRApp extends MRElement {
     document.body.appendChild(this.stats.dom)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.user = new THREE.PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.01,
-      20
-    )
+    // this.user = new THREE.PerspectiveCamera(
+    //   70,
+    //   window.innerWidth / window.innerHeight,
+    //   0.01,
+    //   20
+    // )
+
+    this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
+
     this.user.position.set(0, 0, 2)
 
     const appLight = new THREE.AmbientLight(0xffffff)
@@ -56,9 +64,13 @@ export class MRApp extends MRElement {
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
-
     this.ARButton = ARButton.createButton(this.renderer, {
       requiredFeatures: ['hand-tracking'],
+    })
+
+    this.ARButton.addEventListener('click', () => {
+      console.log('clicked');
+      this.ARButton.blur()
     })
   }
 
@@ -66,7 +78,6 @@ export class MRApp extends MRElement {
     this.init()
 
     this.debug = this.getAttribute('debug') ?? false
-    this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
@@ -78,9 +89,11 @@ export class MRApp extends MRElement {
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
       })
+
+      this.layoutSystem = new LayoutSystem()
+      this.textSystem = new TextSystem()
+      this.textInputSystem = new TextInputSystem()
     })
-    this.layoutSystem = new LayoutSystem
-    this.textSystem = new TextSystem()
   }
 
   disconnectedCallback() {
@@ -114,12 +127,11 @@ export class MRApp extends MRElement {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.autoClear = false
     this.renderer.shadowMap.enabled = true
-    this.renderer.outputEncoding = THREE.sRGBEncoding
     this.renderer.xr.enabled = true
 
-    const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
-    orbitControls.minDistance = 0
-    orbitControls.maxDistance = 8
+    // const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+    // orbitControls.minDistance = 0
+    // orbitControls.maxDistance = 8
 
     let renderStyle = this.renderer.domElement.getAttribute('style')
 
