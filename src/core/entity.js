@@ -95,6 +95,9 @@ export class Entity extends MRElement {
     if (this.parentElement.user) {
       this.user = this.parentElement.user
     }
+    if (this.parentElement.env) {
+      this.env = this.parentElement.env
+    }
 
     this.object3D.userData.element = this
 
@@ -135,6 +138,12 @@ export class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+
+    document.addEventListener('engine-started', (event) => {
+      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+    })
+
+    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
   }
 
   checkForText = () => {
@@ -157,6 +166,10 @@ export class Entity extends MRElement {
   disconnectedCallback() {
     while (this.object3D.parent) {
       this.object3D.removeFromParent()
+    }
+
+    if(this.physics){
+      this.env.physicsWorld.removeRigidBody(this.physics.body)
     }
 
     this.environment = null

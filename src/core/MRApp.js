@@ -27,6 +27,7 @@ export class MRApp extends MRElement {
     this.SCREEN_WIDTH = window.innerWidth / 1000
 		this.SCREEN_HEIGHT = window.innerHeight / 1000
 
+    this.env = this
 
     this.clock = new THREE.Clock()
     this.systems = new Set()
@@ -86,6 +87,7 @@ export class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
+        this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 
       this.layoutSystem = new LayoutSystem()

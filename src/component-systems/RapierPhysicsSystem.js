@@ -28,20 +28,7 @@ export class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
-
     const entities = this.app.querySelectorAll('*')
-
-    for (const entity of entities) {
-      if (!(entity instanceof Entity)) {
-        continue
-      }
-      this.initTransform(entity)
-      if (!entity.object3D.isMesh) {
-        continue
-      }
-      this.initPhysicsBody(entity)
-      this.registry.add(entity)
-    }
 
     if (this.debug && this.debug == "true") {
       const material = new THREE.LineBasicMaterial({
@@ -83,33 +70,12 @@ export class RapierPhysicsSystem extends System {
     this.updateDebugRenderer()
   }
 
-  initTransform(entity) {
-    const position = entity.getAttribute('position')
-    const scale = entity.getAttribute('scale')
-    const rotation = entity.getAttribute('rotation')
-
-    entity.radius =
-      entity.getAttribute('corner-radius') ?? entity.parent.radius ?? 0
-
-    if (position) {
-      entity.object3D.position.fromArray(parseVector(position))
+  onNewEntity(entity) {
+    if (!entity.object3D.isMesh) {
+      return
     }
-
-    if (scale) {
-      entity.object3D.scale.setScalar(scale)
-    }
-
-    if (rotation) {
-      const euler = new THREE.Euler()
-      const array = parseVector(rotation).map(radToDeg)
-      euler.fromArray(array)
-      entity.object3D.setRotationFromEuler(euler)
-    }
-
-    entity.object3D.userData.size = new THREE.Vector3()
-    entity.object3D.userData.bbox = new THREE.Box3()
-    entity.object3D.userData.bbox.setFromObject(entity.object3D)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    this.initPhysicsBody(entity)
+    this.registry.add(entity)
   }
 
   initPhysicsBody(entity) {

@@ -9,6 +9,9 @@ export class Container extends Entity {
     document.addEventListener('DOMContentLoaded', (event) => {
     this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
+    setTimeout(() => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    }, 0);
   }
 }
 

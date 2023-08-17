@@ -19,6 +19,10 @@ export class System {
     this.app.addEventListener(`${this.componentName}-updated`, this.onUpdate)
     this.app.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
+    this.app.addEventListener('new-entity', (event) => {
+      this.onNewEntity(event.target)
+    })
+
     const entities = document.querySelectorAll(`[${this.componentName}]`)
     for (const entity of entities) {
       if (!(entity instanceof Entity)) {
@@ -31,6 +35,12 @@ export class System {
   // Called per frame
   update(deltaTime) {
   }
+
+  // called when a new entity is added to the scene
+  onNewEntity (entity) {
+  }
+
+
 
   // called when the component is initialized
   attachedComponent(entity, data) {
