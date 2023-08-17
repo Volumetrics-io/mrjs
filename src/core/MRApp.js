@@ -129,6 +129,8 @@ export class MRApp extends MRElement {
     this.renderer.autoClear = false
     this.renderer.shadowMap.enabled = true
     this.renderer.xr.enabled = true
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1;
 
     if(this.debug){
       const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
