@@ -1296,7 +1296,7 @@ function degToRad( degrees ) {
 
 }
 
-function three_module_radToDeg( radians ) {
+function radToDeg( radians ) {
 
 	return radians * RAD2DEG;
 
@@ -1458,7 +1458,7 @@ const MathUtils = {
 	randFloatSpread: randFloatSpread,
 	seededRandom: seededRandom,
 	degToRad: degToRad,
-	radToDeg: three_module_radToDeg,
+	radToDeg: radToDeg,
 	isPowerOfTwo: isPowerOfTwo,
 	ceilPowerOfTwo: ceilPowerOfTwo,
 	floorPowerOfTwo: floorPowerOfTwo,
@@ -51965,6 +51965,9 @@ class Entity extends MRElement {
     if (this.parentElement.user) {
       this.user = this.parentElement.user
     }
+    if (this.parentElement.env) {
+      this.env = this.parentElement.env
+    }
 
     this.object3D.userData.element = this
 
@@ -52005,6 +52008,12 @@ class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+
+    document.addEventListener('engine-started', (event) => {
+      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+    })
+
+    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
   }
 
   checkForText = () => {
@@ -52027,6 +52036,10 @@ class Entity extends MRElement {
   disconnectedCallback() {
     while (this.object3D.parent) {
       this.object3D.removeFromParent()
+    }
+
+    if(this.physics){
+      this.env.physicsWorld.removeRigidBody(this.physics.body)
     }
 
     this.environment = null
@@ -52124,6 +52137,10 @@ class System {
     this.app.addEventListener(`${this.componentName}-updated`, this.onUpdate)
     this.app.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
+    this.app.addEventListener('new-entity', (event) => {
+      this.onNewEntity(event.target)
+    })
+
     const entities = document.querySelectorAll(`[${this.componentName}]`)
     for (const entity of entities) {
       if (!(entity instanceof Entity)) {
@@ -52136,6 +52153,12 @@ class System {
   // Called per frame
   update(deltaTime) {
   }
+
+  // called when a new entity is added to the scene
+  onNewEntity (entity) {
+  }
+
+
 
   // called when the component is initialized
   attachedComponent(entity, data) {
@@ -66808,20 +66831,7 @@ class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
-
     const entities = this.app.querySelectorAll('*')
-
-    for (const entity of entities) {
-      if (!(entity instanceof Entity)) {
-        continue
-      }
-      this.initTransform(entity)
-      if (!entity.object3D.isMesh) {
-        continue
-      }
-      this.initPhysicsBody(entity)
-      this.registry.add(entity)
-    }
 
     if (this.debug && this.debug == "true") {
       const material = new LineBasicMaterial({
@@ -66863,33 +66873,12 @@ class RapierPhysicsSystem extends System {
     this.updateDebugRenderer()
   }
 
-  initTransform(entity) {
-    const position = entity.getAttribute('position')
-    const scale = entity.getAttribute('scale')
-    const rotation = entity.getAttribute('rotation')
-
-    entity.radius =
-      entity.getAttribute('corner-radius') ?? entity.parent.radius ?? 0
-
-    if (position) {
-      entity.object3D.position.fromArray(parseVector(position))
+  onNewEntity(entity) {
+    if (!entity.object3D.isMesh) {
+      return
     }
-
-    if (scale) {
-      entity.object3D.scale.setScalar(scale)
-    }
-
-    if (rotation) {
-      const euler = new Euler()
-      const array = parseVector(rotation).map(radToDeg)
-      euler.fromArray(array)
-      entity.object3D.setRotationFromEuler(euler)
-    }
-
-    entity.object3D.userData.size = new three_module_Vector3()
-    entity.object3D.userData.bbox = new Box3()
-    entity.object3D.userData.bbox.setFromObject(entity.object3D)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    this.initPhysicsBody(entity)
+    this.registry.add(entity)
   }
 
   initPhysicsBody(entity) {
@@ -67576,6 +67565,7 @@ class MRApp extends MRElement {
     this.SCREEN_WIDTH = window.innerWidth / 1000
 		this.SCREEN_HEIGHT = window.innerHeight / 1000
 
+    this.env = this
 
     this.clock = new Clock()
     this.systems = new Set()
@@ -67635,6 +67625,7 @@ class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
+        this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 
       this.layoutSystem = new LayoutSystem()
@@ -68222,6 +68213,9 @@ class Container extends Entity {
     document.addEventListener('DOMContentLoaded', (event) => {
     this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
+    setTimeout(() => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    }, 0);
   }
 }
 
