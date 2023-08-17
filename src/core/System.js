@@ -40,8 +40,6 @@ export class System {
   onNewEntity (entity) {
   }
 
-
-
   // called when the component is initialized
   attachedComponent(entity, data) {
     console.log(`attached ${this.componentName} ${data}}`)

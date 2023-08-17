@@ -52158,8 +52158,6 @@ class System {
   onNewEntity (entity) {
   }
 
-
-
   // called when the component is initialized
   attachedComponent(entity, data) {
     console.log(`attached ${this.componentName} ${data}}`)
@@ -67282,6 +67280,9 @@ class LayoutSystem extends System {
         } else {
             entity.width = entity.width == 'auto' ? width : entity.width
             entity.height = entity.height == 'auto' ? height : entity.height
+            if (entity.physics){
+                entity.physics.update = true
+            }
         }
 
         /// Set Z-index
@@ -67311,6 +67312,9 @@ class LayoutSystem extends System {
 
             // fill parent
             child.width = child.width == 'auto' ? column.width : child.width
+            if (child.physics){
+                child.physics.update = true
+             }
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -67330,6 +67334,10 @@ class LayoutSystem extends System {
 
              // fill parent
              child.height = child.height == 'auto' ? row.height : child.height
+
+             if (child.physics){
+                child.physics.update = true
+             }
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
@@ -67667,6 +67675,8 @@ class MRApp extends MRElement {
     this.renderer.autoClear = false
     this.renderer.shadowMap.enabled = true
     this.renderer.xr.enabled = true
+    this.renderer.toneMapping = ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1;
 
     if(this.debug){
       const orbitControls = new OrbitControls(this.user, this.renderer.domElement)

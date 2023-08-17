@@ -28,6 +28,9 @@ export class LayoutSystem extends System {
         } else {
             entity.width = entity.width == 'auto' ? width : entity.width
             entity.height = entity.height == 'auto' ? height : entity.height
+            if (entity.physics){
+                entity.physics.update = true
+            }
         }
 
         /// Set Z-index
@@ -57,6 +60,9 @@ export class LayoutSystem extends System {
 
             // fill parent
             child.width = child.width == 'auto' ? column.width : child.width
+            if (child.physics){
+                child.physics.update = true
+             }
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -76,6 +82,10 @@ export class LayoutSystem extends System {
 
              // fill parent
              child.height = child.height == 'auto' ? row.height : child.height
+
+             if (child.physics){
+                child.physics.update = true
+             }
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
