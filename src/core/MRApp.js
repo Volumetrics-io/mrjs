@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
-import { VRButton } from 'three/addons/webxr/VRButton.js'
 import { MRElement } from './MRElement.js'
 
 // built in Systems
@@ -77,7 +76,6 @@ export class MRApp extends MRElement {
   connectedCallback() {
     this.init()
 
-    this.debug = this.getAttribute('debug') ?? false
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
@@ -91,8 +89,8 @@ export class MRApp extends MRElement {
       })
 
       this.layoutSystem = new LayoutSystem()
-      this.textSystem = new TextSystem()
       this.textInputSystem = new TextInputSystem()
+      this.textSystem = new TextSystem()
     })
   }
 
@@ -123,15 +121,18 @@ export class MRApp extends MRElement {
   mutatedChildList(mutation) {}
 
   init() {
+    this.debug = this.getAttribute('debug') ?? false
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.autoClear = false
     this.renderer.shadowMap.enabled = true
     this.renderer.xr.enabled = true
 
-    // const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
-    // orbitControls.minDistance = 0
-    // orbitControls.maxDistance = 8
+    if(this.debug){
+      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+      orbitControls.minDistance = 0
+      orbitControls.maxDistance = 8
+    }
 
     let renderStyle = this.renderer.domElement.getAttribute('style')
 

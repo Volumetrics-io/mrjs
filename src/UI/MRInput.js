@@ -1,3 +1,4 @@
+import { Text } from 'troika-three-text'
 import { Entity } from "../core/entity"
 
 export class MRInput extends Entity {
@@ -5,4 +6,7 @@ export class MRInput extends Entity {
         super()
         this.focused = true
     }
+
+    
+
 }

@@ -5,7 +5,8 @@ export class TextInputSystem extends System {
   constructor() {
     super()
     this.focus = null
-    document.addEventListener('keydown', this.captureText, true,);
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
 
     const entities = this.app.querySelectorAll('*')
 
@@ -21,39 +22,67 @@ export class TextInputSystem extends System {
       if (entity.focused && this.focus != entity) {
         if(this.focus) { this.focus.focused = false }
         this.focus = entity
-        this.getSourceText(this.focus)
       } else if(!this.focus.focused) {
         this.focus = null
+      }
+
+      if(this.focus?.newSrc) {
+        this.getSourceText()
+        this.focus.newSrc = false
       }
     }
   }
 
 
-  getSourceText(entity) {
-    let result 
-    let src = entity.getAttribute('src')
-    result = document.getElementById(src)
-    if ( result ) { 
-      entity.textContent = result.innerHTML 
+  getSourceText() {
+    if (this.focus.srcElement) {
+      this.focus.textContent = this.focus.srcElement.innerHTML 
     }
 
     // TODO: load from file
     
   }
 
+  saveUpdate(){
+    if(this.focus) {
+      this.spliceSplit(this.currentIndex, 1, '')
+      this.focus.srcElement.innerHTML = this.focus.textContent
+      this.spliceSplit(this.currentIndex, 0, '|')
+
+    }
+  }
+
   // NOT USED YET
   updateSourceText(src, text) {
-    let source 
-    source = document.getElementById(src)
-    if ( source ) { source.textContent = text }
 
     // TODO: update file
   }
 
+  handleMetaKeys = (key) => {
+    switch (key) {
+      case 's':
+        this.saveUpdate()
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  onKeyUp = (event) => {
+    let key = event.key;
+    switch (key) {
+      case 'Meta':
+        this.meta = false
+        break
+
+      default:
+        break
+    }
+  }
   
 
-  captureText = (event) => {
-    console.log(event);
+  onKeyDown = (event) => {
 
     if (this.focus == null) { return }
     event.stopPropagation()
@@ -61,27 +90,21 @@ export class TextInputSystem extends System {
 
     let key = event.key;
 
-    console.log(key);
+    if (this.meta) {
+      this.handleMetaKeys(key)
+      return
+    }
 
-    switch (key) {
-        case 'Meta':
-          this.meta ^= true
+    switch (true) {
+        case key == 'Meta':
+          this.meta = true
           break
-  
-        case 'Control':
-          break
-        case 'Alt':
-          break
-  
-        case 'Shift':
-          break
-  
-        case 'Enter':
+        case key == 'Enter':
           this.spliceSplit(this.currentIndex, 0, '\n')
           this.currentIndex += 1
           break
   
-        case 'Backspace':
+        case key == 'Backspace':
           if (this.currentIndex == 0) {
             return
           }
@@ -89,24 +112,24 @@ export class TextInputSystem extends System {
           this.currentIndex -= 1
           break
   
-        case 'Tab':
+        case key == 'Tab':
           this.focus.textContent += '\t'
           break
   
-        case 'ArrowLeft':
+        case key == 'ArrowLeft':
           if (this.currentIndex == 0) {
             return
           }
           this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
           break
   
-        case 'ArrowRight':
+        case key == 'ArrowRight':
           if (this.currentIndex == this.focus.textContent.length) {
             return
           }
           this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
           break
-        case 'ArrowUp':
+        case key == 'ArrowUp':
           if (this.currentIndex == 0) {
             return
           }
@@ -125,7 +148,7 @@ export class TextInputSystem extends System {
   
           this.setCursorPosition(this.currentIndex, newUpIndex)
           break
-        case 'ArrowDown':
+        case key == 'ArrowDown':
           if (this.currentIndex == this.focus.textContent.length) {
             return
           }
@@ -150,10 +173,13 @@ export class TextInputSystem extends System {
   
           this.setCursorPosition(this.currentIndex, newDownIndex)
           break
-        default:
+        case key.length == 1:
           this.spliceSplit(this.currentIndex, 0, key)
           this.currentIndex += 1
   
+          break
+
+        default:
           break
       }
   }
