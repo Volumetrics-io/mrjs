@@ -45,6 +45,9 @@ export class MRHand {
     this.pinch = false
     this.hover = false
 
+    this.cursor
+    this.cursorPosition = new THREE.Vector3()
+
     this.jointPhysicsBodies = {}
 
     this.identityPosition = new THREE.Vector3()
@@ -78,6 +81,7 @@ export class MRHand {
     app.scene.add(this.grip)
     app.scene.add(this.hand)
     this.initPhysicsBodies(app)
+    this.initCursor(app)
   }
 
   initPhysicsBodies(app){
@@ -114,8 +118,34 @@ export class MRHand {
       if( joint.includes('tip') ){
         JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
       }
-
     }
+  }
+
+  initCursor(app) {
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(1000, 1000, 1000)
+    const colliderDesc = RAPIER.ColliderDesc.ball(0.02)
+
+    this.cursor = app.physicsWorld.createRigidBody(rigidBodyDesc)
+    let collider = app.physicsWorld.createCollider(
+      colliderDesc,
+      this.cursor
+    )
+
+    collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+    collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    
+  }
+
+  updateCursor(){
+    if(!this.pinch){ return }
+    this.cursorPosition.copy(this.getCursorPosition())
+    this.cursor.setTranslation({ ...this.cursorPosition }, true)
+  }
+
+  update() {
+    this.updatePhysicsBodies()
+    this.updateCursor()
   }
 
   updatePhysicsBodies() {
@@ -148,6 +178,10 @@ export class MRHand {
 
   onPinch = (event) => {
     this.pinch = event.type == 'pinchstart'
+    if(!this.pinch) {
+      this.cursorPosition.setScalar(1000)
+      this.cursor.setTranslation({ ...this.cursorPosition }, true)
+    }
     const position = this.getCursorPosition()
     document.dispatchEvent(
       new CustomEvent(event.type, {

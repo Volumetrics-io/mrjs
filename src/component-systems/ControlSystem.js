@@ -22,7 +22,7 @@ export class ControlSystem extends System {
     this.leftHand.setMesh()
     this.rightHand.setMesh()
 
-    this.leftHand.updatePhysicsBodies()
-    this.rightHand.updatePhysicsBodies()
+    this.leftHand.update()
+    this.rightHand.update()
   }
 }
