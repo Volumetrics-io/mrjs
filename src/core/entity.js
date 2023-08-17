@@ -19,6 +19,11 @@ export class Entity extends MRElement {
     return computed + this.margin.horizontal
   }
 
+  get computedInternalWidth() {
+    let computed = this.#width == 'auto' ? 1 : this.#width
+    return computed - this.padding.horizontal
+  }
+
   #height = 'auto'
   set height(value) {
     this.#height = value
@@ -31,6 +36,11 @@ export class Entity extends MRElement {
   get computedHeight() {
     let computed = this.#height == 'auto' ? 1 : this.#height
     return computed + this.margin.vertical
+  }
+
+  get computedInternalHeight() {
+    let computed = this.#height == 'auto' ? 1 : this.#height
+    return computed - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -68,6 +78,7 @@ export class Entity extends MRElement {
     this.scale = 1
 
     this.componentMutated = this.componentMutated.bind(this)
+
   }
 
   connectedCallback() {
@@ -77,6 +88,7 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
+    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 

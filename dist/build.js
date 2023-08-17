@@ -51772,7 +51772,7 @@ class BodyOffset {
     #top = 0
     set top(value){
         this.#top = value
-        this.callback()
+        this.callback
     }
     get top() {
         return this.#top
@@ -51781,7 +51781,7 @@ class BodyOffset {
     #right = 0
     set right(value){
         this.#right = value
-        this.callback()
+        this.callback
     }
     get right() {
         return this.#right
@@ -51790,7 +51790,7 @@ class BodyOffset {
     #bottom = 0
     set bottom(value){
         this.#bottom = value
-        this.callback()
+        this.callback
     }
     get bottom() {
         return this.#bottom
@@ -51799,7 +51799,7 @@ class BodyOffset {
     #left = 0
     set left(value){
         this.#left = value
-        this.callback()
+        this.callback
     }
     get left() {
         return this.#left
@@ -51808,7 +51808,7 @@ class BodyOffset {
     set vertical(value){
         this.#top = value
         this.#bottom = value
-        this.callback()
+        this.callback
     }
 
     get vertical(){
@@ -51818,7 +51818,7 @@ class BodyOffset {
     set horizontal(value){
         this.#right = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     get horizontal(){
@@ -51830,7 +51830,7 @@ class BodyOffset {
         this.#right = value
         this.#bottom = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     setFromVector(vector) {
@@ -51889,6 +51889,11 @@ class Entity extends MRElement {
     return computed + this.margin.horizontal
   }
 
+  get computedInternalWidth() {
+    let computed = this.#width == 'auto' ? 1 : this.#width
+    return computed - this.padding.horizontal
+  }
+
   #height = 'auto'
   set height(value) {
     this.#height = value
@@ -51901,6 +51906,11 @@ class Entity extends MRElement {
   get computedHeight() {
     let computed = this.#height == 'auto' ? 1 : this.#height
     return computed + this.margin.vertical
+  }
+
+  get computedInternalHeight() {
+    let computed = this.#height == 'auto' ? 1 : this.#height
+    return computed - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -51927,8 +51937,6 @@ class Entity extends MRElement {
       writable: false,
     })
 
-    this.focused = false
-
     this.object3D = new Group()
     this.components = new Set()
     this.object3D.userData.bbox = new Box3()
@@ -51940,6 +51948,7 @@ class Entity extends MRElement {
     this.scale = 1
 
     this.componentMutated = this.componentMutated.bind(this)
+
   }
 
   connectedCallback() {
@@ -51949,6 +51958,7 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
+    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -59971,7 +59981,21 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
+;// CONCATENATED MODULE: ./src/UI/MRInput.js
+
+
+
+class MRInput extends Entity {
+    constructor(){
+        super()
+        this.focused = true
+    }
+
+    
+
+}
 ;// CONCATENATED MODULE: ./src/component-systems/TextSystem.js
+
 
 
 
@@ -59979,17 +60003,40 @@ function groupCaretsByRow(textRenderInfo) {
 class TextSystem extends System {
   constructor() {
     super()
-    this.app.addEventListener('has-text', this.addText)
+    this.app.addEventListener('has-text', event => {
+      const { entity } = event.detail
+      this.registry.add(entity)
+      this.addText(entity)
+    })
+
+    const entities = this.app.querySelectorAll('*')
+
+    for (const entity of entities) {
+      if (entity instanceof MRInput) {
+        this.registry.add(entity)
+        this.addText(entity)
+      }
+    }
   }
 
-  update(deltaTime) {}
+  update(deltaTime) {
+    for( const entity of this.registry) {
+      let text = entity.textContent.trim()
+      if (entity.textObj.text != text) {
+        entity.textObj.text = text.length > 0 ? text : ' '
+        entity.textObj.sync()
+      }
+    }
+  }
 
-  addText = (event) => {
-    const { entity } = event.detail
-    this.registry.add(entity)
-    entity.textObj = new Text()
-    entity.object3D.add(entity.textObj)
-    entity.textObj.text = entity.textContent.trim()
+  addText = (entity) => {
+    if (!entity.textObj) { 
+      entity.textObj = new Text()
+      entity.object3D.add(entity.textObj)
+    }
+
+    let text = entity.textContent.trim()
+    entity.textObj.text = text.length > 0 ? text : ' '
 
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
 
@@ -66741,7 +66788,6 @@ let RAPIER = null
 const JOINT_COLLIDER_HANDLE_NAMES = {}
 const COLLIDER_ENTITY_MAP = {}
 
-
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
 // shape, body, mass, etc are definied as attributes.
@@ -67209,7 +67255,7 @@ class Row extends Entity {
     const children = Array.from(this.children)
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.columns += child.width == 'auto' ? 1 : child.width
+        this.columns += child.computedWidth
     }
   }
 }
@@ -67232,7 +67278,7 @@ class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
-        this.adjustContent(event.target, event.target.width, event.target.height)
+        this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
     }
 
     adjustContent = (entity, width, height) => {
@@ -67244,6 +67290,9 @@ class LayoutSystem extends System {
         else if (entity instanceof Row) { 
             entity.height = entity.height == 'auto' ? height : entity.height
             this.adjustRow(entity, width) 
+        } else {
+            entity.width = entity.width == 'auto' ? width : entity.width
+            entity.height = entity.height == 'auto' ? height : entity.height
         }
 
         /// Set Z-index
@@ -67252,8 +67301,8 @@ class LayoutSystem extends System {
         const children = Array.from(entity.children)
         for (const child of children) {
             if (!child instanceof Entity) { continue }
-            let childWidth = entity.width == 'auto' ? width : entity.width
-            let childHeight = entity.height == 'auto' ? height : entity.height
+            let childWidth = entity.computedInternalWidth
+            let childHeight = entity.computedInternalHeight
             this.adjustContent(child, childWidth, childHeight)
         }
     }
@@ -67296,6 +67345,212 @@ class LayoutSystem extends System {
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
 }
+;// CONCATENATED MODULE: ./src/component-systems/TextInputSystem.js
+
+
+
+class TextInputSystem extends System {
+  constructor() {
+    super()
+    this.focus = null
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
+
+    const entities = this.app.querySelectorAll('*')
+
+    for (const entity of entities) {
+      if (entity instanceof MRInput) {
+        this.registry.add(entity)
+      }
+    }
+  }
+
+  update(deltaTime){
+    for (const entity of this.registry) {
+      if (entity.focused && this.focus != entity) {
+        if(this.focus) { this.focus.focused = false }
+        this.focus = entity
+      } else if(!this.focus.focused) {
+        this.focus = null
+      }
+
+      if(this.focus?.newSrc) {
+        this.getSourceText()
+        this.focus.newSrc = false
+      }
+    }
+  }
+
+
+  getSourceText() {
+    if (this.focus.srcElement) {
+      this.focus.textContent = this.focus.srcElement.innerHTML 
+    }
+
+    // TODO: load from file
+    
+  }
+
+  saveUpdate(){
+    if(this.focus) {
+      this.spliceSplit(this.currentIndex, 1, '')
+      this.focus.srcElement.innerHTML = this.focus.textContent
+      this.spliceSplit(this.currentIndex, 0, '|')
+
+    }
+  }
+
+  // NOT USED YET
+  updateSourceText(src, text) {
+
+    // TODO: update file
+  }
+
+  handleMetaKeys = (key) => {
+    switch (key) {
+      case 's':
+        this.saveUpdate()
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  onKeyUp = (event) => {
+    let key = event.key;
+    switch (key) {
+      case 'Meta':
+        this.meta = false
+        break
+
+      default:
+        break
+    }
+  }
+  
+
+  onKeyDown = (event) => {
+
+    if (this.focus == null) { return }
+    event.stopPropagation()
+
+
+    let key = event.key;
+
+    if (this.meta) {
+      this.handleMetaKeys(key)
+      return
+    }
+
+    switch (true) {
+        case key == 'Meta':
+          this.meta = true
+          break
+        case key == 'Enter':
+          this.spliceSplit(this.currentIndex, 0, '\n')
+          this.currentIndex += 1
+          break
+  
+        case key == 'Backspace':
+          if (this.currentIndex == 0) {
+            return
+          }
+          this.spliceSplit(this.currentIndex - 1, 1, '')
+          this.currentIndex -= 1
+          break
+  
+        case key == 'Tab':
+          this.focus.textContent += '\t'
+          break
+  
+        case key == 'ArrowLeft':
+          if (this.currentIndex == 0) {
+            return
+          }
+          this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
+          break
+  
+        case key == 'ArrowRight':
+          if (this.currentIndex == this.focus.textContent.length) {
+            return
+          }
+          this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
+          break
+        case key == 'ArrowUp':
+          if (this.currentIndex == 0) {
+            return
+          }
+  
+          const oneLineBack = this.focus.textContent.lastIndexOf(
+            '\n',
+            this.currentIndex - 1
+          )
+          const twoLinesBack = this.focus.textContent.lastIndexOf(
+            '\n',
+            this.oneLineBack - 1
+          )
+          let newUpIndex = this.currentIndex - oneLineBack + twoLinesBack
+  
+          newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack
+  
+          this.setCursorPosition(this.currentIndex, newUpIndex)
+          break
+        case key == 'ArrowDown':
+          if (this.currentIndex == this.focus.textContent.length) {
+            return
+          }
+          const prevLine = this.focus.textContent.lastIndexOf(
+            '\n',
+            this.currentIndex - 1
+          )
+          const nextLine = this.focus.textContent.indexOf(
+            '\n',
+            this.currentIndex + 1
+          )
+          const lineAfter = this.focus.textContent.indexOf('\n', nextLine + 1)
+          let newDownIndex = this.currentIndex - prevLine + nextLine
+  
+          newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
+          newDownIndex =
+            newDownIndex < this.focus.textContent.length - 1
+              ? newDownIndex
+              : this.focus.textContent.length - 1
+          newDownIndex =
+            newDownIndex > 0 ? newDownIndex : this.focus.textContent.length - 1
+  
+          this.setCursorPosition(this.currentIndex, newDownIndex)
+          break
+        case key.length == 1:
+          this.spliceSplit(this.currentIndex, 0, key)
+          this.currentIndex += 1
+  
+          break
+
+        default:
+          break
+      }
+  }
+
+  setCursorPosition(oldIndex, newIndex) {
+    if (oldIndex == newIndex) {
+      return
+    }
+    if (newIndex < 0) {
+      return
+    }
+    this.spliceSplit(oldIndex, 1, '')
+    this.spliceSplit(newIndex, 0, '|')
+    this.currentIndex = newIndex
+  }
+
+  spliceSplit(index, count, add) {
+    const ar = this.focus.textContent.split('')
+    ar.splice(index, count, add)
+    this.focus.textContent = ar.join('')
+  }
+
+}
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -67304,6 +67559,7 @@ class LayoutSystem extends System {
 
 
 // built in Systems
+
 
 
 
@@ -67317,9 +67573,12 @@ class MRApp extends MRElement {
       writable: false,
     })
 
+    this.SCREEN_WIDTH = window.innerWidth / 1000
+		this.SCREEN_HEIGHT = window.innerHeight / 1000
+
+
     this.clock = new Clock()
     this.systems = new Set()
-
     this.scene = new Scene()
 
     this.stats = new (stats_min_default())()
@@ -67333,7 +67592,10 @@ class MRApp extends MRElement {
       0.01,
       20
     )
-    this.user.position.set(0, 0, 2)
+
+    // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
+
+    this.user.position.set(0, 0, 1)
 
     const appLight = new AmbientLight(0xffffff)
     this.scene.add(appLight)
@@ -67350,17 +67612,19 @@ class MRApp extends MRElement {
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
-
     this.ARButton = ARButton.createButton(this.renderer, {
       requiredFeatures: ['hand-tracking'],
+    })
+
+    this.ARButton.addEventListener('click', () => {
+      console.log('clicked');
+      this.ARButton.blur()
     })
   }
 
   connectedCallback() {
     this.init()
 
-    this.debug = this.getAttribute('debug') ?? false
-    this.setAttribute('style', 'position: absolute;')
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
@@ -67372,9 +67636,11 @@ class MRApp extends MRElement {
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
       })
+
+      this.layoutSystem = new LayoutSystem()
+      this.textInputSystem = new TextInputSystem()
+      this.textSystem = new TextSystem()
     })
-    this.layoutSystem = new LayoutSystem
-    this.textSystem = new TextSystem()
   }
 
   disconnectedCallback() {
@@ -67404,16 +67670,18 @@ class MRApp extends MRElement {
   mutatedChildList(mutation) {}
 
   init() {
+    this.debug = this.getAttribute('debug') ?? false
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.autoClear = false
     this.renderer.shadowMap.enabled = true
-    this.renderer.outputEncoding = sRGBEncoding
     this.renderer.xr.enabled = true
 
-    const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
-    orbitControls.minDistance = 0
-    orbitControls.maxDistance = 8
+    if(this.debug){
+      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+      orbitControls.minDistance = 0
+      orbitControls.maxDistance = 8
+    }
 
     let renderStyle = this.renderer.domElement.getAttribute('style')
 
@@ -67595,7 +67863,7 @@ class Panel extends Entity {
       'color',
     ]
   }
-  radius = 0.05
+  radius = 0.02
   smoothness = 18
 
   set height(value) {
@@ -67657,6 +67925,7 @@ class Panel extends Entity {
         break
       case 'corner-radius':
         this.radius = parseFloat(newValue)
+        this.padding.all = this.radius
         break
       case 'smoothness':
         this.smoothness = parseFloat(newValue)
@@ -67909,6 +68178,38 @@ class Volume extends Entity {
 
 customElements.get('mr-volume') || customElements.define('mr-volume', Volume)
 
+;// CONCATENATED MODULE: ./src/UI/TextEditor.js
+
+
+class TextEditor extends MRInput {
+    constructor(){
+        super()
+        this.src
+        this.srcElement
+        this.newSrc = false
+    }
+
+    connected() {
+        document.addEventListener('DOMContentLoaded', (event) => {
+            this.updateSrc()
+        })
+    }
+
+    mutated = (mutation) => {
+        if (mutation.type != 'attributes') { return }
+        if (mutation.attributeName == 'src') {
+            this.updateSrc()
+        }
+    }
+
+    updateSrc = () => {
+        this.src = this.getAttribute('src')
+        this.srcElement = document.getElementById(this.src)
+        this.newSrc = true
+    }
+}
+
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
 ;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 
@@ -68769,6 +69070,7 @@ if (typeof exports === 'object' && typeof module === 'object')
 
 
 // UI
+
 
 
 

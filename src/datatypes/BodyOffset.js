@@ -7,7 +7,7 @@ export class BodyOffset {
     #top = 0
     set top(value){
         this.#top = value
-        this.callback()
+        this.callback
     }
     get top() {
         return this.#top
@@ -16,7 +16,7 @@ export class BodyOffset {
     #right = 0
     set right(value){
         this.#right = value
-        this.callback()
+        this.callback
     }
     get right() {
         return this.#right
@@ -25,7 +25,7 @@ export class BodyOffset {
     #bottom = 0
     set bottom(value){
         this.#bottom = value
-        this.callback()
+        this.callback
     }
     get bottom() {
         return this.#bottom
@@ -34,7 +34,7 @@ export class BodyOffset {
     #left = 0
     set left(value){
         this.#left = value
-        this.callback()
+        this.callback
     }
     get left() {
         return this.#left
@@ -43,7 +43,7 @@ export class BodyOffset {
     set vertical(value){
         this.#top = value
         this.#bottom = value
-        this.callback()
+        this.callback
     }
 
     get vertical(){
@@ -53,7 +53,7 @@ export class BodyOffset {
     set horizontal(value){
         this.#right = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     get horizontal(){
@@ -65,7 +65,7 @@ export class BodyOffset {
         this.#right = value
         this.#bottom = value
         this.#left = value
-        this.callback()
+        this.callback
     }
 
     setFromVector(vector) {

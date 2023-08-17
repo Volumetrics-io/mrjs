@@ -22,7 +22,7 @@ export class Row extends Entity {
     const children = Array.from(this.children)
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.columns += child.width == 'auto' ? 1 : child.width
+        this.columns += child.computedWidth
     }
   }
 }
