@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js'
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js'
-import { RAPIER, JOINT_COLLIDER_HANDLE_NAMES} from '../component-systems/RapierPhysicsSystem'
+import { RAPIER, JOINT_COLLIDER_HANDLE_NAMES, COLLIDER_CURSOR_MAP} from '../component-systems/RapierPhysicsSystem'
 
 const HOVER_DISTANCE = 0.05
 const PINCH_DISTANCE = 0.02
@@ -45,6 +45,9 @@ export class MRHand {
     this.pinch = false
     this.hover = false
 
+    this.cursor
+    this.cursorPosition = new THREE.Vector3()
+
     this.jointPhysicsBodies = {}
 
     this.identityPosition = new THREE.Vector3()
@@ -78,6 +81,7 @@ export class MRHand {
     app.scene.add(this.grip)
     app.scene.add(this.hand)
     this.initPhysicsBodies(app)
+    this.initCursor(app)
   }
 
   initPhysicsBodies(app){
@@ -111,11 +115,39 @@ export class MRHand {
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
 
-      if( joint.includes('tip') ){
+      if( joint.includes('index-finger-tip') ){
         JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
       }
-
     }
+  }
+
+  initCursor(app) {
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(1000, 1000, 1000)
+    const colliderDesc = RAPIER.ColliderDesc.ball(0.02)
+
+    this.cursor = app.physicsWorld.createRigidBody(rigidBodyDesc)
+    let collider = app.physicsWorld.createCollider(
+      colliderDesc,
+      this.cursor
+    )
+
+    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
+
+    collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+    collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    
+  }
+
+  updateCursor(){
+    if(!this.pinch){ return }
+    this.cursorPosition.copy(this.getCursorPosition())
+    this.cursor.setTranslation({ ...this.cursorPosition }, true)
+  }
+
+  update() {
+    this.updatePhysicsBodies()
+    this.updateCursor()
   }
 
   updatePhysicsBodies() {
@@ -148,6 +180,10 @@ export class MRHand {
 
   onPinch = (event) => {
     this.pinch = event.type == 'pinchstart'
+    if(!this.pinch) {
+      this.cursorPosition.setScalar(1000)
+      this.cursor.setTranslation({ ...this.cursorPosition }, true)
+    }
     const position = this.getCursorPosition()
     document.dispatchEvent(
       new CustomEvent(event.type, {

@@ -51711,6 +51711,10 @@ function parseVector(str) {
   return str.split(' ').map(Number)
 }
 
+function parseDegVector(str) {
+  return str.split(' ').map((val) => { return parseFloat(val) * Math.PI / 180 })
+}
+
 function parser_radToDeg(val) {
   return (val * Math.PI) / 180
 }
@@ -51762,6 +51766,16 @@ function parseAttributeString(attrString) {
   return jsonObject
 }
 
+
+function roundTo(val, decimal){
+  return Math.round(val * decimal) / decimal
+}
+
+function roundVectorTo(vector, decimal){
+  vector.multiplyScalar(decimal)
+  vector.roundToZero()
+  vector.divideScalar(decimal)
+}
 ;// CONCATENATED MODULE: ./src/datatypes/BodyOffset.js
 class BodyOffset {
 
@@ -51949,6 +51963,17 @@ class Entity extends MRElement {
 
     this.componentMutated = this.componentMutated.bind(this)
 
+    this.touch = false
+    this.grabbed = false
+
+  }
+
+  onTouch = (joint, position) => { 
+    console.log(`${joint} touch at:`, position);
+  }
+
+  onGrab = (position) => {
+    console.log('grab');
   }
 
   connectedCallback() {
@@ -51958,7 +51983,6 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -51986,6 +52010,17 @@ class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(attr.value))
+          console.log(this.object3D.rotation);
+          break
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(attr.value))
+          break
+        case 'position':
+          this.object3D.position.fromArray(parseVector(attr.value))
+          console.log(this.object3D.position);
+          break
         case 'width':
           this.width = parseFloat(attr.value)
           break
@@ -52008,6 +52043,7 @@ class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+    this.checkForText()
 
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
@@ -52058,7 +52094,24 @@ class Entity extends MRElement {
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
       }
-    }
+
+      switch (mutation.attributeName) {
+        case 'position':
+          this.object3D.position.fromArray(parseVector(this.getAttribute('position')))
+          console.log(this.object3D.position);
+          break;
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+      
+        default:
+          break;
+      }
+        this.traverse((child) => {
+          if (!child.physics) { return }
+          child.physics.update = true
+        })
+      }
   }
 
   componentMutated(componentName) {
@@ -52108,6 +52161,7 @@ class Entity extends MRElement {
       if (!child instanceof Entity) {
         continue
       }
+      console.log(child);
       child.traverse(callBack)
     }
   }
@@ -60047,18 +60101,12 @@ class TextSystem extends System {
         entity.textObj.text = text.length > 0 ? text : ' '
         entity.textObj.sync()
       }
+
+      this.updateStyle(entity)
     }
   }
 
-  addText = (entity) => {
-    if (!entity.textObj) { 
-      entity.textObj = new Text()
-      entity.object3D.add(entity.textObj)
-    }
-
-    let text = entity.textContent.trim()
-    entity.textObj.text = text.length > 0 ? text : ' '
-
+  updateStyle = (entity) => {
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
 
     let width = entity.width == 'auto' ? 1 : entity.width
@@ -60077,6 +60125,18 @@ class TextSystem extends System {
     style.clipRect = [-style.maxWidth / 2, -height, style.maxWidth / 2, 0]
     this.setStyle(entity.textObj, style)
     entity.textObj.sync()
+  }
+
+  addText = (entity) => {
+    if (!entity.textObj) { 
+      entity.textObj = new Text()
+      entity.object3D.add(entity.textObj)
+    }
+
+    let text = entity.textContent.trim()
+    entity.textObj.text = text.length > 0 ? text : ' '
+
+    this.updateStyle(entity)
   }
 
   setStyle = (textObj, style) => {
@@ -66802,12 +66862,12 @@ class XRHandModelFactory {
 
 
 
-
-
 let RAPIER = null
 
 const JOINT_COLLIDER_HANDLE_NAMES = {}
+const COLLIDER_CURSOR_MAP = {}
 const COLLIDER_ENTITY_MAP = {}
+const COLLIDER_TOOL_MAP = {}
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -66829,8 +66889,6 @@ class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
-    const entities = this.app.querySelectorAll('*')
-
     if (this.debug && this.debug == "true") {
       const material = new LineBasicMaterial({
         color: 0xffffff,
@@ -66847,18 +66905,13 @@ class RapierPhysicsSystem extends System {
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       /* Handle the collision event. */
-      let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1] ?? JOINT_COLLIDER_HANDLE_NAMES[handle2]
-      let entity =  COLLIDER_ENTITY_MAP[handle1] ??  COLLIDER_ENTITY_MAP[handle2]
-      if (joint && entity){
-        entity.dispatchEvent(
-          new CustomEvent(`touch-${started ? 'start' : 'end'}`, {
-            bubbles: true,
-            detail: {
-              joint: joint
-            },
-          })
-        )
+
+      if(started) {
+        this.onContactStart(handle1, handle2)
+      } else {
+        this.onContactEnd(handle1, handle2)
       }
+
     });
 
     for (const entity of this.registry) {
@@ -66866,9 +66919,135 @@ class RapierPhysicsSystem extends System {
         this.updateBody(entity)
         entity.physics.update = false
       }
+
+      if (entity.touch && !entity.grabbed){
+        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+          let joint = JOINT_COLLIDER_HANDLE_NAMES[collider2.handle]
+
+          if (joint) {
+            entity.onTouch(joint, collider2.translation())
+          }
+        })
+      }
+
+      if (entity.grabbed){
+        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+
+          if (cursor) {
+            entity.onGrab(collider2.translation())
+          }
+        })
+      }
     }
 
     this.updateDebugRenderer()
+  }
+
+  onContactStart = ( handle1, handle2 ) => {
+    let collider1 = this.app.physicsWorld.colliders.get(handle1)
+    let collider2 = this.app.physicsWorld.colliders.get(handle2)
+
+    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let entity =  COLLIDER_ENTITY_MAP[handle2]
+
+    if (joint && entity){
+      this.touchStart(collider1, collider2, entity)
+      return
+    }
+
+    let cursor = COLLIDER_CURSOR_MAP[handle1]
+
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+
+      if (tool) {
+        tool.grabbed = true
+        return
+      }
+
+      if (entity) {
+        this.grab(collider1, collider2, entity)
+        return
+      }
+    }
+
+  }
+
+  onContactEnd(handle1, handle2) {
+    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let cursor =  COLLIDER_CURSOR_MAP[handle1]
+    let entity =  COLLIDER_ENTITY_MAP[handle2]
+
+    if (joint && entity){
+      this.touchEnd(entity)
+      return
+    }
+
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+      console.log(COLLIDER_TOOL_MAP);
+
+      if (tool) {
+        tool.grabbed = false
+        return
+      }
+
+      if (entity) {
+        this.release(entity)
+        return
+      }
+    }
+  }
+
+  touchStart = (collider1, collider2, entity) => {
+    entity.touch = true
+    this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`touch-start`, {
+          bubbles: false,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        })
+      )
+   });
+  }
+
+  touchEnd = (entity) => {
+      // Contact information can be read from `manifold`. 
+      entity.touch = false
+      entity.dispatchEvent(
+        new CustomEvent(`touch-end`, {
+          bubbles: false,
+        })
+      )
+  }
+
+  grab = (collider1, collider2, entity) => {
+    entity.grabbed = true
+    this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`grab`, {
+          bubbles: false,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        })
+      )
+   });
+  }
+
+  release = (entity) => {
+    entity.grabbed = false
+      // Contact information can be read from `manifold`. 
+    entity.dispatchEvent(
+      new CustomEvent(`release`, {
+        bubbles: false
+      })
+    )
   }
 
   onNewEntity(entity) {
@@ -66993,6 +67172,9 @@ class MRHand {
     this.pinch = false
     this.hover = false
 
+    this.cursor
+    this.cursorPosition = new three_module_Vector3()
+
     this.jointPhysicsBodies = {}
 
     this.identityPosition = new three_module_Vector3()
@@ -67026,6 +67208,7 @@ class MRHand {
     app.scene.add(this.grip)
     app.scene.add(this.hand)
     this.initPhysicsBodies(app)
+    this.initCursor(app)
   }
 
   initPhysicsBodies(app){
@@ -67059,11 +67242,39 @@ class MRHand {
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
 
-      if( joint.includes('tip') ){
+      if( joint.includes('index-finger-tip') ){
         JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
       }
-
     }
+  }
+
+  initCursor(app) {
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(1000, 1000, 1000)
+    const colliderDesc = RAPIER.ColliderDesc.ball(0.02)
+
+    this.cursor = app.physicsWorld.createRigidBody(rigidBodyDesc)
+    let collider = app.physicsWorld.createCollider(
+      colliderDesc,
+      this.cursor
+    )
+
+    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
+
+    collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+    collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    
+  }
+
+  updateCursor(){
+    if(!this.pinch){ return }
+    this.cursorPosition.copy(this.getCursorPosition())
+    this.cursor.setTranslation({ ...this.cursorPosition }, true)
+  }
+
+  update() {
+    this.updatePhysicsBodies()
+    this.updateCursor()
   }
 
   updatePhysicsBodies() {
@@ -67096,6 +67307,10 @@ class MRHand {
 
   onPinch = (event) => {
     this.pinch = event.type == 'pinchstart'
+    if(!this.pinch) {
+      this.cursorPosition.setScalar(1000)
+      this.cursor.setTranslation({ ...this.cursorPosition }, true)
+    }
     const position = this.getCursorPosition()
     document.dispatchEvent(
       new CustomEvent(event.type, {
@@ -67180,8 +67395,8 @@ class ControlSystem extends System {
     this.leftHand.setMesh()
     this.rightHand.setMesh()
 
-    this.leftHand.updatePhysicsBodies()
-    this.rightHand.updatePhysicsBodies()
+    this.leftHand.update()
+    this.rightHand.update()
   }
 }
 
@@ -67355,6 +67570,10 @@ class TextInputSystem extends System {
 
     const entities = this.app.querySelectorAll('*')
 
+    this.counter = 0
+
+    this.syncPeriod = 5
+
     for (const entity of entities) {
       if (entity instanceof MRInput) {
         this.registry.add(entity)
@@ -67371,15 +67590,20 @@ class TextInputSystem extends System {
         this.focus = null
       }
 
-      if(this.focus?.newSrc) {
-        this.getSourceText()
+      // THIS IS THE WRONG WAY TO DO THIS, we need to resolve differences some how (no-code edits and code edits)
+      this.counter += deltaTime
+      if(this.focus?.newSrc || this.counter >= this.syncPeriod) {
+        this.syncText()
         this.focus.newSrc = false
+        this.counter = 0
       }
+
     }
   }
 
 
-  getSourceText() {
+  syncText() {
+    if (this.edited) { return }
     if (this.focus.srcElement) {
       this.focus.textContent = this.focus.srcElement.innerHTML 
     }
@@ -67390,10 +67614,12 @@ class TextInputSystem extends System {
 
   saveUpdate(){
     if(this.focus) {
+      console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
       this.focus.srcElement.innerHTML = this.focus.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
-
+      this.counter = 0
+      this.edited = false
     }
   }
 
@@ -67406,6 +67632,7 @@ class TextInputSystem extends System {
   handleMetaKeys = (key) => {
     switch (key) {
       case 's':
+        console.log('saving');
         this.saveUpdate()
         break;
     
@@ -67417,7 +67644,7 @@ class TextInputSystem extends System {
   onKeyUp = (event) => {
     let key = event.key;
     switch (key) {
-      case 'Meta':
+      case 'Control':
         this.meta = false
         break
 
@@ -67428,6 +67655,8 @@ class TextInputSystem extends System {
   
 
   onKeyDown = (event) => {
+    this.counter = 0
+    this.edited = true
 
     if (this.focus == null) { return }
     event.stopPropagation()
@@ -67440,8 +67669,10 @@ class TextInputSystem extends System {
       return
     }
 
+    console.log(key);
+
     switch (true) {
-        case key == 'Meta':
+        case key == 'Control':
           this.meta = true
           break
         case key == 'Enter':
@@ -67548,6 +67779,166 @@ class TextInputSystem extends System {
   }
 
 }
+;// CONCATENATED MODULE: ./src/entities/developer/tools/Tool.js
+
+
+class Tool {
+    constructor(entity){
+
+        this.entity = entity
+
+        this.toolName = this.constructor.name.toLowerCase().split('tool')[0]
+        let geometry = new THREE.SphereGeometry(0.01, 32, 16)
+        let material = new THREE.MeshStandardMaterial({
+            roughness: 0.7,
+            metalness: 0.0,
+            side: 2,
+        })
+
+        material.color.setStyle('red')
+
+        this.object3D = new THREE.Mesh(geometry, material)
+        this.object3D.receiveShadow = true
+        this.object3D.renderOrder = 3
+    }
+
+    initBody(world) {
+        let worldPosition = new THREE.Vector3()
+        this.object3D.getWorldPosition(worldPosition)
+        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...worldPosition)
+        const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+    
+        this.body = world.createRigidBody(rigidBodyDesc)
+        this.collider = world.createCollider(
+        colliderDesc,
+        this.body
+        )
+    
+        COLLIDER_TOOL_MAP[this.collider.handle] = this
+    
+        this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+        this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    traverse(callBack) {
+        return
+    }
+
+    onGrab = (position) => {
+        console.log(`you grabbed a ${this.toolName} tool! for ${this.entity}`);
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
+
+
+
+class PositionTool extends Tool {
+    constructor(entity){
+        super(entity)
+        this.localPosition = new THREE.Vector3()
+        this.worldPosition = new THREE.Vector3()
+    }
+
+    onGrab = (position) => {
+        console.log('position tool');
+        this.worldPosition.set(position.x, position.y, position.z)
+        this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
+        roundVectorTo(this.localPosition, 100)
+       this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
+
+
+
+// THERE WILL BE BUGS daniel plainview 
+
+class DevVolume extends Entity {
+  constructor() {
+    super()
+    this.registry = new Set()
+    document.addEventListener('engine-started', (event) => {
+      this.traverse((child) => {
+        if (child == this) { return }
+        this.addTools(child)
+      })
+
+      this.addEventListener('new-entity', (event) => {
+        event.target.traverse((child) => {
+          this.addTools(child)
+        })
+      })
+    })
+  }
+
+  add(entity) {
+    this.object3D.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.object3D.remove(entity.object3D)
+  }
+
+  addTools(child) {
+    let posTool = new PositionTool(child)
+    child.object3D.add(posTool.object3D)
+    posTool.initBody(this.env.physicsWorld)
+
+    this.registry.add(posTool)
+  }
+}
+
+customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', DevVolume)
+
+;// CONCATENATED MODULE: ./src/component-systems/DeveloperSystem.js
+
+
+
+
+
+
+class DeveloperSystem extends System {
+  constructor() {
+    super()
+    
+    let devVolume = document.querySelector('mr-dev-volume')
+
+    this.tempWorldPosition = new three_module_Vector3()
+    this.tempWorldQuaternion = new Quaternion()
+
+    this.registry.add(devVolume)
+    
+  }
+
+  update(deltaTime) {
+    for (const env of this.registry) {
+      for ( const tool of env.registry){
+        this.updateBody(tool)
+        if (tool.grabbed){
+          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
+            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+
+            if (cursor) {
+              tool.onGrab(collider2.translation())
+            }
+          })
+        }
+      }
+    }
+  }
+
+  updateBody(tool) {
+    tool.object3D.getWorldPosition(this.tempWorldPosition)
+    tool.body.setTranslation({ ...this.tempWorldPosition }, true)
+
+    tool.object3D.getWorldQuaternion(this.tempWorldQuaternion)
+    tool.body.setRotation(this.tempWorldQuaternion, true)
+  }
+
+  
+}
+
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -67555,7 +67946,10 @@ class TextInputSystem extends System {
 
 
 
+
+
 // built in Systems
+
 
 
 
@@ -67595,8 +67989,35 @@ class MRApp extends MRElement {
 
     this.user.position.set(0, 0, 1)
 
-    const appLight = new AmbientLight(0xffffff)
-    this.scene.add(appLight)
+    this.light_orange = new PointLight({});
+    this.light_orange.color = new Color(`hsl(30, 100%, 50%)`);
+    this.light_orange.intensity = 5;
+    this.light_orange.shadow.camera.top = 2
+    this.light_orange.shadow.camera.bottom = -2
+    this.light_orange.shadow.camera.right = 2
+    this.light_orange.shadow.camera.left = -2
+    this.light_orange.shadow.mapSize.set(4096, 4096)
+    this.scene.add(this.light_orange);
+
+    this.light_blue = new PointLight({});
+    this.light_blue.color = new Color(`hsl(208, 100%, 50%)`);
+    this.light_blue.intensity = 10;
+    this.light_blue.shadow.camera.top = 2
+    this.light_blue.shadow.camera.bottom = -2
+    this.light_blue.shadow.camera.right = 2
+    this.light_blue.shadow.camera.left = -2
+    this.light_blue.shadow.mapSize.set(4096, 4096)
+    this.scene.add(this.light_blue);
+
+    this.light_pink = new PointLight({});
+    this.light_pink.color = new Color(`hsl(340, 100%, 50%)`);
+    this.light_pink.intensity = 15;
+    this.light_pink.shadow.camera.top = 2
+    this.light_pink.shadow.camera.bottom = -2
+    this.light_pink.shadow.camera.right = 2
+    this.light_pink.shadow.camera.left = -2
+    this.light_pink.shadow.mapSize.set(4096, 4096)
+    this.scene.add(this.light_pink);
 
     this.shadowLight = new DirectionalLight(0xffffff)
     this.shadowLight.position.set(0, 1, 1)
@@ -67606,7 +68027,7 @@ class MRApp extends MRElement {
     this.shadowLight.shadow.camera.right = 2
     this.shadowLight.shadow.camera.left = -2
     this.shadowLight.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.shadowLight)
+    //this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -67633,6 +68054,7 @@ class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
+        this.devSystem = new DeveloperSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 
@@ -67726,6 +68148,22 @@ class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
+    const timer = Date.now() * 0.00025;
+    const radius = 3;
+    const depth = 1;
+
+    this.light_pink.position.x = Math.sin(timer * 1) * radius;
+    this.light_pink.position.y = Math.cos(timer * 1) * radius;
+    this.light_pink.position.z = depth;
+
+    this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
+    this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
+    this.light_orange.position.z = depth;
+
+    this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
+    this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
+    this.light_blue.position.z = depth;
+
     this.stats.begin()
     for (const system of this.systems) {
       system.update(deltaTime)
@@ -67740,6 +68178,510 @@ class MRApp extends MRElement {
 
 customElements.get('mr-app') || customElements.define('mr-app', MRApp)
 
+;// CONCATENATED MODULE: ./src/utils/STLLoader.js
+
+
+/**
+ * Description: A THREE loader for STL ASCII files, as created by Solidworks and other CAD programs.
+ *
+ * Supports both binary and ASCII encoded files, with automatic detection of type.
+ *
+ * The loader returns a non-indexed buffer geometry.
+ *
+ * Limitations:
+ *  Binary decoding supports "Magics" color format (http://en.wikipedia.org/wiki/STL_(file_format)#Color_in_binary_STL).
+ *  There is perhaps some question as to how valid it is to always assume little-endian-ness.
+ *  ASCII decoding assumes file is UTF-8.
+ *
+ * Usage:
+ *  const loader = new STLLoader();
+ *  loader.load( './models/stl/slotted_disk.stl', function ( geometry ) {
+ *    scene.add( new THREE.Mesh( geometry ) );
+ *  });
+ *
+ * For binary STLs geometry might contain colors for vertices. To use it:
+ *  // use the same code to load STL as above
+ *  if (geometry.hasColors) {
+ *    material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
+ *  } else { .... }
+ *  const mesh = new THREE.Mesh( geometry, material );
+ *
+ * For ASCII STLs containing multiple solids, each solid is assigned to a different group.
+ * Groups can be used to assign a different color by defining an array of materials with the same length of
+ * geometry.groups and passing it to the Mesh constructor:
+ *
+ * const mesh = new THREE.Mesh( geometry, material );
+ *
+ * For example:
+ *
+ *  const materials = [];
+ *  const nGeometryGroups = geometry.groups.length;
+ *
+ *  const colorMap = ...; // Some logic to index colors.
+ *
+ *  for (let i = 0; i < nGeometryGroups; i++) {
+ *
+ *		const material = new THREE.MeshPhongMaterial({
+ *			color: colorMap[i],
+ *			wireframe: false
+ *		});
+ *
+ *  }
+ *
+ *  materials.push(material);
+ *  const mesh = new THREE.Mesh(geometry, materials);
+ */
+
+
+class STLLoader extends Loader {
+
+	constructor( manager ) {
+
+		super( manager );
+
+	}
+
+	load( url, onLoad, onProgress, onError ) {
+
+		const scope = this;
+
+		const loader = new FileLoader( this.manager );
+		loader.setPath( this.path );
+		loader.setResponseType( 'arraybuffer' );
+		loader.setRequestHeader( this.requestHeader );
+		loader.setWithCredentials( this.withCredentials );
+
+		loader.load( url, function ( text ) {
+
+			try {
+
+				onLoad( scope.parse( text ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
+
+		}, onProgress, onError );
+
+	}
+
+	parse( data ) {
+
+		function isBinary( data ) {
+
+			const reader = new DataView( data );
+			const face_size = ( 32 / 8 * 3 ) + ( ( 32 / 8 * 3 ) * 3 ) + ( 16 / 8 );
+			const n_faces = reader.getUint32( 80, true );
+			const expect = 80 + ( 32 / 8 ) + ( n_faces * face_size );
+
+			if ( expect === reader.byteLength ) {
+
+				return true;
+
+			}
+
+			// An ASCII STL data must begin with 'solid ' as the first six bytes.
+			// However, ASCII STLs lacking the SPACE after the 'd' are known to be
+			// plentiful.  So, check the first 5 bytes for 'solid'.
+
+			// Several encodings, such as UTF-8, precede the text with up to 5 bytes:
+			// https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding
+			// Search for "solid" to start anywhere after those prefixes.
+
+			// US-ASCII ordinal values for 's', 'o', 'l', 'i', 'd'
+
+			const solid = [ 115, 111, 108, 105, 100 ];
+
+			for ( let off = 0; off < 5; off ++ ) {
+
+				// If "solid" text is matched to the current offset, declare it to be an ASCII STL.
+
+				if ( matchDataViewAt( solid, reader, off ) ) return false;
+
+			}
+
+			// Couldn't find "solid" text at the beginning; it is binary STL.
+
+			return true;
+
+		}
+
+		function matchDataViewAt( query, reader, offset ) {
+
+			// Check if each byte in query matches the corresponding byte from the current offset
+
+			for ( let i = 0, il = query.length; i < il; i ++ ) {
+
+				if ( query[ i ] !== reader.getUint8( offset + i ) ) return false;
+
+			}
+
+			return true;
+
+		}
+
+		function parseBinary( data ) {
+
+			const reader = new DataView( data );
+			const faces = reader.getUint32( 80, true );
+
+			let r, g, b, hasColors = false, colors;
+			let defaultR, defaultG, defaultB, alpha;
+
+			// process STL header
+			// check for default color in header ("COLOR=rgba" sequence).
+
+			for ( let index = 0; index < 80 - 10; index ++ ) {
+
+				if ( ( reader.getUint32( index, false ) == 0x434F4C4F /*COLO*/ ) &&
+					( reader.getUint8( index + 4 ) == 0x52 /*'R'*/ ) &&
+					( reader.getUint8( index + 5 ) == 0x3D /*'='*/ ) ) {
+
+					hasColors = true;
+					colors = new Float32Array( faces * 3 * 3 );
+
+					defaultR = reader.getUint8( index + 6 ) / 255;
+					defaultG = reader.getUint8( index + 7 ) / 255;
+					defaultB = reader.getUint8( index + 8 ) / 255;
+					alpha = reader.getUint8( index + 9 ) / 255;
+
+				}
+
+			}
+
+			const dataOffset = 84;
+			const faceLength = 12 * 4 + 2;
+
+			const geometry = new three_module_BufferGeometry();
+
+			const vertices = new Float32Array( faces * 3 * 3 );
+			const normals = new Float32Array( faces * 3 * 3 );
+
+			const color = new Color();
+
+			for ( let face = 0; face < faces; face ++ ) {
+
+				const start = dataOffset + face * faceLength;
+				const normalX = reader.getFloat32( start, true );
+				const normalY = reader.getFloat32( start + 4, true );
+				const normalZ = reader.getFloat32( start + 8, true );
+
+				if ( hasColors ) {
+
+					const packedColor = reader.getUint16( start + 48, true );
+
+					if ( ( packedColor & 0x8000 ) === 0 ) {
+
+						// facet has its own unique color
+
+						r = ( packedColor & 0x1F ) / 31;
+						g = ( ( packedColor >> 5 ) & 0x1F ) / 31;
+						b = ( ( packedColor >> 10 ) & 0x1F ) / 31;
+
+					} else {
+
+						r = defaultR;
+						g = defaultG;
+						b = defaultB;
+
+					}
+
+				}
+
+				for ( let i = 1; i <= 3; i ++ ) {
+
+					const vertexstart = start + i * 12;
+					const componentIdx = ( face * 3 * 3 ) + ( ( i - 1 ) * 3 );
+
+					vertices[ componentIdx ] = reader.getFloat32( vertexstart, true );
+					vertices[ componentIdx + 1 ] = reader.getFloat32( vertexstart + 4, true );
+					vertices[ componentIdx + 2 ] = reader.getFloat32( vertexstart + 8, true );
+
+					normals[ componentIdx ] = normalX;
+					normals[ componentIdx + 1 ] = normalY;
+					normals[ componentIdx + 2 ] = normalZ;
+
+					if ( hasColors ) {
+
+						color.set( r, g, b ).convertSRGBToLinear();
+
+						colors[ componentIdx ] = color.r;
+						colors[ componentIdx + 1 ] = color.g;
+						colors[ componentIdx + 2 ] = color.b;
+
+					}
+
+				}
+
+			}
+
+			geometry.setAttribute( 'position', new three_module_BufferAttribute( vertices, 3 ) );
+			geometry.setAttribute( 'normal', new three_module_BufferAttribute( normals, 3 ) );
+
+			if ( hasColors ) {
+
+				geometry.setAttribute( 'color', new three_module_BufferAttribute( colors, 3 ) );
+				geometry.hasColors = true;
+				geometry.alpha = alpha;
+
+			}
+
+			return geometry;
+
+		}
+
+		function parseASCII( data ) {
+
+			const geometry = new three_module_BufferGeometry();
+			const patternSolid = /solid([\s\S]*?)endsolid/g;
+			const patternFace = /facet([\s\S]*?)endfacet/g;
+			const patternName = /solid\s(.+)/;
+			let faceCounter = 0;
+
+			const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
+			const patternVertex = new RegExp( 'vertex' + patternFloat + patternFloat + patternFloat, 'g' );
+			const patternNormal = new RegExp( 'normal' + patternFloat + patternFloat + patternFloat, 'g' );
+
+			const vertices = [];
+			const normals = [];
+			const groupNames = [];
+
+			const normal = new three_module_Vector3();
+
+			let result;
+
+			let groupCount = 0;
+			let startVertex = 0;
+			let endVertex = 0;
+
+			while ( ( result = patternSolid.exec( data ) ) !== null ) {
+
+				startVertex = endVertex;
+
+				const solid = result[ 0 ];
+
+				const name = ( result = patternName.exec( solid ) ) !== null ? result[ 1 ] : '';
+				groupNames.push( name );
+
+				while ( ( result = patternFace.exec( solid ) ) !== null ) {
+
+					let vertexCountPerFace = 0;
+					let normalCountPerFace = 0;
+
+					const text = result[ 0 ];
+
+					while ( ( result = patternNormal.exec( text ) ) !== null ) {
+
+						normal.x = parseFloat( result[ 1 ] );
+						normal.y = parseFloat( result[ 2 ] );
+						normal.z = parseFloat( result[ 3 ] );
+						normalCountPerFace ++;
+
+					}
+
+					while ( ( result = patternVertex.exec( text ) ) !== null ) {
+
+						vertices.push( parseFloat( result[ 1 ] ), parseFloat( result[ 2 ] ), parseFloat( result[ 3 ] ) );
+						normals.push( normal.x, normal.y, normal.z );
+						vertexCountPerFace ++;
+						endVertex ++;
+
+					}
+
+					// every face have to own ONE valid normal
+
+					if ( normalCountPerFace !== 1 ) {
+
+						console.error( 'THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter );
+
+					}
+
+					// each face have to own THREE valid vertices
+
+					if ( vertexCountPerFace !== 3 ) {
+
+						console.error( 'THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter );
+
+					}
+
+					faceCounter ++;
+
+				}
+
+				const start = startVertex;
+				const count = endVertex - startVertex;
+
+				geometry.userData.groupNames = groupNames;
+
+				geometry.addGroup( start, count, groupCount );
+				groupCount ++;
+
+			}
+
+			geometry.setAttribute( 'position', new three_module_Float32BufferAttribute( vertices, 3 ) );
+			geometry.setAttribute( 'normal', new three_module_Float32BufferAttribute( normals, 3 ) );
+
+			return geometry;
+
+		}
+
+		function ensureString( buffer ) {
+
+			if ( typeof buffer !== 'string' ) {
+
+				return new TextDecoder().decode( buffer );
+
+			}
+
+			return buffer;
+
+		}
+
+		function ensureBinary( buffer ) {
+
+			if ( typeof buffer === 'string' ) {
+
+				const array_buffer = new Uint8Array( buffer.length );
+				for ( let i = 0; i < buffer.length; i ++ ) {
+
+					array_buffer[ i ] = buffer.charCodeAt( i ) & 0xff; // implicitly assumes little-endian
+
+				}
+
+				return array_buffer.buffer || array_buffer;
+
+			} else {
+
+				return buffer;
+
+			}
+
+		}
+
+		// start
+
+		const binData = ensureBinary( data );
+
+		return isBinary( binData ) ? parseBinary( binData ) : parseASCII( ensureString( data ) );
+
+	}
+
+}
+
+
+
+;// CONCATENATED MODULE: ./src/entities/Model.js
+
+
+
+
+const LOADERS = {
+    'stl' : new STLLoader()
+}
+
+
+class Model extends Entity {
+    constructor(){
+        super()
+    }
+
+    connected(){
+        this.src = this.getAttribute('src')
+
+        if (!this.src) { return }
+
+        let ext = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
+        console.log(ext);
+
+        let loader = LOADERS[ext]
+
+        if (!loader) { return }
+
+        loader.load(this.src, (geometry) => {
+
+            const material = new THREE.MeshPhysicalMaterial({
+                clearcoat: 0.75,
+                clearcoatRoughness: 0.5,
+                metalness: 0.5,
+                roughness: 0.6,
+                //envMap: envTex,
+                envMapIntensity: 0.75,
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.receiveShadow = true
+            mesh.renderOrder = 3
+
+            // mesh.position.set(0.02, 0.02, 0);
+            // mesh.rotation.set(-0.4, 0.3, 0.8);
+            // let scale = 0.01;
+            // mesh.scale.set(scale, scale, scale);
+            this.object3D.add(mesh);
+
+            // const light_orange = new THREE.PointLight({});
+            // light_orange.color = new THREE.Color(`hsl(30, 100%, 50%)`);
+            // light_orange.intensity = 30;
+            // scene.add(light_orange);
+
+            // const light_blue = new THREE.PointLight({});
+            // light_blue.color = new THREE.Color(`hsl(208, 100%, 50%)`);
+            // light_blue.intensity = 40;
+            // scene.add(light_blue);
+
+            // const light_pink = new THREE.PointLight({});
+            // light_pink.color = new THREE.Color(`hsl(340, 100%, 50%)`);
+            // light_pink.intensity = 50;
+            // scene.add(light_pink);
+
+            // var speed = 0;
+
+            // const render = () => {
+            //     const timer = Date.now() * 0.00025;
+            //     const radius = 1.85;
+            //     const depth = 0.5;
+
+            //     light_pink.position.x = Math.sin(timer * 1) * radius;
+            //     light_pink.position.y = Math.cos(timer * 1) * radius;
+            //     light_pink.position.z = depth;
+
+            //     light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
+            //     light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
+            //     light_orange.position.z = depth;
+
+            //     light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
+            //     light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
+            //     light_blue.position.z = depth;
+
+            //     // Rotate the solid, starting from rest and slowly accelerating 
+            //     speed = (speed < 0.002) ? speed + 0.000008 : speed;
+            //     mesh.rotation.z += speed;
+
+            //     renderer.render(scene, camera);
+            // };
+
+            // renderer.setAnimationLoop(render);
+        });
+
+    }
+
+    onLoad = () => {
+
+    }
+}
+
+customElements.get('mr-model') || customElements.define('mr-model', Model)
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
 
@@ -68220,12 +69162,15 @@ class Container extends Entity {
     this.width = 1
     this.height = 1
 
+  }
+
+  connected(){
     document.addEventListener('DOMContentLoaded', (event) => {
-    this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-    setTimeout(() => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    }, 0);
+      })
+      setTimeout(() => {
+        this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+      }, 0);
   }
 }
 
@@ -69066,6 +70011,7 @@ if (typeof exports === 'object' && typeof module === 'object')
 
 
 
+
 // SYSTEMS
 
 
@@ -69098,6 +70044,10 @@ if (typeof exports === 'object' && typeof module === 'object')
 // UI
 
 
+
+//DEV
+
+;
 })();
 
 var __webpack_export_target__ = window;

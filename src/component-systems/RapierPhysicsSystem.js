@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 import { System } from '../core/System.js'
-import { Entity } from '../core/entity.js'
-import { parseVector } from '../utils/parser.js'
 
 export let RAPIER = null
 
 export const JOINT_COLLIDER_HANDLE_NAMES = {}
+export const COLLIDER_CURSOR_MAP = {}
 export const COLLIDER_ENTITY_MAP = {}
+export const COLLIDER_TOOL_MAP = {}
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -28,8 +28,6 @@ export class RapierPhysicsSystem extends System {
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
-    const entities = this.app.querySelectorAll('*')
-
     if (this.debug && this.debug == "true") {
       const material = new THREE.LineBasicMaterial({
         color: 0xffffff,
@@ -46,18 +44,13 @@ export class RapierPhysicsSystem extends System {
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       /* Handle the collision event. */
-      let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1] ?? JOINT_COLLIDER_HANDLE_NAMES[handle2]
-      let entity =  COLLIDER_ENTITY_MAP[handle1] ??  COLLIDER_ENTITY_MAP[handle2]
-      if (joint && entity){
-        entity.dispatchEvent(
-          new CustomEvent(`touch-${started ? 'start' : 'end'}`, {
-            bubbles: true,
-            detail: {
-              joint: joint
-            },
-          })
-        )
+
+      if(started) {
+        this.onContactStart(handle1, handle2)
+      } else {
+        this.onContactEnd(handle1, handle2)
       }
+
     });
 
     for (const entity of this.registry) {
@@ -65,9 +58,135 @@ export class RapierPhysicsSystem extends System {
         this.updateBody(entity)
         entity.physics.update = false
       }
+
+      if (entity.touch && !entity.grabbed){
+        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+          let joint = JOINT_COLLIDER_HANDLE_NAMES[collider2.handle]
+
+          if (joint) {
+            entity.onTouch(joint, collider2.translation())
+          }
+        })
+      }
+
+      if (entity.grabbed){
+        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+
+          if (cursor) {
+            entity.onGrab(collider2.translation())
+          }
+        })
+      }
     }
 
     this.updateDebugRenderer()
+  }
+
+  onContactStart = ( handle1, handle2 ) => {
+    let collider1 = this.app.physicsWorld.colliders.get(handle1)
+    let collider2 = this.app.physicsWorld.colliders.get(handle2)
+
+    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let entity =  COLLIDER_ENTITY_MAP[handle2]
+
+    if (joint && entity){
+      this.touchStart(collider1, collider2, entity)
+      return
+    }
+
+    let cursor = COLLIDER_CURSOR_MAP[handle1]
+
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+
+      if (tool) {
+        tool.grabbed = true
+        return
+      }
+
+      if (entity) {
+        this.grab(collider1, collider2, entity)
+        return
+      }
+    }
+
+  }
+
+  onContactEnd(handle1, handle2) {
+    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let cursor =  COLLIDER_CURSOR_MAP[handle1]
+    let entity =  COLLIDER_ENTITY_MAP[handle2]
+
+    if (joint && entity){
+      this.touchEnd(entity)
+      return
+    }
+
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+      console.log(COLLIDER_TOOL_MAP);
+
+      if (tool) {
+        tool.grabbed = false
+        return
+      }
+
+      if (entity) {
+        this.release(entity)
+        return
+      }
+    }
+  }
+
+  touchStart = (collider1, collider2, entity) => {
+    entity.touch = true
+    this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`touch-start`, {
+          bubbles: false,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        })
+      )
+   });
+  }
+
+  touchEnd = (entity) => {
+      // Contact information can be read from `manifold`. 
+      entity.touch = false
+      entity.dispatchEvent(
+        new CustomEvent(`touch-end`, {
+          bubbles: false,
+        })
+      )
+  }
+
+  grab = (collider1, collider2, entity) => {
+    entity.grabbed = true
+    this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`grab`, {
+          bubbles: false,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        })
+      )
+   });
+  }
+
+  release = (entity) => {
+    entity.grabbed = false
+      // Contact information can be read from `manifold`. 
+    entity.dispatchEvent(
+      new CustomEvent(`release`, {
+        bubbles: false
+      })
+    )
   }
 
   onNewEntity(entity) {

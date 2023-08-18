@@ -9,25 +9,25 @@
 
   </head>
   <body >
-    <mr-app debug="true">
-        <mr-volume position="0 0 0">
-            <mr-container  width="0.5" height="0.666" snap-to="left">
-                <mr-panel corner-radius="0.02" position="-0.5 0 0">
-                    <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
-                    </mr-texteditor>
+    <mr-app>
+        <mr-volume scale="0.5" position="0 -0.1 -0.45">
+            <mr-container rotation="0 -45 0" width="0.666" height="0.666" snap-to="right">
+                <mr-panel color="darkgrey" corner-radius="0.02">
+                    <mr-panel corner-radius="0.02">
+                        <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
+                        </mr-texteditor>
+                    </mr-panel>
                 </mr-panel>
             </mr-container>
-    
-            <mr-entity id="dev" snap-to="back">
-<mr-container width="1.333" height="1">
-    <mr-row>
-        <mr-panel width="0.25" margin="0 0.02 0 0"></mr-panel>
 
-        <mr-panel corner-radius="0.02" width="0.75">
-        </mr-panel>
-    </mr-row>
+            <mr-dev-volume id="dev">
+              <mr-model src="./assets/models/logo.stl" scale="0.005"></mr-model>
+<mr-container width="0.5" height="0.1" position="0 -0.2 0.3" >
+        <mr-entity text-style="font: ./assets/fonts/BricolageGrotesque.ttf; size: 0.06">
+          Volumetrics
+        </mr-entity>
 </mr-container>
-            </mr-entity>
+            </mr-dev-volume>
         </mr-volume>
         
     </mr-app>
@@ -36,9 +36,6 @@
   <footer>
     <script type="module">
 
-        document.addEventListener('touch-start', (event) => {
-            console.log('touched');
-        })
     </script>
   </footer>
 </html>

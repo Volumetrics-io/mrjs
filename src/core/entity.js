@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { parseVector } from '../utils/parser.js'
+import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 import { BodyOffset } from '../datatypes/BodyOffset.js'
 
@@ -79,6 +79,17 @@ export class Entity extends MRElement {
 
     this.componentMutated = this.componentMutated.bind(this)
 
+    this.touch = false
+    this.grabbed = false
+
+  }
+
+  onTouch = (joint, position) => { 
+    console.log(`${joint} touch at:`, position);
+  }
+
+  onGrab = (position) => {
+    console.log('grab');
   }
 
   connectedCallback() {
@@ -88,7 +99,6 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -116,6 +126,17 @@ export class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(attr.value))
+          console.log(this.object3D.rotation);
+          break
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(attr.value))
+          break
+        case 'position':
+          this.object3D.position.fromArray(parseVector(attr.value))
+          console.log(this.object3D.position);
+          break
         case 'width':
           this.width = parseFloat(attr.value)
           break
@@ -138,6 +159,7 @@ export class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+    this.checkForText()
 
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
@@ -188,7 +210,24 @@ export class Entity extends MRElement {
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
       }
-    }
+
+      switch (mutation.attributeName) {
+        case 'position':
+          this.object3D.position.fromArray(parseVector(this.getAttribute('position')))
+          console.log(this.object3D.position);
+          break;
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+      
+        default:
+          break;
+      }
+        this.traverse((child) => {
+          if (!child.physics) { return }
+          child.physics.update = true
+        })
+      }
   }
 
   componentMutated(componentName) {
@@ -238,6 +277,7 @@ export class Entity extends MRElement {
       if (!child instanceof Entity) {
         continue
       }
+      console.log(child);
       child.traverse(callBack)
     }
   }

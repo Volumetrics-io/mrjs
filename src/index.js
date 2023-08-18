@@ -6,6 +6,7 @@ import './core/MRElement.js'
 import './core/System.js'
 import './core/MRApp.js'
 import './core/entity.js'
+import './entities/Model.js'
 
 // SYSTEMS
 import './component-systems/RapierPhysicsSystem.js'
@@ -38,3 +39,8 @@ export { default as Entity } from './core/entity.js'
 export { default as UIPlane } from './geometry/UIPlane.js'
 // UI
 export { default as Panel } from './core/Panel.js'
+
+
+//DEV
+
+import './entities/developer/DevVolume.js'
