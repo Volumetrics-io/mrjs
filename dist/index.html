@@ -17,9 +17,9 @@
                     </mr-texteditor>
                 </mr-panel>
             </mr-container>
-    
-            <mr-entity id="dev" snap-to="back">
-<mr-container width="1.333" height="1">
+
+            <mr-dev-volume id="dev" snap-to="back">
+<mr-container width="1.333" height="1" >
     <mr-row>
         <mr-panel id="panel1" width="0.25" margin="0 0.02 0 0"></mr-panel>
 
@@ -27,7 +27,7 @@
         </mr-panel>
     </mr-row>
 </mr-container>
-            </mr-entity>
+            </mr-dev-volume>
         </mr-volume>
         
     </mr-app>
@@ -36,24 +36,6 @@
   <footer>
     <script type="module">
 
-        let panels = document.querySelectorAll('mr-panel')
-
-        console.log(panels);
-
-        for( const panel of panels) {
-            if (!panel.id) { continue }
-            panel.onGrab = (position) => {
-
-                let localPosition = panel.object3D.parent.worldToLocal(new THREE.Vector3(position.x, position.y, position.z))
-                console.log(localPosition);
-                panel.setAttribute('position', `${localPosition.x} ${localPosition.y} ${localPosition.z}`)
-            }
-
-        }
-
-        document.addEventListener('grab', (event) => {
-            console.log('grab');
-        })
     </script>
   </footer>
 </html>

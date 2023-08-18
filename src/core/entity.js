@@ -219,10 +219,11 @@ export class Entity extends MRElement {
         default:
           break;
       }
-      if(this.physics) {
-        this.physics.update = true
+        this.traverse((child) => {
+          if (!child.physics) { return }
+          child.physics.update = true
+        })
       }
-    }
   }
 
   componentMutated(componentName) {
@@ -272,6 +273,7 @@ export class Entity extends MRElement {
       if (!child instanceof Entity) {
         continue
       }
+      console.log(child);
       child.traverse(callBack)
     }
   }

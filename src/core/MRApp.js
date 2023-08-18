@@ -14,6 +14,7 @@ import {
 
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
+import { DeveloperSystem } from '../component-systems/DeveloperSystem.js'
 ('use strict')
 
 export class MRApp extends MRElement {
@@ -87,6 +88,7 @@ export class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
+        this.devSystem = new DeveloperSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 

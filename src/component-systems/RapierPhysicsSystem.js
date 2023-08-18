@@ -6,6 +6,7 @@ export let RAPIER = null
 export const JOINT_COLLIDER_HANDLE_NAMES = {}
 export const COLLIDER_CURSOR_MAP = {}
 export const COLLIDER_ENTITY_MAP = {}
+export const COLLIDER_TOOL_MAP = {}
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -70,9 +71,9 @@ export class RapierPhysicsSystem extends System {
 
       if (entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let joint = COLLIDER_CURSOR_MAP[collider2.handle]
+          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
 
-          if (joint) {
+          if (cursor) {
             entity.onGrab(collider2.translation())
           }
         })
@@ -96,8 +97,18 @@ export class RapierPhysicsSystem extends System {
 
     let cursor = COLLIDER_CURSOR_MAP[handle1]
 
-    if(cursor && entity){
-      this.grab(collider1, collider2, entity)
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+
+      if (tool) {
+        tool.grabbed = true
+        return
+      }
+
+      if (entity) {
+        this.grab(collider1, collider2, entity)
+        return
+      }
     }
 
   }
@@ -112,8 +123,19 @@ export class RapierPhysicsSystem extends System {
       return
     }
 
-    if(cursor && entity){
-      this.release(entity)
+    if(cursor){
+      let tool = COLLIDER_TOOL_MAP[handle2] 
+      console.log(COLLIDER_TOOL_MAP);
+
+      if (tool) {
+        tool.grabbed = false
+        return
+      }
+
+      if (entity) {
+        this.release(entity)
+        return
+      }
     }
   }
 
