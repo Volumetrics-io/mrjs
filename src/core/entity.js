@@ -79,6 +79,17 @@ export class Entity extends MRElement {
 
     this.componentMutated = this.componentMutated.bind(this)
 
+    this.touch = false
+    this.grabbed = false
+
+  }
+
+  onTouch = (joint, position) => { 
+    console.log(`${joint} touch at:`, position);
+  }
+
+  onGrab = (position) => {
+    console.log('grab');
   }
 
   connectedCallback() {

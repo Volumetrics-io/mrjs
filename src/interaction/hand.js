@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js'
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js'
-import { RAPIER, JOINT_COLLIDER_HANDLE_NAMES} from '../component-systems/RapierPhysicsSystem'
+import { RAPIER, JOINT_COLLIDER_HANDLE_NAMES, COLLIDER_CURSOR_MAP} from '../component-systems/RapierPhysicsSystem'
 
 const HOVER_DISTANCE = 0.05
 const PINCH_DISTANCE = 0.02
@@ -115,7 +115,7 @@ export class MRHand {
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
 
-      if( joint.includes('tip') ){
+      if( joint.includes('index-finger-tip') ){
         JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
       }
     }
@@ -131,8 +131,10 @@ export class MRHand {
       this.cursor
     )
 
+    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
+
     collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
-      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
     collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     
   }

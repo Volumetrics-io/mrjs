@@ -9,7 +9,7 @@
 
   </head>
   <body >
-    <mr-app debug="true">
+    <mr-app>
         <mr-volume position="0 0 0">
             <mr-container  width="0.5" height="0.666" snap-to="left">
                 <mr-panel corner-radius="0.02" position="-0.5 0 0">
@@ -21,9 +21,9 @@
             <mr-entity id="dev" snap-to="back">
 <mr-container width="1.333" height="1">
     <mr-row>
-        <mr-panel width="0.25" margin="0 0.02 0 0"></mr-panel>
+        <mr-panel id="panel1" width="0.25" margin="0 0.02 0 0"></mr-panel>
 
-        <mr-panel corner-radius="0.02" width="0.75">
+        <mr-panel id="panel2" corner-radius="0.02" width="0.75">
         </mr-panel>
     </mr-row>
 </mr-container>
@@ -38,6 +38,10 @@
 
         document.addEventListener('touch-start', (event) => {
             console.log('touched');
+        })
+
+        document.addEventListener('grab', (event) => {
+            console.log('grab');
         })
     </script>
   </footer>
