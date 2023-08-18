@@ -51997,6 +51997,13 @@ class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(attr.value))
+          break
+        case 'position':
+          this.object3D.position.fromArray(parseVector(attr.value))
+          console.log(this.object3D.position);
+          break
         case 'width':
           this.width = parseFloat(attr.value)
           break
@@ -52068,6 +52075,22 @@ class Entity extends MRElement {
       }
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
+      }
+
+      switch (mutation.attributeName) {
+        case 'position':
+          this.object3D.position.fromArray(parseVector(this.getAttribute('position')))
+          console.log(this.object3D.position);
+          break;
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+      
+        default:
+          break;
+      }
+      if(this.physics) {
+        this.physics.update = true
       }
     }
   }
@@ -67430,7 +67453,6 @@ class LayoutSystem extends System {
         }
 
         /// Set Z-index
-        entity.object3D.position.z += entity.zOffeset
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -67499,6 +67521,10 @@ class TextInputSystem extends System {
 
     const entities = this.app.querySelectorAll('*')
 
+    this.counter = 0
+
+    this.syncPeriod = 2
+
     for (const entity of entities) {
       if (entity instanceof MRInput) {
         this.registry.add(entity)
@@ -67515,15 +67541,19 @@ class TextInputSystem extends System {
         this.focus = null
       }
 
-      if(this.focus?.newSrc) {
-        this.getSourceText()
+      // THIS IS THE WRONG WAY TO DO THIS, we need to resolve differences some how (no-code edits and code edits)
+      this.counter += deltaTime
+      if(this.focus?.newSrc || this.counter >= this.syncPeriod) {
+        this.syncText()
         this.focus.newSrc = false
+        this.counter = 0
       }
+
     }
   }
 
 
-  getSourceText() {
+  syncText() {
     if (this.focus.srcElement) {
       this.focus.textContent = this.focus.srcElement.innerHTML 
     }
@@ -67537,7 +67567,7 @@ class TextInputSystem extends System {
       this.spliceSplit(this.currentIndex, 1, '')
       this.focus.srcElement.innerHTML = this.focus.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
-
+      this.counter = 0
     }
   }
 
@@ -67572,6 +67602,8 @@ class TextInputSystem extends System {
   
 
   onKeyDown = (event) => {
+    this.counter = 0
+    this.edited = true
 
     if (this.focus == null) { return }
     event.stopPropagation()

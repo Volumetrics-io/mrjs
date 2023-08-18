@@ -9,10 +9,10 @@
 
   </head>
   <body >
-    <mr-app>
-        <mr-volume position="0 0 0">
+    <mr-app debug="true">
+        <mr-volume scale="0.5" position="0 0 -0.6">
             <mr-container  width="0.5" height="0.666" snap-to="left">
-                <mr-panel corner-radius="0.02" position="-0.5 0 0">
+                <mr-panel corner-radius="0.02">
                     <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
                     </mr-texteditor>
                 </mr-panel>
@@ -36,9 +36,20 @@
   <footer>
     <script type="module">
 
-        document.addEventListener('touch-start', (event) => {
-            console.log('touched');
-        })
+        let panels = document.querySelectorAll('mr-panel')
+
+        console.log(panels);
+
+        for( const panel of panels) {
+            if (!panel.id) { continue }
+            panel.onGrab = (position) => {
+
+                let localPosition = panel.object3D.parent.worldToLocal(new THREE.Vector3(position.x, position.y, position.z))
+                console.log(localPosition);
+                panel.setAttribute('position', `${localPosition.x} ${localPosition.y} ${localPosition.z}`)
+            }
+
+        }
 
         document.addEventListener('grab', (event) => {
             console.log('grab');

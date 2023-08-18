@@ -10,6 +10,10 @@ export class TextInputSystem extends System {
 
     const entities = this.app.querySelectorAll('*')
 
+    this.counter = 0
+
+    this.syncPeriod = 2
+
     for (const entity of entities) {
       if (entity instanceof MRInput) {
         this.registry.add(entity)
@@ -26,15 +30,19 @@ export class TextInputSystem extends System {
         this.focus = null
       }
 
-      if(this.focus?.newSrc) {
-        this.getSourceText()
+      // THIS IS THE WRONG WAY TO DO THIS, we need to resolve differences some how (no-code edits and code edits)
+      this.counter += deltaTime
+      if(this.focus?.newSrc || this.counter >= this.syncPeriod) {
+        this.syncText()
         this.focus.newSrc = false
+        this.counter = 0
       }
+
     }
   }
 
 
-  getSourceText() {
+  syncText() {
     if (this.focus.srcElement) {
       this.focus.textContent = this.focus.srcElement.innerHTML 
     }
@@ -48,7 +56,7 @@ export class TextInputSystem extends System {
       this.spliceSplit(this.currentIndex, 1, '')
       this.focus.srcElement.innerHTML = this.focus.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
-
+      this.counter = 0
     }
   }
 
@@ -83,6 +91,8 @@ export class TextInputSystem extends System {
   
 
   onKeyDown = (event) => {
+    this.counter = 0
+    this.edited = true
 
     if (this.focus == null) { return }
     event.stopPropagation()

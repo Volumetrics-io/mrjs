@@ -127,6 +127,13 @@ export class Entity extends MRElement {
         case 'comp':
           this.componentMutated(attr.name)
           break
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(attr.value))
+          break
+        case 'position':
+          this.object3D.position.fromArray(parseVector(attr.value))
+          console.log(this.object3D.position);
+          break
         case 'width':
           this.width = parseFloat(attr.value)
           break
@@ -198,6 +205,22 @@ export class Entity extends MRElement {
       }
       if (mutation.attributeName.startsWith('comp-')) {
         this.componentMutated(mutation.attributeName)
+      }
+
+      switch (mutation.attributeName) {
+        case 'position':
+          this.object3D.position.fromArray(parseVector(this.getAttribute('position')))
+          console.log(this.object3D.position);
+          break;
+        case 'scale':
+          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+      
+        default:
+          break;
+      }
+      if(this.physics) {
+        this.physics.update = true
       }
     }
   }
