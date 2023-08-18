@@ -13,21 +13,23 @@ export class DeveloperSystem extends System {
     this.tempWorldPosition = new THREE.Vector3()
     this.tempWorldQuaternion = new THREE.Quaternion()
 
-    this.registry = devVolume.registry
+    this.registry.add(devVolume)
     
   }
 
   update(deltaTime) {
-    for (const tool of this.registry) {
-      this.updateBody(tool)
-      if (tool.grabbed){
-        this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
-          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+    for (const env of this.registry) {
+      for ( const tool of env.registry){
+        this.updateBody(tool)
+        if (tool.grabbed){
+          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
+            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
 
-          if (cursor) {
-            tool.onGrab(collider2.translation())
-          }
-        })
+            if (cursor) {
+              tool.onGrab(collider2.translation())
+            }
+          })
+        }
       }
     }
   }

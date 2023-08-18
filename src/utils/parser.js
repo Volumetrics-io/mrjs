@@ -4,6 +4,10 @@ export function parseVector(str) {
   return str.split(' ').map(Number)
 }
 
+export function parseDegVector(str) {
+  return str.split(' ').map((val) => { return parseFloat(val) * Math.PI / 180 })
+}
+
 export function radToDeg(val) {
   return (val * Math.PI) / 180
 }
@@ -53,4 +57,15 @@ export function parseAttributeString(attrString) {
   }
 
   return jsonObject
+}
+
+
+export function roundTo(val, decimal){
+  return Math.round(val * decimal) / decimal
+}
+
+export function roundVectorTo(vector, decimal){
+  vector.multiplyScalar(decimal)
+  vector.roundToZero()
+  vector.divideScalar(decimal)
 }

@@ -12,7 +12,7 @@ export class TextInputSystem extends System {
 
     this.counter = 0
 
-    this.syncPeriod = 2
+    this.syncPeriod = 5
 
     for (const entity of entities) {
       if (entity instanceof MRInput) {
@@ -43,6 +43,7 @@ export class TextInputSystem extends System {
 
 
   syncText() {
+    if (this.edited) { return }
     if (this.focus.srcElement) {
       this.focus.textContent = this.focus.srcElement.innerHTML 
     }
@@ -53,10 +54,12 @@ export class TextInputSystem extends System {
 
   saveUpdate(){
     if(this.focus) {
+      console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
       this.focus.srcElement.innerHTML = this.focus.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
       this.counter = 0
+      this.edited = false
     }
   }
 
@@ -69,6 +72,7 @@ export class TextInputSystem extends System {
   handleMetaKeys = (key) => {
     switch (key) {
       case 's':
+        console.log('saving');
         this.saveUpdate()
         break;
     
@@ -80,7 +84,7 @@ export class TextInputSystem extends System {
   onKeyUp = (event) => {
     let key = event.key;
     switch (key) {
-      case 'Meta':
+      case 'Control':
         this.meta = false
         break
 
@@ -105,8 +109,10 @@ export class TextInputSystem extends System {
       return
     }
 
+    console.log(key);
+
     switch (true) {
-        case key == 'Meta':
+        case key == 'Control':
           this.meta = true
           break
         case key == 'Enter':

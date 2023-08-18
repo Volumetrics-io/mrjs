@@ -12,6 +12,12 @@ export class DevVolume extends Entity {
         if (child == this) { return }
         this.addTools(child)
       })
+
+      this.addEventListener('new-entity', (event) => {
+        event.target.traverse((child) => {
+          this.addTools(child)
+        })
+      })
     })
   }
 

@@ -51711,6 +51711,10 @@ function parseVector(str) {
   return str.split(' ').map(Number)
 }
 
+function parseDegVector(str) {
+  return str.split(' ').map((val) => { return parseFloat(val) * Math.PI / 180 })
+}
+
 function parser_radToDeg(val) {
   return (val * Math.PI) / 180
 }
@@ -51762,6 +51766,16 @@ function parseAttributeString(attrString) {
   return jsonObject
 }
 
+
+function roundTo(val, decimal){
+  return Math.round(val * decimal) / decimal
+}
+
+function roundVectorTo(vector, decimal){
+  vector.multiplyScalar(decimal)
+  vector.roundToZero()
+  vector.divideScalar(decimal)
+}
 ;// CONCATENATED MODULE: ./src/datatypes/BodyOffset.js
 class BodyOffset {
 
@@ -51969,7 +51983,6 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -51996,6 +52009,10 @@ class Entity extends MRElement {
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
+          break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(attr.value))
+          console.log(this.object3D.rotation);
           break
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(attr.value))
@@ -52026,6 +52043,7 @@ class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+    this.checkForText()
 
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
@@ -67477,6 +67495,7 @@ class LayoutSystem extends System {
         }
 
         /// Set Z-index
+        entity.object3D.position.z += entity.zOffeset
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -67547,7 +67566,7 @@ class TextInputSystem extends System {
 
     this.counter = 0
 
-    this.syncPeriod = 2
+    this.syncPeriod = 5
 
     for (const entity of entities) {
       if (entity instanceof MRInput) {
@@ -67578,6 +67597,7 @@ class TextInputSystem extends System {
 
 
   syncText() {
+    if (this.edited) { return }
     if (this.focus.srcElement) {
       this.focus.textContent = this.focus.srcElement.innerHTML 
     }
@@ -67588,10 +67608,12 @@ class TextInputSystem extends System {
 
   saveUpdate(){
     if(this.focus) {
+      console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
       this.focus.srcElement.innerHTML = this.focus.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
       this.counter = 0
+      this.edited = false
     }
   }
 
@@ -67604,6 +67626,7 @@ class TextInputSystem extends System {
   handleMetaKeys = (key) => {
     switch (key) {
       case 's':
+        console.log('saving');
         this.saveUpdate()
         break;
     
@@ -67615,7 +67638,7 @@ class TextInputSystem extends System {
   onKeyUp = (event) => {
     let key = event.key;
     switch (key) {
-      case 'Meta':
+      case 'Control':
         this.meta = false
         break
 
@@ -67640,8 +67663,10 @@ class TextInputSystem extends System {
       return
     }
 
+    console.log(key);
+
     switch (true) {
-        case key == 'Meta':
+        case key == 'Control':
           this.meta = true
           break
         case key == 'Enter':
@@ -67801,6 +67826,7 @@ class Tool {
 ;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
 
 
+
 class PositionTool extends Tool {
     constructor(entity){
         super(entity)
@@ -67812,8 +67838,8 @@ class PositionTool extends Tool {
         console.log('position tool');
         this.worldPosition.set(position.x, position.y, position.z)
         this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
+        roundVectorTo(this.localPosition, 100)
        this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
-
     }
 }
 ;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
@@ -67830,6 +67856,12 @@ class DevVolume extends Entity {
       this.traverse((child) => {
         if (child == this) { return }
         this.addTools(child)
+      })
+
+      this.addEventListener('new-entity', (event) => {
+        event.target.traverse((child) => {
+          this.addTools(child)
+        })
       })
     })
   }
@@ -67869,21 +67901,23 @@ class DeveloperSystem extends System {
     this.tempWorldPosition = new three_module_Vector3()
     this.tempWorldQuaternion = new Quaternion()
 
-    this.registry = devVolume.registry
+    this.registry.add(devVolume)
     
   }
 
   update(deltaTime) {
-    for (const tool of this.registry) {
-      this.updateBody(tool)
-      if (tool.grabbed){
-        this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
-          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+    for (const env of this.registry) {
+      for ( const tool of env.registry){
+        this.updateBody(tool)
+        if (tool.grabbed){
+          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
+            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
 
-          if (cursor) {
-            tool.onGrab(collider2.translation())
-          }
-        })
+            if (cursor) {
+              tool.onGrab(collider2.translation())
+            }
+          })
+        }
       }
     }
   }

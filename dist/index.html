@@ -9,23 +9,21 @@
 
   </head>
   <body >
-    <mr-app debug="true">
-        <mr-volume scale="0.5" position="0 0 -0.6">
-            <mr-container  width="0.5" height="0.666" snap-to="left">
-                <mr-panel corner-radius="0.02">
-                    <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
-                    </mr-texteditor>
+    <mr-app>
+        <mr-volume scale="0.5" position="0 -0.1 -0.45">
+            <mr-container rotation="0 -45 0" width="0.666" height="0.666" snap-to="right">
+                <mr-panel color="darkgrey" corner-radius="0.02">
+                    <mr-panel corner-radius="0.02">
+                        <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
+                        </mr-texteditor>
+                    </mr-panel>
                 </mr-panel>
             </mr-container>
 
             <mr-dev-volume id="dev" snap-to="back">
-<mr-container width="1.333" height="1" >
-    <mr-row>
-        <mr-panel id="panel1" width="0.25" margin="0 0.02 0 0"></mr-panel>
-
-        <mr-panel id="panel2" corner-radius="0.02" width="0.75">
+<mr-container width="0.666" height="0.5" >
+        <mr-panel id="panel2" corner-radius="0.02">
         </mr-panel>
-    </mr-row>
 </mr-container>
             </mr-dev-volume>
         </mr-volume>

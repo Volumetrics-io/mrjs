@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { parseVector } from '../utils/parser.js'
+import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 import { BodyOffset } from '../datatypes/BodyOffset.js'
 
@@ -99,7 +99,6 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-    this.setAttribute('style', 'display: none;')
 
     // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
@@ -126,6 +125,10 @@ export class Entity extends MRElement {
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
+          break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(attr.value))
+          console.log(this.object3D.rotation);
           break
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(attr.value))
@@ -156,6 +159,7 @@ export class Entity extends MRElement {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.checkForText()
     })
+    this.checkForText()
 
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
