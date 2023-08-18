@@ -6,12 +6,15 @@ export class Container extends Entity {
     this.width = 1
     this.height = 1
 
+  }
+
+  connected(){
     document.addEventListener('DOMContentLoaded', (event) => {
-    this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-    setTimeout(() => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    }, 0);
+      })
+      setTimeout(() => {
+        this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+      }, 0);
   }
 }
 

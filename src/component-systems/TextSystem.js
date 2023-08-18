@@ -29,18 +29,12 @@ export class TextSystem extends System {
         entity.textObj.text = text.length > 0 ? text : ' '
         entity.textObj.sync()
       }
+
+      this.updateStyle(entity)
     }
   }
 
-  addText = (entity) => {
-    if (!entity.textObj) { 
-      entity.textObj = new Text()
-      entity.object3D.add(entity.textObj)
-    }
-
-    let text = entity.textContent.trim()
-    entity.textObj.text = text.length > 0 ? text : ' '
-
+  updateStyle = (entity) => {
     const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
 
     let width = entity.width == 'auto' ? 1 : entity.width
@@ -59,6 +53,18 @@ export class TextSystem extends System {
     style.clipRect = [-style.maxWidth / 2, -height, style.maxWidth / 2, 0]
     this.setStyle(entity.textObj, style)
     entity.textObj.sync()
+  }
+
+  addText = (entity) => {
+    if (!entity.textObj) { 
+      entity.textObj = new Text()
+      entity.object3D.add(entity.textObj)
+    }
+
+    let text = entity.textContent.trim()
+    entity.textObj.text = text.length > 0 ? text : ' '
+
+    this.updateStyle(entity)
   }
 
   setStyle = (textObj, style) => {

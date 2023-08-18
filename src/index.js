@@ -6,6 +6,7 @@ import './core/MRElement.js'
 import './core/System.js'
 import './core/MRApp.js'
 import './core/entity.js'
+import './entities/Model.js'
 
 // SYSTEMS
 import './component-systems/RapierPhysicsSystem.js'
