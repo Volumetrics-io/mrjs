@@ -52,45 +52,16 @@ export class MRApp extends MRElement {
 
     this.user.position.set(0, 0, 1)
 
-    this.light_orange = new THREE.PointLight({});
-    this.light_orange.color = new THREE.Color(`hsl(30, 100%, 50%)`);
-    this.light_orange.intensity = 5;
-    this.light_orange.shadow.camera.top = 2
-    this.light_orange.shadow.camera.bottom = -2
-    this.light_orange.shadow.camera.right = 2
-    this.light_orange.shadow.camera.left = -2
-    this.light_orange.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_orange);
-
-    this.light_blue = new THREE.PointLight({});
-    this.light_blue.color = new THREE.Color(`hsl(208, 100%, 50%)`);
-    this.light_blue.intensity = 10;
-    this.light_blue.shadow.camera.top = 2
-    this.light_blue.shadow.camera.bottom = -2
-    this.light_blue.shadow.camera.right = 2
-    this.light_blue.shadow.camera.left = -2
-    this.light_blue.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_blue);
-
-    this.light_pink = new THREE.PointLight({});
-    this.light_pink.color = new THREE.Color(`hsl(340, 100%, 50%)`);
-    this.light_pink.intensity = 15;
-    this.light_pink.shadow.camera.top = 2
-    this.light_pink.shadow.camera.bottom = -2
-    this.light_pink.shadow.camera.right = 2
-    this.light_pink.shadow.camera.left = -2
-    this.light_pink.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_pink);
-
-    this.shadowLight = new THREE.DirectionalLight(0xffffff)
+    this.shadowLight = new THREE.PointLight(0xffffff)
     this.shadowLight.position.set(0, 1, 1)
+    this.shadowLight.intensity = 5
     this.shadowLight.castShadow = true
     this.shadowLight.shadow.camera.top = 2
     this.shadowLight.shadow.camera.bottom = -2
     this.shadowLight.shadow.camera.right = 2
     this.shadowLight.shadow.camera.left = -2
     this.shadowLight.shadow.mapSize.set(4096, 4096)
-    //this.scene.add(this.shadowLight)
+    this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -211,21 +182,21 @@ export class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    const timer = Date.now() * 0.00025;
-    const radius = 3;
-    const depth = 1;
+    // const timer = Date.now() * 0.00025;
+    // const radius = 3;
+    // const depth = 1;
 
-    this.light_pink.position.x = Math.sin(timer * 1) * radius;
-    this.light_pink.position.y = Math.cos(timer * 1) * radius;
-    this.light_pink.position.z = depth;
+    // this.light_pink.position.x = Math.sin(timer * 1) * radius;
+    // this.light_pink.position.y = Math.cos(timer * 1) * radius;
+    // this.light_pink.position.z = depth;
 
-    this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-    this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-    this.light_orange.position.z = depth;
+    // this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
+    // this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
+    // this.light_orange.position.z = depth;
 
-    this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-    this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-    this.light_blue.position.z = depth;
+    // this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
+    // this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
+    // this.light_blue.position.z = depth;
 
     this.stats.begin()
     for (const system of this.systems) {

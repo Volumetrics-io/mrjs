@@ -1,4 +1,4 @@
-import { System } from "../core/System";
+import System from "../core/System";
 import { Entity } from "../core/entity";
 import { Column } from "../entities/layout/Column";
 import { Row } from "../entities/layout/Row";

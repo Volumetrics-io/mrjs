@@ -121,6 +121,36 @@ export class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
+    this.connected()
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.checkForText()
+      this.loadAttributes()
+
+    })
+    this.checkForText()
+    this.loadAttributes()
+
+    document.addEventListener('engine-started', (event) => {
+      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+    })
+
+    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+  }
+
+  checkForText = () => {
+    if (this.textContent.trim() == this.innerHTML.trim()) {
+      this.dispatchEvent(
+        new CustomEvent(`has-text`, {
+          bubbles: true,
+          detail: { entity: this },
+        })
+      )
+    }
+  }
+
+  loadAttributes() {
+    this.components = new Set()
     for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
         case 'comp':
@@ -152,30 +182,6 @@ export class Entity extends MRElement {
         default:
           break
       }
-    }
-
-    this.connected()
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.checkForText()
-    })
-    this.checkForText()
-
-    document.addEventListener('engine-started', (event) => {
-      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-    })
-
-    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-  }
-
-  checkForText = () => {
-    if (this.textContent.trim() == this.innerHTML.trim()) {
-      this.dispatchEvent(
-        new CustomEvent(`has-text`, {
-          bubbles: true,
-          detail: { entity: this },
-        })
-      )
     }
   }
 
@@ -241,6 +247,7 @@ export class Entity extends MRElement {
         })
       )
     } else if (!this.components.has(componentName)) {
+      console.log(componentName);
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
@@ -277,7 +284,6 @@ export class Entity extends MRElement {
       if (!child instanceof Entity) {
         continue
       }
-      console.log(child);
       child.traverse(callBack)
     }
   }

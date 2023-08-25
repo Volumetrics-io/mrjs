@@ -173,18 +173,6 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/harmony module decorator */
 /******/ 	(() => {
 /******/ 		__webpack_require__.hmd = (module) => {
@@ -278,22 +266,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 	
 /******/ 	/* webpack/runtime/publicPath */
 /******/ 	(() => {
-/******/ 		var scriptUrl;
-/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
-/******/ 		var document = __webpack_require__.g.document;
-/******/ 		if (!scriptUrl && document) {
-/******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src;
-/******/ 			if (!scriptUrl) {
-/******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
-/******/ 			}
-/******/ 		}
-/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
-/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
-/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
-/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
-/******/ 		__webpack_require__.p = scriptUrl;
+/******/ 		__webpack_require__.p = "";
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
@@ -399,8 +372,8 @@ __webpack_require__.d(__webpack_exports__, {
   "Ammo": () => (/* reexport */ ammo_wasm_namespaceObject),
   "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
   "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
-  "MRSystemElement": () => (/* reexport */ System_namespaceObject["default"]),
   "Panel": () => (/* reexport */ Panel),
+  "System": () => (/* reexport */ System),
   "THREE": () => (/* reexport */ three_module_namespaceObject),
   "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
 });
@@ -832,13 +805,6 @@ var entity_namespaceObject = {};
 __webpack_require__.r(entity_namespaceObject);
 __webpack_require__.d(entity_namespaceObject, {
   "J": () => (Entity)
-});
-
-// NAMESPACE OBJECT: ./src/core/System.js
-var System_namespaceObject = {};
-__webpack_require__.r(System_namespaceObject);
-__webpack_require__.d(System_namespaceObject, {
-  "x": () => (System)
 });
 
 // NAMESPACE OBJECT: ./src/geometry/UIPlane.js
@@ -52005,6 +51971,36 @@ class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
+    this.connected()
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.checkForText()
+      this.loadAttributes()
+
+    })
+    this.checkForText()
+    this.loadAttributes()
+
+    document.addEventListener('engine-started', (event) => {
+      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+    })
+
+    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+  }
+
+  checkForText = () => {
+    if (this.textContent.trim() == this.innerHTML.trim()) {
+      this.dispatchEvent(
+        new CustomEvent(`has-text`, {
+          bubbles: true,
+          detail: { entity: this },
+        })
+      )
+    }
+  }
+
+  loadAttributes() {
+    this.components = new Set()
     for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
         case 'comp':
@@ -52036,30 +52032,6 @@ class Entity extends MRElement {
         default:
           break
       }
-    }
-
-    this.connected()
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.checkForText()
-    })
-    this.checkForText()
-
-    document.addEventListener('engine-started', (event) => {
-      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-    })
-
-    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-  }
-
-  checkForText = () => {
-    if (this.textContent.trim() == this.innerHTML.trim()) {
-      this.dispatchEvent(
-        new CustomEvent(`has-text`, {
-          bubbles: true,
-          detail: { entity: this },
-        })
-      )
     }
   }
 
@@ -52125,6 +52097,7 @@ class Entity extends MRElement {
         })
       )
     } else if (!this.components.has(componentName)) {
+      console.log(componentName);
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
@@ -52161,7 +52134,6 @@ class Entity extends MRElement {
       if (!child instanceof Entity) {
         continue
       }
-      console.log(child);
       child.traverse(callBack)
     }
   }
@@ -52187,9 +52159,9 @@ class System {
 
     this.app.registerSystem(this)
 
-    this.app.addEventListener(`${this.componentName}-attached`, this.onAttach)
-    this.app.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-    this.app.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    document.addEventListener(`${this.componentName}-attached`, this.onAttach)
+    document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+    document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
     this.app.addEventListener('new-entity', (event) => {
       this.onNewEntity(event.target)
@@ -52227,6 +52199,7 @@ class System {
   }
 
   onAttach = (event) => {
+    console.log(event);
     this.registry.add(event.detail.entity)
     let data = this.parseComponentString(event.detail.component)
     this.attachedComponent(event.detail.entity, data)
@@ -67989,45 +67962,16 @@ class MRApp extends MRElement {
 
     this.user.position.set(0, 0, 1)
 
-    this.light_orange = new PointLight({});
-    this.light_orange.color = new Color(`hsl(30, 100%, 50%)`);
-    this.light_orange.intensity = 5;
-    this.light_orange.shadow.camera.top = 2
-    this.light_orange.shadow.camera.bottom = -2
-    this.light_orange.shadow.camera.right = 2
-    this.light_orange.shadow.camera.left = -2
-    this.light_orange.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_orange);
-
-    this.light_blue = new PointLight({});
-    this.light_blue.color = new Color(`hsl(208, 100%, 50%)`);
-    this.light_blue.intensity = 10;
-    this.light_blue.shadow.camera.top = 2
-    this.light_blue.shadow.camera.bottom = -2
-    this.light_blue.shadow.camera.right = 2
-    this.light_blue.shadow.camera.left = -2
-    this.light_blue.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_blue);
-
-    this.light_pink = new PointLight({});
-    this.light_pink.color = new Color(`hsl(340, 100%, 50%)`);
-    this.light_pink.intensity = 15;
-    this.light_pink.shadow.camera.top = 2
-    this.light_pink.shadow.camera.bottom = -2
-    this.light_pink.shadow.camera.right = 2
-    this.light_pink.shadow.camera.left = -2
-    this.light_pink.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.light_pink);
-
-    this.shadowLight = new DirectionalLight(0xffffff)
+    this.shadowLight = new PointLight(0xffffff)
     this.shadowLight.position.set(0, 1, 1)
+    this.shadowLight.intensity = 5
     this.shadowLight.castShadow = true
     this.shadowLight.shadow.camera.top = 2
     this.shadowLight.shadow.camera.bottom = -2
     this.shadowLight.shadow.camera.right = 2
     this.shadowLight.shadow.camera.left = -2
     this.shadowLight.shadow.mapSize.set(4096, 4096)
-    //this.scene.add(this.shadowLight)
+    this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -68148,21 +68092,21 @@ class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    const timer = Date.now() * 0.00025;
-    const radius = 3;
-    const depth = 1;
+    // const timer = Date.now() * 0.00025;
+    // const radius = 3;
+    // const depth = 1;
 
-    this.light_pink.position.x = Math.sin(timer * 1) * radius;
-    this.light_pink.position.y = Math.cos(timer * 1) * radius;
-    this.light_pink.position.z = depth;
+    // this.light_pink.position.x = Math.sin(timer * 1) * radius;
+    // this.light_pink.position.y = Math.cos(timer * 1) * radius;
+    // this.light_pink.position.z = depth;
 
-    this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-    this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-    this.light_orange.position.z = depth;
+    // this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
+    // this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
+    // this.light_orange.position.z = depth;
 
-    this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-    this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-    this.light_blue.position.z = depth;
+    // this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
+    // this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
+    // this.light_blue.position.z = depth;
 
     this.stats.begin()
     for (const system of this.systems) {
@@ -68682,6 +68626,51 @@ class Model extends Entity {
 }
 
 customElements.get('mr-model') || customElements.define('mr-model', Model)
+;// CONCATENATED MODULE: ./src/entities/Light.js
+
+
+class Light_Light extends Entity {
+
+    constructor(){
+        super()
+        this.object3D = new THREE.PointLight({});
+
+        this.object3D.shadow.camera.top = 2
+        this.object3D.shadow.camera.bottom = -2
+        this.object3D.shadow.camera.right = 2
+        this.object3D.shadow.camera.left = -2
+        this.object3D.shadow.mapSize.set(4096, 4096)
+
+    }
+
+    connected(){
+        let color = this.getAttribute('color')
+        this.object3D.color.setStyle(color)
+
+        this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
+
+        console.log(this.object3D);
+    }
+
+    mutated = (mutation) => {
+        if (mutation.type != 'attributes') { return }
+        switch (mutation.attributeName) {
+            case 'color':
+                let color = this.getAttribute('color')
+                this.object3D.color.setStyle(color)
+                break;
+
+            case 'intensity':
+                this.object3D.intensity = this.getAttribute('intensity')
+                break;
+        
+            default:
+                break;
+        }
+    }
+}
+
+customElements.get('mr-light') || customElements.define('mr-light', Light_Light)
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
 
@@ -70006,6 +69995,7 @@ if (typeof exports === 'object' && typeof module === 'object')
 
 
 // CORE
+
 
 
 

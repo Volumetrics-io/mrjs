@@ -7,6 +7,7 @@ import './core/System.js'
 import './core/MRApp.js'
 import './core/entity.js'
 import './entities/Model.js'
+import './entities/Light.js'
 
 // SYSTEMS
 import './component-systems/RapierPhysicsSystem.js'
@@ -32,7 +33,7 @@ export * as Ammo from 'three/examples/jsm/libs/ammo.wasm.js'
 
 // CORE
 export { default as MRElement } from './core/MRElement.js'
-export { default as MRSystemElement } from './core/System.js'
+export { default as System } from './core/System.js'
 export { default as Entity } from './core/entity.js'
 
 // GEOMETRY
