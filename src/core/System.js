@@ -1,6 +1,6 @@
 import { Entity } from './entity.js'
 
-export class System {
+export default class System {
   constructor() {
     this.app = document.querySelector('mr-app')
 
@@ -15,9 +15,9 @@ export class System {
 
     this.app.registerSystem(this)
 
-    this.app.addEventListener(`${this.componentName}-attached`, this.onAttach)
-    this.app.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-    this.app.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    document.addEventListener(`${this.componentName}-attached`, this.onAttach)
+    document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+    document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
     this.app.addEventListener('new-entity', (event) => {
       this.onNewEntity(event.target)
@@ -55,6 +55,7 @@ export class System {
   }
 
   onAttach = (event) => {
+    console.log(event);
     this.registry.add(event.detail.entity)
     let data = this.parseComponentString(event.detail.component)
     this.attachedComponent(event.detail.entity, data)

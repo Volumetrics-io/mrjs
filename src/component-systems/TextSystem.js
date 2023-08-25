@@ -1,5 +1,5 @@
 import { Text } from 'troika-three-text'
-import { System } from '../core/System'
+import System from '../core/System'
 import { parseAttributeString } from '../utils/parser'
 import { MRInput } from '../UI/MRInput'
 

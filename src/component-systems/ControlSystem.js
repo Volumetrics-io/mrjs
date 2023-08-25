@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { MRHand } from '../interaction/hand'
-import { System } from '../core/System'
+import System from '../core/System'
 
 export class ControlSystem extends System {
   constructor() {

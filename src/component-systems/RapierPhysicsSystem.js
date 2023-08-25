@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { System } from '../core/System.js'
+import System from '../core/System.js'
 
 export let RAPIER = null
 

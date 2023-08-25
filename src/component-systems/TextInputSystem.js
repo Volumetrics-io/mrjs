@@ -1,5 +1,5 @@
 import { MRInput } from '../UI/MRInput';
-import { System } from '../core/System'
+import System from '../core/System'
 
 export class TextInputSystem extends System {
   constructor() {

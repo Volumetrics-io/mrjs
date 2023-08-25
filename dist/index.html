@@ -5,6 +5,7 @@
     <title>MR.js</title>
     <meta name="description" content="MR.js example">
     <script src="./build.js"></script>
+    <script type="module" src="./assets/js/AnimationSystem.js"></script>
 
 
   </head>
@@ -21,7 +22,12 @@
             </mr-container>
 
             <mr-dev-volume id="dev">
-              <mr-model src="./assets/models/logo.stl" scale="0.005"></mr-model>
+              <mr-entity comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;">
+                <mr-light color="hsl(30, 100%, 50%)" intensity="5" position="0 0.5 0"></mr-light>
+                <mr-light color="hsl(208, 100%, 50%)" intensity="10" position="0.5 -0.5 0"></mr-light>
+                <mr-light color="hsl(340, 100%, 50%)" intensity="15" position="-0.5 -0.5 0"></mr-light>
+              </mr-entity>
+              <mr-model comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" src="./assets/models/logo.stl" scale="0.005"></mr-model>
 <mr-container width="0.5" height="0.1" position="0 -0.2 0.3" >
         <mr-entity text-style="font: ./assets/fonts/BricolageGrotesque.ttf; size: 0.06">
           Volumetrics
@@ -34,8 +40,5 @@
   </body>
 
   <footer>
-    <script type="module">
-
-    </script>
   </footer>
 </html>
