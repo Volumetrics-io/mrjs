@@ -10,7 +10,7 @@
 
   </head>
   <body >
-    <mr-app>
+    <mr-app lighting="enabled: false">
         <mr-volume scale="0.5" position="0 -0.1 -0.45">
             <mr-container rotation="0 -45 0" width="0.666" height="0.666" snap-to="right">
                 <mr-panel color="darkgrey" corner-radius="0.02">
@@ -27,8 +27,11 @@
                 <mr-light color="hsl(208, 100%, 50%)" intensity="10" position="1 -1 0"></mr-light>
                 <mr-light color="hsl(340, 100%, 50%)" intensity="15" position="-1 -1 0"></mr-light>
               </mr-entity>
-              <mr-model comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" src="./assets/models/logo.stl" scale="0.005"></mr-model>
-<mr-container width="0.5" height="0.1" position="0 -0.2 0.3" >
+              <mr-model comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
+              src="./assets/models/logo.stl" 
+              rotation="-22.91 17.1887 45.8366"
+              scale="0.005"></mr-model>
+<mr-container width="0.5" height="0.1" position="0 -0.05 0.3" >
         <mr-entity text-style="font: ./assets/fonts/BricolageGrotesque.ttf; opacity: 0.5; size: 0.06">
           Volumetrics
         </mr-entity>

@@ -17,6 +17,7 @@ import {
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { DeveloperSystem } from '../component-systems/DeveloperSystem.js'
+import { parseAttributeString } from '../utils/parser.js'
 ('use strict')
 
 export class MRApp extends MRElement {
@@ -48,20 +49,16 @@ export class MRApp extends MRElement {
       20
     )
 
+    this.lighting = {
+      enabled: true,
+      color: 0xffffff,
+      intensity: 5,
+      shadows: true
+    }
+
     // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
 
     this.user.position.set(0, 0, 1)
-
-    this.shadowLight = new THREE.PointLight(0xffffff)
-    this.shadowLight.position.set(0, 1, 1)
-    this.shadowLight.intensity = 5
-    this.shadowLight.castShadow = true
-    this.shadowLight.shadow.camera.top = 2
-    this.shadowLight.shadow.camera.bottom = -2
-    this.shadowLight.shadow.camera.right = 2
-    this.shadowLight.shadow.camera.left = -2
-    this.shadowLight.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -148,6 +145,29 @@ export class MRApp extends MRElement {
     this.renderer.setAnimationLoop(this.render)
 
     window.addEventListener('resize', this.onWindowResize)
+
+    let lightString = this.getAttribute('lighting')
+
+    if(lightString) {
+      this.lighting = parseAttributeString(this.lighting)
+    }
+
+    this.initLights(this.lighting)
+
+  }
+
+  initLights = (data) => {
+    if(!data.enabled) { return }
+    this.defaultLight = new THREE.PointLight(data.color)
+    this.defaultLight.position.set(0, 1, 1)
+    this.defaultLight.intensity = data.intensity
+    this.defaultLight.castShadow = data.shadows
+    this.defaultLight.shadow.camera.top = 2
+    this.defaultLight.shadow.camera.bottom = -2
+    this.defaultLight.shadow.camera.right = 2
+    this.defaultLight.shadow.camera.left = -2
+    this.defaultLight.shadow.mapSize.set(4096, 4096)
+    this.scene.add(this.defaultLight)
   }
 
   denit() {
@@ -182,29 +202,15 @@ export class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    // const timer = Date.now() * 0.00025;
-    // const radius = 3;
-    // const depth = 1;
-
-    // this.light_pink.position.x = Math.sin(timer * 1) * radius;
-    // this.light_pink.position.y = Math.cos(timer * 1) * radius;
-    // this.light_pink.position.z = depth;
-
-    // this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-    // this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-    // this.light_orange.position.z = depth;
-
-    // this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-    // this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-    // this.light_blue.position.z = depth;
-
     this.stats.begin()
     for (const system of this.systems) {
       system.update(deltaTime)
     }
     this.stats.end()
 
-    this.shadowLight.target = this.user
+    if(this.lighting.enabled){
+      this.defaultLight.target = this.user
+    }
 
     this.renderer.render(this.scene, this.user)
   }

@@ -55,7 +55,6 @@ export default class System {
   }
 
   onAttach = (event) => {
-    console.log(event);
     this.registry.add(event.detail.entity)
     let data = this.parseComponentString(event.detail.component)
     this.attachedComponent(event.detail.entity, data)
