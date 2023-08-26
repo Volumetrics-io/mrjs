@@ -52029,6 +52029,9 @@ class Entity extends MRElement {
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
           break
+          case 'opacity':
+            this.object3D.opacity = parseVector(attr.value)
+            break
         default:
           break
       }
@@ -60126,6 +60129,8 @@ class TextSystem extends System {
     textObj.whiteSpace = style.whiteSpace ?? textObj.whiteSpace
     textObj.maxWidth = style.maxWidth
     textObj.clipRect = style.clipRect
+
+    textObj.material.opacity = style.opacity ?? 1
 
     textObj.position.z = 0.0001
   }
