@@ -82,6 +82,8 @@ export class TextSystem extends System {
     textObj.maxWidth = style.maxWidth
     textObj.clipRect = style.clipRect
 
+    textObj.material.opacity = style.opacity ?? 1
+
     textObj.position.z = 0.0001
   }
 }
