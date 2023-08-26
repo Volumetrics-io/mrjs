@@ -67945,10 +67945,6 @@ class MRApp extends MRElement {
     this.systems = new Set()
     this.scene = new Scene()
 
-    this.stats = new (stats_min_default())()
-    this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(this.stats.dom)
-
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
     this.user = new PerspectiveCamera(
       70,
@@ -68040,6 +68036,10 @@ class MRApp extends MRElement {
     this.renderer.toneMappingExposure = 1;
 
     if(this.debug){
+      this.stats = new (stats_min_default())()
+      this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+      document.body.appendChild(this.stats.dom)
+      
       const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
       orbitControls.minDistance = 0
       orbitControls.maxDistance = 8
@@ -68110,11 +68110,11 @@ class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    this.stats.begin()
+    if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
       system.update(deltaTime)
     }
-    this.stats.end()
+    if( this.debug ) { this.stats.end() }
 
     if(this.lighting.enabled){
       this.defaultLight.target = this.user
