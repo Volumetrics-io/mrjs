@@ -19,8 +19,6 @@ export default class Light extends Entity {
         this.object3D.color.setStyle(color)
 
         this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
-
-        console.log(this.object3D);
     }
 
     mutated = (mutation) => {

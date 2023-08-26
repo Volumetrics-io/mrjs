@@ -158,14 +158,12 @@ export class Entity extends MRElement {
           break
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(attr.value))
-          console.log(this.object3D.rotation);
           break
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(attr.value))
           break
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value))
-          console.log(this.object3D.position);
           break
         case 'width':
           this.width = parseFloat(attr.value)
@@ -247,7 +245,6 @@ export class Entity extends MRElement {
         })
       )
     } else if (!this.components.has(componentName)) {
-      console.log(componentName);
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {

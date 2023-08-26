@@ -52008,14 +52008,12 @@ class Entity extends MRElement {
           break
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(attr.value))
-          console.log(this.object3D.rotation);
           break
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(attr.value))
           break
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value))
-          console.log(this.object3D.position);
           break
         case 'width':
           this.width = parseFloat(attr.value)
@@ -52029,9 +52027,6 @@ class Entity extends MRElement {
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
           break
-          case 'opacity':
-            this.object3D.opacity = parseVector(attr.value)
-            break
         default:
           break
       }
@@ -52100,7 +52095,6 @@ class Entity extends MRElement {
         })
       )
     } else if (!this.components.has(componentName)) {
-      console.log(componentName);
       this.components.add(componentName)
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
@@ -52202,7 +52196,6 @@ class System {
   }
 
   onAttach = (event) => {
-    console.log(event);
     this.registry.add(event.detail.entity)
     let data = this.parseComponentString(event.detail.component)
     this.attachedComponent(event.detail.entity, data)
@@ -67932,6 +67925,7 @@ class DeveloperSystem extends System {
 
 
 
+
 ('use strict')
 
 class MRApp extends MRElement {
@@ -67963,20 +67957,16 @@ class MRApp extends MRElement {
       20
     )
 
+    this.lighting = {
+      enabled: true,
+      color: 0xffffff,
+      intensity: 5,
+      shadows: true
+    }
+
     // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
 
     this.user.position.set(0, 0, 1)
-
-    this.shadowLight = new PointLight(0xffffff)
-    this.shadowLight.position.set(0, 1, 1)
-    this.shadowLight.intensity = 5
-    this.shadowLight.castShadow = true
-    this.shadowLight.shadow.camera.top = 2
-    this.shadowLight.shadow.camera.bottom = -2
-    this.shadowLight.shadow.camera.right = 2
-    this.shadowLight.shadow.camera.left = -2
-    this.shadowLight.shadow.mapSize.set(4096, 4096)
-    this.scene.add(this.shadowLight)
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
@@ -68063,6 +68053,29 @@ class MRApp extends MRElement {
     this.renderer.setAnimationLoop(this.render)
 
     window.addEventListener('resize', this.onWindowResize)
+
+    let lightString = this.getAttribute('lighting')
+
+    if(lightString) {
+      this.lighting = parseAttributeString(this.lighting)
+    }
+
+    this.initLights(this.lighting)
+
+  }
+
+  initLights = (data) => {
+    if(!data.enabled) { return }
+    this.defaultLight = new PointLight(data.color)
+    this.defaultLight.position.set(0, 1, 1)
+    this.defaultLight.intensity = data.intensity
+    this.defaultLight.castShadow = data.shadows
+    this.defaultLight.shadow.camera.top = 2
+    this.defaultLight.shadow.camera.bottom = -2
+    this.defaultLight.shadow.camera.right = 2
+    this.defaultLight.shadow.camera.left = -2
+    this.defaultLight.shadow.mapSize.set(4096, 4096)
+    this.scene.add(this.defaultLight)
   }
 
   denit() {
@@ -68097,29 +68110,15 @@ class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    // const timer = Date.now() * 0.00025;
-    // const radius = 3;
-    // const depth = 1;
-
-    // this.light_pink.position.x = Math.sin(timer * 1) * radius;
-    // this.light_pink.position.y = Math.cos(timer * 1) * radius;
-    // this.light_pink.position.z = depth;
-
-    // this.light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-    // this.light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-    // this.light_orange.position.z = depth;
-
-    // this.light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-    // this.light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-    // this.light_blue.position.z = depth;
-
     this.stats.begin()
     for (const system of this.systems) {
       system.update(deltaTime)
     }
     this.stats.end()
 
-    this.shadowLight.target = this.user
+    if(this.lighting.enabled){
+      this.defaultLight.target = this.user
+    }
 
     this.renderer.render(this.scene, this.user)
   }
@@ -68552,7 +68551,6 @@ class Model extends Entity {
         if (!this.src) { return }
 
         let ext = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
-        console.log(ext);
 
         let loader = LOADERS[ext]
 
@@ -68573,54 +68571,8 @@ class Model extends Entity {
             mesh.receiveShadow = true
             mesh.renderOrder = 3
 
-            // mesh.position.set(0.02, 0.02, 0);
-            // mesh.rotation.set(-0.4, 0.3, 0.8);
-            // let scale = 0.01;
-            // mesh.scale.set(scale, scale, scale);
             this.object3D.add(mesh);
 
-            // const light_orange = new THREE.PointLight({});
-            // light_orange.color = new THREE.Color(`hsl(30, 100%, 50%)`);
-            // light_orange.intensity = 30;
-            // scene.add(light_orange);
-
-            // const light_blue = new THREE.PointLight({});
-            // light_blue.color = new THREE.Color(`hsl(208, 100%, 50%)`);
-            // light_blue.intensity = 40;
-            // scene.add(light_blue);
-
-            // const light_pink = new THREE.PointLight({});
-            // light_pink.color = new THREE.Color(`hsl(340, 100%, 50%)`);
-            // light_pink.intensity = 50;
-            // scene.add(light_pink);
-
-            // var speed = 0;
-
-            // const render = () => {
-            //     const timer = Date.now() * 0.00025;
-            //     const radius = 1.85;
-            //     const depth = 0.5;
-
-            //     light_pink.position.x = Math.sin(timer * 1) * radius;
-            //     light_pink.position.y = Math.cos(timer * 1) * radius;
-            //     light_pink.position.z = depth;
-
-            //     light_orange.position.x = Math.sin(timer + Math.PI * 2 / 3) * radius;
-            //     light_orange.position.y = Math.cos(timer + Math.PI * 2 / 3) * radius;
-            //     light_orange.position.z = depth;
-
-            //     light_blue.position.x = Math.sin(timer + Math.PI * 4 / 3) * radius;
-            //     light_blue.position.y = Math.cos(timer + Math.PI * 4 / 3) * radius;
-            //     light_blue.position.z = depth;
-
-            //     // Rotate the solid, starting from rest and slowly accelerating 
-            //     speed = (speed < 0.002) ? speed + 0.000008 : speed;
-            //     mesh.rotation.z += speed;
-
-            //     renderer.render(scene, camera);
-            // };
-
-            // renderer.setAnimationLoop(render);
         });
 
     }
@@ -68653,8 +68605,6 @@ class Light_Light extends Entity {
         this.object3D.color.setStyle(color)
 
         this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
-
-        console.log(this.object3D);
     }
 
     mutated = (mutation) => {
@@ -69064,7 +69014,6 @@ class Volume extends Entity {
     const wall = entity.getAttribute('snap-to')
     if (wall) {
       this.snapChildToWall(wall, entity.object3D.position)
-      console.log(entity.object3D.position)
     }
   }
 
@@ -69074,7 +69023,6 @@ class Volume extends Entity {
       const wall = child.getAttribute('snap-to')
       if (wall) {
         this.snapChildToWall(wall, child.object3D.position)
-        console.log(child.object3D.position)
       }
     })
   }

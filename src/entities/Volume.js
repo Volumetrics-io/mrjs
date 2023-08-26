@@ -36,7 +36,6 @@ export default class Volume extends Entity {
     const wall = entity.getAttribute('snap-to')
     if (wall) {
       this.snapChildToWall(wall, entity.object3D.position)
-      console.log(entity.object3D.position)
     }
   }
 
@@ -46,7 +45,6 @@ export default class Volume extends Entity {
       const wall = child.getAttribute('snap-to')
       if (wall) {
         this.snapChildToWall(wall, child.object3D.position)
-        console.log(child.object3D.position)
       }
     })
   }
