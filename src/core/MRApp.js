@@ -37,10 +37,6 @@ export class MRApp extends MRElement {
     this.systems = new Set()
     this.scene = new THREE.Scene()
 
-    this.stats = new Stats()
-    this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(this.stats.dom)
-
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.user = new THREE.PerspectiveCamera(
       70,
@@ -132,6 +128,10 @@ export class MRApp extends MRElement {
     this.renderer.toneMappingExposure = 1;
 
     if(this.debug){
+      this.stats = new Stats()
+      this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+      document.body.appendChild(this.stats.dom)
+      
       const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
       orbitControls.minDistance = 0
       orbitControls.maxDistance = 8
@@ -202,11 +202,11 @@ export class MRApp extends MRElement {
   render() {
     const deltaTime = this.clock.getDelta()
 
-    this.stats.begin()
+    if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
       system.update(deltaTime)
     }
-    this.stats.end()
+    if( this.debug ) { this.stats.end() }
 
     if(this.lighting.enabled){
       this.defaultLight.target = this.user
