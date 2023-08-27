@@ -1,24 +1,15 @@
 import { Text } from 'troika-three-text'
 import System from '../core/System'
 import { parseAttributeString } from '../utils/parser'
-import { MRInput } from '../UI/MRInput'
 
 export class TextSystem extends System {
   constructor() {
     super()
-    this.app.addEventListener('has-text', event => {
-      const { entity } = event.detail
+
+    const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-texteditor')
+    for (const entity of entities) {
       this.registry.add(entity)
       this.addText(entity)
-    })
-
-    const entities = this.app.querySelectorAll('*')
-
-    for (const entity of entities) {
-      if (entity instanceof MRInput) {
-        this.registry.add(entity)
-        this.addText(entity)
-      }
     }
   }
 
@@ -56,10 +47,6 @@ export class TextSystem extends System {
   }
 
   addText = (entity) => {
-    if (!entity.textObj) { 
-      entity.textObj = new Text()
-      entity.object3D.add(entity.textObj)
-    }
 
     let text = entity.textContent.trim()
     entity.textObj.text = text.length > 0 ? text : ' '

@@ -81,6 +81,7 @@ export class Entity extends MRElement {
 
     this.touch = false
     this.grabbed = false
+    this.focus = false
 
   }
 
@@ -124,11 +125,9 @@ export class Entity extends MRElement {
     this.connected()
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      this.checkForText()
       this.loadAttributes()
 
     })
-    this.checkForText()
     this.loadAttributes()
 
     document.addEventListener('engine-started', (event) => {
@@ -136,17 +135,6 @@ export class Entity extends MRElement {
     })
 
     this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-  }
-
-  checkForText = () => {
-    if (this.textContent.trim() == this.innerHTML.trim()) {
-      this.dispatchEvent(
-        new CustomEvent(`has-text`, {
-          bubbles: true,
-          detail: { entity: this },
-        })
-      )
-    }
   }
 
   loadAttributes() {

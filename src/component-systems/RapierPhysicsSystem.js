@@ -145,7 +145,7 @@ export class RapierPhysicsSystem extends System {
       // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
         new CustomEvent(`touch-start`, {
-          bubbles: false,
+          bubbles: true,
           detail: {
             position: manifold.localContactPoint2(0)
           },
@@ -159,7 +159,7 @@ export class RapierPhysicsSystem extends System {
       entity.touch = false
       entity.dispatchEvent(
         new CustomEvent(`touch-end`, {
-          bubbles: false,
+          bubbles: true,
         })
       )
   }
@@ -170,7 +170,7 @@ export class RapierPhysicsSystem extends System {
       // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
         new CustomEvent(`grab`, {
-          bubbles: false,
+          bubbles: true,
           detail: {
             position: manifold.localContactPoint2(0)
           },
@@ -184,7 +184,7 @@ export class RapierPhysicsSystem extends System {
       // Contact information can be read from `manifold`. 
     entity.dispatchEvent(
       new CustomEvent(`release`, {
-        bubbles: false
+        bubbles: true
       })
     )
   }

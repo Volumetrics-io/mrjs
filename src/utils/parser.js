@@ -34,6 +34,7 @@ export function setTransformValues(entity) {
 }
 
 export function parseAttributeString(attrString) {
+  if(attrString == null) { return }
   const regexPattern = /(\w+):\s*([^;]+)/g
   const jsonObject = {}
 

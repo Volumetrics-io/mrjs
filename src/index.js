@@ -20,7 +20,11 @@ import './geometry/UIPlane.js'
 import './core/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'
-import './UI/TextEditor.js'
+
+// TEXT
+import './UI/Text/Text.js'
+import './UI/Text/TextField.js'
+import './UI/Text/TextEditor.js'
 
 // UI: LAYOUT
 import './entities/layout/Container.js'
