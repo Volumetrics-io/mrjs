@@ -1,14 +1,13 @@
-import { MRInput } from "./MRInput";
+import { MRText } from "./Text";
 
-export class TextEditor extends MRInput {
+export class TextEditor extends MRText {
     constructor(){
         super()
         this.src
         this.srcElement
         this.newSrc = false
-    }
+        this.edited = false
 
-    connected() {
         document.addEventListener('DOMContentLoaded', (event) => {
             this.updateSrc()
         })

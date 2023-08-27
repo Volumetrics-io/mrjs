@@ -1,4 +1,4 @@
-import { MRInput } from '../UI/MRInput';
+import { MRText } from '../UI/Text/Text';
 import System from '../core/System'
 
 export class TextInputSystem extends System {
@@ -8,49 +8,36 @@ export class TextInputSystem extends System {
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
-    const entities = this.app.querySelectorAll('*')
+    const entities = this.app.querySelectorAll('mr-textfield, mr-texteditor')
 
     this.counter = 0
 
     this.syncPeriod = 5
 
     for (const entity of entities) {
-      if (entity instanceof MRInput) {
-        this.registry.add(entity)
-      }
+      this.registry.add(entity)
+      this.loadSrcText(entity)
     }
   }
 
   update(deltaTime){
-    for (const entity of this.registry) {
-      if (entity.focused && this.focus != entity) {
-        if(this.focus) { this.focus.focused = false }
-        this.focus = entity
-      } else if(!this.focus.focused) {
-        this.focus = null
-      }
+    // for (const entity of this.registry) {
+    //   if (!entity.edited || !this.app.focusEntity == entity) {
+    //     this.loadSrcText(entity)
+    //   }
 
-      // THIS IS THE WRONG WAY TO DO THIS, we need to resolve differences some how (no-code edits and code edits)
-      this.counter += deltaTime
-      if(this.focus?.newSrc || this.counter >= this.syncPeriod) {
-        this.syncText()
-        this.focus.newSrc = false
-        this.counter = 0
-      }
-
-    }
+    // }
   }
 
 
-  syncText() {
-    if (this.edited) { return }
-    if (this.focus.srcElement) {
-      this.focus.textContent = this.focus.srcElement.innerHTML 
+  loadSrcText(entity) {
+    if (entity?.srcElement) {
+      entity.textContent = entity.srcElement.innerHTML 
     }
-
     // TODO: load from file
-    
   }
+
+
 
   saveUpdate(){
     if(this.focus) {
@@ -98,7 +85,7 @@ export class TextInputSystem extends System {
     this.counter = 0
     this.edited = true
 
-    if (this.focus == null) { return }
+    if (this.app.focusEntity == null || this.app.focusEntity instanceof MRText) { return }
     event.stopPropagation()
 
 
@@ -109,10 +96,11 @@ export class TextInputSystem extends System {
       return
     }
 
-    console.log(key);
-
     switch (true) {
         case key == 'Control':
+          this.meta = true
+          break
+        case key == 'Meta':
           this.meta = true
           break
         case key == 'Enter':

@@ -33,6 +33,8 @@ export class MRApp extends MRElement {
 
     this.env = this
 
+    this.focusEntity = null
+
     this.clock = new THREE.Clock()
     this.systems = new Set()
     this.scene = new THREE.Scene()
@@ -52,7 +54,6 @@ export class MRApp extends MRElement {
       shadows: true
     }
 
-    // this.user = new THREE.OrthographicCamera( this.SCREEN_WIDTH / - 2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / - 2, 0.01, 1000 );
 
     this.user.position.set(0, 0, 1)
 
@@ -74,6 +75,12 @@ export class MRApp extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
+    document.addEventListener('touch-start', (event) => {
+      this.focusEntity = event.target
+    })
+
+    this.layoutSystem = new LayoutSystem()
+
     // initialize built in Systems
     document.addEventListener('DOMContentLoaded', (event) => {
       import('@dimforge/rapier3d').then((rap) => {
@@ -82,12 +89,11 @@ export class MRApp extends MRElement {
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
         this.devSystem = new DeveloperSystem()
+        this.textInputSystem = new TextInputSystem()
+        this.textSystem = new TextSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 
-      this.layoutSystem = new LayoutSystem()
-      this.textInputSystem = new TextInputSystem()
-      this.textSystem = new TextSystem()
     })
   }
 
