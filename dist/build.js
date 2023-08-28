@@ -67889,6 +67889,30 @@ class DeveloperSystem extends System {
   
 }
 
+;// CONCATENATED MODULE: ./src/component-systems/StyleSystem.js
+
+
+
+
+class StyleSystem extends System {
+  constructor() {
+    super()
+    this.tags = this.app.querySelectorAll('*')
+
+    for(const tag of this.tags) {
+        if (!tag instanceof Entity) { return }
+        let style = window.getComputedStyle(tag)
+        console.log(tag);
+        console.log(style.fontFamily);
+        tag.style = style
+    }
+  }
+
+  update(deltaTime) {
+    
+  }
+}
+
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -67899,6 +67923,7 @@ class DeveloperSystem extends System {
 
 
 // built in Systems
+
 
 
 
@@ -67976,8 +68001,10 @@ class MRApp extends MRElement {
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
         this.devSystem = new DeveloperSystem()
+        this.styleSystem = new StyleSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
+
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 

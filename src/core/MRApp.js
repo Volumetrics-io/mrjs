@@ -18,6 +18,7 @@ import {
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { DeveloperSystem } from '../component-systems/DeveloperSystem.js'
 import { parseAttributeString } from '../utils/parser.js'
+import { StyleSystem } from '../component-systems/StyleSystem.js'
 ('use strict')
 
 export class MRApp extends MRElement {
@@ -89,8 +90,10 @@ export class MRApp extends MRElement {
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
         this.devSystem = new DeveloperSystem()
+        this.styleSystem = new StyleSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
+
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
       })
 

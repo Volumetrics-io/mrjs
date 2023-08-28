@@ -1,0 +1,134 @@
+/* @font-face {
+  font-family: 'IBM Plex';
+  src: url('/assets/IBMplex.woff2') format('woff2');
+  font-weight: 200 800;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Epilogue';
+  src: url('/assets/Epilogue.woff2') format('woff2');
+  font-weight: 200 800;
+}
+
+@font-face {
+  font-family: 'Mona';
+  src: url('/assets/Mona-Sans.woff2') format('woff2');
+  font-weight: 200 800;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+  font-weight: 200 800;
+} */
+
+/* @font-face {
+  font-family: 'Lexend';
+  src: url('./assets/readex.ttf') format('truetype');
+  font-weight: 100 900;
+} */
+
+@font-face {
+    font-family: 'Bricolage';
+    src: url('./assets/fonts/BricolageGrotesque.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+  
+  
+  :root {
+    /* --font-title: "Lexend", system-ui, sans-serif; */
+    --font-title: "Bricolage", system-ui, sans-serif;
+    /* --font-title: "Readex", system-ui, sans-serif; */
+    /* --font-body: "IBM Plex", system-ui, sans-serif; */
+  
+    --indent: 4vw;
+    --content-max-width: 36rem;
+    --text-max-width: 32rem;
+  
+    --header-height: 30rem;
+  
+    --c-plate: white;
+    --c-text: #2d2d2d;
+    --c-text-light: #666;
+    --c-link: slateblue;
+    --c-link-hover: var(--c-text);
+  
+    --c-focus: slateblue;
+    --c-accent: turquoise;
+  
+    --c-border: rgba(0, 0, 0, 0.08);
+  }
+  
+  body,
+  header,
+  main,
+  nav,
+  section,
+  article,
+  h1,
+  h2,
+  p,
+  a,
+  ul,
+  li,
+  time,
+  picture,
+  img,
+  video,
+  footer,
+  div,
+  span,
+  pre,
+  code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    /* outline: 1px solid #ff000033; */
+  }
+  
+  body {
+    background-color: var(--c-plate);
+    font-family: var(--font-body);
+    color: var(--c-text);
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 6rem;
+    background: var(--c-plate);
+    padding: 4vw;
+    overflow-y: auto;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+  
+  
+  #logo {
+    position: absolute;
+    inset: 0;
+  }
+  
+  #mark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 999;
+    padding-top: 1rem;
+  }
+  
+  h1, mr-text {
+    font-family: var(--font-title);
+    /* font-weight: 500; */
+    font-size: 8vh;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+    font-variation-settings: 'opsz' 80, 'wght' 550;
+  }
