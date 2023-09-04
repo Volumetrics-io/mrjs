@@ -6,13 +6,22 @@
     <meta name="description" content="MR.js example">
     <script src="./build.js"></script>
     <script type="module" src="./assets/js/AnimationSystem.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
 
 
   </head>
   <body >
-    <mr-app debug="true" lighting="enabled: false">
+    <mr-app lighting="enabled: false">
+
+      <mr-font 
+      src="./assets/fonts/BricolageGrotesque.ttf" 
+      size="0.06" 
+      target="mr-text, title"></mr-font>
+
         <mr-volume scale="0.5" position="0 -0.1 -0.45">
             <mr-container rotation="0 -45 0" width="0.666" height="0.666" snap-to="right">
+              <mr-row></mr-row>
+              <mr-column></mr-column>
                 <mr-panel color="darkgrey" corner-radius="0.02">
                     <mr-panel corner-radius="0.02">
                         <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
@@ -32,7 +41,7 @@
               rotation="-22.91 17.1887 45.8366"
               scale="0.005"></mr-model>
 <mr-container width="0.5" height="0.1" position="0 -0.05 0.3" >
-        <mr-text text-style="font: ./assets/fonts/BricolageGrotesque.ttf; opacity: 0.5; size: 0.06">
+        <mr-text class="title" >
           Volumetrics
         </mr-text>
 </mr-container>
