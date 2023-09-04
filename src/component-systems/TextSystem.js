@@ -1,10 +1,35 @@
-import { Text } from 'troika-three-text'
+import {preloadFont} from 'troika-three-text'
 import System from '../core/System'
 import { parseAttributeString } from '../utils/parser'
 
 export class TextSystem extends System {
   constructor() {
     super()
+
+    this.styles = {}
+    const fonts = this.app.querySelectorAll('mr-font')
+
+    if (fonts.length > 0) {
+      for (const font of fonts){
+        preloadFont(
+          {
+            font: font.src 
+          },
+          () => {
+            let targets = this.app.querySelectorAll(font.targets)
+            for (const target of targets) {
+              target.textStyle = {
+                font: font.src,
+                size: font.size
+              }
+              this.updateStyle(target)
+            }
+          }
+        )
+      }
+    }
+
+    
 
     const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-texteditor')
     for (const entity of entities) {
@@ -25,24 +50,43 @@ export class TextSystem extends System {
     }
   }
 
+  initStyle(entity){
+    let style = {}
+    style = this.styles[entity.tagName]
+
+    for(const elClass of entity.classList){
+      style = this.styles[entity.elClass] ?? style
+    }
+
+    style = this.styles[entity.id] ?? style
+    style = parseAttributeString(entity.getAttribute('text-style')) ?? style
+    entity.textStyle = style ?? {}
+
+    console.log(entity.textStyle);
+    this.updateStyle(entity)
+
+  }
+
   updateStyle = (entity) => {
-    const style = parseAttributeString(entity.getAttribute('text-style')) ?? {}
+    if (!entity.textStyle) {
+      this.initStyle(entity)
+    }
 
     let width = entity.width == 'auto' ? 1 : entity.width
     width = width ?? 1
     let height = entity.height == 'auto' ? 1 : entity.height
     height = height ?? 1
 
-    style.width = width
-    style.maxWidth = style.maxWidth ?? width ?? 1
+    entity.textStyle.width = width
+    entity.textStyle.maxWidth = entity.textStyle.maxWidth ?? width ?? 1
     const radius = entity.radius ?? 0
-    style.maxWidth -= radius * 2
+    entity.textStyle.maxWidth -= radius * 2
 
     height -= radius
     entity.textObj.position.setY(height / 2)
 
-    style.clipRect = [-style.maxWidth / 2, -height, style.maxWidth / 2, 0]
-    this.setStyle(entity.textObj, style)
+    entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
+    this.setStyle(entity.textObj, entity.textStyle)
     entity.textObj.sync()
   }
 

@@ -22,6 +22,7 @@ import './entities/Surface.js'
 import './entities/Volume.js'
 
 // TEXT
+import './UI/Text/Font.js'
 import './UI/Text/Text.js'
 import './UI/Text/TextField.js'
 import './UI/Text/TextEditor.js'

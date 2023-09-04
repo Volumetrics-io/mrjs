@@ -132,3 +132,7 @@
     color: rgba(24, 24, 24, 0.75);
     font-variation-settings: 'opsz' 80, 'wght' 550;
   }
+
+  mr-app * {
+    display: none;
+  }
