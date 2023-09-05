@@ -190,9 +190,6 @@ export class RapierPhysicsSystem extends System {
   }
 
   onNewEntity(entity) {
-    if (!entity.object3D.isMesh) {
-      return
-    }
     this.initPhysicsBody(entity)
     this.registry.add(entity)
   }
@@ -200,10 +197,12 @@ export class RapierPhysicsSystem extends System {
   initPhysicsBody(entity) {
     entity.physics = {}
 
-    entity.object3D.geometry.computeBoundingBox()
-    entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
-    entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    if (entity.object3D.isMesh) {
+      entity.object3D.geometry.computeBoundingBox()
+      entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
+      entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
+      entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    }
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)

@@ -143,8 +143,6 @@ export class MRApp extends MRElement {
       orbitControls.maxDistance = 8
     }
 
-    let renderStyle = this.renderer.domElement.getAttribute('style')
-
     this.appendChild(this.renderer.domElement)
     document.body.appendChild(this.ARButton)
 
