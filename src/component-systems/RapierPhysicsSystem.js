@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import System from '../core/System.js'
+import { MRUIEntity } from '../UI/UIEntity.js'
 
 export let RAPIER = null
 
@@ -54,7 +55,7 @@ export class RapierPhysicsSystem extends System {
     });
 
     for (const entity of this.registry) {
-      if (entity.physics.update) {
+      if (entity.physics?.update) {
         this.updateBody(entity)
         entity.physics.update = false
       }
@@ -197,12 +198,15 @@ export class RapierPhysicsSystem extends System {
   initPhysicsBody(entity) {
     entity.physics = {}
 
-    if (entity.object3D.isMesh) {
-      entity.object3D.geometry.computeBoundingBox()
-      entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
-      entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
-      entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    if (entity instanceof MRUIEntity) {
+      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.width, entity.height, 0.001))
+    } else {
+      return
     }
+
+    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
+    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    entity.object3D.userData.size.multiply(this.tempWorldScale)
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -210,7 +214,7 @@ export class RapierPhysicsSystem extends System {
       ...this.tempWorldPosition
     )
     entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
-    entity.physics.body.setRotation(...this.tempWorldQuaternion)
+    entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
     // Create a cuboid collider attached to the dynamic rigidBody.
     this.tempHalfExtents.copy(entity.object3D.userData.size)
@@ -236,8 +240,8 @@ export class RapierPhysicsSystem extends System {
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.geometry.computeBoundingBox()
-    entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
+    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.width, entity.height, 0.001))
+    
     this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
     entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
     entity.object3D.userData.size.multiply(this.tempWorldScale)

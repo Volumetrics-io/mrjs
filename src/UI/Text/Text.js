@@ -1,12 +1,13 @@
 import { Text } from 'troika-three-text'
-import { Entity } from '../../core/entity'
 import { parseAttributeString } from '../../utils/parser'
+import { MRUIEntity } from '../UIEntity'
 
-export class MRText extends Entity {
+export class MRText extends MRUIEntity {
     constructor(){
         super()
         this.textObj = new Text()
         this.object3D.add(this.textObj)
+        this.editable = false
         
     }
 

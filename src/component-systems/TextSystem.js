@@ -62,7 +62,6 @@ export class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    console.log(entity.textStyle);
     this.updateStyle(entity)
 
   }

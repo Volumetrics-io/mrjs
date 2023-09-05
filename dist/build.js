@@ -60079,7 +60079,6 @@ class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    console.log(entity.textStyle);
     this.updateStyle(entity)
 
   }
@@ -66836,7 +66835,16 @@ class XRHandModelFactory {
 
 
 
+;// CONCATENATED MODULE: ./src/UI/UIEntity.js
+
+
+class MRUIEntity extends Entity {
+    constructor(){
+        super()
+    }
+}
 ;// CONCATENATED MODULE: ./src/component-systems/RapierPhysicsSystem.js
+
 
 
 
@@ -66893,7 +66901,7 @@ class RapierPhysicsSystem extends System {
     });
 
     for (const entity of this.registry) {
-      if (entity.physics.update) {
+      if (entity.physics?.update) {
         this.updateBody(entity)
         entity.physics.update = false
       }
@@ -67036,12 +67044,15 @@ class RapierPhysicsSystem extends System {
   initPhysicsBody(entity) {
     entity.physics = {}
 
-    if (entity.object3D.isMesh) {
-      entity.object3D.geometry.computeBoundingBox()
-      entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
-      entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
-      entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    if (entity instanceof MRUIEntity) {
+      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+    } else {
+      return
     }
+
+    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
+    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    entity.object3D.userData.size.multiply(this.tempWorldScale)
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -67049,7 +67060,7 @@ class RapierPhysicsSystem extends System {
       ...this.tempWorldPosition
     )
     entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
-    entity.physics.body.setRotation(...this.tempWorldQuaternion)
+    entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
     // Create a cuboid collider attached to the dynamic rigidBody.
     this.tempHalfExtents.copy(entity.object3D.userData.size)
@@ -67075,8 +67086,8 @@ class RapierPhysicsSystem extends System {
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.geometry.computeBoundingBox()
-    entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
+    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+    
     this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
     entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
     entity.object3D.userData.size.multiply(this.tempWorldScale)
@@ -67363,9 +67374,7 @@ class ControlSystem extends System {
     this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
     this.hit
 
-
     this.app.renderer.domElement.addEventListener('click', this.onClick)
-
   }
 
   update(deltaTime) {
@@ -67554,11 +67563,12 @@ class LayoutSystem extends System {
 
 
 
-class MRText extends Entity {
+class MRText extends MRUIEntity {
     constructor(){
         super()
         this.textObj = new Text()
         this.object3D.add(this.textObj)
+        this.editable = false
         
     }
 
@@ -67577,14 +67587,46 @@ class MRText extends Entity {
 }
 
 customElements.get('mr-text') || customElements.define('mr-text', MRText)
+;// CONCATENATED MODULE: ./src/UI/Text/TextEditor.js
+
+
+class TextEditor extends MRText {
+    constructor(){
+        super()
+        this.src
+        this.srcElement
+        this.newSrc = false
+        this.edited = false
+        this.editable = true
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            this.updateSrc()
+        })
+    }
+
+    mutated = (mutation) => {
+        if (mutation.type != 'attributes') { return }
+        if (mutation.attributeName == 'src') {
+            this.updateSrc()
+        }
+    }
+
+    updateSrc = () => {
+        this.src = this.getAttribute('src')
+        this.srcElement = document.getElementById(this.src)
+        this.newSrc = true
+    }
+}
+
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
 ;// CONCATENATED MODULE: ./src/component-systems/TextInputSystem.js
+
 
 
 
 class TextInputSystem extends System {
   constructor() {
     super()
-    this.focus = null
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
@@ -67620,10 +67662,10 @@ class TextInputSystem extends System {
 
 
   saveUpdate(){
-    if(this.focus) {
+    if(this.app.focusEntity instanceof TextEditor) {
       console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
-      this.focus.srcElement.innerHTML = this.focus.textContent
+      this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
       this.counter = 0
       this.edited = false
@@ -67665,7 +67707,9 @@ class TextInputSystem extends System {
     this.counter = 0
     this.edited = true
 
-    if (this.app.focusEntity == null || this.app.focusEntity instanceof MRText) { return }
+
+    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) { return }
+    if (!this.app.focusEntity.editable) { return }
     event.stopPropagation()
 
 
@@ -67697,7 +67741,7 @@ class TextInputSystem extends System {
           break
   
         case key == 'Tab':
-          this.focus.textContent += '\t'
+          this.app.focusEntity.textContent += '\t'
           break
   
         case key == 'ArrowLeft':
@@ -67708,7 +67752,7 @@ class TextInputSystem extends System {
           break
   
         case key == 'ArrowRight':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
           this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
@@ -67718,11 +67762,11 @@ class TextInputSystem extends System {
             return
           }
   
-          const oneLineBack = this.focus.textContent.lastIndexOf(
+          const oneLineBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const twoLinesBack = this.focus.textContent.lastIndexOf(
+          const twoLinesBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.oneLineBack - 1
           )
@@ -67733,27 +67777,27 @@ class TextInputSystem extends System {
           this.setCursorPosition(this.currentIndex, newUpIndex)
           break
         case key == 'ArrowDown':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
-          const prevLine = this.focus.textContent.lastIndexOf(
+          const prevLine = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const nextLine = this.focus.textContent.indexOf(
+          const nextLine = this.app.focusEntity.textContent.indexOf(
             '\n',
             this.currentIndex + 1
           )
-          const lineAfter = this.focus.textContent.indexOf('\n', nextLine + 1)
+          const lineAfter = this.app.focusEntity.textContent.indexOf('\n', nextLine + 1)
           let newDownIndex = this.currentIndex - prevLine + nextLine
   
           newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
           newDownIndex =
-            newDownIndex < this.focus.textContent.length - 1
+            newDownIndex < this.app.focusEntity.textContent.length - 1
               ? newDownIndex
-              : this.focus.textContent.length - 1
+              : this.app.focusEntity.textContent.length - 1
           newDownIndex =
-            newDownIndex > 0 ? newDownIndex : this.focus.textContent.length - 1
+            newDownIndex > 0 ? newDownIndex : this.app.focusEntity.textContent.length - 1
   
           this.setCursorPosition(this.currentIndex, newDownIndex)
           break
@@ -67781,9 +67825,9 @@ class TextInputSystem extends System {
   }
 
   spliceSplit(index, count, add) {
-    const ar = this.focus.textContent.split('')
+    const ar = this.app.focusEntity.textContent.split('')
     ar.splice(index, count, add)
-    this.focus.textContent = ar.join('')
+    this.app.focusEntity.textContent = ar.join('')
   }
 
 }
@@ -68776,12 +68820,12 @@ function UIPlane(width, height, r, s) {
   return geometry
 }
 
-;// CONCATENATED MODULE: ./src/core/Panel.js
+;// CONCATENATED MODULE: ./src/UI/Panel.js
 
 
 
 
-class Panel extends Entity {
+class Panel extends MRUIEntity {
   static get observedAttributes() {
     return [
       'width',
@@ -69122,10 +69166,6 @@ class MRFont extends MRElement {
         let sizeAttr = this.getAttribute('size') ?? this.size
         this.size = parseFloat(sizeAttr)
         this.targets = this.getAttribute('target')?.split(',').map(val => val.trim()) ?? []
-
-        console.log(this.src);
-        console.log(this.size);
-        console.log(this.targets);
     }
 }
 
@@ -69141,37 +69181,6 @@ class TextField extends MRText {
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
-;// CONCATENATED MODULE: ./src/UI/Text/TextEditor.js
-
-
-class TextEditor extends MRText {
-    constructor(){
-        super()
-        this.src
-        this.srcElement
-        this.newSrc = false
-        this.edited = false
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.updateSrc()
-        })
-    }
-
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
-        if (mutation.attributeName == 'src') {
-            this.updateSrc()
-        }
-    }
-
-    updateSrc = () => {
-        this.src = this.getAttribute('src')
-        this.srcElement = document.getElementById(this.src)
-        this.newSrc = true
-    }
-}
-
-customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
 ;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 

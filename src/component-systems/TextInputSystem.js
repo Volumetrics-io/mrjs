@@ -1,10 +1,10 @@
 import { MRText } from '../UI/Text/Text';
+import { TextEditor } from '../UI/Text/TextEditor';
 import System from '../core/System'
 
 export class TextInputSystem extends System {
   constructor() {
     super()
-    this.focus = null
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
@@ -40,10 +40,10 @@ export class TextInputSystem extends System {
 
 
   saveUpdate(){
-    if(this.focus) {
+    if(this.app.focusEntity instanceof TextEditor) {
       console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
-      this.focus.srcElement.innerHTML = this.focus.textContent
+      this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
       this.counter = 0
       this.edited = false
@@ -85,7 +85,9 @@ export class TextInputSystem extends System {
     this.counter = 0
     this.edited = true
 
-    if (this.app.focusEntity == null || this.app.focusEntity instanceof MRText) { return }
+
+    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) { return }
+    if (!this.app.focusEntity.editable) { return }
     event.stopPropagation()
 
 
@@ -117,7 +119,7 @@ export class TextInputSystem extends System {
           break
   
         case key == 'Tab':
-          this.focus.textContent += '\t'
+          this.app.focusEntity.textContent += '\t'
           break
   
         case key == 'ArrowLeft':
@@ -128,7 +130,7 @@ export class TextInputSystem extends System {
           break
   
         case key == 'ArrowRight':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
           this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
@@ -138,11 +140,11 @@ export class TextInputSystem extends System {
             return
           }
   
-          const oneLineBack = this.focus.textContent.lastIndexOf(
+          const oneLineBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const twoLinesBack = this.focus.textContent.lastIndexOf(
+          const twoLinesBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.oneLineBack - 1
           )
@@ -153,27 +155,27 @@ export class TextInputSystem extends System {
           this.setCursorPosition(this.currentIndex, newUpIndex)
           break
         case key == 'ArrowDown':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
-          const prevLine = this.focus.textContent.lastIndexOf(
+          const prevLine = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const nextLine = this.focus.textContent.indexOf(
+          const nextLine = this.app.focusEntity.textContent.indexOf(
             '\n',
             this.currentIndex + 1
           )
-          const lineAfter = this.focus.textContent.indexOf('\n', nextLine + 1)
+          const lineAfter = this.app.focusEntity.textContent.indexOf('\n', nextLine + 1)
           let newDownIndex = this.currentIndex - prevLine + nextLine
   
           newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
           newDownIndex =
-            newDownIndex < this.focus.textContent.length - 1
+            newDownIndex < this.app.focusEntity.textContent.length - 1
               ? newDownIndex
-              : this.focus.textContent.length - 1
+              : this.app.focusEntity.textContent.length - 1
           newDownIndex =
-            newDownIndex > 0 ? newDownIndex : this.focus.textContent.length - 1
+            newDownIndex > 0 ? newDownIndex : this.app.focusEntity.textContent.length - 1
   
           this.setCursorPosition(this.currentIndex, newDownIndex)
           break
@@ -201,9 +203,9 @@ export class TextInputSystem extends System {
   }
 
   spliceSplit(index, count, add) {
-    const ar = this.focus.textContent.split('')
+    const ar = this.app.focusEntity.textContent.split('')
     ar.splice(index, count, add)
-    this.focus.textContent = ar.join('')
+    this.app.focusEntity.textContent = ar.join('')
   }
 
 }

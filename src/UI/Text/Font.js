@@ -15,10 +15,6 @@ export class MRFont extends MRElement {
         let sizeAttr = this.getAttribute('size') ?? this.size
         this.size = parseFloat(sizeAttr)
         this.targets = this.getAttribute('target')?.split(',').map(val => val.trim()) ?? []
-
-        console.log(this.src);
-        console.log(this.size);
-        console.log(this.targets);
     }
 }
 
