@@ -7,6 +7,7 @@ export class TextEditor extends MRText {
         this.srcElement
         this.newSrc = false
         this.edited = false
+        this.editable = true
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.updateSrc()

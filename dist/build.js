@@ -67568,6 +67568,7 @@ class MRText extends MRUIEntity {
         super()
         this.textObj = new Text()
         this.object3D.add(this.textObj)
+        this.editable = false
         
     }
 
@@ -67586,14 +67587,46 @@ class MRText extends MRUIEntity {
 }
 
 customElements.get('mr-text') || customElements.define('mr-text', MRText)
+;// CONCATENATED MODULE: ./src/UI/Text/TextEditor.js
+
+
+class TextEditor extends MRText {
+    constructor(){
+        super()
+        this.src
+        this.srcElement
+        this.newSrc = false
+        this.edited = false
+        this.editable = true
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            this.updateSrc()
+        })
+    }
+
+    mutated = (mutation) => {
+        if (mutation.type != 'attributes') { return }
+        if (mutation.attributeName == 'src') {
+            this.updateSrc()
+        }
+    }
+
+    updateSrc = () => {
+        this.src = this.getAttribute('src')
+        this.srcElement = document.getElementById(this.src)
+        this.newSrc = true
+    }
+}
+
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
 ;// CONCATENATED MODULE: ./src/component-systems/TextInputSystem.js
+
 
 
 
 class TextInputSystem extends System {
   constructor() {
     super()
-    this.focus = null
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
@@ -67629,10 +67662,10 @@ class TextInputSystem extends System {
 
 
   saveUpdate(){
-    if(this.focus) {
+    if(this.app.focusEntity instanceof TextEditor) {
       console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
-      this.focus.srcElement.innerHTML = this.focus.textContent
+      this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
       this.counter = 0
       this.edited = false
@@ -67674,7 +67707,9 @@ class TextInputSystem extends System {
     this.counter = 0
     this.edited = true
 
-    if (this.app.focusEntity == null || this.app.focusEntity instanceof MRText) { return }
+
+    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) { return }
+    if (!this.app.focusEntity.editable) { return }
     event.stopPropagation()
 
 
@@ -67706,7 +67741,7 @@ class TextInputSystem extends System {
           break
   
         case key == 'Tab':
-          this.focus.textContent += '\t'
+          this.app.focusEntity.textContent += '\t'
           break
   
         case key == 'ArrowLeft':
@@ -67717,7 +67752,7 @@ class TextInputSystem extends System {
           break
   
         case key == 'ArrowRight':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
           this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
@@ -67727,11 +67762,11 @@ class TextInputSystem extends System {
             return
           }
   
-          const oneLineBack = this.focus.textContent.lastIndexOf(
+          const oneLineBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const twoLinesBack = this.focus.textContent.lastIndexOf(
+          const twoLinesBack = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.oneLineBack - 1
           )
@@ -67742,27 +67777,27 @@ class TextInputSystem extends System {
           this.setCursorPosition(this.currentIndex, newUpIndex)
           break
         case key == 'ArrowDown':
-          if (this.currentIndex == this.focus.textContent.length) {
+          if (this.currentIndex == this.app.focusEntity.textContent.length) {
             return
           }
-          const prevLine = this.focus.textContent.lastIndexOf(
+          const prevLine = this.app.focusEntity.textContent.lastIndexOf(
             '\n',
             this.currentIndex - 1
           )
-          const nextLine = this.focus.textContent.indexOf(
+          const nextLine = this.app.focusEntity.textContent.indexOf(
             '\n',
             this.currentIndex + 1
           )
-          const lineAfter = this.focus.textContent.indexOf('\n', nextLine + 1)
+          const lineAfter = this.app.focusEntity.textContent.indexOf('\n', nextLine + 1)
           let newDownIndex = this.currentIndex - prevLine + nextLine
   
           newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
           newDownIndex =
-            newDownIndex < this.focus.textContent.length - 1
+            newDownIndex < this.app.focusEntity.textContent.length - 1
               ? newDownIndex
-              : this.focus.textContent.length - 1
+              : this.app.focusEntity.textContent.length - 1
           newDownIndex =
-            newDownIndex > 0 ? newDownIndex : this.focus.textContent.length - 1
+            newDownIndex > 0 ? newDownIndex : this.app.focusEntity.textContent.length - 1
   
           this.setCursorPosition(this.currentIndex, newDownIndex)
           break
@@ -67790,9 +67825,9 @@ class TextInputSystem extends System {
   }
 
   spliceSplit(index, count, add) {
-    const ar = this.focus.textContent.split('')
+    const ar = this.app.focusEntity.textContent.split('')
     ar.splice(index, count, add)
-    this.focus.textContent = ar.join('')
+    this.app.focusEntity.textContent = ar.join('')
   }
 
 }
@@ -69146,37 +69181,6 @@ class TextField extends MRText {
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
-;// CONCATENATED MODULE: ./src/UI/Text/TextEditor.js
-
-
-class TextEditor extends MRText {
-    constructor(){
-        super()
-        this.src
-        this.srcElement
-        this.newSrc = false
-        this.edited = false
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.updateSrc()
-        })
-    }
-
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
-        if (mutation.attributeName == 'src') {
-            this.updateSrc()
-        }
-    }
-
-    updateSrc = () => {
-        this.src = this.getAttribute('src')
-        this.srcElement = document.getElementById(this.src)
-        this.newSrc = true
-    }
-}
-
-customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
 ;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 

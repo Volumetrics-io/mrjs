@@ -7,6 +7,7 @@ export class MRText extends MRUIEntity {
         super()
         this.textObj = new Text()
         this.object3D.add(this.textObj)
+        this.editable = false
         
     }
 
