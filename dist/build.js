@@ -67029,9 +67029,6 @@ class RapierPhysicsSystem extends System {
   }
 
   onNewEntity(entity) {
-    if (!entity.object3D.isMesh) {
-      return
-    }
     this.initPhysicsBody(entity)
     this.registry.add(entity)
   }
@@ -67039,10 +67036,12 @@ class RapierPhysicsSystem extends System {
   initPhysicsBody(entity) {
     entity.physics = {}
 
-    entity.object3D.geometry.computeBoundingBox()
-    entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
-    entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    if (entity.object3D.isMesh) {
+      entity.object3D.geometry.computeBoundingBox()
+      entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
+      entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
+      entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    }
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -67353,20 +67352,20 @@ class MRHand {
 
 
 
+
 class ControlSystem extends System {
   constructor() {
     super()
     this.leftHand = new MRHand('left', this.app)
     this.rightHand = new MRHand('right', this.app)
 
-    const geometry = new SphereGeometry(0.01)
-    const material = new MeshBasicMaterial()
-    material.color.setStyle('red')
+    this.clickPoint = new three_module_Vector3()
+    this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
+    this.hit
 
-    this.leftCursor = new three_module_Mesh(geometry, material)
-    this.rightCursor = new three_module_Mesh(geometry, material)
 
-    this.ROI = new Box3()
+    this.app.renderer.domElement.addEventListener('click', this.onClick)
+
   }
 
   update(deltaTime) {
@@ -67375,6 +67374,21 @@ class ControlSystem extends System {
 
     this.leftHand.update()
     this.rightHand.update()
+  }
+
+  onClick = (event) => {
+    this.clickPoint.set(( event.clientX / window.innerWidth ) * 2 - 1,
+      - ( event.clientY / window.innerHeight ) * 2 + 1,
+      0.5)
+      this.clickPoint.unproject(this.app.user)
+      this.clickPoint.sub( this.app.user.position ).normalize();
+      this.ray.origin = {...this.app.user.position}
+      this.ray.dir = {...this.clickPoint}
+      this.hit = this.app.physicsWorld.castRay(this.ray, 100, true);
+      if (this.hit != null) {
+        this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
+        console.log(this.app.focusEntity);
+      }
   }
 }
 
@@ -68073,8 +68087,6 @@ class MRApp extends MRElement {
       orbitControls.minDistance = 0
       orbitControls.maxDistance = 8
     }
-
-    let renderStyle = this.renderer.domElement.getAttribute('style')
 
     this.appendChild(this.renderer.domElement)
     document.body.appendChild(this.ARButton)
