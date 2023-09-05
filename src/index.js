@@ -17,7 +17,7 @@ import './component-systems/LayoutSystem.js'
 import './geometry/UIPlane.js'
 
 // UI
-import './core/Panel.js'
+import './UI/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'
 
@@ -44,7 +44,7 @@ export { default as Entity } from './core/entity.js'
 // GEOMETRY
 export { default as UIPlane } from './geometry/UIPlane.js'
 // UI
-export { default as Panel } from './core/Panel.js'
+export { default as Panel } from './UI/Panel.js'
 
 
 //DEV

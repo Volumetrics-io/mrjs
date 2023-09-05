@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import { Entity } from './entity.js'
 import { UIPlane } from '../geometry/UIPlane.js'
+import { MRUIEntity } from './UIEntity.js'
 
-export default class Panel extends Entity {
+export default class Panel extends MRUIEntity {
   static get observedAttributes() {
     return [
       'width',

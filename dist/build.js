@@ -60079,7 +60079,6 @@ class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    console.log(entity.textStyle);
     this.updateStyle(entity)
 
   }
@@ -66836,7 +66835,16 @@ class XRHandModelFactory {
 
 
 
+;// CONCATENATED MODULE: ./src/UI/UIEntity.js
+
+
+class MRUIEntity extends Entity {
+    constructor(){
+        super()
+    }
+}
 ;// CONCATENATED MODULE: ./src/component-systems/RapierPhysicsSystem.js
+
 
 
 
@@ -66893,7 +66901,7 @@ class RapierPhysicsSystem extends System {
     });
 
     for (const entity of this.registry) {
-      if (entity.physics.update) {
+      if (entity.physics?.update) {
         this.updateBody(entity)
         entity.physics.update = false
       }
@@ -67036,12 +67044,15 @@ class RapierPhysicsSystem extends System {
   initPhysicsBody(entity) {
     entity.physics = {}
 
-    if (entity.object3D.isMesh) {
-      entity.object3D.geometry.computeBoundingBox()
-      entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
-      entity.object3D.userData.bbox.applyMatrix4(entity.object3D.matrixWorld)
-      entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    if (entity instanceof MRUIEntity) {
+      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+    } else {
+      return
     }
+
+    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
+    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
+    entity.object3D.userData.size.multiply(this.tempWorldScale)
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -67049,7 +67060,7 @@ class RapierPhysicsSystem extends System {
       ...this.tempWorldPosition
     )
     entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
-    entity.physics.body.setRotation(...this.tempWorldQuaternion)
+    entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
     // Create a cuboid collider attached to the dynamic rigidBody.
     this.tempHalfExtents.copy(entity.object3D.userData.size)
@@ -67075,8 +67086,8 @@ class RapierPhysicsSystem extends System {
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.geometry.computeBoundingBox()
-    entity.object3D.userData.bbox.copy(entity.object3D.geometry.boundingBox)
+    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+    
     this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
     entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
     entity.object3D.userData.size.multiply(this.tempWorldScale)
@@ -67363,9 +67374,7 @@ class ControlSystem extends System {
     this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
     this.hit
 
-
     this.app.renderer.domElement.addEventListener('click', this.onClick)
-
   }
 
   update(deltaTime) {
@@ -67554,7 +67563,7 @@ class LayoutSystem extends System {
 
 
 
-class MRText extends Entity {
+class MRText extends MRUIEntity {
     constructor(){
         super()
         this.textObj = new Text()
@@ -68776,12 +68785,12 @@ function UIPlane(width, height, r, s) {
   return geometry
 }
 
-;// CONCATENATED MODULE: ./src/core/Panel.js
+;// CONCATENATED MODULE: ./src/UI/Panel.js
 
 
 
 
-class Panel extends Entity {
+class Panel extends MRUIEntity {
   static get observedAttributes() {
     return [
       'width',
@@ -69122,10 +69131,6 @@ class MRFont extends MRElement {
         let sizeAttr = this.getAttribute('size') ?? this.size
         this.size = parseFloat(sizeAttr)
         this.targets = this.getAttribute('target')?.split(',').map(val => val.trim()) ?? []
-
-        console.log(this.src);
-        console.log(this.size);
-        console.log(this.targets);
     }
 }
 
