@@ -373,7 +373,7 @@ __webpack_require__.d(__webpack_exports__, {
   "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
   "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
   "Panel": () => (/* reexport */ Panel),
-  "System": () => (/* reexport */ System),
+  "System": () => (/* reexport */ System_System),
   "THREE": () => (/* reexport */ three_module_namespaceObject),
   "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
 });
@@ -52130,7 +52130,7 @@ customElements.get('mr-entity') || customElements.define('mr-entity', Entity)
 ;// CONCATENATED MODULE: ./src/core/System.js
 
 
-class System {
+class System_System {
   constructor() {
     this.app = document.querySelector('mr-app')
 
@@ -60019,7 +60019,7 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
-class TextSystem extends System {
+class TextSystem extends System_System {
   constructor() {
     super()
 
@@ -66851,7 +66851,7 @@ class MRUIEntity extends Entity {
 let RAPIER = null
 
 const JOINT_COLLIDER_HANDLE_NAMES = {}
-const COLLIDER_CURSOR_MAP = {}
+const RapierPhysicsSystem_COLLIDER_CURSOR_MAP = {}
 const COLLIDER_ENTITY_MAP = {}
 const COLLIDER_TOOL_MAP = {}
 
@@ -66864,7 +66864,7 @@ const COLLIDER_TOOL_MAP = {}
 //
 // Alternatively, you can also expressly attatch a comp-physics
 // attribute for more detailed control.
-class RapierPhysicsSystem extends System {
+class RapierPhysicsSystem extends System_System {
   constructor() {
     super()
     this.debug = this.app.debug
@@ -66918,7 +66918,7 @@ class RapierPhysicsSystem extends System {
 
       if (entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
+          let cursor = RapierPhysicsSystem_COLLIDER_CURSOR_MAP[collider2.handle]
 
           if (cursor) {
             entity.onGrab(collider2.translation())
@@ -66942,7 +66942,7 @@ class RapierPhysicsSystem extends System {
       return
     }
 
-    let cursor = COLLIDER_CURSOR_MAP[handle1]
+    let cursor = RapierPhysicsSystem_COLLIDER_CURSOR_MAP[handle1]
 
     if(cursor){
       let tool = COLLIDER_TOOL_MAP[handle2] 
@@ -66962,7 +66962,7 @@ class RapierPhysicsSystem extends System {
 
   onContactEnd(handle1, handle2) {
     let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
-    let cursor =  COLLIDER_CURSOR_MAP[handle1]
+    let cursor =  RapierPhysicsSystem_COLLIDER_CURSOR_MAP[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
     if (joint && entity){
@@ -67246,7 +67246,7 @@ class MRHand {
       this.cursor
     )
 
-    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
+    RapierPhysicsSystem_COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
 
     collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
       RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
@@ -67364,7 +67364,7 @@ class MRHand {
 
 
 
-class ControlSystem extends System {
+class ControlSystem extends System_System {
   constructor() {
     super()
     this.leftHand = new MRHand('left', this.app)
@@ -67471,7 +67471,7 @@ customElements.get('mr-row') || customElements.define('mr-row', Row)
 
 
 
-class LayoutSystem extends System {
+class LayoutSystem extends System_System {
     constructor(){
         super()
 
@@ -67543,7 +67543,10 @@ class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedX += child.margin.left
-            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
+            console.log('before', child.width);
+            child.width = child.width == 'auto' ? colWidth : child.computedWidth * colWidth
+            console.log(child.width);
+            console.log(colWidth);
             child.object3D.position.setX( this.accumulatedX + child.width / 2)
             this.accumulatedX += child.width
             this.accumulatedX += child.margin.right
@@ -67624,7 +67627,7 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 
 
 
-class TextInputSystem extends System {
+class TextInputSystem extends System_System {
   constructor() {
     super()
     document.addEventListener('keydown', this.onKeyDown);
@@ -67950,14 +67953,14 @@ customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', De
 
 
 
-class DeveloperSystem extends System {
+class DeveloperSystem extends (/* unused pure expression or super */ null && (System)) {
   constructor() {
     super()
     
     let devVolume = document.querySelector('mr-dev-volume')
 
-    this.tempWorldPosition = new three_module_Vector3()
-    this.tempWorldQuaternion = new Quaternion()
+    this.tempWorldPosition = new THREE.Vector3()
+    this.tempWorldQuaternion = new THREE.Quaternion()
 
     this.registry.add(devVolume)
     
@@ -68077,7 +68080,7 @@ class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
-        this.devSystem = new DeveloperSystem()
+        // this.devSystem = new DeveloperSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
@@ -69196,9 +69199,9 @@ class Container extends Entity {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
       })
-      setTimeout(() => {
-        this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      }, 0);
+      // setTimeout(() => {
+      //   this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+      // }, 0);
   }
 }
 

@@ -75,7 +75,7 @@ export class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedX += child.margin.left
-            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
+            child.width = child.width == 'auto' ? colWidth : child.computedWidth * colWidth
             child.object3D.position.setX( this.accumulatedX + child.width / 2)
             this.accumulatedX += child.width
             this.accumulatedX += child.margin.right
