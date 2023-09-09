@@ -16,7 +16,6 @@ import {
 
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
-import { DeveloperSystem } from '../component-systems/DeveloperSystem.js'
 import { parseAttributeString } from '../utils/parser.js'
 ('use strict')
 
@@ -27,6 +26,8 @@ export class MRApp extends MRElement {
       value: true,
       writable: false,
     })
+
+    this.xrsupport = 'xr' in window.navigator;
 
     this.SCREEN_WIDTH = window.innerWidth / 1000
 		this.SCREEN_HEIGHT = window.innerHeight / 1000
@@ -59,14 +60,16 @@ export class MRApp extends MRElement {
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
-    this.ARButton = ARButton.createButton(this.renderer, {
-      requiredFeatures: ['hand-tracking'],
-    })
 
-    this.ARButton.addEventListener('click', () => {
-      console.log('clicked');
-      this.ARButton.blur()
-    })
+    if (this.xrsupport) {
+      this.ARButton = ARButton.createButton(this.renderer, {
+        requiredFeatures: ['hand-tracking'],
+      })
+  
+      this.ARButton.addEventListener('click', () => {
+        this.ARButton.blur()
+      })
+    }
   }
 
   connectedCallback() {

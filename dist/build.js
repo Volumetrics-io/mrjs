@@ -373,7 +373,7 @@ __webpack_require__.d(__webpack_exports__, {
   "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
   "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
   "Panel": () => (/* reexport */ Panel),
-  "System": () => (/* reexport */ System_System),
+  "System": () => (/* reexport */ System),
   "THREE": () => (/* reexport */ three_module_namespaceObject),
   "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
 });
@@ -52130,7 +52130,7 @@ customElements.get('mr-entity') || customElements.define('mr-entity', Entity)
 ;// CONCATENATED MODULE: ./src/core/System.js
 
 
-class System_System {
+class System {
   constructor() {
     this.app = document.querySelector('mr-app')
 
@@ -60019,7 +60019,7 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
-class TextSystem extends System_System {
+class TextSystem extends System {
   constructor() {
     super()
 
@@ -66851,7 +66851,7 @@ class MRUIEntity extends Entity {
 let RAPIER = null
 
 const JOINT_COLLIDER_HANDLE_NAMES = {}
-const RapierPhysicsSystem_COLLIDER_CURSOR_MAP = {}
+const COLLIDER_CURSOR_MAP = {}
 const COLLIDER_ENTITY_MAP = {}
 const COLLIDER_TOOL_MAP = {}
 
@@ -66864,7 +66864,7 @@ const COLLIDER_TOOL_MAP = {}
 //
 // Alternatively, you can also expressly attatch a comp-physics
 // attribute for more detailed control.
-class RapierPhysicsSystem extends System_System {
+class RapierPhysicsSystem extends System {
   constructor() {
     super()
     this.debug = this.app.debug
@@ -66918,7 +66918,7 @@ class RapierPhysicsSystem extends System_System {
 
       if (entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let cursor = RapierPhysicsSystem_COLLIDER_CURSOR_MAP[collider2.handle]
+          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
 
           if (cursor) {
             entity.onGrab(collider2.translation())
@@ -66942,7 +66942,7 @@ class RapierPhysicsSystem extends System_System {
       return
     }
 
-    let cursor = RapierPhysicsSystem_COLLIDER_CURSOR_MAP[handle1]
+    let cursor = COLLIDER_CURSOR_MAP[handle1]
 
     if(cursor){
       let tool = COLLIDER_TOOL_MAP[handle2] 
@@ -66962,7 +66962,7 @@ class RapierPhysicsSystem extends System_System {
 
   onContactEnd(handle1, handle2) {
     let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
-    let cursor =  RapierPhysicsSystem_COLLIDER_CURSOR_MAP[handle1]
+    let cursor =  COLLIDER_CURSOR_MAP[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
     if (joint && entity){
@@ -67246,7 +67246,7 @@ class MRHand {
       this.cursor
     )
 
-    RapierPhysicsSystem_COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
+    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
 
     collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
       RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
@@ -67364,7 +67364,7 @@ class MRHand {
 
 
 
-class ControlSystem extends System_System {
+class ControlSystem extends System {
   constructor() {
     super()
     this.leftHand = new MRHand('left', this.app)
@@ -67471,7 +67471,7 @@ customElements.get('mr-row') || customElements.define('mr-row', Row)
 
 
 
-class LayoutSystem extends System_System {
+class LayoutSystem extends System {
     constructor(){
         super()
 
@@ -67543,10 +67543,7 @@ class LayoutSystem extends System_System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedX += child.margin.left
-            console.log('before', child.width);
             child.width = child.width == 'auto' ? colWidth : child.computedWidth * colWidth
-            console.log(child.width);
-            console.log(colWidth);
             child.object3D.position.setX( this.accumulatedX + child.width / 2)
             this.accumulatedX += child.width
             this.accumulatedX += child.margin.right
@@ -67627,7 +67624,7 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 
 
 
-class TextInputSystem extends System_System {
+class TextInputSystem extends System {
   constructor() {
     super()
     document.addEventListener('keydown', this.onKeyDown);
@@ -67834,166 +67831,6 @@ class TextInputSystem extends System_System {
   }
 
 }
-;// CONCATENATED MODULE: ./src/entities/developer/tools/Tool.js
-
-
-class Tool {
-    constructor(entity){
-
-        this.entity = entity
-
-        this.toolName = this.constructor.name.toLowerCase().split('tool')[0]
-        let geometry = new THREE.SphereGeometry(0.01, 32, 16)
-        let material = new THREE.MeshStandardMaterial({
-            roughness: 0.7,
-            metalness: 0.0,
-            side: 2,
-        })
-
-        material.color.setStyle('red')
-
-        this.object3D = new THREE.Mesh(geometry, material)
-        this.object3D.receiveShadow = true
-        this.object3D.renderOrder = 3
-    }
-
-    initBody(world) {
-        let worldPosition = new THREE.Vector3()
-        this.object3D.getWorldPosition(worldPosition)
-        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...worldPosition)
-        const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
-    
-        this.body = world.createRigidBody(rigidBodyDesc)
-        this.collider = world.createCollider(
-        colliderDesc,
-        this.body
-        )
-    
-        COLLIDER_TOOL_MAP[this.collider.handle] = this
-    
-        this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
-        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
-        this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-    }
-
-    traverse(callBack) {
-        return
-    }
-
-    onGrab = (position) => {
-        console.log(`you grabbed a ${this.toolName} tool! for ${this.entity}`);
-    }
-}
-;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
-
-
-
-class PositionTool extends Tool {
-    constructor(entity){
-        super(entity)
-        this.localPosition = new THREE.Vector3()
-        this.worldPosition = new THREE.Vector3()
-    }
-
-    onGrab = (position) => {
-        console.log('position tool');
-        this.worldPosition.set(position.x, position.y, position.z)
-        this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
-        roundVectorTo(this.localPosition, 100)
-       this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
-    }
-}
-;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
-
-
-
-// THERE WILL BE BUGS daniel plainview 
-
-class DevVolume extends Entity {
-  constructor() {
-    super()
-    this.registry = new Set()
-    document.addEventListener('engine-started', (event) => {
-      this.traverse((child) => {
-        if (child == this) { return }
-        this.addTools(child)
-      })
-
-      this.addEventListener('new-entity', (event) => {
-        event.target.traverse((child) => {
-          this.addTools(child)
-        })
-      })
-    })
-  }
-
-  add(entity) {
-    this.object3D.add(entity.object3D)
-  }
-
-  remove(entity) {
-    this.object3D.remove(entity.object3D)
-  }
-
-  addTools(child) {
-    let posTool = new PositionTool(child)
-    child.object3D.add(posTool.object3D)
-    posTool.initBody(this.env.physicsWorld)
-
-    this.registry.add(posTool)
-  }
-}
-
-customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', DevVolume)
-
-;// CONCATENATED MODULE: ./src/component-systems/DeveloperSystem.js
-
-
-
-
-
-
-class DeveloperSystem extends (/* unused pure expression or super */ null && (System)) {
-  constructor() {
-    super()
-    
-    let devVolume = document.querySelector('mr-dev-volume')
-
-    this.tempWorldPosition = new THREE.Vector3()
-    this.tempWorldQuaternion = new THREE.Quaternion()
-
-    this.registry.add(devVolume)
-    
-  }
-
-  update(deltaTime) {
-    for (const env of this.registry) {
-      for ( const tool of env.registry){
-        this.updateBody(tool)
-        if (tool.grabbed){
-          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
-            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
-
-            if (cursor) {
-              tool.onGrab(collider2.translation())
-            }
-          })
-        }
-      }
-    }
-  }
-
-  updateBody(tool) {
-    tool.object3D.getWorldPosition(this.tempWorldPosition)
-    tool.body.setTranslation({ ...this.tempWorldPosition }, true)
-
-    tool.object3D.getWorldQuaternion(this.tempWorldQuaternion)
-    tool.body.setRotation(this.tempWorldQuaternion, true)
-  }
-
-  
-}
-
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -68009,7 +67846,6 @@ class DeveloperSystem extends (/* unused pure expression or super */ null && (Sy
 
 
 
-
 ('use strict')
 
 class MRApp extends MRElement {
@@ -68019,6 +67855,8 @@ class MRApp extends MRElement {
       value: true,
       writable: false,
     })
+
+    this.xrsupport = 'xr' in window.navigator;
 
     this.SCREEN_WIDTH = window.innerWidth / 1000
 		this.SCREEN_HEIGHT = window.innerHeight / 1000
@@ -68051,14 +67889,16 @@ class MRApp extends MRElement {
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
-    this.ARButton = ARButton.createButton(this.renderer, {
-      requiredFeatures: ['hand-tracking'],
-    })
 
-    this.ARButton.addEventListener('click', () => {
-      console.log('clicked');
-      this.ARButton.blur()
-    })
+    if (this.xrsupport) {
+      this.ARButton = ARButton.createButton(this.renderer, {
+        requiredFeatures: ['hand-tracking'],
+      })
+  
+      this.ARButton.addEventListener('click', () => {
+        this.ARButton.blur()
+      })
+    }
   }
 
   connectedCallback() {
@@ -68080,7 +67920,6 @@ class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
-        // this.devSystem = new DeveloperSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
@@ -69199,9 +69038,6 @@ class Container extends Entity {
     document.addEventListener('DOMContentLoaded', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
       })
-      // setTimeout(() => {
-      //   this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      // }, 0);
   }
 }
 
@@ -70031,6 +69867,118 @@ if (typeof exports === 'object' && typeof module === 'object')
     else if (typeof exports === 'object')
       exports["Ammo"] = Ammo;
     
+
+;// CONCATENATED MODULE: ./src/entities/developer/tools/Tool.js
+
+
+class Tool {
+    constructor(entity){
+
+        this.entity = entity
+
+        this.toolName = this.constructor.name.toLowerCase().split('tool')[0]
+        let geometry = new THREE.SphereGeometry(0.01, 32, 16)
+        let material = new THREE.MeshStandardMaterial({
+            roughness: 0.7,
+            metalness: 0.0,
+            side: 2,
+        })
+
+        material.color.setStyle('red')
+
+        this.object3D = new THREE.Mesh(geometry, material)
+        this.object3D.receiveShadow = true
+        this.object3D.renderOrder = 3
+    }
+
+    initBody(world) {
+        let worldPosition = new THREE.Vector3()
+        this.object3D.getWorldPosition(worldPosition)
+        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...worldPosition)
+        const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+    
+        this.body = world.createRigidBody(rigidBodyDesc)
+        this.collider = world.createCollider(
+        colliderDesc,
+        this.body
+        )
+    
+        COLLIDER_TOOL_MAP[this.collider.handle] = this
+    
+        this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+        this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    traverse(callBack) {
+        return
+    }
+
+    onGrab = (position) => {
+        console.log(`you grabbed a ${this.toolName} tool! for ${this.entity}`);
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
+
+
+
+class PositionTool extends Tool {
+    constructor(entity){
+        super(entity)
+        this.localPosition = new THREE.Vector3()
+        this.worldPosition = new THREE.Vector3()
+    }
+
+    onGrab = (position) => {
+        console.log('position tool');
+        this.worldPosition.set(position.x, position.y, position.z)
+        this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
+        roundVectorTo(this.localPosition, 100)
+       this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
+
+
+
+// THERE WILL BE BUGS daniel plainview 
+
+class DevVolume extends Entity {
+  constructor() {
+    super()
+    this.registry = new Set()
+    document.addEventListener('engine-started', (event) => {
+      this.traverse((child) => {
+        if (child == this) { return }
+        this.addTools(child)
+      })
+
+      this.addEventListener('new-entity', (event) => {
+        event.target.traverse((child) => {
+          this.addTools(child)
+        })
+      })
+    })
+  }
+
+  add(entity) {
+    this.object3D.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.object3D.remove(entity.object3D)
+  }
+
+  addTools(child) {
+    let posTool = new PositionTool(child)
+    child.object3D.add(posTool.object3D)
+    posTool.initBody(this.env.physicsWorld)
+
+    this.registry.add(posTool)
+  }
+}
+
+customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', DevVolume)
 
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
