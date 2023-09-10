@@ -67433,6 +67433,27 @@ class Column extends Entity {
 
 customElements.get('mr-column') || customElements.define('mr-column', Column)
 
+;// CONCATENATED MODULE: ./src/entities/layout/Container.js
+
+
+class Container extends Entity {
+  constructor() {
+    super()
+    this.width = 'auto'
+    this.height = 'auto'
+
+  }
+
+  connected(){
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+      })
+  }
+}
+
+customElements.get('mr-container') ||
+  customElements.define('mr-container', Container)
+
 ;// CONCATENATED MODULE: ./src/entities/layout/Row.js
 
 
@@ -67471,6 +67492,7 @@ customElements.get('mr-row') || customElements.define('mr-row', Row)
 
 
 
+
 class LayoutSystem extends System {
     constructor(){
         super()
@@ -67481,6 +67503,12 @@ class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
+        if (event.target.height == 'auto') {
+            event.target.height = this.app.viewPortHieght
+        }
+        if (event.target.width == 'auto') {
+            event.target.width = this.app.viewPortWidth
+        }
         this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
     }
 
@@ -67856,11 +67884,13 @@ class MRApp extends MRElement {
       writable: false,
     })
 
-    this.xrsupport = 'xr' in window.navigator;
+    this.xrsupport = false
 
-    this.SCREEN_WIDTH = window.innerWidth / 1000
-		this.SCREEN_HEIGHT = window.innerHeight / 1000
+    navigator.xr.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
 
+      this.xrsupport = supported
+
+    } )
     this.env = this
 
     this.focusEntity = null
@@ -67876,6 +67906,13 @@ class MRApp extends MRElement {
       0.01,
       20
     )
+
+    this.vFOV = MathUtils.degToRad( this.user.fov ); // convert vertical fov to radians
+
+    this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
+
+    this.viewPortWidth = this.viewPortHieght * this.user.aspect;           // visible width
+
 
     this.lighting = {
       enabled: true,
@@ -67975,7 +68012,10 @@ class MRApp extends MRElement {
     }
 
     this.appendChild(this.renderer.domElement)
-    document.body.appendChild(this.ARButton)
+
+    if (this.xrsupport) {
+      document.body.appendChild(this.ARButton)
+    }
 
     this.renderer.setAnimationLoop(this.render)
 
@@ -69023,27 +69063,6 @@ class TextField extends MRText {
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
-;// CONCATENATED MODULE: ./src/entities/layout/Container.js
-
-
-class Container extends Entity {
-  constructor() {
-    super()
-    this.width = 1
-    this.height = 1
-
-  }
-
-  connected(){
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      })
-  }
-}
-
-customElements.get('mr-container') ||
-  customElements.define('mr-container', Container)
-
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/libs/ammo.wasm.js
 
 // This is ammo.js, a port of Bullet Physics to JavaScript. zlib licensed.

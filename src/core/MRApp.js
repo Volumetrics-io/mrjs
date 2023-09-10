@@ -27,11 +27,13 @@ export class MRApp extends MRElement {
       writable: false,
     })
 
-    this.xrsupport = 'xr' in window.navigator;
+    this.xrsupport = false
 
-    this.SCREEN_WIDTH = window.innerWidth / 1000
-		this.SCREEN_HEIGHT = window.innerHeight / 1000
+    navigator.xr.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
 
+      this.xrsupport = supported
+
+    } )
     this.env = this
 
     this.focusEntity = null
@@ -47,6 +49,13 @@ export class MRApp extends MRElement {
       0.01,
       20
     )
+
+    this.vFOV = THREE.MathUtils.degToRad( this.user.fov ); // convert vertical fov to radians
+
+    this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
+
+    this.viewPortWidth = this.viewPortHieght * this.user.aspect;           // visible width
+
 
     this.lighting = {
       enabled: true,
@@ -146,7 +155,10 @@ export class MRApp extends MRElement {
     }
 
     this.appendChild(this.renderer.domElement)
-    document.body.appendChild(this.ARButton)
+
+    if (this.xrsupport) {
+      document.body.appendChild(this.ARButton)
+    }
 
     this.renderer.setAnimationLoop(this.render)
 

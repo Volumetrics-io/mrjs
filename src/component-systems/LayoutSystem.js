@@ -1,6 +1,7 @@
 import System from "../core/System";
 import { Entity } from "../core/entity";
 import { Column } from "../entities/layout/Column";
+import { Container } from "../entities/layout/Container";
 import { Row } from "../entities/layout/Row";
 
 export class LayoutSystem extends System {
@@ -13,6 +14,12 @@ export class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
+        if (event.target.height == 'auto') {
+            event.target.height = this.app.viewPortHieght
+        }
+        if (event.target.width == 'auto') {
+            event.target.width = this.app.viewPortWidth
+        }
         this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
     }
 
