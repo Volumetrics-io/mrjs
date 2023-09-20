@@ -11,7 +11,11 @@ export class Container extends Entity {
   connected(){
     document.addEventListener('DOMContentLoaded', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      })
+    })
+
+    window.addEventListener('resize', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
   }
 }
 

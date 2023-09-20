@@ -5,42 +5,58 @@ import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
 
+  #absoluteWidth = 1
+  set absoluteWidth(value) {
+    this.#absoluteWidth = value
+  }
+
+  get absoluteWidth() {
+    return this.#absoluteWidth
+  }
+
   #width = 'auto'
   set width(value) {
-    this.#width = value
+    this.#width = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
+    this.absoluteWidth = this.#width
     this.dimensionsUpdate()
   }
   get width() {
-    return this.#width
+    return this.#width == 'auto' ? 1 : this.#width
   }
 
   get computedWidth() {
-    let computed = this.#width == 'auto' ? 1 : this.#width
-    return computed + this.margin.horizontal
+    return this.absoluteWidth + this.margin.horizontal
   }
 
   get computedInternalWidth() {
-    let computed = this.#width == 'auto' ? 1 : this.#width
-    return computed - this.padding.horizontal
+    return this.absoluteWidth - this.padding.horizontal
+  }
+
+  #absoluteHeight = 1
+  set absoluteHeight(value) {
+    this.#absoluteHeight = value
+  }
+
+  get absoluteHeight() {
+    return this.#absoluteHeight
   }
 
   #height = 'auto'
   set height(value) {
-    this.#height = value
+    this.#height = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
+    this.absoluteHeight = this.#height
     this.dimensionsUpdate()
   }
   get height() {
-    return this.#height
+    return this.#height == 'auto' ? 1 : this.#height
   }
 
   get computedHeight() {
-    let computed = this.#height == 'auto' ? 1 : this.#height
-    return computed + this.margin.vertical
+    return this.#absoluteHeight + this.margin.vertical
   }
 
   get computedInternalHeight() {
-    let computed = this.#height == 'auto' ? 1 : this.#height
-    return computed - this.padding.vertical
+    return this.#absoluteHeight - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -119,6 +135,7 @@ export class Entity extends MRElement {
 
     this.object3D.userData.bbox.getSize(this.object3D.userData.size)
 
+    this.mutationCallback = this.mutationCallback.bind(this)
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
@@ -139,7 +156,8 @@ export class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    for (const attr of this.attributes) {
+    let name
+    for (const attr of this.attributes) {      
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
@@ -154,10 +172,10 @@ export class Entity extends MRElement {
           this.object3D.position.fromArray(parseVector(attr.value))
           break
         case 'width':
-          this.width = parseFloat(attr.value)
+          this.width = attr.value
           break
         case 'height':
-          this.height = parseFloat(attr.value)
+          this.height = attr.value
           break
         case 'margin':
           this.margin.setFromVector(parseVector(attr.value))
@@ -166,6 +184,7 @@ export class Entity extends MRElement {
           this.padding.setFromVector(parseVector(attr.value))
           break
         default:
+          this[attr.name] = attr.value
           break
       }
     }
@@ -175,7 +194,6 @@ export class Entity extends MRElement {
 
   disconnected() {}
 
-  mutated = (mutation) => {}
 
   disconnectedCallback() {
     while (this.object3D.parent) {
@@ -192,7 +210,11 @@ export class Entity extends MRElement {
     this.disconnected()
   }
 
-  mutationCallback = (mutationList, observer) => {
+  mutated(mutation) {
+
+  }
+
+  mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
       this.mutated(mutation)
 

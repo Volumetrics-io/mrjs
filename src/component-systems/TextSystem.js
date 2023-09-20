@@ -71,17 +71,11 @@ export class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    let width = entity.width == 'auto' ? 1 : entity.width
-    width = width ?? 1
-    let height = entity.height == 'auto' ? 1 : entity.height
-    height = height ?? 1
+    
+    entity.textStyle.width = entity.absoluteWidth
+    entity.textStyle.maxWidth = entity.absoluteWidth
 
-    entity.textStyle.width = width
-    entity.textStyle.maxWidth = entity.textStyle.maxWidth ?? width ?? 1
-    const radius = entity.radius ?? 0
-    entity.textStyle.maxWidth -= radius * 2
-
-    height -= radius
+    let height = entity.absoluteHeight
     entity.textObj.position.setY(height / 2)
 
     entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
