@@ -36,12 +36,6 @@ export class MRApp extends MRElement {
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
 
-
-    navigator.xr?.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
-
-      this.xrsupport = supported
-
-    } )
     this.env = this
 
     this.focusEntity = null
@@ -50,13 +44,12 @@ export class MRApp extends MRElement {
     this.systems = new Set()
     this.scene = new THREE.Scene()
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false })
-    this.renderer.setPixelRatio( this.isMobile ? 2 : window.devicePixelRatio );
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.user = new THREE.PerspectiveCamera(
       70,
       window.innerWidth / window.innerHeight,
       0.01,
-      this.isMobile ? 10 : 20
+      20
     )
 
     this.vFOV = THREE.MathUtils.degToRad( this.user.fov );
@@ -76,15 +69,6 @@ export class MRApp extends MRElement {
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
 
-    if (this.xrsupport) {
-      this.ARButton = ARButton.createButton(this.renderer, {
-        requiredFeatures: ['hand-tracking'],
-      })
-  
-      this.ARButton.addEventListener('click', () => {
-        this.ARButton.blur()
-      })
-    }
   }
 
   connectedCallback() {
@@ -162,9 +146,23 @@ export class MRApp extends MRElement {
 
     this.appendChild(this.renderer.domElement)
 
-    if (this.xrsupport) {
-      document.body.appendChild(this.ARButton)
-    }
+    navigator.xr?.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
+
+      this.xrsupport = supported
+
+      if (this.xrsupport) {
+        this.ARButton = ARButton.createButton(this.renderer, {
+          requiredFeatures: ['hand-tracking'],
+        })
+    
+        this.ARButton.addEventListener('click', () => {
+          this.ARButton.blur()
+        })
+        document.body.appendChild(this.ARButton)
+
+      }
+
+    } )
 
     this.renderer.setAnimationLoop(this.render)
 
@@ -185,12 +183,14 @@ export class MRApp extends MRElement {
     this.defaultLight = new THREE.PointLight(data.color)
     this.defaultLight.position.set(0, 1, 1)
     this.defaultLight.intensity = data.intensity
-    this.defaultLight.castShadow = data.shadows
-    this.defaultLight.shadow.camera.top = 2
-    this.defaultLight.shadow.camera.bottom = -2
-    this.defaultLight.shadow.camera.right = 2
-    this.defaultLight.shadow.camera.left = -2
-    this.defaultLight.shadow.mapSize.set(4096, 4096)
+    if(!this.isMobile) {
+      this.defaultLight.castShadow = data.shadows
+      this.defaultLight.shadow.camera.top = 2
+      this.defaultLight.shadow.camera.bottom = -2
+      this.defaultLight.shadow.camera.right = 2
+      this.defaultLight.shadow.camera.left = -2
+      this.defaultLight.shadow.mapSize.set(4096, 4096)
+    }
     this.scene.add(this.defaultLight)
   }
 
@@ -234,7 +234,7 @@ export class MRApp extends MRElement {
     }
     if( this.debug ) { this.stats.end() }
 
-    if(this.lighting.enabled){
+    if(this.lighting.enabled && !this.isMobile){
       this.defaultLight.target = this.user
     }
 
