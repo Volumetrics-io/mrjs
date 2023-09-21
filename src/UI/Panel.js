@@ -3,17 +3,18 @@ import { UIPlane } from '../geometry/UIPlane.js'
 import { MRUIEntity } from './UIEntity.js'
 
 export default class Panel extends MRUIEntity {
-  static get observedAttributes() {
-    return [
-      'width',
-      'height',
-      'corner-radius',
-      'smoothness',
-      'color',
-    ]
-  }
   radius = 0.02
   smoothness = 18
+  #color = 0xecf0f1
+
+  set color(value) {
+    this.#color = value
+    this.object3D.material.color.setStyle(this.#color)
+    
+  }
+  get color() {
+    return this.#color
+  }
 
   set height(value) {
     super.height = value
@@ -32,10 +33,36 @@ export default class Panel extends MRUIEntity {
     return super.width
   }
 
+  set absoluteHeight(value) {
+    super.absoluteHeight = value
+    this.updatePlane()
+    
+  }
+  get absoluteHeight() {
+    return super.absoluteHeight
+  }
+
+  get computedInternalHeight() {
+    return super.computedInternalHeight - this.radius
+  }
+
+  set absoluteWidth(value) {
+    super.absoluteWidth = value
+    this.updatePlane()
+  }
+  get absoluteWidth() {
+    return super.absoluteWidth
+  }
+
+  get computedInternalWidth() {
+    return super.computedInternalWidth - this.radius
+  }
+
   updatePlane() {
+    
     this.object3D.geometry = UIPlane(
-      this.width,
-      this.height,
+      this.absoluteWidth,
+      this.absoluteHeight,
       this.radius,
       this.smoothness
     )
@@ -45,13 +72,13 @@ export default class Panel extends MRUIEntity {
     super()
 
     this.geometry = UIPlane(
-      this.width,
-      this.height,
+      this.absoluteWidth,
+      this.absoluteHeight,
       this.radius,
       this.smoothness
     )
     this.material = new THREE.MeshStandardMaterial({
-      color: 0xecf0f1,
+      color: this.color,
       roughness: 0.7,
       metalness: 0.0,
       side: 2,
@@ -61,38 +88,36 @@ export default class Panel extends MRUIEntity {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
+
+
   }
 
-  // TODO: Switch to overriding MutationCallback instead
-  attributeChangedCallback(name, oldValue, newValue) {
-    switch (name) {
-      case 'width':
-        this.width = parseFloat(newValue)
-        break
-      case 'height':
-        this.height = parseFloat(newValue)
-        break
-      case 'corner-radius':
-        this.radius = parseFloat(newValue)
-        this.padding.all = this.radius
-        break
-      case 'smoothness':
-        this.smoothness = parseFloat(newValue)
-        break
-      case 'color':
-        this.object3D.material.color.setStyle(newValue)
-        break
-      default:
-        break
+  mutated(mutation) {
+    if(mutation.type != 'attributes') {
+      switch (mutation.attributeName) {
+        case 'width':
+          this.width = parseFloat(this.getAttribute('width'))
+          break
+        case 'height':
+          this.height = parseFloat(this.getAttribute('height'))
+          break
+        case 'corner-radius':
+          this.radius = parseFloat(this.getAttribute('corner-radius'))
+          console.log(this.radius);
+          this.padding.all = this.radius
+          break
+        case 'smoothness':
+          this.smoothness = parseFloat(this.getAttribute('smoothness'))
+          break
+        case 'color':
+          this.object3D.material.color.setStyle(this.getAttribute('color'))
+          break
+        default:
+          break
     }
 
-    this.object3D.geometry = UIPlane(
-      this.width,
-      this.height,
-      this.radius,
-      this.smoothness
-    )
   }
+}
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel)

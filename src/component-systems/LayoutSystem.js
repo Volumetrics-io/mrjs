@@ -1,6 +1,7 @@
 import System from "../core/System";
 import { Entity } from "../core/entity";
 import { Column } from "../entities/layout/Column";
+import { Container } from "../entities/layout/Container";
 import { Row } from "../entities/layout/Row";
 
 export class LayoutSystem extends System {
@@ -13,28 +14,33 @@ export class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
-        this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
+        this.adjustContainerSize(event.target)
+        this.adjustContent(event.target, event.target.absoluteWidth, event.target.absoluteHeight)
+    }
+
+    adjustContainerSize = (container) => {
+        container.absoluteHeight = container.height * this.app.viewPortHieght
+        container.absoluteWidth = container.width * this.app.viewPortWidth
+        
+
     }
 
     adjustContent = (entity, width, height) => {
         
         if (entity instanceof Column) { 
-            entity.width = entity.width == 'auto' ? width : entity.width
+            // entity.absoluteWidth = width
             this.adjustColumn(entity, height) 
         }
         else if (entity instanceof Row) { 
-            entity.height = entity.height == 'auto' ? height : entity.height
+            entity.absoluteHeight = height
             this.adjustRow(entity, width) 
-        } else {
-            entity.width = entity.width == 'auto' ? width : entity.width
-            entity.height = entity.height == 'auto' ? height : entity.height
-            if (entity.physics){
-                entity.physics.update = true
-            }
+        } else if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
+            entity.absoluteWidth = width
+            entity.absoluteHeight = height
         }
 
         /// Set Z-index
-        entity.object3D.position.z += entity.zOffeset
+        entity.object3D.position.z = entity.zOffeset
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -53,16 +59,12 @@ export class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
-            child.height = child.height == 'auto' ? rowHeight : child.height * rowHeight
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            child.absoluteHeight = child.height * rowHeight
+            child.object3D.position.setY( this.accumulatedY - child.absoluteHeight / 2)
+            this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
 
-            // fill parent
-            child.width = child.width == 'auto' ? column.width : child.width
-            if (child.physics){
-                child.physics.update = true
-             }
+            child.absoluteWidth = column.computedInternalWidth
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -75,17 +77,13 @@ export class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedX += child.margin.left
-            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
-            child.object3D.position.setX( this.accumulatedX + child.width / 2)
-            this.accumulatedX += child.width
+            child.absoluteWidth = child.width * colWidth
+            child.object3D.position.setX( this.accumulatedX + child.absoluteWidth / 2)
+            this.accumulatedX += child.absoluteWidth
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.height = child.height == 'auto' ? row.height : child.height
-
-             if (child.physics){
-                child.physics.update = true
-             }
+             child.absoluteHeight = row.computedInternalHeight
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }

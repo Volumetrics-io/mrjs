@@ -20,9 +20,10 @@ export class Row extends Entity {
 
   getColumnCount(){
     const children = Array.from(this.children)
+    this.columns = 0
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.columns += child.computedWidth
+        this.columns += child.width + child.margin.horizontal
     }
   }
 }

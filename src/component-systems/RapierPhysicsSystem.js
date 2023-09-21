@@ -55,10 +55,8 @@ export class RapierPhysicsSystem extends System {
     });
 
     for (const entity of this.registry) {
-      if (entity.physics?.update) {
-        this.updateBody(entity)
-        entity.physics.update = false
-      }
+      if (entity.physics?.body == null) { continue }
+      this.updateBody(entity)
 
       if (entity.touch && !entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
@@ -199,7 +197,7 @@ export class RapierPhysicsSystem extends System {
     entity.physics = {}
 
     if (entity instanceof MRUIEntity) {
-      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.width, entity.height, 0.001))
+      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
     } else {
       return
     }
@@ -240,7 +238,7 @@ export class RapierPhysicsSystem extends System {
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.width, entity.height, 0.001))
+    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
     
     this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
     entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)

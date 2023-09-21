@@ -18,19 +18,18 @@
       size="0.06" 
       target="mr-text, title"></mr-font>
 
-        <mr-volume scale="0.5" position="0 -0.1 -0.45">
-            <mr-container rotation="0 -45 0" width="0.666" height="0.666" snap-to="right">
-              <mr-row></mr-row>
-              <mr-column></mr-column>
-                <mr-panel color="darkgrey" corner-radius="0.02">
-                    <mr-panel corner-radius="0.02">
-                        <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
-                        </mr-texteditor>
-                    </mr-panel>
-                </mr-panel>
+            <mr-container>
+              <mr-row>
+                <mr-entity></mr-entity>
+                <mr-panel corner-radius="0.02">
+                  <mr-texteditor src="dev" text-style="size: 0.02; vertical: top">
+                  </mr-texteditor>
+              </mr-panel>
+              </mr-row>
+                    
             </mr-container>
 
-            <mr-dev-volume id="dev">
+            <mr-dev-volume id="dev" position="-1 0 -1">
               <mr-entity comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" position="0 0 2">
                 <mr-light color="hsl(30, 100%, 50%)" intensity="5" position="0 1 0"></mr-light>
                 <mr-light color="hsl(208, 100%, 50%)" intensity="10" position="1 -1 0"></mr-light>
@@ -40,13 +39,10 @@
               src="./assets/models/logo.stl" 
               rotation="-22.91 17.1887 45.8366"
               scale="0.005"></mr-model>
-<mr-container width="0.5" height="0.1" position="0 -0.05 0.3" >
-        <mr-text class="title" >
+        <mr-text width="0.5" height="0.1" position="0 -0.05 0.3"  class="title" >
           Volumetrics
         </mr-text>
-</mr-container>
             </mr-dev-volume>
-        </mr-volume>
         
     </mr-app>
   </body>

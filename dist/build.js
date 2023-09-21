@@ -51856,42 +51856,58 @@ class BodyOffset {
 
 class Entity extends MRElement {
 
+  #absoluteWidth = 1
+  set absoluteWidth(value) {
+    this.#absoluteWidth = value
+  }
+
+  get absoluteWidth() {
+    return this.#absoluteWidth
+  }
+
   #width = 'auto'
   set width(value) {
-    this.#width = value
+    this.#width = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
+    this.absoluteWidth = this.#width
     this.dimensionsUpdate()
   }
   get width() {
-    return this.#width
+    return this.#width == 'auto' ? 1 : this.#width
   }
 
   get computedWidth() {
-    let computed = this.#width == 'auto' ? 1 : this.#width
-    return computed + this.margin.horizontal
+    return this.absoluteWidth + this.margin.horizontal
   }
 
   get computedInternalWidth() {
-    let computed = this.#width == 'auto' ? 1 : this.#width
-    return computed - this.padding.horizontal
+    return this.absoluteWidth - this.padding.horizontal
+  }
+
+  #absoluteHeight = 1
+  set absoluteHeight(value) {
+    this.#absoluteHeight = value
+  }
+
+  get absoluteHeight() {
+    return this.#absoluteHeight
   }
 
   #height = 'auto'
   set height(value) {
-    this.#height = value
+    this.#height = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
+    this.absoluteHeight = this.#height
     this.dimensionsUpdate()
   }
   get height() {
-    return this.#height
+    return this.#height == 'auto' ? 1 : this.#height
   }
 
   get computedHeight() {
-    let computed = this.#height == 'auto' ? 1 : this.#height
-    return computed + this.margin.vertical
+    return this.#absoluteHeight + this.margin.vertical
   }
 
   get computedInternalHeight() {
-    let computed = this.#height == 'auto' ? 1 : this.#height
-    return computed - this.padding.vertical
+    return this.#absoluteHeight - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -51970,6 +51986,7 @@ class Entity extends MRElement {
 
     this.object3D.userData.bbox.getSize(this.object3D.userData.size)
 
+    this.mutationCallback = this.mutationCallback.bind(this)
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
@@ -51990,7 +52007,8 @@ class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    for (const attr of this.attributes) {
+    let name
+    for (const attr of this.attributes) {      
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
@@ -52005,10 +52023,10 @@ class Entity extends MRElement {
           this.object3D.position.fromArray(parseVector(attr.value))
           break
         case 'width':
-          this.width = parseFloat(attr.value)
+          this.width = attr.value
           break
         case 'height':
-          this.height = parseFloat(attr.value)
+          this.height = attr.value
           break
         case 'margin':
           this.margin.setFromVector(parseVector(attr.value))
@@ -52017,6 +52035,7 @@ class Entity extends MRElement {
           this.padding.setFromVector(parseVector(attr.value))
           break
         default:
+          this[attr.name] = attr.value
           break
       }
     }
@@ -52026,7 +52045,6 @@ class Entity extends MRElement {
 
   disconnected() {}
 
-  mutated = (mutation) => {}
 
   disconnectedCallback() {
     while (this.object3D.parent) {
@@ -52043,7 +52061,11 @@ class Entity extends MRElement {
     this.disconnected()
   }
 
-  mutationCallback = (mutationList, observer) => {
+  mutated(mutation) {
+
+  }
+
+  mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
       this.mutated(mutation)
 
@@ -60088,17 +60110,11 @@ class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    let width = entity.width == 'auto' ? 1 : entity.width
-    width = width ?? 1
-    let height = entity.height == 'auto' ? 1 : entity.height
-    height = height ?? 1
+    
+    entity.textStyle.width = entity.absoluteWidth
+    entity.textStyle.maxWidth = entity.absoluteWidth
 
-    entity.textStyle.width = width
-    entity.textStyle.maxWidth = entity.textStyle.maxWidth ?? width ?? 1
-    const radius = entity.radius ?? 0
-    entity.textStyle.maxWidth -= radius * 2
-
-    height -= radius
+    let height = entity.absoluteHeight
     entity.textObj.position.setY(height / 2)
 
     entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
@@ -66901,10 +66917,8 @@ class RapierPhysicsSystem extends System {
     });
 
     for (const entity of this.registry) {
-      if (entity.physics?.update) {
-        this.updateBody(entity)
-        entity.physics.update = false
-      }
+      if (entity.physics?.body == null) { continue }
+      this.updateBody(entity)
 
       if (entity.touch && !entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
@@ -67045,7 +67059,7 @@ class RapierPhysicsSystem extends System {
     entity.physics = {}
 
     if (entity instanceof MRUIEntity) {
-      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
     } else {
       return
     }
@@ -67086,7 +67100,7 @@ class RapierPhysicsSystem extends System {
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.width, entity.height, 0.001))
+    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
     
     this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
     entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
@@ -67424,14 +67438,40 @@ class Column extends Entity {
 
   getRowCount(){
     const children = Array.from(this.children)
+    this.rows = 0
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.rows += child.computedHeight
+        this.rows +=child.height + child.margin.vertical
       }
   }
 }
 
 customElements.get('mr-column') || customElements.define('mr-column', Column)
+
+;// CONCATENATED MODULE: ./src/entities/layout/Container.js
+
+
+class Container extends Entity {
+  constructor() {
+    super()
+    this.width = 'auto'
+    this.height = 'auto'
+
+  }
+
+  connected(){
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    window.addEventListener('resize', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+  }
+}
+
+customElements.get('mr-container') ||
+  customElements.define('mr-container', Container)
 
 ;// CONCATENATED MODULE: ./src/entities/layout/Row.js
 
@@ -67456,9 +67496,10 @@ class Row extends Entity {
 
   getColumnCount(){
     const children = Array.from(this.children)
+    this.columns = 0
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.columns += child.computedWidth
+        this.columns += child.width + child.margin.horizontal
     }
   }
 }
@@ -67466,6 +67507,7 @@ class Row extends Entity {
 customElements.get('mr-row') || customElements.define('mr-row', Row)
 
 ;// CONCATENATED MODULE: ./src/component-systems/LayoutSystem.js
+
 
 
 
@@ -67481,28 +67523,33 @@ class LayoutSystem extends System {
     }
 
     updateLayout = (event) => {
-        this.adjustContent(event.target, event.target.computedInternalWidth, event.target.computedInternalWidth)
+        this.adjustContainerSize(event.target)
+        this.adjustContent(event.target, event.target.absoluteWidth, event.target.absoluteHeight)
+    }
+
+    adjustContainerSize = (container) => {
+        container.absoluteHeight = container.height * this.app.viewPortHieght
+        container.absoluteWidth = container.width * this.app.viewPortWidth
+        
+
     }
 
     adjustContent = (entity, width, height) => {
         
         if (entity instanceof Column) { 
-            entity.width = entity.width == 'auto' ? width : entity.width
+            // entity.absoluteWidth = width
             this.adjustColumn(entity, height) 
         }
         else if (entity instanceof Row) { 
-            entity.height = entity.height == 'auto' ? height : entity.height
+            entity.absoluteHeight = height
             this.adjustRow(entity, width) 
-        } else {
-            entity.width = entity.width == 'auto' ? width : entity.width
-            entity.height = entity.height == 'auto' ? height : entity.height
-            if (entity.physics){
-                entity.physics.update = true
-            }
+        } else if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
+            entity.absoluteWidth = width
+            entity.absoluteHeight = height
         }
 
         /// Set Z-index
-        entity.object3D.position.z += entity.zOffeset
+        entity.object3D.position.z = entity.zOffeset
 
         const children = Array.from(entity.children)
         for (const child of children) {
@@ -67521,16 +67568,12 @@ class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
-            child.height = child.height == 'auto' ? rowHeight : child.height * rowHeight
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            child.absoluteHeight = child.height * rowHeight
+            child.object3D.position.setY( this.accumulatedY - child.absoluteHeight / 2)
+            this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
 
-            // fill parent
-            child.width = child.width == 'auto' ? column.width : child.width
-            if (child.physics){
-                child.physics.update = true
-             }
+            child.absoluteWidth = column.computedInternalWidth
         }
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
@@ -67543,17 +67586,13 @@ class LayoutSystem extends System {
         for (const index in children) {
             let child = children[index]
             this.accumulatedX += child.margin.left
-            child.width = child.width == 'auto' ? colWidth : child.width * colWidth
-            child.object3D.position.setX( this.accumulatedX + child.width / 2)
-            this.accumulatedX += child.width
+            child.absoluteWidth = child.width * colWidth
+            child.object3D.position.setX( this.accumulatedX + child.absoluteWidth / 2)
+            this.accumulatedX += child.absoluteWidth
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.height = child.height == 'auto' ? row.height : child.height
-
-             if (child.physics){
-                child.physics.update = true
-             }
+             child.absoluteHeight = row.computedInternalHeight
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
@@ -67831,166 +67870,6 @@ class TextInputSystem extends System {
   }
 
 }
-;// CONCATENATED MODULE: ./src/entities/developer/tools/Tool.js
-
-
-class Tool {
-    constructor(entity){
-
-        this.entity = entity
-
-        this.toolName = this.constructor.name.toLowerCase().split('tool')[0]
-        let geometry = new THREE.SphereGeometry(0.01, 32, 16)
-        let material = new THREE.MeshStandardMaterial({
-            roughness: 0.7,
-            metalness: 0.0,
-            side: 2,
-        })
-
-        material.color.setStyle('red')
-
-        this.object3D = new THREE.Mesh(geometry, material)
-        this.object3D.receiveShadow = true
-        this.object3D.renderOrder = 3
-    }
-
-    initBody(world) {
-        let worldPosition = new THREE.Vector3()
-        this.object3D.getWorldPosition(worldPosition)
-        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...worldPosition)
-        const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
-    
-        this.body = world.createRigidBody(rigidBodyDesc)
-        this.collider = world.createCollider(
-        colliderDesc,
-        this.body
-        )
-    
-        COLLIDER_TOOL_MAP[this.collider.handle] = this
-    
-        this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
-        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
-        this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-    }
-
-    traverse(callBack) {
-        return
-    }
-
-    onGrab = (position) => {
-        console.log(`you grabbed a ${this.toolName} tool! for ${this.entity}`);
-    }
-}
-;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
-
-
-
-class PositionTool extends Tool {
-    constructor(entity){
-        super(entity)
-        this.localPosition = new THREE.Vector3()
-        this.worldPosition = new THREE.Vector3()
-    }
-
-    onGrab = (position) => {
-        console.log('position tool');
-        this.worldPosition.set(position.x, position.y, position.z)
-        this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
-        roundVectorTo(this.localPosition, 100)
-       this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
-    }
-}
-;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
-
-
-
-// THERE WILL BE BUGS daniel plainview 
-
-class DevVolume extends Entity {
-  constructor() {
-    super()
-    this.registry = new Set()
-    document.addEventListener('engine-started', (event) => {
-      this.traverse((child) => {
-        if (child == this) { return }
-        this.addTools(child)
-      })
-
-      this.addEventListener('new-entity', (event) => {
-        event.target.traverse((child) => {
-          this.addTools(child)
-        })
-      })
-    })
-  }
-
-  add(entity) {
-    this.object3D.add(entity.object3D)
-  }
-
-  remove(entity) {
-    this.object3D.remove(entity.object3D)
-  }
-
-  addTools(child) {
-    let posTool = new PositionTool(child)
-    child.object3D.add(posTool.object3D)
-    posTool.initBody(this.env.physicsWorld)
-
-    this.registry.add(posTool)
-  }
-}
-
-customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', DevVolume)
-
-;// CONCATENATED MODULE: ./src/component-systems/DeveloperSystem.js
-
-
-
-
-
-
-class DeveloperSystem extends System {
-  constructor() {
-    super()
-    
-    let devVolume = document.querySelector('mr-dev-volume')
-
-    this.tempWorldPosition = new three_module_Vector3()
-    this.tempWorldQuaternion = new Quaternion()
-
-    this.registry.add(devVolume)
-    
-  }
-
-  update(deltaTime) {
-    for (const env of this.registry) {
-      for ( const tool of env.registry){
-        this.updateBody(tool)
-        if (tool.grabbed){
-          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
-            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
-
-            if (cursor) {
-              tool.onGrab(collider2.translation())
-            }
-          })
-        }
-      }
-    }
-  }
-
-  updateBody(tool) {
-    tool.object3D.getWorldPosition(this.tempWorldPosition)
-    tool.body.setTranslation({ ...this.tempWorldPosition }, true)
-
-    tool.object3D.getWorldQuaternion(this.tempWorldQuaternion)
-    tool.body.setRotation(this.tempWorldQuaternion, true)
-  }
-
-  
-}
-
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -68006,8 +67885,13 @@ class DeveloperSystem extends System {
 
 
 
-
 ('use strict')
+
+window.mobileCheck = function() {
+  let check = false;
+  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  return check;
+};
 
 class MRApp extends MRElement {
   constructor() {
@@ -68017,9 +67901,15 @@ class MRApp extends MRElement {
       writable: false,
     })
 
-    this.SCREEN_WIDTH = window.innerWidth / 1000
-		this.SCREEN_HEIGHT = window.innerHeight / 1000
+    this.xrsupport = false
+    this.isMobile = window.mobileCheck(); //resolves true/false
 
+
+    navigator.xr?.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
+
+      this.xrsupport = supported
+
+    } )
     this.env = this
 
     this.focusEntity = null
@@ -68028,13 +67918,18 @@ class MRApp extends MRElement {
     this.systems = new Set()
     this.scene = new Scene()
 
-    this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer = new WebGLRenderer({ antialias: false, alpha: false })
+    this.renderer.setPixelRatio( this.isMobile ? 2 : window.devicePixelRatio );
     this.user = new PerspectiveCamera(
       70,
       window.innerWidth / window.innerHeight,
       0.01,
-      20
+      this.isMobile ? 10 : 20
     )
+
+    this.vFOV = MathUtils.degToRad( this.user.fov );
+    this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
+    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
 
     this.lighting = {
       enabled: true,
@@ -68048,14 +67943,16 @@ class MRApp extends MRElement {
 
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
-    this.ARButton = ARButton.createButton(this.renderer, {
-      requiredFeatures: ['hand-tracking'],
-    })
 
-    this.ARButton.addEventListener('click', () => {
-      console.log('clicked');
-      this.ARButton.blur()
-    })
+    if (this.xrsupport) {
+      this.ARButton = ARButton.createButton(this.renderer, {
+        requiredFeatures: ['hand-tracking'],
+      })
+  
+      this.ARButton.addEventListener('click', () => {
+        this.ARButton.blur()
+      })
+    }
   }
 
   connectedCallback() {
@@ -68077,7 +67974,6 @@ class MRApp extends MRElement {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
-        this.devSystem = new DeveloperSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
         this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
@@ -68133,7 +68029,10 @@ class MRApp extends MRElement {
     }
 
     this.appendChild(this.renderer.domElement)
-    document.body.appendChild(this.ARButton)
+
+    if (this.xrsupport) {
+      document.body.appendChild(this.ARButton)
+    }
 
     this.renderer.setAnimationLoop(this.render)
 
@@ -68186,10 +68085,12 @@ class MRApp extends MRElement {
   }
 
   onWindowResize() {
-    this.user.aspect = window.innerWidth / window.innerHeight
-    this.user.updateProjectionMatrix()
 
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.user.aspect = window.innerWidth / window.innerHeight
+    this.user.updateProjectionMatrix()
+    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+
   }
 
   render() {
@@ -68826,17 +68727,18 @@ function UIPlane(width, height, r, s) {
 
 
 class Panel extends MRUIEntity {
-  static get observedAttributes() {
-    return [
-      'width',
-      'height',
-      'corner-radius',
-      'smoothness',
-      'color',
-    ]
-  }
   radius = 0.02
   smoothness = 18
+  #color = 0xecf0f1
+
+  set color(value) {
+    this.#color = value
+    this.object3D.material.color.setStyle(this.#color)
+    
+  }
+  get color() {
+    return this.#color
+  }
 
   set height(value) {
     super.height = value
@@ -68855,10 +68757,36 @@ class Panel extends MRUIEntity {
     return super.width
   }
 
+  set absoluteHeight(value) {
+    super.absoluteHeight = value
+    this.updatePlane()
+    
+  }
+  get absoluteHeight() {
+    return super.absoluteHeight
+  }
+
+  get computedInternalHeight() {
+    return super.computedInternalHeight - this.radius
+  }
+
+  set absoluteWidth(value) {
+    super.absoluteWidth = value
+    this.updatePlane()
+  }
+  get absoluteWidth() {
+    return super.absoluteWidth
+  }
+
+  get computedInternalWidth() {
+    return super.computedInternalWidth - this.radius
+  }
+
   updatePlane() {
+    
     this.object3D.geometry = UIPlane(
-      this.width,
-      this.height,
+      this.absoluteWidth,
+      this.absoluteHeight,
       this.radius,
       this.smoothness
     )
@@ -68868,13 +68796,13 @@ class Panel extends MRUIEntity {
     super()
 
     this.geometry = UIPlane(
-      this.width,
-      this.height,
+      this.absoluteWidth,
+      this.absoluteHeight,
       this.radius,
       this.smoothness
     )
     this.material = new MeshStandardMaterial({
-      color: 0xecf0f1,
+      color: this.color,
       roughness: 0.7,
       metalness: 0.0,
       side: 2,
@@ -68884,38 +68812,36 @@ class Panel extends MRUIEntity {
     this.object3D.receiveShadow = true
     this.object3D.renderOrder = 3
 
+
+
   }
 
-  // TODO: Switch to overriding MutationCallback instead
-  attributeChangedCallback(name, oldValue, newValue) {
-    switch (name) {
-      case 'width':
-        this.width = parseFloat(newValue)
-        break
-      case 'height':
-        this.height = parseFloat(newValue)
-        break
-      case 'corner-radius':
-        this.radius = parseFloat(newValue)
-        this.padding.all = this.radius
-        break
-      case 'smoothness':
-        this.smoothness = parseFloat(newValue)
-        break
-      case 'color':
-        this.object3D.material.color.setStyle(newValue)
-        break
-      default:
-        break
+  mutated(mutation) {
+    if(mutation.type != 'attributes') {
+      switch (mutation.attributeName) {
+        case 'width':
+          this.width = parseFloat(this.getAttribute('width'))
+          break
+        case 'height':
+          this.height = parseFloat(this.getAttribute('height'))
+          break
+        case 'corner-radius':
+          this.radius = parseFloat(this.getAttribute('corner-radius'))
+          console.log(this.radius);
+          this.padding.all = this.radius
+          break
+        case 'smoothness':
+          this.smoothness = parseFloat(this.getAttribute('smoothness'))
+          break
+        case 'color':
+          this.object3D.material.color.setStyle(this.getAttribute('color'))
+          break
+        default:
+          break
     }
 
-    this.object3D.geometry = UIPlane(
-      this.width,
-      this.height,
-      this.radius,
-      this.smoothness
-    )
   }
+}
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel)
@@ -69181,30 +69107,6 @@ class TextField extends MRText {
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
-;// CONCATENATED MODULE: ./src/entities/layout/Container.js
-
-
-class Container extends Entity {
-  constructor() {
-    super()
-    this.width = 1
-    this.height = 1
-
-  }
-
-  connected(){
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      })
-      setTimeout(() => {
-        this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-      }, 0);
-  }
-}
-
-customElements.get('mr-container') ||
-  customElements.define('mr-container', Container)
-
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/libs/ammo.wasm.js
 
 // This is ammo.js, a port of Bullet Physics to JavaScript. zlib licensed.
@@ -70028,6 +69930,118 @@ if (typeof exports === 'object' && typeof module === 'object')
     else if (typeof exports === 'object')
       exports["Ammo"] = Ammo;
     
+
+;// CONCATENATED MODULE: ./src/entities/developer/tools/Tool.js
+
+
+class Tool {
+    constructor(entity){
+
+        this.entity = entity
+
+        this.toolName = this.constructor.name.toLowerCase().split('tool')[0]
+        let geometry = new THREE.SphereGeometry(0.01, 32, 16)
+        let material = new THREE.MeshStandardMaterial({
+            roughness: 0.7,
+            metalness: 0.0,
+            side: 2,
+        })
+
+        material.color.setStyle('red')
+
+        this.object3D = new THREE.Mesh(geometry, material)
+        this.object3D.receiveShadow = true
+        this.object3D.renderOrder = 3
+    }
+
+    initBody(world) {
+        let worldPosition = new THREE.Vector3()
+        this.object3D.getWorldPosition(worldPosition)
+        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...worldPosition)
+        const colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+    
+        this.body = world.createRigidBody(rigidBodyDesc)
+        this.collider = world.createCollider(
+        colliderDesc,
+        this.body
+        )
+    
+        COLLIDER_TOOL_MAP[this.collider.handle] = this
+    
+        this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
+        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+        this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    traverse(callBack) {
+        return
+    }
+
+    onGrab = (position) => {
+        console.log(`you grabbed a ${this.toolName} tool! for ${this.entity}`);
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/tools/PositionTool.js
+
+
+
+class PositionTool extends Tool {
+    constructor(entity){
+        super(entity)
+        this.localPosition = new THREE.Vector3()
+        this.worldPosition = new THREE.Vector3()
+    }
+
+    onGrab = (position) => {
+        console.log('position tool');
+        this.worldPosition.set(position.x, position.y, position.z)
+        this.localPosition.copy(this.entity.object3D.parent.worldToLocal(this.worldPosition))
+        roundVectorTo(this.localPosition, 100)
+       this.entity.setAttribute('position', `${this.localPosition.x} ${this.localPosition.y} ${this.localPosition.z}`)
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/developer/DevVolume.js
+
+
+
+// THERE WILL BE BUGS daniel plainview 
+
+class DevVolume extends Entity {
+  constructor() {
+    super()
+    this.registry = new Set()
+    document.addEventListener('engine-started', (event) => {
+      this.traverse((child) => {
+        if (child == this) { return }
+        this.addTools(child)
+      })
+
+      this.addEventListener('new-entity', (event) => {
+        event.target.traverse((child) => {
+          this.addTools(child)
+        })
+      })
+    })
+  }
+
+  add(entity) {
+    this.object3D.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.object3D.remove(entity.object3D)
+  }
+
+  addTools(child) {
+    let posTool = new PositionTool(child)
+    child.object3D.add(posTool.object3D)
+    posTool.initBody(this.env.physicsWorld)
+
+    this.registry.add(posTool)
+  }
+}
+
+customElements.get('mr-dev-volume') || customElements.define('mr-dev-volume', DevVolume)
 
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS

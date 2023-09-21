@@ -20,9 +20,10 @@ export class Column extends Entity {
 
   getRowCount(){
     const children = Array.from(this.children)
+    this.rows = 0
     for (const child of children) {
         if (!child instanceof Entity) { continue }
-        this.rows += child.computedHeight
+        this.rows +=child.height + child.margin.vertical
       }
   }
 }
