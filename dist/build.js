@@ -67878,7 +67878,6 @@ class TextInputSystem extends System {
 
 
 
-
 // built in Systems
 
 
@@ -67913,7 +67912,6 @@ class MRApp extends MRElement {
     this.scene = new Scene()
 
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
-    //this.renderer.setPixelRatio( this.isMobile ? 2 : window.devicePixelRatio );
     this.user = new PerspectiveCamera(
       70,
       window.innerWidth / window.innerHeight,

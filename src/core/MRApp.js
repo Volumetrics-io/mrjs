@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { RGBELoader } from '../utils/RGBELoader.js'
 
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
