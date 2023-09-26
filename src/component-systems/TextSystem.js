@@ -38,7 +38,7 @@ export class TextSystem extends System {
     }
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     for( const entity of this.registry) {
       let text = entity.textContent.trim()
       if (entity.textObj.text != text) {

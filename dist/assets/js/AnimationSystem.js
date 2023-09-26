@@ -7,7 +7,7 @@ export class AnimationSystem extends System {
         console.log(this.componentName);
     }
 
-    update(deltaTime) {
+    update(deltaTime, frame) {
         for(const entity of this.registry){
             switch (entity.animation.type) {
                 case 'rotate':

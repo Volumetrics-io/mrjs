@@ -114,10 +114,10 @@ export default class Panel extends MRUIEntity {
           break
         default:
           break
-    }
+      }
 
+    }
   }
-}
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel)

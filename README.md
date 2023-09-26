@@ -143,7 +143,7 @@ class OrbitSystem extends System{
     }
 
     // called every frame
-    update(deltaTime) {
+    update(deltaTime, frame) {
         for(const entity in this.registry) {
             // Update entitiy position
         }

@@ -17,7 +17,7 @@ export class DeveloperSystem extends System {
     
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     for (const env of this.registry) {
       for ( const tool of env.registry){
         this.updateBody(tool)

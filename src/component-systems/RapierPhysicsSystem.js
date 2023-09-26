@@ -40,7 +40,7 @@ export class RapierPhysicsSystem extends System {
     }
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     this.app.physicsWorld.step(this.eventQueue);
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
@@ -194,17 +194,8 @@ export class RapierPhysicsSystem extends System {
   }
 
   initPhysicsBody(entity) {
-    entity.physics = {}
-
-    if (entity instanceof MRUIEntity) {
-      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
-    } else {
-      return
-    }
-
-    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
-    entity.object3D.userData.size.multiply(this.tempWorldScale)
+    if(entity.physics.type == 'none') { return }
+    entity.updatePhysicsData()
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -215,9 +206,7 @@ export class RapierPhysicsSystem extends System {
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
     // Create a cuboid collider attached to the dynamic rigidBody.
-    this.tempHalfExtents.copy(entity.object3D.userData.size)
-    this.tempHalfExtents.divideScalar(2)
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(...this.tempHalfExtents)
+    const colliderDesc = this.initColliderDesc(entity.physics)
     entity.physics.collider = this.app.physicsWorld.createCollider(
       colliderDesc,
       entity.physics.body
@@ -232,22 +221,37 @@ export class RapierPhysicsSystem extends System {
   }
 
   updateBody(entity) {
+    if(entity.physics.type == 'none') { return }
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true)
 
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new THREE.Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
-    
-    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
-    entity.object3D.userData.size.multiply(this.tempWorldScale)
+    entity.updatePhysicsData()
+    this.updateCollider(entity)
 
-    this.tempHalfExtents.copy(entity.object3D.userData.size)
-    this.tempHalfExtents.divideScalar(2)
+  }
 
-    entity.physics.collider.setHalfExtents(this.tempHalfExtents)
+  initColliderDesc(physicsData) {
+    switch (physicsData.type) {
+      case 'box':
+      case 'ui':
+        return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents)    
+      default:
+        break;
+    }
+  }
+
+  updateCollider(entity) {
+    switch (entity.physics.type) {
+      case 'box':
+      case 'ui':
+        entity.physics.collider.setHalfExtents(entity.physics.halfExtents)
+        break
+      default:
+        break;
+    }
   }
 
   updateDebugRenderer() {

@@ -148,6 +148,22 @@ export class MRHand {
   update() {
     this.updatePhysicsBodies()
     this.updateCursor()
+    this.pinchMoved()
+  }
+
+  pinchMoved() {
+    if(!this.pinch){ return }
+    const position = this.getCursorPosition()
+    document.dispatchEvent(
+      new CustomEvent('pinchmoved', {
+        bubbles: true,
+        detail: {
+          handedness: this.handedness,
+          position,
+        },
+      })
+    )
+
   }
 
   updatePhysicsBodies() {

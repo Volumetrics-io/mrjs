@@ -51856,6 +51856,10 @@ class BodyOffset {
 
 class Entity extends MRElement {
 
+  physics = {
+    type: 'none'
+  }
+
   #absoluteWidth = 1
   set absoluteWidth(value) {
     this.#absoluteWidth = value
@@ -51949,6 +51953,10 @@ class Entity extends MRElement {
     this.touch = false
     this.grabbed = false
     this.focus = false
+
+  }
+
+  updatePhysicsData() {
 
   }
 
@@ -52185,7 +52193,7 @@ class System {
   }
 
   // Called per frame
-  update(deltaTime) {
+  update(deltaTime, frame) {
   }
 
   // called when a new entity is added to the scene
@@ -60077,7 +60085,7 @@ class TextSystem extends System {
     }
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     for( const entity of this.registry) {
       let text = entity.textContent.trim()
       if (entity.textObj.text != text) {
@@ -66857,6 +66865,21 @@ class XRHandModelFactory {
 class MRUIEntity extends Entity {
     constructor(){
         super()
+        this.worldScale = new THREE.Vector3()
+        this.halfExtents = new THREE.Vector3()
+        this.physics.type = 'ui'
+    }
+
+    updatePhysicsData() {
+        this.physics.halfExtents = new THREE.Vector3()
+        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.absoluteWidth, this.absoluteHeight, 0.001))
+        
+        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
+        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
+        this.object3D.userData.size.multiply(this.worldScale)
+
+        this.physics.halfExtents.copy(this.object3D.userData.size)
+        this.physics.halfExtents.divideScalar(2)
     }
 }
 ;// CONCATENATED MODULE: ./src/component-systems/RapierPhysicsSystem.js
@@ -66902,7 +66925,7 @@ class RapierPhysicsSystem extends System {
     }
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     this.app.physicsWorld.step(this.eventQueue);
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
@@ -67056,17 +67079,8 @@ class RapierPhysicsSystem extends System {
   }
 
   initPhysicsBody(entity) {
-    entity.physics = {}
-
-    if (entity instanceof MRUIEntity) {
-      entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
-    } else {
-      return
-    }
-
-    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
-    entity.object3D.userData.size.multiply(this.tempWorldScale)
+    if(entity.physics.type == 'none') { return }
+    entity.updatePhysicsData()
 
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
@@ -67077,9 +67091,7 @@ class RapierPhysicsSystem extends System {
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
     // Create a cuboid collider attached to the dynamic rigidBody.
-    this.tempHalfExtents.copy(entity.object3D.userData.size)
-    this.tempHalfExtents.divideScalar(2)
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(...this.tempHalfExtents)
+    const colliderDesc = this.initColliderDesc(entity.physics)
     entity.physics.collider = this.app.physicsWorld.createCollider(
       colliderDesc,
       entity.physics.body
@@ -67094,22 +67106,37 @@ class RapierPhysicsSystem extends System {
   }
 
   updateBody(entity) {
+    if(entity.physics.type == 'none') { return }
     entity.object3D.getWorldPosition(this.tempWorldPosition)
     entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true)
 
     entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
     entity.physics.body.setRotation(this.tempWorldQuaternion, true)
 
-    entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position,new three_module_Vector3(entity.absoluteWidth, entity.absoluteHeight, 0.001))
-    
-    this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld)
-    entity.object3D.userData.bbox.getSize(entity.object3D.userData.size)
-    entity.object3D.userData.size.multiply(this.tempWorldScale)
+    entity.updatePhysicsData()
+    this.updateCollider(entity)
 
-    this.tempHalfExtents.copy(entity.object3D.userData.size)
-    this.tempHalfExtents.divideScalar(2)
+  }
 
-    entity.physics.collider.setHalfExtents(this.tempHalfExtents)
+  initColliderDesc(physicsData) {
+    switch (physicsData.type) {
+      case 'box':
+      case 'ui':
+        return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents)    
+      default:
+        break;
+    }
+  }
+
+  updateCollider(entity) {
+    switch (entity.physics.type) {
+      case 'box':
+      case 'ui':
+        entity.physics.collider.setHalfExtents(entity.physics.halfExtents)
+        break
+      default:
+        break;
+    }
   }
 
   updateDebugRenderer() {
@@ -67277,6 +67304,22 @@ class MRHand {
   update() {
     this.updatePhysicsBodies()
     this.updateCursor()
+    this.pinchMoved()
+  }
+
+  pinchMoved() {
+    if(!this.pinch){ return }
+    const position = this.getCursorPosition()
+    document.dispatchEvent(
+      new CustomEvent('pinchmoved', {
+        bubbles: true,
+        detail: {
+          handedness: this.handedness,
+          position,
+        },
+      })
+    )
+
   }
 
   updatePhysicsBodies() {
@@ -67391,7 +67434,7 @@ class ControlSystem extends System {
     this.app.renderer.domElement.addEventListener('click', this.onClick)
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     this.leftHand.setMesh()
     this.rightHand.setMesh()
 
@@ -67414,6 +67457,198 @@ class ControlSystem extends System {
       }
   }
 }
+
+;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
+
+
+function UIPlane(width, height, r, s) {
+  // width, height, radius corner, smoothness
+
+  let w = width == 'auto' ? 1 : width
+  let h = height == 'auto' ? 1 : height
+
+  if(!w || !h || !r || !s) { return }
+
+  // helper const's
+  const wi = w / 2 - r // inner width
+  const hi = h / 2 - r // inner height
+  const w2 = w / 2 // half width
+  const h2 = h / 2 // half height
+  const ul = r / w // u left
+  const ur = (w - r) / w // u right
+  const vl = r / h // v low
+  const vh = (h - r) / h // v high
+
+  const positions = [wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0]
+
+  const uvs = [ur, vh, ul, vh, ul, vl, ur, vl]
+
+  const n = [
+    3 * (s + 1) + 3,
+    3 * (s + 1) + 4,
+    s + 4,
+    s + 5,
+    2 * (s + 1) + 4,
+    2,
+    1,
+    2 * (s + 1) + 3,
+    3,
+    4 * (s + 1) + 3,
+    4,
+    0,
+  ]
+
+  const indices = [
+    n[0],
+    n[1],
+    n[2],
+    n[0],
+    n[2],
+    n[3],
+    n[4],
+    n[5],
+    n[6],
+    n[4],
+    n[6],
+    n[7],
+    n[8],
+    n[9],
+    n[10],
+    n[8],
+    n[10],
+    n[11],
+  ]
+
+  let phi
+  let cos
+  let sin
+  let xc
+  let yc
+  let uc
+  let vc
+  let idx
+
+  for (let i = 0; i < 4; i++) {
+    xc = i < 1 || i > 2 ? wi : -wi
+    yc = i < 2 ? hi : -hi
+
+    uc = i < 1 || i > 2 ? ur : ul
+    vc = i < 2 ? vh : vl
+
+    for (let j = 0; j <= s; j++) {
+      phi = (Math.PI / 2) * (i + j / s)
+      cos = Math.cos(phi)
+      sin = Math.sin(phi)
+
+      positions.push(xc + r * cos, yc + r * sin, 0)
+
+      uvs.push(uc + ul * cos, vc + vl * sin)
+
+      if (j < s) {
+        idx = (s + 1) * i + j + 4
+        indices.push(i, idx, idx + 1)
+      }
+    }
+  }
+
+  const geometry = new three_module_BufferGeometry()
+  geometry.setIndex(new three_module_BufferAttribute(new Uint32Array(indices), 1))
+  geometry.setAttribute(
+    'position',
+    new three_module_BufferAttribute(new Float32Array(positions), 3)
+  )
+  geometry.setAttribute(
+    'uv',
+    new three_module_BufferAttribute(new Float32Array(uvs), 2)
+  )
+  geometry.computeBoundingBox()
+  geometry.computeVertexNormals()
+
+  return geometry
+}
+
+;// CONCATENATED MODULE: ./src/entities/Surface.js
+
+
+
+
+class Surface extends Entity {
+  constructor() {
+    super()
+
+    this.rotationPlane = new Group()
+    this.translation = new Group()
+    this.group = new Group()
+    this.orientation = 'any'
+
+    this.object3D.add(this.rotationPlane)
+    this.rotationPlane.add(this.translation)
+
+    this.rotationPlane.receiveShadow = true
+    this.rotationPlane.renderOrder = 3
+
+    this.translation.receiveShadow = true
+    this.translation.renderOrder = 3
+
+    this.aspectRatio = 1.333333
+    this.placed = false
+    this.width = this.aspectRatio / 3
+    this.height = 1 / 3
+
+    this.material = new MeshStandardMaterial({
+      color: 0x3498db,
+      roughness: 0.0,
+      metalness: 0.7,
+      transparent: true,
+      opacity: 0.7,
+      side: 2,
+    })
+
+    this.geometry = UIPlane(this.width, this.height, 0.01, 18)
+
+    this.viz = new three_module_Mesh(this.geometry, this.material)
+
+    this.translation.add(this.group)
+    if (this.viz.parent == null) {
+      this.translation.add(this.viz)
+    }
+    this.group.visible = false
+    this.viz.visible = false
+
+    this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
+  }
+
+  add(entity) {
+    this.group.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.group.remove(entity.object3D)
+  }
+
+  mutated(mutation) {
+    if(mutation.type != 'attributes') {
+      switch (mutation.attributeName) {
+        case 'orientation':
+          this.getAttribute('orientation')
+        default:
+          break
+      }
+
+    }
+  }
+
+  place() {
+    this.viz.removeFromParent()
+    this.group.visible = true
+    this.placed = true
+
+    this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
+
+  }
+}
+
+customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 
 ;// CONCATENATED MODULE: ./src/entities/layout/Column.js
 
@@ -67467,6 +67702,12 @@ class Container extends Entity {
     window.addEventListener('resize', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
+
+    document.addEventListener('surface-placed', (event) => {
+      if (event.target != this.parentElement) { return }
+      console.log('placed');
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
   }
 }
 
@@ -67513,6 +67754,7 @@ customElements.get('mr-row') || customElements.define('mr-row', Row)
 
 
 
+
 class LayoutSystem extends System {
     constructor(){
         super()
@@ -67528,8 +67770,16 @@ class LayoutSystem extends System {
     }
 
     adjustContainerSize = (container) => {
-        container.absoluteHeight = container.height * this.app.viewPortHieght
-        container.absoluteWidth = container.width * this.app.viewPortWidth
+
+        if(container.parentElement instanceof Surface) {
+          container.absoluteHeight = container.height * container.parentElement.height
+          container.absoluteWidth = container.width * container.parentElement.width
+          console.log(container.parentElement.height);
+          console.log(container.parentElement.width);
+        } else {
+          container.absoluteHeight = container.height * this.app.viewPortHieght
+          container.absoluteWidth = container.width * this.app.viewPortWidth
+        }
         
 
     }
@@ -67681,7 +67931,7 @@ class TextInputSystem extends System {
     }
   }
 
-  update(deltaTime){
+  update(deltaTime, frame){
     // for (const entity of this.registry) {
     //   if (!entity.edited || !this.app.focusEntity == entity) {
     //     this.loadSrcText(entity)
@@ -67870,6 +68120,114 @@ class TextInputSystem extends System {
   }
 
 }
+;// CONCATENATED MODULE: ./src/component-systems/SurfaceSystem.js
+
+
+
+class SurfaceSystem extends System {
+  constructor() {
+    super()
+    this.referenceSpace
+    this.sourceRequest = false
+    this.source
+    this.currentSurface = null
+    this.tempMatrix = new three_module_Matrix4()
+
+    this.startPinchPos = new three_module_Vector3()
+    this.scale = 1
+    
+
+    const entities = this.app.querySelectorAll('mr-surface')
+
+    for ( const surface of entities) {
+        this.registry.add(surface)
+    }
+
+    document.addEventListener('pinchstart', (event) => {
+        this.startPinchPos.copy(event.detail.position)
+    })
+
+    document.addEventListener('pinchmoved', (event) => {
+        if (this.currentSurface) {
+            this.scale = 1 + (this.startPinchPos.distanceTo(event.detail.position) * 5)
+            this.currentSurface.viz.scale.setScalar(this.scale)
+        }
+    })
+
+    document.addEventListener('pinchend', (event) => {
+        if (this.currentSurface == null) { return }
+        this.currentSurface.width *= this.scale
+        this.currentSurface.height *= this.scale
+        this.currentSurface.place()
+        console.log(this.scale);
+        
+        this.currentSurface = null
+    })
+
+  }
+
+  update(deltaTime, frame) {
+    for(const surface of this.registry) {
+        if(this.currentSurface == null && surface.placed == false) {
+            this.currentSurface = surface
+            this.currentSurface.viz.visible = true
+        }
+    }
+
+    if(this.currentSurface == null) { return }
+    if ( this.sourceRequest == false ) {
+        this.referenceSpace = this.app.renderer.xr.getReferenceSpace();
+        console.log(this.referenceSpace);
+
+        this.session = this.app.renderer.xr.getSession();
+
+        this.session.requestReferenceSpace( 'viewer' ).then( ( referenceSpace ) => {
+
+            this.session.requestHitTestSource( { space: referenceSpace } ).then( ( source ) => {
+
+                this.source = source;
+
+            } );
+
+        } );
+
+        this.session.addEventListener( 'end', function () {
+            console.log('ended');
+
+            this.sourceRequest = false;
+            this.source = null;
+
+        } );
+
+        this.sourceRequest = true;
+
+        
+    }
+
+    if ( this.source ) {
+
+        const hitTestResults = frame.getHitTestResults( this.source );
+
+        if ( hitTestResults.length ) {
+
+            const hit = hitTestResults[ 0 ];
+            this.placeSurface(hit)
+
+        }
+
+    }
+  }
+
+  placeSurface(hit) {
+    let pose = hit.getPose( this.referenceSpace )
+    
+    this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
+    this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
+
+  }
+
+}
+
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -67879,6 +68237,7 @@ class TextInputSystem extends System {
 
 
 // built in Systems
+
 
 
 
@@ -67926,7 +68285,8 @@ class MRApp extends MRElement {
     this.lighting = {
       enabled: true,
       color: 0xffffff,
-      intensity: 5,
+      intensity: 3,
+      radius: 15,
       shadows: true
     }
 
@@ -68020,9 +68380,11 @@ class MRApp extends MRElement {
       if (this.xrsupport) {
         this.ARButton = ARButton.createButton(this.renderer, {
           requiredFeatures: ['hand-tracking'],
+          optionalFeatures: ['hit-test']
         })
     
         this.ARButton.addEventListener('click', () => {
+          this.surfaceSystem = new SurfaceSystem()
           this.ARButton.blur()
         })
         document.body.appendChild(this.ARButton)
@@ -68052,6 +68414,7 @@ class MRApp extends MRElement {
     this.defaultLight.intensity = data.intensity
     if(!this.isMobile) {
       this.defaultLight.castShadow = data.shadows
+      this.defaultLight.shadow.radius = data.radius
       this.defaultLight.shadow.camera.top = 2
       this.defaultLight.shadow.camera.bottom = -2
       this.defaultLight.shadow.camera.right = 2
@@ -68092,12 +68455,12 @@ class MRApp extends MRElement {
 
   }
 
-  render() {
+  render(timeStamp, frame) {
     const deltaTime = this.clock.getDelta()
 
     if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
-      system.update(deltaTime)
+      system.update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
 
@@ -68611,115 +68974,6 @@ class Light_Light extends Entity {
 }
 
 customElements.get('mr-light') || customElements.define('mr-light', Light_Light)
-;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
-
-
-function UIPlane(width, height, r, s) {
-  // width, height, radius corner, smoothness
-
-  let w = width == 'auto' ? 1 : width
-  let h = height == 'auto' ? 1 : height
-
-  if(!w || !h || !r || !s) { return }
-
-  // helper const's
-  const wi = w / 2 - r // inner width
-  const hi = h / 2 - r // inner height
-  const w2 = w / 2 // half width
-  const h2 = h / 2 // half height
-  const ul = r / w // u left
-  const ur = (w - r) / w // u right
-  const vl = r / h // v low
-  const vh = (h - r) / h // v high
-
-  const positions = [wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0]
-
-  const uvs = [ur, vh, ul, vh, ul, vl, ur, vl]
-
-  const n = [
-    3 * (s + 1) + 3,
-    3 * (s + 1) + 4,
-    s + 4,
-    s + 5,
-    2 * (s + 1) + 4,
-    2,
-    1,
-    2 * (s + 1) + 3,
-    3,
-    4 * (s + 1) + 3,
-    4,
-    0,
-  ]
-
-  const indices = [
-    n[0],
-    n[1],
-    n[2],
-    n[0],
-    n[2],
-    n[3],
-    n[4],
-    n[5],
-    n[6],
-    n[4],
-    n[6],
-    n[7],
-    n[8],
-    n[9],
-    n[10],
-    n[8],
-    n[10],
-    n[11],
-  ]
-
-  let phi
-  let cos
-  let sin
-  let xc
-  let yc
-  let uc
-  let vc
-  let idx
-
-  for (let i = 0; i < 4; i++) {
-    xc = i < 1 || i > 2 ? wi : -wi
-    yc = i < 2 ? hi : -hi
-
-    uc = i < 1 || i > 2 ? ur : ul
-    vc = i < 2 ? vh : vl
-
-    for (let j = 0; j <= s; j++) {
-      phi = (Math.PI / 2) * (i + j / s)
-      cos = Math.cos(phi)
-      sin = Math.sin(phi)
-
-      positions.push(xc + r * cos, yc + r * sin, 0)
-
-      uvs.push(uc + ul * cos, vc + vl * sin)
-
-      if (j < s) {
-        idx = (s + 1) * i + j + 4
-        indices.push(i, idx, idx + 1)
-      }
-    }
-  }
-
-  const geometry = new three_module_BufferGeometry()
-  geometry.setIndex(new three_module_BufferAttribute(new Uint32Array(indices), 1))
-  geometry.setAttribute(
-    'position',
-    new three_module_BufferAttribute(new Float32Array(positions), 3)
-  )
-  geometry.setAttribute(
-    'uv',
-    new three_module_BufferAttribute(new Float32Array(uvs), 2)
-  )
-  geometry.computeBoundingBox()
-  geometry.computeVertexNormals()
-
-  return geometry
-}
-
 ;// CONCATENATED MODULE: ./src/UI/Panel.js
 
 
@@ -68837,153 +69091,13 @@ class Panel extends MRUIEntity {
           break
         default:
           break
-    }
+      }
 
+    }
   }
-}
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel)
-
-;// CONCATENATED MODULE: ./src/entities/Surface.js
-
-
-
-
-const QUAD_PINCH_THRESHOLD = 0.03
-
-class Surface extends Entity {
-  constructor(aspectRatio = 1.77777778) {
-    super()
-
-    this.rotationPlane = new Group()
-    this.translation = new Group()
-    this.group = new Group()
-    this.orientation = 'horizontal'
-
-    this.object3D.add(this.rotationPlane)
-    this.rotationPlane.add(this.translation)
-
-    this.rotationPlane.receiveShadow = true
-    this.rotationPlane.renderOrder = 3
-
-    this.translation.receiveShadow = true
-    this.translation.renderOrder = 3
-
-    this.aspectRatio = aspectRatio
-    this.placed = false
-    this.width = this.aspectRatio
-    this.height = 1
-    this.worldPosition = new three_module_Vector3()
-    this.lookPosition = new three_module_Vector3()
-
-    this.material = new MeshStandardMaterial({
-      color: 0x3498db,
-      roughness: 0.0,
-      metalness: 0.7,
-      transparent: true,
-      opacity: 0.7,
-      side: 2,
-    })
-
-    this.geometry = UIPlane(this.aspectRatio, 1, 0.02, 18)
-
-    this.mesh = new three_module_Mesh(this.geometry, this.material)
-
-    this.onDoublePinch = this.onDoublePinch.bind(this)
-    this.onDoublePinchEnded = this.onDoublePinchEnded.bind(this)
-
-    document.addEventListener('doublepinch', this.onDoublePinch)
-    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
-
-    this.translation.add(this.group)
-    this.group.visible = false
-
-    // setTimeout(() => {
-    //   this.scale = 0.8
-    //   this.object3D.scale.setScalar(this.scale)
-    //   this.translation.position.setY(0.5)
-    //   this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
-    //   this.traverse((entity) => {
-    //     entity.physics.data.size = entity.physics.data.size.map(
-    //       (x) => x * this.scale
-    //     )
-    //     entity.physics.data.update = true
-    //   })
-    // }, 3000);
-  }
-
-  add(entity) {
-    this.group.add(entity.object3D)
-  }
-
-  remove(entity) {
-    this.group.remove(entity.object3D)
-  }
-
-  onDoublePinch(event) {
-    this.user.getWorldPosition(this.worldPosition)
-    this.lookPosition.copy(this.worldPosition)
-
-    this.lookPosition.setY(event.detail.center.y)
-
-    if (this.mesh.parent == null) {
-      this.translation.add(this.mesh)
-    }
-
-    this.object3D.position.setX(event.detail.center.x)
-    this.object3D.position.setY(event.detail.center.y)
-    this.object3D.position.setZ(event.detail.center.z)
-
-    this.scale = event.detail.distance
-    this.object3D.scale.setScalar(this.scale)
-
-    this.object3D.lookAt(this.lookPosition)
-
-    this.setRotation(
-      Math.abs(event.detail.center.y - this.worldPosition.y),
-      0.3
-    )
-  }
-
-  setRotation(delta, threshold) {
-    if (delta < threshold) {
-      this.orientation = 'vertical'
-      this.translation.position.setY(0)
-      this.rotationPlane.rotation.x = 0
-    } else {
-      this.orientation = 'horizontal'
-      this.translation.position.setY(0.5)
-      this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
-    }
-  }
-
-  editPosition() {
-    document.addEventListener('doublepinch', this.onDoublePinch)
-    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
-  }
-
-  onDoublePinchEnded(event) {
-    this.dispatchEvent(
-      new CustomEvent(`surfaceplaced`, {
-        bubbles: true,
-        detail: { orientation: this.orientation },
-      })
-    )
-    this.mesh.removeFromParent()
-    this.group.visible = true
-    this.traverse((entity) => {
-      entity.physics.data.size = entity.physics.data.size.map(
-        (x) => x * this.scale
-      )
-      entity.physics.data.update = true
-    })
-    document.removeEventListener('doublepinch', this.onDoublePinch)
-    document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
-  }
-}
-
-customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 
 ;// CONCATENATED MODULE: ./src/entities/Volume.js
 

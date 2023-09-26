@@ -33,7 +33,7 @@ export default class System {
   }
 
   // Called per frame
-  update(deltaTime) {
+  update(deltaTime, frame) {
   }
 
   // called when a new entity is added to the scene

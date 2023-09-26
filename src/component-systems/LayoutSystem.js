@@ -1,5 +1,6 @@
 import System from "../core/System";
 import { Entity } from "../core/entity";
+import { Surface } from "../entities/Surface";
 import { Column } from "../entities/layout/Column";
 import { Container } from "../entities/layout/Container";
 import { Row } from "../entities/layout/Row";
@@ -19,8 +20,16 @@ export class LayoutSystem extends System {
     }
 
     adjustContainerSize = (container) => {
-        container.absoluteHeight = container.height * this.app.viewPortHieght
-        container.absoluteWidth = container.width * this.app.viewPortWidth
+
+        if(container.parentElement instanceof Surface) {
+          container.absoluteHeight = container.height * container.parentElement.height
+          container.absoluteWidth = container.width * container.parentElement.width
+          console.log(container.parentElement.height);
+          console.log(container.parentElement.width);
+        } else {
+          container.absoluteHeight = container.height * this.app.viewPortHieght
+          container.absoluteWidth = container.width * this.app.viewPortWidth
+        }
         
 
     }
