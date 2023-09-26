@@ -16,6 +16,7 @@ import {
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { parseAttributeString } from '../utils/parser.js'
+import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 ('use strict')
 
 window.mobileCheck = function() {
@@ -58,7 +59,8 @@ export class MRApp extends MRElement {
     this.lighting = {
       enabled: true,
       color: 0xffffff,
-      intensity: 5,
+      intensity: 3,
+      radius: 15,
       shadows: true
     }
 
@@ -152,9 +154,11 @@ export class MRApp extends MRElement {
       if (this.xrsupport) {
         this.ARButton = ARButton.createButton(this.renderer, {
           requiredFeatures: ['hand-tracking'],
+          optionalFeatures: ['hit-test']
         })
     
         this.ARButton.addEventListener('click', () => {
+          this.surfaceSystem = new SurfaceSystem()
           this.ARButton.blur()
         })
         document.body.appendChild(this.ARButton)
@@ -184,6 +188,7 @@ export class MRApp extends MRElement {
     this.defaultLight.intensity = data.intensity
     if(!this.isMobile) {
       this.defaultLight.castShadow = data.shadows
+      this.defaultLight.shadow.radius = data.radius
       this.defaultLight.shadow.camera.top = 2
       this.defaultLight.shadow.camera.bottom = -2
       this.defaultLight.shadow.camera.right = 2
@@ -224,12 +229,12 @@ export class MRApp extends MRElement {
 
   }
 
-  render() {
+  render(timeStamp, frame) {
     const deltaTime = this.clock.getDelta()
 
     if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
-      system.update(deltaTime)
+      system.update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
 

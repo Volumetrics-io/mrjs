@@ -16,7 +16,7 @@ export class ControlSystem extends System {
     this.app.renderer.domElement.addEventListener('click', this.onClick)
   }
 
-  update(deltaTime) {
+  update(deltaTime, frame) {
     this.leftHand.setMesh()
     this.rightHand.setMesh()
 

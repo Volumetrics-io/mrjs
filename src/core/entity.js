@@ -5,6 +5,10 @@ import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
 
+  physics = {
+    type: 'none'
+  }
+
   #absoluteWidth = 1
   set absoluteWidth(value) {
     this.#absoluteWidth = value
@@ -98,6 +102,10 @@ export class Entity extends MRElement {
     this.touch = false
     this.grabbed = false
     this.focus = false
+
+  }
+
+  updatePhysicsData() {
 
   }
 

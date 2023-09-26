@@ -20,7 +20,7 @@ export class TextInputSystem extends System {
     }
   }
 
-  update(deltaTime){
+  update(deltaTime, frame){
     // for (const entity of this.registry) {
     //   if (!entity.edited || !this.app.focusEntity == entity) {
     //     this.loadSrcText(entity)

@@ -2,16 +2,14 @@ import * as THREE from 'three'
 import { Entity } from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js'
 
-const QUAD_PINCH_THRESHOLD = 0.03
-
 export class Surface extends Entity {
-  constructor(aspectRatio = 1.77777778) {
+  constructor() {
     super()
 
     this.rotationPlane = new THREE.Group()
     this.translation = new THREE.Group()
     this.group = new THREE.Group()
-    this.orientation = 'horizontal'
+    this.orientation = 'any'
 
     this.object3D.add(this.rotationPlane)
     this.rotationPlane.add(this.translation)
@@ -22,12 +20,10 @@ export class Surface extends Entity {
     this.translation.receiveShadow = true
     this.translation.renderOrder = 3
 
-    this.aspectRatio = aspectRatio
+    this.aspectRatio = 1.333333
     this.placed = false
-    this.width = this.aspectRatio
-    this.height = 1
-    this.worldPosition = new THREE.Vector3()
-    this.lookPosition = new THREE.Vector3()
+    this.width = this.aspectRatio / 3
+    this.height = 1 / 3
 
     this.material = new THREE.MeshStandardMaterial({
       color: 0x3498db,
@@ -38,31 +34,18 @@ export class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.aspectRatio, 1, 0.02, 18)
+    this.geometry = UIPlane(this.width, this.height, 0.01, 18)
 
-    this.mesh = new THREE.Mesh(this.geometry, this.material)
-
-    this.onDoublePinch = this.onDoublePinch.bind(this)
-    this.onDoublePinchEnded = this.onDoublePinchEnded.bind(this)
-
-    document.addEventListener('doublepinch', this.onDoublePinch)
-    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
+    this.viz = new THREE.Mesh(this.geometry, this.material)
 
     this.translation.add(this.group)
+    if (this.viz.parent == null) {
+      this.translation.add(this.viz)
+    }
     this.group.visible = false
+    this.viz.visible = false
 
-    // setTimeout(() => {
-    //   this.scale = 0.8
-    //   this.object3D.scale.setScalar(this.scale)
-    //   this.translation.position.setY(0.5)
-    //   this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
-    //   this.traverse((entity) => {
-    //     entity.physics.data.size = entity.physics.data.size.map(
-    //       (x) => x * this.scale
-    //     )
-    //     entity.physics.data.update = true
-    //   })
-    // }, 3000);
+    this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
   }
 
   add(entity) {
@@ -73,65 +56,25 @@ export class Surface extends Entity {
     this.group.remove(entity.object3D)
   }
 
-  onDoublePinch(event) {
-    this.user.getWorldPosition(this.worldPosition)
-    this.lookPosition.copy(this.worldPosition)
+  mutated(mutation) {
+    if(mutation.type != 'attributes') {
+      switch (mutation.attributeName) {
+        case 'orientation':
+          this.getAttribute('orientation')
+        default:
+          break
+      }
 
-    this.lookPosition.setY(event.detail.center.y)
-
-    if (this.mesh.parent == null) {
-      this.translation.add(this.mesh)
-    }
-
-    this.object3D.position.setX(event.detail.center.x)
-    this.object3D.position.setY(event.detail.center.y)
-    this.object3D.position.setZ(event.detail.center.z)
-
-    this.scale = event.detail.distance
-    this.object3D.scale.setScalar(this.scale)
-
-    this.object3D.lookAt(this.lookPosition)
-
-    this.setRotation(
-      Math.abs(event.detail.center.y - this.worldPosition.y),
-      0.3
-    )
-  }
-
-  setRotation(delta, threshold) {
-    if (delta < threshold) {
-      this.orientation = 'vertical'
-      this.translation.position.setY(0)
-      this.rotationPlane.rotation.x = 0
-    } else {
-      this.orientation = 'horizontal'
-      this.translation.position.setY(0.5)
-      this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
   }
 
-  editPosition() {
-    document.addEventListener('doublepinch', this.onDoublePinch)
-    document.addEventListener('doublepinchended', this.onDoublePinchEnded)
-  }
-
-  onDoublePinchEnded(event) {
-    this.dispatchEvent(
-      new CustomEvent(`surfaceplaced`, {
-        bubbles: true,
-        detail: { orientation: this.orientation },
-      })
-    )
-    this.mesh.removeFromParent()
+  place() {
+    this.viz.removeFromParent()
     this.group.visible = true
-    this.traverse((entity) => {
-      entity.physics.data.size = entity.physics.data.size.map(
-        (x) => x * this.scale
-      )
-      entity.physics.data.update = true
-    })
-    document.removeEventListener('doublepinch', this.onDoublePinch)
-    document.removeEventListener('doublepinchended', this.onDoublePinchEnded)
+    this.placed = true
+
+    this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
+
   }
 }
 
