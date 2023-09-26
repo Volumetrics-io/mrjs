@@ -6,6 +6,9 @@ export class MRImage extends Panel {
     }
 
     connected() {
+        this.material = new THREE.MeshBasicMaterial({
+            side: 1
+          })
         this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'))
     }
 

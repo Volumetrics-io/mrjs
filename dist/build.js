@@ -67160,7 +67160,7 @@ class RapierPhysicsSystem extends System {
 
 
 const HOVER_DISTANCE = 0.05
-const PINCH_DISTANCE = 0.02
+const PINCH_DISTANCE = 0.005
 
 const joints = [
   'wrist',
@@ -68285,7 +68285,7 @@ class MRApp extends MRElement {
     this.lighting = {
       enabled: true,
       color: 0xffffff,
-      intensity: 3,
+      intensity: 1,
       radius: 15,
       shadows: true
     }
@@ -69117,12 +69117,12 @@ class Volume extends Entity {
 
   connected() {
     if (this.parentElement instanceof Surface) {
-      this.parentElement.addEventListener('surfaceplaced', (event) => {
+      this.parentElement.addEventListener('surface-placed', (event) => {
         this.width = this.parentElement.width
         this.depth = this.parentElement.height
         this.height = this.parentElement.height
-        console.log(event.detail)
-        if (event.detail.orientation == 'horizontal') {
+        let orientation = this.parentElement.getAttribute('orientation')
+        if (orientation == 'horizontal') {
           this.object3D.position.setZ(this.depth / 2)
           this.object3D.rotation.x = Math.PI / 2
         } else {
@@ -69196,6 +69196,9 @@ class MRImage extends Panel {
     }
 
     connected() {
+        this.material = new THREE.MeshBasicMaterial({
+            side: 1
+          })
         this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'))
     }
 

@@ -59,7 +59,7 @@ export class MRApp extends MRElement {
     this.lighting = {
       enabled: true,
       color: 0xffffff,
-      intensity: 3,
+      intensity: 1,
       radius: 15,
       shadows: true
     }
