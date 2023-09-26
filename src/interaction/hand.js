@@ -4,7 +4,7 @@ import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js'
 import { RAPIER, JOINT_COLLIDER_HANDLE_NAMES, COLLIDER_CURSOR_MAP} from '../component-systems/RapierPhysicsSystem'
 
 const HOVER_DISTANCE = 0.05
-const PINCH_DISTANCE = 0.02
+const PINCH_DISTANCE = 0.005
 
 const joints = [
   'wrist',

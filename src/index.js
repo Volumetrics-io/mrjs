@@ -21,6 +21,9 @@ import './UI/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'
 
+// MEDIA
+import './UI/media/Image.js'
+
 // TEXT
 import './UI/Text/Font.js'
 import './UI/Text/Text.js'

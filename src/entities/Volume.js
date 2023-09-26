@@ -13,14 +13,15 @@ export default class Volume extends Entity {
     this.object3D.renderOrder = 3
   }
 
+  // FIXME: doesn't actually respond to switch in surface orientation.
   connected() {
     if (this.parentElement instanceof Surface) {
-      this.parentElement.addEventListener('surfaceplaced', (event) => {
+      this.parentElement.addEventListener('surface-placed', (event) => {
         this.width = this.parentElement.width
         this.depth = this.parentElement.height
         this.height = this.parentElement.height
-        console.log(event.detail)
-        if (event.detail.orientation == 'horizontal') {
+        let orientation = this.parentElement.getAttribute('orientation')
+        if (orientation == 'horizontal') {
           this.object3D.position.setZ(this.depth / 2)
           this.object3D.rotation.x = Math.PI / 2
         } else {
