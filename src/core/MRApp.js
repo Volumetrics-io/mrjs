@@ -35,8 +35,7 @@ export class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-
-    this.env = this
+    this.inXRSession = false
 
     this.focusEntity = null
 
@@ -160,6 +159,7 @@ export class MRApp extends MRElement {
         this.ARButton.addEventListener('click', () => {
           this.surfaceSystem = new SurfaceSystem()
           this.ARButton.blur()
+          this.inXRSession = true
         })
         document.body.appendChild(this.ARButton)
 

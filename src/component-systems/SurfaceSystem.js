@@ -18,6 +18,8 @@ export class SurfaceSystem extends System {
 
     for ( const surface of entities) {
         this.registry.add(surface)
+        surface.group.visible = false
+        surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
 
     document.addEventListener('pinchstart', (event) => {
@@ -47,7 +49,6 @@ export class SurfaceSystem extends System {
     for(const surface of this.registry) {
         if(this.currentSurface == null && surface.placed == false) {
             this.currentSurface = surface
-            this.currentSurface.viz.visible = true
         }
     }
 
@@ -97,6 +98,10 @@ export class SurfaceSystem extends System {
 
   placeSurface(hit) {
     let pose = hit.getPose( this.referenceSpace )
+
+    if (!this.currentSurface.viz.visible) {
+        this.currentSurface.viz.visible = true
+    }
     
     this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
     this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )

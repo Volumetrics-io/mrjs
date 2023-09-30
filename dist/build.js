@@ -67612,10 +67612,9 @@ class Surface extends Entity {
     if (this.viz.parent == null) {
       this.translation.add(this.viz)
     }
-    this.group.visible = false
+    this.group.visible = true
     this.viz.visible = false
 
-    this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
   }
 
   add(entity) {
@@ -67771,7 +67770,7 @@ class LayoutSystem extends System {
 
     adjustContainerSize = (container) => {
 
-        if(container.parentElement instanceof Surface) {
+        if(container.parentElement instanceof Surface && this.app.inXRSession) {
           container.absoluteHeight = container.height * container.parentElement.height
           container.absoluteWidth = container.width * container.parentElement.width
           console.log(container.parentElement.height);
@@ -68141,6 +68140,8 @@ class SurfaceSystem extends System {
 
     for ( const surface of entities) {
         this.registry.add(surface)
+        surface.group.visible = false
+        surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
 
     document.addEventListener('pinchstart', (event) => {
@@ -68170,7 +68171,6 @@ class SurfaceSystem extends System {
     for(const surface of this.registry) {
         if(this.currentSurface == null && surface.placed == false) {
             this.currentSurface = surface
-            this.currentSurface.viz.visible = true
         }
     }
 
@@ -68220,6 +68220,10 @@ class SurfaceSystem extends System {
 
   placeSurface(hit) {
     let pose = hit.getPose( this.referenceSpace )
+
+    if (!this.currentSurface.viz.visible) {
+        this.currentSurface.viz.visible = true
+    }
     
     this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
     this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
@@ -68261,8 +68265,7 @@ class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-
-    this.env = this
+    this.inXRSession = false
 
     this.focusEntity = null
 
@@ -68386,6 +68389,7 @@ class MRApp extends MRElement {
         this.ARButton.addEventListener('click', () => {
           this.surfaceSystem = new SurfaceSystem()
           this.ARButton.blur()
+          this.inXRSession = true
         })
         document.body.appendChild(this.ARButton)
 
@@ -69115,6 +69119,7 @@ class Volume extends Entity {
     this.object3D.renderOrder = 3
   }
 
+  // FIXME: doesn't actually respond to switch in surface orientation.
   connected() {
     if (this.parentElement instanceof Surface) {
       this.parentElement.addEventListener('surface-placed', (event) => {

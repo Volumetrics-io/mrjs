@@ -21,7 +21,7 @@ export class LayoutSystem extends System {
 
     adjustContainerSize = (container) => {
 
-        if(container.parentElement instanceof Surface) {
+        if(container.parentElement instanceof Surface && this.app.inXRSession) {
           container.absoluteHeight = container.height * container.parentElement.height
           container.absoluteWidth = container.width * container.parentElement.width
           console.log(container.parentElement.height);

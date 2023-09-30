@@ -42,10 +42,9 @@ export class Surface extends Entity {
     if (this.viz.parent == null) {
       this.translation.add(this.viz)
     }
-    this.group.visible = false
+    this.group.visible = true
     this.viz.visible = false
 
-    this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
   }
 
   add(entity) {
