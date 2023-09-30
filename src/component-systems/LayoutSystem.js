@@ -24,9 +24,8 @@ export class LayoutSystem extends System {
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
           container.absoluteHeight = container.height * container.parentElement.height
           container.absoluteWidth = container.width * container.parentElement.width
-          console.log(container.parentElement.height);
-          console.log(container.parentElement.width);
         } else {
+            console.log(this.app.user.position.distanceTo(container.object3D.position));
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
         }

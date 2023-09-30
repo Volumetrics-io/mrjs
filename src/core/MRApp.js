@@ -157,7 +157,9 @@ export class MRApp extends MRElement {
         })
     
         this.ARButton.addEventListener('click', () => {
-          this.surfaceSystem = new SurfaceSystem()
+          if(!this.surfaceSystem) {
+            this.surfaceSystem = new SurfaceSystem()
+          }
           this.ARButton.blur()
           this.inXRSession = true
         })

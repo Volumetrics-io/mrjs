@@ -17,9 +17,11 @@ export class Container extends Entity {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
 
-    document.addEventListener('surface-placed', (event) => {
-      if (event.target != this.parentElement) { return }
-      console.log('placed');
+    this.parentElement.addEventListener('surface-placed', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    this.parentElement.addEventListener('surface-removed', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
   }
