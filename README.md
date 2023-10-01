@@ -4,7 +4,7 @@ An extendable WebComponents library for the Spatial Web
 
 ## Overview
 
-MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
 # Features
 
@@ -97,7 +97,7 @@ MR.js is designed from the ground up using the Entity-Component-System Architect
 
 an Entity is an object. It stores only the most fundamental data, such as a unique identifier, a THREE.js Object3D, a physics body, and dimension data such as width and scale.
 
-Any `mr-*` tag within the `mr-app` is an Entity. `mr-entity` is the spatail equivalent of a `div`.
+Any `mr-*` tag within the `mr-app` is an Entity. `mr-entity` is the spatial equivalent of a `div`.
 
 Creating a custom Entity is as simple as creating a Custom Element via the WebComponents API.
 
@@ -132,7 +132,7 @@ Example:
 
 A System contains logic that is applied all entities that have a corresponding Component, using the data stored by the component. unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JS.
 
-When a component is attached or detatched from an entity, it is added or removed from it's System's registry of entities
+When a component is attached or detached from an entity, it is added or removed from its System's registry of entities
 
 Example:
 
@@ -145,7 +145,7 @@ class OrbitSystem extends System{
     // called every frame
     update(deltaTime, frame) {
         for(const entity in this.registry) {
-            // Update entitiy position
+            // Update entity position
         }
     }
 
