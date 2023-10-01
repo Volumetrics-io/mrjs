@@ -46,7 +46,6 @@ export class SurfaceSystem extends System {
         
         this.currentSurface = null
 
-        console.log(this.currentSurface);
     })
 
   }
