@@ -67576,6 +67576,10 @@ class Surface extends Entity {
   constructor() {
     super()
 
+    this.anchored = false
+    this.anchorPosition = new three_module_Vector3()
+    this.anchorQuaternion = new Quaternion()
+
     this.rotationPlane = new Group()
     this.translation = new Group()
     this.group = new Group()
@@ -67612,10 +67616,9 @@ class Surface extends Entity {
     if (this.viz.parent == null) {
       this.translation.add(this.viz)
     }
-    this.group.visible = false
+    this.group.visible = true
     this.viz.visible = false
 
-    this.rotationPlane.rotation.x = 3 * (Math.PI / 2)
   }
 
   add(entity) {
@@ -67644,6 +67647,24 @@ class Surface extends Entity {
     this.placed = true
 
     this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
+
+  }
+
+  replace() {
+    console.log('replace');
+    this.object3D.position.copy(this.anchorPosition)
+    this.object3D.quaternion.copy(this.anchorQuaternion)
+
+    this.placed = true
+    this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
+  }
+
+  remove() {
+    console.log('remove');
+    this.placed = false
+    this.object3D.position.set(0,0,0)
+    this.object3D.quaternion.set(0,0,0,1)
+    this.dispatchEvent( new CustomEvent('surface-removed', { bubbles: true }))
 
   }
 }
@@ -67703,9 +67724,11 @@ class Container extends Entity {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
 
-    document.addEventListener('surface-placed', (event) => {
-      if (event.target != this.parentElement) { return }
-      console.log('placed');
+    this.parentElement.addEventListener('surface-placed', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    this.parentElement.addEventListener('surface-removed', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
   }
@@ -67771,11 +67794,9 @@ class LayoutSystem extends System {
 
     adjustContainerSize = (container) => {
 
-        if(container.parentElement instanceof Surface) {
+        if(container.parentElement instanceof Surface && this.app.inXRSession) {
           container.absoluteHeight = container.height * container.parentElement.height
           container.absoluteWidth = container.width * container.parentElement.width
-          console.log(container.parentElement.height);
-          console.log(container.parentElement.width);
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
@@ -68141,6 +68162,8 @@ class SurfaceSystem extends System {
 
     for ( const surface of entities) {
         this.registry.add(surface)
+        surface.group.visible = false
+        surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
     }
 
     document.addEventListener('pinchstart', (event) => {
@@ -68159,22 +68182,30 @@ class SurfaceSystem extends System {
         this.currentSurface.width *= this.scale
         this.currentSurface.height *= this.scale
         this.currentSurface.place()
-        console.log(this.scale);
+
+        this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
+        this.currentSurface.anchorQuaternion.copy(this.currentSurface.object3D.quaternion)
+
+        this.currentSurface.anchored = true
         
         this.currentSurface = null
+
     })
 
   }
 
   update(deltaTime, frame) {
     for(const surface of this.registry) {
-        if(this.currentSurface == null && surface.placed == false) {
+        if(this.currentSurface == null && surface.anchored == false) {
             this.currentSurface = surface
-            this.currentSurface.viz.visible = true
+        } else if (surface.anchored && !surface.placed) {
+            if(!this.app.inXRSession) { return }
+            surface.replace()
+            surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
+
         }
     }
 
-    if(this.currentSurface == null) { return }
     if ( this.sourceRequest == false ) {
         this.referenceSpace = this.app.renderer.xr.getReferenceSpace();
         console.log(this.referenceSpace);
@@ -68191,8 +68222,11 @@ class SurfaceSystem extends System {
 
         } );
 
-        this.session.addEventListener( 'end', function () {
-            console.log('ended');
+        this.session.addEventListener( 'end', () => {
+            this.app.inXRSession = false
+            this.app.user.position.set(0, 0, 1)
+            this.app.user.quaternion.set(0,0,0,1)
+            this.resetAllSurfaces()
 
             this.sourceRequest = false;
             this.source = null;
@@ -68203,7 +68237,7 @@ class SurfaceSystem extends System {
 
         
     }
-
+    if(this.currentSurface == null) { return }
     if ( this.source ) {
 
         const hitTestResults = frame.getHitTestResults( this.source );
@@ -68218,12 +68252,23 @@ class SurfaceSystem extends System {
     }
   }
 
+  resetAllSurfaces() {
+    for (const surface of this.registry) {
+        surface.remove()
+        surface.rotationPlane.rotation.x = 0
+
+    }
+  }
+
   placeSurface(hit) {
     let pose = hit.getPose( this.referenceSpace )
+
+    if (!this.currentSurface.viz.visible) {
+        this.currentSurface.viz.visible = true
+    }
     
     this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
     this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
-
   }
 
 }
@@ -68261,8 +68306,7 @@ class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-
-    this.env = this
+    this.inXRSession = false
 
     this.focusEntity = null
 
@@ -68384,8 +68428,11 @@ class MRApp extends MRElement {
         })
     
         this.ARButton.addEventListener('click', () => {
-          this.surfaceSystem = new SurfaceSystem()
+          if(!this.surfaceSystem) {
+            this.surfaceSystem = new SurfaceSystem()
+          }
           this.ARButton.blur()
+          this.inXRSession = true
         })
         document.body.appendChild(this.ARButton)
 
@@ -69115,6 +69162,7 @@ class Volume extends Entity {
     this.object3D.renderOrder = 3
   }
 
+  // FIXME: doesn't actually respond to switch in surface orientation.
   connected() {
     if (this.parentElement instanceof Surface) {
       this.parentElement.addEventListener('surface-placed', (event) => {
@@ -69129,6 +69177,11 @@ class Volume extends Entity {
           this.object3D.rotation.x = 0
         }
         this.arrangeChildren()
+      })
+
+      this.parentElement.addEventListener('surface-removed', (event) => {
+        this.object3D.position.setZ(0)
+        this.object3D.rotation.x = 0
       })
     }
   }

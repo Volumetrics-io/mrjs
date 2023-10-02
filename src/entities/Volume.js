@@ -29,6 +29,11 @@ export default class Volume extends Entity {
         }
         this.arrangeChildren()
       })
+
+      this.parentElement.addEventListener('surface-removed', (event) => {
+        this.object3D.position.setZ(0)
+        this.object3D.rotation.x = 0
+      })
     }
   }
 
