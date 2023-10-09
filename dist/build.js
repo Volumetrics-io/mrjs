@@ -51685,6 +51685,12 @@ function parser_radToDeg(val) {
   return (val * Math.PI) / 180
 }
 
+function parseDimensionValue(val) {
+  if(val.includes('%')) { return parseFloat(val) / 100}
+  if(val.includes('/')) { return parseInt(val.split('/')[0]) / parseInt(val.split('/')[1])}
+  return val
+}
+
 function setTransformValues(entity) {
   const position = entity.getAttribute('position')
   const scale = entity.getAttribute('scale')
@@ -51871,12 +51877,16 @@ class Entity extends MRElement {
 
   #width = 'auto'
   set width(value) {
-    this.#width = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
-    this.absoluteWidth = this.#width
+    this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
     this.dimensionsUpdate()
   }
   get width() {
-    return this.#width == 'auto' ? 1 : this.#width
+    switch (this.#width) {
+      case 'auto':
+        return this.parentElement?.computedInternalWidth ? this.parentElement.computedInternalWidth : 1
+      default:
+        return this.#width
+    }
   }
 
   get computedWidth() {
@@ -51898,12 +51908,16 @@ class Entity extends MRElement {
 
   #height = 'auto'
   set height(value) {
-    this.#height = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
-    this.absoluteHeight = this.#height
+    this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
     this.dimensionsUpdate()
   }
   get height() {
-    return this.#height == 'auto' ? 1 : this.#height
+    switch (this.#height) {
+      case 'auto':
+        return this.parentElement?.computedInternalHeight ? this.parentElement.computedInternalHeight : 1
+      default:
+        return this.#height
+    }
   }
 
   get computedHeight() {
@@ -67596,8 +67610,8 @@ class Surface extends Entity {
 
     this.aspectRatio = 1.333333
     this.placed = false
-    this.width = this.aspectRatio / 3
-    this.height = 1 / 3
+    this.width = 1
+    this.height = 1
 
     this.material = new MeshStandardMaterial({
       color: 0x3498db,
@@ -67608,7 +67622,7 @@ class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.width, this.height, 0.01, 18)
+    this.geometry = UIPlane(this.aspectRatio / 3, 1 / 3, 0.01, 18)
 
     this.viz = new three_module_Mesh(this.geometry, this.material)
 
@@ -67710,9 +67724,6 @@ customElements.get('mr-column') || customElements.define('mr-column', Column)
 class Container extends Entity {
   constructor() {
     super()
-    this.width = 'auto'
-    this.height = 'auto'
-
   }
 
   connected(){
@@ -67782,9 +67793,21 @@ class LayoutSystem extends System {
     constructor(){
         super()
 
+        // if (this.app.debug) {
+        //     document.addEventListener('keypress', (event) => {
+        //         if(event.code == 'Space') {
+        //           this.app.inXRSession = !this.app.inXRSession
+        //         }
+        //         let containers = document.querySelectorAll('mr-container')
+
+        //         for (const container of containers) {
+        //             this.adjustContainerSize(container)
+        //             this.adjustContent(container, container.absoluteWidth, container.absoluteHeight)
+        //         }
+        //       })
+        // }
+
         this.app.addEventListener('container-mutated', this.updateLayout)
-        this.app.addEventListener('column-mutated', this.adjustColumn)
-        this.app.addEventListener('row-mutated', this.adjustRow)
     }
 
     updateLayout = (event) => {
@@ -67795,8 +67818,8 @@ class LayoutSystem extends System {
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.height * container.parentElement.height
-          container.absoluteWidth = container.width * container.parentElement.width
+          container.absoluteHeight = container.height
+          container.absoluteWidth = container.width * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
@@ -67806,18 +67829,18 @@ class LayoutSystem extends System {
     }
 
     adjustContent = (entity, width, height) => {
-        
-        if (entity instanceof Column) { 
-            // entity.absoluteWidth = width
-            this.adjustColumn(entity, height) 
-        }
-        else if (entity instanceof Row) { 
-            entity.absoluteHeight = height
-            this.adjustRow(entity, width) 
-        } else if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
+
+        if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
             entity.absoluteWidth = width
             entity.absoluteHeight = height
         }
+        
+        if (entity instanceof Column) { 
+            this.adjustColumn(entity) 
+        }
+        else if (entity instanceof Row) { 
+            this.adjustRow(entity) 
+        } 
 
         /// Set Z-index
         entity.object3D.position.z = entity.zOffeset
@@ -67831,9 +67854,9 @@ class LayoutSystem extends System {
         }
     }
 
-    adjustColumn = (column, height) => {
+    adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (height / column.rows)
+        let rowHeight = (column.height / column.rows)
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
@@ -67849,9 +67872,9 @@ class LayoutSystem extends System {
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
 
-    adjustRow = (row, width) => {
+    adjustRow = (row) => {
         row.getColumnCount()
-        let colWidth = (width / row.columns)
+        let colWidth = (row.width / row.columns)
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
@@ -68179,8 +68202,8 @@ class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null) { return }
-        this.currentSurface.width *= this.scale
-        this.currentSurface.height *= this.scale
+        this.currentSurface.width *= this.scale * (1 / 3)
+        this.currentSurface.height *= this.scale * (1 / 3)
         this.currentSurface.place()
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)

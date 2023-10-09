@@ -9,9 +9,21 @@ export class LayoutSystem extends System {
     constructor(){
         super()
 
+        // if (this.app.debug) {
+        //     document.addEventListener('keypress', (event) => {
+        //         if(event.code == 'Space') {
+        //           this.app.inXRSession = !this.app.inXRSession
+        //         }
+        //         let containers = document.querySelectorAll('mr-container')
+
+        //         for (const container of containers) {
+        //             this.adjustContainerSize(container)
+        //             this.adjustContent(container, container.absoluteWidth, container.absoluteHeight)
+        //         }
+        //       })
+        // }
+
         this.app.addEventListener('container-mutated', this.updateLayout)
-        this.app.addEventListener('column-mutated', this.adjustColumn)
-        this.app.addEventListener('row-mutated', this.adjustRow)
     }
 
     updateLayout = (event) => {
@@ -22,8 +34,8 @@ export class LayoutSystem extends System {
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.height * container.parentElement.height
-          container.absoluteWidth = container.width * container.parentElement.width
+          container.absoluteHeight = container.height
+          container.absoluteWidth = container.width * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
@@ -33,18 +45,18 @@ export class LayoutSystem extends System {
     }
 
     adjustContent = (entity, width, height) => {
-        
-        if (entity instanceof Column) { 
-            // entity.absoluteWidth = width
-            this.adjustColumn(entity, height) 
-        }
-        else if (entity instanceof Row) { 
-            entity.absoluteHeight = height
-            this.adjustRow(entity, width) 
-        } else if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
+
+        if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
             entity.absoluteWidth = width
             entity.absoluteHeight = height
         }
+        
+        if (entity instanceof Column) { 
+            this.adjustColumn(entity) 
+        }
+        else if (entity instanceof Row) { 
+            this.adjustRow(entity) 
+        } 
 
         /// Set Z-index
         entity.object3D.position.z = entity.zOffeset
@@ -58,9 +70,9 @@ export class LayoutSystem extends System {
         }
     }
 
-    adjustColumn = (column, height) => {
+    adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (height / column.rows)
+        let rowHeight = (column.height / column.rows)
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
@@ -76,9 +88,9 @@ export class LayoutSystem extends System {
         column.shuttle.position.setY(-this.accumulatedY / 2)
     }
 
-    adjustRow = (row, width) => {
+    adjustRow = (row) => {
         row.getColumnCount()
-        let colWidth = (width / row.columns)
+        let colWidth = (row.width / row.columns)
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
