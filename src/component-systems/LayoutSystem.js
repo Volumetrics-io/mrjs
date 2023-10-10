@@ -34,8 +34,8 @@ export class LayoutSystem extends System {
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.height
-          container.absoluteWidth = container.width * container.parentElement.aspectRatio
+          container.absoluteHeight = container.parentElement.height
+          container.absoluteWidth = container.parentElement.width * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
@@ -72,7 +72,7 @@ export class LayoutSystem extends System {
 
     adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (column.height / column.rows)
+        let rowHeight = (column.absoluteHeight / column.rows)
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
@@ -90,7 +90,8 @@ export class LayoutSystem extends System {
 
     adjustRow = (row) => {
         row.getColumnCount()
-        let colWidth = (row.width / row.columns)
+        let colWidth = (row.absoluteWidth / row.columns)
+        console.log(row.columns);
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
@@ -102,7 +103,7 @@ export class LayoutSystem extends System {
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.absoluteHeight = row.computedInternalHeight
+             child.absoluteHeight = row.computedInternalHeight - child.margin.vertical
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }

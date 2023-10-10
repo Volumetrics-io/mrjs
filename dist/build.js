@@ -51883,7 +51883,7 @@ class Entity extends MRElement {
   get width() {
     switch (this.#width) {
       case 'auto':
-        return this.parentElement?.computedInternalWidth ? this.parentElement.computedInternalWidth : 1
+        return 1
       default:
         return this.#width
     }
@@ -51914,7 +51914,7 @@ class Entity extends MRElement {
   get height() {
     switch (this.#height) {
       case 'auto':
-        return this.parentElement?.computedInternalHeight ? this.parentElement.computedInternalHeight : 1
+        return 1
       default:
         return this.#height
     }
@@ -60133,10 +60133,10 @@ class TextSystem extends System {
     }
 
     
-    entity.textStyle.width = entity.absoluteWidth
-    entity.textStyle.maxWidth = entity.absoluteWidth
+    entity.textStyle.width = entity.computedInternalWidth
+    entity.textStyle.maxWidth = entity.computedInternalWidth
 
-    let height = entity.absoluteHeight
+    let height = entity.computedInternalHeight
     entity.textObj.position.setY(height / 2)
 
     entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
@@ -67818,8 +67818,8 @@ class LayoutSystem extends System {
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.height
-          container.absoluteWidth = container.width * container.parentElement.aspectRatio
+          container.absoluteHeight = container.parentElement.height
+          container.absoluteWidth = container.parentElement.width * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
@@ -67856,7 +67856,7 @@ class LayoutSystem extends System {
 
     adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (column.height / column.rows)
+        let rowHeight = (column.absoluteHeight / column.rows)
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
@@ -67874,7 +67874,8 @@ class LayoutSystem extends System {
 
     adjustRow = (row) => {
         row.getColumnCount()
-        let colWidth = (row.width / row.columns)
+        let colWidth = (row.absoluteWidth / row.columns)
+        console.log(row.columns);
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
@@ -67886,7 +67887,7 @@ class LayoutSystem extends System {
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.absoluteHeight = row.computedInternalHeight
+             child.absoluteHeight = row.computedInternalHeight - child.margin.vertical
         }
         row.shuttle.position.setX(-this.accumulatedX / 2)
     }
@@ -68353,7 +68354,7 @@ class MRApp extends MRElement {
       enabled: true,
       color: 0xffffff,
       intensity: 1,
-      radius: 15,
+      radius: 5,
       shadows: true
     }
 
@@ -68489,7 +68490,7 @@ class MRApp extends MRElement {
       this.defaultLight.shadow.camera.bottom = -2
       this.defaultLight.shadow.camera.right = 2
       this.defaultLight.shadow.camera.left = -2
-      this.defaultLight.shadow.mapSize.set(4096, 4096)
+      this.defaultLight.shadow.mapSize.set(2048, 2048)
     }
     this.scene.add(this.defaultLight)
   }

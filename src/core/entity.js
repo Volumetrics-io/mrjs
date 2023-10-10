@@ -26,7 +26,7 @@ export class Entity extends MRElement {
   get width() {
     switch (this.#width) {
       case 'auto':
-        return this.parentElement?.computedInternalWidth ? this.parentElement.computedInternalWidth : 1
+        return 1
       default:
         return this.#width
     }
@@ -57,7 +57,7 @@ export class Entity extends MRElement {
   get height() {
     switch (this.#height) {
       case 'auto':
-        return this.parentElement?.computedInternalHeight ? this.parentElement.computedInternalHeight : 1
+        return 1
       default:
         return this.#height
     }

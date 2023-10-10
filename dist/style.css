@@ -89,6 +89,7 @@
   }
   
   body {
+    position:fixed;
     background-color: var(--c-plate);
     font-family: var(--font-body);
     color: var(--c-text);
