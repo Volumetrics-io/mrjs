@@ -59,7 +59,7 @@ export class MRApp extends MRElement {
       enabled: true,
       color: 0xffffff,
       intensity: 1,
-      radius: 15,
+      radius: 5,
       shadows: true
     }
 
@@ -195,7 +195,7 @@ export class MRApp extends MRElement {
       this.defaultLight.shadow.camera.bottom = -2
       this.defaultLight.shadow.camera.right = 2
       this.defaultLight.shadow.camera.left = -2
-      this.defaultLight.shadow.mapSize.set(4096, 4096)
+      this.defaultLight.shadow.mapSize.set(2048, 2048)
     }
     this.scene.add(this.defaultLight)
   }

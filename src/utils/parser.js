@@ -12,6 +12,12 @@ export function radToDeg(val) {
   return (val * Math.PI) / 180
 }
 
+export function parseDimensionValue(val) {
+  if(val.includes('%')) { return parseFloat(val) / 100}
+  if(val.includes('/')) { return parseInt(val.split('/')[0]) / parseInt(val.split('/')[1])}
+  return val
+}
+
 export function setTransformValues(entity) {
   const position = entity.getAttribute('position')
   const scale = entity.getAttribute('scale')

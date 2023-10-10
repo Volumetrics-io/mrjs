@@ -6,32 +6,34 @@
     <meta name="description" content="MR.js example">
     <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.0/dist/es-module-shims.js"></script>
     <script src="./build.js"></script>
-    <script type="module" src="./assets/js/AnimationSystem.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css" />
 
 
   </head>
   <body >
-    <mr-app debug="true">
+    <mr-app debug="false">
 
       <mr-font 
       src="./assets/fonts/BricolageGrotesque.ttf" 
       size="0.06" 
       target="mr-text, title"></mr-font>
 
+      <mr-surface>
             <mr-container >
                 <mr-panel color="darkgrey" corner-radius="0.02">
                     <mr-panel corner-radius="0.02">
                       <mr-row>
-                        <mr-column>
+                        <mr-column width="4">
                           <mr-image src="./assets/textures/night_life.jpeg"></mr-image>
-                          <mr-panel color="blue"></mr-panel>
-                          <mr-texteditor text-style="size: 0.02; vertical: top" margin="0 0.01 0 0">
+                          <mr-row margin="0.01 0 0 0">
+                            <mr-panel color="blue"></mr-panel>
+                          <mr-texteditor text-style="size: 0.02; vertical: top" padding="0.01">
                             Deserunt aliquip aliqua magna labore cillum occaecat id cupidatat est aute. Minim veniam ut aliquip excepteur reprehenderit id duis consectetur duis et labore officia consectetur quis. Pariatur non eu velit mollit cupidatat est ea eiusmod ullamco ea.
                           </mr-texteditor>
+                          </mr-row>
                         </mr-column>
                         
-                        <mr-texteditor text-style="size: 0.02; vertical: top" margin="0 0 0 0.01">
+                        <mr-texteditor text-style="size: 0.02; vertical: top" padding="0.02">
                           Magna cillum eiusmod Lorem nisi quis enim in sint mollit dolor dolore exercitation fugiat. Veniam aliqua esse ut id consequat enim aliquip quis. Velit anim dolor anim consequat fugiat eiusmod duis. Pariatur proident deserunt in non non veniam do irure.
 
 Adipisicing commodo consequat dolor occaecat incididunt amet fugiat voluptate. Nisi nisi nostrud incididunt aliquip esse labore magna est ad occaecat irure nostrud duis qui. Elit consequat consequat dolor eiusmod enim eiusmod pariatur officia labore dolor ullamco laboris.
@@ -43,6 +45,7 @@ Ex commodo non pariatur duis ex cillum labore proident esse sit non cillum in. T
                     </mr-panel>
                 </mr-panel>
             </mr-container>
+            </mr-surface>
     </mr-app>
   </body>
 

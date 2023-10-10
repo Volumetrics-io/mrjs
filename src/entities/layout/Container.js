@@ -3,9 +3,6 @@ import { Entity } from "../../core/entity";
 export class Container extends Entity {
   constructor() {
     super()
-    this.width = 'auto'
-    this.height = 'auto'
-
   }
 
   connected(){
