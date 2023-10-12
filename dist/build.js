@@ -68480,19 +68480,25 @@ class MRApp extends MRElement {
 
   initLights = (data) => {
     if(!data.enabled) { return }
-    this.defaultLight = new PointLight(data.color)
-    this.defaultLight.position.set(0, 1, 1)
-    this.defaultLight.intensity = data.intensity
+    this.globalLight = new AmbientLight(data.color)
+    this.globalLight.intensity = data.intensity
+    this.globalLight.position.set(0, 0, 0)
+    this.scene.add(this.globalLight)
+
     if(!this.isMobile) {
-      this.defaultLight.castShadow = data.shadows
-      this.defaultLight.shadow.radius = data.radius
-      this.defaultLight.shadow.camera.top = 2
-      this.defaultLight.shadow.camera.bottom = -2
-      this.defaultLight.shadow.camera.right = 2
-      this.defaultLight.shadow.camera.left = -2
-      this.defaultLight.shadow.mapSize.set(2048, 2048)
+      if(data.shadows) {
+        this.shadowLight = new PointLight(data.color)
+        this.shadowLight.position.set(0, 0, 0)
+        this.shadowLight.intensity = data.intensity
+        this.shadowLight.castShadow = data.shadows
+        this.shadowLight.shadow.radius = data.radius
+        this.shadowLight.shadow.camera.near = 0.01; // default
+        this.shadowLight.shadow.camera.far = 20; // default
+        this.shadowLight.shadow.mapSize.set(2048, 2048)
+        this.scene.add(this.shadowLight)
+
+      }
     }
-    this.scene.add(this.defaultLight)
   }
 
   denit() {
@@ -68534,10 +68540,6 @@ class MRApp extends MRElement {
       system.update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
-
-    if(this.lighting.enabled && !this.isMobile){
-      this.defaultLight.target = this.user
-    }
 
     this.renderer.render(this.scene, this.user)
   }
