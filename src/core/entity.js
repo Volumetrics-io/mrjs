@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { parseDegVector, parseVector } from '../utils/parser.js'
+import { parseDegVector, parseDimensionValue, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 import { BodyOffset } from '../datatypes/BodyOffset.js'
 
@@ -20,12 +20,16 @@ export class Entity extends MRElement {
 
   #width = 'auto'
   set width(value) {
-    this.#width = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
-    this.absoluteWidth = this.#width
+    this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
     this.dimensionsUpdate()
   }
   get width() {
-    return this.#width == 'auto' ? 1 : this.#width
+    switch (this.#width) {
+      case 'auto':
+        return 1
+      default:
+        return this.#width
+    }
   }
 
   get computedWidth() {
@@ -47,12 +51,16 @@ export class Entity extends MRElement {
 
   #height = 'auto'
   set height(value) {
-    this.#height = typeof value == 'string' && value.includes('%') ? parseFloat(value) / 100 : value
-    this.absoluteHeight = this.#height
+    this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
     this.dimensionsUpdate()
   }
   get height() {
-    return this.#height == 'auto' ? 1 : this.#height
+    switch (this.#height) {
+      case 'auto':
+        return 1
+      default:
+        return this.#height
+    }
   }
 
   get computedHeight() {

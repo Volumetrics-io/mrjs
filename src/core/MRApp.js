@@ -35,8 +35,7 @@ export class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-
-    this.env = this
+    this.inXRSession = false
 
     this.focusEntity = null
 
@@ -60,7 +59,7 @@ export class MRApp extends MRElement {
       enabled: true,
       color: 0xffffff,
       intensity: 1,
-      radius: 15,
+      radius: 5,
       shadows: true
     }
 
@@ -158,8 +157,11 @@ export class MRApp extends MRElement {
         })
     
         this.ARButton.addEventListener('click', () => {
-          this.surfaceSystem = new SurfaceSystem()
+          if(!this.surfaceSystem) {
+            this.surfaceSystem = new SurfaceSystem()
+          }
           this.ARButton.blur()
+          this.inXRSession = true
         })
         document.body.appendChild(this.ARButton)
 
@@ -183,19 +185,25 @@ export class MRApp extends MRElement {
 
   initLights = (data) => {
     if(!data.enabled) { return }
-    this.defaultLight = new THREE.PointLight(data.color)
-    this.defaultLight.position.set(0, 1, 1)
-    this.defaultLight.intensity = data.intensity
+    this.globalLight = new THREE.AmbientLight(data.color)
+    this.globalLight.intensity = data.intensity
+    this.globalLight.position.set(0, 0, 0)
+    this.scene.add(this.globalLight)
+
     if(!this.isMobile) {
-      this.defaultLight.castShadow = data.shadows
-      this.defaultLight.shadow.radius = data.radius
-      this.defaultLight.shadow.camera.top = 2
-      this.defaultLight.shadow.camera.bottom = -2
-      this.defaultLight.shadow.camera.right = 2
-      this.defaultLight.shadow.camera.left = -2
-      this.defaultLight.shadow.mapSize.set(4096, 4096)
+      if(data.shadows) {
+        this.shadowLight = new THREE.PointLight(data.color)
+        this.shadowLight.position.set(0, 0, 0)
+        this.shadowLight.intensity = data.intensity
+        this.shadowLight.castShadow = data.shadows
+        this.shadowLight.shadow.radius = data.radius
+        this.shadowLight.shadow.camera.near = 0.01; // default
+        this.shadowLight.shadow.camera.far = 20; // default
+        this.shadowLight.shadow.mapSize.set(2048, 2048)
+        this.scene.add(this.shadowLight)
+
+      }
     }
-    this.scene.add(this.defaultLight)
   }
 
   denit() {
@@ -237,10 +245,6 @@ export class MRApp extends MRElement {
       system.update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
-
-    if(this.lighting.enabled && !this.isMobile){
-      this.defaultLight.target = this.user
-    }
 
     this.renderer.render(this.scene, this.user)
   }
