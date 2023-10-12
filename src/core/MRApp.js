@@ -246,11 +246,6 @@ export class MRApp extends MRElement {
     }
     if( this.debug ) { this.stats.end() }
 
-    // if(this.lighting.enabled && !this.isMobile){
-    //   this.shadowLight.position.copy(this.user.position)
-    //   //this.shadowLight.position.y += 1
-    // }
-
     this.renderer.render(this.scene, this.user)
   }
 }
