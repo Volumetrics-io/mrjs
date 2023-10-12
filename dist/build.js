@@ -68487,7 +68487,6 @@ class MRApp extends MRElement {
 
     if(!this.isMobile) {
       if(data.shadows) {
-        console.log('init shadow lights');
         this.shadowLight = new PointLight(data.color)
         this.shadowLight.position.set(0, 0, 0)
         this.shadowLight.intensity = data.intensity
