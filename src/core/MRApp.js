@@ -15,7 +15,7 @@ import {
 
 ;import { LayoutSystem } from '../component-systems/LayoutSystem.js'
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
-import { parseAttributeString } from '../utils/parser.js'
+import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 ('use strict')
 
@@ -44,16 +44,6 @@ export class MRApp extends MRElement {
     this.scene = new THREE.Scene()
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.user = new THREE.PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.01,
-      20
-    )
-
-    this.vFOV = THREE.MathUtils.degToRad( this.user.fov );
-    this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
-    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
 
     this.lighting = {
       enabled: true,
@@ -63,9 +53,9 @@ export class MRApp extends MRElement {
       shadows: true
     }
 
-
-    this.user.position.set(0, 0, 1)
-
+    this.cameraOptions = {
+      camera: 'perspective'
+    }
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
 
@@ -134,6 +124,27 @@ export class MRApp extends MRElement {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
 
+    this.cameraOptionString = this.getAttribute('camera')
+    if(this.cameraOptionString) {
+      this.cameraOptions = parseAttributeString(this.cameraOptionString)
+    }
+
+    this.initUser()
+
+    this.user.position.set(0, 0, 1)
+
+    let layersString = this.getAttribute('layers')
+
+    if(layersString) {
+      this.layers = parseVector(layersString)
+
+      for(const layer of this.layers) {
+        this.user.layers.enable(layer)
+      }
+    }
+
+
+
     if(this.debug){
       this.stats = new Stats()
       this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -181,6 +192,30 @@ export class MRApp extends MRElement {
 
     this.initLights(this.lighting)
 
+  }
+
+  initUser = () => {
+    switch(this.cameraOptions.camera) {
+      case 'orthographic':
+        this.viewPortWidth  = window.innerWidth / 1000
+		    this.viewPortHieght = window.innerHeight / 1000
+
+        this.user = new THREE.OrthographicCamera( this.viewPortWidth / - 2, this.viewPortWidth / 2, this.viewPortHieght / 2, this.viewPortHieght / - 2, 0.01, 1000 );
+        break;
+      case 'perspective':
+      default:
+        this.user = new THREE.PerspectiveCamera(
+          70,
+          window.innerWidth / window.innerHeight,
+          0.01,
+          20
+        )
+        this.vFOV = THREE.MathUtils.degToRad( this.user.fov );
+        this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
+        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+      break
+    }
+    
   }
 
   initLights = (data) => {

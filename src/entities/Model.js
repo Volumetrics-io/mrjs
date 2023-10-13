@@ -30,13 +30,18 @@ export class Model extends Entity {
                 clearcoatRoughness: 0.5,
                 metalness: 0.5,
                 roughness: 0.6,
-                //envMap: envTex,
                 envMapIntensity: 0.75,
             });
 
             const mesh = new THREE.Mesh(geometry, material);
             mesh.receiveShadow = true
             mesh.renderOrder = 3
+
+            console.log(this.layer);
+
+            mesh.traverse(child => {
+                child.layers.enable(this.layer)
+            })
 
             this.object3D.add(mesh);
 
