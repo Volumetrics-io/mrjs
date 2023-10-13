@@ -4,10 +4,8 @@ import { MRUIEntity } from '../UI/UIEntity.js'
 
 export let RAPIER = null
 
-export const JOINT_COLLIDER_HANDLE_NAMES = {}
-export const COLLIDER_CURSOR_MAP = {}
+export const INPUT_COLLIDER_HANDLE_NAMES = {}
 export const COLLIDER_ENTITY_MAP = {}
-export const COLLIDER_TOOL_MAP = {}
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -58,25 +56,22 @@ export class RapierPhysicsSystem extends System {
       if (entity.physics?.body == null) { continue }
       this.updateBody(entity)
 
-      if (entity.touch && !entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let joint = JOINT_COLLIDER_HANDLE_NAMES[collider2.handle]
+          let joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
 
           if (joint) {
-            entity.onTouch(joint, collider2.translation())
+            if(!joint.includes('hover') && entity.touch) {
+              entity.dispatchEvent(new CustomEvent(`touch`, {
+                bubbles: true,
+                detail: {
+                  joint: joint,
+                  position: collider2.translation(),
+                }}))
+
+            }
           }
         })
-      }
 
-      if (entity.grabbed){
-        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
-
-          if (cursor) {
-            entity.onGrab(collider2.translation())
-          }
-        })
-      }
     }
 
     this.updateDebugRenderer()
@@ -86,55 +81,33 @@ export class RapierPhysicsSystem extends System {
     let collider1 = this.app.physicsWorld.colliders.get(handle1)
     let collider2 = this.app.physicsWorld.colliders.get(handle2)
 
-    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
-    if (joint && entity){
+    if (joint && entity && !joint.includes('hover')){
       this.touchStart(collider1, collider2, entity)
       return
     }
 
-    let cursor = COLLIDER_CURSOR_MAP[handle1]
-
-    if(cursor){
-      let tool = COLLIDER_TOOL_MAP[handle2] 
-
-      if (tool) {
-        tool.grabbed = true
-        return
-      }
-
-      if (entity) {
-        this.grab(collider1, collider2, entity)
-        return
-      }
+    if (joint && entity && joint.includes('hover')){
+      this.hoverStart(collider1, collider2, entity)
+      return
     }
 
   }
 
   onContactEnd(handle1, handle2) {
-    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
-    let cursor =  COLLIDER_CURSOR_MAP[handle1]
+    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
-    if (joint && entity){
+    if (joint && entity && !joint.includes('hover')){
       this.touchEnd(entity)
       return
     }
 
-    if(cursor){
-      let tool = COLLIDER_TOOL_MAP[handle2] 
-      console.log(COLLIDER_TOOL_MAP);
-
-      if (tool) {
-        tool.grabbed = false
-        return
-      }
-
-      if (entity) {
-        this.release(entity)
-        return
-      }
+    if (joint && entity && joint.includes('hover')){
+      this.hoverEnd(entity)
+      return
     }
   }
 
@@ -142,6 +115,13 @@ export class RapierPhysicsSystem extends System {
     entity.touch = true
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
       // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`click`, {
+          bubbles: true,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        }))
       entity.dispatchEvent(
         new CustomEvent(`touch-start`, {
           bubbles: true,
@@ -163,26 +143,22 @@ export class RapierPhysicsSystem extends System {
       )
   }
 
-  grab = (collider1, collider2, entity) => {
-    entity.grabbed = true
+  hoverStart = (collider1, collider2, entity) => {
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-      // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
-        new CustomEvent(`grab`, {
+        new CustomEvent(`hover-start`, {
           bubbles: true,
           detail: {
             position: manifold.localContactPoint2(0)
           },
         })
       )
-   });
+    })
   }
 
-  release = (entity) => {
-    entity.grabbed = false
-      // Contact information can be read from `manifold`. 
+  hoverEnd = (entity) => {
     entity.dispatchEvent(
-      new CustomEvent(`release`, {
+      new CustomEvent(`hover-end`, {
         bubbles: true
       })
     )

@@ -807,6 +807,16 @@ __webpack_require__.d(entity_namespaceObject, {
   "J": () => (Entity)
 });
 
+// NAMESPACE OBJECT: ./src/component-systems/RapierPhysicsSystem.js
+var RapierPhysicsSystem_namespaceObject = {};
+__webpack_require__.r(RapierPhysicsSystem_namespaceObject);
+__webpack_require__.d(RapierPhysicsSystem_namespaceObject, {
+  "Wn": () => (COLLIDER_ENTITY_MAP),
+  "K": () => (INPUT_COLLIDER_HANDLE_NAMES),
+  "Gy": () => (RAPIER),
+  "ho": () => (RapierPhysicsSystem)
+});
+
 // NAMESPACE OBJECT: ./src/geometry/UIPlane.js
 var UIPlane_namespaceObject = {};
 __webpack_require__.r(UIPlane_namespaceObject);
@@ -51940,6 +51950,8 @@ class Entity extends MRElement {
 
   padding = new BodyOffset(this.dimensionsUpdate)
 
+  layer = 0
+
   dimensionsUpdate = () => {
     this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
   }
@@ -51974,8 +51986,12 @@ class Entity extends MRElement {
 
   }
 
-  onTouch = (joint, position) => { 
-    console.log(`${joint} touch at:`, position);
+  onHover = (event) => {
+    //console.log(`${event.detail.joint} hover at:`, event.detail.position);
+  }
+
+  onTouch = (event) => { 
+    //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
   onGrab = (position) => {
@@ -52012,17 +52028,21 @@ class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    this.connected()
-
     document.addEventListener('DOMContentLoaded', (event) => {
       this.loadAttributes()
 
     })
     this.loadAttributes()
 
+    this.connected()
+
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
     })
+
+    this.addEventListener('touch', this.onTouch)
+    this.addEventListener('hover-start', (event) => { this.onHover(event) })
+    this.addEventListener('hover-end', (event) => { this.onHover(event) })
 
     this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
   }
@@ -52055,6 +52075,10 @@ class Entity extends MRElement {
           break
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
+          break
+        case 'layer':
+          this.layer = parseFloat(attr.value)
+          this.object3D.layers.set(this.layer)
           break
         default:
           this[attr.name] = attr.value
@@ -66903,10 +66927,8 @@ class MRUIEntity extends Entity {
 
 let RAPIER = null
 
-const JOINT_COLLIDER_HANDLE_NAMES = {}
-const COLLIDER_CURSOR_MAP = {}
+const INPUT_COLLIDER_HANDLE_NAMES = {}
 const COLLIDER_ENTITY_MAP = {}
-const COLLIDER_TOOL_MAP = {}
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -66957,25 +66979,22 @@ class RapierPhysicsSystem extends System {
       if (entity.physics?.body == null) { continue }
       this.updateBody(entity)
 
-      if (entity.touch && !entity.grabbed){
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let joint = JOINT_COLLIDER_HANDLE_NAMES[collider2.handle]
+          let joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
 
           if (joint) {
-            entity.onTouch(joint, collider2.translation())
+            if(!joint.includes('hover') && entity.touch) {
+              entity.dispatchEvent(new CustomEvent(`touch`, {
+                bubbles: true,
+                detail: {
+                  joint: joint,
+                  position: collider2.translation(),
+                }}))
+
+            }
           }
         })
-      }
 
-      if (entity.grabbed){
-        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
-
-          if (cursor) {
-            entity.onGrab(collider2.translation())
-          }
-        })
-      }
     }
 
     this.updateDebugRenderer()
@@ -66985,55 +67004,33 @@ class RapierPhysicsSystem extends System {
     let collider1 = this.app.physicsWorld.colliders.get(handle1)
     let collider2 = this.app.physicsWorld.colliders.get(handle2)
 
-    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
+    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
-    if (joint && entity){
+    if (joint && entity && !joint.includes('hover')){
       this.touchStart(collider1, collider2, entity)
       return
     }
 
-    let cursor = COLLIDER_CURSOR_MAP[handle1]
-
-    if(cursor){
-      let tool = COLLIDER_TOOL_MAP[handle2] 
-
-      if (tool) {
-        tool.grabbed = true
-        return
-      }
-
-      if (entity) {
-        this.grab(collider1, collider2, entity)
-        return
-      }
+    if (joint && entity && joint.includes('hover')){
+      this.hoverStart(collider1, collider2, entity)
+      return
     }
 
   }
 
   onContactEnd(handle1, handle2) {
-    let joint = JOINT_COLLIDER_HANDLE_NAMES[handle1]
-    let cursor =  COLLIDER_CURSOR_MAP[handle1]
+    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
-    if (joint && entity){
+    if (joint && entity && !joint.includes('hover')){
       this.touchEnd(entity)
       return
     }
 
-    if(cursor){
-      let tool = COLLIDER_TOOL_MAP[handle2] 
-      console.log(COLLIDER_TOOL_MAP);
-
-      if (tool) {
-        tool.grabbed = false
-        return
-      }
-
-      if (entity) {
-        this.release(entity)
-        return
-      }
+    if (joint && entity && joint.includes('hover')){
+      this.hoverEnd(entity)
+      return
     }
   }
 
@@ -67041,6 +67038,13 @@ class RapierPhysicsSystem extends System {
     entity.touch = true
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
       // Contact information can be read from `manifold`. 
+      entity.dispatchEvent(
+        new CustomEvent(`click`, {
+          bubbles: true,
+          detail: {
+            position: manifold.localContactPoint2(0)
+          },
+        }))
       entity.dispatchEvent(
         new CustomEvent(`touch-start`, {
           bubbles: true,
@@ -67062,26 +67066,22 @@ class RapierPhysicsSystem extends System {
       )
   }
 
-  grab = (collider1, collider2, entity) => {
-    entity.grabbed = true
+  hoverStart = (collider1, collider2, entity) => {
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-      // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
-        new CustomEvent(`grab`, {
+        new CustomEvent(`hover-start`, {
           bubbles: true,
           detail: {
             position: manifold.localContactPoint2(0)
           },
         })
       )
-   });
+    })
   }
 
-  release = (entity) => {
-    entity.grabbed = false
-      // Contact information can be read from `manifold`. 
+  hoverEnd = (entity) => {
     entity.dispatchEvent(
-      new CustomEvent(`release`, {
+      new CustomEvent(`hover-end`, {
         bubbles: true
       })
     )
@@ -67215,7 +67215,6 @@ class MRHand {
     this.pinch = false
     this.hover = false
 
-    this.cursor
     this.cursorPosition = new three_module_Vector3()
 
     this.jointPhysicsBodies = {}
@@ -67251,7 +67250,6 @@ class MRHand {
     app.scene.add(this.grip)
     app.scene.add(this.hand)
     this.initPhysicsBodies(app)
-    this.initCursor(app)
   }
 
   initPhysicsBodies(app){
@@ -67265,7 +67263,7 @@ class MRHand {
       let colliderDesc
 
       if( joint.includes('tip') ){
-        colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+        colliderDesc = RAPIER.ColliderDesc.ball(0.023)
       } else {
         colliderDesc = RAPIER.ColliderDesc.capsule(0.01, 0.01)
       }
@@ -67280,44 +67278,30 @@ class MRHand {
 
       this.jointPhysicsBodies[joint].body.enableCcd(true);
 
-      // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to join collisions
+      // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to joint collisions
       this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
 
       if( joint.includes('index-finger-tip') ){
-        JOINT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
+        this.jointPhysicsBodies[`${joint}-hover`] = {body: app.physicsWorld.createRigidBody(rigidBodyDesc)}
+        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation)
+
+
+        // This should be replaced with a cone or something
+        let hoverColDesc = RAPIER.ColliderDesc.ball(0.04)
+        this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(
+          hoverColDesc,
+          this.jointPhysicsBodies[`${joint}-hover`].body
+        )
+        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
+        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`
       }
     }
   }
 
-  initCursor(app) {
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(1000, 1000, 1000)
-    const colliderDesc = RAPIER.ColliderDesc.ball(0.02)
-
-    this.cursor = app.physicsWorld.createRigidBody(rigidBodyDesc)
-    let collider = app.physicsWorld.createCollider(
-      colliderDesc,
-      this.cursor
-    )
-
-    COLLIDER_CURSOR_MAP[collider.handle] = this.cursor
-
-    collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
-      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
-    collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-    
-  }
-
-  updateCursor(){
-    if(!this.pinch){ return }
-    this.cursorPosition.copy(this.getCursorPosition())
-    this.cursor.setTranslation({ ...this.cursorPosition }, true)
-  }
-
   update() {
     this.updatePhysicsBodies()
-    this.updateCursor()
     this.pinchMoved()
   }
 
@@ -67348,6 +67332,11 @@ class MRHand {
       this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true)
       this.jointPhysicsBodies[joint].body.setRotation(this.tempJointOrientation, true)
 
+      if(joint.includes('index-finger-tip')) {
+        this.jointPhysicsBodies[`${joint}-hover`].body.setTranslation({ ...this.tempJointPosition }, true)
+        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(this.tempJointOrientation, true)
+      }
+
       
     }
   }
@@ -67366,10 +67355,6 @@ class MRHand {
 
   onPinch = (event) => {
     this.pinch = event.type == 'pinchstart'
-    if(!this.pinch) {
-      this.cursorPosition.setScalar(1000)
-      this.cursor.setTranslation({ ...this.cursorPosition }, true)
-    }
     const position = this.getCursorPosition()
     document.dispatchEvent(
       new CustomEvent(event.type, {
@@ -67441,11 +67426,32 @@ class ControlSystem extends System {
     this.leftHand = new MRHand('left', this.app)
     this.rightHand = new MRHand('right', this.app)
 
-    this.clickPoint = new three_module_Vector3()
+    this.pointerPosition = new three_module_Vector3()
     this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
     this.hit
 
+    this.restPosition = new three_module_Vector3(1000,1000,1000)
+    this.hitPosition = new three_module_Vector3()
+    this.timer
+
+
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
+
+    this.cursor = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
+
+    // This should be replaced with a cone or something
+    let hoverColDesc = RAPIER.ColliderDesc.ball(0.02)
+    this.cursor.collider = this.app.physicsWorld.createCollider(
+      hoverColDesc,
+      this.cursor
+    )
+
+    this.cursor.setTranslation({ ...this.restPosition }, true)
+
+    INPUT_COLLIDER_HANDLE_NAMES[this.cursor.collider.handle] = 'cursor-hover'
+
     this.app.renderer.domElement.addEventListener('click', this.onClick)
+    this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver)
   }
 
   update(deltaTime, frame) {
@@ -67456,18 +67462,59 @@ class ControlSystem extends System {
     this.rightHand.update()
   }
 
-  onClick = (event) => {
-    this.clickPoint.set(( event.clientX / window.innerWidth ) * 2 - 1,
+  mouseOver = (event) => {
+    
+      this.hit = this.castRay(event)
+
+      if (this.hit != null) {
+
+        this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
+        this.cursor.setTranslation({ ...this.hitPosition }, true)
+      }
+  }
+
+  castRay(event) {
+    if(this.app.user instanceof OrthographicCamera) {
+      this.pointerPosition.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1, - 1 ); // z = - 1 important!
+      this.pointerPosition.unproject( this.app.user );
+      let direction = new three_module_Vector3(0, 0, -1)
+      direction.transformDirection( this.app.user.matrixWorld );
+
+      this.ray.origin = {...this.pointerPosition}
+      this.ray.dir = {...direction}
+
+    } else {
+      this.pointerPosition.set(( event.clientX / window.innerWidth ) * 2 - 1,
       - ( event.clientY / window.innerHeight ) * 2 + 1,
       0.5)
-      this.clickPoint.unproject(this.app.user)
-      this.clickPoint.sub( this.app.user.position ).normalize();
+      this.pointerPosition.unproject(this.app.user)
+      this.pointerPosition.sub( this.app.user.position ).normalize();
       this.ray.origin = {...this.app.user.position}
-      this.ray.dir = {...this.clickPoint}
-      this.hit = this.app.physicsWorld.castRay(this.ray, 100, true);
+      this.ray.dir = {...this.pointerPosition}
+    }
+
+      return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+  }
+
+  removeCursor = () => {
+    this.cursor.setTranslation({ ...this.restPosition }, true)
+  }
+
+  onClick = (event) => {
+    this.removeCursor()
+    
+      this.hit = this.castRay(event)
       if (this.hit != null) {
         this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
-        console.log(this.app.focusEntity);
+        this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
+        this.app.focusEntity.object3D.worldToLocal(this.hitPosition)
+        this.app.focusEntity.dispatchEvent(
+          new CustomEvent(`click`, {
+            bubbles: true,
+            detail: {
+              position: this.hitPosition
+            },
+          }))
       }
   }
 }
@@ -68339,16 +68386,6 @@ class MRApp extends MRElement {
     this.scene = new Scene()
 
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
-    this.user = new PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.01,
-      20
-    )
-
-    this.vFOV = MathUtils.degToRad( this.user.fov );
-    this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
-    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
 
     this.lighting = {
       enabled: true,
@@ -68358,9 +68395,9 @@ class MRApp extends MRElement {
       shadows: true
     }
 
-
-    this.user.position.set(0, 0, 1)
-
+    this.cameraOptions = {
+      camera: 'perspective'
+    }
     this.render = this.render.bind(this)
     this.onWindowResize = this.onWindowResize.bind(this)
 
@@ -68429,6 +68466,27 @@ class MRApp extends MRElement {
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
 
+    this.cameraOptionString = this.getAttribute('camera')
+    if(this.cameraOptionString) {
+      this.cameraOptions = parseAttributeString(this.cameraOptionString)
+    }
+
+    this.initUser()
+
+    this.user.position.set(0, 0, 1)
+
+    let layersString = this.getAttribute('layers')
+
+    if(layersString) {
+      this.layers = parseVector(layersString)
+
+      for(const layer of this.layers) {
+        this.user.layers.enable(layer)
+      }
+    }
+
+
+
     if(this.debug){
       this.stats = new (stats_min_default())()
       this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -68476,6 +68534,30 @@ class MRApp extends MRElement {
 
     this.initLights(this.lighting)
 
+  }
+
+  initUser = () => {
+    switch(this.cameraOptions.camera) {
+      case 'orthographic':
+        this.viewPortWidth  = window.innerWidth / 1000
+		    this.viewPortHieght = window.innerHeight / 1000
+
+        this.user = new OrthographicCamera( this.viewPortWidth / - 2, this.viewPortWidth / 2, this.viewPortHieght / 2, this.viewPortHieght / - 2, 0.01, 1000 );
+        break;
+      case 'perspective':
+      default:
+        this.user = new PerspectiveCamera(
+          70,
+          window.innerWidth / window.innerHeight,
+          0.01,
+          20
+        )
+        this.vFOV = MathUtils.degToRad( this.user.fov );
+        this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
+        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+      break
+    }
+    
   }
 
   initLights = (data) => {
@@ -68526,9 +68608,16 @@ class MRApp extends MRElement {
   onWindowResize() {
 
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.user.aspect = window.innerWidth / window.innerHeight
-    this.user.updateProjectionMatrix()
-    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+    switch(this.cameraOptions.camera) {
+      case 'orthographic':
+        break;
+      case 'perspective':
+      default:
+        this.user.aspect = window.innerWidth / window.innerHeight
+        this.user.updateProjectionMatrix()
+        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        break;
+    }
 
   }
 
@@ -68984,13 +69073,18 @@ class Model extends Entity {
                 clearcoatRoughness: 0.5,
                 metalness: 0.5,
                 roughness: 0.6,
-                //envMap: envTex,
                 envMapIntensity: 0.75,
             });
 
             const mesh = new THREE.Mesh(geometry, material);
             mesh.receiveShadow = true
             mesh.renderOrder = 3
+
+            console.log(this.layer);
+
+            mesh.traverse(child => {
+                child.layers.enable(this.layer)
+            })
 
             this.object3D.add(mesh);
 
@@ -69018,7 +69112,6 @@ class Light_Light extends Entity {
         this.object3D.shadow.camera.right = 2
         this.object3D.shadow.camera.left = -2
         this.object3D.shadow.mapSize.set(4096, 4096)
-
     }
 
     connected(){
@@ -70184,7 +70277,7 @@ class Tool {
         this.body
         )
     
-        COLLIDER_TOOL_MAP[this.collider.handle] = this
+        RapierPhysicsSystem_namespaceObject.COLLIDER_TOOL_MAP[this.collider.handle] = this
     
         this.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
         RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED | RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC);

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MR.js</title>
+    <meta name="description" content="MR.js example">
+    <script src="./build.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+
+
+  </head>
+  <body >
+    <mr-app debug="true" camera="camera: orthographic">
+      <mr-surface>
+        <mr-container>
+          <mr-column>
+            <mr-row>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+            </mr-row>
+            <mr-row>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+            </mr-row>
+            <mr-row>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+              <mr-panel></mr-panel>
+            </mr-row>
+          </mr-column>
+        </mr-container>
+      </mr-surface> 
+    </mr-app>
+  </body>
+
+  <footer>
+    <script>
+      let colors = ['red', 'blue', 'green', 'yellow']
+
+      let panels = document.querySelectorAll('mr-panel')
+
+      for(const panel of panels) {
+        panel.addEventListener('click', (event) => {
+          event.target.object3D.material.color.setStyle(colors[Math.floor(Math.random()*colors.length)])
+        })
+
+        panel.onHover = (event) => {
+          switch (event.type) {
+            case 'hover-start':
+              panel.object3D.scale.subScalar(0.1)
+              break;
+
+            case 'hover-end':
+              panel.object3D.scale.addScalar(0.1)
+              break;
+          
+            default:
+              break;
+          }
+        }
+      }
+    </script>
+  </footer>
+</html>
