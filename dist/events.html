@@ -10,7 +10,7 @@
 
   </head>
   <body >
-    <mr-app>
+    <mr-app camera="camera: orthographic">
 
       <mr-font 
       src="./assets/fonts/BricolageGrotesque.ttf" 
@@ -56,11 +56,11 @@
         panel.onHover = (event) => {
           switch (event.type) {
             case 'hover-start':
-              panel.object3D.position.z += 0.01
+              panel.object3D.scale.subScalar(0.1)
               break;
 
             case 'hover-end':
-              panel.object3D.position.z -= 0.01
+              panel.object3D.scale.addScalar(0.1)
               break;
           
             default:

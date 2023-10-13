@@ -67463,14 +67463,8 @@ class ControlSystem extends System {
   }
 
   mouseOver = (event) => {
-    this.pointerPosition.set(( event.clientX / window.innerWidth ) * 2 - 1,
-      - ( event.clientY / window.innerHeight ) * 2 + 1,
-      0.5)
-      this.pointerPosition.unproject(this.app.user)
-      this.pointerPosition.sub( this.app.user.position ).normalize();
-      this.ray.origin = {...this.app.user.position}
-      this.ray.dir = {...this.pointerPosition}
-      this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+    
+      this.hit = this.castRay(event)
 
       if (this.hit != null) {
 
@@ -67479,20 +67473,37 @@ class ControlSystem extends System {
       }
   }
 
-  removeCursor = () => {
-    this.cursor.setTranslation({ ...this.restPosition }, true)
-  }
+  castRay(event) {
+    if(this.app.user instanceof OrthographicCamera) {
+      this.pointerPosition.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1, - 1 ); // z = - 1 important!
+      this.pointerPosition.unproject( this.app.user );
+      let direction = new three_module_Vector3(0, 0, -1)
+      direction.transformDirection( this.app.user.matrixWorld );
 
-  onClick = (event) => {
-    this.removeCursor()
-    this.pointerPosition.set(( event.clientX / window.innerWidth ) * 2 - 1,
+      this.ray.origin = {...this.pointerPosition}
+      this.ray.dir = {...direction}
+
+    } else {
+      this.pointerPosition.set(( event.clientX / window.innerWidth ) * 2 - 1,
       - ( event.clientY / window.innerHeight ) * 2 + 1,
       0.5)
       this.pointerPosition.unproject(this.app.user)
       this.pointerPosition.sub( this.app.user.position ).normalize();
       this.ray.origin = {...this.app.user.position}
       this.ray.dir = {...this.pointerPosition}
-      this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+    }
+
+      return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+  }
+
+  removeCursor = () => {
+    this.cursor.setTranslation({ ...this.restPosition }, true)
+  }
+
+  onClick = (event) => {
+    this.removeCursor()
+    
+      this.hit = this.castRay(event)
       if (this.hit != null) {
         this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
         this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
