@@ -266,9 +266,16 @@ export class MRApp extends MRElement {
   onWindowResize() {
 
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.user.aspect = window.innerWidth / window.innerHeight
-    this.user.updateProjectionMatrix()
-    this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+    switch(this.cameraOptions.camera) {
+      case 'orthographic':
+        break;
+      case 'perspective':
+      default:
+        this.user.aspect = window.innerWidth / window.innerHeight
+        this.user.updateProjectionMatrix()
+        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        break;
+    }
 
   }
 
