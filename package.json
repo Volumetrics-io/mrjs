@@ -33,9 +33,7 @@
   },
   "dependencies": {
     "@dimforge/rapier3d": "*",
-    "ammo.js": "github:kripken/ammo.js",
     "babel-eslint": "^10.1.0",
-    "html2canvas": "^1.4.1",
     "prettier": "^2.8.8",
     "prettier-eslint-cli": "^7.1.0",
     "stats.js": "^0.17.0",

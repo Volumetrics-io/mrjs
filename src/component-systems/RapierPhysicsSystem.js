@@ -1,8 +1,7 @@
 import * as THREE from 'three'
+import { RAPIER } from '../core/rapier.js'
 import System from '../core/System.js'
 import { MRUIEntity } from '../UI/UIEntity.js'
-
-export let RAPIER = null
 
 export const INPUT_COLLIDER_HANDLE_NAMES = {}
 export const COLLIDER_ENTITY_MAP = {}

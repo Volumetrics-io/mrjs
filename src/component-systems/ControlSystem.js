@@ -1,7 +1,8 @@
 import * as THREE from 'three'
+import { RAPIER } from '../core/rapier'
 import { MRHand } from '../interaction/hand'
 import System from '../core/System'
-import { RAPIER, COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES} from '../component-systems/RapierPhysicsSystem'
+import { COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES} from '../component-systems/RapierPhysicsSystem'
 
 export class ControlSystem extends System {
   constructor() {
