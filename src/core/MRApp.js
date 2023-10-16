@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import {RAPIER} from './rapier'
 
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -9,7 +10,6 @@ import { MRElement } from './MRElement.js'
 import { TextSystem } from '../component-systems/TextSystem.js'
 import { ControlSystem } from '../component-systems/ControlSystem.js'
 import {
-  RAPIER,
   RapierPhysicsSystem,
 } from '../component-systems/RapierPhysicsSystem.js'
 
@@ -74,16 +74,12 @@ export class MRApp extends MRElement {
     this.layoutSystem = new LayoutSystem()
 
     // initialize built in Systems
-    document.addEventListener('DOMContentLoaded', (event) => {
-      import('@dimforge/rapier3d').then((rap) => {
-        RAPIER = rap
+    document.addEventListener('engine-started', (event) => {
         this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
         this.physicsSystem = new RapierPhysicsSystem()
         this.controlSystem = new ControlSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
-        this.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
-      })
 
     })
   }

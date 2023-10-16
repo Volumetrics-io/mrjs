@@ -1,6 +1,8 @@
 // UTILS
 import './utils/extensions.js'
 
+import { RAPIER } from './core/rapier.js'
+
 // CORE
 import './core/MRElement.js'
 import './core/System.js'
@@ -37,7 +39,6 @@ import './entities/layout/Column.js'
 
 //   EXPORTS
 export * as THREE from 'three'
-export * as Ammo from 'three/examples/jsm/libs/ammo.wasm.js'
 
 // CORE
 export { default as MRElement } from './core/MRElement.js'
@@ -48,8 +49,3 @@ export { default as Entity } from './core/entity.js'
 export { default as UIPlane } from './geometry/UIPlane.js'
 // UI
 export { default as Panel } from './UI/Panel.js'
-
-
-//DEV
-
-import './entities/developer/DevVolume.js'
