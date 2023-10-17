@@ -1,6 +1,4 @@
-import '../../build.js'
-
-export class AnimationSystem extends System {
+class AnimationSystem extends System {
     constructor() {
         super()
 
@@ -9,7 +7,7 @@ export class AnimationSystem extends System {
 
     update(deltaTime, frame) {
         for(const entity of this.registry){
-            switch (entity.animation.type) {
+            switch (entity.animation?.type) {
                 case 'rotate':
                     this.rotate(entity)
                     break;
