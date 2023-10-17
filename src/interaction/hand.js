@@ -94,7 +94,7 @@ export class MRHand {
       let colliderDesc
 
       if( joint.includes('tip') ){
-        colliderDesc = RAPIER.ColliderDesc.ball(0.01)
+        colliderDesc = RAPIER.ColliderDesc.ball(0.0125)
       } else {
         colliderDesc = RAPIER.ColliderDesc.capsule(0.01, 0.01)
       }
@@ -120,7 +120,7 @@ export class MRHand {
 
 
         // This should be replaced with a cone or something
-        let hoverColDesc = RAPIER.ColliderDesc.ball(0.02)
+        let hoverColDesc = RAPIER.ColliderDesc.ball(0.025)
         this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(
           hoverColDesc,
           this.jointPhysicsBodies[`${joint}-hover`].body
