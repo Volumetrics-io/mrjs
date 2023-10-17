@@ -6,11 +6,12 @@ module.exports = {
     publicPath: '',
     filename: 'build.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: 'auto',
     libraryTarget: 'window',
   },
 
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 
   experiments: {

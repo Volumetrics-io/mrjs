@@ -83,6 +83,8 @@ export class Entity extends MRElement {
 
   padding = new BodyOffset(this.dimensionsUpdate)
 
+  layer = 0
+
   dimensionsUpdate = () => {
     this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
   }
@@ -117,8 +119,12 @@ export class Entity extends MRElement {
 
   }
 
-  onTouch = (joint, position) => { 
-    console.log(`${joint} touch at:`, position);
+  onHover = (event) => {
+    //console.log(`${event.detail.joint} hover at:`, event.detail.position);
+  }
+
+  onTouch = (event) => { 
+    //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
   onGrab = (position) => {
@@ -155,17 +161,21 @@ export class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    this.connected()
-
     document.addEventListener('DOMContentLoaded', (event) => {
       this.loadAttributes()
 
     })
     this.loadAttributes()
 
+    this.connected()
+
     document.addEventListener('engine-started', (event) => {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
     })
+
+    this.addEventListener('touch', this.onTouch)
+    this.addEventListener('hover-start', (event) => { this.onHover(event) })
+    this.addEventListener('hover-end', (event) => { this.onHover(event) })
 
     this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
   }
@@ -198,6 +208,10 @@ export class Entity extends MRElement {
           break
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
+          break
+        case 'layer':
+          this.layer = parseFloat(attr.value)
+          this.object3D.layers.set(this.layer)
           break
         default:
           this[attr.name] = attr.value

@@ -11,7 +11,6 @@ export default class Light extends Entity {
         this.object3D.shadow.camera.right = 2
         this.object3D.shadow.camera.left = -2
         this.object3D.shadow.mapSize.set(4096, 4096)
-
     }
 
     connected(){
