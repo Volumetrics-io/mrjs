@@ -20,22 +20,37 @@ export class ControlSystem extends System {
 
 
     const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
+    let colDesc = RAPIER.ColliderDesc.ball(0.02)
 
-    this.cursor = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
+    this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
+    this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
 
-    // This should be replaced with a cone or something
-    let hoverColDesc = RAPIER.ColliderDesc.ball(0.02)
-    this.cursor.collider = this.app.physicsWorld.createCollider(
-      hoverColDesc,
-      this.cursor
+    this.cursorHover.collider = this.app.physicsWorld.createCollider(
+      colDesc,
+      this.cursorHover
+    )
+    this.cursorClick.collider = this.app.physicsWorld.createCollider(
+      colDesc,
+      this.cursorClick
     )
 
-    this.cursor.setTranslation({ ...this.restPosition }, true)
+    this.cursorClick.setTranslation({ ...this.restPosition }, true)
+    this.cursorHover.setTranslation({ ...this.restPosition }, true)
 
-    INPUT_COLLIDER_HANDLE_NAMES[this.cursor.collider.handle] = 'cursor-hover'
+    INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor'
+    INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover'
+
+    this.cursor = this.cursorHover
+
 
     this.app.renderer.domElement.addEventListener('click', this.onClick)
+    this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown)
+    this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp)
     this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver)
+
+    this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown)
+    this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp)
+    this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver)
   }
 
   update(deltaTime, frame) {
@@ -47,6 +62,8 @@ export class ControlSystem extends System {
   }
 
   mouseOver = (event) => {
+    event.stopPropagation()
+    console.log(event);
     
       this.hit = this.castRay(event)
 
@@ -58,8 +75,18 @@ export class ControlSystem extends System {
   }
 
   castRay(event) {
+    let x = 0
+    let y = 0
+    if (event.type.includes('touch')){
+      x = event.touches[0].clientX
+      y = event.touches[0].clientY
+    } else {
+      x = event.clientX
+      y = event.clientY
+    }
+
     if(this.app.user instanceof THREE.OrthographicCamera) {
-      this.pointerPosition.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1, - 1 ); // z = - 1 important!
+      this.pointerPosition.set( ( x / window.innerWidth ) * 2 - 1, - ( y / window.innerHeight ) * 2 + 1, - 1 ); // z = - 1 important!
       this.pointerPosition.unproject( this.app.user );
       let direction = new THREE.Vector3(0, 0, -1)
       direction.transformDirection( this.app.user.matrixWorld );
@@ -68,8 +95,8 @@ export class ControlSystem extends System {
       this.ray.dir = {...direction}
 
     } else {
-      this.pointerPosition.set(( event.clientX / window.innerWidth ) * 2 - 1,
-      - ( event.clientY / window.innerHeight ) * 2 + 1,
+      this.pointerPosition.set(( x / window.innerWidth ) * 2 - 1,
+      - ( y / window.innerHeight ) * 2 + 1,
       0.5)
       this.pointerPosition.unproject(this.app.user)
       this.pointerPosition.sub( this.app.user.position ).normalize();
@@ -81,24 +108,44 @@ export class ControlSystem extends System {
   }
 
   removeCursor = () => {
-    this.cursor.setTranslation({ ...this.restPosition }, true)
+    this.cursorHover.setTranslation({ ...this.restPosition }, true)
+    this.cursorClick.setTranslation({ ...this.restPosition }, true)
+  }
+
+  onMouseDown = (event) => {
+    event.stopPropagation()
+    this.removeCursor()
+
+    this.cursor = this.cursorClick
+
+    this.hit = this.castRay(event)
+
+    if (this.hit != null) {
+      this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
+      this.cursor.setTranslation({ ...this.hitPosition }, true)
+    }
+  }
+
+  onMouseUp = (event) => {
+    event.stopPropagation()
+    this.removeCursor()
+    this.cursor = this.cursorHover
   }
 
   onClick = (event) => {
-    this.removeCursor()
     
       this.hit = this.castRay(event)
       if (this.hit != null) {
         this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
         this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
         this.app.focusEntity.object3D.worldToLocal(this.hitPosition)
-        this.app.focusEntity.dispatchEvent(
-          new CustomEvent(`click`, {
-            bubbles: true,
-            detail: {
-              position: this.hitPosition
-            },
-          }))
+        // this.app.focusEntity.dispatchEvent(
+        //   new CustomEvent(`click`, {
+        //     bubbles: true,
+        //     detail: {
+        //       position: this.hitPosition
+        //     },
+        //   }))
       }
   }
 }
