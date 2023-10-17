@@ -9,20 +9,6 @@ export class LayoutSystem extends System {
     constructor(){
         super()
 
-        // if (this.app.debug) {
-        //     document.addEventListener('keypress', (event) => {
-        //         if(event.code == 'Space') {
-        //           this.app.inXRSession = !this.app.inXRSession
-        //         }
-        //         let containers = document.querySelectorAll('mr-container')
-
-        //         for (const container of containers) {
-        //             this.adjustContainerSize(container)
-        //             this.adjustContent(container, container.absoluteWidth, container.absoluteHeight)
-        //         }
-        //       })
-        // }
-
         this.app.addEventListener('container-mutated', this.updateLayout)
     }
 
@@ -47,8 +33,8 @@ export class LayoutSystem extends System {
     adjustContent = (entity, width, height) => {
 
         if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
-            entity.absoluteWidth = width
-            entity.absoluteHeight = height
+            entity.absoluteWidth = entity.fixedWidth ? entity.fixedWidth : width
+            entity.absoluteHeight = entity.fixedHeight ? entity.fixedHeight : height
         }
         
         if (entity instanceof Column) { 
@@ -73,19 +59,21 @@ export class LayoutSystem extends System {
     adjustColumn = (column) => {
         column.getRowCount()
         let rowHeight = (column.absoluteHeight / column.rows)
+        rowHeight = rowHeight > 1 ? 1 : rowHeight
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
             child.absoluteHeight = child.height * rowHeight
+            console.log(child.absoluteHeight);
             child.object3D.position.setY( this.accumulatedY - child.absoluteHeight / 2)
             this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
 
-            child.absoluteWidth = column.computedInternalWidth
+            child.absoluteWidth = child.fixedWidth ? child.fixedWidth :column.computedInternalWidth
         }
-        column.shuttle.position.setY(-this.accumulatedY / 2)
+        column.shuttle.position.setY(column.parentElement.computedInternalHeight / 2)
     }
 
     adjustRow = (row) => {
@@ -103,8 +91,8 @@ export class LayoutSystem extends System {
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.absoluteHeight = row.computedInternalHeight - child.margin.vertical
+             child.absoluteHeight = child.fixedHeight ? child.fixedHeight : row.computedInternalHeight - child.margin.vertical
         }
-        row.shuttle.position.setX(-this.accumulatedX / 2)
+        row.shuttle.position.setX(-row.parentElement.computedInternalWidth / 2)
     }
 }

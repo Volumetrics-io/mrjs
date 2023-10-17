@@ -18,9 +18,15 @@ export class Entity extends MRElement {
     return this.#absoluteWidth
   }
 
+  #fixedWidth = null
+  get fixedWidth() {
+    return this.#fixedWidth
+  }
+
   #width = 'auto'
   set width(value) {
     this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
+    this.#fixedWidth = this.width
     this.dimensionsUpdate()
   }
   get width() {
@@ -49,9 +55,15 @@ export class Entity extends MRElement {
     return this.#absoluteHeight
   }
 
+  #fixedHeight = null
+  get fixedHeight() {
+    return this.#fixedHeight
+  }
+
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
+    this.#fixedHeight = this.height
     this.dimensionsUpdate()
   }
   get height() {

@@ -63,7 +63,6 @@ export class ControlSystem extends System {
 
   mouseOver = (event) => {
     event.stopPropagation()
-    console.log(event);
     
       this.hit = this.castRay(event)
 
