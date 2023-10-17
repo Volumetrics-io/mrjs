@@ -146,9 +146,9 @@ export class MRApp extends MRElement {
       this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
       document.body.appendChild(this.stats.dom)
       
-      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
-      orbitControls.minDistance = 0
-      orbitControls.maxDistance = 8
+      // const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+      // orbitControls.minDistance = 0
+      // orbitControls.maxDistance = 8
     }
 
     this.appendChild(this.renderer.domElement)
