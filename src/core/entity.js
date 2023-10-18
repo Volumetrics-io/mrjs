@@ -185,7 +185,9 @@ export class Entity extends MRElement {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
     })
 
-    this.addEventListener('touch', this.onTouch)
+    this.addEventListener('touch-start', (event) => { this.onTouch(event) })
+    this.addEventListener('touch', (event) => { this.onTouch(event) })
+    this.addEventListener('touch-end', (event) => { this.onTouch(event) })
     this.addEventListener('hover-start', (event) => { this.onHover(event) })
     this.addEventListener('hover-end', (event) => { this.onHover(event) })
 

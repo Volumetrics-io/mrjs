@@ -69,6 +69,7 @@ export class MRApp extends MRElement {
     this.observer.observe(this, { attributes: true, childList: true })
 
     this.addEventListener('wheel', (event) => {
+      console.log(this.focusEntity);
       this.focusEntity.onScroll(event)
     })
 

@@ -11,14 +11,14 @@ export default class Button extends Panel {
   onHover = (event) => {
     switch (event.type) {
         case 'hover-start':
-          panel.object3D.scale.addScalar(0.1)
-          panel.object3D.position.z += 0.001
+          this.object3D.scale.addScalar(0.1)
+          this.object3D.position.z += 0.001
 
           break;
 
         case 'hover-end':
-          panel.object3D.scale.subScalar(0.1)
-          panel.object3D.position.z -= 0.001
+          this.object3D.scale.subScalar(0.1)
+          this.object3D.position.z -= 0.001
 
           break;
       

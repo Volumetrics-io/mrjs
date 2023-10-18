@@ -31,6 +31,10 @@ export class Column extends MRUIEntity {
     this.rows = 0
 
     this.zOffeset = 0.01
+
+    this.currentPosition = new THREE.Vector3()
+    this.prevPosition = new THREE.Vector3()
+    this.delta = new THREE.Vector3()
   }
 
   add(entity) {
@@ -42,13 +46,27 @@ export class Column extends MRUIEntity {
   }
 
   onTouch = (event) => {
+    if(event.type =='touch-end') {
+      this.prevPosition.set(0,0,0)
+      return
+    }
     event.stopPropagation()
     let scrollMax = (this.fixedHeight) - (this.parentElement.computedInternalHeight / 2)
     let scrollMin = (this.parentElement.computedInternalHeight / 2)
-    let delta = event.detail.delta.y * 1.333
+    this.currentPosition.copy(event.detail.worldPosition)
+    this.object3D.worldToLocal(this.currentPosition)
+    if(this.prevPosition.y != 0) {
+      this.delta.subVectors(this.currentPosition, this.prevPosition)
+    }
+    this.prevPosition.copy(this.currentPosition)
 
-    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
-      this.shuttle.position.y += delta
+    if(this.delta.y > 0.1) {
+      console.log('big delta', this.delta.y);
+      console.log(event);
+    }
+
+    if( this.shuttle.position.y + this.delta.y > scrollMin && this.shuttle.position.y + this.delta.y < scrollMax){
+      this.shuttle.position.y += this.delta.y * 1.33
     }
   }
 

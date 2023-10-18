@@ -65,10 +65,6 @@ export class RapierPhysicsSystem extends System {
         this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
           let joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
 
-          if(entity != this.currentEntity) {
-            return
-          }
-
           if (joint) {
             if(!joint.includes('hover') && entity.touch) {
               this.tempPreviousPosition.copy(this.tempLocalPosition)
@@ -82,6 +78,7 @@ export class RapierPhysicsSystem extends System {
                 bubbles: true,
                 detail: {
                   joint: joint,
+                  worldPosition: collider2.translation(),
                   position: this.tempLocalPosition,
                   delta: this.touchDelta
                 }}))
@@ -103,9 +100,9 @@ export class RapierPhysicsSystem extends System {
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
     if (joint && entity && !joint.includes('hover')){
-      if(this.currentEntity) {
-        return
-      }
+      // if(this.currentEntity) {
+      //   return
+      // }
       this.touchStart(collider1, collider2, entity)
       return
     }
@@ -122,9 +119,9 @@ export class RapierPhysicsSystem extends System {
     let entity =  COLLIDER_ENTITY_MAP[handle2]
 
     if (joint && entity && !joint.includes('hover')){
-      if(entity != this.currentEntity) {
-        return
-      }
+      // if(entity != this.currentEntity) {
+      //   return
+      // }
       this.touchEnd(entity)
       return
     }
@@ -142,12 +139,15 @@ export class RapierPhysicsSystem extends System {
 
       this.app.focusEntity = entity
       this.tempLocalPosition.copy(manifold.localContactPoint2(0))
+      this.tempWorldPosition.copy(manifold.localContactPoint2(0))
+      entity.object3D.localToWorld(this.tempWorldPosition)
 
       // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
         new CustomEvent(`click`, {
           bubbles: true,
           detail: {
+            worldPosition: this.tempWorldPosition,
             position: this.tempLocalPosition
           },
         }))
@@ -155,6 +155,7 @@ export class RapierPhysicsSystem extends System {
         new CustomEvent(`touch-start`, {
           bubbles: true,
           detail: {
+            worldPosition: this.tempWorldPosition,
             position: this.tempLocalPosition
           },
         })
@@ -167,6 +168,7 @@ export class RapierPhysicsSystem extends System {
       // Contact information can be read from `manifold`. 
       this.tempPreviousPosition.set(0,0,0)
       this.tempLocalPosition.set(0,0,0)
+      this.tempWorldPosition.set(0,0,0)
       entity.touch = false
       entity.dispatchEvent(
         new CustomEvent(`touch-end`, {
@@ -178,10 +180,13 @@ export class RapierPhysicsSystem extends System {
   hoverStart = (collider1, collider2, entity) => {
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
       this.tempLocalPosition.copy(manifold.localContactPoint2(0))
+      this.tempWorldPosition.copy(manifold.localContactPoint2(0))
+      entity.object3D.localToWorld(this.tempWorldPosition)
       entity.dispatchEvent(
         new CustomEvent(`hover-start`, {
           bubbles: true,
           detail: {
+            worldPosition: this.tempWorldPosition,
             position: this.tempLocalPosition
           },
         })
