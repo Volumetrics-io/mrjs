@@ -67,11 +67,6 @@ export class MRApp extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    document.addEventListener('touch', (event) => {
-      this.focusEntity = event.target
-      console.log(this.focusEntity);
-    })
-
     this.addEventListener('wheel', (event) => {
       this.focusEntity.onScroll(event)
     })
@@ -150,6 +145,24 @@ export class MRApp extends MRElement {
       this.stats = new Stats()
       this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
       document.body.appendChild(this.stats.dom)
+
+      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+      orbitControls.minDistance = 1
+      orbitControls.maxDistance = 2
+      orbitControls.enabled = false
+
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key == '='){
+          orbitControls.enabled = true
+        }
+      })
+
+      document.addEventListener('keyup', (event) => {
+        if (event.key == '='){
+          orbitControls.enabled = false
+        }
+      })
 
     }
 

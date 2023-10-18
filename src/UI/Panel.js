@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { UIPlane } from '../geometry/UIPlane.js'
-import { MRUIEntity } from './UIEntity.js'
+import { Entity } from '../core/entity.js'
 
-export default class Panel extends MRUIEntity {
+export default class Panel extends Entity {
   radius = 0.02
   smoothness = 18
   #color = 0xecf0f1

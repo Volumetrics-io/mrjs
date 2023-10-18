@@ -1,8 +1,9 @@
 import { Text } from 'troika-three-text'
 import { parseAttributeString } from '../../utils/parser'
 import { MRUIEntity } from '../UIEntity'
+import { Entity } from '../../core/entity'
 
-export class MRText extends MRUIEntity {
+export class MRText extends Entity {
     constructor(){
         super()
         this.textObj = new Text()

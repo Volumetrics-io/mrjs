@@ -9,6 +9,8 @@ export class Column extends MRUIEntity {
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
     this.rows = 0
+
+    this.zOffeset = 0.01
   }
 
   add(entity) {
@@ -17,6 +19,17 @@ export class Column extends MRUIEntity {
 
   remove(entity) {
     this.shuttle.remove(entity.object3D)
+  }
+
+  onTouch = (event) => {
+    event.stopPropagation()
+    let scrollMax = (this.fixedHeight) - (this.parentElement.computedInternalHeight / 2)
+    let scrollMin = (this.parentElement.computedInternalHeight / 2)
+    let delta = event.detail.delta.y * 1.333
+
+    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
+      this.shuttle.position.y += delta
+    }
   }
 
   onScroll = (event) => {

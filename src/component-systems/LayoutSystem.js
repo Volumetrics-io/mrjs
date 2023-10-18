@@ -67,7 +67,6 @@ export class LayoutSystem extends System {
             let child = children[index]
             this.accumulatedY -= child.margin.top
             child.absoluteHeight = child.height * rowHeight
-            console.log(child.absoluteHeight);
             child.object3D.position.setY( this.accumulatedY - child.absoluteHeight / 2)
             this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
@@ -80,7 +79,6 @@ export class LayoutSystem extends System {
     adjustRow = (row) => {
         row.getColumnCount()
         let colWidth = (row.absoluteWidth / row.columns)
-        console.log(row.columns);
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
