@@ -20,6 +20,7 @@ export default class System {
     document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
 
     this.app.addEventListener('new-entity', (event) => {
+      if (this.registry.has(event.target)) { return }
       this.onNewEntity(event.target)
     })
 

@@ -71,11 +71,10 @@ export class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    
-    entity.textStyle.width = entity.computedInternalWidth
-    entity.textStyle.maxWidth = entity.computedInternalWidth
+    entity.textStyle.width = entity.fixedWidth ?? entity.computedInternalWidth
+    entity.textStyle.maxWidth = entity.fixedWidth ?? entity.computedInternalWidth
 
-    let height = entity.computedInternalHeight
+    let height = entity.fixedHeight ?? entity.computedInternalHeight
     entity.textObj.position.setY(height / 2)
 
     entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]

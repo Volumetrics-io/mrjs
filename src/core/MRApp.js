@@ -73,7 +73,6 @@ export class MRApp extends MRElement {
     })
 
     this.layoutSystem = new LayoutSystem()
-    this.clippingSystem = new ClippingSystem()
 
     // initialize built in Systems
     document.addEventListener('engine-started', (event) => {
@@ -82,6 +81,8 @@ export class MRApp extends MRElement {
         this.controlSystem = new ControlSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
+
+        this.clippingSystem = new ClippingSystem()
 
     })
   }
@@ -121,6 +122,7 @@ export class MRApp extends MRElement {
     this.renderer.xr.enabled = true
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
+    this.renderer.localClippingEnabled = true;
 
     this.cameraOptionString = this.getAttribute('camera')
     if(this.cameraOptionString) {
