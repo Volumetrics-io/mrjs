@@ -54,7 +54,6 @@ export class ClippingSystem extends System {
 
     applyClipping(object, clipping) {
         if (!object.isMesh) {return}
-        console.log('applied');
         object.material.clippingPlanes = clipping.planes
         object.material.clipIntersection = clipping.intersection
     }
