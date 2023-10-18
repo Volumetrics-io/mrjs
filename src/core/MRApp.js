@@ -17,6 +17,7 @@ import {
 import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
+import { ClippingSystem } from '../component-systems/ClippingSystem'
 ('use strict')
 
 window.mobileCheck = function() {
@@ -67,8 +68,9 @@ export class MRApp extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    document.addEventListener('touch-start', (event) => {
-      this.focusEntity = event.target
+    this.addEventListener('wheel', (event) => {
+      console.log(this.focusEntity);
+      this.focusEntity.onScroll(event)
     })
 
     this.layoutSystem = new LayoutSystem()
@@ -80,6 +82,8 @@ export class MRApp extends MRElement {
         this.controlSystem = new ControlSystem()
         this.textInputSystem = new TextInputSystem()
         this.textSystem = new TextSystem()
+
+        this.clippingSystem = new ClippingSystem()
 
     })
   }
@@ -119,6 +123,7 @@ export class MRApp extends MRElement {
     this.renderer.xr.enabled = true
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
+    this.renderer.localClippingEnabled = true;
 
     this.cameraOptionString = this.getAttribute('camera')
     if(this.cameraOptionString) {
@@ -145,6 +150,25 @@ export class MRApp extends MRElement {
       this.stats = new Stats()
       this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
       document.body.appendChild(this.stats.dom)
+
+      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
+      orbitControls.minDistance = 1
+      orbitControls.maxDistance = 2
+      orbitControls.enabled = false
+
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key == '='){
+          orbitControls.enabled = true
+        }
+      })
+
+      document.addEventListener('keyup', (event) => {
+        if (event.key == '='){
+          orbitControls.enabled = false
+        }
+      })
+
     }
 
     this.appendChild(this.renderer.domElement)
@@ -257,17 +281,24 @@ export class MRApp extends MRElement {
 
   onWindowResize() {
 
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
     switch(this.cameraOptions.camera) {
       case 'orthographic':
+        this.viewPortWidth  = window.innerWidth / 1000
+		    this.viewPortHieght = window.innerHeight / 1000
+
+        this.user.left = this.viewPortWidth / - 2
+        this.user.right = this.viewPortWidth / 2
+        this.user.top = this.viewPortHieght / 2
+        this.user.bottom = this.viewPortHieght / - 2
         break;
       case 'perspective':
       default:
         this.user.aspect = window.innerWidth / window.innerHeight
-        this.user.updateProjectionMatrix()
         this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
         break;
     }
+    this.user.updateProjectionMatrix()
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
 
   }
 

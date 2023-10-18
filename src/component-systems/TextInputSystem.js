@@ -41,7 +41,6 @@ export class TextInputSystem extends System {
 
   saveUpdate(){
     if(this.app.focusEntity instanceof TextEditor) {
-      console.log('saved');
       this.spliceSplit(this.currentIndex, 1, '')
       this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent
       this.spliceSplit(this.currentIndex, 0, '|')
@@ -59,7 +58,6 @@ export class TextInputSystem extends System {
   handleMetaKeys = (key) => {
     switch (key) {
       case 's':
-        console.log('saving');
         this.saveUpdate()
         break;
     

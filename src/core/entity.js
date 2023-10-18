@@ -18,9 +18,15 @@ export class Entity extends MRElement {
     return this.#absoluteWidth
   }
 
+  #fixedWidth = null
+  get fixedWidth() {
+    return this.#fixedWidth
+  }
+
   #width = 'auto'
   set width(value) {
     this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
+    this.#fixedWidth = this.width
     this.dimensionsUpdate()
   }
   get width() {
@@ -49,9 +55,15 @@ export class Entity extends MRElement {
     return this.#absoluteHeight
   }
 
+  #fixedHeight = null
+  get fixedHeight() {
+    return this.#fixedHeight
+  }
+
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
+    this.#fixedHeight = this.height
     this.dimensionsUpdate()
   }
   get height() {
@@ -127,8 +139,8 @@ export class Entity extends MRElement {
     //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
-  onGrab = (position) => {
-    console.log('grab');
+  onScroll = (event) => {
+    this.parentElement?.onScroll(event)
   }
 
   connectedCallback() {
@@ -173,7 +185,9 @@ export class Entity extends MRElement {
       this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
     })
 
-    this.addEventListener('touch', this.onTouch)
+    this.addEventListener('touch-start', (event) => { this.onTouch(event) })
+    this.addEventListener('touch', (event) => { this.onTouch(event) })
+    this.addEventListener('touch-end', (event) => { this.onTouch(event) })
     this.addEventListener('hover-start', (event) => { this.onHover(event) })
     this.addEventListener('hover-end', (event) => { this.onHover(event) })
 

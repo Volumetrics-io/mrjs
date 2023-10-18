@@ -87,6 +87,11 @@
     border: none;
     /* outline: 1px solid #ff000033; */
   }
+
+        html {
+          overflow: hidden;
+          overscroll-behavior: none;
+        }
   
   body {
     position:fixed;

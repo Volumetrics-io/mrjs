@@ -19,6 +19,7 @@ import './component-systems/LayoutSystem.js'
 import './geometry/UIPlane.js'
 
 // UI
+import './UI/Button.js'
 import './UI/Panel.js'
 import './entities/Surface.js'
 import './entities/Volume.js'

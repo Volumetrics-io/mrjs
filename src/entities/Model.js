@@ -37,8 +37,6 @@ export class Model extends Entity {
             mesh.receiveShadow = true
             mesh.renderOrder = 3
 
-            console.log(this.layer);
-
             mesh.traverse(child => {
                 child.layers.enable(this.layer)
             })

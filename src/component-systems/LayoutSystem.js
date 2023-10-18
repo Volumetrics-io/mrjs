@@ -9,20 +9,6 @@ export class LayoutSystem extends System {
     constructor(){
         super()
 
-        // if (this.app.debug) {
-        //     document.addEventListener('keypress', (event) => {
-        //         if(event.code == 'Space') {
-        //           this.app.inXRSession = !this.app.inXRSession
-        //         }
-        //         let containers = document.querySelectorAll('mr-container')
-
-        //         for (const container of containers) {
-        //             this.adjustContainerSize(container)
-        //             this.adjustContent(container, container.absoluteWidth, container.absoluteHeight)
-        //         }
-        //       })
-        // }
-
         this.app.addEventListener('container-mutated', this.updateLayout)
     }
 
@@ -47,11 +33,12 @@ export class LayoutSystem extends System {
     adjustContent = (entity, width, height) => {
 
         if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
-            entity.absoluteWidth = width
-            entity.absoluteHeight = height
+            entity.absoluteWidth = entity.fixedWidth ? entity.fixedWidth : width
+            entity.absoluteHeight = entity.fixedHeight ? entity.fixedHeight : height
         }
         
         if (entity instanceof Column) { 
+            entity.absoluteHeight = height
             this.adjustColumn(entity) 
         }
         else if (entity instanceof Row) { 
@@ -72,7 +59,8 @@ export class LayoutSystem extends System {
 
     adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (column.absoluteHeight / column.rows)
+        let rowHeight = ((column.fixedHeight ?? column.absoluteHeight) / column.rows)
+        rowHeight = rowHeight > 1 ? 1 : rowHeight
         const children = Array.from(column.children)
         this.accumulatedY = 0
         for (const index in children) {
@@ -83,15 +71,14 @@ export class LayoutSystem extends System {
             this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
 
-            child.absoluteWidth = column.computedInternalWidth
+            child.absoluteWidth = child.fixedWidth ? child.fixedWidth : column.computedInternalWidth
         }
-        column.shuttle.position.setY(-this.accumulatedY / 2)
+        column.shuttle.position.setY(column.parentElement.computedInternalHeight / 2)
     }
 
     adjustRow = (row) => {
         row.getColumnCount()
         let colWidth = (row.absoluteWidth / row.columns)
-        console.log(row.columns);
         const children = Array.from(row.children)
         this.accumulatedX = 0
         for (const index in children) {
@@ -103,8 +90,8 @@ export class LayoutSystem extends System {
             this.accumulatedX += child.margin.right
 
              // fill parent
-             child.absoluteHeight = row.computedInternalHeight - child.margin.vertical
+             child.absoluteHeight = child.fixedHeight ? child.fixedHeight : row.computedInternalHeight - child.margin.vertical
         }
-        row.shuttle.position.setX(-this.accumulatedX / 2)
+        row.shuttle.position.setX(-row.parentElement.computedInternalWidth / 2)
     }
 }

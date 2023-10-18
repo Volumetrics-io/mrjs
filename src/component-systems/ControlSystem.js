@@ -20,7 +20,7 @@ export class ControlSystem extends System {
 
 
     const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-    let colDesc = RAPIER.ColliderDesc.ball(0.02)
+    let colDesc = RAPIER.ColliderDesc.ball(0.0001)
 
     this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
     this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
@@ -63,7 +63,6 @@ export class ControlSystem extends System {
 
   mouseOver = (event) => {
     event.stopPropagation()
-    console.log(event);
     
       this.hit = this.castRay(event)
 
@@ -132,20 +131,13 @@ export class ControlSystem extends System {
     this.cursor = this.cursorHover
   }
 
-  onClick = (event) => {
-    
-      this.hit = this.castRay(event)
-      if (this.hit != null) {
-        this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
-        this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
-        this.app.focusEntity.object3D.worldToLocal(this.hitPosition)
-        // this.app.focusEntity.dispatchEvent(
-        //   new CustomEvent(`click`, {
-        //     bubbles: true,
-        //     detail: {
-        //       position: this.hitPosition
-        //     },
-        //   }))
-      }
-  }
+  // onClick = (event) => {
+  //   this.removeCursor()
+  //   this.cursor = this.cursorClick
+
+  //     this.hit = this.castRay(event)
+  //     if (this.hit != null) {
+  //       this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
+  //     }
+  // }
 }
