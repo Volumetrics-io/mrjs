@@ -132,19 +132,12 @@ export class ControlSystem extends System {
   }
 
   onClick = (event) => {
-    
+    this.removeCursor()
+    this.cursor = this.cursorClick
+
       this.hit = this.castRay(event)
       if (this.hit != null) {
         this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
-        this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
-        this.app.focusEntity.object3D.worldToLocal(this.hitPosition)
-        // this.app.focusEntity.dispatchEvent(
-        //   new CustomEvent(`click`, {
-        //     bubbles: true,
-        //     detail: {
-        //       position: this.hitPosition
-        //     },
-        //   }))
       }
   }
 }

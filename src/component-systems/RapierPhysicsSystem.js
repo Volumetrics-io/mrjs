@@ -20,6 +20,7 @@ export class RapierPhysicsSystem extends System {
     super()
     this.debug = this.app.debug
     this.tempWorldPosition = new THREE.Vector3()
+    this.tempLocalPosition = new THREE.Vector3()
     this.tempWorldScale = new THREE.Vector3()
     this.tempWorldQuaternion = new THREE.Quaternion()
     this.tempHalfExtents = new THREE.Vector3()
@@ -60,11 +61,13 @@ export class RapierPhysicsSystem extends System {
 
           if (joint) {
             if(!joint.includes('hover') && entity.touch) {
+              this.tempLocalPosition.copy(collider2.translation())
+              entity.object3D.worldToLocal(this.tempLocalPosition)
               entity.dispatchEvent(new CustomEvent(`touch`, {
                 bubbles: true,
                 detail: {
                   joint: joint,
-                  position: collider2.translation(),
+                  position: this.tempLocalPosition,
                 }}))
 
             }
@@ -113,19 +116,23 @@ export class RapierPhysicsSystem extends System {
   touchStart = (collider1, collider2, entity) => {
     entity.touch = true
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+
+      //this.app.focusEntity = entity
+      this.tempLocalPosition.copy(manifold.localContactPoint2(0))
+      entity.object3D.worldToLocal(this.tempLocalPosition)
       // Contact information can be read from `manifold`. 
       entity.dispatchEvent(
         new CustomEvent(`click`, {
           bubbles: true,
           detail: {
-            position: manifold.localContactPoint2(0)
+            position: this.tempLocalPosition
           },
         }))
       entity.dispatchEvent(
         new CustomEvent(`touch-start`, {
           bubbles: true,
           detail: {
-            position: manifold.localContactPoint2(0)
+            position: this.tempLocalPosition
           },
         })
       )
@@ -144,11 +151,13 @@ export class RapierPhysicsSystem extends System {
 
   hoverStart = (collider1, collider2, entity) => {
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      this.tempLocalPosition.copy(manifold.localContactPoint2(0))
+      entity.object3D.worldToLocal(this.tempLocalPosition)
       entity.dispatchEvent(
         new CustomEvent(`hover-start`, {
           bubbles: true,
           detail: {
-            position: manifold.localContactPoint2(0)
+            position: this.tempLocalPosition
           },
         })
       )

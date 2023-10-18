@@ -38,6 +38,7 @@ export class LayoutSystem extends System {
         }
         
         if (entity instanceof Column) { 
+            entity.absoluteHeight = height
             this.adjustColumn(entity) 
         }
         else if (entity instanceof Row) { 
@@ -58,7 +59,7 @@ export class LayoutSystem extends System {
 
     adjustColumn = (column) => {
         column.getRowCount()
-        let rowHeight = (column.absoluteHeight / column.rows)
+        let rowHeight = ((column.fixedHeight ?? column.absoluteHeight) / column.rows)
         rowHeight = rowHeight > 1 ? 1 : rowHeight
         const children = Array.from(column.children)
         this.accumulatedY = 0
@@ -71,7 +72,7 @@ export class LayoutSystem extends System {
             this.accumulatedY -= child.absoluteHeight 
             this.accumulatedY -= child.margin.bottom
 
-            child.absoluteWidth = child.fixedWidth ? child.fixedWidth :column.computedInternalWidth
+            child.absoluteWidth = child.fixedWidth ? child.fixedWidth : column.computedInternalWidth
         }
         column.shuttle.position.setY(column.parentElement.computedInternalHeight / 2)
     }

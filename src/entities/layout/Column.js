@@ -1,6 +1,7 @@
+import { MRUIEntity } from '../../UI/UIEntity'
 import { Entity } from '../../core/entity'
 
-export class Column extends Entity {
+export class Column extends MRUIEntity {
   constructor() {
     super()
     this.shuttle = new THREE.Group() // will shift based on bounding box width
@@ -16,6 +17,15 @@ export class Column extends Entity {
 
   remove(entity) {
     this.shuttle.remove(entity.object3D)
+  }
+
+  onScroll = (event) => {
+    let scrollMax = (this.fixedHeight) - (this.parentElement.computedInternalHeight / 2)
+    let scrollMin = (this.parentElement.computedInternalHeight / 2)
+    let delta = event.deltaY * 0.001
+    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
+      this.shuttle.position.y += delta
+    }
   }
 
   getRowCount(){

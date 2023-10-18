@@ -139,8 +139,8 @@ export class Entity extends MRElement {
     //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
-  onGrab = (position) => {
-    console.log('grab');
+  onScroll = (event) => {
+    this.parentElement?.onScroll(event)
   }
 
   connectedCallback() {
