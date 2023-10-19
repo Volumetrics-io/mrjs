@@ -10,7 +10,7 @@ MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web 
 
 CDN:
 
-`    <script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/build.js"></script>
+`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/build.js"></script>
 `
 
 NPM:
