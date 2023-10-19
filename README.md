@@ -6,28 +6,44 @@ An extendable WebComponents library for the Spatial Web
 
 MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
+## Getting started
+
+CDN:
+
+`    <script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/build.js"></script>
+`
+
+NPM:
+
+`npm install volumetrics-io/mr.js`
+
+from source:
+
+`npm run build`
+
 # Features
 
 ## 2D UI & Layout Components
 
 ```html
 <mr-app>
-    <mr-container width="3" height="2">
+    <mr-surface>
+    <mr-container>
+        <mr-panel></mr-panel>
         <mr-row>
-            <mr-panel>
+            <mr-text>
                 This is a quick example of an image gallery with explainer text.
-            </mr-panel>
+            </mr-text>
             <mr-column>
-                <-- image tag not yet implemented -->
                 <mr-image src="..."></mr-image>
                 <mr-row height="0.02">
-                    <-- Buttons not yet implemented -->
                     <mr-button onClick="Prev()"> <- </mr-button>
                     <mr-button onClick="Next()"> -> </mr-button>
                 </mr-row>
             </mr-column>
         </mr-row>
     </mr-container>
+    </mr-surface>
 </mr-app>
 ```
 
@@ -52,12 +68,6 @@ MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web 
 </mr-app>
 ```
 
-## Hand Interaction
-
-(touch and point/pinch interaction is currently disabled while transitioning to physics based gestures)
-
-_**ADD GIF OF HAND INTERACTIONS**_
-
 ## 3D Content
 
 _**Currently unimplemented but here's the markup**_
@@ -68,9 +78,7 @@ _**Currently unimplemented but here's the markup**_
         <mr-panel snap-to="left">
             This is an example of loading a 3D model
         </mr-panel>
-        <mr-cube opacity="0.3">
-            <mr-model src="model.gltf"></mr-model>
-        </mr-cube>
+        <mr-model src="model.gltf"></mr-model>
     </mr-volume>
 <mr-app>
 ```
@@ -168,11 +176,3 @@ class OrbitSystem extends System{
 ```
 
 Note: the mapping between components and systems is 1-to-1, and the naming convention (`comp-<name>` and `<Name>System`) is strictly enforced. components can only be modified by their matching system. You can also implement a System to do per frame logic without using components, but it's not recommended.
-
-# Installation
-
-`npm install volumetrics-io/mr.js`
-
-# run locally
-
-`npm run build`
