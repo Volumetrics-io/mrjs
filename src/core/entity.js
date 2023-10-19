@@ -223,6 +223,9 @@ export class Entity extends MRElement {
         case 'padding':
           this.padding.setFromVector(parseVector(attr.value))
           break
+        case 'zoffset':
+          this.zOffeset = parseFloat(attr.value)
+          break
         case 'layer':
           this.layer = parseFloat(attr.value)
           this.object3D.layers.set(this.layer)
