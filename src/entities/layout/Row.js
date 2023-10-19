@@ -41,8 +41,8 @@ export class Row extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.fixedWidth) - (this.parentElement.computedInternalWidth / 2)
-    let scrollMin = (this.parentElement.computedInternalWidth / 2)
+    let scrollMax = -(this.parentElement.computedInternalWidth / 2)
+    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.fixedWidth)
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.x != 0) {

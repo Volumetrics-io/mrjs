@@ -6,7 +6,7 @@ export class Column extends MRUIEntity {
 
   set absoluteHeight(value) {
     super.absoluteHeight = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
     
   }
   get absoluteHeight() {
@@ -15,7 +15,7 @@ export class Column extends MRUIEntity {
 
   set absoluteWidth(value) {
     super.absoluteWidth = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
   }
   get absoluteWidth() {
     return super.absoluteWidth
@@ -27,10 +27,9 @@ export class Column extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
     this.rows = 0
 
-    this.zOffeset = 0.01
 
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()

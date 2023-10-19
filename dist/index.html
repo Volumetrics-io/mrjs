@@ -17,12 +17,15 @@
       size="0.06" 
       target=".title"></mr-font>
 
-      <mr-surface position="0 -0.32 0">
+      <mr-surface>
         <mr-container>
             <mr-panel corner-radius="0.0">
               <mr-row>
                 <mr-panel color="black"></mr-panel>
                 <mr-column width="2" height="2">
+                  <mr-text width="0.5" height="0.1"  class="title" >
+                    MR.js
+                  </mr-text>
                   <mr-text height="0.2" padding="0.01" class="title">
                     Building for Mixed Reality, in Mixed Reality.
                   </mr-text>
@@ -34,8 +37,17 @@ Sit aliquip excepteur laboris ullamco minim sint sit dolor cupidatat culpa conse
 Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
                   </mr-text>
 
-                  <mr-text height="0.2" padding="0.01" class="title">
-                    wahoo!
+            
+
+                  <mr-model height="0.1" layer="2" comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
+                    src="./assets/models/logo.stl" 
+                    rotation="-22.91 17.1887 45.8366"
+                    zoffset="0.05"
+                    scale="0.001">
+                  </mr-model>
+
+                  <mr-text width="0.5" height="0.1"  class="title" >
+                    volumetrics
                   </mr-text>
 
                 </mr-column>
@@ -45,20 +57,11 @@ Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi u
         </mr-container>
       </mr-surface>
 
-      <mr-surface position="0 0.5 -1">
       <mr-entity comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" position="0 0 2">
         <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="5" position="0 1 0"></mr-light>
         <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="10" position="1 -1 0"></mr-light>
         <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="15" position="-1 -1 0"></mr-light>
       </mr-entity>
-      <mr-model layer="2" comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
-      src="./assets/models/logo.stl" 
-      rotation="-22.91 17.1887 45.8366"
-      scale="0.003"></mr-model>
-      <mr-text width="0.5" height="0.1" position="0 -0.05 0.3"  class="title" >
-        MR.js
-      </mr-text>
-      </mr-surface>
         
     </mr-app>
   </body>
