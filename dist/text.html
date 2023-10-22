@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MR.js</title>
+    <meta name="description" content="MR.js text">
+    <script src="./build.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+
+
+  </head>
+  <body >
+    <div style="font-size: 12px; text-align: center;">12px</div>
+    <mr-app debug="true" camera="camera: orthographic">
+        <mr-container>
+            <mr-panel>
+            </mr-panel>
+            <mr-column height="2">
+                <mr-text text-style="size: 12px; vertical: top">absolute units</mr-text>
+                <mr-text text-style="size: 12px; vertical: top">12px</mr-text>
+                <mr-text text-style="size: 12pt; vertical: top">12pt</mr-text>
+                <mr-text text-style="size: 1.22pc; vertical: top">1.2pc</mr-text>
+                <mr-text text-style="size: 10mm; vertical: top">10mm</mr-text>
+                <mr-text text-style="size: 1cm; vertical: top">1cm</mr-text>
+                <mr-text text-style="size: 1in; vertical: top">1in</mr-text>
+
+            </mr-column>
+
+        </mr-container>
+      <!-- <mr-text text-style="size: 0.5em; vertical: top">t</mr-text> -->
+    </mr-app>
+  </body>
+
+  <footer>
+    
+  </footer>
+</html>

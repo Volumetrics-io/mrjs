@@ -46,7 +46,8 @@ export class LayoutSystem extends System {
         } 
 
         /// Set Z-index
-        entity.object3D.position.z += entity.zOffeset
+        //entity.object3D.position.z += entity.zOffeset
+        entity.object3D.position.z = entity.zOffeset
 
         const children = Array.from(entity.children)
         for (const child of children) {

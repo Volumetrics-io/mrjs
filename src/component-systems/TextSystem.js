@@ -2,6 +2,8 @@ import {preloadFont} from 'troika-three-text'
 import System from '../core/System'
 import { parseAttributeString } from '../utils/parser'
 
+const VIRTUAL_DISPLAY_RESOLUTION = 1080
+
 export class TextSystem extends System {
   constructor() {
     super()
@@ -77,7 +79,7 @@ export class TextSystem extends System {
     let height = entity.fixedHeight ?? entity.computedInternalHeight
     entity.textObj.position.setY(height / 2)
 
-    entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
+    //entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
     this.setStyle(entity.textObj, entity.textStyle)
     entity.textObj.sync()
   }
@@ -94,11 +96,7 @@ export class TextSystem extends System {
     textObj.anchorX = style.horizontal ?? 'center'
     textObj.anchorY = style.vertical ?? 'top'
     textObj.material.color.setStyle(style.color ?? '#000')
-    if (style.size == 'fit') {
-      textObj.fontSize = style.width * 0.025
-    } else {
-      textObj.fontSize = style.size ?? 0.025
-    }
+    textObj.fontSize = this.parseFontSize(style.size)
     textObj.font = style.font ?? textObj.font
     textObj.textAlign = style.textAlign ?? textObj.textAlign
     textObj.whiteSpace = style.whiteSpace ?? textObj.whiteSpace
@@ -109,4 +107,21 @@ export class TextSystem extends System {
 
     textObj.position.z = 0.0001
   }
+
+  parseFontSize(val) {
+    if(!val) { return 0.025}
+    if(val instanceof String){
+      if(val.endsWith('em')) { return parseFloat(val.split('em')[0])}
+      if(val.endsWith('px')) { return parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION}
+      if(val.endsWith('pt')) { return parseFloat(val.split('pt')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 1.75}
+      if(val.endsWith('pc')) { return parseFloat(val.split('pc')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 21}
+      if(val.endsWith('mm')) { return parseFloat(val.split('mm')[0]) / 1000}
+      if(val.endsWith('cm')) { return parseFloat(val.split('cm')[0]) / 100}
+      if(val.endsWith('in')) { return parseFloat(val.split('in')[0]) / 39.3701}
+      if(val.endsWith('%')) { return parseFloat(val) / 100}
+    }
+    return val
+  }
+
+
 }
