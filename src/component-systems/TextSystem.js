@@ -80,7 +80,7 @@ export class TextSystem extends System {
     entity.textObj.position.setY(height / 2)
 
     //entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
-    this.setStyle(entity.textObj, entity.textStyle)
+    this.setStyle(entity)
     entity.textObj.sync()
   }
 
@@ -92,11 +92,13 @@ export class TextSystem extends System {
     this.updateStyle(entity)
   }
 
-  setStyle = (textObj, style) => {
+  setStyle = (entity) => {
+    let textObj =entity.textObj
+    let style = entity.textStyle
     textObj.anchorX = style.horizontal ?? 'center'
     textObj.anchorY = style.vertical ?? 'top'
     textObj.material.color.setStyle(style.color ?? '#000')
-    textObj.fontSize = this.parseFontSize(style.size)
+    textObj.fontSize = this.parseFontSize(style.size, entity)
     textObj.font = style.font ?? textObj.font
     textObj.textAlign = style.textAlign ?? textObj.textAlign
     textObj.whiteSpace = style.whiteSpace ?? textObj.whiteSpace
@@ -108,20 +110,68 @@ export class TextSystem extends System {
     textObj.position.z = 0.0001
   }
 
-  parseFontSize(val) {
-    if(!val) { return 0.025}
-    if(val instanceof String){
-      if(val.endsWith('em')) { return parseFloat(val.split('em')[0])}
-      if(val.endsWith('px')) { return parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION}
-      if(val.endsWith('pt')) { return parseFloat(val.split('pt')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 1.75}
-      if(val.endsWith('pc')) { return parseFloat(val.split('pc')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 21}
-      if(val.endsWith('mm')) { return parseFloat(val.split('mm')[0]) / 1000}
-      if(val.endsWith('cm')) { return parseFloat(val.split('cm')[0]) / 100}
-      if(val.endsWith('in')) { return parseFloat(val.split('in')[0]) / 39.3701}
-      if(val.endsWith('%')) { return parseFloat(val) / 100}
+  parseFontSize(val, el) {
+    if(!val) { 
+      console.log(val);
+      return 0.025
+    }
+    if (typeof val == 'string') {
+      let valuepair = val.split(/(\d+)/).filter(Boolean);
+      if(valuepair.length > 1){
+        switch(valuepair[1]){
+          case 'px':
+            return parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION
+          case 'pt':
+            return parseFloat(val.split('pt')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 1.75
+          case 'pc':
+            return parseFloat(val.split('pc')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 21
+          case 'mm':
+            return parseFloat(val.split('mm')[0]) / 1000
+          case 'cm':
+            return parseFloat(val.split('cm')[0]) / 100
+          case 'in':
+            return parseFloat(val.split('in')[0]) / 39.3701
+          case 'vh':
+            return (parseFloat(val.split('vh')[0]) / 100) * this.getVH(el)
+          case 'vw':
+            return (parseFloat(val.split('vw')[0]) / 100) * this.getVW(el)
+          case 'vmin':
+            return (parseFloat(val.split('vmin')[0]) / 100) * this.getVMin(el)
+          case 'vmax':
+            return (parseFloat(val.split('vmax')[0]) / 100) * this.getVMax(el)
+          case '%':
+            return parseFloat(val) / 100
+          default:
+            return val
+
+        }
+      }
     }
     return val
   }
 
+  getEM(el) {
+
+  }
+
+  getREM(el) {
+    
+  }
+
+  getVH(el) {
+    return el.closest('mr-container').absoluteHeight
+  }
+
+  getVW(el) {
+    return el.closest('mr-container').absoluteWidth
+  }
+
+  getVMax(el) {
+    return Math.max(this.getVH(el), this.getVW(el))
+  }
+
+  getVMin(el) {
+    return Math.min(this.getVH(el), this.getVW(el))
+  }
 
 }

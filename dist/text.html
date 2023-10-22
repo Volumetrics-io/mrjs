@@ -10,21 +10,31 @@
 
   </head>
   <body >
-    <div style="font-size: 12px; text-align: center;">12px</div>
-    <mr-app debug="true" camera="camera: orthographic">
+    <div style="font-family: arial; font-size: 12px; text-align: center;">12px</div>
+    <mr-app camera="camera: orthographic">
         <mr-container>
             <mr-panel>
             </mr-panel>
-            <mr-column height="2">
-                <mr-text text-style="size: 12px; vertical: top">absolute units</mr-text>
-                <mr-text text-style="size: 12px; vertical: top">12px</mr-text>
-                <mr-text text-style="size: 12pt; vertical: top">12pt</mr-text>
-                <mr-text text-style="size: 1.22pc; vertical: top">1.2pc</mr-text>
-                <mr-text text-style="size: 10mm; vertical: top">10mm</mr-text>
-                <mr-text text-style="size: 1cm; vertical: top">1cm</mr-text>
-                <mr-text text-style="size: 1in; vertical: top">1in</mr-text>
-
-            </mr-column>
+            <mr-row>
+                <mr-column>
+                    <mr-text text-style="size: 16px;">absolute units</mr-text>
+                    <mr-text text-style="size: 12px;">12px</mr-text>
+                    <mr-text text-style="size: 12pt;">12pt</mr-text>
+                    <mr-text text-style="size: 1.22pc;">1.2pc</mr-text>
+                    <mr-text text-style="size: 10mm;">10mm</mr-text>
+                    <mr-text text-style="size: 1cm;">1cm</mr-text>
+                    <mr-text text-style="size: 1in;">1in</mr-text>
+                </mr-column>
+                <mr-column >
+                    <mr-text text-style="size: 16px;">relative units</mr-text>
+                    <mr-text text-style="size: 0.01;">0.01</mr-text>
+                    <mr-text text-style="size: 5%;">5%</mr-text>
+                    <mr-text text-style="size: 1vh;">1vh</mr-text>
+                    <mr-text text-style="size: 1vw;">1vw</mr-text>
+                    <mr-text text-style="size: 1vmax;">1vmax</mr-text>
+                    <mr-text text-style="size: 1vmin;">1vmin</mr-text>
+                </mr-column>
+            </mr-row>
 
         </mr-container>
       <!-- <mr-text text-style="size: 0.5em; vertical: top">t</mr-text> -->
