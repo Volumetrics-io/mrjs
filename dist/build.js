@@ -60189,6 +60189,7 @@ class TextSystem extends System {
 
     entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
+    entity.absoluteWidth = entity.textStyle.maxWidth
 
     entity.textObj.position.setY(entity.offsetHeight / 2)
 
@@ -67901,273 +67902,7 @@ class Surface extends Entity {
 
 customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 
-;// CONCATENATED MODULE: ./src/datatypes/ClippingGeometry.js
-//NOTE: There is probably a better way to do this
-
-class ClippingGeometry {
-    planes = []
-    planeIDs = []
-    intersection = false
-    global = false
-
-    constructor(geometry){
-        this.geometry = geometry
-    }
-}
-;// CONCATENATED MODULE: ./src/entities/layout/Column.js
-
-
-
-
-class Column extends MRUIEntity {
-
-  set absoluteHeight(value) {
-    super.absoluteHeight = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-    
-  }
-  get height() {
-    return super.height
-  }
-
-  set absoluteWidth(value) {
-    super.absoluteWidth = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-  }
-  get width() {
-    return super.width
-  }
-
-  constructor() {
-    super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-    this.accumulatedY = 0
-
-    document.addEventListener('container-mutated', (event) => {
-      if (event.target != this.parentElement) { return }
-      this.absoluteHeight = this.height * this.parentElement.offsetHeight
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
-      this.update()
-    })
-
-    this.currentPosition = new THREE.Vector3()
-    this.prevPosition = new THREE.Vector3()
-    this.delta = new THREE.Vector3()
-  }
-
-  update = () => {
-        const children = Array.from(this.children)
-        this.accumulatedY = -this.padding.top
-        for (const index in children) {
-            let child = children[index]
-            this.accumulatedY -= child.margin.top
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
-            this.accumulatedY -= child.margin.bottom
-        }
-        this.shuttle.position.setY(this.parentElement.offsetHeight / 2)
-    }
-
-  add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
-  }
-
-  remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
-  }
-
-  onTouch = (event) => {
-    if(event.type =='touch-end') {
-      this.prevPosition.set(0,0,0)
-      console.log('offsetWidth', this.offsetWidth);
-      return
-    }
-    event.stopPropagation()
-    let scrollMax = (this.contentHeight) - (this.parentElement.offsetHeight / 2)
-    let scrollMin = (this.parentElement.offsetHeight / 2)
-    this.currentPosition.copy(event.detail.worldPosition)
-    this.object3D.worldToLocal(this.currentPosition)
-    if(this.prevPosition.y != 0) {
-      this.delta.subVectors(this.currentPosition, this.prevPosition)
-    }
-    this.prevPosition.copy(this.currentPosition)
-
-    if( this.shuttle.position.y + this.delta.y > scrollMin && this.shuttle.position.y + this.delta.y < scrollMax){
-      this.shuttle.position.y += this.delta.y * 1.33
-    }
-  }
-
-  onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - (this.parentElement.offsetHeight / 2)
-    let scrollMin = (this.parentElement.offsetHeight / 2)
-    let delta = event.deltaY * 0.001
-    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
-      this.shuttle.position.y += delta
-    }
-  }
-}
-
-customElements.get('mr-column') || customElements.define('mr-column', Column)
-
-;// CONCATENATED MODULE: ./src/entities/layout/Container.js
-
-
-class Container extends Entity {
-  constructor() {
-    super()
-  }
-
-  connected(){
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-
-    window.addEventListener('resize', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-
-    this.parentElement.addEventListener('surface-placed', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-
-    this.parentElement.addEventListener('surface-removed', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
-  }
-}
-
-customElements.get('mr-container') ||
-  customElements.define('mr-container', Container)
-
-;// CONCATENATED MODULE: ./src/entities/layout/Row.js
-
-
-
-
-
-class Row extends MRUIEntity {
-
-  // set height(value) {
-  //   super.height = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.height, 0.3))
-    
-  // }
-  // get height() {
-  //   return super.height
-  // }
-
-  // set width(value) {
-  //   super.width = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
-  // }
-  // get width() {
-  //   return super.width
-  // }
-
-
-  constructor() {
-    super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
-    //this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
-    this.columns = 0
-    this.accumulatedX = 0
-
-    document.addEventListener('container-mutated', (event) => {
-      if (event.target != this.parentElement) { return }
-      this.height = this.parentElement.height
-      this.update()
-    })
-
-
-    this.currentPosition = new THREE.Vector3()
-    this.prevPosition = new THREE.Vector3()
-    this.delta = new THREE.Vector3()
-  }
-
-  update = () => {
-    this.getColumnCount()
-    const children = Array.from(this.children)
-    this.accumulatedX = 0
-    for (const index in children) {
-        let child = children[index]
-        this.accumulatedX += child.margin.left
-        child.object3D.position.setX( this.accumulatedX + child.width / 2)
-        this.accumulatedX += child.width
-        this.accumulatedX += child.margin.right
-
-        if (child instanceof Column) {
-          child.height = this.height
-        }
-
-    }
-    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
-    }
-
-  onTouch = (event) => {
-    if(event.type =='touch-end') {
-      this.prevPosition.set(0,0,0)
-      return
-    }
-    event.stopPropagation()
-    let scrollMax = -(this.parentElement.offsetWidth / 2)
-    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
-    this.currentPosition.copy(event.detail.worldPosition)
-    this.object3D.worldToLocal(this.currentPosition)
-    if(this.prevPosition.x != 0) {
-      this.delta.subVectors(this.currentPosition, this.prevPosition)
-    }
-    this.prevPosition.copy(this.currentPosition)
-
-    if( this.shuttle.position.x + this.delta.x > scrollMin && this.shuttle.position.x + this.delta.x < scrollMax){
-      this.shuttle.position.x += this.delta.x * 1.33
-    }
-  }
-
-  onScroll = (event) => {
-    let scrollMax = -(this.parentElement.offsetWidth / 2)
-    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
-    let delta = event.deltaX * 0.001
-    if(this.shuttle.position.x - delta < scrollMax && this.shuttle.position.x - delta > scrollMin){
-      this.shuttle.position.x -= delta
-    }
-  }
-
-  add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
-  }
-
-  remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
-  }
-
-  getColumnCount(){
-    const children = Array.from(this.children)
-    this.columns = 0
-    for (const child of children) {
-        if (!child instanceof Entity) { continue }
-        this.columns += child.width + child.margin.horizontal
-    }
-  }
-}
-
-customElements.get('mr-row') || customElements.define('mr-row', Row)
-
 ;// CONCATENATED MODULE: ./src/component-systems/LayoutSystem.js
-
-
-
-
 
 
 
@@ -68180,7 +67915,6 @@ class LayoutSystem extends System {
 
     updateLayout = (event) => {
         this.adjustContainerSize(event.target)
-        //this.adjustContent(event.target, event.target.absoluteWidth, event.target.absoluteHeight)
     }
 
     adjustContainerSize = (container) => {
@@ -68194,18 +67928,6 @@ class LayoutSystem extends System {
         }
         
 
-    }
-
-    adjustContent = (entity, width, height) => {
-
-        /// Set Z-index
-        //entity.object3D.position.z += entity.zOffeset
-
-        const children = Array.from(entity.children)
-        for (const child of children) {
-            entity.height = height
-            entity.width = width
-        }
     }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
@@ -69817,6 +69539,231 @@ class TextField extends MRText {
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
+;// CONCATENATED MODULE: ./src/datatypes/ClippingGeometry.js
+//NOTE: There is probably a better way to do this
+
+class ClippingGeometry {
+    planes = []
+    planeIDs = []
+    intersection = false
+    global = false
+
+    constructor(geometry){
+        this.geometry = geometry
+    }
+}
+;// CONCATENATED MODULE: ./src/entities/layout/Container.js
+
+
+
+class Container extends MRUIEntity {
+  set absoluteHeight(value) {
+    super.absoluteHeight = value
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
+    
+  }
+  get height() {
+    return super.height
+  }
+
+  set absoluteWidth(value) {
+    super.absoluteWidth = value
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
+  }
+  get width() {
+    return super.width
+  }
+
+  constructor() {
+    super()
+    this.shuttle = new THREE.Group() // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
+    this.object3D.add(this.shuttle)
+
+    this.currentPosition = new THREE.Vector3()
+    this.prevPosition = new THREE.Vector3()
+    this.delta = new THREE.Vector3()
+  }
+
+  connected(){
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    window.addEventListener('resize', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    this.parentElement.addEventListener('surface-placed', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+
+    this.parentElement.addEventListener('surface-removed', (event) => {
+      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+    })
+  }
+
+  add(entity) {
+    this.shuttle.add(entity.object3D)
+  }
+
+  remove(entity) {
+    this.shuttle.remove(entity.object3D)
+  }
+
+  onTouch = (event) => {
+    if(event.type =='touch-end') {
+      this.prevPosition.set(0,0,0)
+      return
+    }
+    event.stopPropagation()
+    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
+    let scrollMin = (this.parentElement.offsetHeight / 2)
+    this.currentPosition.copy(event.detail.worldPosition)
+    this.object3D.worldToLocal(this.currentPosition)
+    if(this.prevPosition.y != 0) {
+      this.delta.subVectors(this.currentPosition, this.prevPosition)
+    }
+    this.prevPosition.copy(this.currentPosition)
+
+    if( this.shuttle.position.y + this.delta.y > scrollMin && this.shuttle.position.y + this.delta.y < scrollMax){
+      this.shuttle.position.y += this.delta.y * 1.33
+    }
+  }
+
+  onScroll = (event) => {
+    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
+    let scrollMin = (this.parentElement.offsetHeight / 2)
+    let delta = event.deltaY * 0.001
+    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){
+      this.shuttle.position.y += delta
+    }
+  }
+}
+
+customElements.get('mr-container') ||
+  customElements.define('mr-container', Container)
+
+;// CONCATENATED MODULE: ./src/entities/layout/Column.js
+
+
+class Column extends MRUIEntity {
+
+  constructor() {
+    super()
+    this.shuttle = new THREE.Group() // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+    this.object3D.add(this.shuttle)
+    this.accumulatedY = 0
+
+    document.addEventListener('container-mutated', (event) => {
+      if (event.target != this.closest('mr-container')) { return }
+        this.absoluteHeight = this.height * this.parentElement.offsetHeight
+        this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
+  }
+
+  update = () => {
+        const children = Array.from(this.children)
+        this.accumulatedY = -this.padding.top
+        for (const index in children) {
+            let child = children[index]
+            this.accumulatedY -= child.margin.top
+            child.object3D.position.setY( this.accumulatedY - child.height / 2)
+            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.margin.bottom
+        }
+        this.shuttle.position.setY(this.parentElement.offsetHeight / 2)
+    }
+
+  add(entity) {
+    this.shuttle.add(entity.object3D)
+    this.update()
+  }
+
+  remove(entity) {
+    this.shuttle.remove(entity.object3D)
+    this.update()
+  }
+}
+
+customElements.get('mr-column') || customElements.define('mr-column', Column)
+
+;// CONCATENATED MODULE: ./src/entities/layout/Row.js
+
+
+
+
+class Row extends MRUIEntity {
+
+
+  constructor() {
+    super()
+    this.shuttle = new THREE.Group() // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3()
+    this.object3D.userData.size = new THREE.Vector3()
+    this.object3D.add(this.shuttle)
+    this.columns = 0
+    this.accumulatedX = 0
+
+    document.addEventListener('container-mutated', (event) => {
+      if (event.target != this.closest('mr-container')) { return }
+        this.absoluteHeight = this.height * this.parentElement.offsetHeight
+        this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
+
+
+    this.currentPosition = new THREE.Vector3()
+    this.prevPosition = new THREE.Vector3()
+    this.delta = new THREE.Vector3()
+  }
+
+  update = () => {
+    this.getColumnCount()
+    const children = Array.from(this.children)
+    let colWidth = this.offsetWidth / this.columns 
+    this.accumulatedX = 0
+    for (const index in children) {
+        let child = children[index]
+        if (!(child instanceof Column)) { continue }
+        child.absoluteHeight = child.height * this.offsetHeight
+        child.absoluteWidth = colWidth * child.width
+
+        this.accumulatedX += child.margin.left
+        child.object3D.position.setX( this.accumulatedX + child.offsetWidth / 2)
+        this.accumulatedX += child.offsetWidth
+        this.accumulatedX += child.margin.right
+    }
+    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
+    }
+
+  add(entity) {
+    this.shuttle.add(entity.object3D)
+    this.update()
+  }
+
+  remove(entity) {
+    this.shuttle.remove(entity.object3D)
+    this.update()
+  }
+
+  getColumnCount(){
+    const children = Array.from(this.children)
+    this.columns = 0
+    for (const child of children) {
+        if (!child instanceof Entity) { continue }
+        this.columns += child.width + child.margin.horizontal
+    }
+  }
+}
+
+customElements.get('mr-row') || customElements.define('mr-row', Row)
+
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
 

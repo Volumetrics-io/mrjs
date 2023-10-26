@@ -1,26 +1,8 @@
 import { MRUIEntity } from '../../UI/UIEntity'
 import { Entity } from '../../core/entity'
-import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
 import { Column } from './Column'
 
 export class Row extends MRUIEntity {
-
-  // set height(value) {
-  //   super.height = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.height, 0.3))
-    
-  // }
-  // get height() {
-  //   return super.height
-  // }
-
-  // set width(value) {
-  //   super.width = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
-  // }
-  // get width() {
-  //   return super.width
-  // }
 
 
   constructor() {
@@ -29,13 +11,13 @@ export class Row extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    //this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
     this.columns = 0
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {
-      if (event.target != this.parentElement) { return }
-      this.height = this.parentElement.height
+      if (event.target != this.closest('mr-container')) { return }
+        this.absoluteHeight = this.height * this.parentElement.offsetHeight
+        this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 
@@ -48,50 +30,21 @@ export class Row extends MRUIEntity {
   update = () => {
     this.getColumnCount()
     const children = Array.from(this.children)
+    let colWidth = this.offsetWidth / this.columns 
     this.accumulatedX = 0
     for (const index in children) {
         let child = children[index]
+        if (!(child instanceof Column)) { continue }
+        child.absoluteHeight = child.height * this.offsetHeight
+        child.absoluteWidth = colWidth * child.width
+
         this.accumulatedX += child.margin.left
-        child.object3D.position.setX( this.accumulatedX + child.width / 2)
-        this.accumulatedX += child.width
+        child.object3D.position.setX( this.accumulatedX + child.offsetWidth / 2)
+        this.accumulatedX += child.offsetWidth
         this.accumulatedX += child.margin.right
-
-        if (child instanceof Column) {
-          child.height = this.height
-        }
-
     }
     this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
     }
-
-  onTouch = (event) => {
-    if(event.type =='touch-end') {
-      this.prevPosition.set(0,0,0)
-      return
-    }
-    event.stopPropagation()
-    let scrollMax = -(this.parentElement.offsetWidth / 2)
-    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
-    this.currentPosition.copy(event.detail.worldPosition)
-    this.object3D.worldToLocal(this.currentPosition)
-    if(this.prevPosition.x != 0) {
-      this.delta.subVectors(this.currentPosition, this.prevPosition)
-    }
-    this.prevPosition.copy(this.currentPosition)
-
-    if( this.shuttle.position.x + this.delta.x > scrollMin && this.shuttle.position.x + this.delta.x < scrollMax){
-      this.shuttle.position.x += this.delta.x * 1.33
-    }
-  }
-
-  onScroll = (event) => {
-    let scrollMax = -(this.parentElement.offsetWidth / 2)
-    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
-    let delta = event.deltaX * 0.001
-    if(this.shuttle.position.x - delta < scrollMax && this.shuttle.position.x - delta > scrollMin){
-      this.shuttle.position.x -= delta
-    }
-  }
 
   add(entity) {
     this.shuttle.add(entity.object3D)

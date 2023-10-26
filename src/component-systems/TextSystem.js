@@ -75,6 +75,7 @@ export class TextSystem extends System {
 
     entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
+    entity.absoluteWidth = entity.textStyle.maxWidth
 
     entity.textObj.position.setY(entity.offsetHeight / 2)
 

@@ -1,9 +1,5 @@
 import System from "../core/System";
-import { Entity } from "../core/entity";
 import { Surface } from "../entities/Surface";
-import { Column } from "../entities/layout/Column";
-import { Container } from "../entities/layout/Container";
-import { Row } from "../entities/layout/Row";
 
 export class LayoutSystem extends System {
     constructor(){
@@ -14,7 +10,6 @@ export class LayoutSystem extends System {
 
     updateLayout = (event) => {
         this.adjustContainerSize(event.target)
-        //this.adjustContent(event.target, event.target.absoluteWidth, event.target.absoluteHeight)
     }
 
     adjustContainerSize = (container) => {
@@ -28,17 +23,5 @@ export class LayoutSystem extends System {
         }
         
 
-    }
-
-    adjustContent = (entity, width, height) => {
-
-        /// Set Z-index
-        //entity.object3D.position.z += entity.zOffeset
-
-        const children = Array.from(entity.children)
-        for (const child of children) {
-            entity.height = height
-            entity.width = width
-        }
     }
 }
