@@ -26,17 +26,20 @@ export class Entity extends MRElement {
     }
   }
 
+  #absoluteWidth = 0
+
+  get offsetWidth() {
+    super.offsetWidth
+    return this.#absoluteWidth
+  }
+
+  set absoluteWidth(value) {
+    this.#absoluteWidth = value
+  }
+
   get contentWidth() {
     this.aabb.setFromObject(this.object3D).getSize(this.size)
     return this.size.x
-  }
-
-  get computedWidth() {
-    return this.width + this.margin.horizontal
-  }
-
-  get computedInternalWidth() {
-    return this.width - this.padding.horizontal
   }
 
   #height = 'auto'
@@ -53,17 +56,20 @@ export class Entity extends MRElement {
     }
   }
 
+  #absoluteHeight = 0
+
+  get offsetHeight() {
+    super.offsetHeight
+    return this.#absoluteHeight
+  }
+
+  set absoluteHeight(value) {
+    this.#absoluteHeight = value
+  }
+
   get contentHeight() {
     this.aabb.setFromObject(this.object3D).getSize(this.size)
     return this.size.y
-  }
-
-  get computedHeight() {
-    return this.height + this.margin.vertical
-  }
-
-  get computedInternalHeight() {
-    return this.height - this.padding.vertical
   }
 
   #zOffeset = 0.001

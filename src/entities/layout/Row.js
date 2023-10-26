@@ -61,7 +61,7 @@ export class Row extends MRUIEntity {
         }
 
     }
-    this.shuttle.position.setX(-this.parentElement.computedInternalWidth / 2)
+    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
     }
 
   onTouch = (event) => {
@@ -70,8 +70,8 @@ export class Row extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = -(this.parentElement.computedInternalWidth / 2)
-    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.contentWidth)
+    let scrollMax = -(this.parentElement.offsetWidth / 2)
+    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.x != 0) {
@@ -85,8 +85,8 @@ export class Row extends MRUIEntity {
   }
 
   onScroll = (event) => {
-    let scrollMax = -(this.parentElement.computedInternalWidth / 2)
-    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.contentWidth)
+    let scrollMax = -(this.parentElement.offsetWidth / 2)
+    let scrollMin = (this.parentElement.offsetWidth / 2) - (this.contentWidth)
     let delta = event.deltaX * 0.001
     if(this.shuttle.position.x - delta < scrollMax && this.shuttle.position.x - delta > scrollMin){
       this.shuttle.position.x -= delta

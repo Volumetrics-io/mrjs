@@ -23,8 +23,8 @@ export class LayoutSystem extends System {
           container.height = container.parentElement.height
           container.width = container.parentElement.width * container.parentElement.aspectRatio
         } else {
-          container.height = this.app.viewPortHieght
-          container.width = this.app.viewPortWidth
+          container.absoluteHeight = container.height * this.app.viewPortHieght
+          container.absoluteWidth = container.width * this.app.viewPortWidth
         }
         
 

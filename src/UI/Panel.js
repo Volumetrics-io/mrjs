@@ -34,12 +34,12 @@ export default class Panel extends MRUIEntity {
     return super.width
   }
 
-  get computedInternalHeight() {
-    return super.computedInternalHeight - this.radius
+  get offsetHeight() {
+    return super.offsetHeight - this.radius
   }
 
-  get computedInternalWidth() {
-    return super.computedInternalWidth - this.radius
+  get offsetWidth() {
+    return super.offsetWidth - this.radius
   }
 
   updatePlane() {
