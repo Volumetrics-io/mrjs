@@ -10,7 +10,7 @@
 
   </head>
   <body >
-    <mr-app camera="camera: orthographic" layers="0 1 2 3">
+    <mr-app debug="true" camera="camera: orthographic" layers="0 1 2 3">
 
       <mr-font 
       src="./assets/fonts/BricolageGrotesque.ttf" 
@@ -19,41 +19,35 @@
 
       <mr-surface>
         <mr-container>
-            <mr-panel corner-radius="0.0">
-              <mr-row>
-                <mr-panel color="black"></mr-panel>
-                <mr-column width="2" height="2">
-                  <mr-text width="0.5" height="0.1"  class="title" >
-                    MR.js
-                  </mr-text>
-                  <mr-text height="0.2" padding="0.01" class="title">
-                    Building for Mixed Reality, in Mixed Reality.
-                  </mr-text>
-                  <mr-text padding="0.015" margin="">
-                    Sint eiusmod laboris eu voluptate ullamco ea fugiat exercitation id ad magna commodo. Irure proident et qui ullamco aliquip aute dolor nostrud laborum excepteur sint aute ea. Sit consectetur qui Lorem esse magna voluptate irure aliqua nostrud adipisicing eu irure cupidatat sunt. Officia dolore sint laboris Lorem enim labore mollit reprehenderit laboris amet. Aute eiusmod fugiat labore veniam cupidatat dolor ipsum.
+            <mr-column>
+              <mr-text width="0.5" height="0.1"  class="title" >
+                MR.js
+              </mr-text>
+              <mr-text height="0.2" padding="0.01" class="title">
+                Building for Mixed Reality, in Mixed Reality.
+              </mr-text>
+              <mr-text padding="0.015" margin="">
+                Sint eiusmod laboris eu voluptate ullamco ea fugiat exercitation id ad magna commodo. Irure proident et qui ullamco aliquip aute dolor nostrud laborum excepteur sint aute ea. Sit consectetur qui Lorem esse magna voluptate irure aliqua nostrud adipisicing eu irure cupidatat sunt. Officia dolore sint laboris Lorem enim labore mollit reprehenderit laboris amet. Aute eiusmod fugiat labore veniam cupidatat dolor ipsum.
 
 Sit aliquip excepteur laboris ullamco minim sint sit dolor cupidatat culpa consequat quis sit tempor. Culpa voluptate eiusmod et eiusmod. Lorem deserunt ullamco laborum ut. Cillum aute dolore mollit sint amet. Qui ea deserunt consectetur eiusmod. Ullamco qui irure nostrud ea est do. Pariatur laboris labore in irure ea voluptate quis.
 
 Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
-                  </mr-text>
+              </mr-text>
 
-            
+        
 
-                  <mr-model height="0.1" layer="2" comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
-                    src="./assets/models/logo.stl" 
-                    rotation="-22.91 17.1887 45.8366"
-                    zoffset="0.05"
-                    scale="0.001">
-                  </mr-model>
+              <mr-model height="0.1" layer="2" comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
+                src="./assets/models/logo.stl" 
+                rotation="-22.91 17.1887 45.8366"
+                zoffset="0.05"
+                scale="0.001">
+              </mr-model>
 
-                  <mr-text width="0.5" height="0.1"  class="title" >
-                    volumetrics
-                  </mr-text>
+              <mr-text width="0.5" height="0.1"  class="title" >
+                volumetrics
+              </mr-text>
 
-                </mr-column>
-                <mr-panel color="black"></mr-panel>
-              </mr-row>
-            </mr-panel>
+            </mr-column>
         </mr-container>
       </mr-surface>
 

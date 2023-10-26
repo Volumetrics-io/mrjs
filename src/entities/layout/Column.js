@@ -4,21 +4,21 @@ import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
 
 export class Column extends MRUIEntity {
 
-  set absoluteHeight(value) {
-    super.absoluteHeight = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
+  set height(value) {
+    super.height = value
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
     
   }
-  get absoluteHeight() {
-    return super.absoluteHeight
+  get height() {
+    return super.height
   }
 
-  set absoluteWidth(value) {
-    super.absoluteWidth = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
+  set width(value) {
+    super.width = value
+    this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
   }
-  get absoluteWidth() {
-    return super.absoluteWidth
+  get width() {
+    return super.width
   }
 
   constructor() {
@@ -27,21 +27,42 @@ export class Column extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.3))
-    this.rows = 0
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
+    this.accumulatedY = 0
 
+    document.addEventListener('container-mutated', (event) => {
+      if (event.target != this.parentElement) { return }
+      this.height = this.parentElement.height
+      this.width = this.parentElement.width
+      this.update()
+    })
 
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()
   }
 
+  update = () => {
+        const children = Array.from(this.children)
+        this.accumulatedY = 0
+        for (const index in children) {
+            let child = children[index]
+            this.accumulatedY -= child.margin.top
+            child.object3D.position.setY( this.accumulatedY - child.height / 2)
+            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.margin.bottom
+        }
+        this.shuttle.position.setY(this.parentElement.computedInternalHeight / 2)
+    }
+
   add(entity) {
     this.shuttle.add(entity.object3D)
+    this.update()
   }
 
   remove(entity) {
     this.shuttle.remove(entity.object3D)
+    this.update()
   }
 
   onTouch = (event) => {
@@ -50,7 +71,7 @@ export class Column extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.fixedHeight) - (this.parentElement.computedInternalHeight / 2)
+    let scrollMax = (this.contentHeight) - (this.parentElement.computedInternalHeight / 2)
     let scrollMin = (this.parentElement.computedInternalHeight / 2)
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
@@ -70,21 +91,12 @@ export class Column extends MRUIEntity {
   }
 
   onScroll = (event) => {
-    let scrollMax = (this.fixedHeight) - (this.parentElement.computedInternalHeight / 2)
+    let scrollMax = (this.contentHeight) - (this.parentElement.computedInternalHeight / 2)
     let scrollMin = (this.parentElement.computedInternalHeight / 2)
     let delta = event.deltaY * 0.001
     if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
       this.shuttle.position.y += delta
     }
-  }
-
-  getRowCount(){
-    const children = Array.from(this.children)
-    this.rows = 0
-    for (const child of children) {
-        if (!child instanceof Entity) { continue }
-        this.rows +=child.height + child.margin.vertical
-      }
   }
 }
 

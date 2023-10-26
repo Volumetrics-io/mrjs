@@ -1,25 +1,27 @@
 import { MRUIEntity } from '../../UI/UIEntity'
 import { Entity } from '../../core/entity'
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
+import { Column } from './Column'
 
 export class Row extends MRUIEntity {
 
-  // set absoluteHeight(value) {
-  //   super.absoluteHeight = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+  // set height(value) {
+  //   super.height = value
+  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.height, 0.3))
     
   // }
-  // get absoluteHeight() {
-  //   return super.absoluteHeight
+  // get height() {
+  //   return super.height
   // }
 
-  // set absoluteWidth(value) {
-  //   super.absoluteWidth = value
-  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+  // set width(value) {
+  //   super.width = value
+  //   this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
   // }
-  // get absoluteWidth() {
-  //   return super.absoluteWidth
+  // get width() {
+  //   return super.width
   // }
+
 
   constructor() {
     super()
@@ -27,13 +29,40 @@ export class Row extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    //this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.absoluteWidth, this.absoluteHeight, 0.1))
+    //this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
     this.columns = 0
+    this.accumulatedX = 0
+
+    document.addEventListener('container-mutated', (event) => {
+      if (event.target != this.parentElement) { return }
+      this.height = this.parentElement.height
+      this.update()
+    })
+
 
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()
   }
+
+  update = () => {
+    this.getColumnCount()
+    const children = Array.from(this.children)
+    this.accumulatedX = 0
+    for (const index in children) {
+        let child = children[index]
+        this.accumulatedX += child.margin.left
+        child.object3D.position.setX( this.accumulatedX + child.width / 2)
+        this.accumulatedX += child.width
+        this.accumulatedX += child.margin.right
+
+        if (child instanceof Column) {
+          child.height = this.height
+        }
+
+    }
+    this.shuttle.position.setX(-this.parentElement.computedInternalWidth / 2)
+    }
 
   onTouch = (event) => {
     if(event.type =='touch-end') {
@@ -42,18 +71,13 @@ export class Row extends MRUIEntity {
     }
     event.stopPropagation()
     let scrollMax = -(this.parentElement.computedInternalWidth / 2)
-    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.fixedWidth)
+    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.contentWidth)
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.x != 0) {
       this.delta.subVectors(this.currentPosition, this.prevPosition)
     }
     this.prevPosition.copy(this.currentPosition)
-
-    if(this.delta.x > 0.1) {
-      console.log('big delta', this.delta.x);
-      console.log(event);
-    }
 
     if( this.shuttle.position.x + this.delta.x > scrollMin && this.shuttle.position.x + this.delta.x < scrollMax){
       this.shuttle.position.x += this.delta.x * 1.33
@@ -62,9 +86,8 @@ export class Row extends MRUIEntity {
 
   onScroll = (event) => {
     let scrollMax = -(this.parentElement.computedInternalWidth / 2)
-    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.fixedWidth)
+    let scrollMin = (this.parentElement.computedInternalWidth / 2) - (this.contentWidth)
     let delta = event.deltaX * 0.001
-    console.log(delta);
     if(this.shuttle.position.x - delta < scrollMax && this.shuttle.position.x - delta > scrollMin){
       this.shuttle.position.x -= delta
     }
@@ -72,10 +95,12 @@ export class Row extends MRUIEntity {
 
   add(entity) {
     this.shuttle.add(entity.object3D)
+    this.update()
   }
 
   remove(entity) {
     this.shuttle.remove(entity.object3D)
+    this.update()
   }
 
   getColumnCount(){

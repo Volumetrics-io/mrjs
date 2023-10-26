@@ -9,24 +9,12 @@ export class Entity extends MRElement {
     type: 'none'
   }
 
-  #absoluteWidth = 1
-  set absoluteWidth(value) {
-    this.#absoluteWidth = value
-  }
-
-  get absoluteWidth() {
-    return this.#absoluteWidth
-  }
-
-  #fixedWidth = null
-  get fixedWidth() {
-    return this.#fixedWidth
-  }
-
+  aabb = new THREE.Box3()
+  size = new THREE.Vector3()
+  
   #width = 'auto'
   set width(value) {
     this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.#fixedWidth = this.width
     this.dimensionsUpdate()
   }
   get width() {
@@ -38,32 +26,22 @@ export class Entity extends MRElement {
     }
   }
 
+  get contentWidth() {
+    this.aabb.setFromObject(this.object3D).getSize(this.size)
+    return this.size.x
+  }
+
   get computedWidth() {
-    return this.absoluteWidth + this.margin.horizontal
+    return this.width + this.margin.horizontal
   }
 
   get computedInternalWidth() {
-    return this.absoluteWidth - this.padding.horizontal
-  }
-
-  #absoluteHeight = 1
-  set absoluteHeight(value) {
-    this.#absoluteHeight = value
-  }
-
-  get absoluteHeight() {
-    return this.#absoluteHeight
-  }
-
-  #fixedHeight = null
-  get fixedHeight() {
-    return this.#fixedHeight
+    return this.width - this.padding.horizontal
   }
 
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.#fixedHeight = this.height
     this.dimensionsUpdate()
   }
   get height() {
@@ -75,12 +53,17 @@ export class Entity extends MRElement {
     }
   }
 
+  get contentHeight() {
+    this.aabb.setFromObject(this.object3D).getSize(this.size)
+    return this.size.y
+  }
+
   get computedHeight() {
-    return this.#absoluteHeight + this.margin.vertical
+    return this.height + this.margin.vertical
   }
 
   get computedInternalHeight() {
-    return this.#absoluteHeight - this.padding.vertical
+    return this.height - this.padding.vertical
   }
 
   #zOffeset = 0.001
@@ -196,7 +179,6 @@ export class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    let name
     for (const attr of this.attributes) {      
       switch (attr.name.split('-')[0]) {
         case 'comp':

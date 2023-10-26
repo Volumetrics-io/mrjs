@@ -76,7 +76,7 @@ export class TextSystem extends System {
     entity.textStyle.width = entity.fixedWidth ?? entity.computedInternalWidth
     entity.textStyle.maxWidth = entity.fixedWidth ?? entity.computedInternalWidth
 
-    let height = entity.fixedHeight ?? entity.computedInternalHeight
+    let height = entity.computedInternalHeight
     entity.textObj.position.setY(height / 2)
 
     //entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
@@ -112,7 +112,6 @@ export class TextSystem extends System {
 
   parseFontSize(val, el) {
     if(!val) { 
-      console.log(val);
       return 0.025
     }
     if (typeof val == 'string') {
