@@ -37,6 +37,9 @@ export class TextSystem extends System {
     for (const entity of entities) {
       this.registry.add(entity)
       this.addText(entity)
+      entity.textObj.sync(() => {
+              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+        })
     }
   }
 
@@ -64,8 +67,6 @@ export class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    this.updateStyle(entity)
-
   }
 
   updateStyle = (entity) => {
@@ -80,7 +81,6 @@ export class TextSystem extends System {
     entity.textObj.position.setY(entity.offsetHeight / 2)
 
     this.setStyle(entity)
-    entity.textObj.sync()
   }
 
   addText = (entity) => {

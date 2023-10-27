@@ -51935,7 +51935,6 @@ class Entity extends MRElement {
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.dimensionsUpdate()
   }
   get height() {
     switch (this.#height) {
@@ -51977,7 +51976,7 @@ class Entity extends MRElement {
   layer = 0
 
   dimensionsUpdate = () => {
-    this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
+    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
   }
 
   constructor() {
@@ -60151,6 +60150,9 @@ class TextSystem extends System {
     for (const entity of entities) {
       this.registry.add(entity)
       this.addText(entity)
+      entity.textObj.sync(() => {
+              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+        })
     }
   }
 
@@ -60178,8 +60180,6 @@ class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    this.updateStyle(entity)
-
   }
 
   updateStyle = (entity) => {
@@ -60194,7 +60194,6 @@ class TextSystem extends System {
     entity.textObj.position.setY(entity.offsetHeight / 2)
 
     this.setStyle(entity)
-    entity.textObj.sync()
   }
 
   addText = (entity) => {
@@ -67926,8 +67925,8 @@ class LayoutSystem extends System {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
         }
-        
 
+        console.log(window.innerWidth);
     }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
@@ -69154,6 +69153,10 @@ const LOADERS = {
 
 
 class Model extends Entity {
+    get offsetHeight() {
+        super.offsetHeight
+        return this.contentHeight
+    }
     constructor(){
         super()
     }
@@ -69665,6 +69668,12 @@ class Column extends MRUIEntity {
         this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
+
+    this.addEventListener('child-resized', (event) => {
+      this.absoluteHeight = this.height * this.parentElement.offsetHeight
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
   }
 
   update = () => {
@@ -69673,8 +69682,8 @@ class Column extends MRUIEntity {
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            child.object3D.position.setY( this.accumulatedY - child.offsetHeight / 2)
+            this.accumulatedY -= child.offsetHeight 
             this.accumulatedY -= child.margin.bottom
         }
         this.shuttle.position.setY(this.parentElement.offsetHeight / 2)
@@ -69712,8 +69721,17 @@ class Row extends MRUIEntity {
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
+      if(event.target == this.parentElement) {
         this.absoluteHeight = this.height * this.parentElement.offsetHeight
-        this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      } else {
+        this.absoluteHeight = this.contentHeight
+      }
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
+
+    this.addEventListener('child-resized', (event) => {
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 

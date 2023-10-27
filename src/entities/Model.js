@@ -8,6 +8,10 @@ const LOADERS = {
 
 
 export class Model extends Entity {
+    get offsetHeight() {
+        super.offsetHeight
+        return this.contentHeight
+    }
     constructor(){
         super()
     }

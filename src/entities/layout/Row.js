@@ -16,8 +16,17 @@ export class Row extends MRUIEntity {
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
+      if(event.target == this.parentElement) {
         this.absoluteHeight = this.height * this.parentElement.offsetHeight
-        this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      } else {
+        this.absoluteHeight = this.contentHeight
+      }
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
+
+    this.addEventListener('child-resized', (event) => {
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 

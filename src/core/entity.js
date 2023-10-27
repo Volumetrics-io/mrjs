@@ -45,7 +45,6 @@ export class Entity extends MRElement {
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.dimensionsUpdate()
   }
   get height() {
     switch (this.#height) {
@@ -87,7 +86,7 @@ export class Entity extends MRElement {
   layer = 0
 
   dimensionsUpdate = () => {
-    this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
+    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
   }
 
   constructor() {

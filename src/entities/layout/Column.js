@@ -16,6 +16,12 @@ export class Column extends MRUIEntity {
         this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
+
+    this.addEventListener('child-resized', (event) => {
+      this.absoluteHeight = this.height * this.parentElement.offsetHeight
+      this.absoluteWidth = this.width * this.parentElement.offsetWidth
+      this.update()
+    })
   }
 
   update = () => {
@@ -24,8 +30,8 @@ export class Column extends MRUIEntity {
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            child.object3D.position.setY( this.accumulatedY - child.offsetHeight / 2)
+            this.accumulatedY -= child.offsetHeight 
             this.accumulatedY -= child.margin.bottom
         }
         this.shuttle.position.setY(this.parentElement.offsetHeight / 2)

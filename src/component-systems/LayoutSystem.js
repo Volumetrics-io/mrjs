@@ -21,7 +21,7 @@ export class LayoutSystem extends System {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
         }
-        
 
+        console.log(window.innerWidth);
     }
 }
