@@ -60147,7 +60147,6 @@ class TextSystem extends System {
       this.registry.add(entity)
       this.addText(entity)
       entity.textObj.sync(() => {
-              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
               entity.textObj.position.setY(entity.offsetHeight / 2)
         })
     }
@@ -60165,7 +60164,6 @@ class TextSystem extends System {
         this.updateStyle(entity)
         entity.needsUpdate = false
         entity.textObj.sync(() => {
-              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
               entity.textObj.position.setY(entity.offsetHeight / 2)
         })
       }
@@ -67912,8 +67910,6 @@ class LayoutSystem extends System {
     constructor(){
         super()
 
-        //this.app.addEventListener('container-mutated', this.updateLayout)
-
         document.addEventListener('DOMContentLoaded', (event) => {
           let containers = this.app.querySelectorAll('mr-container')
         console.log(containers);
@@ -67926,10 +67922,6 @@ class LayoutSystem extends System {
         console.log(this.registry);
         })
         
-    }
-
-    updateLayout = (event) => {
-        this.adjustContainerSize(event.target)
     }
 
     update(deltaTime,frame) {
@@ -69650,8 +69642,10 @@ class Container extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
-    let scrollMin = (this.parentElement.offsetHeight / 2)
+    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMin =  0
+    console.log('scroll max', scrollMax);
+    console.log('scroll min', scrollMin);
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.y != 0) {
@@ -69659,14 +69653,16 @@ class Container extends MRUIEntity {
     }
     this.prevPosition.copy(this.currentPosition)
 
-    if( this.shuttle.position.y + this.delta.y > scrollMin && this.shuttle.position.y + this.delta.y < scrollMax){
-      this.shuttle.position.y += this.delta.y * 1.33
+    let delta = this.delta.y * 1.33
+
+    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
+      this.shuttle.position.y += delta
     }
   }
 
   onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
-    let scrollMin = (this.parentElement.offsetHeight / 2)
+    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMin =  0
     let delta = event.deltaY * 0.001
     if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){
       this.shuttle.position.y += delta
@@ -69696,12 +69692,6 @@ class Column extends MRUIEntity {
         this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
-
-    // this.addEventListener('child-resized', (event) => {
-    //   this.absoluteHeight = this.height * this.parentElement.offsetHeight
-    //   this.absoluteWidth = this.width * this.parentElement.offsetWidth
-    //   this.update()
-    // })
   }
 
   update = () => {
@@ -69757,12 +69747,6 @@ class Row extends MRUIEntity {
       this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
-
-    this.addEventListener('child-resized', (event) => {
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
-      this.update()
-    })
-
 
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()

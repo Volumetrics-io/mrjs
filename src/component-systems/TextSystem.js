@@ -38,7 +38,6 @@ export class TextSystem extends System {
       this.registry.add(entity)
       this.addText(entity)
       entity.textObj.sync(() => {
-              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
               entity.textObj.position.setY(entity.offsetHeight / 2)
         })
     }
@@ -56,7 +55,6 @@ export class TextSystem extends System {
         this.updateStyle(entity)
         entity.needsUpdate = false
         entity.textObj.sync(() => {
-              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
               entity.textObj.position.setY(entity.offsetHeight / 2)
         })
       }

@@ -64,8 +64,10 @@ export class Container extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
-    let scrollMin = (this.parentElement.offsetHeight / 2)
+    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMin =  0
+    console.log('scroll max', scrollMax);
+    console.log('scroll min', scrollMin);
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.y != 0) {
@@ -73,14 +75,16 @@ export class Container extends MRUIEntity {
     }
     this.prevPosition.copy(this.currentPosition)
 
-    if( this.shuttle.position.y + this.delta.y > scrollMin && this.shuttle.position.y + this.delta.y < scrollMax){
-      this.shuttle.position.y += this.delta.y * 1.33
+    let delta = this.delta.y * 1.33
+
+    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
+      this.shuttle.position.y += delta
     }
   }
 
   onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - this.offsetHeight / 2
-    let scrollMin = (this.parentElement.offsetHeight / 2)
+    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMin =  0
     let delta = event.deltaY * 0.001
     if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){
       this.shuttle.position.y += delta

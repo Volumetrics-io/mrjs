@@ -25,12 +25,6 @@ export class Row extends MRUIEntity {
       this.update()
     })
 
-    this.addEventListener('child-resized', (event) => {
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
-      this.update()
-    })
-
-
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()

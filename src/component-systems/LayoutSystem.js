@@ -5,8 +5,6 @@ export class LayoutSystem extends System {
     constructor(){
         super()
 
-        //this.app.addEventListener('container-mutated', this.updateLayout)
-
         document.addEventListener('DOMContentLoaded', (event) => {
           let containers = this.app.querySelectorAll('mr-container')
         console.log(containers);
@@ -19,10 +17,6 @@ export class LayoutSystem extends System {
         console.log(this.registry);
         })
         
-    }
-
-    updateLayout = (event) => {
-        this.adjustContainerSize(event.target)
     }
 
     update(deltaTime,frame) {
