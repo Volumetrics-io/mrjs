@@ -1,98 +1,41 @@
 import System from "../core/System";
-import { Entity } from "../core/entity";
 import { Surface } from "../entities/Surface";
-import { Column } from "../entities/layout/Column";
-import { Container } from "../entities/layout/Container";
-import { Row } from "../entities/layout/Row";
 
 export class LayoutSystem extends System {
     constructor(){
         super()
 
-        this.app.addEventListener('container-mutated', this.updateLayout)
+        document.addEventListener('DOMContentLoaded', (event) => {
+          let containers = this.app.querySelectorAll('mr-container')
+        console.log(containers);
+
+        for(const container of containers) {
+          console.log(container);
+          this.registry.add(container)
+        }
+        
+        console.log(this.registry);
+        })
+        
     }
 
-    updateLayout = (event) => {
-        this.adjustContainerSize(event.target)
-        this.adjustContent(event.target, event.target.absoluteWidth, event.target.absoluteHeight)
+    update(deltaTime,frame) {
+      for(const entity of this.registry) {
+        this.adjustContainerSize(entity)
+      }
     }
 
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.parentElement.height
-          container.absoluteWidth = container.parentElement.width * container.parentElement.aspectRatio
+          container.absoluteHeight = container.parentElement.offsetHeight
+          container.absoluteWidth = container.parentElement.offsetWidth * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
         }
-        
 
-    }
+        container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
 
-    adjustContent = (entity, width, height) => {
-
-        if(!(entity.parentElement instanceof Column) && !(entity.parentElement instanceof Row)) {
-            entity.absoluteWidth = entity.fixedWidth ? entity.fixedWidth : width
-            entity.absoluteHeight = entity.fixedHeight ? entity.fixedHeight : height
-        }
-        
-        if (entity instanceof Column) { 
-            entity.absoluteHeight = height
-            this.adjustColumn(entity) 
-        }
-        else if (entity instanceof Row) { 
-            this.adjustRow(entity) 
-        } 
-
-        /// Set Z-index
-        //entity.object3D.position.z += entity.zOffeset
-        entity.object3D.position.z = entity.zOffeset
-
-        const children = Array.from(entity.children)
-        for (const child of children) {
-            if (!child instanceof Entity) { continue }
-            let childWidth = entity.computedInternalWidth
-            let childHeight = entity.computedInternalHeight
-            this.adjustContent(child, childWidth, childHeight)
-        }
-    }
-
-    adjustColumn = (column) => {
-        column.getRowCount()
-        let rowHeight = ((column.fixedHeight ?? column.absoluteHeight) / column.rows)
-        rowHeight = rowHeight > 1 ? 1 : rowHeight
-        const children = Array.from(column.children)
-        this.accumulatedY = 0
-        for (const index in children) {
-            let child = children[index]
-            this.accumulatedY -= child.margin.top
-            child.absoluteHeight = child.height * rowHeight
-            child.object3D.position.setY( this.accumulatedY - child.absoluteHeight / 2)
-            this.accumulatedY -= child.absoluteHeight 
-            this.accumulatedY -= child.margin.bottom
-
-            child.absoluteWidth = child.fixedWidth ? child.fixedWidth : column.computedInternalWidth
-        }
-        column.shuttle.position.setY(column.parentElement.computedInternalHeight / 2)
-    }
-
-    adjustRow = (row) => {
-        row.getColumnCount()
-        let colWidth = (row.absoluteWidth / row.columns)
-        const children = Array.from(row.children)
-        this.accumulatedX = 0
-        for (const index in children) {
-            let child = children[index]
-            this.accumulatedX += child.margin.left
-            child.absoluteWidth = child.width * colWidth
-            child.object3D.position.setX( this.accumulatedX + child.absoluteWidth / 2)
-            this.accumulatedX += child.absoluteWidth
-            this.accumulatedX += child.margin.right
-
-             // fill parent
-             child.absoluteHeight = child.fixedHeight ? child.fixedHeight : row.computedInternalHeight - child.margin.vertical
-        }
-        row.shuttle.position.setX(-row.parentElement.computedInternalWidth / 2)
     }
 }

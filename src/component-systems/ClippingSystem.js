@@ -42,10 +42,10 @@ export class ClippingSystem extends System {
             let newPlane = new THREE.Plane()
 
             newPlane.setFromCoplanarPoints(this.a, this.b, this.c)
-            if (this.app.debug) {
-                const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
-                this.app.scene.add( helper );
-            }
+            // if (this.app.debug) {
+            //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
+            //     this.app.scene.add( helper );
+            // }
     
             entity.clipping.planes.push(newPlane)
             entity.clipping.planeIDs.push(f)

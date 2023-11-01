@@ -35,8 +35,8 @@ export class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null) { return }
-        this.currentSurface.width *= this.scale * (1 / 3)
-        this.currentSurface.height *= this.scale * (1 / 3)
+        this.currentSurface.absoluteWidth = this.scale / 3
+        this.currentSurface.absoluteHeight = this.scale / 3
         this.currentSurface.place()
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)

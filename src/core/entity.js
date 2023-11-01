@@ -9,24 +9,12 @@ export class Entity extends MRElement {
     type: 'none'
   }
 
-  #absoluteWidth = 1
-  set absoluteWidth(value) {
-    this.#absoluteWidth = value
-  }
-
-  get absoluteWidth() {
-    return this.#absoluteWidth
-  }
-
-  #fixedWidth = null
-  get fixedWidth() {
-    return this.#fixedWidth
-  }
-
+  aabb = new THREE.Box3()
+  size = new THREE.Vector3()
+  
   #width = 'auto'
   set width(value) {
     this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.#fixedWidth = this.width
     this.dimensionsUpdate()
   }
   get width() {
@@ -38,33 +26,25 @@ export class Entity extends MRElement {
     }
   }
 
-  get computedWidth() {
-    return this.absoluteWidth + this.margin.horizontal
+  #absoluteWidth = 0
+
+  get offsetWidth() {
+    super.offsetWidth
+    return this.#absoluteWidth
   }
 
-  get computedInternalWidth() {
-    return this.absoluteWidth - this.padding.horizontal
+  set absoluteWidth(value) {
+    this.#absoluteWidth = value
   }
 
-  #absoluteHeight = 1
-  set absoluteHeight(value) {
-    this.#absoluteHeight = value
-  }
-
-  get absoluteHeight() {
-    return this.#absoluteHeight
-  }
-
-  #fixedHeight = null
-  get fixedHeight() {
-    return this.#fixedHeight
+  get contentWidth() {
+    this.aabb.setFromObject(this.object3D).getSize(this.size)
+    return this.size.x
   }
 
   #height = 'auto'
   set height(value) {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.#fixedHeight = this.height
-    this.dimensionsUpdate()
   }
   get height() {
     switch (this.#height) {
@@ -75,12 +55,20 @@ export class Entity extends MRElement {
     }
   }
 
-  get computedHeight() {
-    return this.#absoluteHeight + this.margin.vertical
+  #absoluteHeight = 0
+
+  get offsetHeight() {
+    super.offsetHeight
+    return this.#absoluteHeight
   }
 
-  get computedInternalHeight() {
-    return this.#absoluteHeight - this.padding.vertical
+  set absoluteHeight(value) {
+    this.#absoluteHeight = value
+  }
+
+  get contentHeight() {
+    this.aabb.setFromObject(this.object3D).getSize(this.size)
+    return this.size.y
   }
 
   #zOffeset = 0.001
@@ -98,7 +86,7 @@ export class Entity extends MRElement {
   layer = 0
 
   dimensionsUpdate = () => {
-    this.dispatchEvent( new CustomEvent('dimensions-mutated', { bubbles: true }))
+    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
   }
 
   constructor() {
@@ -196,7 +184,6 @@ export class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    let name
     for (const attr of this.attributes) {      
       switch (attr.name.split('-')[0]) {
         case 'comp':

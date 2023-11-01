@@ -37,6 +37,9 @@ export class TextSystem extends System {
     for (const entity of entities) {
       this.registry.add(entity)
       this.addText(entity)
+      entity.textObj.sync(() => {
+              entity.textObj.position.setY(entity.offsetHeight / 2)
+        })
     }
   }
 
@@ -48,7 +51,14 @@ export class TextSystem extends System {
         entity.textObj.sync()
       }
 
-      this.updateStyle(entity)
+      if (entity.needsUpdate) {
+        this.updateStyle(entity)
+        entity.needsUpdate = false
+        entity.textObj.sync(() => {
+              entity.textObj.position.setY(entity.offsetHeight / 2)
+        })
+      }
+
     }
   }
 
@@ -64,8 +74,6 @@ export class TextSystem extends System {
     style = parseAttributeString(entity.getAttribute('text-style')) ?? style
     entity.textStyle = style ?? {}
 
-    this.updateStyle(entity)
-
   }
 
   updateStyle = (entity) => {
@@ -73,15 +81,11 @@ export class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    entity.textStyle.width = entity.fixedWidth ?? entity.computedInternalWidth
-    entity.textStyle.maxWidth = entity.fixedWidth ?? entity.computedInternalWidth
+    entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
+    entity.textStyle.maxWidth = entity.textStyle.width
+    entity.absoluteWidth = entity.textStyle.width
 
-    let height = entity.fixedHeight ?? entity.computedInternalHeight
-    entity.textObj.position.setY(height / 2)
-
-    //entity.textStyle.clipRect = [-entity.textStyle.maxWidth / 2, -height, entity.textStyle.maxWidth / 2, 0]
     this.setStyle(entity)
-    entity.textObj.sync()
   }
 
   addText = (entity) => {
@@ -112,7 +116,6 @@ export class TextSystem extends System {
 
   parseFontSize(val, el) {
     if(!val) { 
-      console.log(val);
       return 0.025
     }
     if (typeof val == 'string') {

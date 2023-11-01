@@ -34,36 +34,19 @@ export default class Panel extends MRUIEntity {
     return super.width
   }
 
-  set absoluteHeight(value) {
-    super.absoluteHeight = value
-    this.updatePlane()
-    
-  }
-  get absoluteHeight() {
-    return super.absoluteHeight
+  get offsetHeight() {
+    return super.offsetHeight - this.radius
   }
 
-  get computedInternalHeight() {
-    return super.computedInternalHeight - this.radius
-  }
-
-  set absoluteWidth(value) {
-    super.absoluteWidth = value
-    this.updatePlane()
-  }
-  get absoluteWidth() {
-    return super.absoluteWidth
-  }
-
-  get computedInternalWidth() {
-    return super.computedInternalWidth - this.radius
+  get offsetWidth() {
+    return super.offsetWidth - this.radius
   }
 
   updatePlane() {
     
     this.object3D.geometry = UIPlane(
-      this.absoluteWidth,
-      this.absoluteHeight,
+      this.width,
+      this.height,
       this.radius,
       this.smoothness
     )
@@ -73,8 +56,8 @@ export default class Panel extends MRUIEntity {
     super()
 
     this.geometry = UIPlane(
-      this.absoluteWidth,
-      this.absoluteHeight,
+      this.width,
+      this.height,
       this.radius,
       this.smoothness
     )

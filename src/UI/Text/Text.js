@@ -1,14 +1,25 @@
 import { Text } from 'troika-three-text'
 import { parseAttributeString } from '../../utils/parser'
 import { MRUIEntity } from '../UIEntity'
-import { Entity } from '../../core/entity'
 
-export class MRText extends Entity {
+export class MRText extends MRUIEntity {
+    get offsetHeight() {
+        super.offsetHeight
+        return this.contentHeight
+    }
+
+
     constructor(){
         super()
         this.textObj = new Text()
         this.object3D.add(this.textObj)
         this.editable = false
+
+        this.needsUpdate = true
+
+        document.addEventListener('container-mutated', () => {
+            this.needsUpdate = true
+        })
         
     }
 
