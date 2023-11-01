@@ -64,7 +64,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
 /******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
 /******/ 		var resolveQueue = (queue) => {
-/******/ 			if(queue && queue.d < 1) {
+/******/ 			if(queue && !queue.d) {
 /******/ 				queue.d = 1;
 /******/ 				queue.forEach((fn) => (fn.r--));
 /******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
@@ -95,7 +95,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 		}));
 /******/ 		__webpack_require__.a = (module, body, hasAwait) => {
 /******/ 			var queue;
-/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			hasAwait && ((queue = []).d = 1);
 /******/ 			var depQueues = new Set();
 /******/ 			var exports = module.exports;
 /******/ 			var currentDeps;
@@ -123,7 +123,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 				});
 /******/ 				return fn.r ? promise : getResult();
 /******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
-/******/ 			queue && queue.d < 0 && (queue.d = 0);
+/******/ 			queue && (queue.d = 0);
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -230,7 +230,6 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 					script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 				}
 /******/ 				script.setAttribute("data-webpack", dataWebpackPrefix + key);
-/******/ 		
 /******/ 				script.src = url;
 /******/ 			}
 /******/ 			inProgress[url] = [done];
@@ -287,10 +286,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 				scriptUrl = document.currentScript.src;
 /******/ 			if (!scriptUrl) {
 /******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) {
-/******/ 					var i = scripts.length - 1;
-/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
-/******/ 				}
+/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
 /******/ 			}
 /******/ 		}
 /******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
@@ -345,7 +341,7 @@ String.prototype.spliceSplit = function (index, count, add) {
 /******/ 								}
 /******/ 							};
 /******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
-/******/ 						}
+/******/ 						} else installedChunks[chunkId] = 0;
 /******/ 					}
 /******/ 				}
 /******/ 		};
@@ -400,448 +396,448 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  Entity: () => (/* reexport */ entity_namespaceObject["default"]),
-  MRElement: () => (/* reexport */ MRElement_namespaceObject["default"]),
-  Panel: () => (/* reexport */ Panel),
-  System: () => (/* reexport */ System),
-  THREE: () => (/* reexport */ three_module_namespaceObject),
-  UIPlane: () => (/* reexport */ UIPlane_namespaceObject["default"])
-});
-
-// NAMESPACE OBJECT: ./node_modules/three/build/three.module.js
-var three_module_namespaceObject = {};
-__webpack_require__.r(three_module_namespaceObject);
-__webpack_require__.d(three_module_namespaceObject, {
-  ACESFilmicToneMapping: () => (ACESFilmicToneMapping),
-  AddEquation: () => (AddEquation),
-  AddOperation: () => (AddOperation),
-  AdditiveAnimationBlendMode: () => (AdditiveAnimationBlendMode),
-  AdditiveBlending: () => (AdditiveBlending),
-  AlphaFormat: () => (AlphaFormat),
-  AlwaysDepth: () => (AlwaysDepth),
-  AlwaysStencilFunc: () => (AlwaysStencilFunc),
-  AmbientLight: () => (AmbientLight),
-  AmbientLightProbe: () => (AmbientLightProbe),
-  AnimationAction: () => (AnimationAction),
-  AnimationClip: () => (AnimationClip),
-  AnimationLoader: () => (AnimationLoader),
-  AnimationMixer: () => (AnimationMixer),
-  AnimationObjectGroup: () => (AnimationObjectGroup),
-  AnimationUtils: () => (AnimationUtils),
-  ArcCurve: () => (ArcCurve),
-  ArrayCamera: () => (ArrayCamera),
-  ArrowHelper: () => (ArrowHelper),
-  Audio: () => (Audio),
-  AudioAnalyser: () => (AudioAnalyser),
-  AudioContext: () => (AudioContext),
-  AudioListener: () => (AudioListener),
-  AudioLoader: () => (AudioLoader),
-  AxesHelper: () => (AxesHelper),
-  BackSide: () => (BackSide),
-  BasicDepthPacking: () => (BasicDepthPacking),
-  BasicShadowMap: () => (BasicShadowMap),
-  Bone: () => (Bone),
-  BooleanKeyframeTrack: () => (BooleanKeyframeTrack),
-  Box2: () => (Box2),
-  Box3: () => (Box3),
-  Box3Helper: () => (Box3Helper),
-  BoxBufferGeometry: () => (BoxBufferGeometry),
-  BoxGeometry: () => (BoxGeometry),
-  BoxHelper: () => (BoxHelper),
-  BufferAttribute: () => (three_module_BufferAttribute),
-  BufferGeometry: () => (three_module_BufferGeometry),
-  BufferGeometryLoader: () => (BufferGeometryLoader),
-  ByteType: () => (ByteType),
-  Cache: () => (Cache),
-  Camera: () => (Camera),
-  CameraHelper: () => (CameraHelper),
-  CanvasTexture: () => (CanvasTexture),
-  CapsuleBufferGeometry: () => (CapsuleBufferGeometry),
-  CapsuleGeometry: () => (CapsuleGeometry),
-  CatmullRomCurve3: () => (CatmullRomCurve3),
-  CineonToneMapping: () => (CineonToneMapping),
-  CircleBufferGeometry: () => (CircleBufferGeometry),
-  CircleGeometry: () => (CircleGeometry),
-  ClampToEdgeWrapping: () => (ClampToEdgeWrapping),
-  Clock: () => (Clock),
-  Color: () => (Color),
-  ColorKeyframeTrack: () => (ColorKeyframeTrack),
-  ColorManagement: () => (ColorManagement),
-  CompressedArrayTexture: () => (CompressedArrayTexture),
-  CompressedTexture: () => (CompressedTexture),
-  CompressedTextureLoader: () => (CompressedTextureLoader),
-  ConeBufferGeometry: () => (ConeBufferGeometry),
-  ConeGeometry: () => (ConeGeometry),
-  CubeCamera: () => (CubeCamera),
-  CubeReflectionMapping: () => (CubeReflectionMapping),
-  CubeRefractionMapping: () => (CubeRefractionMapping),
-  CubeTexture: () => (CubeTexture),
-  CubeTextureLoader: () => (CubeTextureLoader),
-  CubeUVReflectionMapping: () => (CubeUVReflectionMapping),
-  CubicBezierCurve: () => (CubicBezierCurve),
-  CubicBezierCurve3: () => (CubicBezierCurve3),
-  CubicInterpolant: () => (CubicInterpolant),
-  CullFaceBack: () => (CullFaceBack),
-  CullFaceFront: () => (CullFaceFront),
-  CullFaceFrontBack: () => (CullFaceFrontBack),
-  CullFaceNone: () => (CullFaceNone),
-  Curve: () => (Curve),
-  CurvePath: () => (CurvePath),
-  CustomBlending: () => (CustomBlending),
-  CustomToneMapping: () => (CustomToneMapping),
-  CylinderBufferGeometry: () => (CylinderBufferGeometry),
-  CylinderGeometry: () => (three_module_CylinderGeometry),
-  Cylindrical: () => (Cylindrical),
-  Data3DTexture: () => (Data3DTexture),
-  DataArrayTexture: () => (DataArrayTexture),
-  DataTexture: () => (DataTexture),
-  DataTextureLoader: () => (DataTextureLoader),
-  DataUtils: () => (DataUtils),
-  DecrementStencilOp: () => (DecrementStencilOp),
-  DecrementWrapStencilOp: () => (DecrementWrapStencilOp),
-  DefaultLoadingManager: () => (DefaultLoadingManager),
-  DepthFormat: () => (DepthFormat),
-  DepthStencilFormat: () => (DepthStencilFormat),
-  DepthTexture: () => (DepthTexture),
-  DirectionalLight: () => (DirectionalLight),
-  DirectionalLightHelper: () => (DirectionalLightHelper),
-  DiscreteInterpolant: () => (DiscreteInterpolant),
-  DisplayP3ColorSpace: () => (DisplayP3ColorSpace),
-  DodecahedronBufferGeometry: () => (DodecahedronBufferGeometry),
-  DodecahedronGeometry: () => (DodecahedronGeometry),
-  DoubleSide: () => (DoubleSide),
-  DstAlphaFactor: () => (DstAlphaFactor),
-  DstColorFactor: () => (DstColorFactor),
-  DynamicCopyUsage: () => (DynamicCopyUsage),
-  DynamicDrawUsage: () => (DynamicDrawUsage),
-  DynamicReadUsage: () => (DynamicReadUsage),
-  EdgesGeometry: () => (EdgesGeometry),
-  EllipseCurve: () => (EllipseCurve),
-  EqualDepth: () => (EqualDepth),
-  EqualStencilFunc: () => (EqualStencilFunc),
-  EquirectangularReflectionMapping: () => (EquirectangularReflectionMapping),
-  EquirectangularRefractionMapping: () => (EquirectangularRefractionMapping),
-  Euler: () => (Euler),
-  EventDispatcher: () => (EventDispatcher),
-  ExtrudeBufferGeometry: () => (ExtrudeBufferGeometry),
-  ExtrudeGeometry: () => (ExtrudeGeometry),
-  FileLoader: () => (FileLoader),
-  Float16BufferAttribute: () => (Float16BufferAttribute),
-  Float32BufferAttribute: () => (three_module_Float32BufferAttribute),
-  Float64BufferAttribute: () => (Float64BufferAttribute),
-  FloatType: () => (FloatType),
-  Fog: () => (Fog),
-  FogExp2: () => (FogExp2),
-  FramebufferTexture: () => (FramebufferTexture),
-  FrontSide: () => (FrontSide),
-  Frustum: () => (Frustum),
-  GLBufferAttribute: () => (GLBufferAttribute),
-  GLSL1: () => (GLSL1),
-  GLSL3: () => (GLSL3),
-  GreaterDepth: () => (GreaterDepth),
-  GreaterEqualDepth: () => (GreaterEqualDepth),
-  GreaterEqualStencilFunc: () => (GreaterEqualStencilFunc),
-  GreaterStencilFunc: () => (GreaterStencilFunc),
-  GridHelper: () => (GridHelper),
-  Group: () => (Group),
-  HalfFloatType: () => (HalfFloatType),
-  HemisphereLight: () => (HemisphereLight),
-  HemisphereLightHelper: () => (HemisphereLightHelper),
-  HemisphereLightProbe: () => (HemisphereLightProbe),
-  IcosahedronBufferGeometry: () => (IcosahedronBufferGeometry),
-  IcosahedronGeometry: () => (IcosahedronGeometry),
-  ImageBitmapLoader: () => (ImageBitmapLoader),
-  ImageLoader: () => (ImageLoader),
-  ImageUtils: () => (ImageUtils),
-  IncrementStencilOp: () => (IncrementStencilOp),
-  IncrementWrapStencilOp: () => (IncrementWrapStencilOp),
-  InstancedBufferAttribute: () => (three_module_InstancedBufferAttribute),
-  InstancedBufferGeometry: () => (InstancedBufferGeometry),
-  InstancedInterleavedBuffer: () => (InstancedInterleavedBuffer),
-  InstancedMesh: () => (InstancedMesh),
-  Int16BufferAttribute: () => (Int16BufferAttribute),
-  Int32BufferAttribute: () => (Int32BufferAttribute),
-  Int8BufferAttribute: () => (Int8BufferAttribute),
-  IntType: () => (IntType),
-  InterleavedBuffer: () => (three_module_InterleavedBuffer),
-  InterleavedBufferAttribute: () => (three_module_InterleavedBufferAttribute),
-  Interpolant: () => (Interpolant),
-  InterpolateDiscrete: () => (InterpolateDiscrete),
-  InterpolateLinear: () => (InterpolateLinear),
-  InterpolateSmooth: () => (InterpolateSmooth),
-  InvertStencilOp: () => (InvertStencilOp),
-  KeepStencilOp: () => (KeepStencilOp),
-  KeyframeTrack: () => (KeyframeTrack),
-  LOD: () => (LOD),
-  LatheBufferGeometry: () => (LatheBufferGeometry),
-  LatheGeometry: () => (LatheGeometry),
-  Layers: () => (Layers),
-  LessDepth: () => (LessDepth),
-  LessEqualDepth: () => (LessEqualDepth),
-  LessEqualStencilFunc: () => (LessEqualStencilFunc),
-  LessStencilFunc: () => (LessStencilFunc),
-  Light: () => (Light),
-  LightProbe: () => (LightProbe),
-  Line: () => (Line),
-  Line3: () => (Line3),
-  LineBasicMaterial: () => (LineBasicMaterial),
-  LineCurve: () => (LineCurve),
-  LineCurve3: () => (LineCurve3),
-  LineDashedMaterial: () => (LineDashedMaterial),
-  LineLoop: () => (LineLoop),
-  LineSegments: () => (LineSegments),
-  LinearEncoding: () => (LinearEncoding),
-  LinearFilter: () => (LinearFilter),
-  LinearInterpolant: () => (LinearInterpolant),
-  LinearMipMapLinearFilter: () => (LinearMipMapLinearFilter),
-  LinearMipMapNearestFilter: () => (LinearMipMapNearestFilter),
-  LinearMipmapLinearFilter: () => (LinearMipmapLinearFilter),
-  LinearMipmapNearestFilter: () => (LinearMipmapNearestFilter),
-  LinearSRGBColorSpace: () => (LinearSRGBColorSpace),
-  LinearToneMapping: () => (LinearToneMapping),
-  Loader: () => (Loader),
-  LoaderUtils: () => (LoaderUtils),
-  LoadingManager: () => (LoadingManager),
-  LoopOnce: () => (LoopOnce),
-  LoopPingPong: () => (LoopPingPong),
-  LoopRepeat: () => (LoopRepeat),
-  LuminanceAlphaFormat: () => (LuminanceAlphaFormat),
-  LuminanceFormat: () => (LuminanceFormat),
-  MOUSE: () => (MOUSE),
-  Material: () => (Material),
-  MaterialLoader: () => (MaterialLoader),
-  MathUtils: () => (MathUtils),
-  Matrix3: () => (Matrix3),
-  Matrix4: () => (three_module_Matrix4),
-  MaxEquation: () => (MaxEquation),
-  Mesh: () => (three_module_Mesh),
-  MeshBasicMaterial: () => (MeshBasicMaterial),
-  MeshDepthMaterial: () => (MeshDepthMaterial),
-  MeshDistanceMaterial: () => (MeshDistanceMaterial),
-  MeshLambertMaterial: () => (MeshLambertMaterial),
-  MeshMatcapMaterial: () => (MeshMatcapMaterial),
-  MeshNormalMaterial: () => (MeshNormalMaterial),
-  MeshPhongMaterial: () => (MeshPhongMaterial),
-  MeshPhysicalMaterial: () => (MeshPhysicalMaterial),
-  MeshStandardMaterial: () => (MeshStandardMaterial),
-  MeshToonMaterial: () => (MeshToonMaterial),
-  MinEquation: () => (MinEquation),
-  MirroredRepeatWrapping: () => (MirroredRepeatWrapping),
-  MixOperation: () => (MixOperation),
-  MultiplyBlending: () => (MultiplyBlending),
-  MultiplyOperation: () => (MultiplyOperation),
-  NearestFilter: () => (NearestFilter),
-  NearestMipMapLinearFilter: () => (NearestMipMapLinearFilter),
-  NearestMipMapNearestFilter: () => (NearestMipMapNearestFilter),
-  NearestMipmapLinearFilter: () => (NearestMipmapLinearFilter),
-  NearestMipmapNearestFilter: () => (NearestMipmapNearestFilter),
-  NeverDepth: () => (NeverDepth),
-  NeverStencilFunc: () => (NeverStencilFunc),
-  NoBlending: () => (NoBlending),
-  NoColorSpace: () => (NoColorSpace),
-  NoToneMapping: () => (NoToneMapping),
-  NormalAnimationBlendMode: () => (NormalAnimationBlendMode),
-  NormalBlending: () => (NormalBlending),
-  NotEqualDepth: () => (NotEqualDepth),
-  NotEqualStencilFunc: () => (NotEqualStencilFunc),
-  NumberKeyframeTrack: () => (NumberKeyframeTrack),
-  Object3D: () => (Object3D),
-  ObjectLoader: () => (ObjectLoader),
-  ObjectSpaceNormalMap: () => (ObjectSpaceNormalMap),
-  OctahedronBufferGeometry: () => (OctahedronBufferGeometry),
-  OctahedronGeometry: () => (OctahedronGeometry),
-  OneFactor: () => (OneFactor),
-  OneMinusDstAlphaFactor: () => (OneMinusDstAlphaFactor),
-  OneMinusDstColorFactor: () => (OneMinusDstColorFactor),
-  OneMinusSrcAlphaFactor: () => (OneMinusSrcAlphaFactor),
-  OneMinusSrcColorFactor: () => (OneMinusSrcColorFactor),
-  OrthographicCamera: () => (OrthographicCamera),
-  PCFShadowMap: () => (PCFShadowMap),
-  PCFSoftShadowMap: () => (PCFSoftShadowMap),
-  PMREMGenerator: () => (PMREMGenerator),
-  Path: () => (Path),
-  PerspectiveCamera: () => (PerspectiveCamera),
-  Plane: () => (Plane),
-  PlaneBufferGeometry: () => (PlaneBufferGeometry),
-  PlaneGeometry: () => (PlaneGeometry),
-  PlaneHelper: () => (PlaneHelper),
-  PointLight: () => (PointLight),
-  PointLightHelper: () => (PointLightHelper),
-  Points: () => (Points),
-  PointsMaterial: () => (PointsMaterial),
-  PolarGridHelper: () => (PolarGridHelper),
-  PolyhedronBufferGeometry: () => (PolyhedronBufferGeometry),
-  PolyhedronGeometry: () => (PolyhedronGeometry),
-  PositionalAudio: () => (PositionalAudio),
-  PropertyBinding: () => (PropertyBinding),
-  PropertyMixer: () => (PropertyMixer),
-  QuadraticBezierCurve: () => (QuadraticBezierCurve),
-  QuadraticBezierCurve3: () => (QuadraticBezierCurve3),
-  Quaternion: () => (Quaternion),
-  QuaternionKeyframeTrack: () => (QuaternionKeyframeTrack),
-  QuaternionLinearInterpolant: () => (QuaternionLinearInterpolant),
-  RED_GREEN_RGTC2_Format: () => (RED_GREEN_RGTC2_Format),
-  RED_RGTC1_Format: () => (RED_RGTC1_Format),
-  REVISION: () => (REVISION),
-  RGBADepthPacking: () => (RGBADepthPacking),
-  RGBAFormat: () => (RGBAFormat),
-  RGBAIntegerFormat: () => (RGBAIntegerFormat),
-  RGBA_ASTC_10x10_Format: () => (RGBA_ASTC_10x10_Format),
-  RGBA_ASTC_10x5_Format: () => (RGBA_ASTC_10x5_Format),
-  RGBA_ASTC_10x6_Format: () => (RGBA_ASTC_10x6_Format),
-  RGBA_ASTC_10x8_Format: () => (RGBA_ASTC_10x8_Format),
-  RGBA_ASTC_12x10_Format: () => (RGBA_ASTC_12x10_Format),
-  RGBA_ASTC_12x12_Format: () => (RGBA_ASTC_12x12_Format),
-  RGBA_ASTC_4x4_Format: () => (RGBA_ASTC_4x4_Format),
-  RGBA_ASTC_5x4_Format: () => (RGBA_ASTC_5x4_Format),
-  RGBA_ASTC_5x5_Format: () => (RGBA_ASTC_5x5_Format),
-  RGBA_ASTC_6x5_Format: () => (RGBA_ASTC_6x5_Format),
-  RGBA_ASTC_6x6_Format: () => (RGBA_ASTC_6x6_Format),
-  RGBA_ASTC_8x5_Format: () => (RGBA_ASTC_8x5_Format),
-  RGBA_ASTC_8x6_Format: () => (RGBA_ASTC_8x6_Format),
-  RGBA_ASTC_8x8_Format: () => (RGBA_ASTC_8x8_Format),
-  RGBA_BPTC_Format: () => (RGBA_BPTC_Format),
-  RGBA_ETC2_EAC_Format: () => (RGBA_ETC2_EAC_Format),
-  RGBA_PVRTC_2BPPV1_Format: () => (RGBA_PVRTC_2BPPV1_Format),
-  RGBA_PVRTC_4BPPV1_Format: () => (RGBA_PVRTC_4BPPV1_Format),
-  RGBA_S3TC_DXT1_Format: () => (RGBA_S3TC_DXT1_Format),
-  RGBA_S3TC_DXT3_Format: () => (RGBA_S3TC_DXT3_Format),
-  RGBA_S3TC_DXT5_Format: () => (RGBA_S3TC_DXT5_Format),
-  RGB_ETC1_Format: () => (RGB_ETC1_Format),
-  RGB_ETC2_Format: () => (RGB_ETC2_Format),
-  RGB_PVRTC_2BPPV1_Format: () => (RGB_PVRTC_2BPPV1_Format),
-  RGB_PVRTC_4BPPV1_Format: () => (RGB_PVRTC_4BPPV1_Format),
-  RGB_S3TC_DXT1_Format: () => (RGB_S3TC_DXT1_Format),
-  RGFormat: () => (RGFormat),
-  RGIntegerFormat: () => (RGIntegerFormat),
-  RawShaderMaterial: () => (RawShaderMaterial),
-  Ray: () => (Ray),
-  Raycaster: () => (Raycaster),
-  RectAreaLight: () => (RectAreaLight),
-  RedFormat: () => (RedFormat),
-  RedIntegerFormat: () => (RedIntegerFormat),
-  ReinhardToneMapping: () => (ReinhardToneMapping),
-  RepeatWrapping: () => (RepeatWrapping),
-  ReplaceStencilOp: () => (ReplaceStencilOp),
-  ReverseSubtractEquation: () => (ReverseSubtractEquation),
-  RingBufferGeometry: () => (RingBufferGeometry),
-  RingGeometry: () => (RingGeometry),
-  SIGNED_RED_GREEN_RGTC2_Format: () => (SIGNED_RED_GREEN_RGTC2_Format),
-  SIGNED_RED_RGTC1_Format: () => (SIGNED_RED_RGTC1_Format),
-  SRGBColorSpace: () => (SRGBColorSpace),
-  Scene: () => (Scene),
-  ShaderChunk: () => (ShaderChunk),
-  ShaderLib: () => (three_module_ShaderLib),
-  ShaderMaterial: () => (ShaderMaterial),
-  ShadowMaterial: () => (ShadowMaterial),
-  Shape: () => (Shape),
-  ShapeBufferGeometry: () => (ShapeBufferGeometry),
-  ShapeGeometry: () => (ShapeGeometry),
-  ShapePath: () => (ShapePath),
-  ShapeUtils: () => (ShapeUtils),
-  ShortType: () => (ShortType),
-  Skeleton: () => (Skeleton),
-  SkeletonHelper: () => (SkeletonHelper),
-  SkinnedMesh: () => (SkinnedMesh),
-  Source: () => (Source),
-  Sphere: () => (Sphere),
-  SphereBufferGeometry: () => (SphereBufferGeometry),
-  SphereGeometry: () => (SphereGeometry),
-  Spherical: () => (Spherical),
-  SphericalHarmonics3: () => (SphericalHarmonics3),
-  SplineCurve: () => (SplineCurve),
-  SpotLight: () => (SpotLight),
-  SpotLightHelper: () => (SpotLightHelper),
-  Sprite: () => (Sprite),
-  SpriteMaterial: () => (SpriteMaterial),
-  SrcAlphaFactor: () => (SrcAlphaFactor),
-  SrcAlphaSaturateFactor: () => (SrcAlphaSaturateFactor),
-  SrcColorFactor: () => (SrcColorFactor),
-  StaticCopyUsage: () => (StaticCopyUsage),
-  StaticDrawUsage: () => (StaticDrawUsage),
-  StaticReadUsage: () => (StaticReadUsage),
-  StereoCamera: () => (StereoCamera),
-  StreamCopyUsage: () => (StreamCopyUsage),
-  StreamDrawUsage: () => (StreamDrawUsage),
-  StreamReadUsage: () => (StreamReadUsage),
-  StringKeyframeTrack: () => (StringKeyframeTrack),
-  SubtractEquation: () => (SubtractEquation),
-  SubtractiveBlending: () => (SubtractiveBlending),
-  TOUCH: () => (TOUCH),
-  TangentSpaceNormalMap: () => (TangentSpaceNormalMap),
-  TetrahedronBufferGeometry: () => (TetrahedronBufferGeometry),
-  TetrahedronGeometry: () => (TetrahedronGeometry),
-  Texture: () => (Texture),
-  TextureLoader: () => (TextureLoader),
-  TorusBufferGeometry: () => (TorusBufferGeometry),
-  TorusGeometry: () => (TorusGeometry),
-  TorusKnotBufferGeometry: () => (TorusKnotBufferGeometry),
-  TorusKnotGeometry: () => (TorusKnotGeometry),
-  Triangle: () => (Triangle),
-  TriangleFanDrawMode: () => (TriangleFanDrawMode),
-  TriangleStripDrawMode: () => (TriangleStripDrawMode),
-  TrianglesDrawMode: () => (TrianglesDrawMode),
-  TubeBufferGeometry: () => (TubeBufferGeometry),
-  TubeGeometry: () => (TubeGeometry),
-  TwoPassDoubleSide: () => (TwoPassDoubleSide),
-  UVMapping: () => (UVMapping),
-  Uint16BufferAttribute: () => (Uint16BufferAttribute),
-  Uint32BufferAttribute: () => (Uint32BufferAttribute),
-  Uint8BufferAttribute: () => (Uint8BufferAttribute),
-  Uint8ClampedBufferAttribute: () => (Uint8ClampedBufferAttribute),
-  Uniform: () => (Uniform),
-  UniformsGroup: () => (UniformsGroup),
-  UniformsLib: () => (UniformsLib),
-  UniformsUtils: () => (UniformsUtils),
-  UnsignedByteType: () => (UnsignedByteType),
-  UnsignedInt248Type: () => (UnsignedInt248Type),
-  UnsignedIntType: () => (UnsignedIntType),
-  UnsignedShort4444Type: () => (UnsignedShort4444Type),
-  UnsignedShort5551Type: () => (UnsignedShort5551Type),
-  UnsignedShortType: () => (UnsignedShortType),
-  VSMShadowMap: () => (VSMShadowMap),
-  Vector2: () => (three_module_Vector2),
-  Vector3: () => (three_module_Vector3),
-  Vector4: () => (Vector4),
-  VectorKeyframeTrack: () => (VectorKeyframeTrack),
-  VideoTexture: () => (VideoTexture),
-  WebGL1Renderer: () => (WebGL1Renderer),
-  WebGL3DRenderTarget: () => (WebGL3DRenderTarget),
-  WebGLArrayRenderTarget: () => (WebGLArrayRenderTarget),
-  WebGLCubeRenderTarget: () => (WebGLCubeRenderTarget),
-  WebGLMultipleRenderTargets: () => (WebGLMultipleRenderTargets),
-  WebGLRenderTarget: () => (WebGLRenderTarget),
-  WebGLRenderer: () => (WebGLRenderer),
-  WebGLUtils: () => (WebGLUtils),
-  WireframeGeometry: () => (WireframeGeometry),
-  WrapAroundEnding: () => (WrapAroundEnding),
-  ZeroCurvatureEnding: () => (ZeroCurvatureEnding),
-  ZeroFactor: () => (ZeroFactor),
-  ZeroSlopeEnding: () => (ZeroSlopeEnding),
-  ZeroStencilOp: () => (ZeroStencilOp),
-  _SRGBAFormat: () => (_SRGBAFormat),
-  sRGBEncoding: () => (sRGBEncoding)
+  "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
+  "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
+  "Panel": () => (/* reexport */ Panel),
+  "System": () => (/* reexport */ System),
+  "THREE": () => (/* reexport */ three_module_namespaceObject),
+  "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
 });
 
 // NAMESPACE OBJECT: ./src/core/MRElement.js
 var MRElement_namespaceObject = {};
 __webpack_require__.r(MRElement_namespaceObject);
 __webpack_require__.d(MRElement_namespaceObject, {
-  Z: () => (MRElement)
+  "Z": () => (MRElement)
+});
+
+// NAMESPACE OBJECT: ./node_modules/three/build/three.module.js
+var three_module_namespaceObject = {};
+__webpack_require__.r(three_module_namespaceObject);
+__webpack_require__.d(three_module_namespaceObject, {
+  "ACESFilmicToneMapping": () => (ACESFilmicToneMapping),
+  "AddEquation": () => (AddEquation),
+  "AddOperation": () => (AddOperation),
+  "AdditiveAnimationBlendMode": () => (AdditiveAnimationBlendMode),
+  "AdditiveBlending": () => (AdditiveBlending),
+  "AlphaFormat": () => (AlphaFormat),
+  "AlwaysDepth": () => (AlwaysDepth),
+  "AlwaysStencilFunc": () => (AlwaysStencilFunc),
+  "AmbientLight": () => (AmbientLight),
+  "AmbientLightProbe": () => (AmbientLightProbe),
+  "AnimationAction": () => (AnimationAction),
+  "AnimationClip": () => (AnimationClip),
+  "AnimationLoader": () => (AnimationLoader),
+  "AnimationMixer": () => (AnimationMixer),
+  "AnimationObjectGroup": () => (AnimationObjectGroup),
+  "AnimationUtils": () => (AnimationUtils),
+  "ArcCurve": () => (ArcCurve),
+  "ArrayCamera": () => (ArrayCamera),
+  "ArrowHelper": () => (ArrowHelper),
+  "Audio": () => (Audio),
+  "AudioAnalyser": () => (AudioAnalyser),
+  "AudioContext": () => (AudioContext),
+  "AudioListener": () => (AudioListener),
+  "AudioLoader": () => (AudioLoader),
+  "AxesHelper": () => (AxesHelper),
+  "BackSide": () => (BackSide),
+  "BasicDepthPacking": () => (BasicDepthPacking),
+  "BasicShadowMap": () => (BasicShadowMap),
+  "Bone": () => (Bone),
+  "BooleanKeyframeTrack": () => (BooleanKeyframeTrack),
+  "Box2": () => (Box2),
+  "Box3": () => (Box3),
+  "Box3Helper": () => (Box3Helper),
+  "BoxBufferGeometry": () => (BoxBufferGeometry),
+  "BoxGeometry": () => (BoxGeometry),
+  "BoxHelper": () => (BoxHelper),
+  "BufferAttribute": () => (three_module_BufferAttribute),
+  "BufferGeometry": () => (three_module_BufferGeometry),
+  "BufferGeometryLoader": () => (BufferGeometryLoader),
+  "ByteType": () => (ByteType),
+  "Cache": () => (Cache),
+  "Camera": () => (Camera),
+  "CameraHelper": () => (CameraHelper),
+  "CanvasTexture": () => (CanvasTexture),
+  "CapsuleBufferGeometry": () => (CapsuleBufferGeometry),
+  "CapsuleGeometry": () => (CapsuleGeometry),
+  "CatmullRomCurve3": () => (CatmullRomCurve3),
+  "CineonToneMapping": () => (CineonToneMapping),
+  "CircleBufferGeometry": () => (CircleBufferGeometry),
+  "CircleGeometry": () => (CircleGeometry),
+  "ClampToEdgeWrapping": () => (ClampToEdgeWrapping),
+  "Clock": () => (Clock),
+  "Color": () => (Color),
+  "ColorKeyframeTrack": () => (ColorKeyframeTrack),
+  "ColorManagement": () => (ColorManagement),
+  "CompressedArrayTexture": () => (CompressedArrayTexture),
+  "CompressedTexture": () => (CompressedTexture),
+  "CompressedTextureLoader": () => (CompressedTextureLoader),
+  "ConeBufferGeometry": () => (ConeBufferGeometry),
+  "ConeGeometry": () => (ConeGeometry),
+  "CubeCamera": () => (CubeCamera),
+  "CubeReflectionMapping": () => (CubeReflectionMapping),
+  "CubeRefractionMapping": () => (CubeRefractionMapping),
+  "CubeTexture": () => (CubeTexture),
+  "CubeTextureLoader": () => (CubeTextureLoader),
+  "CubeUVReflectionMapping": () => (CubeUVReflectionMapping),
+  "CubicBezierCurve": () => (CubicBezierCurve),
+  "CubicBezierCurve3": () => (CubicBezierCurve3),
+  "CubicInterpolant": () => (CubicInterpolant),
+  "CullFaceBack": () => (CullFaceBack),
+  "CullFaceFront": () => (CullFaceFront),
+  "CullFaceFrontBack": () => (CullFaceFrontBack),
+  "CullFaceNone": () => (CullFaceNone),
+  "Curve": () => (Curve),
+  "CurvePath": () => (CurvePath),
+  "CustomBlending": () => (CustomBlending),
+  "CustomToneMapping": () => (CustomToneMapping),
+  "CylinderBufferGeometry": () => (CylinderBufferGeometry),
+  "CylinderGeometry": () => (three_module_CylinderGeometry),
+  "Cylindrical": () => (Cylindrical),
+  "Data3DTexture": () => (Data3DTexture),
+  "DataArrayTexture": () => (DataArrayTexture),
+  "DataTexture": () => (DataTexture),
+  "DataTextureLoader": () => (DataTextureLoader),
+  "DataUtils": () => (DataUtils),
+  "DecrementStencilOp": () => (DecrementStencilOp),
+  "DecrementWrapStencilOp": () => (DecrementWrapStencilOp),
+  "DefaultLoadingManager": () => (DefaultLoadingManager),
+  "DepthFormat": () => (DepthFormat),
+  "DepthStencilFormat": () => (DepthStencilFormat),
+  "DepthTexture": () => (DepthTexture),
+  "DirectionalLight": () => (DirectionalLight),
+  "DirectionalLightHelper": () => (DirectionalLightHelper),
+  "DiscreteInterpolant": () => (DiscreteInterpolant),
+  "DisplayP3ColorSpace": () => (DisplayP3ColorSpace),
+  "DodecahedronBufferGeometry": () => (DodecahedronBufferGeometry),
+  "DodecahedronGeometry": () => (DodecahedronGeometry),
+  "DoubleSide": () => (DoubleSide),
+  "DstAlphaFactor": () => (DstAlphaFactor),
+  "DstColorFactor": () => (DstColorFactor),
+  "DynamicCopyUsage": () => (DynamicCopyUsage),
+  "DynamicDrawUsage": () => (DynamicDrawUsage),
+  "DynamicReadUsage": () => (DynamicReadUsage),
+  "EdgesGeometry": () => (EdgesGeometry),
+  "EllipseCurve": () => (EllipseCurve),
+  "EqualDepth": () => (EqualDepth),
+  "EqualStencilFunc": () => (EqualStencilFunc),
+  "EquirectangularReflectionMapping": () => (EquirectangularReflectionMapping),
+  "EquirectangularRefractionMapping": () => (EquirectangularRefractionMapping),
+  "Euler": () => (Euler),
+  "EventDispatcher": () => (EventDispatcher),
+  "ExtrudeBufferGeometry": () => (ExtrudeBufferGeometry),
+  "ExtrudeGeometry": () => (ExtrudeGeometry),
+  "FileLoader": () => (FileLoader),
+  "Float16BufferAttribute": () => (Float16BufferAttribute),
+  "Float32BufferAttribute": () => (three_module_Float32BufferAttribute),
+  "Float64BufferAttribute": () => (Float64BufferAttribute),
+  "FloatType": () => (FloatType),
+  "Fog": () => (Fog),
+  "FogExp2": () => (FogExp2),
+  "FramebufferTexture": () => (FramebufferTexture),
+  "FrontSide": () => (FrontSide),
+  "Frustum": () => (Frustum),
+  "GLBufferAttribute": () => (GLBufferAttribute),
+  "GLSL1": () => (GLSL1),
+  "GLSL3": () => (GLSL3),
+  "GreaterDepth": () => (GreaterDepth),
+  "GreaterEqualDepth": () => (GreaterEqualDepth),
+  "GreaterEqualStencilFunc": () => (GreaterEqualStencilFunc),
+  "GreaterStencilFunc": () => (GreaterStencilFunc),
+  "GridHelper": () => (GridHelper),
+  "Group": () => (Group),
+  "HalfFloatType": () => (HalfFloatType),
+  "HemisphereLight": () => (HemisphereLight),
+  "HemisphereLightHelper": () => (HemisphereLightHelper),
+  "HemisphereLightProbe": () => (HemisphereLightProbe),
+  "IcosahedronBufferGeometry": () => (IcosahedronBufferGeometry),
+  "IcosahedronGeometry": () => (IcosahedronGeometry),
+  "ImageBitmapLoader": () => (ImageBitmapLoader),
+  "ImageLoader": () => (ImageLoader),
+  "ImageUtils": () => (ImageUtils),
+  "IncrementStencilOp": () => (IncrementStencilOp),
+  "IncrementWrapStencilOp": () => (IncrementWrapStencilOp),
+  "InstancedBufferAttribute": () => (three_module_InstancedBufferAttribute),
+  "InstancedBufferGeometry": () => (InstancedBufferGeometry),
+  "InstancedInterleavedBuffer": () => (InstancedInterleavedBuffer),
+  "InstancedMesh": () => (InstancedMesh),
+  "Int16BufferAttribute": () => (Int16BufferAttribute),
+  "Int32BufferAttribute": () => (Int32BufferAttribute),
+  "Int8BufferAttribute": () => (Int8BufferAttribute),
+  "IntType": () => (IntType),
+  "InterleavedBuffer": () => (three_module_InterleavedBuffer),
+  "InterleavedBufferAttribute": () => (three_module_InterleavedBufferAttribute),
+  "Interpolant": () => (Interpolant),
+  "InterpolateDiscrete": () => (InterpolateDiscrete),
+  "InterpolateLinear": () => (InterpolateLinear),
+  "InterpolateSmooth": () => (InterpolateSmooth),
+  "InvertStencilOp": () => (InvertStencilOp),
+  "KeepStencilOp": () => (KeepStencilOp),
+  "KeyframeTrack": () => (KeyframeTrack),
+  "LOD": () => (LOD),
+  "LatheBufferGeometry": () => (LatheBufferGeometry),
+  "LatheGeometry": () => (LatheGeometry),
+  "Layers": () => (Layers),
+  "LessDepth": () => (LessDepth),
+  "LessEqualDepth": () => (LessEqualDepth),
+  "LessEqualStencilFunc": () => (LessEqualStencilFunc),
+  "LessStencilFunc": () => (LessStencilFunc),
+  "Light": () => (Light),
+  "LightProbe": () => (LightProbe),
+  "Line": () => (Line),
+  "Line3": () => (Line3),
+  "LineBasicMaterial": () => (LineBasicMaterial),
+  "LineCurve": () => (LineCurve),
+  "LineCurve3": () => (LineCurve3),
+  "LineDashedMaterial": () => (LineDashedMaterial),
+  "LineLoop": () => (LineLoop),
+  "LineSegments": () => (LineSegments),
+  "LinearEncoding": () => (LinearEncoding),
+  "LinearFilter": () => (LinearFilter),
+  "LinearInterpolant": () => (LinearInterpolant),
+  "LinearMipMapLinearFilter": () => (LinearMipMapLinearFilter),
+  "LinearMipMapNearestFilter": () => (LinearMipMapNearestFilter),
+  "LinearMipmapLinearFilter": () => (LinearMipmapLinearFilter),
+  "LinearMipmapNearestFilter": () => (LinearMipmapNearestFilter),
+  "LinearSRGBColorSpace": () => (LinearSRGBColorSpace),
+  "LinearToneMapping": () => (LinearToneMapping),
+  "Loader": () => (Loader),
+  "LoaderUtils": () => (LoaderUtils),
+  "LoadingManager": () => (LoadingManager),
+  "LoopOnce": () => (LoopOnce),
+  "LoopPingPong": () => (LoopPingPong),
+  "LoopRepeat": () => (LoopRepeat),
+  "LuminanceAlphaFormat": () => (LuminanceAlphaFormat),
+  "LuminanceFormat": () => (LuminanceFormat),
+  "MOUSE": () => (MOUSE),
+  "Material": () => (Material),
+  "MaterialLoader": () => (MaterialLoader),
+  "MathUtils": () => (MathUtils),
+  "Matrix3": () => (Matrix3),
+  "Matrix4": () => (three_module_Matrix4),
+  "MaxEquation": () => (MaxEquation),
+  "Mesh": () => (three_module_Mesh),
+  "MeshBasicMaterial": () => (MeshBasicMaterial),
+  "MeshDepthMaterial": () => (MeshDepthMaterial),
+  "MeshDistanceMaterial": () => (MeshDistanceMaterial),
+  "MeshLambertMaterial": () => (MeshLambertMaterial),
+  "MeshMatcapMaterial": () => (MeshMatcapMaterial),
+  "MeshNormalMaterial": () => (MeshNormalMaterial),
+  "MeshPhongMaterial": () => (MeshPhongMaterial),
+  "MeshPhysicalMaterial": () => (MeshPhysicalMaterial),
+  "MeshStandardMaterial": () => (MeshStandardMaterial),
+  "MeshToonMaterial": () => (MeshToonMaterial),
+  "MinEquation": () => (MinEquation),
+  "MirroredRepeatWrapping": () => (MirroredRepeatWrapping),
+  "MixOperation": () => (MixOperation),
+  "MultiplyBlending": () => (MultiplyBlending),
+  "MultiplyOperation": () => (MultiplyOperation),
+  "NearestFilter": () => (NearestFilter),
+  "NearestMipMapLinearFilter": () => (NearestMipMapLinearFilter),
+  "NearestMipMapNearestFilter": () => (NearestMipMapNearestFilter),
+  "NearestMipmapLinearFilter": () => (NearestMipmapLinearFilter),
+  "NearestMipmapNearestFilter": () => (NearestMipmapNearestFilter),
+  "NeverDepth": () => (NeverDepth),
+  "NeverStencilFunc": () => (NeverStencilFunc),
+  "NoBlending": () => (NoBlending),
+  "NoColorSpace": () => (NoColorSpace),
+  "NoToneMapping": () => (NoToneMapping),
+  "NormalAnimationBlendMode": () => (NormalAnimationBlendMode),
+  "NormalBlending": () => (NormalBlending),
+  "NotEqualDepth": () => (NotEqualDepth),
+  "NotEqualStencilFunc": () => (NotEqualStencilFunc),
+  "NumberKeyframeTrack": () => (NumberKeyframeTrack),
+  "Object3D": () => (Object3D),
+  "ObjectLoader": () => (ObjectLoader),
+  "ObjectSpaceNormalMap": () => (ObjectSpaceNormalMap),
+  "OctahedronBufferGeometry": () => (OctahedronBufferGeometry),
+  "OctahedronGeometry": () => (OctahedronGeometry),
+  "OneFactor": () => (OneFactor),
+  "OneMinusDstAlphaFactor": () => (OneMinusDstAlphaFactor),
+  "OneMinusDstColorFactor": () => (OneMinusDstColorFactor),
+  "OneMinusSrcAlphaFactor": () => (OneMinusSrcAlphaFactor),
+  "OneMinusSrcColorFactor": () => (OneMinusSrcColorFactor),
+  "OrthographicCamera": () => (OrthographicCamera),
+  "PCFShadowMap": () => (PCFShadowMap),
+  "PCFSoftShadowMap": () => (PCFSoftShadowMap),
+  "PMREMGenerator": () => (PMREMGenerator),
+  "Path": () => (Path),
+  "PerspectiveCamera": () => (PerspectiveCamera),
+  "Plane": () => (Plane),
+  "PlaneBufferGeometry": () => (PlaneBufferGeometry),
+  "PlaneGeometry": () => (PlaneGeometry),
+  "PlaneHelper": () => (PlaneHelper),
+  "PointLight": () => (PointLight),
+  "PointLightHelper": () => (PointLightHelper),
+  "Points": () => (Points),
+  "PointsMaterial": () => (PointsMaterial),
+  "PolarGridHelper": () => (PolarGridHelper),
+  "PolyhedronBufferGeometry": () => (PolyhedronBufferGeometry),
+  "PolyhedronGeometry": () => (PolyhedronGeometry),
+  "PositionalAudio": () => (PositionalAudio),
+  "PropertyBinding": () => (PropertyBinding),
+  "PropertyMixer": () => (PropertyMixer),
+  "QuadraticBezierCurve": () => (QuadraticBezierCurve),
+  "QuadraticBezierCurve3": () => (QuadraticBezierCurve3),
+  "Quaternion": () => (Quaternion),
+  "QuaternionKeyframeTrack": () => (QuaternionKeyframeTrack),
+  "QuaternionLinearInterpolant": () => (QuaternionLinearInterpolant),
+  "RED_GREEN_RGTC2_Format": () => (RED_GREEN_RGTC2_Format),
+  "RED_RGTC1_Format": () => (RED_RGTC1_Format),
+  "REVISION": () => (REVISION),
+  "RGBADepthPacking": () => (RGBADepthPacking),
+  "RGBAFormat": () => (RGBAFormat),
+  "RGBAIntegerFormat": () => (RGBAIntegerFormat),
+  "RGBA_ASTC_10x10_Format": () => (RGBA_ASTC_10x10_Format),
+  "RGBA_ASTC_10x5_Format": () => (RGBA_ASTC_10x5_Format),
+  "RGBA_ASTC_10x6_Format": () => (RGBA_ASTC_10x6_Format),
+  "RGBA_ASTC_10x8_Format": () => (RGBA_ASTC_10x8_Format),
+  "RGBA_ASTC_12x10_Format": () => (RGBA_ASTC_12x10_Format),
+  "RGBA_ASTC_12x12_Format": () => (RGBA_ASTC_12x12_Format),
+  "RGBA_ASTC_4x4_Format": () => (RGBA_ASTC_4x4_Format),
+  "RGBA_ASTC_5x4_Format": () => (RGBA_ASTC_5x4_Format),
+  "RGBA_ASTC_5x5_Format": () => (RGBA_ASTC_5x5_Format),
+  "RGBA_ASTC_6x5_Format": () => (RGBA_ASTC_6x5_Format),
+  "RGBA_ASTC_6x6_Format": () => (RGBA_ASTC_6x6_Format),
+  "RGBA_ASTC_8x5_Format": () => (RGBA_ASTC_8x5_Format),
+  "RGBA_ASTC_8x6_Format": () => (RGBA_ASTC_8x6_Format),
+  "RGBA_ASTC_8x8_Format": () => (RGBA_ASTC_8x8_Format),
+  "RGBA_BPTC_Format": () => (RGBA_BPTC_Format),
+  "RGBA_ETC2_EAC_Format": () => (RGBA_ETC2_EAC_Format),
+  "RGBA_PVRTC_2BPPV1_Format": () => (RGBA_PVRTC_2BPPV1_Format),
+  "RGBA_PVRTC_4BPPV1_Format": () => (RGBA_PVRTC_4BPPV1_Format),
+  "RGBA_S3TC_DXT1_Format": () => (RGBA_S3TC_DXT1_Format),
+  "RGBA_S3TC_DXT3_Format": () => (RGBA_S3TC_DXT3_Format),
+  "RGBA_S3TC_DXT5_Format": () => (RGBA_S3TC_DXT5_Format),
+  "RGB_ETC1_Format": () => (RGB_ETC1_Format),
+  "RGB_ETC2_Format": () => (RGB_ETC2_Format),
+  "RGB_PVRTC_2BPPV1_Format": () => (RGB_PVRTC_2BPPV1_Format),
+  "RGB_PVRTC_4BPPV1_Format": () => (RGB_PVRTC_4BPPV1_Format),
+  "RGB_S3TC_DXT1_Format": () => (RGB_S3TC_DXT1_Format),
+  "RGFormat": () => (RGFormat),
+  "RGIntegerFormat": () => (RGIntegerFormat),
+  "RawShaderMaterial": () => (RawShaderMaterial),
+  "Ray": () => (Ray),
+  "Raycaster": () => (Raycaster),
+  "RectAreaLight": () => (RectAreaLight),
+  "RedFormat": () => (RedFormat),
+  "RedIntegerFormat": () => (RedIntegerFormat),
+  "ReinhardToneMapping": () => (ReinhardToneMapping),
+  "RepeatWrapping": () => (RepeatWrapping),
+  "ReplaceStencilOp": () => (ReplaceStencilOp),
+  "ReverseSubtractEquation": () => (ReverseSubtractEquation),
+  "RingBufferGeometry": () => (RingBufferGeometry),
+  "RingGeometry": () => (RingGeometry),
+  "SIGNED_RED_GREEN_RGTC2_Format": () => (SIGNED_RED_GREEN_RGTC2_Format),
+  "SIGNED_RED_RGTC1_Format": () => (SIGNED_RED_RGTC1_Format),
+  "SRGBColorSpace": () => (SRGBColorSpace),
+  "Scene": () => (Scene),
+  "ShaderChunk": () => (ShaderChunk),
+  "ShaderLib": () => (three_module_ShaderLib),
+  "ShaderMaterial": () => (ShaderMaterial),
+  "ShadowMaterial": () => (ShadowMaterial),
+  "Shape": () => (Shape),
+  "ShapeBufferGeometry": () => (ShapeBufferGeometry),
+  "ShapeGeometry": () => (ShapeGeometry),
+  "ShapePath": () => (ShapePath),
+  "ShapeUtils": () => (ShapeUtils),
+  "ShortType": () => (ShortType),
+  "Skeleton": () => (Skeleton),
+  "SkeletonHelper": () => (SkeletonHelper),
+  "SkinnedMesh": () => (SkinnedMesh),
+  "Source": () => (Source),
+  "Sphere": () => (Sphere),
+  "SphereBufferGeometry": () => (SphereBufferGeometry),
+  "SphereGeometry": () => (SphereGeometry),
+  "Spherical": () => (Spherical),
+  "SphericalHarmonics3": () => (SphericalHarmonics3),
+  "SplineCurve": () => (SplineCurve),
+  "SpotLight": () => (SpotLight),
+  "SpotLightHelper": () => (SpotLightHelper),
+  "Sprite": () => (Sprite),
+  "SpriteMaterial": () => (SpriteMaterial),
+  "SrcAlphaFactor": () => (SrcAlphaFactor),
+  "SrcAlphaSaturateFactor": () => (SrcAlphaSaturateFactor),
+  "SrcColorFactor": () => (SrcColorFactor),
+  "StaticCopyUsage": () => (StaticCopyUsage),
+  "StaticDrawUsage": () => (StaticDrawUsage),
+  "StaticReadUsage": () => (StaticReadUsage),
+  "StereoCamera": () => (StereoCamera),
+  "StreamCopyUsage": () => (StreamCopyUsage),
+  "StreamDrawUsage": () => (StreamDrawUsage),
+  "StreamReadUsage": () => (StreamReadUsage),
+  "StringKeyframeTrack": () => (StringKeyframeTrack),
+  "SubtractEquation": () => (SubtractEquation),
+  "SubtractiveBlending": () => (SubtractiveBlending),
+  "TOUCH": () => (TOUCH),
+  "TangentSpaceNormalMap": () => (TangentSpaceNormalMap),
+  "TetrahedronBufferGeometry": () => (TetrahedronBufferGeometry),
+  "TetrahedronGeometry": () => (TetrahedronGeometry),
+  "Texture": () => (Texture),
+  "TextureLoader": () => (TextureLoader),
+  "TorusBufferGeometry": () => (TorusBufferGeometry),
+  "TorusGeometry": () => (TorusGeometry),
+  "TorusKnotBufferGeometry": () => (TorusKnotBufferGeometry),
+  "TorusKnotGeometry": () => (TorusKnotGeometry),
+  "Triangle": () => (Triangle),
+  "TriangleFanDrawMode": () => (TriangleFanDrawMode),
+  "TriangleStripDrawMode": () => (TriangleStripDrawMode),
+  "TrianglesDrawMode": () => (TrianglesDrawMode),
+  "TubeBufferGeometry": () => (TubeBufferGeometry),
+  "TubeGeometry": () => (TubeGeometry),
+  "TwoPassDoubleSide": () => (TwoPassDoubleSide),
+  "UVMapping": () => (UVMapping),
+  "Uint16BufferAttribute": () => (Uint16BufferAttribute),
+  "Uint32BufferAttribute": () => (Uint32BufferAttribute),
+  "Uint8BufferAttribute": () => (Uint8BufferAttribute),
+  "Uint8ClampedBufferAttribute": () => (Uint8ClampedBufferAttribute),
+  "Uniform": () => (Uniform),
+  "UniformsGroup": () => (UniformsGroup),
+  "UniformsLib": () => (UniformsLib),
+  "UniformsUtils": () => (UniformsUtils),
+  "UnsignedByteType": () => (UnsignedByteType),
+  "UnsignedInt248Type": () => (UnsignedInt248Type),
+  "UnsignedIntType": () => (UnsignedIntType),
+  "UnsignedShort4444Type": () => (UnsignedShort4444Type),
+  "UnsignedShort5551Type": () => (UnsignedShort5551Type),
+  "UnsignedShortType": () => (UnsignedShortType),
+  "VSMShadowMap": () => (VSMShadowMap),
+  "Vector2": () => (three_module_Vector2),
+  "Vector3": () => (three_module_Vector3),
+  "Vector4": () => (Vector4),
+  "VectorKeyframeTrack": () => (VectorKeyframeTrack),
+  "VideoTexture": () => (VideoTexture),
+  "WebGL1Renderer": () => (WebGL1Renderer),
+  "WebGL3DRenderTarget": () => (WebGL3DRenderTarget),
+  "WebGLArrayRenderTarget": () => (WebGLArrayRenderTarget),
+  "WebGLCubeRenderTarget": () => (WebGLCubeRenderTarget),
+  "WebGLMultipleRenderTargets": () => (WebGLMultipleRenderTargets),
+  "WebGLRenderTarget": () => (WebGLRenderTarget),
+  "WebGLRenderer": () => (WebGLRenderer),
+  "WebGLUtils": () => (WebGLUtils),
+  "WireframeGeometry": () => (WireframeGeometry),
+  "WrapAroundEnding": () => (WrapAroundEnding),
+  "ZeroCurvatureEnding": () => (ZeroCurvatureEnding),
+  "ZeroFactor": () => (ZeroFactor),
+  "ZeroSlopeEnding": () => (ZeroSlopeEnding),
+  "ZeroStencilOp": () => (ZeroStencilOp),
+  "_SRGBAFormat": () => (_SRGBAFormat),
+  "sRGBEncoding": () => (sRGBEncoding)
 });
 
 // NAMESPACE OBJECT: ./src/core/entity.js
 var entity_namespaceObject = {};
 __webpack_require__.r(entity_namespaceObject);
 __webpack_require__.d(entity_namespaceObject, {
-  J: () => (Entity)
+  "J": () => (Entity)
 });
 
 // NAMESPACE OBJECT: ./src/geometry/UIPlane.js
 var UIPlane_namespaceObject = {};
 __webpack_require__.r(UIPlane_namespaceObject);
 __webpack_require__.d(UIPlane_namespaceObject, {
-  J: () => (UIPlane)
+  "J": () => (UIPlane)
 });
 
 // EXTERNAL MODULE: ./src/utils/extensions.js
@@ -853,6 +849,21 @@ __webpack_require__.e(/* import() */ 87).then(__webpack_require__.bind(__webpack
     RAPIER = rap
     document.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
 })
+;// CONCATENATED MODULE: ./src/core/MRElement.js
+
+
+class MRElement extends HTMLElement {
+  constructor() {
+    super()
+    this.environment = null
+    this.observer = null
+  }
+
+  add(entity) {}
+
+  remove(entity) {}
+}
+
 ;// CONCATENATED MODULE: ./node_modules/three/build/three.module.js
 /**
  * @license
@@ -51767,21 +51778,6 @@ function roundVectorTo(vector, decimal){
   vector.roundToZero()
   vector.divideScalar(decimal)
 }
-;// CONCATENATED MODULE: ./src/core/MRElement.js
-
-
-class MRElement extends HTMLElement {
-  constructor() {
-    super()
-    this.environment = null
-    this.observer = null
-  }
-
-  add(entity) {}
-
-  remove(entity) {}
-}
-
 ;// CONCATENATED MODULE: ./src/datatypes/BodyOffset.js
 class BodyOffset {
 
@@ -60152,6 +60148,7 @@ class TextSystem extends System {
       this.addText(entity)
       entity.textObj.sync(() => {
               entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+              entity.textObj.position.setY(entity.offsetHeight / 2)
         })
     }
   }
@@ -60164,7 +60161,15 @@ class TextSystem extends System {
         entity.textObj.sync()
       }
 
-      this.updateStyle(entity)
+      if (entity.needsUpdate) {
+        this.updateStyle(entity)
+        entity.needsUpdate = false
+        entity.textObj.sync(() => {
+              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+              entity.textObj.position.setY(entity.offsetHeight / 2)
+        })
+      }
+
     }
   }
 
@@ -60189,9 +60194,7 @@ class TextSystem extends System {
 
     entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
-    entity.absoluteWidth = entity.textStyle.maxWidth
-
-    entity.textObj.position.setY(entity.offsetHeight / 2)
+    entity.absoluteWidth = entity.textStyle.width
 
     this.setStyle(entity)
   }
@@ -67909,28 +67912,47 @@ class LayoutSystem extends System {
     constructor(){
         super()
 
-        this.app.addEventListener('container-mutated', this.updateLayout)
+        //this.app.addEventListener('container-mutated', this.updateLayout)
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          let containers = this.app.querySelectorAll('mr-container')
+        console.log(containers);
+
+        for(const container of containers) {
+          console.log(container);
+          this.registry.add(container)
+        }
+        
+        console.log(this.registry);
+        })
+        
     }
 
     updateLayout = (event) => {
         this.adjustContainerSize(event.target)
     }
 
+    update(deltaTime,frame) {
+      for(const entity of this.registry) {
+        this.adjustContainerSize(entity)
+      }
+    }
+
     adjustContainerSize = (container) => {
 
         if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.height = container.parentElement.height
-          container.width = container.parentElement.width * container.parentElement.aspectRatio
+          container.absoluteHeight = container.parentElement.offsetHeight
+          container.absoluteWidth = container.parentElement.offsetWidth * container.parentElement.aspectRatio
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
         }
 
-        console.log(window.innerWidth);
+        container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+
     }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
-
 
 
 
@@ -67947,6 +67969,12 @@ class MRText extends MRUIEntity {
         this.textObj = new Text()
         this.object3D.add(this.textObj)
         this.editable = false
+
+        this.needsUpdate = true
+
+        document.addEventListener('container-mutated', () => {
+            this.needsUpdate = true
+        })
         
     }
 
@@ -68245,8 +68273,8 @@ class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null) { return }
-        this.currentSurface.width *= this.scale * (1 / 3)
-        this.currentSurface.height *= this.scale * (1 / 3)
+        this.currentSurface.absoluteWidth = this.scale / 3
+        this.currentSurface.absoluteHeight = this.scale / 3
         this.currentSurface.place()
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
@@ -69669,11 +69697,11 @@ class Column extends MRUIEntity {
       this.update()
     })
 
-    this.addEventListener('child-resized', (event) => {
-      this.absoluteHeight = this.height * this.parentElement.offsetHeight
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
-      this.update()
-    })
+    // this.addEventListener('child-resized', (event) => {
+    //   this.absoluteHeight = this.height * this.parentElement.offsetHeight
+    //   this.absoluteWidth = this.width * this.parentElement.offsetWidth
+    //   this.update()
+    // })
   }
 
   update = () => {

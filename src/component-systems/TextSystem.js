@@ -39,6 +39,7 @@ export class TextSystem extends System {
       this.addText(entity)
       entity.textObj.sync(() => {
               entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+              entity.textObj.position.setY(entity.offsetHeight / 2)
         })
     }
   }
@@ -51,7 +52,15 @@ export class TextSystem extends System {
         entity.textObj.sync()
       }
 
-      this.updateStyle(entity)
+      if (entity.needsUpdate) {
+        this.updateStyle(entity)
+        entity.needsUpdate = false
+        entity.textObj.sync(() => {
+              entity.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
+              entity.textObj.position.setY(entity.offsetHeight / 2)
+        })
+      }
+
     }
   }
 
@@ -76,9 +85,7 @@ export class TextSystem extends System {
 
     entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
-    entity.absoluteWidth = entity.textStyle.maxWidth
-
-    entity.textObj.position.setY(entity.offsetHeight / 2)
+    entity.absoluteWidth = entity.textStyle.width
 
     this.setStyle(entity)
   }

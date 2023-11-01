@@ -17,11 +17,11 @@ export class Column extends MRUIEntity {
       this.update()
     })
 
-    this.addEventListener('child-resized', (event) => {
-      this.absoluteHeight = this.height * this.parentElement.offsetHeight
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
-      this.update()
-    })
+    // this.addEventListener('child-resized', (event) => {
+    //   this.absoluteHeight = this.height * this.parentElement.offsetHeight
+    //   this.absoluteWidth = this.width * this.parentElement.offsetWidth
+    //   this.update()
+    // })
   }
 
   update = () => {

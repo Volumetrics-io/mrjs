@@ -5,7 +5,7 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   F: () => (/* binding */ Coarena)
+/* harmony export */   "F": () => (/* binding */ Coarena)
 /* harmony export */ });
 class Coarena {
     constructor() {
@@ -76,8 +76,8 @@ class Coarena {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   _: () => (/* binding */ CharacterCollision),
-/* harmony export */   m: () => (/* binding */ KinematicCharacterController)
+/* harmony export */   "_": () => (/* binding */ CharacterCollision),
+/* harmony export */   "m": () => (/* binding */ KinematicCharacterController)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
@@ -124,7 +124,7 @@ class KinematicCharacterController {
      * Sets the direction that goes "up". Used to determine where the floor is, and the floor’s angle.
      */
     setUp(vector) {
-        let rawVect = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(vector);
+        let rawVect = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(vector);
         return this.raw.setUp(rawVect);
         rawVect.free();
     }
@@ -289,7 +289,7 @@ class KinematicCharacterController {
      *                          obstacles taken into account.
      */
     computeColliderMovement(collider, desiredTranslation, filterFlags, filterGroups, filterPredicate) {
-        let rawTranslation = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(desiredTranslation);
+        let rawTranslation = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(desiredTranslation);
         this.raw.computeColliderMovement(this.params.dt, this.bodies.raw, this.colliders.raw, this.queries.raw, collider.handle, rawTranslation, this._applyImpulsesToDynamicBodies, this._characterMass, filterFlags, filterGroups, this.colliders.castClosure(filterPredicate));
         rawTranslation.free();
     }
@@ -297,7 +297,7 @@ class KinematicCharacterController {
      * The movement computed by the last call to `this.computeColliderMovement`.
      */
     computedMovement() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.computedMovement());
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.computedMovement());
     }
     /**
      * The result of ground detection computed by the last call to `this.computeColliderMovement`.
@@ -326,13 +326,13 @@ class KinematicCharacterController {
         else {
             let c = this.rawCharacterCollision;
             out = out !== null && out !== void 0 ? out : new CharacterCollision();
-            out.translationApplied = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.translationApplied());
-            out.translationRemaining = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.translationRemaining());
+            out.translationApplied = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.translationApplied());
+            out.translationRemaining = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.translationRemaining());
             out.toi = c.toi();
-            out.witness1 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.worldWitness1());
-            out.witness2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.worldWitness2());
-            out.normal1 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.worldNormal1());
-            out.normal2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(c.worldNormal2());
+            out.witness1 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.worldWitness1());
+            out.witness2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.worldWitness2());
+            out.normal1 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.worldNormal1());
+            out.normal2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(c.worldNormal2());
             out.collider = this.colliders.get(c.handle());
             return out;
         }
@@ -349,8 +349,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   _: () => (/* reexport safe */ _character_controller__WEBPACK_IMPORTED_MODULE_0__._),
-/* harmony export */   m: () => (/* reexport safe */ _character_controller__WEBPACK_IMPORTED_MODULE_0__.m)
+/* harmony export */   "_": () => (/* reexport safe */ _character_controller__WEBPACK_IMPORTED_MODULE_0__._),
+/* harmony export */   "m": () => (/* reexport safe */ _character_controller__WEBPACK_IMPORTED_MODULE_0__.m)
 /* harmony export */ });
 /* harmony import */ var _character_controller__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(144);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_character_controller__WEBPACK_IMPORTED_MODULE_0__]);
@@ -367,7 +367,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   K: () => (/* binding */ CCDSolver)
+/* harmony export */   "K": () => (/* binding */ CCDSolver)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -403,7 +403,7 @@ __webpack_async_result__();
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   j: () => (/* binding */ CoefficientCombineRule)
+/* harmony export */   "j": () => (/* binding */ CoefficientCombineRule)
 /* harmony export */ });
 /**
  * A rule applied to combine coefficients.
@@ -428,15 +428,15 @@ var CoefficientCombineRule;
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   C1: () => (/* binding */ UnitImpulseJoint),
-/* harmony export */   JW: () => (/* binding */ FixedImpulseJoint),
-/* harmony export */   VH: () => (/* binding */ SphericalImpulseJoint),
-/* harmony export */   Vt: () => (/* binding */ MotorModel),
-/* harmony export */   _h: () => (/* binding */ JointData),
-/* harmony export */   au: () => (/* binding */ RevoluteImpulseJoint),
-/* harmony export */   dl: () => (/* binding */ JointType),
-/* harmony export */   eZ: () => (/* binding */ PrismaticImpulseJoint),
-/* harmony export */   s2: () => (/* binding */ ImpulseJoint)
+/* harmony export */   "C1": () => (/* binding */ UnitImpulseJoint),
+/* harmony export */   "JW": () => (/* binding */ FixedImpulseJoint),
+/* harmony export */   "VH": () => (/* binding */ SphericalImpulseJoint),
+/* harmony export */   "Vt": () => (/* binding */ MotorModel),
+/* harmony export */   "_h": () => (/* binding */ JointData),
+/* harmony export */   "au": () => (/* binding */ RevoluteImpulseJoint),
+/* harmony export */   "dl": () => (/* binding */ JointType),
+/* harmony export */   "eZ": () => (/* binding */ PrismaticImpulseJoint),
+/* harmony export */   "s2": () => (/* binding */ ImpulseJoint)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(184);
@@ -524,7 +524,7 @@ class ImpulseJoint {
      * The rotation quaternion that aligns this joint's first local axis to the `x` axis.
      */
     frameX1() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.fromRaw(this.rawSet.jointFrameX1(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.fromRaw */ .T3.fromRaw(this.rawSet.jointFrameX1(this.handle));
     }
     // #endif
     // #if DIM3
@@ -532,7 +532,7 @@ class ImpulseJoint {
      * The rotation matrix that aligns this joint's second local axis to the `x` axis.
      */
     frameX2() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.fromRaw(this.rawSet.jointFrameX2(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.fromRaw */ .T3.fromRaw(this.rawSet.jointFrameX2(this.handle));
     }
     // #endif
     /**
@@ -542,7 +542,7 @@ class ImpulseJoint {
      * local frame of the first rigid-body it is attached to.
      */
     anchor1() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.jointAnchor1(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.jointAnchor1(this.handle));
     }
     /**
      * The position of the second anchor of this joint.
@@ -551,7 +551,7 @@ class ImpulseJoint {
      * local frame of the second rigid-body it is attached to.
      */
     anchor2() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.jointAnchor2(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.jointAnchor2(this.handle));
     }
     /**
      * Sets the position of the first anchor of this joint.
@@ -560,7 +560,7 @@ class ImpulseJoint {
      * local frame of the first rigid-body it is attached to.
      */
     setAnchor1(newPos) {
-        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(newPos);
+        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(newPos);
         this.rawSet.jointSetAnchor1(this.handle, rawPoint);
         rawPoint.free();
     }
@@ -571,7 +571,7 @@ class ImpulseJoint {
      * local frame of the second rigid-body it is attached to.
      */
     setAnchor2(newPos) {
-        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(newPos);
+        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(newPos);
         this.rawSet.jointSetAnchor2(this.handle, rawPoint);
         rawPoint.free();
     }
@@ -635,12 +635,12 @@ class FixedImpulseJoint extends ImpulseJoint {
 }
 class PrismaticImpulseJoint extends UnitImpulseJoint {
     rawAxis() {
-        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis */ .JM.X;
+        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis.X */ .JM.X;
     }
 }
 class RevoluteImpulseJoint extends UnitImpulseJoint {
     rawAxis() {
-        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis */ .JM.AngX;
+        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis.AngX */ .JM.AngX;
     }
 }
 // #if DIM3
@@ -733,8 +733,8 @@ class JointData {
     }
     // #endif
     intoRaw() {
-        let rawA1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.anchor1);
-        let rawA2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.anchor2);
+        let rawA1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.anchor1);
+        let rawA2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.anchor2);
         let rawAx;
         let result;
         let limitsEnabled = false;
@@ -742,31 +742,31 @@ class JointData {
         let limitsMax = 0.0;
         switch (this.jointType) {
             case JointType.Fixed:
-                let rawFra1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(this.frame1);
-                let rawFra2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(this.frame2);
-                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint */ .cQ.fixed(rawA1, rawFra1, rawA2, rawFra2);
+                let rawFra1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(this.frame1);
+                let rawFra2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(this.frame2);
+                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint.fixed */ .cQ.fixed(rawA1, rawFra1, rawA2, rawFra2);
                 rawFra1.free();
                 rawFra2.free();
                 break;
             case JointType.Prismatic:
-                rawAx = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.axis);
+                rawAx = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.axis);
                 if (!!this.limitsEnabled) {
                     limitsEnabled = true;
                     limitsMin = this.limits[0];
                     limitsMax = this.limits[1];
                 }
                 // #if DIM3
-                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint */ .cQ.prismatic(rawA1, rawA2, rawAx, limitsEnabled, limitsMin, limitsMax);
+                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint.prismatic */ .cQ.prismatic(rawA1, rawA2, rawAx, limitsEnabled, limitsMin, limitsMax);
                 // #endif
                 rawAx.free();
                 break;
             // #if DIM3
             case JointType.Spherical:
-                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint */ .cQ.spherical(rawA1, rawA2);
+                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint.spherical */ .cQ.spherical(rawA1, rawA2);
                 break;
             case JointType.Revolute:
-                rawAx = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.axis);
-                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint */ .cQ.revolute(rawA1, rawA2, rawAx);
+                rawAx = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.axis);
+                result = _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawGenericJoint.revolute */ .cQ.revolute(rawA1, rawA2, rawAx);
                 rawAx.free();
                 break;
             // #endif
@@ -787,7 +787,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   l: () => (/* binding */ ImpulseJointSet)
+/* harmony export */   "l": () => (/* binding */ ImpulseJointSet)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _coarena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(709);
@@ -810,7 +810,7 @@ class ImpulseJointSet {
         // Initialize the map with the existing elements, if any.
         if (raw) {
             raw.forEachJointHandle((handle) => {
-                this.map.set(handle, _impulse_joint__WEBPACK_IMPORTED_MODULE_2__/* .ImpulseJoint */ .s2.newTyped(raw, null, handle));
+                this.map.set(handle, _impulse_joint__WEBPACK_IMPORTED_MODULE_2__/* .ImpulseJoint.newTyped */ .s2.newTyped(raw, null, handle));
             });
         }
     }
@@ -844,7 +844,7 @@ class ImpulseJointSet {
         const rawParams = desc.intoRaw();
         const handle = this.raw.createJoint(rawParams, parent1, parent2, wakeUp);
         rawParams.free();
-        let joint = _impulse_joint__WEBPACK_IMPORTED_MODULE_2__/* .ImpulseJoint */ .s2.newTyped(this.raw, bodies, handle);
+        let joint = _impulse_joint__WEBPACK_IMPORTED_MODULE_2__/* .ImpulseJoint.newTyped */ .s2.newTyped(this.raw, bodies, handle);
         this.map.set(handle, joint);
         return joint;
     }
@@ -925,31 +925,31 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Am: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.Am),
-/* harmony export */   C1: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.C1),
-/* harmony export */   JW: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.JW),
-/* harmony export */   Jj: () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.Jj),
-/* harmony export */   Kd: () => (/* reexport safe */ _ccd_solver__WEBPACK_IMPORTED_MODULE_8__.K),
-/* harmony export */   RT: () => (/* reexport safe */ _integration_parameters__WEBPACK_IMPORTED_MODULE_2__.R),
-/* harmony export */   UW: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.UW),
-/* harmony export */   VH: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.VH),
-/* harmony export */   Vt: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.Vt),
-/* harmony export */   _h: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__._h),
-/* harmony export */   au: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.au),
-/* harmony export */   dl: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.dl),
-/* harmony export */   dx: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.dx),
-/* harmony export */   eZ: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.eZ),
-/* harmony export */   h1: () => (/* reexport safe */ _multibody_joint_set__WEBPACK_IMPORTED_MODULE_6__.h),
-/* harmony export */   ib: () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.ib),
-/* harmony export */   jK: () => (/* reexport safe */ _coefficient_combine_rule__WEBPACK_IMPORTED_MODULE_7__.j),
-/* harmony export */   jp: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.jp),
-/* harmony export */   lX: () => (/* reexport safe */ _impulse_joint_set__WEBPACK_IMPORTED_MODULE_4__.l),
-/* harmony export */   rF: () => (/* reexport safe */ _rigid_body_set__WEBPACK_IMPORTED_MODULE_1__.r),
-/* harmony export */   s2: () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.s2),
-/* harmony export */   wI: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.wI),
-/* harmony export */   xr: () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.xr),
-/* harmony export */   yB: () => (/* reexport safe */ _island_manager__WEBPACK_IMPORTED_MODULE_9__.y),
-/* harmony export */   yf: () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.yf)
+/* harmony export */   "Am": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.Am),
+/* harmony export */   "C1": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.C1),
+/* harmony export */   "JW": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.JW),
+/* harmony export */   "Jj": () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.Jj),
+/* harmony export */   "Kd": () => (/* reexport safe */ _ccd_solver__WEBPACK_IMPORTED_MODULE_8__.K),
+/* harmony export */   "RT": () => (/* reexport safe */ _integration_parameters__WEBPACK_IMPORTED_MODULE_2__.R),
+/* harmony export */   "UW": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.UW),
+/* harmony export */   "VH": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.VH),
+/* harmony export */   "Vt": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.Vt),
+/* harmony export */   "_h": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__._h),
+/* harmony export */   "au": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.au),
+/* harmony export */   "dl": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.dl),
+/* harmony export */   "dx": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.dx),
+/* harmony export */   "eZ": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.eZ),
+/* harmony export */   "h1": () => (/* reexport safe */ _multibody_joint_set__WEBPACK_IMPORTED_MODULE_6__.h),
+/* harmony export */   "ib": () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.ib),
+/* harmony export */   "jK": () => (/* reexport safe */ _coefficient_combine_rule__WEBPACK_IMPORTED_MODULE_7__.j),
+/* harmony export */   "jp": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.jp),
+/* harmony export */   "lX": () => (/* reexport safe */ _impulse_joint_set__WEBPACK_IMPORTED_MODULE_4__.l),
+/* harmony export */   "rF": () => (/* reexport safe */ _rigid_body_set__WEBPACK_IMPORTED_MODULE_1__.r),
+/* harmony export */   "s2": () => (/* reexport safe */ _impulse_joint__WEBPACK_IMPORTED_MODULE_3__.s2),
+/* harmony export */   "wI": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.wI),
+/* harmony export */   "xr": () => (/* reexport safe */ _rigid_body__WEBPACK_IMPORTED_MODULE_0__.xr),
+/* harmony export */   "yB": () => (/* reexport safe */ _island_manager__WEBPACK_IMPORTED_MODULE_9__.y),
+/* harmony export */   "yf": () => (/* reexport safe */ _multibody_joint__WEBPACK_IMPORTED_MODULE_5__.yf)
 /* harmony export */ });
 /* harmony import */ var _rigid_body__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(522);
 /* harmony import */ var _rigid_body_set__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(676);
@@ -984,7 +984,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   R: () => (/* binding */ IntegrationParameters)
+/* harmony export */   "R": () => (/* binding */ IntegrationParameters)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -1097,7 +1097,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   y: () => (/* binding */ IslandManager)
+/* harmony export */   "y": () => (/* binding */ IslandManager)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -1144,12 +1144,12 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Am: () => (/* binding */ RevoluteMultibodyJoint),
-/* harmony export */   UW: () => (/* binding */ FixedMultibodyJoint),
-/* harmony export */   dx: () => (/* binding */ SphericalMultibodyJoint),
-/* harmony export */   jp: () => (/* binding */ PrismaticMultibodyJoint),
-/* harmony export */   wI: () => (/* binding */ UnitMultibodyJoint),
-/* harmony export */   yf: () => (/* binding */ MultibodyJoint)
+/* harmony export */   "Am": () => (/* binding */ RevoluteMultibodyJoint),
+/* harmony export */   "UW": () => (/* binding */ FixedMultibodyJoint),
+/* harmony export */   "dx": () => (/* binding */ SphericalMultibodyJoint),
+/* harmony export */   "jp": () => (/* binding */ PrismaticMultibodyJoint),
+/* harmony export */   "wI": () => (/* binding */ UnitMultibodyJoint),
+/* harmony export */   "yf": () => (/* binding */ MultibodyJoint)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(184);
 /* harmony import */ var _impulse_joint__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(380);
@@ -1164,14 +1164,14 @@ class MultibodyJoint {
     }
     static newTyped(rawSet, handle) {
         switch (rawSet.jointType(handle)) {
-            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType */ .dl.Revolute:
+            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType.Revolute */ .dl.Revolute:
                 return new RevoluteMultibodyJoint(rawSet, handle);
-            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType */ .dl.Prismatic:
+            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType.Prismatic */ .dl.Prismatic:
                 return new PrismaticMultibodyJoint(rawSet, handle);
-            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType */ .dl.Fixed:
+            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType.Fixed */ .dl.Fixed:
                 return new FixedMultibodyJoint(rawSet, handle);
             // #if DIM3
-            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType */ .dl.Spherical:
+            case _impulse_joint__WEBPACK_IMPORTED_MODULE_0__/* .JointType.Spherical */ .dl.Spherical:
                 return new SphericalMultibodyJoint(rawSet, handle);
             // #endif
             default:
@@ -1266,12 +1266,12 @@ class FixedMultibodyJoint extends MultibodyJoint {
 }
 class PrismaticMultibodyJoint extends UnitMultibodyJoint {
     rawAxis() {
-        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis */ .JM.X;
+        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis.X */ .JM.X;
     }
 }
 class RevoluteMultibodyJoint extends UnitMultibodyJoint {
     rawAxis() {
-        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis */ .JM.AngX;
+        return _raw__WEBPACK_IMPORTED_MODULE_1__/* .RawJointAxis.AngX */ .JM.AngX;
     }
 }
 // #if DIM3
@@ -1289,7 +1289,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   h: () => (/* binding */ MultibodyJointSet)
+/* harmony export */   "h": () => (/* binding */ MultibodyJointSet)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _coarena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(709);
@@ -1312,7 +1312,7 @@ class MultibodyJointSet {
         // Initialize the map with the existing elements, if any.
         if (raw) {
             raw.forEachJointHandle((handle) => {
-                this.map.set(handle, _multibody_joint__WEBPACK_IMPORTED_MODULE_2__/* .MultibodyJoint */ .yf.newTyped(this.raw, handle));
+                this.map.set(handle, _multibody_joint__WEBPACK_IMPORTED_MODULE_2__/* .MultibodyJoint.newTyped */ .yf.newTyped(this.raw, handle));
             });
         }
     }
@@ -1341,7 +1341,7 @@ class MultibodyJointSet {
         const rawParams = desc.intoRaw();
         const handle = this.raw.createJoint(rawParams, parent1, parent2, wakeUp);
         rawParams.free();
-        let joint = _multibody_joint__WEBPACK_IMPORTED_MODULE_2__/* .MultibodyJoint */ .yf.newTyped(this.raw, handle);
+        let joint = _multibody_joint__WEBPACK_IMPORTED_MODULE_2__/* .MultibodyJoint.newTyped */ .yf.newTyped(this.raw, handle);
         this.map.set(handle, joint);
         return joint;
     }
@@ -1422,9 +1422,9 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Jj: () => (/* binding */ RigidBodyType),
-/* harmony export */   ib: () => (/* binding */ RigidBody),
-/* harmony export */   xr: () => (/* binding */ RigidBodyDesc)
+/* harmony export */   "Jj": () => (/* binding */ RigidBodyType),
+/* harmony export */   "ib": () => (/* binding */ RigidBody),
+/* harmony export */   "xr": () => (/* binding */ RigidBodyDesc)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_math__WEBPACK_IMPORTED_MODULE_0__]);
@@ -1578,14 +1578,14 @@ class RigidBody {
      */
     translation() {
         let res = this.rawSet.rbTranslation(this.handle);
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(res);
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(res);
     }
     /**
      * The world-space orientation of this rigid-body.
      */
     rotation() {
         let res = this.rawSet.rbRotation(this.handle);
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.fromRaw(res);
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.fromRaw */ .T3.fromRaw(res);
     }
     /**
      * The world-space next translation of this rigid-body.
@@ -1596,7 +1596,7 @@ class RigidBody {
      */
     nextTranslation() {
         let res = this.rawSet.rbNextTranslation(this.handle);
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(res);
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(res);
     }
     /**
      * The world-space next orientation of this rigid-body.
@@ -1607,7 +1607,7 @@ class RigidBody {
      */
     nextRotation() {
         let res = this.rawSet.rbNextRotation(this.handle);
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.fromRaw(res);
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.fromRaw */ .T3.fromRaw(res);
     }
     /**
      * Sets the translation of this rigid-body.
@@ -1628,7 +1628,7 @@ class RigidBody {
      * @param wakeUp - Forces the rigid-body to wake-up if it was asleep.
      */
     setLinvel(vel, wakeUp) {
-        let rawVel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(vel);
+        let rawVel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(vel);
         this.rawSet.rbSetLinvel(this.handle, rawVel, wakeUp);
         rawVel.free();
     }
@@ -1670,7 +1670,7 @@ class RigidBody {
      * @param wakeUp - Forces the rigid-body to wake-up if it was asleep.
      */
     setAngvel(vel, wakeUp) {
-        let rawVel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(vel);
+        let rawVel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(vel);
         this.rawSet.rbSetAngvel(this.handle, rawVel, wakeUp);
         rawVel.free();
     }
@@ -1711,14 +1711,14 @@ class RigidBody {
      * The linear velocity of this rigid-body.
      */
     linvel() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbLinvel(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbLinvel(this.handle));
     }
     // #if DIM3
     /**
      * The angular velocity of this rigid-body.
      */
     angvel() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbAngvel(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbAngvel(this.handle));
     }
     // #endif
     /**
@@ -1731,7 +1731,7 @@ class RigidBody {
      * The inverse mass taking into account translation locking.
      */
     effectiveInvMass() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbEffectiveInvMass(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbEffectiveInvMass(this.handle));
     }
     /**
      * The inverse of the mass of a rigid-body.
@@ -1745,13 +1745,13 @@ class RigidBody {
      * The center of mass of a rigid-body expressed in its local-space.
      */
     localCom() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbLocalCom(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbLocalCom(this.handle));
     }
     /**
      * The world-space center of mass of the rigid-body.
      */
     worldCom() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbWorldCom(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbWorldCom(this.handle));
     }
     // #if DIM3
     /**
@@ -1760,7 +1760,7 @@ class RigidBody {
      * Components set to zero are assumed to be infinite along the corresponding principal axis.
      */
     invPrincipalInertiaSqrt() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbInvPrincipalInertiaSqrt(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbInvPrincipalInertiaSqrt(this.handle));
     }
     // #endif
     // #if DIM3
@@ -1768,7 +1768,7 @@ class RigidBody {
      * The angular inertia along the principal inertia axes of the rigid-body.
      */
     principalInertia() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.rawSet.rbPrincipalInertia(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.rawSet.rbPrincipalInertia(this.handle));
     }
     // #endif
     // #if DIM3
@@ -1776,7 +1776,7 @@ class RigidBody {
      * The principal vectors of the local angular inertia tensor of the rigid-body.
      */
     principalInertiaLocalFrame() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.fromRaw(this.rawSet.rbPrincipalInertiaLocalFrame(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.fromRaw */ .T3.fromRaw(this.rawSet.rbPrincipalInertiaLocalFrame(this.handle));
     }
     // #endif
     // #if DIM3
@@ -1785,7 +1785,7 @@ class RigidBody {
      * taking into account rotation locking.
      */
     effectiveWorldInvInertiaSqrt() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .SdpMatrix3Ops */ .PR.fromRaw(this.rawSet.rbEffectiveWorldInvInertiaSqrt(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .SdpMatrix3Ops.fromRaw */ .PR.fromRaw(this.rawSet.rbEffectiveWorldInvInertiaSqrt(this.handle));
     }
     // #endif
     // #if DIM3
@@ -1794,7 +1794,7 @@ class RigidBody {
      * this rigid-body.
      */
     effectiveAngularInertia() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .SdpMatrix3Ops */ .PR.fromRaw(this.rawSet.rbEffectiveAngularInertia(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .SdpMatrix3Ops.fromRaw */ .PR.fromRaw(this.rawSet.rbEffectiveAngularInertia(this.handle));
     }
     // #endif
     /**
@@ -1962,9 +1962,9 @@ class RigidBody {
      * If `wake_up` is true then the rigid-body will be woken up if it was put to sleep because it did not move for a while.
      */
     setAdditionalMassProperties(mass, centerOfMass, principalAngularInertia, angularInertiaLocalFrame, wakeUp) {
-        let rawCom = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(centerOfMass);
-        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(principalAngularInertia);
-        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(angularInertiaLocalFrame);
+        let rawCom = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(centerOfMass);
+        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(principalAngularInertia);
+        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(angularInertiaLocalFrame);
         this.rawSet.rbSetAdditionalMassProperties(this.handle, mass, rawCom, rawPrincipalInertia, rawInertiaFrame, wakeUp);
         rawCom.free();
         rawPrincipalInertia.free();
@@ -2002,7 +2002,7 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     addForce(force, wakeUp) {
-        const rawForce = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(force);
+        const rawForce = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(force);
         this.rawSet.rbAddForce(this.handle, rawForce, wakeUp);
         rawForce.free();
     }
@@ -2013,7 +2013,7 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     applyImpulse(impulse, wakeUp) {
-        const rawImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(impulse);
+        const rawImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(impulse);
         this.rawSet.rbApplyImpulse(this.handle, rawImpulse, wakeUp);
         rawImpulse.free();
     }
@@ -2025,7 +2025,7 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     addTorque(torque, wakeUp) {
-        const rawTorque = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(torque);
+        const rawTorque = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(torque);
         this.rawSet.rbAddTorque(this.handle, rawTorque, wakeUp);
         rawTorque.free();
     }
@@ -2038,7 +2038,7 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     applyTorqueImpulse(torqueImpulse, wakeUp) {
-        const rawTorqueImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(torqueImpulse);
+        const rawTorqueImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(torqueImpulse);
         this.rawSet.rbApplyTorqueImpulse(this.handle, rawTorqueImpulse, wakeUp);
         rawTorqueImpulse.free();
     }
@@ -2051,8 +2051,8 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     addForceAtPoint(force, point, wakeUp) {
-        const rawForce = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(force);
-        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(point);
+        const rawForce = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(force);
+        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         this.rawSet.rbAddForceAtPoint(this.handle, rawForce, rawPoint, wakeUp);
         rawForce.free();
         rawPoint.free();
@@ -2065,8 +2065,8 @@ class RigidBody {
      * @param wakeUp - should the rigid-body be automatically woken-up?
      */
     applyImpulseAtPoint(impulse, point, wakeUp) {
-        const rawImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(impulse);
-        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(point);
+        const rawImpulse = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(impulse);
+        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         this.rawSet.rbApplyImpulseAtPoint(this.handle, rawImpulse, rawPoint, wakeUp);
         rawImpulse.free();
         rawPoint.free();
@@ -2076,19 +2076,19 @@ class RigidBodyDesc {
     constructor(status) {
         this.enabled = true;
         this.status = status;
-        this.translation = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.zeros();
-        this.rotation = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.identity();
+        this.translation = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.zeros */ .ut.zeros();
+        this.rotation = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.identity */ .T3.identity();
         this.gravityScale = 1.0;
-        this.linvel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.zeros();
+        this.linvel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.zeros */ .ut.zeros();
         this.mass = 0.0;
         this.massOnly = false;
-        this.centerOfMass = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.zeros();
+        this.centerOfMass = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.zeros */ .ut.zeros();
         this.translationsEnabledX = true;
         this.translationsEnabledY = true;
         // #if DIM3
-        this.angvel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.zeros();
-        this.principalAngularInertia = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.zeros();
-        this.angularInertiaLocalFrame = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.identity();
+        this.angvel = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.zeros */ .ut.zeros();
+        this.principalAngularInertia = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.zeros */ .ut.zeros();
+        this.angularInertiaLocalFrame = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.identity */ .T3.identity();
         this.translationsEnabledZ = true;
         this.rotationsEnabledX = true;
         this.rotationsEnabledY = true;
@@ -2191,7 +2191,7 @@ class RigidBodyDesc {
      */
     setRotation(rot) {
         // #if DIM3
-        _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.copy(this.rotation, rot);
+        _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.copy */ .T3.copy(this.rotation, rot);
         // #endif
         return this;
     }
@@ -2238,7 +2238,7 @@ class RigidBodyDesc {
      * @param vel - The angular velocity to set.
      */
     setAngvel(vel) {
-        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.copy(this.angvel, vel);
+        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.copy */ .ut.copy(this.angvel, vel);
         return this;
     }
     /**
@@ -2262,9 +2262,9 @@ class RigidBodyDesc {
      */
     setAdditionalMassProperties(mass, centerOfMass, principalAngularInertia, angularInertiaLocalFrame) {
         this.mass = mass;
-        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.copy(this.centerOfMass, centerOfMass);
-        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.copy(this.principalAngularInertia, principalAngularInertia);
-        _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.copy(this.angularInertiaLocalFrame, angularInertiaLocalFrame);
+        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.copy */ .ut.copy(this.centerOfMass, centerOfMass);
+        _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.copy */ .ut.copy(this.principalAngularInertia, principalAngularInertia);
+        _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.copy */ .T3.copy(this.angularInertiaLocalFrame, angularInertiaLocalFrame);
         this.massOnly = false;
         return this;
     }
@@ -2399,7 +2399,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   r: () => (/* binding */ RigidBodySet)
+/* harmony export */   "r": () => (/* binding */ RigidBodySet)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _coarena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(709);
@@ -2453,14 +2453,14 @@ class RigidBodySet {
      * @param desc - The description of the rigid-body to create.
      */
     createRigidBody(colliderSet, desc) {
-        let rawTra = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.translation);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps */ .T3.intoRaw(desc.rotation);
-        let rawLv = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.linvel);
-        let rawCom = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.centerOfMass);
+        let rawTra = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.translation);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps.intoRaw */ .T3.intoRaw(desc.rotation);
+        let rawLv = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.linvel);
+        let rawCom = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.centerOfMass);
         // #if DIM3
-        let rawAv = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.angvel);
-        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.principalAngularInertia);
-        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps */ .T3.intoRaw(desc.angularInertiaLocalFrame);
+        let rawAv = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.angvel);
+        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.principalAngularInertia);
+        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps.intoRaw */ .T3.intoRaw(desc.angularInertiaLocalFrame);
         // #endif
         let handle = this.raw.createRigidBody(desc.enabled, rawTra, rawRot, desc.gravityScale, desc.mass, desc.massOnly, rawCom, rawLv, 
         // #if DIM3
@@ -2565,89 +2565,89 @@ __webpack_async_result__();
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ActiveCollisionTypes: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.vq),
-/* harmony export */   ActiveEvents: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Md),
-/* harmony export */   ActiveHooks: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.iX),
-/* harmony export */   Ball: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.ec),
-/* harmony export */   BroadPhase: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.NT),
-/* harmony export */   CCDSolver: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Kd),
-/* harmony export */   Capsule: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.sw),
-/* harmony export */   CharacterCollision: () => (/* reexport safe */ _control__WEBPACK_IMPORTED_MODULE_5__._),
-/* harmony export */   CoefficientCombineRule: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.jK),
-/* harmony export */   Collider: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.YM),
-/* harmony export */   ColliderDesc: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.ic),
-/* harmony export */   ColliderSet: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.zY),
-/* harmony export */   Cone: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Qq),
-/* harmony export */   ConvexPolyhedron: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.YD),
-/* harmony export */   Cuboid: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.jv),
-/* harmony export */   Cylinder: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Ab),
-/* harmony export */   DebugRenderBuffers: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.tt),
-/* harmony export */   DebugRenderPipeline: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.kh),
-/* harmony export */   EventQueue: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.NH),
-/* harmony export */   FeatureType: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Te),
-/* harmony export */   FixedImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.JW),
-/* harmony export */   FixedMultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.UW),
-/* harmony export */   HalfSpace: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Fr),
-/* harmony export */   Heightfield: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.f4),
-/* harmony export */   ImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.s2),
-/* harmony export */   ImpulseJointSet: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.lX),
-/* harmony export */   IntegrationParameters: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.RT),
-/* harmony export */   IslandManager: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.yB),
-/* harmony export */   JointData: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__._h),
-/* harmony export */   JointType: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.dl),
-/* harmony export */   KinematicCharacterController: () => (/* reexport safe */ _control__WEBPACK_IMPORTED_MODULE_5__.m),
-/* harmony export */   MassPropsMode: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.uV),
-/* harmony export */   MotorModel: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Vt),
-/* harmony export */   MultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.yf),
-/* harmony export */   MultibodyJointSet: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.h1),
-/* harmony export */   NarrowPhase: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.L4),
-/* harmony export */   PhysicsPipeline: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.DJ),
-/* harmony export */   PointColliderProjection: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Vl),
-/* harmony export */   PointProjection: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.FP),
-/* harmony export */   Polyline: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.aH),
-/* harmony export */   PrismaticImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.eZ),
-/* harmony export */   PrismaticMultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.jp),
-/* harmony export */   Quaternion: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__._f),
-/* harmony export */   QueryFilterFlags: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__._m),
-/* harmony export */   QueryPipeline: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Vq),
-/* harmony export */   Ray: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.zH),
-/* harmony export */   RayColliderIntersection: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.No),
-/* harmony export */   RayColliderToi: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.cu),
-/* harmony export */   RayIntersection: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Gz),
-/* harmony export */   RevoluteImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.au),
-/* harmony export */   RevoluteMultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Am),
-/* harmony export */   RigidBody: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.ib),
-/* harmony export */   RigidBodyDesc: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.xr),
-/* harmony export */   RigidBodySet: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.rF),
-/* harmony export */   RigidBodyType: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Jj),
-/* harmony export */   RotationOps: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.T3),
-/* harmony export */   RoundCone: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.eT),
-/* harmony export */   RoundConvexPolyhedron: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Ch),
-/* harmony export */   RoundCuboid: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.iA),
-/* harmony export */   RoundCylinder: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.$t),
-/* harmony export */   RoundTriangle: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.$R),
-/* harmony export */   SdpMatrix3: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.w4),
-/* harmony export */   SdpMatrix3Ops: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.PR),
-/* harmony export */   Segment: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.XX),
-/* harmony export */   SerializationPipeline: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.y9),
-/* harmony export */   Shape: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.bn),
-/* harmony export */   ShapeColliderTOI: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.mB),
-/* harmony export */   ShapeContact: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Qi),
-/* harmony export */   ShapeTOI: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.GJ),
-/* harmony export */   ShapeType: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.DY),
-/* harmony export */   SolverFlags: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Nv),
-/* harmony export */   SphericalImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.VH),
-/* harmony export */   SphericalMultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.dx),
-/* harmony export */   TempContactForceEvent: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.qV),
-/* harmony export */   TempContactManifold: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.eL),
-/* harmony export */   TriMesh: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.az),
-/* harmony export */   Triangle: () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.CJ),
-/* harmony export */   UnitImpulseJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.C1),
-/* harmony export */   UnitMultibodyJoint: () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.wI),
-/* harmony export */   Vector3: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.P),
-/* harmony export */   VectorOps: () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.ut),
-/* harmony export */   World: () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.q3),
-/* harmony export */   version: () => (/* binding */ version)
+/* harmony export */   "ActiveCollisionTypes": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.vq),
+/* harmony export */   "ActiveEvents": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Md),
+/* harmony export */   "ActiveHooks": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.iX),
+/* harmony export */   "Ball": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.ec),
+/* harmony export */   "BroadPhase": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.NT),
+/* harmony export */   "CCDSolver": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Kd),
+/* harmony export */   "Capsule": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.sw),
+/* harmony export */   "CharacterCollision": () => (/* reexport safe */ _control__WEBPACK_IMPORTED_MODULE_5__._),
+/* harmony export */   "CoefficientCombineRule": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.jK),
+/* harmony export */   "Collider": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.YM),
+/* harmony export */   "ColliderDesc": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.ic),
+/* harmony export */   "ColliderSet": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.zY),
+/* harmony export */   "Cone": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Qq),
+/* harmony export */   "ConvexPolyhedron": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.YD),
+/* harmony export */   "Cuboid": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.jv),
+/* harmony export */   "Cylinder": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Ab),
+/* harmony export */   "DebugRenderBuffers": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.tt),
+/* harmony export */   "DebugRenderPipeline": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.kh),
+/* harmony export */   "EventQueue": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.NH),
+/* harmony export */   "FeatureType": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Te),
+/* harmony export */   "FixedImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.JW),
+/* harmony export */   "FixedMultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.UW),
+/* harmony export */   "HalfSpace": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Fr),
+/* harmony export */   "Heightfield": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.f4),
+/* harmony export */   "ImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.s2),
+/* harmony export */   "ImpulseJointSet": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.lX),
+/* harmony export */   "IntegrationParameters": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.RT),
+/* harmony export */   "IslandManager": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.yB),
+/* harmony export */   "JointData": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__._h),
+/* harmony export */   "JointType": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.dl),
+/* harmony export */   "KinematicCharacterController": () => (/* reexport safe */ _control__WEBPACK_IMPORTED_MODULE_5__.m),
+/* harmony export */   "MassPropsMode": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.uV),
+/* harmony export */   "MotorModel": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Vt),
+/* harmony export */   "MultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.yf),
+/* harmony export */   "MultibodyJointSet": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.h1),
+/* harmony export */   "NarrowPhase": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.L4),
+/* harmony export */   "PhysicsPipeline": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.DJ),
+/* harmony export */   "PointColliderProjection": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Vl),
+/* harmony export */   "PointProjection": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.FP),
+/* harmony export */   "Polyline": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.aH),
+/* harmony export */   "PrismaticImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.eZ),
+/* harmony export */   "PrismaticMultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.jp),
+/* harmony export */   "Quaternion": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__._f),
+/* harmony export */   "QueryFilterFlags": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__._m),
+/* harmony export */   "QueryPipeline": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Vq),
+/* harmony export */   "Ray": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.zH),
+/* harmony export */   "RayColliderIntersection": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.No),
+/* harmony export */   "RayColliderToi": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.cu),
+/* harmony export */   "RayIntersection": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Gz),
+/* harmony export */   "RevoluteImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.au),
+/* harmony export */   "RevoluteMultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Am),
+/* harmony export */   "RigidBody": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.ib),
+/* harmony export */   "RigidBodyDesc": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.xr),
+/* harmony export */   "RigidBodySet": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.rF),
+/* harmony export */   "RigidBodyType": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.Jj),
+/* harmony export */   "RotationOps": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.T3),
+/* harmony export */   "RoundCone": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.eT),
+/* harmony export */   "RoundConvexPolyhedron": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Ch),
+/* harmony export */   "RoundCuboid": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.iA),
+/* harmony export */   "RoundCylinder": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.$t),
+/* harmony export */   "RoundTriangle": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.$R),
+/* harmony export */   "SdpMatrix3": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.w4),
+/* harmony export */   "SdpMatrix3Ops": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.PR),
+/* harmony export */   "Segment": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.XX),
+/* harmony export */   "SerializationPipeline": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.y9),
+/* harmony export */   "Shape": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.bn),
+/* harmony export */   "ShapeColliderTOI": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.mB),
+/* harmony export */   "ShapeContact": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.Qi),
+/* harmony export */   "ShapeTOI": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.GJ),
+/* harmony export */   "ShapeType": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.DY),
+/* harmony export */   "SolverFlags": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.Nv),
+/* harmony export */   "SphericalImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.VH),
+/* harmony export */   "SphericalMultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.dx),
+/* harmony export */   "TempContactForceEvent": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.qV),
+/* harmony export */   "TempContactManifold": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.eL),
+/* harmony export */   "TriMesh": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.az),
+/* harmony export */   "Triangle": () => (/* reexport safe */ _geometry__WEBPACK_IMPORTED_MODULE_3__.CJ),
+/* harmony export */   "UnitImpulseJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.C1),
+/* harmony export */   "UnitMultibodyJoint": () => (/* reexport safe */ _dynamics__WEBPACK_IMPORTED_MODULE_2__.wI),
+/* harmony export */   "Vector3": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.P),
+/* harmony export */   "VectorOps": () => (/* reexport safe */ _math__WEBPACK_IMPORTED_MODULE_1__.ut),
+/* harmony export */   "World": () => (/* reexport safe */ _pipeline__WEBPACK_IMPORTED_MODULE_4__.q3),
+/* harmony export */   "version": () => (/* binding */ version)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
@@ -2678,7 +2678,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   N: () => (/* binding */ BroadPhase)
+/* harmony export */   "N": () => (/* binding */ BroadPhase)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -2715,10 +2715,10 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   YM: () => (/* binding */ Collider),
-/* harmony export */   ic: () => (/* binding */ ColliderDesc),
-/* harmony export */   uV: () => (/* binding */ MassPropsMode),
-/* harmony export */   vq: () => (/* binding */ ActiveCollisionTypes)
+/* harmony export */   "YM": () => (/* binding */ Collider),
+/* harmony export */   "ic": () => (/* binding */ ColliderDesc),
+/* harmony export */   "uV": () => (/* binding */ MassPropsMode),
+/* harmony export */   "vq": () => (/* binding */ ActiveCollisionTypes)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
 /* harmony import */ var _dynamics__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(42);
@@ -2802,7 +2802,7 @@ class Collider {
     }
     ensureShapeIsCached() {
         if (!this._shape)
-            this._shape = _shape__WEBPACK_IMPORTED_MODULE_0__/* .Shape */ .bn.fromRaw(this.colliderSet.raw, this.handle);
+            this._shape = _shape__WEBPACK_IMPORTED_MODULE_0__/* .Shape.fromRaw */ .bn.fromRaw(this.colliderSet.raw, this.handle);
     }
     /**
      * The shape of this collider.
@@ -2822,13 +2822,13 @@ class Collider {
      * The world-space translation of this rigid-body.
      */
     translation() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.colliderSet.raw.coTranslation(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.colliderSet.raw.coTranslation(this.handle));
     }
     /**
      * The world-space orientation of this rigid-body.
      */
     rotation() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.fromRaw(this.colliderSet.raw.coRotation(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.fromRaw */ .T3.fromRaw(this.colliderSet.raw.coRotation(this.handle));
     }
     /**
      * Is this collider a sensor?
@@ -3037,9 +3037,9 @@ class Collider {
      * `ColliderDesc.mass`, or `ColliderDesc.massProperties` for this collider.
      */
     setMassProperties(mass, centerOfMass, principalAngularInertia, angularInertiaLocalFrame) {
-        let rawCom = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(centerOfMass);
-        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(principalAngularInertia);
-        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(angularInertiaLocalFrame);
+        let rawCom = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(centerOfMass);
+        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(principalAngularInertia);
+        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(angularInertiaLocalFrame);
         this.colliderSet.raw.coSetMassProperties(this.handle, mass, rawCom, rawPrincipalInertia, rawInertiaFrame);
         rawCom.free();
         rawPrincipalInertia.free();
@@ -3103,7 +3103,7 @@ class Collider {
      * @deprecated this field will be removed in the future, please access this field on `shape` member instead.
      */
     halfExtents() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.colliderSet.raw.coHalfExtents(this.handle));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.colliderSet.raw.coHalfExtents(this.handle));
     }
     /**
      * Sets the half-extents of this collider if it is a cuboid shape.
@@ -3111,7 +3111,7 @@ class Collider {
      * @param newHalfExtents - desired half extents.
      */
     setHalfExtents(newHalfExtents) {
-        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(newHalfExtents);
+        const rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(newHalfExtents);
         this.colliderSet.raw.coSetHalfExtents(this.handle, rawPoint);
     }
     /**
@@ -3191,7 +3191,7 @@ class Collider {
      */
     heightfieldScale() {
         let scale = this.colliderSet.raw.coHeightfieldScale(this.handle);
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(scale);
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(scale);
     }
     // #if DIM3
     /**
@@ -3265,7 +3265,7 @@ class Collider {
      * @param point - The point to test.
      */
     containsPoint(point) {
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(point);
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         let result = this.colliderSet.raw.coContainsPoint(this.handle, rawPoint);
         rawPoint.free();
         return result;
@@ -3281,8 +3281,8 @@ class Collider {
      *   boundary).
      */
     projectPoint(point, solid) {
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(point);
-        let result = _point__WEBPACK_IMPORTED_MODULE_2__/* .PointProjection */ .F.fromRaw(this.colliderSet.raw.coProjectPoint(this.handle, rawPoint, solid));
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
+        let result = _point__WEBPACK_IMPORTED_MODULE_2__/* .PointProjection.fromRaw */ .F.fromRaw(this.colliderSet.raw.coProjectPoint(this.handle, rawPoint, solid));
         rawPoint.free();
         return result;
     }
@@ -3294,8 +3294,8 @@ class Collider {
      *   limits the length of the ray to `ray.dir.norm() * maxToi`.
      */
     intersectsRay(ray, maxToi) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let result = this.colliderSet.raw.coIntersectsRay(this.handle, rawOrig, rawDir, maxToi);
         rawOrig.free();
         rawDir.free();
@@ -3316,12 +3316,12 @@ class Collider {
      *   that it’s on a path to exist that penetration state.
      */
     castShape(collider1Vel, shape2, shape2Pos, shape2Rot, shape2Vel, maxToi, stopAtPenetration) {
-        let rawCollider1Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(collider1Vel);
-        let rawShape2Pos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shape2Pos);
-        let rawShape2Rot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shape2Rot);
-        let rawShape2Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shape2Vel);
+        let rawCollider1Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(collider1Vel);
+        let rawShape2Pos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shape2Pos);
+        let rawShape2Rot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shape2Rot);
+        let rawShape2Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shape2Vel);
         let rawShape2 = shape2.intoRaw();
-        let result = _toi__WEBPACK_IMPORTED_MODULE_3__/* .ShapeTOI */ .G.fromRaw(this.colliderSet, this.colliderSet.raw.coCastShape(this.handle, rawCollider1Vel, rawShape2, rawShape2Pos, rawShape2Rot, rawShape2Vel, maxToi, stopAtPenetration));
+        let result = _toi__WEBPACK_IMPORTED_MODULE_3__/* .ShapeTOI.fromRaw */ .G.fromRaw(this.colliderSet, this.colliderSet.raw.coCastShape(this.handle, rawCollider1Vel, rawShape2, rawShape2Pos, rawShape2Rot, rawShape2Vel, maxToi, stopAtPenetration));
         rawCollider1Vel.free();
         rawShape2Pos.free();
         rawShape2Rot.free();
@@ -3342,16 +3342,16 @@ class Collider {
      *   that it’s on a path to exist that penetration state.
      */
     castCollider(collider1Vel, collider2, collider2Vel, maxToi, stopAtPenetration) {
-        let rawCollider1Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(collider1Vel);
-        let rawCollider2Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(collider2Vel);
-        let result = _toi__WEBPACK_IMPORTED_MODULE_3__/* .ShapeColliderTOI */ .m.fromRaw(this.colliderSet, this.colliderSet.raw.coCastCollider(this.handle, rawCollider1Vel, collider2.handle, rawCollider2Vel, maxToi, stopAtPenetration));
+        let rawCollider1Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(collider1Vel);
+        let rawCollider2Vel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(collider2Vel);
+        let result = _toi__WEBPACK_IMPORTED_MODULE_3__/* .ShapeColliderTOI.fromRaw */ .m.fromRaw(this.colliderSet, this.colliderSet.raw.coCastCollider(this.handle, rawCollider1Vel, collider2.handle, rawCollider2Vel, maxToi, stopAtPenetration));
         rawCollider1Vel.free();
         rawCollider2Vel.free();
         return result;
     }
     intersectsShape(shape2, shapePos2, shapeRot2) {
-        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shapePos2);
-        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shapeRot2);
+        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos2);
+        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot2);
         let rawShape2 = shape2.intoRaw();
         let result = this.colliderSet.raw.coIntersectsShape(this.handle, rawShape2, rawPos2, rawRot2);
         rawPos2.free();
@@ -3369,10 +3369,10 @@ class Collider {
      * @returns `null` if the shapes are separated by a distance greater than prediction, otherwise contact details. The result is given in world-space.
      */
     contactShape(shape2, shape2Pos, shape2Rot, prediction) {
-        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shape2Pos);
-        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shape2Rot);
+        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shape2Pos);
+        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shape2Rot);
         let rawShape2 = shape2.intoRaw();
-        let result = _contact__WEBPACK_IMPORTED_MODULE_4__/* .ShapeContact */ .Q.fromRaw(this.colliderSet.raw.coContactShape(this.handle, rawShape2, rawPos2, rawRot2, prediction));
+        let result = _contact__WEBPACK_IMPORTED_MODULE_4__/* .ShapeContact.fromRaw */ .Q.fromRaw(this.colliderSet.raw.coContactShape(this.handle, rawShape2, rawPos2, rawRot2, prediction));
         rawPos2.free();
         rawRot2.free();
         rawShape2.free();
@@ -3386,7 +3386,7 @@ class Collider {
      * @returns `null` if the shapes are separated by a distance greater than prediction, otherwise contact details. The result is given in world-space.
      */
     contactCollider(collider2, prediction) {
-        let result = _contact__WEBPACK_IMPORTED_MODULE_4__/* .ShapeContact */ .Q.fromRaw(this.colliderSet.raw.coContactCollider(this.handle, collider2.handle, prediction));
+        let result = _contact__WEBPACK_IMPORTED_MODULE_4__/* .ShapeContact.fromRaw */ .Q.fromRaw(this.colliderSet.raw.coContactCollider(this.handle, collider2.handle, prediction));
         return result;
     }
     /*
@@ -3402,8 +3402,8 @@ class Collider {
      * @returns The time-of-impact between this collider and the ray, or `-1` if there is no intersection.
      */
     castRay(ray, maxToi, solid) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let result = this.colliderSet.raw.coCastRay(this.handle, rawOrig, rawDir, maxToi, solid);
         rawOrig.free();
         rawDir.free();
@@ -3421,9 +3421,9 @@ class Collider {
      *   whereas `false` implies that all shapes are hollow for this ray-cast.
      */
     castRayAndGetNormal(ray, maxToi, solid) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
-        let result = _ray__WEBPACK_IMPORTED_MODULE_5__/* .RayIntersection */ .Gz.fromRaw(this.colliderSet.raw.coCastRayAndGetNormal(this.handle, rawOrig, rawDir, maxToi, solid));
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
+        let result = _ray__WEBPACK_IMPORTED_MODULE_5__/* .RayIntersection.fromRaw */ .Gz.fromRaw(this.colliderSet.raw.coCastRayAndGetNormal(this.handle, rawOrig, rawDir, maxToi, solid));
         rawOrig.free();
         rawDir.free();
         return result;
@@ -3448,22 +3448,22 @@ class ColliderDesc {
         this.density = 1.0;
         this.friction = 0.5;
         this.restitution = 0.0;
-        this.rotation = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.identity();
-        this.translation = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.zeros();
+        this.rotation = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.identity */ .T3.identity();
+        this.translation = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.zeros */ .ut.zeros();
         this.isSensor = false;
         this.collisionGroups = 4294967295;
         this.solverGroups = 4294967295;
-        this.frictionCombineRule = _dynamics__WEBPACK_IMPORTED_MODULE_6__/* .CoefficientCombineRule */ .j.Average;
-        this.restitutionCombineRule = _dynamics__WEBPACK_IMPORTED_MODULE_6__/* .CoefficientCombineRule */ .j.Average;
+        this.frictionCombineRule = _dynamics__WEBPACK_IMPORTED_MODULE_6__/* .CoefficientCombineRule.Average */ .j.Average;
+        this.restitutionCombineRule = _dynamics__WEBPACK_IMPORTED_MODULE_6__/* .CoefficientCombineRule.Average */ .j.Average;
         this.activeCollisionTypes = ActiveCollisionTypes.DEFAULT;
         this.activeEvents = 0;
         this.activeHooks = 0;
         this.mass = 0.0;
-        this.centerOfMass = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.zeros();
+        this.centerOfMass = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.zeros */ .ut.zeros();
         this.contactForceEventThreshold = 0.0;
         // #if DIM3
-        this.principalAngularInertia = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.zeros();
-        this.angularInertiaLocalFrame = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.identity();
+        this.principalAngularInertia = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.zeros */ .ut.zeros();
+        this.angularInertiaLocalFrame = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.identity */ .T3.identity();
         // #endif
     }
     /**
@@ -3683,7 +3683,7 @@ class ColliderDesc {
      */
     setRotation(rot) {
         // #if DIM3
-        _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.copy(this.rotation, rot);
+        _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.copy */ .T3.copy(this.rotation, rot);
         // #endif
         return this;
     }
@@ -3749,9 +3749,9 @@ class ColliderDesc {
     setMassProperties(mass, centerOfMass, principalAngularInertia, angularInertiaLocalFrame) {
         this.massPropsMode = MassPropsMode.MassProps;
         this.mass = mass;
-        _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.copy(this.centerOfMass, centerOfMass);
-        _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.copy(this.principalAngularInertia, principalAngularInertia);
-        _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.copy(this.angularInertiaLocalFrame, angularInertiaLocalFrame);
+        _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.copy */ .ut.copy(this.centerOfMass, centerOfMass);
+        _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.copy */ .ut.copy(this.principalAngularInertia, principalAngularInertia);
+        _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.copy */ .T3.copy(this.angularInertiaLocalFrame, angularInertiaLocalFrame);
         return this;
     }
     // #endif
@@ -3874,7 +3874,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   z: () => (/* binding */ ColliderSet)
+/* harmony export */   "z": () => (/* binding */ ColliderSet)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _coarena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(709);
@@ -3943,12 +3943,12 @@ class ColliderSet {
         if (hasParent && isNaN(parentHandle))
             throw Error("Cannot create a collider with a parent rigid-body handle that is not a number.");
         let rawShape = desc.shape.intoRaw();
-        let rawTra = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.translation);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps */ .T3.intoRaw(desc.rotation);
-        let rawCom = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.centerOfMass);
+        let rawTra = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.translation);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps.intoRaw */ .T3.intoRaw(desc.rotation);
+        let rawCom = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.centerOfMass);
         // #if DIM3
-        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps */ .ut.intoRaw(desc.principalAngularInertia);
-        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps */ .T3.intoRaw(desc.angularInertiaLocalFrame);
+        let rawPrincipalInertia = _math__WEBPACK_IMPORTED_MODULE_3__/* .VectorOps.intoRaw */ .ut.intoRaw(desc.principalAngularInertia);
+        let rawInertiaFrame = _math__WEBPACK_IMPORTED_MODULE_3__/* .RotationOps.intoRaw */ .T3.intoRaw(desc.angularInertiaLocalFrame);
         // #endif
         let handle = this.raw.createCollider(desc.enabled, rawShape, rawTra, rawRot, desc.massPropsMode, desc.mass, rawCom, 
         // #if DIM3
@@ -4036,7 +4036,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Q: () => (/* binding */ ShapeContact)
+/* harmony export */   "Q": () => (/* binding */ ShapeContact)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_math__WEBPACK_IMPORTED_MODULE_0__]);
@@ -4056,7 +4056,7 @@ class ShapeContact {
     static fromRaw(raw) {
         if (!raw)
             return null;
-        const result = new ShapeContact(raw.distance(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.point1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.point2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal2()));
+        const result = new ShapeContact(raw.distance(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.point1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.point2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal2()));
         raw.free();
         return result;
     }
@@ -4071,7 +4071,7 @@ __webpack_async_result__();
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   T: () => (/* binding */ FeatureType)
+/* harmony export */   "T": () => (/* binding */ FeatureType)
 /* harmony export */ });
 // #if DIM3
 var FeatureType;
@@ -4091,43 +4091,43 @@ var FeatureType;
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $R: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.$R),
-/* harmony export */   $t: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.$t),
-/* harmony export */   Ab: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Ab),
-/* harmony export */   CJ: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.CJ),
-/* harmony export */   Ch: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Ch),
-/* harmony export */   DY: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.DY),
-/* harmony export */   FP: () => (/* reexport safe */ _point__WEBPACK_IMPORTED_MODULE_7__.F),
-/* harmony export */   Fr: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Fr),
-/* harmony export */   GJ: () => (/* reexport safe */ _toi__WEBPACK_IMPORTED_MODULE_8__.G),
-/* harmony export */   Gz: () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.Gz),
-/* harmony export */   L4: () => (/* reexport safe */ _narrow_phase__WEBPACK_IMPORTED_MODULE_1__.L),
-/* harmony export */   NT: () => (/* reexport safe */ _broad_phase__WEBPACK_IMPORTED_MODULE_0__.N),
-/* harmony export */   No: () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.No),
-/* harmony export */   Qi: () => (/* reexport safe */ _contact__WEBPACK_IMPORTED_MODULE_9__.Q),
-/* harmony export */   Qq: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Qq),
-/* harmony export */   Te: () => (/* reexport safe */ _feature__WEBPACK_IMPORTED_MODULE_5__.T),
-/* harmony export */   Vl: () => (/* reexport safe */ _point__WEBPACK_IMPORTED_MODULE_7__.V),
-/* harmony export */   XX: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.XX),
-/* harmony export */   YD: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.YD),
-/* harmony export */   YM: () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.YM),
-/* harmony export */   aH: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.aH),
-/* harmony export */   az: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.az),
-/* harmony export */   bn: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.bn),
-/* harmony export */   cu: () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.cu),
-/* harmony export */   eL: () => (/* reexport safe */ _narrow_phase__WEBPACK_IMPORTED_MODULE_1__.e),
-/* harmony export */   eT: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.eT),
-/* harmony export */   ec: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.ec),
-/* harmony export */   f4: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.f4),
-/* harmony export */   iA: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.iA),
-/* harmony export */   ic: () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.ic),
-/* harmony export */   jv: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.jv),
-/* harmony export */   mB: () => (/* reexport safe */ _toi__WEBPACK_IMPORTED_MODULE_8__.m),
-/* harmony export */   sw: () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.sw),
-/* harmony export */   uV: () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.uV),
-/* harmony export */   vq: () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.vq),
-/* harmony export */   zH: () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.zH),
-/* harmony export */   zY: () => (/* reexport safe */ _collider_set__WEBPACK_IMPORTED_MODULE_4__.z)
+/* harmony export */   "$R": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.$R),
+/* harmony export */   "$t": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.$t),
+/* harmony export */   "Ab": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Ab),
+/* harmony export */   "CJ": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.CJ),
+/* harmony export */   "Ch": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Ch),
+/* harmony export */   "DY": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.DY),
+/* harmony export */   "FP": () => (/* reexport safe */ _point__WEBPACK_IMPORTED_MODULE_7__.F),
+/* harmony export */   "Fr": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Fr),
+/* harmony export */   "GJ": () => (/* reexport safe */ _toi__WEBPACK_IMPORTED_MODULE_8__.G),
+/* harmony export */   "Gz": () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.Gz),
+/* harmony export */   "L4": () => (/* reexport safe */ _narrow_phase__WEBPACK_IMPORTED_MODULE_1__.L),
+/* harmony export */   "NT": () => (/* reexport safe */ _broad_phase__WEBPACK_IMPORTED_MODULE_0__.N),
+/* harmony export */   "No": () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.No),
+/* harmony export */   "Qi": () => (/* reexport safe */ _contact__WEBPACK_IMPORTED_MODULE_9__.Q),
+/* harmony export */   "Qq": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.Qq),
+/* harmony export */   "Te": () => (/* reexport safe */ _feature__WEBPACK_IMPORTED_MODULE_5__.T),
+/* harmony export */   "Vl": () => (/* reexport safe */ _point__WEBPACK_IMPORTED_MODULE_7__.V),
+/* harmony export */   "XX": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.XX),
+/* harmony export */   "YD": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.YD),
+/* harmony export */   "YM": () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.YM),
+/* harmony export */   "aH": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.aH),
+/* harmony export */   "az": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.az),
+/* harmony export */   "bn": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.bn),
+/* harmony export */   "cu": () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.cu),
+/* harmony export */   "eL": () => (/* reexport safe */ _narrow_phase__WEBPACK_IMPORTED_MODULE_1__.e),
+/* harmony export */   "eT": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.eT),
+/* harmony export */   "ec": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.ec),
+/* harmony export */   "f4": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.f4),
+/* harmony export */   "iA": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.iA),
+/* harmony export */   "ic": () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.ic),
+/* harmony export */   "jv": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.jv),
+/* harmony export */   "mB": () => (/* reexport safe */ _toi__WEBPACK_IMPORTED_MODULE_8__.m),
+/* harmony export */   "sw": () => (/* reexport safe */ _shape__WEBPACK_IMPORTED_MODULE_2__.sw),
+/* harmony export */   "uV": () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.uV),
+/* harmony export */   "vq": () => (/* reexport safe */ _collider__WEBPACK_IMPORTED_MODULE_3__.vq),
+/* harmony export */   "zH": () => (/* reexport safe */ _ray__WEBPACK_IMPORTED_MODULE_6__.zH),
+/* harmony export */   "zY": () => (/* reexport safe */ _collider_set__WEBPACK_IMPORTED_MODULE_4__.z)
 /* harmony export */ });
 /* harmony import */ var _broad_phase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(261);
 /* harmony import */ var _narrow_phase__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(322);
@@ -4163,8 +4163,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   L: () => (/* binding */ NarrowPhase),
-/* harmony export */   e: () => (/* binding */ TempContactManifold)
+/* harmony export */   "L": () => (/* binding */ NarrowPhase),
+/* harmony export */   "e": () => (/* binding */ TempContactManifold)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
@@ -4255,13 +4255,13 @@ class TempContactManifold {
         this.raw = undefined;
     }
     normal() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.normal());
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.normal());
     }
     localNormal1() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.local_n1());
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.local_n1());
     }
     localNormal2() {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.local_n2());
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.local_n2());
     }
     subshape1() {
         return this.raw.subshape1();
@@ -4273,10 +4273,10 @@ class TempContactManifold {
         return this.raw.num_contacts();
     }
     localContactPoint1(i) {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.contact_local_p1(i));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.contact_local_p1(i));
     }
     localContactPoint2(i) {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.contact_local_p2(i));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.contact_local_p2(i));
     }
     contactDist(i) {
         return this.raw.contact_dist(i);
@@ -4302,7 +4302,7 @@ class TempContactManifold {
         return this.raw.num_solver_contacts();
     }
     solverContactPoint(i) {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.solver_contact_point(i));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.solver_contact_point(i));
     }
     solverContactDist(i) {
         return this.raw.solver_contact_dist(i);
@@ -4314,7 +4314,7 @@ class TempContactManifold {
         return this.raw.solver_contact_restitution(i);
     }
     solverContactTangentVelocity(i) {
-        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(this.raw.solver_contact_tangent_velocity(i));
+        return _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.solver_contact_tangent_velocity(i));
     }
 }
 //# sourceMappingURL=narrow_phase.js.map
@@ -4328,8 +4328,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   F: () => (/* binding */ PointProjection),
-/* harmony export */   V: () => (/* binding */ PointColliderProjection)
+/* harmony export */   "F": () => (/* binding */ PointProjection),
+/* harmony export */   "V": () => (/* binding */ PointColliderProjection)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 /* harmony import */ var _feature__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(193);
@@ -4348,7 +4348,7 @@ class PointProjection {
     static fromRaw(raw) {
         if (!raw)
             return null;
-        const result = new PointProjection(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.point()), raw.isInside());
+        const result = new PointProjection(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.point()), raw.isInside());
         raw.free();
         return result;
     }
@@ -4361,7 +4361,7 @@ class PointColliderProjection {
         /**
          * The type of the geometric feature the point was projected on.
          */
-        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_1__/* .FeatureType */ .T.Unknown;
+        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_1__/* .FeatureType.Unknown */ .T.Unknown;
         /**
          * The id of the geometric feature the point was projected on.
          */
@@ -4377,7 +4377,7 @@ class PointColliderProjection {
     static fromRaw(colliderSet, raw) {
         if (!raw)
             return null;
-        const result = new PointColliderProjection(colliderSet.get(raw.colliderHandle()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.point()), raw.isInside(), raw.featureType(), raw.featureId());
+        const result = new PointColliderProjection(colliderSet.get(raw.colliderHandle()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.point()), raw.isInside(), raw.featureType(), raw.featureId());
         raw.free();
         return result;
     }
@@ -4393,10 +4393,10 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Gz: () => (/* binding */ RayIntersection),
-/* harmony export */   No: () => (/* binding */ RayColliderIntersection),
-/* harmony export */   cu: () => (/* binding */ RayColliderToi),
-/* harmony export */   zH: () => (/* binding */ Ray)
+/* harmony export */   "Gz": () => (/* binding */ RayIntersection),
+/* harmony export */   "No": () => (/* binding */ RayColliderIntersection),
+/* harmony export */   "cu": () => (/* binding */ RayColliderToi),
+/* harmony export */   "zH": () => (/* binding */ Ray)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
 /* harmony import */ var _feature__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(193);
@@ -4436,7 +4436,7 @@ class RayIntersection {
         /**
          * The type of the geometric feature the point was projected on.
          */
-        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_0__/* .FeatureType */ .T.Unknown;
+        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_0__/* .FeatureType.Unknown */ .T.Unknown;
         /**
          * The id of the geometric feature the point was projected on.
          */
@@ -4451,7 +4451,7 @@ class RayIntersection {
     static fromRaw(raw) {
         if (!raw)
             return null;
-        const result = new RayIntersection(raw.toi(), _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(raw.normal()), raw.featureType(), raw.featureId());
+        const result = new RayIntersection(raw.toi(), _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal()), raw.featureType(), raw.featureId());
         raw.free();
         return result;
     }
@@ -4464,7 +4464,7 @@ class RayColliderIntersection {
         /**
          * The type of the geometric feature the point was projected on.
          */
-        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_0__/* .FeatureType */ .T.Unknown;
+        this.featureType = _feature__WEBPACK_IMPORTED_MODULE_0__/* .FeatureType.Unknown */ .T.Unknown;
         /**
          * The id of the geometric feature the point was projected on.
          */
@@ -4480,7 +4480,7 @@ class RayColliderIntersection {
     static fromRaw(colliderSet, raw) {
         if (!raw)
             return null;
-        const result = new RayColliderIntersection(colliderSet.get(raw.colliderHandle()), raw.toi(), _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.fromRaw(raw.normal()), raw.featureType(), raw.featureId());
+        const result = new RayColliderIntersection(colliderSet.get(raw.colliderHandle()), raw.toi(), _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal()), raw.featureType(), raw.featureId());
         raw.free();
         return result;
     }
@@ -4512,25 +4512,25 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $R: () => (/* binding */ RoundTriangle),
-/* harmony export */   $t: () => (/* binding */ RoundCylinder),
-/* harmony export */   Ab: () => (/* binding */ Cylinder),
-/* harmony export */   CJ: () => (/* binding */ Triangle),
-/* harmony export */   Ch: () => (/* binding */ RoundConvexPolyhedron),
-/* harmony export */   DY: () => (/* binding */ ShapeType),
-/* harmony export */   Fr: () => (/* binding */ HalfSpace),
-/* harmony export */   Qq: () => (/* binding */ Cone),
-/* harmony export */   XX: () => (/* binding */ Segment),
-/* harmony export */   YD: () => (/* binding */ ConvexPolyhedron),
-/* harmony export */   aH: () => (/* binding */ Polyline),
-/* harmony export */   az: () => (/* binding */ TriMesh),
-/* harmony export */   bn: () => (/* binding */ Shape),
-/* harmony export */   eT: () => (/* binding */ RoundCone),
-/* harmony export */   ec: () => (/* binding */ Ball),
-/* harmony export */   f4: () => (/* binding */ Heightfield),
-/* harmony export */   iA: () => (/* binding */ RoundCuboid),
-/* harmony export */   jv: () => (/* binding */ Cuboid),
-/* harmony export */   sw: () => (/* binding */ Capsule)
+/* harmony export */   "$R": () => (/* binding */ RoundTriangle),
+/* harmony export */   "$t": () => (/* binding */ RoundCylinder),
+/* harmony export */   "Ab": () => (/* binding */ Cylinder),
+/* harmony export */   "CJ": () => (/* binding */ Triangle),
+/* harmony export */   "Ch": () => (/* binding */ RoundConvexPolyhedron),
+/* harmony export */   "DY": () => (/* binding */ ShapeType),
+/* harmony export */   "Fr": () => (/* binding */ HalfSpace),
+/* harmony export */   "Qq": () => (/* binding */ Cone),
+/* harmony export */   "XX": () => (/* binding */ Segment),
+/* harmony export */   "YD": () => (/* binding */ ConvexPolyhedron),
+/* harmony export */   "aH": () => (/* binding */ Polyline),
+/* harmony export */   "az": () => (/* binding */ TriMesh),
+/* harmony export */   "bn": () => (/* binding */ Shape),
+/* harmony export */   "eT": () => (/* binding */ RoundCone),
+/* harmony export */   "ec": () => (/* binding */ Ball),
+/* harmony export */   "f4": () => (/* binding */ Heightfield),
+/* harmony export */   "iA": () => (/* binding */ RoundCuboid),
+/* harmony export */   "jv": () => (/* binding */ Cuboid),
+/* harmony export */   "sw": () => (/* binding */ Capsule)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(184);
@@ -4580,7 +4580,7 @@ class Shape {
             case ShapeType.Segment:
                 vs = rawSet.coVertices(handle);
                 // #if DIM3
-                return new Segment(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[3], vs[4], vs[5]));
+                return new Segment(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[3], vs[4], vs[5]));
             // #endif
             case ShapeType.Polyline:
                 vs = rawSet.coVertices(handle);
@@ -4589,16 +4589,16 @@ class Shape {
             case ShapeType.Triangle:
                 vs = rawSet.coVertices(handle);
                 // #if DIM3
-                return new Triangle(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[3], vs[4], vs[5]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[6], vs[7], vs[8]));
+                return new Triangle(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[3], vs[4], vs[5]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[6], vs[7], vs[8]));
             // #endif
             case ShapeType.RoundTriangle:
                 vs = rawSet.coVertices(handle);
                 borderRadius = rawSet.coRoundRadius(handle);
                 // #if DIM3
-                return new RoundTriangle(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[3], vs[4], vs[5]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(vs[6], vs[7], vs[8]), borderRadius);
+                return new RoundTriangle(_math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[0], vs[1], vs[2]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[3], vs[4], vs[5]), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](vs[6], vs[7], vs[8]), borderRadius);
             // #endif
             case ShapeType.HalfSpace:
-                normal = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(rawSet.coHalfspaceNormal(handle));
+                normal = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(rawSet.coHalfspaceNormal(handle));
                 return new HalfSpace(normal);
             case ShapeType.TriMesh:
                 vs = rawSet.coVertices(handle);
@@ -4663,15 +4663,15 @@ class Shape {
      *  `null`if the two shapes never collide along their paths.
      */
     castShape(shapePos1, shapeRot1, shapeVel1, shape2, shapePos2, shapeRot2, shapeVel2, maxToi, stopAtPenetration) {
-        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos1);
-        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot1);
-        let rawVel1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapeVel1);
-        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos2);
-        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot2);
-        let rawVel2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapeVel2);
+        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos1);
+        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot1);
+        let rawVel1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapeVel1);
+        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos2);
+        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot2);
+        let rawVel2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapeVel2);
         let rawShape1 = this.intoRaw();
         let rawShape2 = shape2.intoRaw();
-        let result = _toi__WEBPACK_IMPORTED_MODULE_1__/* .ShapeTOI */ .G.fromRaw(null, rawShape1.castShape(rawPos1, rawRot1, rawVel1, rawShape2, rawPos2, rawRot2, rawVel2, maxToi, stopAtPenetration));
+        let result = _toi__WEBPACK_IMPORTED_MODULE_1__/* .ShapeTOI.fromRaw */ .G.fromRaw(null, rawShape1.castShape(rawPos1, rawRot1, rawVel1, rawShape2, rawPos2, rawRot2, rawVel2, maxToi, stopAtPenetration));
         rawPos1.free();
         rawRot1.free();
         rawVel1.free();
@@ -4693,10 +4693,10 @@ class Shape {
      * @returns `true` if the two shapes intersect, `false` if they don’t.
      */
     intersectsShape(shapePos1, shapeRot1, shape2, shapePos2, shapeRot2) {
-        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos1);
-        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot1);
-        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos2);
-        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot2);
+        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos1);
+        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot1);
+        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos2);
+        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot2);
         let rawShape1 = this.intoRaw();
         let rawShape2 = shape2.intoRaw();
         let result = rawShape1.intersectsShape(rawPos1, rawRot1, rawShape2, rawPos2, rawRot2);
@@ -4720,13 +4720,13 @@ class Shape {
      * @returns `null` if the shapes are separated by a distance greater than prediction, otherwise contact details. The result is given in world-space.
      */
     contactShape(shapePos1, shapeRot1, shape2, shapePos2, shapeRot2, prediction) {
-        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos1);
-        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot1);
-        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos2);
-        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot2);
+        let rawPos1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos1);
+        let rawRot1 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot1);
+        let rawPos2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos2);
+        let rawRot2 = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot2);
         let rawShape1 = this.intoRaw();
         let rawShape2 = shape2.intoRaw();
-        let result = _contact__WEBPACK_IMPORTED_MODULE_2__/* .ShapeContact */ .Q.fromRaw(rawShape1.contactShape(rawPos1, rawRot1, rawShape2, rawPos2, rawRot2, prediction));
+        let result = _contact__WEBPACK_IMPORTED_MODULE_2__/* .ShapeContact.fromRaw */ .Q.fromRaw(rawShape1.contactShape(rawPos1, rawRot1, rawShape2, rawPos2, rawRot2, prediction));
         rawPos1.free();
         rawRot1.free();
         rawPos2.free();
@@ -4736,9 +4736,9 @@ class Shape {
         return result;
     }
     containsPoint(shapePos, shapeRot, point) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(point);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         let rawShape = this.intoRaw();
         let result = rawShape.containsPoint(rawPos, rawRot, rawPoint);
         rawPos.free();
@@ -4748,11 +4748,11 @@ class Shape {
         return result;
     }
     projectPoint(shapePos, shapeRot, point, solid) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(point);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         let rawShape = this.intoRaw();
-        let result = _point__WEBPACK_IMPORTED_MODULE_3__/* .PointProjection */ .F.fromRaw(rawShape.projectPoint(rawPos, rawRot, rawPoint, solid));
+        let result = _point__WEBPACK_IMPORTED_MODULE_3__/* .PointProjection.fromRaw */ .F.fromRaw(rawShape.projectPoint(rawPos, rawRot, rawPoint, solid));
         rawPos.free();
         rawRot.free();
         rawPoint.free();
@@ -4760,10 +4760,10 @@ class Shape {
         return result;
     }
     intersectsRay(ray, shapePos, shapeRot, maxToi) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let rawShape = this.intoRaw();
         let result = rawShape.intersectsRay(rawPos, rawRot, rawRayOrig, rawRayDir, maxToi);
         rawPos.free();
@@ -4774,10 +4774,10 @@ class Shape {
         return result;
     }
     castRay(ray, shapePos, shapeRot, maxToi, solid) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let rawShape = this.intoRaw();
         let result = rawShape.castRay(rawPos, rawRot, rawRayOrig, rawRayDir, maxToi, solid);
         rawPos.free();
@@ -4788,12 +4788,12 @@ class Shape {
         return result;
     }
     castRayAndGetNormal(ray, shapePos, shapeRot, maxToi, solid) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_0__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawRayOrig = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawRayDir = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let rawShape = this.intoRaw();
-        let result = _ray__WEBPACK_IMPORTED_MODULE_4__/* .RayIntersection */ .Gz.fromRaw(rawShape.castRayAndGetNormal(rawPos, rawRot, rawRayOrig, rawRayDir, maxToi, solid));
+        let result = _ray__WEBPACK_IMPORTED_MODULE_4__/* .RayIntersection.fromRaw */ .Gz.fromRaw(rawShape.castRayAndGetNormal(rawPos, rawRot, rawRayOrig, rawRayDir, maxToi, solid));
         rawPos.free();
         rawRot.free();
         rawRayOrig.free();
@@ -4842,7 +4842,7 @@ class Ball extends Shape {
         this.radius = radius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.ball(this.radius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.ball */ .X7.ball(this.radius);
     }
 }
 class HalfSpace extends Shape {
@@ -4857,8 +4857,8 @@ class HalfSpace extends Shape {
         this.normal = normal;
     }
     intoRaw() {
-        let n = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.normal);
-        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.halfspace(n);
+        let n = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.normal);
+        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.halfspace */ .X7.halfspace(n);
         n.free();
         return result;
     }
@@ -4877,12 +4877,12 @@ class Cuboid extends Shape {
     constructor(hx, hy, hz) {
         super();
         this.type = ShapeType.Cuboid;
-        this.halfExtents = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(hx, hy, hz);
+        this.halfExtents = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](hx, hy, hz);
     }
     // #endif
     intoRaw() {
         // #if DIM3
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.cuboid(this.halfExtents.x, this.halfExtents.y, this.halfExtents.z);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.cuboid */ .X7.cuboid(this.halfExtents.x, this.halfExtents.y, this.halfExtents.z);
         // #endif
     }
 }
@@ -4902,13 +4902,13 @@ class RoundCuboid extends Shape {
     constructor(hx, hy, hz, borderRadius) {
         super();
         this.type = ShapeType.RoundCuboid;
-        this.halfExtents = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.new(hx, hy, hz);
+        this.halfExtents = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps["new"] */ .ut["new"](hx, hy, hz);
         this.borderRadius = borderRadius;
     }
     // #endif
     intoRaw() {
         // #if DIM3
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundCuboid(this.halfExtents.x, this.halfExtents.y, this.halfExtents.z, this.borderRadius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundCuboid */ .X7.roundCuboid(this.halfExtents.x, this.halfExtents.y, this.halfExtents.z, this.borderRadius);
         // #endif
     }
 }
@@ -4928,7 +4928,7 @@ class Capsule extends Shape {
         this.radius = radius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.capsule(this.halfHeight, this.radius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.capsule */ .X7.capsule(this.halfHeight, this.radius);
     }
 }
 /**
@@ -4947,9 +4947,9 @@ class Segment extends Shape {
         this.b = b;
     }
     intoRaw() {
-        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.a);
-        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.b);
-        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.segment(ra, rb);
+        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.a);
+        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.b);
+        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.segment */ .X7.segment(ra, rb);
         ra.free();
         rb.free();
         return result;
@@ -4974,10 +4974,10 @@ class Triangle extends Shape {
         this.c = c;
     }
     intoRaw() {
-        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.a);
-        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.b);
-        let rc = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.c);
-        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.triangle(ra, rb, rc);
+        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.a);
+        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.b);
+        let rc = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.c);
+        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.triangle */ .X7.triangle(ra, rb, rc);
         ra.free();
         rb.free();
         rc.free();
@@ -5006,10 +5006,10 @@ class RoundTriangle extends Shape {
         this.borderRadius = borderRadius;
     }
     intoRaw() {
-        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.a);
-        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.b);
-        let rc = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.c);
-        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundTriangle(ra, rb, rc, this.borderRadius);
+        let ra = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.a);
+        let rb = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.b);
+        let rc = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.c);
+        let result = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundTriangle */ .X7.roundTriangle(ra, rb, rc, this.borderRadius);
         ra.free();
         rb.free();
         rc.free();
@@ -5034,7 +5034,7 @@ class Polyline extends Shape {
         this.indices = indices !== null && indices !== void 0 ? indices : new Uint32Array(0);
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.polyline(this.vertices, this.indices);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.polyline */ .X7.polyline(this.vertices, this.indices);
     }
 }
 /**
@@ -5054,7 +5054,7 @@ class TriMesh extends Shape {
         this.indices = indices;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.trimesh(this.vertices, this.indices);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.trimesh */ .X7.trimesh(this.vertices, this.indices);
     }
 }
 // #if DIM3
@@ -5079,10 +5079,10 @@ class ConvexPolyhedron extends Shape {
     }
     intoRaw() {
         if (!!this.indices) {
-            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.convexMesh(this.vertices, this.indices);
+            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.convexMesh */ .X7.convexMesh(this.vertices, this.indices);
         }
         else {
-            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.convexHull(this.vertices);
+            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.convexHull */ .X7.convexHull(this.vertices);
         }
     }
 }
@@ -5109,10 +5109,10 @@ class RoundConvexPolyhedron extends Shape {
     }
     intoRaw() {
         if (!!this.indices) {
-            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundConvexMesh(this.vertices, this.indices, this.borderRadius);
+            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundConvexMesh */ .X7.roundConvexMesh(this.vertices, this.indices, this.borderRadius);
         }
         else {
-            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundConvexHull(this.vertices, this.borderRadius);
+            return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundConvexHull */ .X7.roundConvexHull(this.vertices, this.borderRadius);
         }
     }
 }
@@ -5138,8 +5138,8 @@ class Heightfield extends Shape {
         this.scale = scale;
     }
     intoRaw() {
-        let rawScale = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.intoRaw(this.scale);
-        let rawShape = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.heightfield(this.nrows, this.ncols, this.heights, rawScale);
+        let rawScale = _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.intoRaw */ .ut.intoRaw(this.scale);
+        let rawShape = _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.heightfield */ .X7.heightfield(this.nrows, this.ncols, this.heights, rawScale);
         rawScale.free();
         return rawShape;
     }
@@ -5160,7 +5160,7 @@ class Cylinder extends Shape {
         this.radius = radius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.cylinder(this.halfHeight, this.radius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.cylinder */ .X7.cylinder(this.halfHeight, this.radius);
     }
 }
 /**
@@ -5181,7 +5181,7 @@ class RoundCylinder extends Shape {
         this.radius = radius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundCylinder(this.halfHeight, this.radius, this.borderRadius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundCylinder */ .X7.roundCylinder(this.halfHeight, this.radius, this.borderRadius);
     }
 }
 /**
@@ -5200,7 +5200,7 @@ class Cone extends Shape {
         this.radius = radius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.cone(this.halfHeight, this.radius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.cone */ .X7.cone(this.halfHeight, this.radius);
     }
 }
 /**
@@ -5221,7 +5221,7 @@ class RoundCone extends Shape {
         this.borderRadius = borderRadius;
     }
     intoRaw() {
-        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape */ .X7.roundCone(this.halfHeight, this.radius, this.borderRadius);
+        return _raw__WEBPACK_IMPORTED_MODULE_5__/* .RawShape.roundCone */ .X7.roundCone(this.halfHeight, this.radius, this.borderRadius);
     }
 }
 // #endif
@@ -5236,8 +5236,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   G: () => (/* binding */ ShapeTOI),
-/* harmony export */   m: () => (/* binding */ ShapeColliderTOI)
+/* harmony export */   "G": () => (/* binding */ ShapeTOI),
+/* harmony export */   "m": () => (/* binding */ ShapeColliderTOI)
 /* harmony export */ });
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_math__WEBPACK_IMPORTED_MODULE_0__]);
@@ -5257,7 +5257,7 @@ class ShapeTOI {
     static fromRaw(colliderSet, raw) {
         if (!raw)
             return null;
-        const result = new ShapeTOI(raw.toi(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.witness1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.witness2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal2()));
+        const result = new ShapeTOI(raw.toi(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.witness1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.witness2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal2()));
         raw.free();
         return result;
     }
@@ -5273,7 +5273,7 @@ class ShapeColliderTOI extends ShapeTOI {
     static fromRaw(colliderSet, raw) {
         if (!raw)
             return null;
-        const result = new ShapeColliderTOI(colliderSet.get(raw.colliderHandle()), raw.toi(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.witness1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.witness2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(raw.normal2()));
+        const result = new ShapeColliderTOI(colliderSet.get(raw.colliderHandle()), raw.toi(), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.witness1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.witness2()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal1()), _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.normal2()));
         raw.free();
         return result;
     }
@@ -5289,12 +5289,12 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   P: () => (/* binding */ Vector3),
-/* harmony export */   PR: () => (/* binding */ SdpMatrix3Ops),
-/* harmony export */   T3: () => (/* binding */ RotationOps),
-/* harmony export */   _f: () => (/* binding */ Quaternion),
-/* harmony export */   ut: () => (/* binding */ VectorOps),
-/* harmony export */   w4: () => (/* binding */ SdpMatrix3)
+/* harmony export */   "P": () => (/* binding */ Vector3),
+/* harmony export */   "PR": () => (/* binding */ SdpMatrix3Ops),
+/* harmony export */   "T3": () => (/* binding */ RotationOps),
+/* harmony export */   "_f": () => (/* binding */ Quaternion),
+/* harmony export */   "ut": () => (/* binding */ VectorOps),
+/* harmony export */   "w4": () => (/* binding */ SdpMatrix3)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -5447,8 +5447,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   k: () => (/* binding */ DebugRenderPipeline),
-/* harmony export */   t: () => (/* binding */ DebugRenderBuffers)
+/* harmony export */   "k": () => (/* binding */ DebugRenderPipeline),
+/* harmony export */   "t": () => (/* binding */ DebugRenderBuffers)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_raw__WEBPACK_IMPORTED_MODULE_0__]);
@@ -5501,9 +5501,9 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Md: () => (/* binding */ ActiveEvents),
-/* harmony export */   NH: () => (/* binding */ EventQueue),
-/* harmony export */   qV: () => (/* binding */ TempContactForceEvent)
+/* harmony export */   "Md": () => (/* binding */ ActiveEvents),
+/* harmony export */   "NH": () => (/* binding */ EventQueue),
+/* harmony export */   "qV": () => (/* binding */ TempContactForceEvent)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(383);
@@ -5555,7 +5555,7 @@ class TempContactForceEvent {
      * The sum of all the forces between the two colliders.
      */
     totalForce() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.raw.total_force());
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.total_force());
     }
     /**
      * The sum of the magnitudes of each force between the two colliders.
@@ -5571,7 +5571,7 @@ class TempContactForceEvent {
      * The world-space (unit) direction of the force with strongest magnitude.
      */
     maxForceDirection() {
-        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps */ .ut.fromRaw(this.raw.max_force_direction());
+        return _math__WEBPACK_IMPORTED_MODULE_0__/* .VectorOps.fromRaw */ .ut.fromRaw(this.raw.max_force_direction());
     }
     /**
      * The magnitude of the largest force at a contact point of this contact pair.
@@ -5653,18 +5653,18 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DJ: () => (/* reexport safe */ _physics_pipeline__WEBPACK_IMPORTED_MODULE_1__.D),
-/* harmony export */   Md: () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.Md),
-/* harmony export */   NH: () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.NH),
-/* harmony export */   Nv: () => (/* reexport safe */ _physics_hooks__WEBPACK_IMPORTED_MODULE_4__.N),
-/* harmony export */   Vq: () => (/* reexport safe */ _query_pipeline__WEBPACK_IMPORTED_MODULE_6__.V),
-/* harmony export */   _m: () => (/* reexport safe */ _query_pipeline__WEBPACK_IMPORTED_MODULE_6__._),
-/* harmony export */   iX: () => (/* reexport safe */ _physics_hooks__WEBPACK_IMPORTED_MODULE_4__.i),
-/* harmony export */   kh: () => (/* reexport safe */ _debug_render_pipeline__WEBPACK_IMPORTED_MODULE_5__.k),
-/* harmony export */   q3: () => (/* reexport safe */ _world__WEBPACK_IMPORTED_MODULE_0__.q),
-/* harmony export */   qV: () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.qV),
-/* harmony export */   tt: () => (/* reexport safe */ _debug_render_pipeline__WEBPACK_IMPORTED_MODULE_5__.t),
-/* harmony export */   y9: () => (/* reexport safe */ _serialization_pipeline__WEBPACK_IMPORTED_MODULE_2__.y)
+/* harmony export */   "DJ": () => (/* reexport safe */ _physics_pipeline__WEBPACK_IMPORTED_MODULE_1__.D),
+/* harmony export */   "Md": () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.Md),
+/* harmony export */   "NH": () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.NH),
+/* harmony export */   "Nv": () => (/* reexport safe */ _physics_hooks__WEBPACK_IMPORTED_MODULE_4__.N),
+/* harmony export */   "Vq": () => (/* reexport safe */ _query_pipeline__WEBPACK_IMPORTED_MODULE_6__.V),
+/* harmony export */   "_m": () => (/* reexport safe */ _query_pipeline__WEBPACK_IMPORTED_MODULE_6__._),
+/* harmony export */   "iX": () => (/* reexport safe */ _physics_hooks__WEBPACK_IMPORTED_MODULE_4__.i),
+/* harmony export */   "kh": () => (/* reexport safe */ _debug_render_pipeline__WEBPACK_IMPORTED_MODULE_5__.k),
+/* harmony export */   "q3": () => (/* reexport safe */ _world__WEBPACK_IMPORTED_MODULE_0__.q),
+/* harmony export */   "qV": () => (/* reexport safe */ _event_queue__WEBPACK_IMPORTED_MODULE_3__.qV),
+/* harmony export */   "tt": () => (/* reexport safe */ _debug_render_pipeline__WEBPACK_IMPORTED_MODULE_5__.t),
+/* harmony export */   "y9": () => (/* reexport safe */ _serialization_pipeline__WEBPACK_IMPORTED_MODULE_2__.y)
 /* harmony export */ });
 /* harmony import */ var _world__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(641);
 /* harmony import */ var _physics_pipeline__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(64);
@@ -5692,8 +5692,8 @@ __webpack_async_result__();
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   N: () => (/* binding */ SolverFlags),
-/* harmony export */   i: () => (/* binding */ ActiveHooks)
+/* harmony export */   "N": () => (/* binding */ SolverFlags),
+/* harmony export */   "i": () => (/* binding */ ActiveHooks)
 /* harmony export */ });
 var ActiveHooks;
 (function (ActiveHooks) {
@@ -5715,7 +5715,7 @@ var SolverFlags;
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D: () => (/* binding */ PhysicsPipeline)
+/* harmony export */   "D": () => (/* binding */ PhysicsPipeline)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
@@ -5734,7 +5734,7 @@ class PhysicsPipeline {
         this.raw = undefined;
     }
     step(gravity, integrationParameters, islands, broadPhase, narrowPhase, bodies, colliders, impulseJoints, multibodyJoints, ccdSolver, eventQueue, hooks) {
-        let rawG = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(gravity);
+        let rawG = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(gravity);
         if (!!eventQueue) {
             this.raw.stepWithEvents(rawG, integrationParameters.raw, islands.raw, broadPhase.raw, narrowPhase.raw, bodies.raw, colliders.raw, impulseJoints.raw, multibodyJoints.raw, ccdSolver.raw, eventQueue.raw, hooks, !!hooks ? hooks.filterContactPair : null, !!hooks ? hooks.filterIntersectionPair : null);
         }
@@ -5755,8 +5755,8 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   V: () => (/* binding */ QueryPipeline),
-/* harmony export */   _: () => (/* binding */ QueryFilterFlags)
+/* harmony export */   "V": () => (/* binding */ QueryPipeline),
+/* harmony export */   "_": () => (/* binding */ QueryFilterFlags)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(238);
@@ -5849,9 +5849,9 @@ class QueryPipeline {
      * @param filter - The callback to filter out which collider will be hit.
      */
     castRay(bodies, colliders, ray, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
-        let result = _geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderToi */ .cu.fromRaw(colliders, this.raw.castRay(bodies.raw, colliders.raw, rawOrig, rawDir, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
+        let result = _geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderToi.fromRaw */ .cu.fromRaw(colliders, this.raw.castRay(bodies.raw, colliders.raw, rawOrig, rawDir, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
         rawOrig.free();
         rawDir.free();
         return result;
@@ -5870,9 +5870,9 @@ class QueryPipeline {
      * @param groups - Used to filter the colliders that can or cannot be hit by the ray.
      */
     castRayAndGetNormal(bodies, colliders, ray, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
-        let result = _geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderIntersection */ .No.fromRaw(colliders, this.raw.castRayAndGetNormal(bodies.raw, colliders.raw, rawOrig, rawDir, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
+        let result = _geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderIntersection.fromRaw */ .No.fromRaw(colliders, this.raw.castRayAndGetNormal(bodies.raw, colliders.raw, rawOrig, rawDir, maxToi, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
         rawOrig.free();
         rawDir.free();
         return result;
@@ -5892,10 +5892,10 @@ class QueryPipeline {
      *   If this callback returns `false`, then the cast will stop and no further hits will be detected/reported.
      */
     intersectionsWithRay(bodies, colliders, ray, maxToi, solid, callback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.origin);
-        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(ray.dir);
+        let rawOrig = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.origin);
+        let rawDir = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(ray.dir);
         let rawCallback = (rawInter) => {
-            return callback(_geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderIntersection */ .No.fromRaw(colliders, rawInter));
+            return callback(_geometry__WEBPACK_IMPORTED_MODULE_2__/* .RayColliderIntersection.fromRaw */ .No.fromRaw(colliders, rawInter));
         };
         this.raw.intersectionsWithRay(bodies.raw, colliders.raw, rawOrig, rawDir, maxToi, solid, rawCallback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate);
         rawOrig.free();
@@ -5912,8 +5912,8 @@ class QueryPipeline {
      *   hit the colliders with collision groups compatible with the ray's group.
      */
     intersectionWithShape(bodies, colliders, shapePos, shapeRot, shape, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shapeRot);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
         let rawShape = shape.intoRaw();
         let result = this.raw.intersectionWithShape(bodies.raw, colliders.raw, rawPos, rawRot, rawShape, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate);
         rawPos.free();
@@ -5935,8 +5935,8 @@ class QueryPipeline {
      *   project on colliders with collision groups compatible with the ray's group.
      */
     projectPoint(bodies, colliders, point, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(point);
-        let result = _geometry__WEBPACK_IMPORTED_MODULE_3__/* .PointColliderProjection */ .V.fromRaw(colliders, this.raw.projectPoint(bodies.raw, colliders.raw, rawPoint, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
+        let result = _geometry__WEBPACK_IMPORTED_MODULE_3__/* .PointColliderProjection.fromRaw */ .V.fromRaw(colliders, this.raw.projectPoint(bodies.raw, colliders.raw, rawPoint, solid, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
         rawPoint.free();
         return result;
     }
@@ -5949,8 +5949,8 @@ class QueryPipeline {
      *   project on colliders with collision groups compatible with the ray's group.
      */
     projectPointAndGetFeature(bodies, colliders, point, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(point);
-        let result = _geometry__WEBPACK_IMPORTED_MODULE_3__/* .PointColliderProjection */ .V.fromRaw(colliders, this.raw.projectPointAndGetFeature(bodies.raw, colliders.raw, rawPoint, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
+        let result = _geometry__WEBPACK_IMPORTED_MODULE_3__/* .PointColliderProjection.fromRaw */ .V.fromRaw(colliders, this.raw.projectPointAndGetFeature(bodies.raw, colliders.raw, rawPoint, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
         rawPoint.free();
         return result;
     }
@@ -5965,7 +5965,7 @@ class QueryPipeline {
      *   containing the `point`.
      */
     intersectionsWithPoint(bodies, colliders, point, callback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(point);
+        let rawPoint = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(point);
         this.raw.intersectionsWithPoint(bodies.raw, colliders.raw, rawPoint, callback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate);
         rawPoint.free();
     }
@@ -5988,11 +5988,11 @@ class QueryPipeline {
      *   test on colliders with collision groups compatible with this group.
      */
     castShape(bodies, colliders, shapePos, shapeRot, shapeVel, shape, maxToi, stopAtPenetration, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shapeRot);
-        let rawVel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shapeVel);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
+        let rawVel = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shapeVel);
         let rawShape = shape.intoRaw();
-        let result = _geometry__WEBPACK_IMPORTED_MODULE_4__/* .ShapeColliderTOI */ .m.fromRaw(colliders, this.raw.castShape(bodies.raw, colliders.raw, rawPos, rawRot, rawVel, rawShape, maxToi, stopAtPenetration, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
+        let result = _geometry__WEBPACK_IMPORTED_MODULE_4__/* .ShapeColliderTOI.fromRaw */ .m.fromRaw(colliders, this.raw.castShape(bodies.raw, colliders.raw, rawPos, rawRot, rawVel, rawShape, maxToi, stopAtPenetration, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate));
         rawPos.free();
         rawRot.free();
         rawVel.free();
@@ -6011,8 +6011,8 @@ class QueryPipeline {
      * @param callback - A function called with the handles of each collider intersecting the `shape`.
      */
     intersectionsWithShape(bodies, colliders, shapePos, shapeRot, shape, callback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate) {
-        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(shapePos);
-        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps */ .T3.intoRaw(shapeRot);
+        let rawPos = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(shapePos);
+        let rawRot = _math__WEBPACK_IMPORTED_MODULE_1__/* .RotationOps.intoRaw */ .T3.intoRaw(shapeRot);
         let rawShape = shape.intoRaw();
         this.raw.intersectionsWithShape(bodies.raw, colliders.raw, rawPos, rawRot, rawShape, callback, filterFlags, filterGroups, filterExcludeCollider, filterExcludeRigidBody, filterPredicate);
         rawPos.free();
@@ -6028,8 +6028,8 @@ class QueryPipeline {
      *                   currently intersecting the given AABB.
      */
     collidersWithAabbIntersectingAabb(aabbCenter, aabbHalfExtents, callback) {
-        let rawCenter = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(aabbCenter);
-        let rawHalfExtents = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(aabbHalfExtents);
+        let rawCenter = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(aabbCenter);
+        let rawHalfExtents = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(aabbHalfExtents);
         this.raw.collidersWithAabbIntersectingAabb(rawCenter, rawHalfExtents, callback);
         rawCenter.free();
         rawHalfExtents.free();
@@ -6046,7 +6046,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   y: () => (/* binding */ SerializationPipeline)
+/* harmony export */   "y": () => (/* binding */ SerializationPipeline)
 /* harmony export */ });
 /* harmony import */ var _raw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(184);
 /* harmony import */ var _math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(383);
@@ -6087,7 +6087,7 @@ class SerializationPipeline {
      * @param multibodyJoints - The multibody joints taking part into the simulation.
      */
     serializeAll(gravity, integrationParameters, islands, broadPhase, narrowPhase, bodies, colliders, impulseJoints, multibodyJoints) {
-        let rawGra = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps */ .ut.intoRaw(gravity);
+        let rawGra = _math__WEBPACK_IMPORTED_MODULE_1__/* .VectorOps.intoRaw */ .ut.intoRaw(gravity);
         const res = this.raw.serializeAll(rawGra, integrationParameters.raw, islands.raw, broadPhase.raw, narrowPhase.raw, bodies.raw, colliders.raw, impulseJoints.raw, multibodyJoints.raw);
         rawGra.free();
         return res;
@@ -6098,7 +6098,7 @@ class SerializationPipeline {
      * @param data - The byte array to deserialize.
      */
     deserializeAll(data) {
-        return _world__WEBPACK_IMPORTED_MODULE_2__/* .World */ .q.fromRaw(this.raw.deserializeAll(data));
+        return _world__WEBPACK_IMPORTED_MODULE_2__/* .World.fromRaw */ .q.fromRaw(this.raw.deserializeAll(data));
     }
 }
 //# sourceMappingURL=serialization_pipeline.js.map
@@ -6112,7 +6112,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   q: () => (/* binding */ World)
+/* harmony export */   "q": () => (/* binding */ World)
 /* harmony export */ });
 /* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(261);
 /* harmony import */ var _geometry__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(322);
@@ -6205,7 +6205,7 @@ class World {
     static fromRaw(raw) {
         if (!raw)
             return null;
-        return new World(_math__WEBPACK_IMPORTED_MODULE_13__/* .VectorOps */ .ut.fromRaw(raw.takeGravity()), raw.takeIntegrationParameters(), raw.takeIslandManager(), raw.takeBroadPhase(), raw.takeNarrowPhase(), raw.takeBodies(), raw.takeColliders(), raw.takeImpulseJoints(), raw.takeMultibodyJoints());
+        return new World(_math__WEBPACK_IMPORTED_MODULE_13__/* .VectorOps.fromRaw */ .ut.fromRaw(raw.takeGravity()), raw.takeIntegrationParameters(), raw.takeIslandManager(), raw.takeBroadPhase(), raw.takeNarrowPhase(), raw.takeBodies(), raw.takeColliders(), raw.takeImpulseJoints(), raw.takeMultibodyJoints());
     }
     /**
      * Takes a snapshot of this world.
@@ -6687,90 +6687,90 @@ __webpack_async_result__();
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ActiveCollisionTypes: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveCollisionTypes),
-/* harmony export */   ActiveEvents: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveEvents),
-/* harmony export */   ActiveHooks: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveHooks),
-/* harmony export */   Ball: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Ball),
-/* harmony export */   BroadPhase: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.BroadPhase),
-/* harmony export */   CCDSolver: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CCDSolver),
-/* harmony export */   Capsule: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Capsule),
-/* harmony export */   CharacterCollision: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CharacterCollision),
-/* harmony export */   CoefficientCombineRule: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CoefficientCombineRule),
-/* harmony export */   Collider: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Collider),
-/* harmony export */   ColliderDesc: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ColliderDesc),
-/* harmony export */   ColliderSet: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ColliderSet),
-/* harmony export */   Cone: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cone),
-/* harmony export */   ConvexPolyhedron: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ConvexPolyhedron),
-/* harmony export */   Cuboid: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cuboid),
-/* harmony export */   Cylinder: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cylinder),
-/* harmony export */   DebugRenderBuffers: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.DebugRenderBuffers),
-/* harmony export */   DebugRenderPipeline: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.DebugRenderPipeline),
-/* harmony export */   EventQueue: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.EventQueue),
-/* harmony export */   FeatureType: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FeatureType),
-/* harmony export */   FixedImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FixedImpulseJoint),
-/* harmony export */   FixedMultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FixedMultibodyJoint),
-/* harmony export */   HalfSpace: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.HalfSpace),
-/* harmony export */   Heightfield: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Heightfield),
-/* harmony export */   ImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ImpulseJoint),
-/* harmony export */   ImpulseJointSet: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ImpulseJointSet),
-/* harmony export */   IntegrationParameters: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.IntegrationParameters),
-/* harmony export */   IslandManager: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.IslandManager),
-/* harmony export */   JointData: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.JointData),
-/* harmony export */   JointType: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.JointType),
-/* harmony export */   KinematicCharacterController: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.KinematicCharacterController),
-/* harmony export */   MassPropsMode: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MassPropsMode),
-/* harmony export */   MotorModel: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MotorModel),
-/* harmony export */   MultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MultibodyJoint),
-/* harmony export */   MultibodyJointSet: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MultibodyJointSet),
-/* harmony export */   NarrowPhase: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.NarrowPhase),
-/* harmony export */   PhysicsPipeline: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PhysicsPipeline),
-/* harmony export */   PointColliderProjection: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PointColliderProjection),
-/* harmony export */   PointProjection: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PointProjection),
-/* harmony export */   Polyline: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Polyline),
-/* harmony export */   PrismaticImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PrismaticImpulseJoint),
-/* harmony export */   PrismaticMultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PrismaticMultibodyJoint),
-/* harmony export */   Quaternion: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Quaternion),
-/* harmony export */   QueryFilterFlags: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.QueryFilterFlags),
-/* harmony export */   QueryPipeline: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.QueryPipeline),
-/* harmony export */   Ray: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Ray),
-/* harmony export */   RayColliderIntersection: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayColliderIntersection),
-/* harmony export */   RayColliderToi: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayColliderToi),
-/* harmony export */   RayIntersection: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayIntersection),
-/* harmony export */   RevoluteImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RevoluteImpulseJoint),
-/* harmony export */   RevoluteMultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RevoluteMultibodyJoint),
-/* harmony export */   RigidBody: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBody),
-/* harmony export */   RigidBodyDesc: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodyDesc),
-/* harmony export */   RigidBodySet: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodySet),
-/* harmony export */   RigidBodyType: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodyType),
-/* harmony export */   RotationOps: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RotationOps),
-/* harmony export */   RoundCone: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCone),
-/* harmony export */   RoundConvexPolyhedron: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundConvexPolyhedron),
-/* harmony export */   RoundCuboid: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCuboid),
-/* harmony export */   RoundCylinder: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCylinder),
-/* harmony export */   RoundTriangle: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundTriangle),
-/* harmony export */   SdpMatrix3: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SdpMatrix3),
-/* harmony export */   SdpMatrix3Ops: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SdpMatrix3Ops),
-/* harmony export */   Segment: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Segment),
-/* harmony export */   SerializationPipeline: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SerializationPipeline),
-/* harmony export */   Shape: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Shape),
-/* harmony export */   ShapeColliderTOI: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeColliderTOI),
-/* harmony export */   ShapeContact: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeContact),
-/* harmony export */   ShapeTOI: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeTOI),
-/* harmony export */   ShapeType: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeType),
-/* harmony export */   SolverFlags: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SolverFlags),
-/* harmony export */   SphericalImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SphericalImpulseJoint),
-/* harmony export */   SphericalMultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SphericalMultibodyJoint),
-/* harmony export */   TempContactForceEvent: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TempContactForceEvent),
-/* harmony export */   TempContactManifold: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TempContactManifold),
-/* harmony export */   TriMesh: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TriMesh),
-/* harmony export */   Triangle: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Triangle),
-/* harmony export */   UnitImpulseJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.UnitImpulseJoint),
-/* harmony export */   UnitMultibodyJoint: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.UnitMultibodyJoint),
-/* harmony export */   Vector3: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Vector3),
-/* harmony export */   VectorOps: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.VectorOps),
-/* harmony export */   World: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.World),
+/* harmony export */   "ActiveCollisionTypes": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveCollisionTypes),
+/* harmony export */   "ActiveEvents": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveEvents),
+/* harmony export */   "ActiveHooks": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ActiveHooks),
+/* harmony export */   "Ball": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Ball),
+/* harmony export */   "BroadPhase": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.BroadPhase),
+/* harmony export */   "CCDSolver": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CCDSolver),
+/* harmony export */   "Capsule": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Capsule),
+/* harmony export */   "CharacterCollision": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CharacterCollision),
+/* harmony export */   "CoefficientCombineRule": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.CoefficientCombineRule),
+/* harmony export */   "Collider": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Collider),
+/* harmony export */   "ColliderDesc": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ColliderDesc),
+/* harmony export */   "ColliderSet": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ColliderSet),
+/* harmony export */   "Cone": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cone),
+/* harmony export */   "ConvexPolyhedron": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ConvexPolyhedron),
+/* harmony export */   "Cuboid": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cuboid),
+/* harmony export */   "Cylinder": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Cylinder),
+/* harmony export */   "DebugRenderBuffers": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.DebugRenderBuffers),
+/* harmony export */   "DebugRenderPipeline": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.DebugRenderPipeline),
+/* harmony export */   "EventQueue": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.EventQueue),
+/* harmony export */   "FeatureType": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FeatureType),
+/* harmony export */   "FixedImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FixedImpulseJoint),
+/* harmony export */   "FixedMultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.FixedMultibodyJoint),
+/* harmony export */   "HalfSpace": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.HalfSpace),
+/* harmony export */   "Heightfield": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Heightfield),
+/* harmony export */   "ImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ImpulseJoint),
+/* harmony export */   "ImpulseJointSet": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ImpulseJointSet),
+/* harmony export */   "IntegrationParameters": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.IntegrationParameters),
+/* harmony export */   "IslandManager": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.IslandManager),
+/* harmony export */   "JointData": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.JointData),
+/* harmony export */   "JointType": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.JointType),
+/* harmony export */   "KinematicCharacterController": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.KinematicCharacterController),
+/* harmony export */   "MassPropsMode": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MassPropsMode),
+/* harmony export */   "MotorModel": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MotorModel),
+/* harmony export */   "MultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MultibodyJoint),
+/* harmony export */   "MultibodyJointSet": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.MultibodyJointSet),
+/* harmony export */   "NarrowPhase": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.NarrowPhase),
+/* harmony export */   "PhysicsPipeline": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PhysicsPipeline),
+/* harmony export */   "PointColliderProjection": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PointColliderProjection),
+/* harmony export */   "PointProjection": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PointProjection),
+/* harmony export */   "Polyline": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Polyline),
+/* harmony export */   "PrismaticImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PrismaticImpulseJoint),
+/* harmony export */   "PrismaticMultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.PrismaticMultibodyJoint),
+/* harmony export */   "Quaternion": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Quaternion),
+/* harmony export */   "QueryFilterFlags": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.QueryFilterFlags),
+/* harmony export */   "QueryPipeline": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.QueryPipeline),
+/* harmony export */   "Ray": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Ray),
+/* harmony export */   "RayColliderIntersection": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayColliderIntersection),
+/* harmony export */   "RayColliderToi": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayColliderToi),
+/* harmony export */   "RayIntersection": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RayIntersection),
+/* harmony export */   "RevoluteImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RevoluteImpulseJoint),
+/* harmony export */   "RevoluteMultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RevoluteMultibodyJoint),
+/* harmony export */   "RigidBody": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBody),
+/* harmony export */   "RigidBodyDesc": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodyDesc),
+/* harmony export */   "RigidBodySet": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodySet),
+/* harmony export */   "RigidBodyType": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RigidBodyType),
+/* harmony export */   "RotationOps": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RotationOps),
+/* harmony export */   "RoundCone": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCone),
+/* harmony export */   "RoundConvexPolyhedron": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundConvexPolyhedron),
+/* harmony export */   "RoundCuboid": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCuboid),
+/* harmony export */   "RoundCylinder": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundCylinder),
+/* harmony export */   "RoundTriangle": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.RoundTriangle),
+/* harmony export */   "SdpMatrix3": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SdpMatrix3),
+/* harmony export */   "SdpMatrix3Ops": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SdpMatrix3Ops),
+/* harmony export */   "Segment": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Segment),
+/* harmony export */   "SerializationPipeline": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SerializationPipeline),
+/* harmony export */   "Shape": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Shape),
+/* harmony export */   "ShapeColliderTOI": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeColliderTOI),
+/* harmony export */   "ShapeContact": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeContact),
+/* harmony export */   "ShapeTOI": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeTOI),
+/* harmony export */   "ShapeType": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.ShapeType),
+/* harmony export */   "SolverFlags": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SolverFlags),
+/* harmony export */   "SphericalImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SphericalImpulseJoint),
+/* harmony export */   "SphericalMultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.SphericalMultibodyJoint),
+/* harmony export */   "TempContactForceEvent": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TempContactForceEvent),
+/* harmony export */   "TempContactManifold": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TempContactManifold),
+/* harmony export */   "TriMesh": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.TriMesh),
+/* harmony export */   "Triangle": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Triangle),
+/* harmony export */   "UnitImpulseJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.UnitImpulseJoint),
+/* harmony export */   "UnitMultibodyJoint": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.UnitMultibodyJoint),
+/* harmony export */   "Vector3": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.Vector3),
+/* harmony export */   "VectorOps": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.VectorOps),
+/* harmony export */   "World": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.World),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   version: () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.version)
+/* harmony export */   "version": () => (/* reexport safe */ _exports__WEBPACK_IMPORTED_MODULE_0__.version)
 /* harmony export */ });
 /* harmony import */ var _exports__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(324);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_exports__WEBPACK_IMPORTED_MODULE_0__]);
@@ -6789,50 +6789,50 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $B: () => (/* binding */ __wbg_rawcontactforceevent_new),
-/* harmony export */   $Z: () => (/* binding */ RawRotation),
-/* harmony export */   FU: () => (/* binding */ RawBroadPhase),
-/* harmony export */   HT: () => (/* binding */ __wbindgen_boolean_get),
-/* harmony export */   IQ: () => (/* binding */ RawColliderSet),
-/* harmony export */   Is: () => (/* binding */ RawIslandManager),
-/* harmony export */   JM: () => (/* binding */ RawJointAxis),
-/* harmony export */   LE: () => (/* binding */ RawCCDSolver),
-/* harmony export */   M1: () => (/* binding */ __wbindgen_number_get),
-/* harmony export */   Mv: () => (/* binding */ __wbg_newwithbyteoffsetandlength_be22e5fcf4f69ab4),
-/* harmony export */   Ne: () => (/* binding */ __wbg_rawraycolliderintersection_new),
-/* harmony export */   Or: () => (/* binding */ __wbindgen_throw),
-/* harmony export */   Py: () => (/* binding */ __wbg_set_0e0314cf6675c1b9),
-/* harmony export */   Qc: () => (/* binding */ RawImpulseJointSet),
-/* harmony export */   Qj: () => (/* binding */ __wbg_length_9a2deed95d22668d),
-/* harmony export */   R: () => (/* binding */ __wbg_call_e1f72c051cdab859),
-/* harmony export */   TY: () => (/* binding */ __wbg_newwithbyteoffsetandlength_d9aa266703cb98be),
-/* harmony export */   VD: () => (/* binding */ __wbg_call_168da88779e35f61),
-/* harmony export */   WF: () => (/* binding */ RawVector),
-/* harmony export */   Wx: () => (/* binding */ RawCharacterCollision),
-/* harmony export */   X7: () => (/* binding */ RawShape),
-/* harmony export */   _q: () => (/* binding */ RawPhysicsPipeline),
-/* harmony export */   am: () => (/* binding */ __wbg_bind_10dfe70e95d2a480),
-/* harmony export */   bj: () => (/* binding */ __wbg_length_9e1ae1900cb0fbd5),
-/* harmony export */   cQ: () => (/* binding */ RawGenericJoint),
-/* harmony export */   fP: () => (/* binding */ __wbg_set_83db9690f9353e79),
-/* harmony export */   fY: () => (/* binding */ RawRigidBodySet),
-/* harmony export */   fl: () => (/* binding */ RawMultibodyJointSet),
-/* harmony export */   i8: () => (/* binding */ version),
-/* harmony export */   jp: () => (/* binding */ __wbg_buffer_3f3d764d4747d564),
-/* harmony export */   lB: () => (/* binding */ __wbg_new_8c3f0052272a457a),
-/* harmony export */   nv: () => (/* binding */ RawQueryPipeline),
-/* harmony export */   o$: () => (/* binding */ __wbindgen_is_function),
-/* harmony export */   oH: () => (/* binding */ __wbindgen_memory),
-/* harmony export */   pT: () => (/* binding */ __wbindgen_number_new),
-/* harmony export */   pm: () => (/* binding */ __wbg_call_3999bee59e9f7719),
-/* harmony export */   uU: () => (/* binding */ RawNarrowPhase),
-/* harmony export */   ug: () => (/* binding */ __wbindgen_object_drop_ref),
-/* harmony export */   vg: () => (/* binding */ RawKinematicCharacterController),
-/* harmony export */   w0: () => (/* binding */ RawSerializationPipeline),
-/* harmony export */   w_: () => (/* binding */ __wbg_newwithlength_a7168e4a1e8f5e12),
-/* harmony export */   wb: () => (/* binding */ RawDebugRenderPipeline),
-/* harmony export */   we: () => (/* binding */ RawEventQueue),
-/* harmony export */   zu: () => (/* binding */ RawIntegrationParameters)
+/* harmony export */   "$B": () => (/* binding */ __wbg_rawcontactforceevent_new),
+/* harmony export */   "$Z": () => (/* binding */ RawRotation),
+/* harmony export */   "FU": () => (/* binding */ RawBroadPhase),
+/* harmony export */   "HT": () => (/* binding */ __wbindgen_boolean_get),
+/* harmony export */   "IQ": () => (/* binding */ RawColliderSet),
+/* harmony export */   "Is": () => (/* binding */ RawIslandManager),
+/* harmony export */   "JM": () => (/* binding */ RawJointAxis),
+/* harmony export */   "LE": () => (/* binding */ RawCCDSolver),
+/* harmony export */   "M1": () => (/* binding */ __wbindgen_number_get),
+/* harmony export */   "Mv": () => (/* binding */ __wbg_newwithbyteoffsetandlength_be22e5fcf4f69ab4),
+/* harmony export */   "Ne": () => (/* binding */ __wbg_rawraycolliderintersection_new),
+/* harmony export */   "Or": () => (/* binding */ __wbindgen_throw),
+/* harmony export */   "Py": () => (/* binding */ __wbg_set_0e0314cf6675c1b9),
+/* harmony export */   "Qc": () => (/* binding */ RawImpulseJointSet),
+/* harmony export */   "Qj": () => (/* binding */ __wbg_length_9a2deed95d22668d),
+/* harmony export */   "R": () => (/* binding */ __wbg_call_e1f72c051cdab859),
+/* harmony export */   "TY": () => (/* binding */ __wbg_newwithbyteoffsetandlength_d9aa266703cb98be),
+/* harmony export */   "VD": () => (/* binding */ __wbg_call_168da88779e35f61),
+/* harmony export */   "WF": () => (/* binding */ RawVector),
+/* harmony export */   "Wx": () => (/* binding */ RawCharacterCollision),
+/* harmony export */   "X7": () => (/* binding */ RawShape),
+/* harmony export */   "_q": () => (/* binding */ RawPhysicsPipeline),
+/* harmony export */   "am": () => (/* binding */ __wbg_bind_10dfe70e95d2a480),
+/* harmony export */   "bj": () => (/* binding */ __wbg_length_9e1ae1900cb0fbd5),
+/* harmony export */   "cQ": () => (/* binding */ RawGenericJoint),
+/* harmony export */   "fP": () => (/* binding */ __wbg_set_83db9690f9353e79),
+/* harmony export */   "fY": () => (/* binding */ RawRigidBodySet),
+/* harmony export */   "fl": () => (/* binding */ RawMultibodyJointSet),
+/* harmony export */   "i8": () => (/* binding */ version),
+/* harmony export */   "jp": () => (/* binding */ __wbg_buffer_3f3d764d4747d564),
+/* harmony export */   "lB": () => (/* binding */ __wbg_new_8c3f0052272a457a),
+/* harmony export */   "nv": () => (/* binding */ RawQueryPipeline),
+/* harmony export */   "o$": () => (/* binding */ __wbindgen_is_function),
+/* harmony export */   "oH": () => (/* binding */ __wbindgen_memory),
+/* harmony export */   "pT": () => (/* binding */ __wbindgen_number_new),
+/* harmony export */   "pm": () => (/* binding */ __wbg_call_3999bee59e9f7719),
+/* harmony export */   "uU": () => (/* binding */ RawNarrowPhase),
+/* harmony export */   "ug": () => (/* binding */ __wbindgen_object_drop_ref),
+/* harmony export */   "vg": () => (/* binding */ RawKinematicCharacterController),
+/* harmony export */   "w0": () => (/* binding */ RawSerializationPipeline),
+/* harmony export */   "w_": () => (/* binding */ __wbg_newwithlength_a7168e4a1e8f5e12),
+/* harmony export */   "wb": () => (/* binding */ RawDebugRenderPipeline),
+/* harmony export */   "we": () => (/* binding */ RawEventQueue),
+/* harmony export */   "zu": () => (/* binding */ RawIntegrationParameters)
 /* harmony export */ });
 /* unused harmony exports RawJointType, RawMotorModel, RawRigidBodyType, RawFeatureType, RawShapeType, RawContactForceEvent, RawContactManifold, RawContactPair, RawDeserializedWorld, RawPointColliderProjection, RawPointProjection, RawRayColliderIntersection, RawRayColliderToi, RawRayIntersection, RawSdpMatrix3, RawShapeColliderTOI, RawShapeContact, RawShapeTOI */
 /* harmony import */ var _rapier_wasm3d_bg_wasm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(502);
