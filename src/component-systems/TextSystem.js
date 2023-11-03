@@ -2,7 +2,6 @@ import {preloadFont} from 'troika-three-text'
 import System from '../core/System'
 import { parseAttributeString } from '../utils/parser'
 
-const VIRTUAL_DISPLAY_RESOLUTION = 1080
 
 export class TextSystem extends System {
   constructor() {
@@ -81,7 +80,7 @@ export class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
+    entity.textStyle.width = entity.parentElement.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
     entity.absoluteWidth = entity.textStyle.width
 
@@ -123,11 +122,11 @@ export class TextSystem extends System {
       if(valuepair.length > 1){
         switch(valuepair[1]){
           case 'px':
-            return parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION
+            return parseFloat(val.split('px')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION
           case 'pt':
-            return parseFloat(val.split('pt')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 1.75
+            return parseFloat(val.split('pt')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 1.75
           case 'pc':
-            return parseFloat(val.split('pc')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 21
+            return parseFloat(val.split('pc')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 21
           case 'mm':
             return parseFloat(val.split('mm')[0]) / 1000
           case 'cm':

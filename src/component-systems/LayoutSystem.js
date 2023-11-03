@@ -33,6 +33,8 @@ export class LayoutSystem extends System {
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
+
+          //console.log(parseFloat(container.compStyle.height) / parseFloat(window.innerHeigh));
         }
 
         container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))

@@ -18,12 +18,7 @@ export class Entity extends MRElement {
     this.dimensionsUpdate()
   }
   get width() {
-    switch (this.#width) {
-      case 'auto':
-        return 1
-      default:
-        return this.#width
-    }
+    return this.compStyle.width.split('px')[0] / window.innerWidth
   }
 
   #absoluteWidth = 0
@@ -47,12 +42,9 @@ export class Entity extends MRElement {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
   }
   get height() {
-    switch (this.#height) {
-      case 'auto':
-        return 1
-      default:
-        return this.#height
-    }
+    let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
+    return styleHeight / window.innerHeight
+
   }
 
   #absoluteHeight = 0
@@ -132,6 +124,15 @@ export class Entity extends MRElement {
   }
 
   connectedCallback() {
+    this.compStyle = window.getComputedStyle(this)
+    console.log(this);
+
+    console.log(this.compStyle.getPropertyValue("height"));
+    console.log(this.height);
+
+    console.log(this.compStyle.getPropertyValue("width"));
+    console.log(this.width);
+    
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
     }
@@ -161,11 +162,11 @@ export class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.loadAttributes()
+    // document.addEventListener('DOMContentLoaded', (event) => {
+    //   this.loadAttributes()
 
-    })
-    this.loadAttributes()
+    // })
+    // this.loadAttributes()
 
     this.connected()
 

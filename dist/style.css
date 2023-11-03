@@ -134,12 +134,29 @@
   h1, mr-text {
     font-family: var(--font-title);
     /* font-weight: 500; */
-    font-size: 8vh;
+    font-size: 1vh;
     line-height: 100%;
     color: rgba(24, 24, 24, 0.75);
     font-variation-settings: 'opsz' 80, 'wght' 550;
   }
 
   mr-app * {
-    display: none;
+    display: block;
+  }
+
+  mr-container {
+    height:100vh;
+    width: 100vw;
+  }
+
+  mr-row {
+    height: 100%;
+    width: 100%;
+  }
+  mr-column {
+    height: 100%;
+  }
+
+  .half-col {
+    width: 50%;
   }

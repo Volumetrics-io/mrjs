@@ -13,7 +13,6 @@ export class Column extends MRUIEntity {
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
         this.absoluteHeight = this.height * this.parentElement.offsetHeight
-        this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
   }

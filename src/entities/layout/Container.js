@@ -7,16 +7,11 @@ export class Container extends MRUIEntity {
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
     
   }
-  get height() {
-    return super.height
-  }
+  
 
   set absoluteWidth(value) {
     super.absoluteWidth = value
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-  }
-  get width() {
-    return super.width
   }
 
   constructor() {
@@ -66,8 +61,6 @@ export class Container extends MRUIEntity {
     event.stopPropagation()
     let scrollMax = (this.contentHeight) - this.offsetHeight
     let scrollMin =  0
-    console.log('scroll max', scrollMax);
-    console.log('scroll min', scrollMin);
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.y != 0) {

@@ -23,6 +23,19 @@ String.prototype.spliceSplit = function (index, count, add) {
 }
 
 
+/***/ }),
+
+/***/ 730:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "VIRTUAL_DISPLAY_RESOLUTION": () => (/* binding */ VIRTUAL_DISPLAY_RESOLUTION)
+/* harmony export */ });
+const VIRTUAL_DISPLAY_RESOLUTION = 1080
+
+
 /***/ })
 
 /******/ 	});
@@ -51904,12 +51917,7 @@ class Entity extends MRElement {
     this.dimensionsUpdate()
   }
   get width() {
-    switch (this.#width) {
-      case 'auto':
-        return 1
-      default:
-        return this.#width
-    }
+    return this.compStyle.width.split('px')[0] / window.innerWidth
   }
 
   #absoluteWidth = 0
@@ -51933,12 +51941,9 @@ class Entity extends MRElement {
     this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
   }
   get height() {
-    switch (this.#height) {
-      case 'auto':
-        return 1
-      default:
-        return this.#height
-    }
+    let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
+    return styleHeight / window.innerHeight
+
   }
 
   #absoluteHeight = 0
@@ -52018,6 +52023,15 @@ class Entity extends MRElement {
   }
 
   connectedCallback() {
+    this.compStyle = window.getComputedStyle(this)
+    console.log(this);
+
+    console.log(this.compStyle.getPropertyValue("height"));
+    console.log(this.height);
+
+    console.log(this.compStyle.getPropertyValue("width"));
+    console.log(this.width);
+    
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
     }
@@ -52047,11 +52061,11 @@ class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.loadAttributes()
+    // document.addEventListener('DOMContentLoaded', (event) => {
+    //   this.loadAttributes()
 
-    })
-    this.loadAttributes()
+    // })
+    // this.loadAttributes()
 
     this.connected()
 
@@ -60107,11 +60121,11 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 ;// CONCATENATED MODULE: ./src/component-systems/TextSystem.js
+/* provided dependency */ var utils = __webpack_require__(730);
 
 
 
 
-const VIRTUAL_DISPLAY_RESOLUTION = 1080
 
 class TextSystem extends System {
   constructor() {
@@ -60190,7 +60204,7 @@ class TextSystem extends System {
       this.initStyle(entity)
     }
 
-    entity.textStyle.width = entity.width * entity.parentElement?.offsetWidth - entity.padding.horizontal
+    entity.textStyle.width = entity.parentElement.offsetWidth - entity.padding.horizontal
     entity.textStyle.maxWidth = entity.textStyle.width
     entity.absoluteWidth = entity.textStyle.width
 
@@ -60232,11 +60246,11 @@ class TextSystem extends System {
       if(valuepair.length > 1){
         switch(valuepair[1]){
           case 'px':
-            return parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION
+            return parseFloat(val.split('px')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION
           case 'pt':
-            return parseFloat(val.split('pt')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 1.75
+            return parseFloat(val.split('pt')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 1.75
           case 'pc':
-            return parseFloat(val.split('pc')[0]) / VIRTUAL_DISPLAY_RESOLUTION * 21
+            return parseFloat(val.split('pc')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 21
           case 'mm':
             return parseFloat(val.split('mm')[0]) / 1000
           case 'cm':
@@ -67938,6 +67952,8 @@ class LayoutSystem extends System {
         } else {
           container.absoluteHeight = container.height * this.app.viewPortHieght
           container.absoluteWidth = container.width * this.app.viewPortWidth
+
+          //console.log(parseFloat(container.compStyle.height) / parseFloat(window.innerHeigh));
         }
 
         container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
@@ -69585,16 +69601,11 @@ class Container extends MRUIEntity {
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
     
   }
-  get height() {
-    return super.height
-  }
+  
 
   set absoluteWidth(value) {
     super.absoluteWidth = value
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-  }
-  get width() {
-    return super.width
   }
 
   constructor() {
@@ -69644,8 +69655,6 @@ class Container extends MRUIEntity {
     event.stopPropagation()
     let scrollMax = (this.contentHeight) - this.offsetHeight
     let scrollMin =  0
-    console.log('scroll max', scrollMax);
-    console.log('scroll min', scrollMin);
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.y != 0) {
@@ -69689,7 +69698,6 @@ class Column extends MRUIEntity {
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
         this.absoluteHeight = this.height * this.parentElement.offsetHeight
-        this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
   }
@@ -69740,7 +69748,7 @@ class Row extends MRUIEntity {
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
       if(event.target == this.parentElement) {
-        this.absoluteHeight = this.height * this.parentElement.offsetHeight
+        this.absoluteHeight = this.parentElement.offsetHeight
       } else {
         this.absoluteHeight = this.contentHeight
       }
@@ -69756,7 +69764,7 @@ class Row extends MRUIEntity {
   update = () => {
     this.getColumnCount()
     const children = Array.from(this.children)
-    let colWidth = this.offsetWidth / this.columns 
+    let colWidth = this.offsetWidth / children.length
     this.accumulatedX = 0
     for (const index in children) {
         let child = children[index]
