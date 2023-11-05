@@ -18,6 +18,7 @@ import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 import { ClippingSystem } from '../component-systems/ClippingSystem'
+import { StyleSystem } from '../component-systems/StyleSystem'
 ('use strict')
 
 window.mobileCheck = function() {
@@ -73,6 +74,7 @@ export class MRApp extends MRElement {
     })
 
     this.layoutSystem = new LayoutSystem()
+    this.styleSystem = new StyleSystem()
 
     // initialize built in Systems
     document.addEventListener('engine-started', (event) => {
@@ -306,7 +308,7 @@ export class MRApp extends MRElement {
 
     if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
-      system.update(deltaTime, frame)
+      system.__update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
 

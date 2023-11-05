@@ -17,7 +17,7 @@ export const COLLIDER_ENTITY_MAP = {}
 // attribute for more detailed control.
 export class RapierPhysicsSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.debug = this.app.debug
     this.tempWorldPosition = new THREE.Vector3()
 

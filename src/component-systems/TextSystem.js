@@ -5,7 +5,7 @@ import { parseAttributeString } from '../utils/parser'
 
 export class TextSystem extends System {
   constructor() {
-    super()
+    super(false)
 
     this.styles = {}
     const fonts = this.app.querySelectorAll('mr-font')

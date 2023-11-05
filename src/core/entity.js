@@ -125,13 +125,6 @@ export class Entity extends MRElement {
 
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this)
-    console.log(this);
-
-    console.log(this.compStyle.getPropertyValue("height"));
-    console.log(this.height);
-
-    console.log(this.compStyle.getPropertyValue("width"));
-    console.log(this.width);
     
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
@@ -139,8 +132,6 @@ export class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-
-    // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
     if (this.parentElement.user) {
       this.user = this.parentElement.user

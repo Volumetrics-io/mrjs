@@ -157,6 +157,10 @@
     height: 100%;
   }
 
-  .half-col {
-    width: 50%;
+  .main {
+    max-width: 400px;
+  }
+
+  .logo {
+    scale: 0.001;
   }

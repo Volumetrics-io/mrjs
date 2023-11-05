@@ -3,7 +3,7 @@ import System from "../core/System";
 
 export class ClippingSystem extends System {
     constructor(){
-        super()
+        super(false)
         this.a = new THREE.Vector3();
         this.b = new THREE.Vector3();
         this.c = new THREE.Vector3();

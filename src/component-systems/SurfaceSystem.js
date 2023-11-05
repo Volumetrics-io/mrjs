@@ -3,7 +3,7 @@ import System from '../core/System'
 
 export class SurfaceSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.referenceSpace
     this.sourceRequest = false
     this.source

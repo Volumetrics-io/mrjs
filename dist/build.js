@@ -52024,13 +52024,6 @@ class Entity extends MRElement {
 
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this)
-    console.log(this);
-
-    console.log(this.compStyle.getPropertyValue("height"));
-    console.log(this.height);
-
-    console.log(this.compStyle.getPropertyValue("width"));
-    console.log(this.width);
     
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
@@ -52038,8 +52031,6 @@ class Entity extends MRElement {
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-
-    // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
     if (this.parentElement.user) {
       this.user = this.parentElement.user
@@ -52236,12 +52227,18 @@ customElements.get('mr-entity') || customElements.define('mr-entity', Entity)
 
 
 class System {
-  constructor() {
+
+  frameRate = null
+  delta = 0
+
+  constructor(useComponents = true, frameRate = null) {
     this.app = document.querySelector('mr-app')
 
     if (!this.app) {
       return
     }
+
+    this.frameRate = frameRate
     // Need a way to register and deregister systems per environment
     this.registry = new Set()
 
@@ -52250,9 +52247,11 @@ class System {
 
     this.app.registerSystem(this)
 
-    document.addEventListener(`${this.componentName}-attached`, this.onAttach)
-    document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-    document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    if(useComponents) {
+      document.addEventListener(`${this.componentName}-attached`, this.onAttach)
+      document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+      document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    }
 
     this.app.addEventListener('new-entity', (event) => {
       if (this.registry.has(event.target)) { return }
@@ -52266,6 +52265,15 @@ class System {
       }
       this.registry.add(entity)
     }
+  }
+
+  __update(deltaTime, frame) {
+    if(this.frameRate) {
+      this.delta += deltaTime
+      if (this.delta < this.frameRate) { return }
+    }
+    this.update(deltaTime, frame)
+    this.delta = 0
   }
 
   // Called per frame
@@ -60129,7 +60137,7 @@ function groupCaretsByRow(textRenderInfo) {
 
 class TextSystem extends System {
   constructor() {
-    super()
+    super(false)
 
     this.styles = {}
     const fonts = this.app.querySelectorAll('mr-font')
@@ -67045,7 +67053,7 @@ const COLLIDER_ENTITY_MAP = {}
 // attribute for more detailed control.
 class RapierPhysicsSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.debug = this.app.debug
     this.tempWorldPosition = new three_module_Vector3()
 
@@ -67567,7 +67575,7 @@ class MRHand {
 
 class ControlSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.leftHand = new MRHand('left', this.app)
     this.rightHand = new MRHand('right', this.app)
 
@@ -67922,7 +67930,7 @@ customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
 
 class LayoutSystem extends System {
     constructor(){
-        super()
+        super(false)
 
         document.addEventListener('DOMContentLoaded', (event) => {
           let containers = this.app.querySelectorAll('mr-container')
@@ -68039,8 +68047,9 @@ customElements.get('mr-texteditor') || customElements.define('mr-texteditor', Te
 
 
 class TextInputSystem extends System {
+  hasComponents = false
   constructor() {
-    super()
+    super(false)
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
@@ -68249,7 +68258,7 @@ class TextInputSystem extends System {
 
 class SurfaceSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.referenceSpace
     this.sourceRequest = false
     this.source
@@ -68381,7 +68390,7 @@ class SurfaceSystem extends System {
 
 class ClippingSystem extends System {
     constructor(){
-        super()
+        super(false)
         this.a = new THREE.Vector3();
         this.b = new THREE.Vector3();
         this.c = new THREE.Vector3();
@@ -68459,6 +68468,26 @@ class ClippingSystem extends System {
         }
     }
 }
+;// CONCATENATED MODULE: ./src/component-systems/StyleSystem.js
+
+
+class StyleSystem extends System {
+    constructor(){
+        super(false, 1)
+    }
+
+    printed = false
+
+    update(deltaTime,frame) {
+        console.log(this.delta);
+    }
+
+    // called when a new entity is added to the scene
+    onNewEntity (entity) {
+        this.registry.add(entity)
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -68469,6 +68498,7 @@ class ClippingSystem extends System {
 
 
 // built in Systems
+
 
 
 
@@ -68531,6 +68561,7 @@ class MRApp extends MRElement {
     })
 
     this.layoutSystem = new LayoutSystem()
+    this.styleSystem = new StyleSystem()
 
     // initialize built in Systems
     document.addEventListener('engine-started', (event) => {
@@ -68764,7 +68795,7 @@ class MRApp extends MRElement {
 
     if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
-      system.update(deltaTime, frame)
+      system.__update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
 

@@ -3,7 +3,7 @@ import { Surface } from "../entities/Surface";
 
 export class LayoutSystem extends System {
     constructor(){
-        super()
+        super(false)
 
         document.addEventListener('DOMContentLoaded', (event) => {
           let containers = this.app.querySelectorAll('mr-container')
