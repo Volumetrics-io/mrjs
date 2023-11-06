@@ -1,11 +1,30 @@
 import { MRUIEntity } from "../../UI/UIEntity";
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
+import { Surface } from "../Surface";
 
 export class Container extends MRUIEntity {
   set absoluteHeight(value) {
     super.absoluteHeight = value
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
     
+  }
+
+  get height() {
+    super.height
+
+    if(this.parentElement instanceof Surface && global.inXR) {
+      return (this.compStyle.height.split('px')[0] / window.innerHeight)
+    }
+    return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
+  }
+
+  get width() {
+    super.width
+
+    if(this.parentElement instanceof Surface && global.inXR) {
+      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio
+    }
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
   
 

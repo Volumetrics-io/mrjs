@@ -12,13 +12,8 @@ export class Entity extends MRElement {
   aabb = new THREE.Box3()
   size = new THREE.Vector3()
   
-  #width = 'auto'
-  set width(value) {
-    this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.dimensionsUpdate()
-  }
   get width() {
-    return this.compStyle.width.split('px')[0] / window.innerWidth
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
 
   #absoluteWidth = 0
@@ -37,13 +32,9 @@ export class Entity extends MRElement {
     return this.size.x
   }
 
-  #height = 'auto'
-  set height(value) {
-    this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-  }
   get height() {
     let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
-    return styleHeight / window.innerHeight
+    return (styleHeight / window.innerHeight) * global.viewPortHeight
 
   }
 

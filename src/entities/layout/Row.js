@@ -16,12 +16,6 @@ export class Row extends MRUIEntity {
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
-      if(event.target == this.parentElement) {
-        this.absoluteHeight = this.parentElement.offsetHeight
-      } else {
-        this.absoluteHeight = this.contentHeight
-      }
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 
@@ -33,20 +27,17 @@ export class Row extends MRUIEntity {
   update = () => {
     this.getColumnCount()
     const children = Array.from(this.children)
-    let colWidth = this.offsetWidth / children.length
     this.accumulatedX = 0
     for (const index in children) {
         let child = children[index]
         if (!(child instanceof Column)) { continue }
-        child.absoluteHeight = child.height * this.offsetHeight
-        child.absoluteWidth = colWidth * child.width
 
         this.accumulatedX += child.margin.left
-        child.object3D.position.setX( this.accumulatedX + child.offsetWidth / 2)
-        this.accumulatedX += child.offsetWidth
+        child.object3D.position.setX( this.accumulatedX + child.width / 2)
+        this.accumulatedX += child.width
         this.accumulatedX += child.margin.right
     }
-    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
+    this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
   add(entity) {

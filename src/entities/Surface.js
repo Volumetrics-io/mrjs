@@ -26,8 +26,6 @@ export class Surface extends Entity {
 
     this.aspectRatio = 1.333333
     this.placed = false
-    this.width = 1
-    this.height = 1
 
     this.material = new THREE.MeshStandardMaterial({
       color: 0x3498db,

@@ -8,6 +8,10 @@ export class StyleSystem extends System {
     update(deltaTime,frame) {
         for (const entity of this.registry) {
             entity.compStyle = window.getComputedStyle(entity)
+
+            if(entity.compStyle.scale != 'none') {
+                entity.object3D.scale.setScalar(entity.compStyle.scale)
+            }
         }
     }
 

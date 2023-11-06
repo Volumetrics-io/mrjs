@@ -35,6 +35,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const VIRTUAL_DISPLAY_RESOLUTION = 1080
 
+__webpack_require__.g.viewPortHeight = 0
+__webpack_require__.g.viewPortWidth = 0
+
+__webpack_require__.g.inXR = false
 
 /***/ })
 
@@ -51911,13 +51915,8 @@ class Entity extends MRElement {
   aabb = new Box3()
   size = new three_module_Vector3()
   
-  #width = 'auto'
-  set width(value) {
-    this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.dimensionsUpdate()
-  }
   get width() {
-    return this.compStyle.width.split('px')[0] / window.innerWidth
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
   }
 
   #absoluteWidth = 0
@@ -51936,13 +51935,9 @@ class Entity extends MRElement {
     return this.size.x
   }
 
-  #height = 'auto'
-  set height(value) {
-    this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-  }
   get height() {
     let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
-    return styleHeight / window.innerHeight
+    return (styleHeight / window.innerHeight) * __webpack_require__.g.viewPortHeight
 
   }
 
@@ -60129,8 +60124,7 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 ;// CONCATENATED MODULE: ./src/component-systems/TextSystem.js
-/* provided dependency */ var utils = __webpack_require__(730);
-
+/* provided dependency */ var MRJS = __webpack_require__(730);
 
 
 
@@ -60171,7 +60165,7 @@ class TextSystem extends System {
       this.registry.add(entity)
       this.addText(entity)
       entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.offsetHeight / 2)
+              entity.textObj.position.setY(entity.height / 2)
         })
     }
   }
@@ -60188,7 +60182,7 @@ class TextSystem extends System {
         this.updateStyle(entity)
         entity.needsUpdate = false
         entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.offsetHeight / 2)
+              entity.textObj.position.setY(entity.height / 2)
         })
       }
 
@@ -60216,7 +60210,7 @@ class TextSystem extends System {
 
     
     textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace
-    textObj.maxWidth = entity.parentElement.offsetWidth - entity.padding.horizontal
+    textObj.maxWidth = entity.width
 
     textObj.position.z = 0.0001
 
@@ -60304,11 +60298,11 @@ class TextSystem extends System {
       if(valuepair.length > 1){
         switch(valuepair[1]){
           case 'px':
-            return parseFloat(val.split('px')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION
+            return parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
           case 'pt':
-            return parseFloat(val.split('pt')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 1.75
+            return parseFloat(val.split('pt')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 1.75
           case 'pc':
-            return parseFloat(val.split('pc')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 21
+            return parseFloat(val.split('pc')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 21
           case 'mm':
             return parseFloat(val.split('mm')[0]) / 1000
           case 'cm':
@@ -67097,7 +67091,7 @@ class MRUIEntity extends Entity {
 
     updatePhysicsData() {
         this.physics.halfExtents = new THREE.Vector3()
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.offsetWidth, this.offsetHeight, 0.002))
+        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.width, this.height, 0.002))
         
         this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
         this.object3D.userData.bbox.getSize(this.object3D.userData.size)
@@ -67923,8 +67917,6 @@ class Surface extends Entity {
 
     this.aspectRatio = 1.333333
     this.placed = false
-    this.width = 1
-    this.height = 1
 
     this.material = new MeshStandardMaterial({
       color: 0x3498db,
@@ -68025,16 +68017,6 @@ class LayoutSystem extends System {
 
     adjustContainerSize = (container) => {
 
-        if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.parentElement.offsetHeight
-          container.absoluteWidth = container.parentElement.offsetWidth * container.parentElement.aspectRatio
-        } else {
-          container.absoluteHeight = container.height * this.app.viewPortHieght
-          container.absoluteWidth = container.width * this.app.viewPortWidth
-
-          //console.log(parseFloat(container.compStyle.height) / parseFloat(window.innerHeigh));
-        }
-
         container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
 
     }
@@ -68045,8 +68027,8 @@ class LayoutSystem extends System {
 
 
 class MRText extends MRUIEntity {
-    get offsetHeight() {
-        super.offsetHeight
+    get height() {
+        super.height
         return this.contentHeight
     }
 
@@ -68381,7 +68363,7 @@ class SurfaceSystem extends System {
         if(this.currentSurface == null && surface.anchored == false) {
             this.currentSurface = surface
         } else if (surface.anchored && !surface.placed) {
-            if(!this.app.inXRSession) { return }
+            if(!__webpack_require__.g.inXR) { return }
             surface.replace()
             surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
 
@@ -68405,7 +68387,7 @@ class SurfaceSystem extends System {
         } );
 
         this.session.addEventListener( 'end', () => {
-            this.app.inXRSession = false
+            __webpack_require__.g.inXR = false
             this.app.user.position.set(0, 0, 1)
             this.app.user.quaternion.set(0,0,0,1)
             this.resetAllSurfaces()
@@ -68550,6 +68532,10 @@ class StyleSystem extends System {
     update(deltaTime,frame) {
         for (const entity of this.registry) {
             entity.compStyle = window.getComputedStyle(entity)
+
+            if(entity.compStyle.scale != 'none') {
+                entity.object3D.scale.setScalar(entity.compStyle.scale)
+            }
         }
     }
 
@@ -68595,7 +68581,7 @@ class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-    this.inXRSession = false
+    __webpack_require__.g.inXR = false
 
     this.focusEntity = null
 
@@ -68747,7 +68733,7 @@ class MRApp extends MRElement {
             this.surfaceSystem = new SurfaceSystem()
           }
           this.ARButton.blur()
-          this.inXRSession = true
+          __webpack_require__.g.inXR = true
         })
         document.body.appendChild(this.ARButton)
 
@@ -68772,10 +68758,10 @@ class MRApp extends MRElement {
   initUser = () => {
     switch(this.cameraOptions.camera) {
       case 'orthographic':
-        this.viewPortWidth  = window.innerWidth / 1000
-		    this.viewPortHieght = window.innerHeight / 1000
+        __webpack_require__.g.viewPortWidth  = window.innerWidth / 1000
+		    __webpack_require__.g.viewPortHeight = window.innerHeight / 1000
 
-        this.user = new OrthographicCamera( this.viewPortWidth / - 2, this.viewPortWidth / 2, this.viewPortHieght / 2, this.viewPortHieght / - 2, 0.01, 1000 );
+        this.user = new OrthographicCamera( __webpack_require__.g.viewPortWidth / - 2, __webpack_require__.g.viewPortWidth / 2, __webpack_require__.g.viewPortHeight / 2, __webpack_require__.g.viewPortHeight / - 2, 0.01, 1000 );
         break;
       case 'perspective':
       default:
@@ -68786,8 +68772,8 @@ class MRApp extends MRElement {
           20
         )
         this.vFOV = MathUtils.degToRad( this.user.fov );
-        this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
-        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        __webpack_require__.g.viewPortHeight = 2 * Math.tan( this.vFOV / 2 )
+        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect; 
       break
     }
     
@@ -68842,18 +68828,18 @@ class MRApp extends MRElement {
 
     switch(this.cameraOptions.camera) {
       case 'orthographic':
-        this.viewPortWidth  = window.innerWidth / 1000
-		    this.viewPortHieght = window.innerHeight / 1000
+        __webpack_require__.g.viewPortWidth  = window.innerWidth / 1000
+		    __webpack_require__.g.viewPortHeight = window.innerHeight / 1000
 
-        this.user.left = this.viewPortWidth / - 2
-        this.user.right = this.viewPortWidth / 2
-        this.user.top = this.viewPortHieght / 2
-        this.user.bottom = this.viewPortHieght / - 2
+        this.user.left = __webpack_require__.g.viewPortWidth / - 2
+        this.user.right = __webpack_require__.g.viewPortWidth / 2
+        this.user.top = __webpack_require__.g.viewPortHeight / 2
+        this.user.bottom = __webpack_require__.g.viewPortHeight / - 2
         break;
       case 'perspective':
       default:
         this.user.aspect = window.innerWidth / window.innerHeight
-        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect; 
         break;
     }
     this.user.updateProjectionMatrix()
@@ -69291,8 +69277,8 @@ const LOADERS = {
 
 
 class Model extends Entity {
-    get offsetHeight() {
-        super.offsetHeight
+    get height() {
+        super.height
         return this.contentHeight
     }
     constructor(){
@@ -69697,11 +69683,30 @@ class ClippingGeometry {
 
 
 
+
 class Container extends MRUIEntity {
   set absoluteHeight(value) {
     super.absoluteHeight = value
     this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
     
+  }
+
+  get height() {
+    super.height
+
+    if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
+      return (this.compStyle.height.split('px')[0] / window.innerHeight)
+    }
+    return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight
+  }
+
+  get width() {
+    super.width
+
+    if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
+      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio
+    }
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
   }
   
 
@@ -69799,7 +69804,6 @@ class Column extends MRUIEntity {
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
-        this.absoluteHeight = this.height * this.parentElement.offsetHeight
       this.update()
     })
   }
@@ -69810,11 +69814,11 @@ class Column extends MRUIEntity {
         for (const index in children) {
             let child = children[index]
             this.accumulatedY -= child.margin.top
-            child.object3D.position.setY( this.accumulatedY - child.offsetHeight / 2)
-            this.accumulatedY -= child.offsetHeight 
+            child.object3D.position.setY( this.accumulatedY - child.height / 2)
+            this.accumulatedY -= child.height 
             this.accumulatedY -= child.margin.bottom
         }
-        this.shuttle.position.setY(this.parentElement.offsetHeight / 2)
+        this.shuttle.position.setY(this.parentElement.height / 2)
     }
 
   add(entity) {
@@ -69849,12 +69853,6 @@ class Row extends MRUIEntity {
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
-      if(event.target == this.parentElement) {
-        this.absoluteHeight = this.parentElement.offsetHeight
-      } else {
-        this.absoluteHeight = this.contentHeight
-      }
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 
@@ -69866,20 +69864,17 @@ class Row extends MRUIEntity {
   update = () => {
     this.getColumnCount()
     const children = Array.from(this.children)
-    let colWidth = this.offsetWidth / children.length
     this.accumulatedX = 0
     for (const index in children) {
         let child = children[index]
         if (!(child instanceof Column)) { continue }
-        child.absoluteHeight = child.height * this.offsetHeight
-        child.absoluteWidth = colWidth * child.width
 
         this.accumulatedX += child.margin.left
-        child.object3D.position.setX( this.accumulatedX + child.offsetWidth / 2)
-        this.accumulatedX += child.offsetWidth
+        child.object3D.position.setX( this.accumulatedX + child.width / 2)
+        this.accumulatedX += child.width
         this.accumulatedX += child.margin.right
     }
-    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
+    this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
   add(entity) {

@@ -24,16 +24,6 @@ export class LayoutSystem extends System {
 
     adjustContainerSize = (container) => {
 
-        if(container.parentElement instanceof Surface && this.app.inXRSession) {
-          container.absoluteHeight = container.parentElement.offsetHeight
-          container.absoluteWidth = container.parentElement.offsetWidth * container.parentElement.aspectRatio
-        } else {
-          container.absoluteHeight = container.height * this.app.viewPortHieght
-          container.absoluteWidth = container.width * this.app.viewPortWidth
-
-          //console.log(parseFloat(container.compStyle.height) / parseFloat(window.innerHeigh));
-        }
-
         container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
 
     }

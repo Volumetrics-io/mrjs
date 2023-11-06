@@ -1,6 +1,5 @@
 import {preloadFont} from 'troika-three-text'
 import System from '../core/System'
-import { parseAttributeString } from '../utils/parser'
 
 
 export class TextSystem extends System {
@@ -39,7 +38,7 @@ export class TextSystem extends System {
       this.registry.add(entity)
       this.addText(entity)
       entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.offsetHeight / 2)
+              entity.textObj.position.setY(entity.height / 2)
         })
     }
   }
@@ -56,7 +55,7 @@ export class TextSystem extends System {
         this.updateStyle(entity)
         entity.needsUpdate = false
         entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.offsetHeight / 2)
+              entity.textObj.position.setY(entity.height / 2)
         })
       }
 
@@ -84,7 +83,7 @@ export class TextSystem extends System {
 
     
     textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace
-    textObj.maxWidth = entity.parentElement.offsetWidth - entity.padding.horizontal
+    textObj.maxWidth = entity.width
 
     textObj.position.z = 0.0001
 
@@ -172,11 +171,11 @@ export class TextSystem extends System {
       if(valuepair.length > 1){
         switch(valuepair[1]){
           case 'px':
-            return parseFloat(val.split('px')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION
+            return parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
           case 'pt':
-            return parseFloat(val.split('pt')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 1.75
+            return parseFloat(val.split('pt')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 1.75
           case 'pc':
-            return parseFloat(val.split('pc')[0]) / utils.VIRTUAL_DISPLAY_RESOLUTION * 21
+            return parseFloat(val.split('pc')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 21
           case 'mm':
             return parseFloat(val.split('mm')[0]) / 1000
           case 'cm':

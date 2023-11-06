@@ -22,7 +22,7 @@ module.exports = {
   resolve: {
     extensions: ['', '.js'],
     alias: {
-      'utils': path.resolve(__dirname, 'src/utils/global')  // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
+      'MRJS': path.resolve(__dirname, 'src/utils/global')  // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
     },
     fallback: {
       fs: false,
@@ -35,7 +35,7 @@ module.exports = {
     // ...
 
     new webpack.ProvidePlugin({
-      'utils': 'utils'
+      'MRJS': 'MRJS'
     })
   ]  
 }

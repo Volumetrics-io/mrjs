@@ -55,7 +55,7 @@ export class SurfaceSystem extends System {
         if(this.currentSurface == null && surface.anchored == false) {
             this.currentSurface = surface
         } else if (surface.anchored && !surface.placed) {
-            if(!this.app.inXRSession) { return }
+            if(!global.inXR) { return }
             surface.replace()
             surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
 
@@ -79,7 +79,7 @@ export class SurfaceSystem extends System {
         } );
 
         this.session.addEventListener( 'end', () => {
-            this.app.inXRSession = false
+            global.inXR = false
             this.app.user.position.set(0, 0, 1)
             this.app.user.quaternion.set(0,0,0,1)
             this.resetAllSurfaces()
