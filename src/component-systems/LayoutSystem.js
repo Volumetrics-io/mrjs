@@ -7,14 +7,11 @@ export class LayoutSystem extends System {
 
         document.addEventListener('DOMContentLoaded', (event) => {
           let containers = this.app.querySelectorAll('mr-container')
-        console.log(containers);
 
-        for(const container of containers) {
-          console.log(container);
-          this.registry.add(container)
-        }
+          for(const container of containers) {
+            this.registry.add(container)
+          }
         
-        console.log(this.registry);
         })
         
     }
