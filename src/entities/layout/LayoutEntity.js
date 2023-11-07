@@ -9,6 +9,8 @@ export class LayoutEntity extends MRUIEntity {
         this.object3D.userData.size = new THREE.Vector3()
         this.object3D.add(this.shuttle)
 
+        this.shuttle.position.setZ(0.0001)
+
 
     }
 

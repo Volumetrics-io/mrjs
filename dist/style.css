@@ -217,4 +217,5 @@
 
   .logo {
     scale: 0.001;
+    z-index: 100;
   }

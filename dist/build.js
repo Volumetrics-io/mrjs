@@ -68464,6 +68464,10 @@ class StyleSystem extends System {
                 entity.object3D.scale.setScalar(1)
             }
 
+            if(entity.compStyle.zIndex != 'auto') {
+                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000)
+            }
+
             if(entity instanceof MRUIEntity) {
                 entity.updateStyle()
             }
@@ -69271,12 +69275,6 @@ class Light_Light extends Entity {
     constructor(){
         super()
         this.object3D = new THREE.PointLight({});
-
-        this.object3D.shadow.camera.top = 2
-        this.object3D.shadow.camera.bottom = -2
-        this.object3D.shadow.camera.right = 2
-        this.object3D.shadow.camera.left = -2
-        this.object3D.shadow.mapSize.set(4096, 4096)
     }
 
     connected(){
@@ -69624,6 +69622,8 @@ class LayoutEntity extends MRUIEntity {
         this.object3D.userData.bbox = new THREE.Box3()
         this.object3D.userData.size = new THREE.Vector3()
         this.object3D.add(this.shuttle)
+
+        this.shuttle.position.setZ(0.0001)
 
 
     }

@@ -15,6 +15,10 @@ export class StyleSystem extends System {
                 entity.object3D.scale.setScalar(1)
             }
 
+            if(entity.compStyle.zIndex != 'auto') {
+                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000)
+            }
+
             if(entity instanceof MRUIEntity) {
                 entity.updateStyle()
             }
