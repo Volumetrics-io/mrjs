@@ -51795,113 +51795,7 @@ function roundVectorTo(vector, decimal){
   vector.roundToZero()
   vector.divideScalar(decimal)
 }
-;// CONCATENATED MODULE: ./src/datatypes/BodyOffset.js
-class BodyOffset {
-
-    constructor(callback) {
-        this.callback = callback
-    }
-
-    #top = 0
-    set top(value){
-        this.#top = value
-        this.callback
-    }
-    get top() {
-        return this.#top
-    }
-
-    #right = 0
-    set right(value){
-        this.#right = value
-        this.callback
-    }
-    get right() {
-        return this.#right
-    }
-
-    #bottom = 0
-    set bottom(value){
-        this.#bottom = value
-        this.callback
-    }
-    get bottom() {
-        return this.#bottom
-    }
-
-    #left = 0
-    set left(value){
-        this.#left = value
-        this.callback
-    }
-    get left() {
-        return this.#left
-    }
-
-    set vertical(value){
-        this.#top = value
-        this.#bottom = value
-        this.callback
-    }
-
-    get vertical(){
-        return this.#top + this.#bottom
-    }
-    
-    set horizontal(value){
-        this.#right = value
-        this.#left = value
-        this.callback
-    }
-
-    get horizontal(){
-        return this.#right + this.#left
-    }
-
-    set all(value) {
-        this.#top = value
-        this.#right = value
-        this.#bottom = value
-        this.#left = value
-        this.callback
-    }
-
-    setFromVector(vector) {
-        switch (vector.length) {
-            case 1:
-                this.#top = vector[0]
-                this.#right = vector[0]
-                this.#bottom = vector[0]
-                this.#left = vector[0]
-                break;
-            case 2:
-                this.#top = vector[0]
-                this.#right = vector[1]
-                this.#bottom = vector[0]
-                this.#left = vector[1]
-                break;
-            case 3:
-                this.#top = vector[0]
-                this.#right = vector[1]
-                this.#left = vector[1]
-                this.#bottom = vector[2]
-                break;
-            case 4:
-                this.#top = vector[0]
-                this.#right = vector[1]
-                this.#bottom = vector[2]
-                this.#left = vector[3]
-                break;
-            default:
-                break;
-        }
-
-        this.callback
-    }
-
-}
 ;// CONCATENATED MODULE: ./src/core/entity.js
-
 
 
 
@@ -51943,15 +51837,7 @@ class Entity extends MRElement {
     return this.#zOffeset
   }
 
-  margin = new BodyOffset(this.dimensionsUpdate)
-
-  padding = new BodyOffset(this.dimensionsUpdate)
-
   layer = 0
-
-  dimensionsUpdate = () => {
-    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
-  }
 
   constructor() {
     super()
@@ -52025,11 +51911,11 @@ class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    // document.addEventListener('DOMContentLoaded', (event) => {
-    //   this.loadAttributes()
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.loadAttributes()
 
-    // })
-    // this.loadAttributes()
+    })
+    this.loadAttributes()
 
     this.connected()
 
@@ -52056,23 +51942,8 @@ class Entity extends MRElement {
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(attr.value))
           break
-        case 'scale':
-          this.object3D.scale.setScalar(parseFloat(attr.value))
-          break
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value))
-          break
-        case 'width':
-          this.width = attr.value
-          break
-        case 'height':
-          this.height = attr.value
-          break
-        case 'margin':
-          this.margin.setFromVector(parseVector(attr.value))
-          break
-        case 'padding':
-          this.padding.setFromVector(parseVector(attr.value))
           break
         case 'zoffset':
           this.zOffeset = parseFloat(attr.value)
@@ -52080,9 +51951,6 @@ class Entity extends MRElement {
         case 'layer':
           this.layer = parseFloat(attr.value)
           this.object3D.layers.set(this.layer)
-          break
-        default:
-          this[attr.name] = attr.value
           break
       }
     }
@@ -52130,6 +51998,9 @@ class Entity extends MRElement {
           break;
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
           break
       
         default:
@@ -67995,6 +67866,13 @@ class MRUIEntity extends Entity {
         this.physics.halfExtents.copy(this.object3D.userData.size)
         this.physics.halfExtents.divideScalar(2)
     }
+
+    pxToThree(val) {
+        if(__webpack_require__.g.inXR) {
+            return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
+        }
+        return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
+    }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
 
@@ -69766,14 +69644,15 @@ class Column extends MRUIEntity {
 
   update = () => {
         const children = Array.from(this.children)
-        this.accumulatedY = -this.padding.top
+        this.accumulatedY = -this.pxToThree(this.compStyle.paddingTop)
         for (const index in children) {
             let child = children[index]
-            this.accumulatedY -= child.margin.top
+            this.accumulatedY -= this.pxToThree(child.compStyle.marginTop)
             child.object3D.position.setY( this.accumulatedY - child.height / 2)
             this.accumulatedY -= child.height 
-            this.accumulatedY -= child.margin.bottom
+            this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom)
         }
+        this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom)
         this.shuttle.position.setY(this.parentElement.height / 2)
     }
 
@@ -69804,7 +69683,6 @@ class Row extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    this.columns = 0
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {
@@ -69818,18 +69696,19 @@ class Row extends MRUIEntity {
   }
 
   update = () => {
-    this.getColumnCount()
     const children = Array.from(this.children)
-    this.accumulatedX = 0
+    this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft)
     for (const index in children) {
         let child = children[index]
         if (!(child instanceof Column)) { continue }
 
-        this.accumulatedX += child.margin.left
+        this.accumulatedX += this.pxToThree(child.compStyle.marginLeft)
         child.object3D.position.setX( this.accumulatedX + child.width / 2)
         this.accumulatedX += child.width
-        this.accumulatedX += child.margin.right
+        this.accumulatedX += this.pxToThree(child.compStyle.marginRight)
     }
+    this.accumulatedX += this.pxToThree(this.compStyle.paddingRight)
+
     this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
@@ -69841,15 +69720,6 @@ class Row extends MRUIEntity {
   remove(entity) {
     this.shuttle.remove(entity.object3D)
     this.update()
-  }
-
-  getColumnCount(){
-    const children = Array.from(this.children)
-    this.columns = 0
-    for (const child of children) {
-        if (!child instanceof Entity) { continue }
-        this.columns += child.width + child.margin.horizontal
-    }
   }
 }
 

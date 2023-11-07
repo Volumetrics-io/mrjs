@@ -44,4 +44,11 @@ export class MRUIEntity extends Entity {
         this.physics.halfExtents.copy(this.object3D.userData.size)
         this.physics.halfExtents.divideScalar(2)
     }
+
+    pxToThree(val) {
+        if(global.inXR) {
+            return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
+        }
+        return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth
+    }
 }

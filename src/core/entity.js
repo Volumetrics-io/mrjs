@@ -1,7 +1,6 @@
 import * as THREE from 'three'
-import { parseDegVector, parseDimensionValue, parseVector } from '../utils/parser.js'
+import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
-import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
 
@@ -40,15 +39,7 @@ export class Entity extends MRElement {
     return this.#zOffeset
   }
 
-  margin = new BodyOffset(this.dimensionsUpdate)
-
-  padding = new BodyOffset(this.dimensionsUpdate)
-
   layer = 0
-
-  dimensionsUpdate = () => {
-    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
-  }
 
   constructor() {
     super()
@@ -122,11 +113,11 @@ export class Entity extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback)
     this.observer.observe(this, { attributes: true, childList: true })
 
-    // document.addEventListener('DOMContentLoaded', (event) => {
-    //   this.loadAttributes()
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.loadAttributes()
 
-    // })
-    // this.loadAttributes()
+    })
+    this.loadAttributes()
 
     this.connected()
 
@@ -153,23 +144,8 @@ export class Entity extends MRElement {
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(attr.value))
           break
-        case 'scale':
-          this.object3D.scale.setScalar(parseFloat(attr.value))
-          break
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value))
-          break
-        case 'width':
-          this.width = attr.value
-          break
-        case 'height':
-          this.height = attr.value
-          break
-        case 'margin':
-          this.margin.setFromVector(parseVector(attr.value))
-          break
-        case 'padding':
-          this.padding.setFromVector(parseVector(attr.value))
           break
         case 'zoffset':
           this.zOffeset = parseFloat(attr.value)
@@ -177,9 +153,6 @@ export class Entity extends MRElement {
         case 'layer':
           this.layer = parseFloat(attr.value)
           this.object3D.layers.set(this.layer)
-          break
-        default:
-          this[attr.name] = attr.value
           break
       }
     }
@@ -227,6 +200,9 @@ export class Entity extends MRElement {
           break;
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
           break
       
         default:

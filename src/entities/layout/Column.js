@@ -18,14 +18,15 @@ export class Column extends MRUIEntity {
 
   update = () => {
         const children = Array.from(this.children)
-        this.accumulatedY = -this.padding.top
+        this.accumulatedY = -this.pxToThree(this.compStyle.paddingTop)
         for (const index in children) {
             let child = children[index]
-            this.accumulatedY -= child.margin.top
+            this.accumulatedY -= this.pxToThree(child.compStyle.marginTop)
             child.object3D.position.setY( this.accumulatedY - child.height / 2)
             this.accumulatedY -= child.height 
-            this.accumulatedY -= child.margin.bottom
+            this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom)
         }
+        this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom)
         this.shuttle.position.setY(this.parentElement.height / 2)
     }
 

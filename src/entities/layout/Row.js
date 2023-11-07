@@ -11,7 +11,6 @@ export class Row extends MRUIEntity {
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
     this.object3D.add(this.shuttle)
-    this.columns = 0
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {
@@ -25,18 +24,19 @@ export class Row extends MRUIEntity {
   }
 
   update = () => {
-    this.getColumnCount()
     const children = Array.from(this.children)
-    this.accumulatedX = 0
+    this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft)
     for (const index in children) {
         let child = children[index]
         if (!(child instanceof Column)) { continue }
 
-        this.accumulatedX += child.margin.left
+        this.accumulatedX += this.pxToThree(child.compStyle.marginLeft)
         child.object3D.position.setX( this.accumulatedX + child.width / 2)
         this.accumulatedX += child.width
-        this.accumulatedX += child.margin.right
+        this.accumulatedX += this.pxToThree(child.compStyle.marginRight)
     }
+    this.accumulatedX += this.pxToThree(this.compStyle.paddingRight)
+
     this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
@@ -48,15 +48,6 @@ export class Row extends MRUIEntity {
   remove(entity) {
     this.shuttle.remove(entity.object3D)
     this.update()
-  }
-
-  getColumnCount(){
-    const children = Array.from(this.children)
-    this.columns = 0
-    for (const child of children) {
-        if (!child instanceof Entity) { continue }
-        this.columns += child.width + child.margin.horizontal
-    }
   }
 }
 
