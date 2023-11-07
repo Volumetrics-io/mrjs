@@ -16,17 +16,6 @@ export class Entity extends MRElement {
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
 
-  #absoluteWidth = 0
-
-  get offsetWidth() {
-    super.offsetWidth
-    return this.#absoluteWidth
-  }
-
-  set absoluteWidth(value) {
-    this.#absoluteWidth = value
-  }
-
   get contentWidth() {
     this.aabb.setFromObject(this.object3D).getSize(this.size)
     return this.size.x
@@ -36,17 +25,6 @@ export class Entity extends MRElement {
     let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
     return (styleHeight / window.innerHeight) * global.viewPortHeight
 
-  }
-
-  #absoluteHeight = 0
-
-  get offsetHeight() {
-    super.offsetHeight
-    return this.#absoluteHeight
-  }
-
-  set absoluteHeight(value) {
-    this.#absoluteHeight = value
   }
 
   get contentHeight() {
