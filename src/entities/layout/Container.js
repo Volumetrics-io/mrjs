@@ -4,23 +4,6 @@ import { Surface } from "../Surface";
 
 export class Container extends MRUIEntity {
   
-  get height() {
-    super.height
-
-    if(this.parentElement instanceof Surface && global.inXR) {
-      return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.parentElement.scale
-    }
-    return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
-  }
-
-  get width() {
-    super.width
-
-    if(this.parentElement instanceof Surface && global.inXR) {
-      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio * this.parentElement.scale
-    }
-    return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
-  }
 
   constructor() {
     super()

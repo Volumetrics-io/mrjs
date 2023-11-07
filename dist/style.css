@@ -130,6 +130,10 @@
     z-index: 999;
     padding-top: 1rem;
   }
+
+  mr-text {
+    font-size: 16px;
+  }
   
   h1, .title {
     font-family: var(--font-title);

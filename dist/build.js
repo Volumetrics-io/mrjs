@@ -60290,42 +60290,11 @@ class TextSystem extends System {
   }
 
   parseFontSize(val, el) {
-    if(!val) { 
-      return 0.025
+    let result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
+    if (__webpack_require__.g.inXR) {
+      return result * el.windowHorizontalScale
     }
-    if (typeof val == 'string') {
-      let valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
-      if(valuepair.length > 1){
-        switch(valuepair[1]){
-          case 'px':
-            return parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
-          case 'pt':
-            return parseFloat(val.split('pt')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 1.75
-          case 'pc':
-            return parseFloat(val.split('pc')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 21
-          case 'mm':
-            return parseFloat(val.split('mm')[0]) / 1000
-          case 'cm':
-            return parseFloat(val.split('cm')[0]) / 100
-          case 'in':
-            return parseFloat(val.split('in')[0]) / 39.3701
-          case 'vh':
-            return (parseFloat(val.split('vh')[0]) / 100) * this.getVH(el)
-          case 'vw':
-            return (parseFloat(val.split('vw')[0]) / 100) * this.getVW(el)
-          case 'vmin':
-            return (parseFloat(val.split('vmin')[0]) / 100) * this.getVMin(el)
-          case 'vmax':
-            return (parseFloat(val.split('vmax')[0]) / 100) * this.getVMax(el)
-          case '%':
-            return parseFloat(val) / 100
-          default:
-            return val
-
-        }
-      }
-    }
-    return val
+    return result
   }
 
   getEM(el) {
@@ -67078,31 +67047,7 @@ class XRHandModelFactory {
 
 
 
-;// CONCATENATED MODULE: ./src/UI/UIEntity.js
-
-
-class MRUIEntity extends Entity {
-    constructor(){
-        super()
-        this.worldScale = new THREE.Vector3()
-        this.halfExtents = new THREE.Vector3()
-        this.physics.type = 'ui'
-    }
-
-    updatePhysicsData() {
-        this.physics.halfExtents = new THREE.Vector3()
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.width, this.height, 0.002))
-        
-        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
-        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-        this.object3D.userData.size.multiply(this.worldScale)
-
-        this.physics.halfExtents.copy(this.object3D.userData.size)
-        this.physics.halfExtents.divideScalar(2)
-    }
-}
 ;// CONCATENATED MODULE: ./src/component-systems/RapierPhysicsSystem.js
-
 
 
 
@@ -67915,9 +67860,11 @@ class Surface extends Entity {
     this.translation.receiveShadow = true
     this.translation.renderOrder = 3
 
-    this.scale = 1 / 3
-
     this.aspectRatio = 1.333333
+
+    this.windowVerticalScale = 1 / 3
+    this.windowHorizontalScale = this.aspectRatio * 1 / 3
+
     this.placed = false
 
     this.material = new MeshStandardMaterial({
@@ -67929,7 +67876,7 @@ class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.aspectRatio * this.scale, this.scale, 0.01, 18)
+    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, 0.01, 18)
 
     this.viz = new three_module_Mesh(this.geometry, this.material)
 
@@ -68021,6 +67968,54 @@ class LayoutSystem extends System {
 
         container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
 
+    }
+}
+;// CONCATENATED MODULE: ./src/UI/UIEntity.js
+
+
+class MRUIEntity extends Entity {
+
+    get height() {
+        super.height
+
+        if(__webpack_require__.g.inXR) {
+            this.windowVerticalScale = this.parentElement.windowVerticalScale
+                return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale
+            }
+            return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight
+        }
+
+    get width() {
+        super.width
+
+        if(__webpack_require__.g.inXR) {
+            this.windowHorizontalScale = this.parentElement.windowHorizontalScale
+            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
+        }
+        return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
+    }
+
+
+    constructor(){
+        super()
+        this.worldScale = new THREE.Vector3()
+        this.halfExtents = new THREE.Vector3()
+        this.physics.type = 'ui'
+
+        this.windowVerticalScale = 1
+        this.windowHorizontalScale = 1
+    }
+
+    updatePhysicsData() {
+        this.physics.halfExtents = new THREE.Vector3()
+        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.width, this.height, 0.002))
+        
+        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
+        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
+        this.object3D.userData.size.multiply(this.worldScale)
+
+        this.physics.halfExtents.copy(this.object3D.userData.size)
+        this.physics.halfExtents.divideScalar(2)
     }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
@@ -68345,7 +68340,8 @@ class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null) { return }
-        this.currentSurface.scale = this.scale / 3
+        this.currentSurface.windowVerticalScale = this.scale / 3
+        this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.aspectRatio
         this.currentSurface.place()
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
@@ -69689,23 +69685,6 @@ class ClippingGeometry {
 
 class Container extends MRUIEntity {
   
-  get height() {
-    super.height
-
-    if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
-      return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.parentElement.scale
-    }
-    return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight
-  }
-
-  get width() {
-    super.width
-
-    if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
-      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio * this.parentElement.scale
-    }
-    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
-  }
 
   constructor() {
     super()

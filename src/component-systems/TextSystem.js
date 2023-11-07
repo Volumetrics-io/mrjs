@@ -163,42 +163,11 @@ export class TextSystem extends System {
   }
 
   parseFontSize(val, el) {
-    if(!val) { 
-      return 0.025
+    let result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
+    if (global.inXR) {
+      return result * el.windowHorizontalScale
     }
-    if (typeof val == 'string') {
-      let valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
-      if(valuepair.length > 1){
-        switch(valuepair[1]){
-          case 'px':
-            return parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
-          case 'pt':
-            return parseFloat(val.split('pt')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 1.75
-          case 'pc':
-            return parseFloat(val.split('pc')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION * 21
-          case 'mm':
-            return parseFloat(val.split('mm')[0]) / 1000
-          case 'cm':
-            return parseFloat(val.split('cm')[0]) / 100
-          case 'in':
-            return parseFloat(val.split('in')[0]) / 39.3701
-          case 'vh':
-            return (parseFloat(val.split('vh')[0]) / 100) * this.getVH(el)
-          case 'vw':
-            return (parseFloat(val.split('vw')[0]) / 100) * this.getVW(el)
-          case 'vmin':
-            return (parseFloat(val.split('vmin')[0]) / 100) * this.getVMin(el)
-          case 'vmax':
-            return (parseFloat(val.split('vmax')[0]) / 100) * this.getVMax(el)
-          case '%':
-            return parseFloat(val) / 100
-          default:
-            return val
-
-        }
-      }
-    }
-    return val
+    return result
   }
 
   getEM(el) {

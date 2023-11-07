@@ -1,13 +1,13 @@
-import { Entity } from "../core/entity";
+import { Entity } from '../../core/entity'
 
-export class MRUIEntity extends Entity {
+export class LayoutEntity extends Entity {
 
     get height() {
         super.height
 
         if(global.inXR) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale
-                return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale
+            this.windowScale = this.parentElement.windowScale
+                return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowScale
             }
             return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
         }
@@ -16,8 +16,8 @@ export class MRUIEntity extends Entity {
         super.width
 
         if(global.inXR) {
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale
-            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
+            this.windowScale = this.parentElement.windowScale
+            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowScale
         }
         return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
     }
@@ -29,8 +29,7 @@ export class MRUIEntity extends Entity {
         this.halfExtents = new THREE.Vector3()
         this.physics.type = 'ui'
 
-        this.windowVerticalScale = 1
-        this.windowHorizontalScale = 1
+        this.windowScale = 1
     }
 
     updatePhysicsData() {
