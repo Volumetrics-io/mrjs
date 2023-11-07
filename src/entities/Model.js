@@ -41,14 +41,10 @@ export class Model extends Entity {
             mesh.receiveShadow = true
             mesh.renderOrder = 3
 
-            mesh.traverse(child => {
-                if(this.parentElement.clipping && child.material) {
-                    child.material.clippingPlanes = this.parentElement.clipping.planes
-                }
-                child.layers.enable(this.layer)
-            })
-
             this.object3D.add(mesh);
+
+            this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+
 
         });
 
