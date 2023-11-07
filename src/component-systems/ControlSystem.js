@@ -6,7 +6,7 @@ import { COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES} from '../component-sy
 
 export class ControlSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.leftHand = new MRHand('left', this.app)
     this.rightHand = new MRHand('right', this.app)
 

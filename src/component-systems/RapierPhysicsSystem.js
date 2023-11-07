@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { RAPIER } from '../core/rapier.js'
 import System from '../core/System.js'
-import { MRUIEntity } from '../UI/UIEntity.js'
 
 export const INPUT_COLLIDER_HANDLE_NAMES = {}
 export const COLLIDER_ENTITY_MAP = {}
@@ -17,7 +16,7 @@ export const COLLIDER_ENTITY_MAP = {}
 // attribute for more detailed control.
 export class RapierPhysicsSystem extends System {
   constructor() {
-    super()
+    super(false)
     this.debug = this.app.debug
     this.tempWorldPosition = new THREE.Vector3()
 

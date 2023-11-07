@@ -3,9 +3,10 @@ import { parseAttributeString } from '../../utils/parser'
 import { MRUIEntity } from '../UIEntity'
 
 export class MRText extends MRUIEntity {
-    get offsetHeight() {
-        super.offsetHeight
-        return this.contentHeight
+    get height() {
+        super.height
+        this.aabb.setFromObject(this.textObj).getSize(this.size)
+        return this.size.y
     }
 
 

@@ -1,12 +1,18 @@
 import { Entity } from './entity.js'
 
 export default class System {
-  constructor() {
+
+  frameRate = null
+  delta = 0
+
+  constructor(useComponents = true, frameRate = null) {
     this.app = document.querySelector('mr-app')
 
     if (!this.app) {
       return
     }
+
+    this.frameRate = frameRate
     // Need a way to register and deregister systems per environment
     this.registry = new Set()
 
@@ -15,9 +21,11 @@ export default class System {
 
     this.app.registerSystem(this)
 
-    document.addEventListener(`${this.componentName}-attached`, this.onAttach)
-    document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-    document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    if(useComponents) {
+      document.addEventListener(`${this.componentName}-attached`, this.onAttach)
+      document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
+      document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    }
 
     this.app.addEventListener('new-entity', (event) => {
       if (this.registry.has(event.target)) { return }
@@ -31,6 +39,15 @@ export default class System {
       }
       this.registry.add(entity)
     }
+  }
+
+  __update(deltaTime, frame) {
+    if(this.frameRate) {
+      this.delta += deltaTime
+      if (this.delta < this.frameRate) { return }
+    }
+    this.update(deltaTime, frame)
+    this.delta = 0
   }
 
   // Called per frame

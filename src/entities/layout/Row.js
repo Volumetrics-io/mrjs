@@ -1,27 +1,15 @@
-import { MRUIEntity } from '../../UI/UIEntity'
-import { Entity } from '../../core/entity'
 import { Column } from './Column'
+import { LayoutEntity } from './layoutEntity'
 
-export class Row extends MRUIEntity {
+export class Row extends LayoutEntity {
 
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
-    this.columns = 0
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {
       if (event.target != this.closest('mr-container')) { return }
-      if(event.target == this.parentElement) {
-        this.absoluteHeight = this.height * this.parentElement.offsetHeight
-      } else {
-        this.absoluteHeight = this.contentHeight
-      }
-      this.absoluteWidth = this.width * this.parentElement.offsetWidth
       this.update()
     })
 
@@ -31,22 +19,20 @@ export class Row extends MRUIEntity {
   }
 
   update = () => {
-    this.getColumnCount()
     const children = Array.from(this.children)
-    let colWidth = this.offsetWidth / this.columns 
-    this.accumulatedX = 0
+    this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft)
     for (const index in children) {
         let child = children[index]
         if (!(child instanceof Column)) { continue }
-        child.absoluteHeight = child.height * this.offsetHeight
-        child.absoluteWidth = colWidth * child.width
 
-        this.accumulatedX += child.margin.left
-        child.object3D.position.setX( this.accumulatedX + child.offsetWidth / 2)
-        this.accumulatedX += child.offsetWidth
-        this.accumulatedX += child.margin.right
+        this.accumulatedX += this.pxToThree(child.compStyle.marginLeft)
+        child.object3D.position.setX( this.accumulatedX + child.width / 2)
+        this.accumulatedX += child.width
+        this.accumulatedX += this.pxToThree(child.compStyle.marginRight)
     }
-    this.shuttle.position.setX(-this.parentElement.offsetWidth / 2)
+    this.accumulatedX += this.pxToThree(this.compStyle.paddingRight)
+
+    this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
   add(entity) {
@@ -57,15 +43,6 @@ export class Row extends MRUIEntity {
   remove(entity) {
     this.shuttle.remove(entity.object3D)
     this.update()
-  }
-
-  getColumnCount(){
-    const children = Array.from(this.children)
-    this.columns = 0
-    for (const child of children) {
-        if (!child instanceof Entity) { continue }
-        this.columns += child.width + child.margin.horizontal
-    }
   }
 }
 

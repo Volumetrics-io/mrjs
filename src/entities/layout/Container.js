@@ -1,38 +1,20 @@
 import { MRUIEntity } from "../../UI/UIEntity";
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
+import { Surface } from "../Surface";
+import { LayoutEntity } from "./layoutEntity";
 
-export class Container extends MRUIEntity {
-  set absoluteHeight(value) {
-    super.absoluteHeight = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-    
-  }
-  get height() {
-    return super.height
-  }
-
-  set absoluteWidth(value) {
-    super.absoluteWidth = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-  }
-  get width() {
-    return super.width
-  }
+export class Container extends LayoutEntity {
+  
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-    this.object3D.add(this.shuttle)
-
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()
   }
 
   connected(){
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
     document.addEventListener('DOMContentLoaded', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
@@ -47,7 +29,14 @@ export class Container extends MRUIEntity {
 
     this.parentElement.addEventListener('surface-removed', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+
     })
+
+    this.parentElement.addEventListener('container-mutated', (event) => {
+      this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
+    })
+
+
   }
 
   add(entity) {
@@ -64,10 +53,8 @@ export class Container extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMax = (this.contentHeight) - this.height
     let scrollMin =  0
-    console.log('scroll max', scrollMax);
-    console.log('scroll min', scrollMin);
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
     if(this.prevPosition.y != 0) {
@@ -83,7 +70,7 @@ export class Container extends MRUIEntity {
   }
 
   onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMax = (this.contentHeight) - this.height
     let scrollMin =  0
     let delta = event.deltaY * 0.001
     if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){

@@ -5,12 +5,6 @@ export default class Light extends Entity {
     constructor(){
         super()
         this.object3D = new THREE.PointLight({});
-
-        this.object3D.shadow.camera.top = 2
-        this.object3D.shadow.camera.bottom = -2
-        this.object3D.shadow.camera.right = 2
-        this.object3D.shadow.camera.left = -2
-        this.object3D.shadow.mapSize.set(4096, 4096)
     }
 
     connected(){

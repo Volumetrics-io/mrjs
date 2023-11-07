@@ -3,8 +3,9 @@ import { TextEditor } from '../UI/Text/TextEditor';
 import System from '../core/System'
 
 export class TextInputSystem extends System {
+  hasComponents = false
   constructor() {
-    super()
+    super(false)
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 

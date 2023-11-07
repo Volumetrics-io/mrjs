@@ -37,27 +37,67 @@
   
   
   :root {
-    /* --font-title: "Lexend", system-ui, sans-serif; */
-    --font-title: "Bricolage", system-ui, sans-serif;
-    /* --font-title: "Readex", system-ui, sans-serif; */
-    /* --font-body: "IBM Plex", system-ui, sans-serif; */
-  
-    --indent: 4vw;
-    --content-max-width: 36rem;
-    --text-max-width: 32rem;
-  
-    --header-height: 30rem;
-  
-    --c-plate: white;
-    --c-text: #2d2d2d;
-    --c-text-light: #666;
-    --c-link: slateblue;
-    --c-link-hover: var(--c-text);
-  
-    --c-focus: slateblue;
-    --c-accent: turquoise;
-  
-    --c-border: rgba(0, 0, 0, 0.08);
+    --font-title: "Bricolage";
+    /* --font-body: "Onest", system-ui, sans-serif; */
+    /* PADDINGS & MARGINS */
+    --space: 4rem;
+    --outer: 1.5rem;
+    --inter: 1rem;
+    --inner: 0.5rem;
+    --inlet: 0.25rem;
+    /* CONSTRAINTS */
+    --hwdth: 56rem;
+    --mwdth: 68rem;
+    /* RADIUS */
+    --border-radius-large: 2rem;
+    /* SCROLL */
+    --scroll: 0;
+    --position: 0;
+    /* NEUTRAL COLORS */
+    --neutral-hue: 40;
+    --color-title: hsl(var(--neutral-hue), 20%, 20%);
+    --color-text: hsl(var(--neutral-hue), 15%, 10%);
+    --color-text-light: hsl(var(--neutral-hue), 20%, 42%);
+    --color-paper: hsl(var(--neutral-hue), 80%, 94%);
+    --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
+    --color-paper-card: white;
+    /* BUTTONS */
+    /* --rythm-hue: 310; */
+    --rythm-hue: 300;
+    /* --rythm-hue: 40; */
+    --color-button: hsl(var(--rythm-hue), 15%, 96%);
+    --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
+    --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
+    --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
+    --color-button-ring: hsl(var(--rythm-hue), 100%, 70%);
+    /* CTA */
+    /* --hue: 210; */
+    --hue: 210;
+    --color-cta: hsl(var(--hue), 70%, 40%);
+    --color-cta-hover: hsl(var(--hue), 70%, 55%);
+    --color-cta-active: hsl(var(--hue), 70%, 60%);
+    --color-cta-text: hsl(var(--hue), 10%, 100%);
+    --color-cta-focus-ring: hsl(var(--hue), 100%, 100%);
+    /* OPTIONS */
+    --option-hue: 40;
+    --color-option: hsl(var(--option-hue), 50%, 83%);
+    --color-option-hover: hsl(var(--option-hue), 50%, 86%);
+    --color-option-active: hsl(var(--option-hue), 50%, 88%);
+    --color-option-text: var(--color-text);
+    --color-option-focus-ring: hsl(var(--option-hue), 50%, 50%);
+    /* OPTIONS SELECTED */
+    --color-option-selected: hsl(var(--option-hue), 100%, 100%);
+    --color-option-selected-text: hsl(var(--hue), 80%, 30%);
+    /* FOCUS */
+    --color-focus-outline: hsl(var(--hue), 100%, 50%);
+    /* BORDERS */
+    --color-border-light: hsl(var(--rythm-hue), 15%, 92%);
+    --color-border-static: hsla(var(--rythm-hue), 100%, 15%, 15%);
+    --color-border-field-hover: hsl(var(--rythm-hue), 80%, 80%);
+    --color-border-field-active: hsl(var(--rythm-hue), 100%, 70%);
+    /* SHADOWS */
+    --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
+    --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
   }
   
   body,
@@ -130,16 +170,52 @@
     z-index: 999;
     padding-top: 1rem;
   }
+
+  mr-text {
+    margin: 10px;
+    font-size: 16px;
+  }
   
-  h1, mr-text {
+  h1, .title {
     font-family: var(--font-title);
     /* font-weight: 500; */
-    font-size: 8vh;
+    font-size: 5vw;
     line-height: 100%;
     color: rgba(24, 24, 24, 0.75);
     font-variation-settings: 'opsz' 80, 'wght' 550;
+    font-weight: bold;
+
+    text-align: center;
   }
 
   mr-app * {
-    display: none;
+    display: block;
+  }
+
+  mr-container {
+    background-color: rgba(24, 24, 24, 0.75);;
+    border-radius: 2%;
+    height:100vh;
+    width: 100vw;
+  }
+
+  mr-row {
+    height: 100%;
+    width: 100%;
+  }
+  mr-column {
+    height: 100%;
+  }
+
+  .main {
+    background-color: var(--color-paper);
+    border-radius: 2%;
+    padding: 10px;
+    max-width: 50%;
+    margin: auto;
+  }
+
+  .logo {
+    scale: 0.001;
+    z-index: 100;
   }

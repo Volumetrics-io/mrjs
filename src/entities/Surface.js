@@ -25,9 +25,11 @@ export class Surface extends Entity {
     this.translation.renderOrder = 3
 
     this.aspectRatio = 1.333333
+
+    this.windowVerticalScale = 1 / 3
+    this.windowHorizontalScale = this.aspectRatio * 1 / 3
+
     this.placed = false
-    this.width = 1
-    this.height = 1
 
     this.material = new THREE.MeshStandardMaterial({
       color: 0x3498db,
@@ -38,7 +40,7 @@ export class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.aspectRatio / 3, 1 / 3, 0.01, 18)
+    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18)
 
     this.viz = new THREE.Mesh(this.geometry, this.material)
 

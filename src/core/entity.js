@@ -1,7 +1,6 @@
 import * as THREE from 'three'
-import { parseDegVector, parseDimensionValue, parseVector } from '../utils/parser.js'
+import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
-import { BodyOffset } from '../datatypes/BodyOffset.js'
 
 export class Entity extends MRElement {
 
@@ -12,29 +11,8 @@ export class Entity extends MRElement {
   aabb = new THREE.Box3()
   size = new THREE.Vector3()
   
-  #width = 'auto'
-  set width(value) {
-    this.#width = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-    this.dimensionsUpdate()
-  }
   get width() {
-    switch (this.#width) {
-      case 'auto':
-        return 1
-      default:
-        return this.#width
-    }
-  }
-
-  #absoluteWidth = 0
-
-  get offsetWidth() {
-    super.offsetWidth
-    return this.#absoluteWidth
-  }
-
-  set absoluteWidth(value) {
-    this.#absoluteWidth = value
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
 
   get contentWidth() {
@@ -42,28 +20,10 @@ export class Entity extends MRElement {
     return this.size.x
   }
 
-  #height = 'auto'
-  set height(value) {
-    this.#height = !isNaN(value) ? parseFloat(value) : parseDimensionValue(value)
-  }
   get height() {
-    switch (this.#height) {
-      case 'auto':
-        return 1
-      default:
-        return this.#height
-    }
-  }
+    let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
+    return (styleHeight / window.innerHeight) * global.viewPortHeight
 
-  #absoluteHeight = 0
-
-  get offsetHeight() {
-    super.offsetHeight
-    return this.#absoluteHeight
-  }
-
-  set absoluteHeight(value) {
-    this.#absoluteHeight = value
   }
 
   get contentHeight() {
@@ -79,15 +39,7 @@ export class Entity extends MRElement {
     return this.#zOffeset
   }
 
-  margin = new BodyOffset(this.dimensionsUpdate)
-
-  padding = new BodyOffset(this.dimensionsUpdate)
-
   layer = 0
-
-  dimensionsUpdate = () => {
-    // this.dispatchEvent( new CustomEvent('child-resized', { bubbles: true }))
-  }
 
   constructor() {
     super()
@@ -132,14 +84,14 @@ export class Entity extends MRElement {
   }
 
   connectedCallback() {
+    this.compStyle = window.getComputedStyle(this)
+    
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
     }
     this.parentElement.add(this)
 
     this.parent = this.parentElement
-
-    // if (this.parent) { this.scale *= this.parent.scale ?? 1}
 
     if (this.parentElement.user) {
       this.user = this.parentElement.user
@@ -192,23 +144,8 @@ export class Entity extends MRElement {
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(attr.value))
           break
-        case 'scale':
-          this.object3D.scale.setScalar(parseFloat(attr.value))
-          break
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value))
-          break
-        case 'width':
-          this.width = attr.value
-          break
-        case 'height':
-          this.height = attr.value
-          break
-        case 'margin':
-          this.margin.setFromVector(parseVector(attr.value))
-          break
-        case 'padding':
-          this.padding.setFromVector(parseVector(attr.value))
           break
         case 'zoffset':
           this.zOffeset = parseFloat(attr.value)
@@ -216,9 +153,6 @@ export class Entity extends MRElement {
         case 'layer':
           this.layer = parseFloat(attr.value)
           this.object3D.layers.set(this.layer)
-          break
-        default:
-          this[attr.name] = attr.value
           break
       }
     }
@@ -266,6 +200,9 @@ export class Entity extends MRElement {
           break;
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
+          break
+        case 'rotation':
+          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
           break
       
         default:

@@ -18,6 +18,7 @@ import { TextInputSystem } from '../component-systems/TextInputSystem.js'
 import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 import { ClippingSystem } from '../component-systems/ClippingSystem'
+import { StyleSystem } from '../component-systems/StyleSystem'
 ('use strict')
 
 window.mobileCheck = function() {
@@ -36,7 +37,7 @@ export class MRApp extends MRElement {
 
     this.xrsupport = false
     this.isMobile = window.mobileCheck(); //resolves true/false
-    this.inXRSession = false
+    global.inXR = false
 
     this.focusEntity = null
 
@@ -73,6 +74,7 @@ export class MRApp extends MRElement {
     })
 
     this.layoutSystem = new LayoutSystem()
+    this.styleSystem = new StyleSystem()
 
     // initialize built in Systems
     document.addEventListener('engine-started', (event) => {
@@ -187,9 +189,11 @@ export class MRApp extends MRElement {
             this.surfaceSystem = new SurfaceSystem()
           }
           this.ARButton.blur()
-          this.inXRSession = true
+          global.inXR = true
         })
-        document.body.appendChild(this.ARButton)
+        this.appendChild(this.ARButton)
+
+        this.ARButton.style.position = "fixed"
 
       }
 
@@ -212,10 +216,10 @@ export class MRApp extends MRElement {
   initUser = () => {
     switch(this.cameraOptions.camera) {
       case 'orthographic':
-        this.viewPortWidth  = window.innerWidth / 1000
-		    this.viewPortHieght = window.innerHeight / 1000
+        global.viewPortWidth  = window.innerWidth / 1000
+		    global.viewPortHeight = window.innerHeight / 1000
 
-        this.user = new THREE.OrthographicCamera( this.viewPortWidth / - 2, this.viewPortWidth / 2, this.viewPortHieght / 2, this.viewPortHieght / - 2, 0.01, 1000 );
+        this.user = new THREE.OrthographicCamera( global.viewPortWidth / - 2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / - 2, 0.01, 1000 );
         break;
       case 'perspective':
       default:
@@ -226,8 +230,8 @@ export class MRApp extends MRElement {
           20
         )
         this.vFOV = THREE.MathUtils.degToRad( this.user.fov );
-        this.viewPortHieght = 2 * Math.tan( this.vFOV / 2 )
-        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        global.viewPortHeight = 2 * Math.tan( this.vFOV / 2 )
+        global.viewPortWidth = global.viewPortHeight * this.user.aspect; 
       break
     }
     
@@ -258,7 +262,7 @@ export class MRApp extends MRElement {
 
   denit() {
     document.body.removeChild(this.renderer.domElement)
-    document.body.removeChild(this.ARButton)
+    this.removeChild(this.ARButton)
     window.removeEventListener('resize', this.onWindowResize)
   }
 
@@ -282,18 +286,18 @@ export class MRApp extends MRElement {
 
     switch(this.cameraOptions.camera) {
       case 'orthographic':
-        this.viewPortWidth  = window.innerWidth / 1000
-		    this.viewPortHieght = window.innerHeight / 1000
+        global.viewPortWidth  = window.innerWidth / 1000
+		    global.viewPortHeight = window.innerHeight / 1000
 
-        this.user.left = this.viewPortWidth / - 2
-        this.user.right = this.viewPortWidth / 2
-        this.user.top = this.viewPortHieght / 2
-        this.user.bottom = this.viewPortHieght / - 2
+        this.user.left = global.viewPortWidth / - 2
+        this.user.right = global.viewPortWidth / 2
+        this.user.top = global.viewPortHeight / 2
+        this.user.bottom = global.viewPortHeight / - 2
         break;
       case 'perspective':
       default:
         this.user.aspect = window.innerWidth / window.innerHeight
-        this.viewPortWidth = this.viewPortHieght * this.user.aspect; 
+        global.viewPortWidth = global.viewPortHeight * this.user.aspect; 
         break;
     }
     this.user.updateProjectionMatrix()
@@ -306,7 +310,7 @@ export class MRApp extends MRElement {
 
     if( this.debug ) { this.stats.begin() }
     for (const system of this.systems) {
-      system.update(deltaTime, frame)
+      system.__update(deltaTime, frame)
     }
     if( this.debug ) { this.stats.end() }
 
