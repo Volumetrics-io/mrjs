@@ -67576,11 +67576,13 @@ class ControlSystem extends System {
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
 
-function UIPlane(width, height, r, s) {
+function UIPlane(width, height, radii, s) {
   // width, height, radius corner, smoothness
 
   let w = width == 'auto' ? 1 : width
   let h = height == 'auto' ? 1 : height
+
+  let r = radii[0] == 0 ? 0.0001 : radii[0]
 
   if(!w || !h || !r || !s) { return }
 
@@ -67725,7 +67727,7 @@ class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, 0.01, 18)
+    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18)
 
     this.viz = new three_module_Mesh(this.geometry, this.material)
 
@@ -67822,6 +67824,7 @@ class LayoutSystem extends System {
 ;// CONCATENATED MODULE: ./src/UI/UIEntity.js
 
 
+
 class MRUIEntity extends Entity {
 
     get height() {
@@ -67844,15 +67847,34 @@ class MRUIEntity extends Entity {
         return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
     }
 
-
     constructor(){
         super()
         this.worldScale = new THREE.Vector3()
         this.halfExtents = new THREE.Vector3()
         this.physics.type = 'ui'
 
+        let geometry = UIPlane(1, 1, [0], 18)
+        let material = new THREE.MeshStandardMaterial({
+            color: 0xfff,
+            roughness: 0.7,
+            metalness: 0.0,
+            side: 2,
+            colorWriter: false
+          })
+
+        this.background = new THREE.Mesh(geometry, material)
+        this.background.receiveShadow = true
+        this.background.renderOrder = 3
+        this.background.visible = false
+        this.object3D.add(this.background)
+
+
         this.windowVerticalScale = 1
         this.windowHorizontalScale = 1
+    }
+
+    connected() {
+        this.background.geometry = UIPlane(this.width, this.height, [0], 18)
     }
 
     updatePhysicsData() {
@@ -67873,6 +67895,55 @@ class MRUIEntity extends Entity {
         }
         return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
     }
+
+    domToThree(val) {
+        if (typeof val == 'string') {
+          let valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
+          if(valuepair.length > 1){
+            switch(valuepair[1]){
+              case 'px':
+                if(__webpack_require__.g.inXR) {
+                    return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
+                }
+                return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
+              case '%':
+                if(__webpack_require__.g.inXR) {
+                    return (parseFloat(val) / 100) * this.windowHorizontalScale
+                }
+                return (parseFloat(val) / 100) * __webpack_require__.g.viewPortWidth
+              default:
+                return val
+    
+            }
+          }
+        }
+        return val
+      }
+
+    updateStyle() {
+        // background
+        this.setBorder()
+        this.setBackground()
+    }
+
+    setBorder() {
+        let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
+        this.background.geometry = UIPlane(this.width, this.height, borderRadii, 18)
+    }
+
+    setBackground() {
+        let color = this.compStyle.backgroundColor
+        if (color.includes('rgba')) {
+          let rgba = color.substring(5, color.length - 1).split(',').map(part => parseFloat(part.trim()));
+          if(rgba[3] == 0) { return }
+
+          this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`)
+        
+        } else {
+            this.background.material.color.setStyle(color)    
+        }
+        this.background.visible = true
+    }
 }
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
 
@@ -67882,7 +67953,8 @@ class MRUIEntity extends Entity {
 class MRText extends MRUIEntity {
     get height() {
         super.height
-        return this.contentHeight
+        this.aabb.setFromObject(this.textObj).getSize(this.size)
+        return this.size.y
     }
 
 
@@ -68377,6 +68449,7 @@ class ClippingSystem extends System {
 ;// CONCATENATED MODULE: ./src/component-systems/StyleSystem.js
 
 
+
 class StyleSystem extends System {
     constructor(){
         super(false, 1 / 15)
@@ -68384,11 +68457,17 @@ class StyleSystem extends System {
 
     update(deltaTime,frame) {
         for (const entity of this.registry) {
-            entity.compStyle = window.getComputedStyle(entity)
-
+            
             if(entity.compStyle.scale != 'none') {
                 entity.object3D.scale.setScalar(entity.compStyle.scale)
+            } else {
+                entity.object3D.scale.setScalar(1)
             }
+
+            if(entity instanceof MRUIEntity) {
+                entity.updateStyle()
+            }
+
         }
     }
 
@@ -69534,21 +69613,33 @@ class ClippingGeometry {
         this.geometry = geometry
     }
 }
+;// CONCATENATED MODULE: ./src/entities/layout/layoutEntity.js
+
+
+class LayoutEntity extends MRUIEntity {
+
+    constructor(){
+        super()
+        this.shuttle = new THREE.Group() // will shift based on bounding box width
+        this.object3D.userData.bbox = new THREE.Box3()
+        this.object3D.userData.size = new THREE.Vector3()
+        this.object3D.add(this.shuttle)
+
+
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 
 
 
-class Container extends MRUIEntity {
+
+class Container extends LayoutEntity {
   
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
-
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()
@@ -69626,14 +69717,11 @@ customElements.get('mr-container') ||
 ;// CONCATENATED MODULE: ./src/entities/layout/Column.js
 
 
-class Column extends MRUIEntity {
+
+class Column extends LayoutEntity {
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
     this.accumulatedY = 0
 
     document.addEventListener('container-mutated', (event) => {
@@ -69665,6 +69753,14 @@ class Column extends MRUIEntity {
     this.shuttle.remove(entity.object3D)
     this.update()
   }
+
+  setBorder() {
+    let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
+    let height = -this.accumulatedY + this.domToThree(this.compStyle.paddingTop) + this.domToThree(this.compStyle.paddingBottom)
+    let width = this.width + this.domToThree(this.compStyle.paddingLeft) + this.domToThree(this.compStyle.paddingRight)
+    this.background.geometry = UIPlane(width, height, borderRadii, 18)
+    this.background.position.setY((-height / 2) + this.parentElement.height / 2)
+  }
 }
 
 customElements.get('mr-column') || customElements.define('mr-column', Column)
@@ -69673,16 +69769,11 @@ customElements.get('mr-column') || customElements.define('mr-column', Column)
 
 
 
-
-class Row extends MRUIEntity {
+class Row extends LayoutEntity {
 
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {

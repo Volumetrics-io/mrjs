@@ -40,7 +40,7 @@ export class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, 0.01, 18)
+    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18)
 
     this.viz = new THREE.Mesh(this.geometry, this.material)
 

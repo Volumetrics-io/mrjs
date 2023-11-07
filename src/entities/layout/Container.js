@@ -1,17 +1,13 @@
 import { MRUIEntity } from "../../UI/UIEntity";
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
 import { Surface } from "../Surface";
+import { LayoutEntity } from "./layoutEntity";
 
-export class Container extends MRUIEntity {
+export class Container extends LayoutEntity {
   
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
-
     this.currentPosition = new THREE.Vector3()
     this.prevPosition = new THREE.Vector3()
     this.delta = new THREE.Vector3()

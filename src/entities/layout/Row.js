@@ -1,16 +1,11 @@
-import { MRUIEntity } from '../../UI/UIEntity'
-import { Entity } from '../../core/entity'
 import { Column } from './Column'
+import { LayoutEntity } from './layoutEntity'
 
-export class Row extends MRUIEntity {
+export class Row extends LayoutEntity {
 
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
     this.accumulatedX = 0
 
     document.addEventListener('container-mutated', (event) => {

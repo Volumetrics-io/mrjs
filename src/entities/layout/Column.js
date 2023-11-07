@@ -1,13 +1,10 @@
-import { MRUIEntity } from '../../UI/UIEntity'
+import { UIPlane } from '../../geometry/UIPlane'
+import { LayoutEntity } from './layoutEntity'
 
-export class Column extends MRUIEntity {
+export class Column extends LayoutEntity {
 
   constructor() {
     super()
-    this.shuttle = new THREE.Group() // will shift based on bounding box width
-    this.object3D.userData.bbox = new THREE.Box3()
-    this.object3D.userData.size = new THREE.Vector3()
-    this.object3D.add(this.shuttle)
     this.accumulatedY = 0
 
     document.addEventListener('container-mutated', (event) => {
@@ -38,6 +35,14 @@ export class Column extends MRUIEntity {
   remove(entity) {
     this.shuttle.remove(entity.object3D)
     this.update()
+  }
+
+  setBorder() {
+    let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
+    let height = -this.accumulatedY + this.domToThree(this.compStyle.paddingTop) + this.domToThree(this.compStyle.paddingBottom)
+    let width = this.width + this.domToThree(this.compStyle.paddingLeft) + this.domToThree(this.compStyle.paddingRight)
+    this.background.geometry = UIPlane(width, height, borderRadii, 18)
+    this.background.position.setY((-height / 2) + this.parentElement.height / 2)
   }
 }
 

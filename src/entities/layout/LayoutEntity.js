@@ -1,46 +1,15 @@
-import { Entity } from '../../core/entity'
+import { MRUIEntity } from '../../UI/UIEntity'
 
-export class LayoutEntity extends Entity {
-
-    get height() {
-        super.height
-
-        if(global.inXR) {
-            this.windowScale = this.parentElement.windowScale
-                return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowScale
-            }
-            return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
-        }
-
-    get width() {
-        super.width
-
-        if(global.inXR) {
-            this.windowScale = this.parentElement.windowScale
-            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowScale
-        }
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
-    }
-
+export class LayoutEntity extends MRUIEntity {
 
     constructor(){
         super()
-        this.worldScale = new THREE.Vector3()
-        this.halfExtents = new THREE.Vector3()
-        this.physics.type = 'ui'
+        this.shuttle = new THREE.Group() // will shift based on bounding box width
+        this.object3D.userData.bbox = new THREE.Box3()
+        this.object3D.userData.size = new THREE.Vector3()
+        this.object3D.add(this.shuttle)
 
-        this.windowScale = 1
+
     }
 
-    updatePhysicsData() {
-        this.physics.halfExtents = new THREE.Vector3()
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.width, this.height, 0.002))
-        
-        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
-        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-        this.object3D.userData.size.multiply(this.worldScale)
-
-        this.physics.halfExtents.copy(this.object3D.userData.size)
-        this.physics.halfExtents.divideScalar(2)
-    }
 }

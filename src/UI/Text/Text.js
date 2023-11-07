@@ -5,7 +5,8 @@ import { MRUIEntity } from '../UIEntity'
 export class MRText extends MRUIEntity {
     get height() {
         super.height
-        return this.contentHeight
+        this.aabb.setFromObject(this.textObj).getSize(this.size)
+        return this.size.y
     }
 
 
