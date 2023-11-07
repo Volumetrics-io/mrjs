@@ -191,7 +191,9 @@ export class MRApp extends MRElement {
           this.ARButton.blur()
           global.inXR = true
         })
-        document.body.appendChild(this.ARButton)
+        this.appendChild(this.ARButton)
+
+        this.ARButton.style.position = "fixed"
 
       }
 
@@ -260,7 +262,7 @@ export class MRApp extends MRElement {
 
   denit() {
     document.body.removeChild(this.renderer.domElement)
-    document.body.removeChild(this.ARButton)
+    this.removeChild(this.ARButton)
     window.removeEventListener('resize', this.onWindowResize)
   }
 

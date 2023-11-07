@@ -68735,7 +68735,9 @@ class MRApp extends MRElement {
           this.ARButton.blur()
           __webpack_require__.g.inXR = true
         })
-        document.body.appendChild(this.ARButton)
+        this.appendChild(this.ARButton)
+
+        this.ARButton.style.position = "fixed"
 
       }
 
@@ -68804,7 +68806,7 @@ class MRApp extends MRElement {
 
   denit() {
     document.body.removeChild(this.renderer.domElement)
-    document.body.removeChild(this.ARButton)
+    this.removeChild(this.ARButton)
     window.removeEventListener('resize', this.onWindowResize)
   }
 
@@ -69685,12 +69687,7 @@ class ClippingGeometry {
 
 
 class Container extends MRUIEntity {
-  set absoluteHeight(value) {
-    super.absoluteHeight = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-    
-  }
-
+  
   get height() {
     super.height
 
@@ -69708,19 +69705,12 @@ class Container extends MRUIEntity {
     }
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
   }
-  
-
-  set absoluteWidth(value) {
-    super.absoluteWidth = value
-    this.clipping.geometry.copy(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
-  }
 
   constructor() {
     super()
     this.shuttle = new THREE.Group() // will shift based on bounding box width
     this.object3D.userData.bbox = new THREE.Box3()
     this.object3D.userData.size = new THREE.Vector3()
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.offsetWidth, this.offsetHeight, 0.3))
     this.object3D.add(this.shuttle)
 
     this.currentPosition = new THREE.Vector3()
@@ -69729,6 +69719,7 @@ class Container extends MRUIEntity {
   }
 
   connected(){
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
     document.addEventListener('DOMContentLoaded', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
     })
@@ -69760,7 +69751,7 @@ class Container extends MRUIEntity {
       return
     }
     event.stopPropagation()
-    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMax = (this.contentHeight) - this.height
     let scrollMin =  0
     this.currentPosition.copy(event.detail.worldPosition)
     this.object3D.worldToLocal(this.currentPosition)
@@ -69777,7 +69768,7 @@ class Container extends MRUIEntity {
   }
 
   onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - this.offsetHeight
+    let scrollMax = (this.contentHeight) - this.height
     let scrollMin =  0
     let delta = event.deltaY * 0.001
     if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){
