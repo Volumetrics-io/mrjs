@@ -67915,6 +67915,8 @@ class Surface extends Entity {
     this.translation.receiveShadow = true
     this.translation.renderOrder = 3
 
+    this.scale = 1 / 3
+
     this.aspectRatio = 1.333333
     this.placed = false
 
@@ -67927,7 +67929,7 @@ class Surface extends Entity {
       side: 2,
     })
 
-    this.geometry = UIPlane(this.aspectRatio / 3, 1 / 3, 0.01, 18)
+    this.geometry = UIPlane(this.aspectRatio * this.scale, this.scale, 0.01, 18)
 
     this.viz = new three_module_Mesh(this.geometry, this.material)
 
@@ -68343,8 +68345,7 @@ class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null) { return }
-        this.currentSurface.absoluteWidth = this.scale / 3
-        this.currentSurface.absoluteHeight = this.scale / 3
+        this.currentSurface.scale = this.scale / 3
         this.currentSurface.place()
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
@@ -69692,7 +69693,7 @@ class Container extends MRUIEntity {
     super.height
 
     if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
-      return (this.compStyle.height.split('px')[0] / window.innerHeight)
+      return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.parentElement.scale
     }
     return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight
   }
@@ -69701,7 +69702,7 @@ class Container extends MRUIEntity {
     super.width
 
     if(this.parentElement instanceof Surface && __webpack_require__.g.inXR) {
-      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio
+      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio * this.parentElement.scale
     }
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
   }
@@ -69734,7 +69735,14 @@ class Container extends MRUIEntity {
 
     this.parentElement.addEventListener('surface-removed', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+
     })
+
+    this.parentElement.addEventListener('container-mutated', (event) => {
+      this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
+    })
+
+
   }
 
   add(entity) {

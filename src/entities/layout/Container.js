@@ -8,7 +8,7 @@ export class Container extends MRUIEntity {
     super.height
 
     if(this.parentElement instanceof Surface && global.inXR) {
-      return (this.compStyle.height.split('px')[0] / window.innerHeight)
+      return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.parentElement.scale
     }
     return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
   }
@@ -17,7 +17,7 @@ export class Container extends MRUIEntity {
     super.width
 
     if(this.parentElement instanceof Surface && global.inXR) {
-      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio
+      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.parentElement.aspectRatio * this.parentElement.scale
     }
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
@@ -50,7 +50,14 @@ export class Container extends MRUIEntity {
 
     this.parentElement.addEventListener('surface-removed', (event) => {
       this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
+
     })
+
+    this.parentElement.addEventListener('container-mutated', (event) => {
+      this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
+    })
+
+
   }
 
   add(entity) {
