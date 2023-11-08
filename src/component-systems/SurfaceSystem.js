@@ -94,16 +94,13 @@ export class SurfaceSystem extends System {
         
     }
     if(this.currentSurface == null) { return }
-    if ( this.source ) {
+    console.log(frame);
+    if ( this.source) {
 
-        const hitTestResults = frame.getHitTestResults( this.source );
+        const results = frame.getHitTestResults( this.source );
+        
+        this.placeSurface(results, frame)
 
-        if ( hitTestResults.length ) {
-
-            const hit = hitTestResults[ 0 ];
-            this.placeSurface(hit)
-
-        }
 
     }
   }
@@ -116,15 +113,25 @@ export class SurfaceSystem extends System {
     }
   }
 
-  placeSurface(hit) {
-    let pose = hit.getPose( this.referenceSpace )
+  placeSurface(hitResults, frame) {
 
     if (!this.currentSurface.viz.visible) {
         this.currentSurface.viz.visible = true
     }
-    
-    this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
-    this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
+
+
+    if ( hitResults.length ) {
+        const hit = hitResults[ 0 ];
+        let pose = hit.getPose( this.referenceSpace )
+        
+        this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
+        this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
+
+    } else {
+        this.currentSurface.rotationPlane.rotation.x = 0
+        this.currentSurface.object3D.position.setFromMatrixPosition(this.app.userPoseObject.matrixWorld)
+        this.currentSurface.object3D.lookAt(this.app.user.position)
+    }
   }
 
 }
