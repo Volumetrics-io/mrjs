@@ -1,5 +1,5 @@
 import { Column } from './Column'
-import { LayoutEntity } from './layoutEntity'
+import { LayoutEntity } from './LayoutEntity'
 
 export class Row extends LayoutEntity {
 

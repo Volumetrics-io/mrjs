@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 
-export class Entity extends MRElement {
+export default class Entity extends MRElement {
 
   physics = {
     type: 'none'
@@ -10,7 +10,7 @@ export class Entity extends MRElement {
 
   aabb = new THREE.Box3()
   size = new THREE.Vector3()
-  
+
   get width() {
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
   }
@@ -75,7 +75,7 @@ export class Entity extends MRElement {
     //console.log(`${event.detail.joint} hover at:`, event.detail.position);
   }
 
-  onTouch = (event) => { 
+  onTouch = (event) => {
     //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
@@ -85,7 +85,7 @@ export class Entity extends MRElement {
 
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this)
-    
+
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
     }
@@ -136,7 +136,7 @@ export class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    for (const attr of this.attributes) {      
+    for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
@@ -204,7 +204,7 @@ export class Entity extends MRElement {
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
           break
-      
+
         default:
           break;
       }
