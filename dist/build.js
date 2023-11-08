@@ -413,7 +413,7 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "Entity": () => (/* reexport */ entity_namespaceObject["default"]),
+  "Entity": () => (/* reexport */ Entity),
   "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
   "Panel": () => (/* reexport */ Panel),
   "System": () => (/* reexport */ System),
@@ -841,13 +841,6 @@ __webpack_require__.d(three_module_namespaceObject, {
   "ZeroStencilOp": () => (ZeroStencilOp),
   "_SRGBAFormat": () => (_SRGBAFormat),
   "sRGBEncoding": () => (sRGBEncoding)
-});
-
-// NAMESPACE OBJECT: ./src/core/entity.js
-var entity_namespaceObject = {};
-__webpack_require__.r(entity_namespaceObject);
-__webpack_require__.d(entity_namespaceObject, {
-  "J": () => (Entity)
 });
 
 // NAMESPACE OBJECT: ./src/geometry/UIPlane.js
@@ -51808,7 +51801,7 @@ class Entity extends MRElement {
 
   aabb = new Box3()
   size = new three_module_Vector3()
-  
+
   get width() {
     return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
   }
@@ -51873,7 +51866,7 @@ class Entity extends MRElement {
     //console.log(`${event.detail.joint} hover at:`, event.detail.position);
   }
 
-  onTouch = (event) => { 
+  onTouch = (event) => {
     //console.log(`${event.detail.joint} touch at:`, event.detail.position);
   }
 
@@ -51883,7 +51876,7 @@ class Entity extends MRElement {
 
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this)
-    
+
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
       return
     }
@@ -51934,7 +51927,7 @@ class Entity extends MRElement {
 
   loadAttributes() {
     this.components = new Set()
-    for (const attr of this.attributes) {      
+    for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
         case 'comp':
           this.componentMutated(attr.name)
@@ -52002,7 +51995,7 @@ class Entity extends MRElement {
         case 'rotation':
           this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
           break
-      
+
         default:
           break;
       }
@@ -68327,16 +68320,13 @@ class SurfaceSystem extends System {
         
     }
     if(this.currentSurface == null) { return }
-    if ( this.source ) {
+    console.log(frame);
+    if ( this.source) {
 
-        const hitTestResults = frame.getHitTestResults( this.source );
+        const results = frame.getHitTestResults( this.source );
+        
+        this.placeSurface(results, frame)
 
-        if ( hitTestResults.length ) {
-
-            const hit = hitTestResults[ 0 ];
-            this.placeSurface(hit)
-
-        }
 
     }
   }
@@ -68349,15 +68339,26 @@ class SurfaceSystem extends System {
     }
   }
 
-  placeSurface(hit) {
-    let pose = hit.getPose( this.referenceSpace )
+  placeSurface(hitResults, frame) {
 
     if (!this.currentSurface.viz.visible) {
         this.currentSurface.viz.visible = true
     }
-    
-    this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
-    this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
+
+
+    if ( hitResults.length ) {
+        const hit = hitResults[ 0 ];
+        let pose = hit.getPose( this.referenceSpace )
+        
+        this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
+        this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
+
+    } else {
+        this.currentSurface.rotationPlane.rotation.x = 0
+        // this.app.userPoseObject.getWorldDirection(this.currentSurface.object3D.position)
+        this.currentSurface.object3D.position.setFromMatrixPosition(this.app.userPoseObject.matrixWorld)
+        this.currentSurface.object3D.lookAt(this.app.user.position)
+    }
   }
 
 }
@@ -68714,6 +68715,13 @@ class MRApp extends MRElement {
         __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect; 
       break
     }
+
+    //weird bug fix in getting camera position in webXR
+    this.userPoseObject = new Object3D(); 
+    this.user.add(this.userPoseObject)
+
+    this.userPoseObject.position.setZ(-0.6)
+
     
   }
 
@@ -69248,13 +69256,6 @@ class Model extends Entity {
             mesh.receiveShadow = true
             mesh.renderOrder = 3
 
-            // mesh.traverse(child => {
-            //     if(this.parentElement.clipping && child.material) {
-            //         child.material.clippingPlanes = this.parentElement.clipping.planes
-            //     }
-            //     child.layers.enable(this.layer)
-            // })
-
             this.object3D.add(mesh);
 
             this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
@@ -69614,7 +69615,7 @@ class ClippingGeometry {
         this.geometry = geometry
     }
 }
-;// CONCATENATED MODULE: ./src/entities/layout/layoutEntity.js
+;// CONCATENATED MODULE: ./src/entities/layout/LayoutEntity.js
 
 
 class LayoutEntity extends MRUIEntity {
@@ -69639,7 +69640,7 @@ class LayoutEntity extends MRUIEntity {
 
 
 class Container extends LayoutEntity {
-  
+
 
   constructor() {
     super()
@@ -69740,7 +69741,7 @@ class Column extends LayoutEntity {
             let child = children[index]
             this.accumulatedY -= this.pxToThree(child.compStyle.marginTop)
             child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.height
             this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom)
         }
         this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom)

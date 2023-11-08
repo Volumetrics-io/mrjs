@@ -234,6 +234,13 @@ export class MRApp extends MRElement {
         global.viewPortWidth = global.viewPortHeight * this.user.aspect; 
       break
     }
+
+    //weird bug fix in getting camera position in webXR
+    this.userPoseObject = new THREE.Object3D(); 
+    this.user.add(this.userPoseObject)
+
+    this.userPoseObject.position.setZ(-0.6)
+
     
   }
 
