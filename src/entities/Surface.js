@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Entity } from '../core/entity.js'
+import Entity from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js'
 
 export class Surface extends Entity {

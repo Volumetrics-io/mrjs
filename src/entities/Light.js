@@ -1,4 +1,4 @@
-import { Entity } from "../core/entity";
+import Entity from "../core/entity";
 
 export default class Light extends Entity {
 

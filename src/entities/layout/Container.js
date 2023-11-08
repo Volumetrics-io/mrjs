@@ -1,10 +1,10 @@
 import { MRUIEntity } from "../../UI/UIEntity";
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
 import { Surface } from "../Surface";
-import { LayoutEntity } from "./layoutEntity";
+import { LayoutEntity } from "./LayoutEntity";
 
 export class Container extends LayoutEntity {
-  
+
 
   constructor() {
     super()

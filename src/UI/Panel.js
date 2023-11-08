@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { UIPlane } from '../geometry/UIPlane.js'
-import { Entity } from '../core/entity.js'
+import Entity from '../core/entity.js'
 import { MRUIEntity } from './UIEntity.js'
 
 export default class Panel extends MRUIEntity {

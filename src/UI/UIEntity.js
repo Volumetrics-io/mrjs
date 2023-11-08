@@ -1,4 +1,4 @@
-import { Entity } from "../core/entity";
+import Entity from "../core/entity";
 import { UIPlane } from "../geometry/UIPlane";
 
 export class MRUIEntity extends Entity {

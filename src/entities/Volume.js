@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Entity } from '../core/entity.js'
+import Entity from '../core/entity.js'
 import { Surface } from './Surface.js'
 
 export default class Volume extends Entity {

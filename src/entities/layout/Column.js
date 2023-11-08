@@ -1,5 +1,5 @@
 import { UIPlane } from '../../geometry/UIPlane'
-import { LayoutEntity } from './layoutEntity'
+import { LayoutEntity } from './LayoutEntity'
 
 export class Column extends LayoutEntity {
 
@@ -20,7 +20,7 @@ export class Column extends LayoutEntity {
             let child = children[index]
             this.accumulatedY -= this.pxToThree(child.compStyle.marginTop)
             child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height 
+            this.accumulatedY -= child.height
             this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom)
         }
         this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom)
