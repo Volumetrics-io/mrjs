@@ -19,7 +19,7 @@ NPM:
 
 from source:
 
-`npm run build`
+`npm install && npm run build`
 
 # Features
 
