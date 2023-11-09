@@ -68355,7 +68355,6 @@ class SurfaceSystem extends System {
 
     } else {
         this.currentSurface.rotationPlane.rotation.x = 0
-        // this.app.userPoseObject.getWorldDirection(this.currentSurface.object3D.position)
         this.currentSurface.object3D.position.setFromMatrixPosition(this.app.userPoseObject.matrixWorld)
         this.currentSurface.object3D.lookAt(this.app.user.position)
     }

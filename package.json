@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@dimforge/rapier3d": "*",
-    "babel-eslint": "^10.1.0",
+    "@babel/eslint-parser": "^7.23.3",
     "prettier": "^2.8.8",
     "prettier-eslint-cli": "^7.1.0",
     "stats.js": "^0.17.0",
