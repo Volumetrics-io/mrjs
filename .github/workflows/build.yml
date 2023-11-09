@@ -1,0 +1,26 @@
+# Build MRjs and confirm everything passes
+name: npm build
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+      # todo - run the npm install with a dockerfile setup instead of pure
+      # install but not important to do right now since install isnt too long
+    
+    - uses: actions/setup-node@v3
+      with:
+      node-version: 18
+    
+    - name: 👷 Build
+      run: |
+        npm run build
