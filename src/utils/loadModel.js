@@ -41,7 +41,9 @@ function load3DM(filePath, scene, libraryPath) {
         scene.add( object );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads 3ds file and adds it to the scene
@@ -67,7 +69,9 @@ function load3DS(filePath, resourcePath, scene, normalMap) {
 
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads 3mf file and adds it to the scene
@@ -98,7 +102,9 @@ function load3MF(filePath, scene, loadingManager) {
 
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads amf file and adds it to the scene
@@ -109,7 +115,9 @@ function loadAMF(filePath, scene) {
         scene.add( amfobject );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads bvh file and adds it to the scene
@@ -123,7 +131,9 @@ function loadBVH(filePath, scene) {
         scene.add( skeletonHelper );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads Collada file and adds it to the scene
@@ -142,7 +152,9 @@ function loadDAE(filePath, scene, loadingManager) {
         scene.add(collada.scene);
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads Draco file and adds it to the scene
@@ -165,10 +177,14 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
 
     }, undefined, function ( error ) {
         console.error( error );
+        dracoLoader.dispose();
+        return false;
     } );
 
     // Release decoder resources.
     dracoLoader.dispose();
+
+    return true;
 }
 
 // Loads fbx file and adds it to the scene
@@ -181,7 +197,9 @@ function loadFBX(filePath, scene) {
         scene.add( object );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads gcode file and adds it to the scene
@@ -192,7 +210,9 @@ function loadGCODE(filePath, scene) {
         scene.add( object );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads GLTF/GLB file and adds it to the scene
@@ -206,7 +226,9 @@ function loadGLTF(filePath, scene) {
         scene.add( gltf.scene );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads IFC file and adds it to the scene
@@ -224,7 +246,11 @@ function loadIFC(filePath, scene) {
 
     ifcLoader.load( filePath, function ( model ) {
         scene.add( model.mesh );
+    }, undefined, function ( error ) {
+        console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // TODO - from imagebitmap <--> nrrd
@@ -238,7 +264,9 @@ function loadOBJ(filePath, scene) {
         scene.add(root);
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads OBJ file with material and adds it to the scene
@@ -257,11 +285,14 @@ function loadOBJWithMTL(objFilePath, mtlFilePath, scene) {
 
             }, undefined, function ( error ) {
                 console.error( error );
+                return false;
             } );
 
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads pcd file and adds it to the scene
@@ -272,7 +303,9 @@ function loadPCD(filePath, scene) {
         scene.add( points );
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // TODO - pdb
@@ -291,7 +324,9 @@ function loadPLY(filePath, scene) {
 
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // Loads stl file and adds it to the scene
@@ -307,7 +342,9 @@ function loadSTL(filePath, scene) {
 
     }, undefined, function ( error ) {
         console.error( error );
+        return false;
     } );
+    return true;
 }
 
 // TODO - svg
@@ -320,9 +357,36 @@ function loadUSDZ(filePath, scene) {
 
     const [ model ] = await Promise.all( [
         usdzLoader.loadAsync( filePath ),
-    ] );
-
+    ], undefined, function ( error ) {
+        console.error( error );
+        return false;
+    } );
+    
     scene.add( model );
+    return true;
 }
 
 // TODO - vox <--> xyz
+
+///////////////////////////
+// Main Loading Function //
+///////////////////////////
+
+function loadModel(filePath, extension, scene) {
+    // later on - this would be better//faster with enums<->string<-->num interop but 
+    // quick impl for now 
+    if (extension == 'stl') {
+        return loadSTL(filePath, scene);
+    } else if (extension == 'gltf') {
+        return loadGLTF(filePath, scene);
+    } else if (extension == 'glb') {
+        return loadGLTF(filePath, scene);
+    } else if (extension == 'usd') {
+        return loadUSDZ(filePath, scene);
+    } else if (extension == 'usdz') {
+        return loadUSDZ(filePath, scene);
+    } else {
+        console.log('ERR: the extensions ' + extension + ' is not supported by MR.js');
+        return false;
+    }
+}

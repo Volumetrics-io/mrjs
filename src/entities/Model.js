@@ -1,53 +1,30 @@
 import Entity from "../core/entity";
-import { STLLoader } from "../utils/STLLoader";
-
-
-const LOADERS = {
-    'stl' : new STLLoader()
-}
-
+import { loadModel } from "../utils/loadModel";
 
 export class Model extends Entity {
+    constructor() {
+        super();
+    }
+
     get height() {
-        super.height
-        return this.contentHeight
-    }
-    constructor(){
-        super()
+        super.height; // TODO - why is this line here?
+        return this.contentHeight;
     }
 
-    connected(){
-        this.src = this.getAttribute('src')
+    connected() {
+        this.src = this.getAttribute('src');
+        if (! this.src) {
+            return;
+        }
 
-        if (!this.src) { return }
+        let extension = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
+        if (! loadModel(this.src, extension)) {
+            console.log('ERR: in loading model ' + this.src);
+            return;
+        }
 
-        let ext = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
-
-        let loader = LOADERS[ext]
-
-        if (!loader) { return }
-
-        loader.load(this.src, (geometry) => {
-
-            const material = new THREE.MeshPhysicalMaterial({
-                clearcoat: 0.75,
-                clearcoatRoughness: 0.5,
-                metalness: 0.5,
-                roughness: 0.6,
-                envMapIntensity: 0.75,
-            });
-
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.receiveShadow = true
-            mesh.renderOrder = 3
-
-            this.object3D.add(mesh);
-
-            this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-
-
-        });
-
+        // TODO - recheck this lower part
+        this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}));
     }
 
     onLoad = () => {
@@ -55,4 +32,4 @@ export class Model extends Entity {
     }
 }
 
-customElements.get('mr-model') || customElements.define('mr-model', Model)
+customElements.get('mr-model') || customElements.define('mr-model', Model);
