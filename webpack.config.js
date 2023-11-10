@@ -19,6 +19,8 @@ module.exports = {
     asyncWebAssembly: true,
   },
 
+  mode: 'none', // disable default behavior for now
+
   resolve: {
     extensions: ['', '.js'],
     alias: {

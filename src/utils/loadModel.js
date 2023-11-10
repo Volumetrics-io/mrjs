@@ -5,8 +5,8 @@ import { DRACOLoader }      from 'three/addons/loaders/DRACOLoader.js';
 import { FBXLoader }        from 'three/addons/loaders/FBXLoader.js';
 import { GCodeLoader }      from 'three/addons/loaders/GCodeLoader.js';
 import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader.js';
-import { IFCLoader }        from 'web-ifc-three';
-import { IFCSPACE }         from 'web-ifc';
+// import { IFCLoader }        from 'web-ifc-three';
+// import { IFCSPACE }         from 'web-ifc';
 import { OBJLoader }        from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader }        from 'three/addons/loaders/MTLLoader.js';
 import { Rhino3dmLoader }   from 'three/addons/loaders/3DMLoader.js';
@@ -28,6 +28,7 @@ import { USDZLoader }       from 'three/addons/loaders/USDZLoader.js';
 // - need to look at current stl loader setup and see if these match from an mr-js integration standpoint
 // - current highest priority is GLB/GLTF and USDZ
 
+/*
 // Loads 3dm file and adds it to the scene
 // @param libraryPath - optional - default is 'jsm/libs/rhino3dm'. If not using the
 // default, set this variable to proper local path.
@@ -214,6 +215,7 @@ function loadGCODE(filePath, scene) {
     } );
     return true;
 }
+*/
 
 // Loads GLTF/GLB file and adds it to the scene
 function loadGLTF(filePath, scene) {
@@ -231,6 +233,7 @@ function loadGLTF(filePath, scene) {
     return true;
 }
 
+/*
 // Loads IFC file and adds it to the scene
 function loadIFC(filePath, scene) {
     const ifcLoader = new IFCLoader();
@@ -328,6 +331,7 @@ function loadPLY(filePath, scene) {
     } );
     return true;
 }
+*/
 
 // Loads stl file and adds it to the scene
 function loadSTL(filePath, scene) {
@@ -352,7 +356,7 @@ function loadSTL(filePath, scene) {
 // TODO - tilt, tff
 
 // Loads USD/USDZ file and adds it to the scene
-function loadUSDZ(filePath, scene) {
+async function loadUSDZ(filePath, scene) {
     const usdzLoader = new USDZLoader();
 
     const [ model ] = await Promise.all( [
@@ -372,7 +376,7 @@ function loadUSDZ(filePath, scene) {
 // Main Loading Function //
 ///////////////////////////
 
-function loadModel(filePath, extension, scene) {
+export function loadModel(filePath, extension, scene) {
     // later on - this would be better//faster with enums<->string<-->num interop but 
     // quick impl for now 
     if (extension == 'stl') {
