@@ -376,19 +376,19 @@ async function loadUSDZ(filePath, scene) {
 // Main Loading Function //
 ///////////////////////////
 
-export function loadModel(filePath, extension, scene) {
+export function loadModel(filePath, extension, entityScene) {
     // later on - this would be better//faster with enums<->string<-->num interop but 
     // quick impl for now 
     if (extension == 'stl') {
-        return loadSTL(filePath, scene);
+        return loadSTL(filePath, entityScene);
     } else if (extension == 'gltf') {
-        return loadGLTF(filePath, scene);
+        return loadGLTF(filePath, entityScene);
     } else if (extension == 'glb') {
-        return loadGLTF(filePath, scene);
+        return loadGLTF(filePath, entityScene);
     } else if (extension == 'usd') {
-        return loadUSDZ(filePath, scene);
+        return loadUSDZ(filePath, entityScene);
     } else if (extension == 'usdz') {
-        return loadUSDZ(filePath, scene);
+        return loadUSDZ(filePath, entityScene);
     } else {
         console.log('ERR: the extensions ' + extension + ' is not supported by MR.js');
         return false;
