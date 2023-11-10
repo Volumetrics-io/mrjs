@@ -21,12 +21,11 @@ import { USDZLoader }       from 'three/addons/loaders/USDZLoader.js';
 
 // TODOs before merge
 // - look into smaller todos leftover
-// - check if loading managers are required or optional for all or just some objects
 // - see if any items after loading should be returned instead of directly added to scene
 //   - prob should allow scene to be an optional parameter and return items as necessary
 // - i should probably simply these to be more self contained of pure model and allow modifications on top, tbd
-// - need to look at current stl loader setup and see if these match from an mr-js integration standpoint
 // - current highest priority is GLB/GLTF and USDZ
+// - if model already exists in the scene - add an instance of it instead of fully reloading
 
 /*
 // Loads 3dm file and adds it to the scene
