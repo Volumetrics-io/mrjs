@@ -389,7 +389,7 @@ export function loadModel(filePath, extension, entityScene) {
     } else if (extension == 'usdz') {
         return loadUSDZ(filePath, entityScene);
     } else {
-        console.log('ERR: the extensions ' + extension + ' is not supported by MR.js');
+        console.error('ERR: the extensions ' + extension + ' is not supported by MR.js');
         return false;
     }
 }
