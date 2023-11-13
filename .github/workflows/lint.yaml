@@ -30,8 +30,8 @@ jobs:
     
     - name: 👷 Check if format is needed
       run: |
-        npm run check-prettier
-        
+        npm run check-format
+
         if [ $? -ne 0 ]; then
           echo "Some files need formatting. Run 'npm run prettier' to format them."
           exit 1
