@@ -380,7 +380,7 @@ async function loadUSDZ(filePath, scene) {
 // Main Loading Function //
 ///////////////////////////
 
-export function loadModel(filePath, extension, entityScene) {
+function loadModel(filePath, extension, entityScene) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
     if (extension == 'stl') {
@@ -399,8 +399,11 @@ export function loadModel(filePath, extension, entityScene) {
     }
 }
 
-export function abc(a, b) {
+function abc(a, b) {
     return a + b
 }
 
-// module.exports = loadModel;
+module.exports = {
+    loadModel,
+    abc,
+}

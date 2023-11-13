@@ -50,3 +50,6 @@ export { default as Entity } from './core/entity.js'
 export { default as UIPlane } from './geometry/UIPlane.js'
 // UI
 export { default as Panel } from './UI/Panel.js'
+
+// For testing
+export { default as loadModel } from './utils/loadModel.js'
