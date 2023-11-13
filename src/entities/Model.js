@@ -21,7 +21,7 @@ export class Model extends Entity {
         if (! loadModel(this.src, extension, this.object3D)) {
             console.log('ERR: in loading model ' + this.src);
             return;
-        }
+        } 
 
         // TODO - recheck this lower part
         this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}));
