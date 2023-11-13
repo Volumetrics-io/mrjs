@@ -28,22 +28,12 @@ jobs:
       run: |
         npm install
     
-    - name: 👷 Format
-      run: npm run format
-
-    - name: Error if there are changed files
+    - name: 👷 Check if format is needed
       run: |
-        # Get the list of changed files
-        changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-
-        # Print the changed files
-        echo "Changed files:"
-        echo "$changed_files"
-
-        # Check if there are any changed files
-        if [ -n "$changed_files" ]; then
-          echo "There are changed files. Perform your actions here."
-        else
-          echo "No changed files. Skip further actions."
+        npm run check-prettier
+        
+        if [ $? -ne 0 ]; then
+          echo "Some files need formatting. Run 'npm run prettier' to format them."
+          exit 1
         fi
 
