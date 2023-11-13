@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  check-format:
     runs-on: ubuntu-latest
     # needs: build # todo
     steps:
@@ -33,7 +33,7 @@ jobs:
         npm run check-format
 
         if [ $? -ne 0 ]; then
-          echo "Some files need formatting. Run 'npm run prettier' to format them."
+          echo "Some files need formatting. Run 'npm run format' to format them."
           exit 1
         fi
 
