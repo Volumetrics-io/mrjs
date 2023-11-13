@@ -18,7 +18,7 @@ export class Model extends Entity {
         }
 
         let extension = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
-        if (! loadModel(this.src, extension, this.object3D)) {
+        if (! loadModel.loadModel(this.src, extension, this.object3D)) {
             console.log('ERR: in loading model ' + this.src);
             return;
         } 

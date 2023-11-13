@@ -393,3 +393,9 @@ export function loadModel(filePath, extension, entityScene) {
         return false;
     }
 }
+
+export function abc(a, b) {
+    return a + b;
+}
+
+// module.exports = loadModel;
