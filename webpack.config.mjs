@@ -1,7 +1,10 @@
-const webpack = require("webpack");
-const path = require('path')
+import webpack from "webpack";
+import path from 'path';
 
-module.exports = {
+// const webpack = require("webpack");
+// const path = require('path')
+
+export default {
   entry: './src/index.js',
   output: {
     publicPath: '',
