@@ -45,5 +45,8 @@
     "three": "^0.151.3",
     "troika-three-text": "^0.48.0-unicode.1"
   },
-  "type": "module"
+  "type": "module",
+  "exports": {
+    "./src/*": "./src/*.js"
+  }
 }

@@ -1,5 +1,10 @@
-import webpack from 'webpack'
-import path from 'path'
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import webpack from 'webpack';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
     entry: './src/index.js',
