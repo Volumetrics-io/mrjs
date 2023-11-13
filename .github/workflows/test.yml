@@ -1,4 +1,4 @@
-# Test MRjs and confirm everything passes
+# Run MRjs testing
 name: npm test
 
 on:
