@@ -1,3 +1,6 @@
+# ignore dist
+*.dist/*
+
 # Logs
 logs
 *.log
