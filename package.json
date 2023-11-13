@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "npx webpack --config webpack.config.js",
-    "format": "prettier --write \"src/**/*.js\"",
-    "check-format": "prettier --list-different \"src/**/*.js\""
+    "format": "prettier --write \"src/**/*.js\" \"*.js\"",
+    "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\""
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/Volumetrics-io/volumetrics#readme",
   "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "babel-jest": "^29.7.0",
     "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -36,10 +38,12 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.23.3",
     "@dimforge/rapier3d": "*",
+    "esm": "^3.2.25",
     "prettier": "^3.1.0",
     "prettier-eslint-cli": "^8.0.1",
     "stats.js": "^0.17.0",
     "three": "^0.151.3",
     "troika-three-text": "^0.48.0-unicode.1"
-  }
+  },
+  "type": "module"
 }
