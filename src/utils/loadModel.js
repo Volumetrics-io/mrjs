@@ -1,23 +1,23 @@
-import { AMFLoader }        from 'three/addons/loaders/AMFLoader.js';
-import { BVHLoader }        from 'three/addons/loaders/BVHLoader.js';
-import { ColladaLoader }    from 'three/addons/loaders/ColladaLoader.js';
-import { DRACOLoader }      from 'three/addons/loaders/DRACOLoader.js';
-import { FBXLoader }        from 'three/addons/loaders/FBXLoader.js';
-import { GCodeLoader }      from 'three/addons/loaders/GCodeLoader.js';
-import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader.js';
+import { AMFLoader } from 'three/addons/loaders/AMFLoader.js'
+import { BVHLoader } from 'three/addons/loaders/BVHLoader.js'
+import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js'
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
+import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 // import { IFCLoader }        from 'web-ifc-three';
 // import { IFCSPACE }         from 'web-ifc';
-import { OBJLoader }        from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader }        from 'three/addons/loaders/MTLLoader.js';
-import { Rhino3dmLoader }   from 'three/addons/loaders/3DMLoader.js';
-import { PCDLoader }        from 'three/addons/loaders/PCDLoader.js';
-import { PDBLoader }        from 'three/addons/loaders/PDBLoader.js';
-import { PLYLoader }        from 'three/addons/loaders/PLYLoader.js';
-import { STLLoader }        from 'three/addons/loaders/STLLoader.js';
-import { SVGLoader }        from 'three/addons/loaders/SVGLoader.js';
-import { TDSLoader }        from 'three/addons/loaders/TDSLoader.js';
-import { ThreeMFLoader }    from 'three/addons/loaders/3MFLoader.js';
-import { USDZLoader }       from 'three/addons/loaders/USDZLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
+import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js'
+import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
+import { PDBLoader } from 'three/addons/loaders/PDBLoader.js'
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js'
+import { STLLoader } from 'three/addons/loaders/STLLoader.js'
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js'
+import { TDSLoader } from 'three/addons/loaders/TDSLoader.js'
+import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js'
+import { USDZLoader } from 'three/addons/loaders/USDZLoader.js'
 
 // TODOs before merge
 // - look into smaller todos leftover
@@ -218,18 +218,22 @@ function loadGCODE(filePath, scene) {
 
 // Loads GLTF/GLB file and adds it to the scene
 function loadGLTF(filePath, scene) {
-    const loader = new GLTFLoader();
-    loader.load( filePath, function ( gltf ) {
+    const loader = new GLTFLoader()
+    loader.load(
+        filePath,
+        function (gltf) {
+            // TODO - look into what that avif and anisotropy versions of loading are
+            // compressed, instancing, etc, etc
 
-        // TODO - look into what that avif and anisotropy versions of loading are
-        // compressed, instancing, etc, etc
-
-        scene.add( gltf.scene );
-    }, undefined, function ( error ) {
-        console.error( error );
-        return false;
-    } );
-    return true;
+            scene.add(gltf.scene)
+        },
+        undefined,
+        function (error) {
+            console.error(error)
+            return false
+        }
+    )
+    return true
 }
 
 /*
@@ -334,20 +338,23 @@ function loadPLY(filePath, scene) {
 
 // Loads stl file and adds it to the scene
 function loadSTL(filePath, scene) {
-    const loader = new STLLoader();
+    const loader = new STLLoader()
 
-    loader.load( filePath, function ( geometry ) {
+    loader.load(
+        filePath,
+        function (geometry) {
+            const material = new THREE.MeshPhongMaterial()
+            const mesh = new THREE.Mesh(geometry, material)
 
-        const material = new THREE.MeshPhongMaterial( );
-        const mesh = new THREE.Mesh( geometry, material );
-
-        scene.add( mesh );
-
-    }, undefined, function ( error ) {
-        console.error( error );
-        return false;
-    } );
-    return true;
+            scene.add(mesh)
+        },
+        undefined,
+        function (error) {
+            console.error(error)
+            return false
+        }
+    )
+    return true
 }
 
 // TODO - svg
@@ -356,17 +363,15 @@ function loadSTL(filePath, scene) {
 
 // Loads USD/USDZ file and adds it to the scene
 async function loadUSDZ(filePath, scene) {
-    const usdzLoader = new USDZLoader();
+    const usdzLoader = new USDZLoader()
 
-    const [ model ] = await Promise.all( [
-        usdzLoader.loadAsync( filePath ),
-    ], undefined, function ( error ) {
-        console.error( error );
-        return false;
-    } );
-    
-    scene.add( model );
-    return true;
+    const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, function (error) {
+        console.error(error)
+        return false
+    })
+
+    scene.add(model)
+    return true
 }
 
 // TODO - vox <--> xyz
@@ -376,26 +381,26 @@ async function loadUSDZ(filePath, scene) {
 ///////////////////////////
 
 export function loadModel(filePath, extension, entityScene) {
-    // later on - this would be better//faster with enums<->string<-->num interop but 
-    // quick impl for now 
+    // later on - this would be better//faster with enums<->string<-->num interop but
+    // quick impl for now
     if (extension == 'stl') {
-        return loadSTL(filePath, entityScene);
+        return loadSTL(filePath, entityScene)
     } else if (extension == 'gltf') {
-        return loadGLTF(filePath, entityScene);
+        return loadGLTF(filePath, entityScene)
     } else if (extension == 'glb') {
-        return loadGLTF(filePath, entityScene);
+        return loadGLTF(filePath, entityScene)
     } else if (extension == 'usd') {
-        return loadUSDZ(filePath, entityScene);
+        return loadUSDZ(filePath, entityScene)
     } else if (extension == 'usdz') {
-        return loadUSDZ(filePath, entityScene);
+        return loadUSDZ(filePath, entityScene)
     } else {
-        console.error('ERR: the extensions ' + extension + ' is not supported by MR.js');
-        return false;
+        console.error('ERR: the extensions ' + extension + ' is not supported by MR.js')
+        return false
     }
 }
 
 export function abc(a, b) {
-    return a + b;
+    return a + b
 }
 
 // module.exports = loadModel;

@@ -6,7 +6,7 @@ export class ClippingGeometry {
     intersection = false
     global = false
 
-    constructor(geometry){
+    constructor(geometry) {
         this.geometry = geometry
     }
 }
