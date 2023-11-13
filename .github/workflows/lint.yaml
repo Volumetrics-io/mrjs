@@ -1,5 +1,5 @@
 # Check MRjs has been linted
-name: npm format
+name: npm run format
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
         npm install
     
     - name: 👷 Format
-      run: npm format
+      run: npm run format
 
     - name: Error if there are changed files
       run: |

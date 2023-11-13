@@ -1,5 +1,5 @@
 # Run MRjs testing
-name: npm test
+name: npm run test
 
 on:
   workflow_dispatch:
