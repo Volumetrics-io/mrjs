@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "npx webpack --config webpack.config.js",
-    "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx}\""
+    "format": "prettier --write \"src/**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -35,8 +35,8 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.23.3",
     "@dimforge/rapier3d": "*",
-    "prettier": "^2.8.8",
-    "prettier-eslint-cli": "^7.1.0",
+    "prettier": "^3.1.0",
+    "prettier-eslint-cli": "^8.0.1",
     "stats.js": "^0.17.0",
     "three": "^0.151.3",
     "troika-three-text": "^0.48.0-unicode.1"
