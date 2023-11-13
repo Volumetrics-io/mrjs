@@ -1,6 +1,6 @@
 import { Text } from 'troika-three-text'
-import { parseAttributeString } from '../../utils/parser.js'
-import { MRUIEntity } from '../UIEntity.js'
+import { parseAttributeString } from '../../utils/parser'
+import { MRUIEntity } from '../UIEntity'
 
 export class MRText extends MRUIEntity {
     get height() {
