@@ -68861,10 +68861,10 @@ class Model extends _core_entity__WEBPACK_IMPORTED_MODULE_0__["default"] {
         }
 
         let extension = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
-        if (! (0,_utils_loadModel__WEBPACK_IMPORTED_MODULE_1__.loadModel)(this.src, extension, this.object3D)) {
+        if (! _utils_loadModel__WEBPACK_IMPORTED_MODULE_1__.loadModel.loadModel(this.src, extension, this.object3D)) {
             console.log('ERR: in loading model ' + this.src);
             return;
-        }
+        } 
 
         // TODO - recheck this lower part
         this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}));
@@ -68885,6 +68885,7 @@ customElements.get('mr-model') || customElements.define('mr-model', Model);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "abc": () => (/* binding */ abc),
 /* harmony export */   "loadModel": () => (/* binding */ loadModel)
 /* harmony export */ });
 /* harmony import */ var three_addons_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
@@ -68913,12 +68914,11 @@ __webpack_require__.r(__webpack_exports__);
 
 // TODOs before merge
 // - look into smaller todos leftover
-// - check if loading managers are required or optional for all or just some objects
 // - see if any items after loading should be returned instead of directly added to scene
 //   - prob should allow scene to be an optional parameter and return items as necessary
 // - i should probably simply these to be more self contained of pure model and allow modifications on top, tbd
-// - need to look at current stl loader setup and see if these match from an mr-js integration standpoint
 // - current highest priority is GLB/GLTF and USDZ
+// - if model already exists in the scene - add an instance of it instead of fully reloading
 
 /*
 // Loads 3dm file and adds it to the scene
@@ -69282,10 +69282,16 @@ function loadModel(filePath, extension, entityScene) {
     } else if (extension == 'usdz') {
         return loadUSDZ(filePath, entityScene);
     } else {
-        console.log('ERR: the extensions ' + extension + ' is not supported by MR.js');
+        console.error('ERR: the extensions ' + extension + ' is not supported by MR.js');
         return false;
     }
 }
+
+function abc(a, b) {
+    return a + b;
+}
+
+// module.exports = loadModel;
 
 
 /***/ }),

@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    needs: build 
+    # needs: build # todo
     steps:
     - uses: actions/checkout@v2
     
