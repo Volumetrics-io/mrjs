@@ -416,7 +416,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   "Entity": () => (/* reexport */ Entity),
   "MRElement": () => (/* reexport */ MRElement_namespaceObject["default"]),
-  "Panel": () => (/* reexport */ Panel),
   "System": () => (/* reexport */ System),
   "THREE": () => (/* reexport */ three_module_namespaceObject),
   "UIPlane": () => (/* reexport */ UIPlane_namespaceObject["default"])
@@ -848,7 +847,7 @@ __webpack_require__.d(three_module_namespaceObject, {
 var UIPlane_namespaceObject = {};
 __webpack_require__.r(UIPlane_namespaceObject);
 __webpack_require__.d(UIPlane_namespaceObject, {
-  "J": () => (UIPlane)
+  "J": () => (UIPlane_UIPlane)
 });
 
 // EXTERNAL MODULE: ./src/utils/extensions.js
@@ -67836,7 +67835,7 @@ class ControlSystem extends System {
  * @param radii
  * @param s
  */
-function UIPlane(width, height, radii, s) {
+function UIPlane_UIPlane(width, height, radii, s) {
   // width, height, radius corner, smoothness
 
   const w = width == 'auto' ? 1 : width;
@@ -67960,7 +67959,7 @@ class Surface extends Entity {
       side: 2,
     });
 
-    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
+    this.geometry = UIPlane_UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
 
     this.viz = new three_module_Mesh(this.geometry, this.material);
 
@@ -68122,7 +68121,7 @@ class MRUIEntity extends Entity {
     this.halfExtents = new THREE.Vector3();
     this.physics.type = 'ui';
 
-    const geometry = UIPlane(1, 1, [0], 18);
+    const geometry = UIPlane_UIPlane(1, 1, [0], 18);
     const material = new THREE.MeshStandardMaterial({
       color: 0xfff,
       roughness: 0.7,
@@ -68145,7 +68144,7 @@ class MRUIEntity extends Entity {
    *
    */
   connected() {
-    this.background.geometry = UIPlane(this.width, this.height, [0], 18);
+    this.background.geometry = UIPlane_UIPlane(this.width, this.height, [0], 18);
   }
 
   /**
@@ -68215,7 +68214,7 @@ class MRUIEntity extends Entity {
    */
   setBorder() {
     const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-    this.background.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+    this.background.geometry = UIPlane_UIPlane(this.width, this.height, borderRadii, 18);
   }
 
   /**
@@ -69782,147 +69781,13 @@ class Light_Light extends Entity {
 
 customElements.get('mr-light') || customElements.define('mr-light', Light_Light);
 
-;// CONCATENATED MODULE: ./src/UI/Panel.js
-
-
-
-
-
-/**
- *
- */
-class Panel extends MRUIEntity {
-  radius = 0.02;
-
-  smoothness = 18;
-
-  #color = 0xecf0f1;
-
-  /**
-   *
-   */
-  set color(value) {
-    this.#color = value;
-    this.object3D.material.color.setStyle(this.#color);
-  }
-
-  /**
-   *
-   */
-  get color() {
-    return this.#color;
-  }
-
-  /**
-   *
-   */
-  set height(value) {
-    super.height = value;
-    this.updatePlane();
-  }
-
-  /**
-   *
-   */
-  get height() {
-    return super.height;
-  }
-
-  /**
-   *
-   */
-  set width(value) {
-    super.width = value;
-    this.updatePlane();
-  }
-
-  /**
-   *
-   */
-  get width() {
-    return super.width;
-  }
-
-  /**
-   *
-   */
-  get offsetHeight() {
-    return super.offsetHeight - this.radius;
-  }
-
-  /**
-   *
-   */
-  get offsetWidth() {
-    return super.offsetWidth - this.radius;
-  }
-
-  /**
-   *
-   */
-  updatePlane() {
-    this.object3D.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness);
-  }
-
-  /**
-   *
-   */
-  constructor() {
-    super();
-
-    this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness);
-    this.material = new MeshStandardMaterial({
-      color: this.color,
-      roughness: 0.7,
-      metalness: 0.0,
-      side: 2,
-    });
-
-    this.object3D = new three_module_Mesh(this.geometry, this.material);
-    this.object3D.receiveShadow = true;
-    this.object3D.renderOrder = 3;
-  }
-
-  /**
-   *
-   * @param mutation
-   */
-  mutated(mutation) {
-    if (mutation.type != 'attributes') {
-      switch (mutation.attributeName) {
-        case 'width':
-          this.width = parseFloat(this.getAttribute('width'));
-          break;
-        case 'height':
-          this.height = parseFloat(this.getAttribute('height'));
-          break;
-        case 'corner-radius':
-          this.radius = parseFloat(this.getAttribute('corner-radius'));
-          console.log(this.radius);
-          this.padding.all = this.radius;
-          break;
-        case 'smoothness':
-          this.smoothness = parseFloat(this.getAttribute('smoothness'));
-          break;
-        case 'color':
-          this.object3D.material.color.setStyle(this.getAttribute('color'));
-          break;
-        default:
-          break;
-      }
-    }
-  }
-}
-
-customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
-
 ;// CONCATENATED MODULE: ./src/UI/Button.js
 
 
 /**
  *
  */
-class Button extends Panel {
+class Button extends MRUIEntity {
   /**
    *
    */
@@ -70073,7 +69938,7 @@ customElements.get('mr-volume') || customElements.define('mr-volume', Volume);
 /**
  *
  */
-class MRImage extends Panel {
+class MRImage extends MRUIEntity {
   /**
    *
    */
@@ -70085,10 +69950,12 @@ class MRImage extends Panel {
    *
    */
   connected() {
+    this.geometry = UIPlane(this.width, this.height, borderRadii, 18);
     this.material = new THREE.MeshBasicMaterial({
       side: 1,
+      map: new THREE.TextureLoader().load(this.getAttribute('src'))
     });
-    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'));
+    this.object3D = new THREE.Mesh(this.geometry, this.material);
   }
 
   /**
@@ -70104,39 +69971,6 @@ class MRImage extends Panel {
 }
 
 customElements.get('mr-image') || customElements.define('mr-image', MRImage);
-
-;// CONCATENATED MODULE: ./src/UI/Text/Font.js
-
-
-
-/**
- *
- */
-class MRFont extends MRElement {
-  /**
-   *
-   */
-  constructor() {
-    super();
-    this.src = null;
-    this.size = 'fit';
-    this.targets = [];
-  }
-
-  /**
-   *
-   */
-  connectedCallback() {
-    this.src = this.getAttribute('src');
-    const sizeAttr = this.getAttribute('size') ?? this.size;
-    this.size = parseFloat(sizeAttr);
-    this.targets = this.getAttribute('target')
-      ?.split(',')
-      .map((val) => val.trim()) ?? [];
-  }
-}
-
-customElements.get('mr-font') || customElements.define('mr-font', MRFont);
 
 ;// CONCATENATED MODULE: ./src/UI/Text/TextField.js
 
@@ -70359,7 +70193,7 @@ class Column extends LayoutEntity {
     const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     const height = -this.accumulatedY + this.domToThree(this.compStyle.paddingTop) + this.domToThree(this.compStyle.paddingBottom);
     const width = this.width + this.domToThree(this.compStyle.paddingLeft) + this.domToThree(this.compStyle.paddingRight);
-    this.background.geometry = UIPlane(width, height, borderRadii, 18);
+    this.background.geometry = UIPlane_UIPlane(width, height, borderRadii, 18);
     this.background.position.setY(-height / 2 + this.parentElement.height / 2);
   }
 }
@@ -70459,12 +70293,10 @@ customElements.get('mr-row') || customElements.define('mr-row', Row);
 
 
 
-
 // MEDIA
 
 
 // TEXT
-
 
 
 
@@ -70483,9 +70315,6 @@ customElements.get('mr-row') || customElements.define('mr-row', Row);
 
 
 // GEOMETRY
-
-// UI
-
 
 })();
 
