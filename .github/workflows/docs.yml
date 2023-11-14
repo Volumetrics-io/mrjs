@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: 21
 
-     - name: Install Dependencies
+    - name: Install Dependencies
       run: |
         npm install
 
