@@ -4,6 +4,8 @@ name: npm run docs
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 permissions:
   contents: read
