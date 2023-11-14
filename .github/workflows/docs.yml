@@ -53,8 +53,8 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm -rf auto && mkdir auto
-        mv -f ../doc/* ./auto/
+        rm -rf docs && mkdir docs
+        mv -f ../doc/* ./docs/
 
     - name: Commit only if there are changes
       run: |
