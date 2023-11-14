@@ -55,6 +55,8 @@ jobs:
       run: |
         rm -rf docs && mkdir docs
         mv -f ../doc/* ./docs/
+        ls -al
+        ls docs
 
     - name: Commit only if there are changes
       run: |
