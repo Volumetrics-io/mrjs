@@ -336,15 +336,23 @@ function loadPLY(filePath, scene) {
 function loadSTL(filePath) {
     const loader = new STLLoader()
 
-    loader.load(filePath, function (geometry) {
-            const material = new THREE.MeshPhongMaterial();
-            const mesh = new THREE.Mesh(geometry, material);
+    console.log('hi');
 
-            return mesh;
-        }, undefined, function (error) {
-            console.error(error)
-        }
-    )
+    loader.load(filePath, function (geometry) {
+        console.log('hi1');
+        const material = new THREE.MeshPhongMaterial();
+        console.log('hi2');
+        const mesh = new THREE.Mesh(geometry, material);
+        console.log('hi3');
+
+        return mesh;
+    }, undefined, function (error) {
+        console.log('hi4');
+        console.error(error)
+        console.log('hi5');
+    });
+
+    console.log('hi6');
     return null
 }
 
