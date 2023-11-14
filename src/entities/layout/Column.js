@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { UIPlane } from '../../geometry/UIPlane';
 import { LayoutEntity } from './LayoutEntity';
 
