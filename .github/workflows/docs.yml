@@ -36,8 +36,8 @@ jobs:
         npm run docs
 
     - name: Get Docs content
-        id: get-docs
-        run: |
+      id: get-docs
+      run: |
           cp -rf docs/* > ../docs
 
     - name: see if info is there
