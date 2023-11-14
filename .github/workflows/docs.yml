@@ -4,8 +4,6 @@ name: npm run docs
 on:
   workflow_dispatch:
   push:
-    #branches:
-    #  - main
 
 permissions:
   contents: read
@@ -14,12 +12,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
-      # todo - run the npm install with a dockerfile setup instead of pure
-      # install but not important to do right now since install isnt too long
+    # todo - run the npm install with a dockerfile setup instead of pure
+    # install but not important to do right now since install isnt too long
     
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: 21
 
