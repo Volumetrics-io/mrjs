@@ -2,6 +2,9 @@
 # todo - dont want merge conflicts in dist, but do want when publish, to resolve.
 # dist/*
 
+# Docs - ignore auto html docs in this repo, they'll be exported to the docs repo
+docs/*
+
 # Logs
 logs
 *.log
