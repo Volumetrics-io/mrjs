@@ -1,33 +1,43 @@
-import Entity from "../core/entity";
+import Entity from '../core/entity'
 
+/**
+ *
+ */
 export default class Light extends Entity {
-
-    constructor(){
+    /**
+     *
+     */
+    constructor() {
         super()
-        this.object3D = new THREE.PointLight({});
+        this.object3D = new THREE.PointLight({})
     }
 
-    connected(){
-        let color = this.getAttribute('color')
+    /**
+     *
+     */
+    connected() {
+        const color = this.getAttribute('color')
         this.object3D.color.setStyle(color)
 
         this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
     }
 
     mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
+        if (mutation.type != 'attributes') {
+            return
+        }
         switch (mutation.attributeName) {
             case 'color':
-                let color = this.getAttribute('color')
+                const color = this.getAttribute('color')
                 this.object3D.color.setStyle(color)
-                break;
+                break
 
             case 'intensity':
                 this.object3D.intensity = this.getAttribute('intensity')
-                break;
-        
+                break
+
             default:
-                break;
+                break
         }
     }
 }

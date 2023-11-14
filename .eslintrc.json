@@ -7,9 +7,20 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "extends": ["airbnb-base", "prettier"],
-    "plugins": ["prettier"],
+    "extends": ["airbnb-base", "plugin:jsdoc/recommended"],
+    // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
+    "plugins": ["jsdoc"],
     "rules": {
-        "prettier/prettier": ["error"]
+        "no-var": "error",
+        "jsdoc/require-jsdoc": [
+          "error", {
+            "require": {
+              "FunctionDeclaration": true,
+              "MethodDefinition": true,
+              "ClassDeclaration": true
+              // You can add more as needed: ArrowFunctionExpression, FunctionExpression, etc.
+            }
+          }
+        ]
     }
 }

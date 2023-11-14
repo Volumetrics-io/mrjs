@@ -1,7 +1,13 @@
-import { MRText } from "./Text";
+import { MRText } from './Text'
 
+/**
+ *
+ */
 export class TextField extends MRText {
-    constructor(){
+    /**
+     *
+     */
+    constructor() {
         super()
         this.focused = false
     }

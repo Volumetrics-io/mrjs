@@ -1,46 +1,57 @@
 import * as THREE from 'three'
 import System from '../core/System'
-import { COLLIDER_CURSOR_MAP } from "./RapierPhysicsSystem";
-import { DevVolume } from '../entities/developer/DevVolume';
+import { COLLIDER_CURSOR_MAP } from './RapierPhysicsSystem'
+import { DevVolume } from '../entities/developer/DevVolume'
 
-
+/**
+ *
+ */
 export class DeveloperSystem extends System {
-  constructor() {
-    super()
-    
-    let devVolume = document.querySelector('mr-dev-volume')
+    /**
+     *
+     */
+    constructor() {
+        super()
 
-    this.tempWorldPosition = new THREE.Vector3()
-    this.tempWorldQuaternion = new THREE.Quaternion()
+        const devVolume = document.querySelector('mr-dev-volume')
 
-    this.registry.add(devVolume)
-    
-  }
+        this.tempWorldPosition = new THREE.Vector3()
+        this.tempWorldQuaternion = new THREE.Quaternion()
 
-  update(deltaTime, frame) {
-    for (const env of this.registry) {
-      for ( const tool of env.registry){
-        this.updateBody(tool)
-        if (tool.grabbed){
-          this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
-            let cursor = COLLIDER_CURSOR_MAP[collider2.handle]
-
-            if (cursor) {
-              tool.onGrab(collider2.translation())
-            }
-          })
-        }
-      }
+        this.registry.add(devVolume)
     }
-  }
 
-  updateBody(tool) {
-    tool.object3D.getWorldPosition(this.tempWorldPosition)
-    tool.body.setTranslation({ ...this.tempWorldPosition }, true)
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
+    update(deltaTime, frame) {
+        for (const env of this.registry) {
+            for (const tool of env.registry) {
+                this.updateBody(tool)
+                if (tool.grabbed) {
+                    this.app.physicsWorld.contactsWith(tool.collider, (collider2) => {
+                        const cursor = COLLIDER_CURSOR_MAP[collider2.handle]
 
-    tool.object3D.getWorldQuaternion(this.tempWorldQuaternion)
-    tool.body.setRotation(this.tempWorldQuaternion, true)
-  }
+                        if (cursor) {
+                            tool.onGrab(collider2.translation())
+                        }
+                    })
+                }
+            }
+        }
+    }
 
-  
+    /**
+     *
+     * @param tool
+     */
+    updateBody(tool) {
+        tool.object3D.getWorldPosition(this.tempWorldPosition)
+        tool.body.setTranslation({ ...this.tempWorldPosition }, true)
+
+        tool.object3D.getWorldQuaternion(this.tempWorldQuaternion)
+        tool.body.setRotation(this.tempWorldQuaternion, true)
+    }
 }
