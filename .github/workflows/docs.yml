@@ -1,0 +1,62 @@
+# Auto generate docs as a new commit for the docs repo
+name: npm run docs
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    # todo - run the npm install with a dockerfile setup instead of pure
+    # install but not important to do right now since install isnt too long
+    
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 21
+
+    - name: Install Dependencies
+      run: |
+        npm install
+
+    - name: 👷 Write the html docs
+      run: |
+        npm run docs
+
+    - name: Get Docs content
+      id: get-docs
+      run: |
+        mkdir -p ../doc
+        cp -rf ./docs/* ../doc/
+
+    - name: see if info is there
+      run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout docs Repository
+      uses: actions/checkout@v3
+      with:
+        repository: Volumetrics-io/docs
+        ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: Update Docs
+      run: |
+        mkdir -p ./auto
+        mv -f ../doc/* ./auto/
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
+        git add auto/*
+        git commit -m "👷 MR.js - Auto Generated Docs 👷" 
+        git push --quiet --set-upstream origin HEAD
+      env:
+          PAT_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
