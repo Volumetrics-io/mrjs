@@ -1,15 +1,15 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import path from 'path'
-import webpack from 'webpack'
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import webpack from 'webpack';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
     entry: './src/index.js',
     output: {
-        publicPath: '',
+        publicPath: 'auto',
         filename: 'build.js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: 'auto',
@@ -25,7 +25,7 @@ export default {
     },
 
     resolve: {
-        extensions: ['', '.mjs', '.js'],
+        extensions: ['.mjs', '.js'],
         alias: {
             MRJS: path.resolve(__dirname, 'src/utils/global'), // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
         },
@@ -36,10 +36,10 @@ export default {
         fullySpecified: false, // disable required .js / .mjs when importing
     },
 
+    mode: process.env.NODE_ENV || 'development',
+
     plugins: [
         // ... 
-
-        mode: process.env.NODE_ENV || 'development',
     
         new webpack.ProvidePlugin({
             MRJS: 'MRJS',
