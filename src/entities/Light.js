@@ -1,45 +1,45 @@
-import Entity from '../core/entity'
+import Entity from '../core/entity';
 
 /**
  *
  */
 export default class Light extends Entity {
-    /**
-     *
-     */
-    constructor() {
-        super()
-        this.object3D = new THREE.PointLight({})
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.object3D = new THREE.PointLight({});
+  }
+
+  /**
+   *
+   */
+  connected() {
+    const color = this.getAttribute('color');
+    this.object3D.color.setStyle(color);
+
+    this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1;
+  }
+
+  mutated = (mutation) => {
+    if (mutation.type != 'attributes') {
+      return;
     }
+    switch (mutation.attributeName) {
+      case 'color':
+        const color = this.getAttribute('color');
+        this.object3D.color.setStyle(color);
+        break;
 
-    /**
-     *
-     */
-    connected() {
-        const color = this.getAttribute('color')
-        this.object3D.color.setStyle(color)
+      case 'intensity':
+        this.object3D.intensity = this.getAttribute('intensity');
+        break;
 
-        this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
+      default:
+        break;
     }
-
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') {
-            return
-        }
-        switch (mutation.attributeName) {
-            case 'color':
-                const color = this.getAttribute('color')
-                this.object3D.color.setStyle(color)
-                break
-
-            case 'intensity':
-                this.object3D.intensity = this.getAttribute('intensity')
-                break
-
-            default:
-                break
-        }
-    }
+  };
 }
 
-customElements.get('mr-light') || customElements.define('mr-light', Light)
+customElements.get('mr-light') || customElements.define('mr-light', Light);

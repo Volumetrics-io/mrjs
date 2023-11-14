@@ -17,10 +17,10 @@ b.fillRect(d,m,n,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d,m,n,p);return{do
 /***/ (() => {
 
 String.prototype.spliceSplit = function (index, count, add) {
-  const ar = this.split('')
-  ar.splice(index, count, add)
-  return ar.join('')
-}
+  const ar = this.split('');
+  ar.splice(index, count, add);
+  return ar.join('');
+};
 
 
 /***/ }),
@@ -33,12 +33,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "VIRTUAL_DISPLAY_RESOLUTION": () => (/* binding */ VIRTUAL_DISPLAY_RESOLUTION)
 /* harmony export */ });
-const VIRTUAL_DISPLAY_RESOLUTION = 1080
+const VIRTUAL_DISPLAY_RESOLUTION = 1080;
 
-__webpack_require__.g.viewPortHeight = 0
-__webpack_require__.g.viewPortWidth = 0
+__webpack_require__.g.viewPortHeight = 0;
+__webpack_require__.g.viewPortWidth = 0;
 
-__webpack_require__.g.inXR = false
+__webpack_require__.g.inXR = false;
+
 
 /***/ })
 
@@ -853,24 +854,39 @@ __webpack_require__.d(UIPlane_namespaceObject, {
 // EXTERNAL MODULE: ./src/utils/extensions.js
 var extensions = __webpack_require__(629);
 ;// CONCATENATED MODULE: ./src/core/rapier.js
-let RAPIER = null
+let RAPIER = null;
 
-__webpack_require__.e(/* import() */ 87).then(__webpack_require__.bind(__webpack_require__, 87)).then(rap => {
-    RAPIER = rap
-    document.dispatchEvent(new CustomEvent(`engine-started`, {bubbles: true}))
-})
+__webpack_require__.e(/* import() */ 87).then(__webpack_require__.bind(__webpack_require__, 87)).then((rap) => {
+  RAPIER = rap;
+  document.dispatchEvent(new CustomEvent('engine-started', { bubbles: true }));
+});
+
 ;// CONCATENATED MODULE: ./src/core/MRElement.js
 
 
+/**
+ *
+ */
 class MRElement extends HTMLElement {
+  /**
+   *
+   */
   constructor() {
-    super()
-    this.environment = null
-    this.observer = null
+    super();
+    this.environment = null;
+    this.observer = null;
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {}
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {}
 }
 
@@ -51712,470 +51728,625 @@ if ( typeof window !== 'undefined' ) {
 ;// CONCATENATED MODULE: ./src/utils/parser.js
 
 
+/**
+ *
+ * @param str
+ */
 function parseVector(str) {
-  return str.split(' ').map(Number)
+  return str.split(' ').map(Number);
 }
 
+/**
+ *
+ * @param str
+ */
 function parseDegVector(str) {
-  return str.split(' ').map((val) => { return parseFloat(val) * Math.PI / 180 })
+  return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
 }
 
+/**
+ *
+ * @param val
+ */
 function parser_radToDeg(val) {
-  return (val * Math.PI) / 180
+  return (val * Math.PI) / 180;
 }
 
+/**
+ *
+ * @param val
+ */
 function parseDimensionValue(val) {
-  if(val.includes('%')) { return parseFloat(val) / 100}
-  if(val.includes('/')) { return parseInt(val.split('/')[0]) / parseInt(val.split('/')[1])}
-  return val
+  if (val.includes('%')) {
+    return parseFloat(val) / 100;
+  }
+  if (val.includes('/')) {
+    return parseInt(val.split('/')[0]) / parseInt(val.split('/')[1]);
+  }
+  return val;
 }
 
+/**
+ *
+ * @param entity
+ */
 function setTransformValues(entity) {
-  const position = entity.getAttribute('position')
-  const scale = entity.getAttribute('scale')
-  const rotation = entity.getAttribute('rotation')
+  const position = entity.getAttribute('position');
+  const scale = entity.getAttribute('scale');
+  const rotation = entity.getAttribute('rotation');
 
   if (position) {
-    entity.object3D.position.fromArray(parseVector(position))
+    entity.object3D.position.fromArray(parseVector(position));
   }
 
   if (scale) {
-    entity.object3D.scale.fromArray(parseVector(scale))
+    entity.object3D.scale.fromArray(parseVector(scale));
   }
 
   if (rotation) {
-    const euler = new THREE.Euler()
-    const array = parseVector(rotation).map(parser_radToDeg)
-    euler.fromArray(array)
-    entity.object3D.setRotationFromEuler(euler)
+    const euler = new THREE.Euler();
+    const array = parseVector(rotation).map(parser_radToDeg);
+    euler.fromArray(array);
+    entity.object3D.setRotationFromEuler(euler);
   }
 }
 
+/**
+ *
+ * @param attrString
+ */
 function parseAttributeString(attrString) {
-  if(attrString == null) { return }
-  const regexPattern = /(\w+):\s*([^;]+)/g
-  const jsonObject = {}
+  if (attrString == null) {
+    return;
+  }
+  const regexPattern = /(\w+):\s*([^;]+)/g;
+  const jsonObject = {};
 
-  let match
+  let match;
   while ((match = regexPattern.exec(attrString)) !== null) {
-    const key = match[1].trim()
-    let value = match[2].trim()
+    const key = match[1].trim();
+    let value = match[2].trim();
 
     // Check value type and convert if necessary
     if (value.includes(' ')) {
-      value = value.split(' ').map((v) => parseFloat(v))
+      value = value.split(' ').map((v) => parseFloat(v));
     } else if (/^\d+(\.\d+)?$/.test(value)) {
-      value = parseFloat(value)
+      value = parseFloat(value);
     } else if (value === 'true') {
-      value = true
+      value = true;
     } else if (value === 'false') {
-      value = false
+      value = false;
     }
 
-    jsonObject[key] = value
+    jsonObject[key] = value;
   }
 
-  return jsonObject
+  return jsonObject;
 }
 
-
-function roundTo(val, decimal){
-  return Math.round(val * decimal) / decimal
+/**
+ *
+ * @param val
+ * @param decimal
+ */
+function roundTo(val, decimal) {
+  return Math.round(val * decimal) / decimal;
 }
 
-function roundVectorTo(vector, decimal){
-  vector.multiplyScalar(decimal)
-  vector.roundToZero()
-  vector.divideScalar(decimal)
+/**
+ *
+ * @param vector
+ * @param decimal
+ */
+function roundVectorTo(vector, decimal) {
+  vector.multiplyScalar(decimal);
+  vector.roundToZero();
+  vector.divideScalar(decimal);
 }
+
 ;// CONCATENATED MODULE: ./src/core/entity.js
 
 
 
 
+/**
+ *
+ */
 class Entity extends MRElement {
-
   physics = {
-    type: 'none'
-  }
+    type: 'none',
+  };
 
-  aabb = new Box3()
-  size = new three_module_Vector3()
+  aabb = new Box3();
 
+  size = new three_module_Vector3();
+
+  /**
+   *
+   */
   get width() {
-    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth;
   }
 
+  /**
+   *
+   */
   get contentWidth() {
-    this.aabb.setFromObject(this.object3D).getSize(this.size)
-    return this.size.x
+    this.aabb.setFromObject(this.object3D).getSize(this.size);
+    return this.size.x;
   }
 
+  /**
+   *
+   */
   get height() {
-    let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
-    return (styleHeight / window.innerHeight) * __webpack_require__.g.viewPortHeight
-
+    const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
+    return (styleHeight / window.innerHeight) * __webpack_require__.g.viewPortHeight;
   }
 
+  /**
+   *
+   */
   get contentHeight() {
-    this.aabb.setFromObject(this.object3D).getSize(this.size)
-    return this.size.y
+    this.aabb.setFromObject(this.object3D).getSize(this.size);
+    return this.size.y;
   }
 
-  #zOffeset = 0.001
+  #zOffeset = 0.001;
+
+  /**
+   *
+   */
   set zOffeset(value) {
-    this.#zOffeset = value
+    this.#zOffeset = value;
   }
+
+  /**
+   *
+   */
   get zOffeset() {
-    return this.#zOffeset
+    return this.#zOffeset;
   }
 
-  layer = 0
+  layer = 0;
 
+  /**
+   *
+   */
   constructor() {
-    super()
+    super();
 
     Object.defineProperty(this, 'isApp', {
       value: false,
       writable: false,
-    })
+    });
 
-    this.object3D = new Group()
-    this.components = new Set()
-    this.object3D.userData.bbox = new Box3()
-    this.object3D.userData.size = new three_module_Vector3()
+    this.object3D = new Group();
+    this.components = new Set();
+    this.object3D.userData.bbox = new Box3();
+    this.object3D.userData.size = new three_module_Vector3();
 
-    this.object3D.receiveShadow = true
-    this.object3D.renderOrder = 3
+    this.object3D.receiveShadow = true;
+    this.object3D.renderOrder = 3;
 
-    this.scale = 1
+    this.scale = 1;
 
-    this.componentMutated = this.componentMutated.bind(this)
+    this.componentMutated = this.componentMutated.bind(this);
 
-    this.touch = false
-    this.grabbed = false
-    this.focus = false
-
+    this.touch = false;
+    this.grabbed = false;
+    this.focus = false;
   }
 
-  updatePhysicsData() {
-
-  }
+  /**
+   *
+   */
+  updatePhysicsData() {}
 
   onHover = (event) => {
-    //console.log(`${event.detail.joint} hover at:`, event.detail.position);
-  }
+    // console.log(`${event.detail.joint} hover at:`, event.detail.position);
+  };
 
   onTouch = (event) => {
-    //console.log(`${event.detail.joint} touch at:`, event.detail.position);
-  }
+    // console.log(`${event.detail.joint} touch at:`, event.detail.position);
+  };
 
   onScroll = (event) => {
-    this.parentElement?.onScroll(event)
-  }
+    this.parentElement?.onScroll(event);
+  };
 
+  /**
+   *
+   */
   connectedCallback() {
-    this.compStyle = window.getComputedStyle(this)
+    this.compStyle = window.getComputedStyle(this);
 
     if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
-      return
+      return;
     }
-    this.parentElement.add(this)
+    this.parentElement.add(this);
 
-    this.parent = this.parentElement
+    this.parent = this.parentElement;
 
     if (this.parentElement.user) {
-      this.user = this.parentElement.user
+      this.user = this.parentElement.user;
     }
     if (this.parentElement.env) {
-      this.env = this.parentElement.env
+      this.env = this.parentElement.env;
     }
 
-    this.object3D.userData.element = this
+    this.object3D.userData.element = this;
 
-    this.object3D.userData.bbox = new Box3()
-    this.object3D.userData.size = new three_module_Vector3()
+    this.object3D.userData.bbox = new Box3();
+    this.object3D.userData.size = new three_module_Vector3();
 
-    this.object3D.userData.bbox.setFromObject(this.object3D)
+    this.object3D.userData.bbox.setFromObject(this.object3D);
 
-    this.object3D.userData.bbox.getSize(this.object3D.userData.size)
+    this.object3D.userData.bbox.getSize(this.object3D.userData.size);
 
-    this.mutationCallback = this.mutationCallback.bind(this)
-    this.observer = new MutationObserver(this.mutationCallback)
-    this.observer.observe(this, { attributes: true, childList: true })
+    this.mutationCallback = this.mutationCallback.bind(this);
+    this.observer = new MutationObserver(this.mutationCallback);
+    this.observer.observe(this, { attributes: true, childList: true });
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      this.loadAttributes()
+      this.loadAttributes();
+    });
+    this.loadAttributes();
 
-    })
-    this.loadAttributes()
-
-    this.connected()
+    this.connected();
 
     document.addEventListener('engine-started', (event) => {
-      this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-    })
+      this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+    });
 
-    this.addEventListener('touch-start', (event) => { this.onTouch(event) })
-    this.addEventListener('touch', (event) => { this.onTouch(event) })
-    this.addEventListener('touch-end', (event) => { this.onTouch(event) })
-    this.addEventListener('hover-start', (event) => { this.onHover(event) })
-    this.addEventListener('hover-end', (event) => { this.onHover(event) })
+    this.addEventListener('touch-start', (event) => {
+      this.onTouch(event);
+    });
+    this.addEventListener('touch', (event) => {
+      this.onTouch(event);
+    });
+    this.addEventListener('touch-end', (event) => {
+      this.onTouch(event);
+    });
+    this.addEventListener('hover-start', (event) => {
+      this.onHover(event);
+    });
+    this.addEventListener('hover-end', (event) => {
+      this.onHover(event);
+    });
 
-    this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
+    this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
   }
 
+  /**
+   *
+   */
   loadAttributes() {
-    this.components = new Set()
+    this.components = new Set();
     for (const attr of this.attributes) {
       switch (attr.name.split('-')[0]) {
         case 'comp':
-          this.componentMutated(attr.name)
-          break
+          this.componentMutated(attr.name);
+          break;
         case 'rotation':
-          this.object3D.rotation.fromArray(parseDegVector(attr.value))
-          break
+          this.object3D.rotation.fromArray(parseDegVector(attr.value));
+          break;
         case 'position':
-          this.object3D.position.fromArray(parseVector(attr.value))
-          break
+          this.object3D.position.fromArray(parseVector(attr.value));
+          break;
         case 'zoffset':
-          this.zOffeset = parseFloat(attr.value)
-          break
+          this.zOffeset = parseFloat(attr.value);
+          break;
         case 'layer':
-          this.layer = parseFloat(attr.value)
-          this.object3D.layers.set(this.layer)
-          break
+          this.layer = parseFloat(attr.value);
+          this.object3D.layers.set(this.layer);
+          break;
       }
     }
   }
 
+  /**
+   *
+   */
   connected() {}
 
+  /**
+   *
+   */
   disconnected() {}
 
-
+  /**
+   *
+   */
   disconnectedCallback() {
     while (this.object3D.parent) {
-      this.object3D.removeFromParent()
+      this.object3D.removeFromParent();
     }
 
-    if(this.physics){
-      this.env.physicsWorld.removeRigidBody(this.physics.body)
+    if (this.physics) {
+      this.env.physicsWorld.removeRigidBody(this.physics.body);
     }
 
-    this.environment = null
-    this.observer.disconnect()
+    this.environment = null;
+    this.observer.disconnect();
 
-    this.disconnected()
+    this.disconnected();
   }
 
-  mutated(mutation) {
+  /**
+   *
+   * @param mutation
+   */
+  mutated(mutation) {}
 
-  }
-
+  /**
+   *
+   * @param mutationList
+   * @param observer
+   */
   mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
-      this.mutated(mutation)
+      this.mutated(mutation);
 
       if (mutation.type != 'attributes') {
-        continue
+        continue;
       }
       if (mutation.attributeName.startsWith('comp-')) {
-        this.componentMutated(mutation.attributeName)
+        this.componentMutated(mutation.attributeName);
       }
 
       switch (mutation.attributeName) {
         case 'position':
-          this.object3D.position.fromArray(parseVector(this.getAttribute('position')))
+          this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
           console.log(this.object3D.position);
           break;
         case 'scale':
-          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')))
-          break
+          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
+          break;
         case 'rotation':
-          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')))
-          break
+          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
+          break;
 
         default:
           break;
       }
-        this.traverse((child) => {
-          if (!child.physics) { return }
-          child.physics.update = true
-        })
-      }
+      this.traverse((child) => {
+        if (!child.physics) {
+          return;
+        }
+        child.physics.update = true;
+      });
+    }
   }
 
+  /**
+   *
+   * @param componentName
+   */
   componentMutated(componentName) {
-    const component = this.getAttribute(componentName)
+    const component = this.getAttribute(componentName);
     if (!component) {
-      this.components.delete(componentName)
+      this.components.delete(componentName);
       this.dispatchEvent(
         new CustomEvent(`${componentName}-detached`, {
           bubbles: true,
           detail: { entity: this, component },
-        })
-      )
+        }),
+      );
     } else if (!this.components.has(componentName)) {
-      this.components.add(componentName)
+      this.components.add(componentName);
       this.dispatchEvent(
         new CustomEvent(`${componentName}-attached`, {
           bubbles: true,
           detail: { entity: this, component },
-        })
-      )
+        }),
+      );
     } else {
       this.dispatchEvent(
         new CustomEvent(`${componentName}-updated`, {
           bubbles: true,
           detail: this,
           detail: { entity: this, component },
-        })
-      )
+        }),
+      );
     }
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    entity.object3D.receiveShadow = true
-    entity.object3D.renderOrder = 3
-    this.object3D.add(entity.object3D)
+    entity.object3D.receiveShadow = true;
+    entity.object3D.renderOrder = 3;
+    this.object3D.add(entity.object3D);
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.object3D.remove(entity.object3D)
+    this.object3D.remove(entity.object3D);
   }
 
+  /**
+   *
+   * @param callBack
+   */
   traverse(callBack) {
-    callBack(this)
-    const children = Array.from(this.children)
+    callBack(this);
+    const children = Array.from(this.children);
     for (const child of children) {
       // if o is an object, traverse it again
       if (!child instanceof Entity) {
-        continue
+        continue;
       }
-      child.traverse(callBack)
+      child.traverse(callBack);
     }
   }
 }
 
-customElements.get('mr-entity') || customElements.define('mr-entity', Entity)
+customElements.get('mr-entity') || customElements.define('mr-entity', Entity);
 
 ;// CONCATENATED MODULE: ./src/core/System.js
 
 
+/**
+ *
+ */
 class System {
+  frameRate = null;
 
-  frameRate = null
-  delta = 0
+  delta = 0;
 
+  /**
+   *
+   * @param useComponents
+   * @param frameRate
+   */
   constructor(useComponents = true, frameRate = null) {
-    this.app = document.querySelector('mr-app')
+    this.app = document.querySelector('mr-app');
 
     if (!this.app) {
-      return
+      return;
     }
 
-    this.frameRate = frameRate
+    this.frameRate = frameRate;
     // Need a way to register and deregister systems per environment
-    this.registry = new Set()
+    this.registry = new Set();
 
-    this.systemName = this.constructor.name.toLowerCase().split('system')[0]
-    this.componentName = `comp-${this.systemName}`
+    this.systemName = this.constructor.name.toLowerCase().split('system')[0];
+    this.componentName = `comp-${this.systemName}`;
 
-    this.app.registerSystem(this)
+    this.app.registerSystem(this);
 
-    if(useComponents) {
-      document.addEventListener(`${this.componentName}-attached`, this.onAttach)
-      document.addEventListener(`${this.componentName}-updated`, this.onUpdate)
-      document.addEventListener(`${this.componentName}-detached`, this.onDetatch)
+    if (useComponents) {
+      document.addEventListener(`${this.componentName}-attached`, this.onAttach);
+      document.addEventListener(`${this.componentName}-updated`, this.onUpdate);
+      document.addEventListener(`${this.componentName}-detached`, this.onDetatch);
     }
 
     this.app.addEventListener('new-entity', (event) => {
-      if (this.registry.has(event.target)) { return }
-      this.onNewEntity(event.target)
-    })
+      if (this.registry.has(event.target)) {
+        return;
+      }
+      this.onNewEntity(event.target);
+    });
 
-    const entities = document.querySelectorAll(`[${this.componentName}]`)
+    const entities = document.querySelectorAll(`[${this.componentName}]`);
     for (const entity of entities) {
       if (!(entity instanceof Entity)) {
-        return
+        return;
       }
-      this.registry.add(entity)
+      this.registry.add(entity);
     }
   }
 
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
   __update(deltaTime, frame) {
-    if(this.frameRate) {
-      this.delta += deltaTime
-      if (this.delta < this.frameRate) { return }
+    if (this.frameRate) {
+      this.delta += deltaTime;
+      if (this.delta < this.frameRate) {
+        return;
+      }
     }
-    this.update(deltaTime, frame)
-    this.delta = 0
+    this.update(deltaTime, frame);
+    this.delta = 0;
   }
 
   // Called per frame
-  update(deltaTime, frame) {
-  }
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
+  update(deltaTime, frame) {}
 
   // called when a new entity is added to the scene
-  onNewEntity (entity) {
-  }
+  /**
+   *
+   * @param entity
+   */
+  onNewEntity(entity) {}
 
   // called when the component is initialized
+  /**
+   *
+   * @param entity
+   * @param data
+   */
   attachedComponent(entity, data) {
-    console.log(`attached ${this.componentName} ${data}}`)
+    console.log(`attached ${this.componentName} ${data}}`);
   }
 
+  /**
+   *
+   * @param entity
+   * @param data
+   */
   updatedComponent(entity, data) {
-    console.log(`updated ${this.componentName} ${data}}`)
+    console.log(`updated ${this.componentName} ${data}}`);
   }
 
   // called when the component is removed
+  /**
+   *
+   * @param entity
+   */
   detachedComponent(entity) {
-    console.log(`detached ${this.componentName}`)
+    console.log(`detached ${this.componentName}`);
   }
 
   onAttach = (event) => {
-    this.registry.add(event.detail.entity)
-    let data = this.parseComponentString(event.detail.component)
-    this.attachedComponent(event.detail.entity, data)
-  }
+    this.registry.add(event.detail.entity);
+    const data = this.parseComponentString(event.detail.component);
+    this.attachedComponent(event.detail.entity, data);
+  };
 
   onUpdate = (event) => {
-    let data = this.parseComponentString(event.detail.component)
-    this.updatedComponent(event.detail.entity, data)
-  }
+    const data = this.parseComponentString(event.detail.component);
+    this.updatedComponent(event.detail.entity, data);
+  };
 
   onDetatch = (event) => {
-    this.registry.delete(event.detail.entity)
-    this.detachedComponent(event.detail.entity)
-  }
+    this.registry.delete(event.detail.entity);
+    this.detachedComponent(event.detail.entity);
+  };
 
   // lol chatGPT made this.
+  /**
+   *
+   * @param compString
+   */
   parseComponentString(compString) {
-    const regexPattern = /(\w+):\s*([^;]+)/g
-    const jsonObject = {}
+    const regexPattern = /(\w+):\s*([^;]+)/g;
+    const jsonObject = {};
 
-    let match
+    let match;
     while ((match = regexPattern.exec(compString)) !== null) {
-      const key = match[1].trim()
-      let value = match[2].trim()
+      const key = match[1].trim();
+      let value = match[2].trim();
 
       // Check value type and convert if necessary
       if (value.includes(' ')) {
-        value = value.split(' ').map((v) => parseFloat(v))
+        value = value.split(' ').map((v) => parseFloat(v));
       } else if (/^\d+(\.\d+)?$/.test(value)) {
-        value = parseFloat(value)
+        value = parseFloat(value);
       } else if (value === 'true') {
-        value = true
+        value = true;
       } else if (value === 'false') {
-        value = false
+        value = false;
       }
 
-      jsonObject[key] = value
+      jsonObject[key] = value;
     }
 
-    return jsonObject
+    return jsonObject;
   }
 }
 
@@ -59970,209 +60141,264 @@ function groupCaretsByRow(textRenderInfo) {
 
 
 
-
+/**
+ *
+ */
 class TextSystem extends System {
+  /**
+   *
+   */
   constructor() {
-    super(false, 1 / 30)
+    super(false, 1 / 30);
 
-    this.preloadedFonts = {}
+    this.preloadedFonts = {};
 
-    this.styles = {}
+    this.styles = {};
     const styleSheets = Array.from(document.styleSheets);
 
-    styleSheets.forEach(styleSheet => {
-      const cssRules = Array.from(styleSheet.cssRules)
+    styleSheets.forEach((styleSheet) => {
+      const cssRules = Array.from(styleSheet.cssRules);
       // all the font-faces rules
-      const rulesFontFace = cssRules.filter(rule => rule.cssText.startsWith('@font-face'));
+      const rulesFontFace = cssRules.filter((rule) => rule.cssText.startsWith('@font-face'));
 
-      rulesFontFace.forEach(fontFace => {
-          let fontData = this.parseFontFace(fontFace.cssText)
+      rulesFontFace.forEach((fontFace) => {
+        const fontData = this.parseFontFace(fontFace.cssText);
 
-          preloadFont(
-            {
-              font: fontData.src
-            },
-            () => {
-              this.preloadedFonts[fontFace.style.fontFamily] = fontData.src
-            }
-          )
-
+        preloadFont(
+          {
+            font: fontData.src,
+          },
+          () => {
+            this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
+          },
+        );
       });
     });
 
-    
-
-    const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-texteditor')
+    const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-texteditor');
     for (const entity of entities) {
-      this.registry.add(entity)
-      this.addText(entity)
+      this.registry.add(entity);
+      this.addText(entity);
       entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.height / 2)
-        })
+        entity.textObj.position.setY(entity.height / 2);
+      });
     }
   }
 
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
   update(deltaTime, frame) {
-    for( const entity of this.registry) {
-      let text = entity.textContent.trim()
+    for (const entity of this.registry) {
+      const text = entity.textContent.trim();
       if (entity.textObj.text != text) {
-        entity.textObj.text = text.length > 0 ? text : ' '
-        entity.textObj.sync()
+        entity.textObj.text = text.length > 0 ? text : ' ';
+        entity.textObj.sync();
       }
 
       if (entity.needsUpdate) {
-        this.updateStyle(entity)
-        entity.needsUpdate = false
+        this.updateStyle(entity);
+        entity.needsUpdate = false;
         entity.textObj.sync(() => {
-              entity.textObj.position.setY(entity.height / 2)
-        })
+          entity.textObj.position.setY(entity.height / 2);
+        });
       }
-
     }
   }
 
   updateStyle = (entity) => {
+    const { textObj } = entity;
 
-    let textObj = entity.textObj
+    textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
+    textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
+    textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
+    textObj.fontStyle = entity.compStyle.fontStyle;
 
-    textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font
-    textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity)
-    textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight)
-    textObj.fontStyle = entity.compStyle.fontStyle
+    textObj.anchorX = 'center';
+    textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity);
 
-    textObj.anchorX = 'center'
-    textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity)
+    textObj.textAlign = this.setTextAlign(entity.compStyle.textAlign);
+    textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
-    textObj.textAlign = this.setTextAlign(entity.compStyle.textAlign)
-    textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity)
+    textObj.material.opacity = entity.compStyle.opacity ?? 1;
 
-    textObj.material.opacity = entity.compStyle.opacity ?? 1
+    this.setColor(textObj, entity.compStyle.color);
 
-    this.setColor(textObj, entity.compStyle.color)
+    textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
+    textObj.maxWidth = entity.width;
 
-    
-    textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace
-    textObj.maxWidth = entity.width
-
-    textObj.position.z = 0.0001
-
-  }
+    textObj.position.z = 0.0001;
+  };
 
   addText = (entity) => {
+    const text = entity.textContent.trim();
+    entity.textObj.text = text.length > 0 ? text : ' ';
 
-    let text = entity.textContent.trim()
-    entity.textObj.text = text.length > 0 ? text : ' '
+    this.updateStyle(entity);
+  };
 
-    this.updateStyle(entity)
-  }
-
+  /**
+   *
+   * @param weight
+   */
   parseFontWeight(weight) {
-    if(weight >= 500) {
-      return "bold"
+    if (weight >= 500) {
+      return 'bold';
     }
 
-    return "normal"
+    return 'normal';
   }
 
+  /**
+   *
+   * @param verticalAlign
+   * @param entity
+   */
   getVerticalAlign(verticalAlign, entity) {
-    let result = this.parseFontSize(verticalAlign, entity)
+    let result = this.parseFontSize(verticalAlign, entity);
 
-    if(typeof result == 'number') {
-      result = result / this.parseFontSize(entity.compStyle.fontSize, entity)
+    if (typeof result === 'number') {
+      result /= this.parseFontSize(entity.compStyle.fontSize, entity);
     }
 
     switch (result) {
       case 'baseline':
       case 'sub':
       case 'super':
-        return 0
+        return 0;
       case 'text-top':
-        return 'top-cap'
+        return 'top-cap';
       case 'text-bottom':
-        return 'bottom'
+        return 'bottom';
       default:
-        return result
+        return result;
     }
   }
 
+  /**
+   *
+   * @param lineHeight
+   * @param entity
+   */
   getLineHeight(lineHeight, entity) {
-    let result = this.parseFontSize(lineHeight, entity)
+    let result = this.parseFontSize(lineHeight, entity);
 
-    if(typeof result == 'number') {
-      result = result / this.parseFontSize(entity.compStyle.fontSize, entity)
+    if (typeof result === 'number') {
+      result /= this.parseFontSize(entity.compStyle.fontSize, entity);
     }
 
-    return result
+    return result;
   }
 
+  /**
+   *
+   * @param textAlign
+   */
   setTextAlign(textAlign) {
     switch (textAlign) {
       case 'start':
       case 'left':
-        return 'left'
+        return 'left';
       case 'end':
       case 'right':
-        return 'right'
+        return 'right';
       default:
-        return textAlign
+        return textAlign;
     }
   }
 
+  /**
+   *
+   * @param textObj
+   * @param color
+   */
   setColor(textObj, color) {
     if (color.includes('rgba')) {
-      let rgba = color.substring(5, color.length - 1).split(',').map(part => parseFloat(part.trim()));
-      textObj.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`)
+      const rgba = color
+        .substring(5, color.length - 1)
+        .split(',')
+        .map((part) => parseFloat(part.trim()));
+      textObj.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
 
-      textObj.material.opacity = rgba[3]
-
+      textObj.material.opacity = rgba[3];
     } else {
-      textObj.material.color.setStyle(color ?? '#000')
-
+      textObj.material.color.setStyle(color ?? '#000');
     }
   }
 
+  /**
+   *
+   * @param val
+   * @param el
+   */
   parseFontSize(val, el) {
-    let result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
+    const result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION;
     if (__webpack_require__.g.inXR) {
-      return result * el.windowHorizontalScale
+      return result * el.windowHorizontalScale;
     }
-    return result
+    return result;
   }
 
-  getEM(el) {
+  /**
+   *
+   * @param el
+   */
+  getEM(el) {}
 
-  }
+  /**
+   *
+   * @param el
+   */
+  getREM(el) {}
 
-  getREM(el) {
-    
-  }
-
+  /**
+   *
+   * @param el
+   */
   getVH(el) {
-    return el.closest('mr-container').absoluteHeight
+    return el.closest('mr-container').absoluteHeight;
   }
 
+  /**
+   *
+   * @param el
+   */
   getVW(el) {
-    return el.closest('mr-container').absoluteWidth
+    return el.closest('mr-container').absoluteWidth;
   }
 
+  /**
+   *
+   * @param el
+   */
   getVMax(el) {
-    return Math.max(this.getVH(el), this.getVW(el))
+    return Math.max(this.getVH(el), this.getVW(el));
   }
 
+  /**
+   *
+   * @param el
+   */
   getVMin(el) {
-    return Math.min(this.getVH(el), this.getVW(el))
+    return Math.min(this.getVH(el), this.getVW(el));
   }
 
+  /**
+   *
+   * @param cssString
+   */
   parseFontFace(cssString) {
     const obj = {};
     const match = cssString.match(/@font-face\s*{\s*([^}]*)\s*}/);
-  
+
     if (match) {
       const fontFaceAttributes = match[1];
       const attributes = fontFaceAttributes.split(';');
-      
-      attributes.forEach(attribute => {
-        const [key, value] = attribute.split(':').map(item => item.trim());
+
+      attributes.forEach((attribute) => {
+        const [key, value] = attribute.split(':').map((item) => item.trim());
         if (key === 'src') {
           const urlMatch = value.match(/url\("([^"]+)"\)/);
           if (urlMatch) {
@@ -60183,10 +60409,9 @@ class TextSystem extends System {
         }
       });
     }
-  
+
     return obj;
   }
-
 }
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
@@ -66894,8 +67119,8 @@ class XRHandModelFactory {
 
 
 
-const INPUT_COLLIDER_HANDLE_NAMES = {}
-const COLLIDER_ENTITY_MAP = {}
+const INPUT_COLLIDER_HANDLE_NAMES = {};
+const COLLIDER_ENTITY_MAP = {};
 
 // The physics system functions differently from other systems,
 // Rather than attaching components, physical properties such as
@@ -66906,270 +67131,300 @@ const COLLIDER_ENTITY_MAP = {}
 //
 // Alternatively, you can also expressly attatch a comp-physics
 // attribute for more detailed control.
+/**
+ *
+ */
 class RapierPhysicsSystem extends System {
+  /**
+   *
+   */
   constructor() {
-    super(false)
-    this.debug = this.app.debug
-    this.tempWorldPosition = new three_module_Vector3()
+    super(false);
+    this.debug = this.app.debug;
+    this.tempWorldPosition = new three_module_Vector3();
 
-    this.currentEntity = null
+    this.currentEntity = null;
 
-    this.tempLocalPosition = new three_module_Vector3()
-    this.tempPreviousPosition = new three_module_Vector3()
-    this.touchDelta = new three_module_Vector3()
+    this.tempLocalPosition = new three_module_Vector3();
+    this.tempPreviousPosition = new three_module_Vector3();
+    this.touchDelta = new three_module_Vector3();
 
-    this.tempWorldScale = new three_module_Vector3()
-    this.tempWorldQuaternion = new Quaternion()
-    this.tempHalfExtents = new three_module_Vector3()
+    this.tempWorldScale = new three_module_Vector3();
+    this.tempWorldQuaternion = new Quaternion();
+    this.tempHalfExtents = new three_module_Vector3();
 
     this.eventQueue = new RAPIER.EventQueue(true);
 
-    if (this.debug && this.debug == "true") {
+    if (this.debug && this.debug == 'true') {
       const material = new LineBasicMaterial({
         color: 0xffffff,
         vertexColors: true,
-      })
-      const geometry = new three_module_BufferGeometry()
-      this.lines = new LineSegments(geometry, material)
-      this.app.scene.add(this.lines)
+      });
+      const geometry = new three_module_BufferGeometry();
+      this.lines = new LineSegments(geometry, material);
+      this.app.scene.add(this.lines);
     }
   }
 
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
   update(deltaTime, frame) {
     this.app.physicsWorld.step(this.eventQueue);
 
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       /* Handle the collision event. */
 
-      if(started) {
-        this.onContactStart(handle1, handle2)
+      if (started) {
+        this.onContactStart(handle1, handle2);
       } else {
-        this.onContactEnd(handle1, handle2)
+        this.onContactEnd(handle1, handle2);
       }
-
     });
 
     for (const entity of this.registry) {
-      if (entity.physics?.body == null) { continue }
-      this.updateBody(entity)
+      if (entity.physics?.body == null) {
+        continue;
+      }
+      this.updateBody(entity);
 
-        this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-          let joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
+      this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+        const joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
 
-          if (joint) {
-            if(!joint.includes('hover') && entity.touch) {
-              this.tempPreviousPosition.copy(this.tempLocalPosition)
+        if (joint) {
+          if (!joint.includes('hover') && entity.touch) {
+            this.tempPreviousPosition.copy(this.tempLocalPosition);
 
-              this.tempLocalPosition.copy(collider2.translation())
-              entity.object3D.worldToLocal(this.tempLocalPosition)
+            this.tempLocalPosition.copy(collider2.translation());
+            entity.object3D.worldToLocal(this.tempLocalPosition);
 
-              this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition)
-              
-              entity.dispatchEvent(new CustomEvent(`touch`, {
+            this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
+
+            entity.dispatchEvent(
+              new CustomEvent('touch', {
                 bubbles: true,
                 detail: {
-                  joint: joint,
+                  joint,
                   worldPosition: collider2.translation(),
                   position: this.tempLocalPosition,
-                  delta: this.touchDelta
-                }}))
-
-            }
+                  delta: this.touchDelta,
+                },
+              }),
+            );
           }
-        })
-
+        }
+      });
     }
 
-    this.updateDebugRenderer()
+    this.updateDebugRenderer();
   }
 
-  onContactStart = ( handle1, handle2 ) => {
-    let collider1 = this.app.physicsWorld.colliders.get(handle1)
-    let collider2 = this.app.physicsWorld.colliders.get(handle2)
+  onContactStart = (handle1, handle2) => {
+    const collider1 = this.app.physicsWorld.colliders.get(handle1);
+    const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
-    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
-    let entity =  COLLIDER_ENTITY_MAP[handle2]
+    const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
+    const entity = COLLIDER_ENTITY_MAP[handle2];
 
-    if (joint && entity && !joint.includes('hover')){
+    if (joint && entity && !joint.includes('hover')) {
       // if(this.currentEntity) {
       //   return
       // }
-      this.touchStart(collider1, collider2, entity)
-      return
+      this.touchStart(collider1, collider2, entity);
+      return;
     }
 
-    if (joint && entity && joint.includes('hover')){
-      this.hoverStart(collider1, collider2, entity)
-      return
+    if (joint && entity && joint.includes('hover')) {
+      this.hoverStart(collider1, collider2, entity);
     }
+  };
 
-  }
-
+  /**
+   *
+   * @param handle1
+   * @param handle2
+   */
   onContactEnd(handle1, handle2) {
-    let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
-    let entity =  COLLIDER_ENTITY_MAP[handle2]
+    const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
+    const entity = COLLIDER_ENTITY_MAP[handle2];
 
-    if (joint && entity && !joint.includes('hover')){
+    if (joint && entity && !joint.includes('hover')) {
       // if(entity != this.currentEntity) {
       //   return
       // }
-      this.touchEnd(entity)
-      return
+      this.touchEnd(entity);
+      return;
     }
 
-    if (joint && entity && joint.includes('hover')){
-      this.hoverEnd(entity)
-      return
+    if (joint && entity && joint.includes('hover')) {
+      this.hoverEnd(entity);
     }
   }
 
   touchStart = (collider1, collider2, entity) => {
-    this.currentEntity = entity
-    entity.touch = true
+    this.currentEntity = entity;
+    entity.touch = true;
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+      this.app.focusEntity = entity;
+      this.tempLocalPosition.copy(manifold.localContactPoint2(0));
+      this.tempWorldPosition.copy(manifold.localContactPoint2(0));
+      entity.object3D.localToWorld(this.tempWorldPosition);
 
-      this.app.focusEntity = entity
-      this.tempLocalPosition.copy(manifold.localContactPoint2(0))
-      this.tempWorldPosition.copy(manifold.localContactPoint2(0))
-      entity.object3D.localToWorld(this.tempWorldPosition)
-
-      // Contact information can be read from `manifold`. 
+      // Contact information can be read from `manifold`.
       entity.dispatchEvent(
-        new CustomEvent(`click`, {
+        new CustomEvent('click', {
           bubbles: true,
           detail: {
             worldPosition: this.tempWorldPosition,
-            position: this.tempLocalPosition
+            position: this.tempLocalPosition,
           },
-        }))
+        }),
+      );
       entity.dispatchEvent(
-        new CustomEvent(`touch-start`, {
+        new CustomEvent('touch-start', {
           bubbles: true,
           detail: {
             worldPosition: this.tempWorldPosition,
-            position: this.tempLocalPosition
+            position: this.tempLocalPosition,
           },
-        })
-      )
-   });
-  }
+        }),
+      );
+    });
+  };
 
   touchEnd = (entity) => {
-    this.currentEntity = null
-      // Contact information can be read from `manifold`. 
-      this.tempPreviousPosition.set(0,0,0)
-      this.tempLocalPosition.set(0,0,0)
-      this.tempWorldPosition.set(0,0,0)
-      entity.touch = false
-      entity.dispatchEvent(
-        new CustomEvent(`touch-end`, {
-          bubbles: true,
-        })
-      )
-  }
+    this.currentEntity = null;
+    // Contact information can be read from `manifold`.
+    this.tempPreviousPosition.set(0, 0, 0);
+    this.tempLocalPosition.set(0, 0, 0);
+    this.tempWorldPosition.set(0, 0, 0);
+    entity.touch = false;
+    entity.dispatchEvent(
+      new CustomEvent('touch-end', {
+        bubbles: true,
+      }),
+    );
+  };
 
   hoverStart = (collider1, collider2, entity) => {
     this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-      this.tempLocalPosition.copy(manifold.localContactPoint2(0))
-      this.tempWorldPosition.copy(manifold.localContactPoint2(0))
-      entity.object3D.localToWorld(this.tempWorldPosition)
+      this.tempLocalPosition.copy(manifold.localContactPoint2(0));
+      this.tempWorldPosition.copy(manifold.localContactPoint2(0));
+      entity.object3D.localToWorld(this.tempWorldPosition);
       entity.dispatchEvent(
-        new CustomEvent(`hover-start`, {
+        new CustomEvent('hover-start', {
           bubbles: true,
           detail: {
             worldPosition: this.tempWorldPosition,
-            position: this.tempLocalPosition
+            position: this.tempLocalPosition,
           },
-        })
-      )
-    })
-  }
+        }),
+      );
+    });
+  };
 
   hoverEnd = (entity) => {
     entity.dispatchEvent(
-      new CustomEvent(`hover-end`, {
-        bubbles: true
-      })
-    )
-  }
+      new CustomEvent('hover-end', {
+        bubbles: true,
+      }),
+    );
+  };
 
+  /**
+   *
+   * @param entity
+   */
   onNewEntity(entity) {
-    this.initPhysicsBody(entity)
-    this.registry.add(entity)
+    this.initPhysicsBody(entity);
+    this.registry.add(entity);
   }
 
+  /**
+   *
+   * @param entity
+   */
   initPhysicsBody(entity) {
-    if(entity.physics.type == 'none') { return }
-    entity.updatePhysicsData()
+    if (entity.physics.type == 'none') {
+      return;
+    }
+    entity.updatePhysicsData();
 
-    entity.object3D.getWorldPosition(this.tempWorldPosition)
-    entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
-      ...this.tempWorldPosition
-    )
-    entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
-    entity.physics.body.setRotation(this.tempWorldQuaternion, true)
+    entity.object3D.getWorldPosition(this.tempWorldPosition);
+    entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
+    entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+    entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
     // Create a cuboid collider attached to the dynamic rigidBody.
-    const colliderDesc = this.initColliderDesc(entity.physics)
-    entity.physics.collider = this.app.physicsWorld.createCollider(
-      colliderDesc,
-      entity.physics.body
-    )
+    const colliderDesc = this.initColliderDesc(entity.physics);
+    entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
-    COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity
+    COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
 
-    entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT|
-      RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+    entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT | RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
     entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-
   }
 
+  /**
+   *
+   * @param entity
+   */
   updateBody(entity) {
-    if(entity.physics.type == 'none') { return }
-    entity.object3D.getWorldPosition(this.tempWorldPosition)
-    entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true)
+    if (entity.physics.type == 'none') {
+      return;
+    }
+    entity.object3D.getWorldPosition(this.tempWorldPosition);
+    entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true);
 
-    entity.object3D.getWorldQuaternion(this.tempWorldQuaternion)
-    entity.physics.body.setRotation(this.tempWorldQuaternion, true)
+    entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
+    entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-    entity.updatePhysicsData()
-    this.updateCollider(entity)
-
+    entity.updatePhysicsData();
+    this.updateCollider(entity);
   }
 
+  /**
+   *
+   * @param physicsData
+   */
   initColliderDesc(physicsData) {
     switch (physicsData.type) {
       case 'box':
       case 'ui':
-        return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents)    
+        return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
       default:
         break;
     }
   }
 
+  /**
+   *
+   * @param entity
+   */
   updateCollider(entity) {
     switch (entity.physics.type) {
       case 'box':
       case 'ui':
-        entity.physics.collider.setHalfExtents(entity.physics.halfExtents)
-        break
+        entity.physics.collider.setHalfExtents(entity.physics.halfExtents);
+        break;
       default:
         break;
     }
   }
 
+  /**
+   *
+   */
   updateDebugRenderer() {
-    if(!this.debug || this.debug == "false") { return }
-    const buffers = this.app.physicsWorld.debugRender()
-    this.lines.geometry.setAttribute(
-      'position',
-      new three_module_BufferAttribute(buffers.vertices, 3)
-    )
-    this.lines.geometry.setAttribute(
-      'color',
-      new three_module_BufferAttribute(buffers.colors, 4)
-    )
+    if (!this.debug || this.debug == 'false') {
+      return;
+    }
+    const buffers = this.app.physicsWorld.debugRender();
+    this.lines.geometry.setAttribute('position', new three_module_BufferAttribute(buffers.vertices, 3));
+    this.lines.geometry.setAttribute('color', new three_module_BufferAttribute(buffers.colors, 4));
   }
 }
 
@@ -67180,8 +67435,8 @@ class RapierPhysicsSystem extends System {
 
 
 
-const HOVER_DISTANCE = 0.05
-const PINCH_DISTANCE = 0.005
+const HOVER_DISTANCE = 0.05;
+const PINCH_DISTANCE = 0.005;
 
 const joints = [
   'wrist',
@@ -67214,107 +67469,117 @@ const joints = [
 const HAND_MAPPING = {
   left: 0,
   right: 1,
-}
+};
 
+/**
+ *
+ */
 class MRHand {
+  /**
+   *
+   * @param handedness
+   * @param app
+   */
   constructor(handedness, app) {
-    this.handedness = handedness
-    this.pinch = false
-    this.hover = false
+    this.handedness = handedness;
+    this.pinch = false;
+    this.hover = false;
 
-    this.cursorPosition = new three_module_Vector3()
+    this.cursorPosition = new three_module_Vector3();
 
-    this.jointPhysicsBodies = {}
+    this.jointPhysicsBodies = {};
 
-    this.identityPosition = new three_module_Vector3()
+    this.identityPosition = new three_module_Vector3();
 
-    this.tempJointPosition = new three_module_Vector3()
-    this.tempJointOrientation = new Quaternion()
+    this.tempJointPosition = new three_module_Vector3();
+    this.tempJointOrientation = new Quaternion();
 
-    this.orientationOffset = new Quaternion( 0.7071068, 0, 0, 0.7071068)
+    this.orientationOffset = new Quaternion(0.7071068, 0, 0, 0.7071068);
 
-    this.hoverInitPosition = new three_module_Vector3()
-    this.hoverPosition = new three_module_Vector3()
+    this.hoverInitPosition = new three_module_Vector3();
+    this.hoverPosition = new three_module_Vector3();
 
-    this.controllerModelFactory = new XRControllerModelFactory()
-    this.handModelFactory = new XRHandModelFactory()
+    this.controllerModelFactory = new XRControllerModelFactory();
+    this.handModelFactory = new XRHandModelFactory();
 
-    this.mesh
-    this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness])
+    this.mesh;
+    this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness]);
 
-    this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness])
-    this.grip.add(this.controllerModelFactory.createControllerModel(this.grip))
+    this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness]);
+    this.grip.add(this.controllerModelFactory.createControllerModel(this.grip));
 
-    this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness])
-    this.model = this.handModelFactory.createHandModel(this.hand, 'mesh')
+    this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness]);
+    this.model = this.handModelFactory.createHandModel(this.hand, 'mesh');
 
-    this.hand.add(this.model)
+    this.hand.add(this.model);
 
-    this.hand.addEventListener('pinchstart', this.onPinch)
-    this.hand.addEventListener('pinchend', this.onPinch)
+    this.hand.addEventListener('pinchstart', this.onPinch);
+    this.hand.addEventListener('pinchend', this.onPinch);
 
-    app.scene.add(this.controller)
-    app.scene.add(this.grip)
-    app.scene.add(this.hand)
-    this.initPhysicsBodies(app)
+    app.scene.add(this.controller);
+    app.scene.add(this.grip);
+    app.scene.add(this.hand);
+    this.initPhysicsBodies(app);
   }
 
-  initPhysicsBodies(app){
-    for(const joint of joints) {
-      this.tempJointPosition = this.getJointPosition(joint)
-      this.tempJointOrientation = this.getJointOrientation(joint)
-      const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
-        ...this.tempJointPosition
-      )
+  /**
+   *
+   * @param app
+   */
+  initPhysicsBodies(app) {
+    for (const joint of joints) {
+      this.tempJointPosition = this.getJointPosition(joint);
+      this.tempJointOrientation = this.getJointOrientation(joint);
+      const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempJointPosition);
 
-      let colliderDesc
+      let colliderDesc;
 
-      if( joint.includes('tip') ){
-        colliderDesc = RAPIER.ColliderDesc.ball(0.015)
+      if (joint.includes('tip')) {
+        colliderDesc = RAPIER.ColliderDesc.ball(0.015);
       } else {
-        colliderDesc = RAPIER.ColliderDesc.capsule(0.01, 0.01)
+        colliderDesc = RAPIER.ColliderDesc.capsule(0.01, 0.01);
       }
 
-      this.jointPhysicsBodies[joint] = {body: app.physicsWorld.createRigidBody(rigidBodyDesc)}
-      this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation)
+      this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
+      this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);
 
-      this.jointPhysicsBodies[joint].collider = app.physicsWorld.createCollider(
-        colliderDesc,
-        this.jointPhysicsBodies[joint].body
-      )
+      this.jointPhysicsBodies[joint].collider = app.physicsWorld.createCollider(colliderDesc, this.jointPhysicsBodies[joint].body);
 
       this.jointPhysicsBodies[joint].body.enableCcd(true);
 
       // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to joint collisions
-      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT |
-        RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+      this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT | RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
       this.jointPhysicsBodies[joint].collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
 
-      if( joint.includes('index-finger-tip') ){
-        this.jointPhysicsBodies[`${joint}-hover`] = {body: app.physicsWorld.createRigidBody(rigidBodyDesc)}
-        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation)
-
+      if (joint.includes('index-finger-tip')) {
+        this.jointPhysicsBodies[`${joint}-hover`] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
+        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation);
 
         // This should be replaced with a cone or something
-        let hoverColDesc = RAPIER.ColliderDesc.ball(0.03)
-        this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(
-          hoverColDesc,
-          this.jointPhysicsBodies[`${joint}-hover`].body
-        )
-        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
-        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`
+        const hoverColDesc = RAPIER.ColliderDesc.ball(0.03);
+        this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
+        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
+        INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
       }
     }
   }
 
+  /**
+   *
+   */
   update() {
-    this.updatePhysicsBodies()
-    this.pinchMoved()
+    this.updatePhysicsBodies();
+    this.pinchMoved();
   }
 
+  /**
+   *
+   */
   pinchMoved() {
-    if(!this.pinch){ return }
-    const position = this.getCursorPosition()
+    if (!this.pinch) {
+      return;
+    }
+    const position = this.getCursorPosition();
     document.dispatchEvent(
       new CustomEvent('pinchmoved', {
         bubbles: true,
@@ -67322,47 +67587,47 @@ class MRHand {
           handedness: this.handedness,
           position,
         },
-      })
-    )
-
+      }),
+    );
   }
 
+  /**
+   *
+   */
   updatePhysicsBodies() {
-    for(const joint of joints) {
-      this.tempJointPosition = this.getJointPosition(joint)
-      this.tempJointOrientation = this.getJointOrientation(joint)
+    for (const joint of joints) {
+      this.tempJointPosition = this.getJointPosition(joint);
+      this.tempJointOrientation = this.getJointOrientation(joint);
 
-      if( !joint.includes('tip') ){
-        this.tempJointOrientation.multiply(this.orientationOffset)
+      if (!joint.includes('tip')) {
+        this.tempJointOrientation.multiply(this.orientationOffset);
       }
 
-      this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true)
-      this.jointPhysicsBodies[joint].body.setRotation(this.tempJointOrientation, true)
+      this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true);
+      this.jointPhysicsBodies[joint].body.setRotation(this.tempJointOrientation, true);
 
-      if(joint.includes('index-finger-tip')) {
-        this.jointPhysicsBodies[`${joint}-hover`].body.setTranslation({ ...this.tempJointPosition }, true)
-        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(this.tempJointOrientation, true)
+      if (joint.includes('index-finger-tip')) {
+        this.jointPhysicsBodies[`${joint}-hover`].body.setTranslation({ ...this.tempJointPosition }, true);
+        this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(this.tempJointOrientation, true);
       }
-
-      
     }
   }
 
   setMesh = () => {
     if (this.mesh) {
-      return
+      return;
     }
-    this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh')
+    this.mesh = this.hand.getObjectByProperty('type', 'SkinnedMesh');
     if (!this.mesh) {
-      return
+      return;
     }
-    this.mesh.material.colorWrite = false
-    this.mesh.renderOrder = 2
-  }
+    this.mesh.material.colorWrite = false;
+    this.mesh.renderOrder = 2;
+  };
 
   onPinch = (event) => {
-    this.pinch = event.type == 'pinchstart'
-    const position = this.getCursorPosition()
+    this.pinch = event.type == 'pinchstart';
+    const position = this.getCursorPosition();
     document.dispatchEvent(
       new CustomEvent(event.type, {
         bubbles: true,
@@ -67370,54 +67635,65 @@ class MRHand {
           handedness: this.handedness,
           position,
         },
-      })
-    )
-  }
+      }),
+    );
+  };
 
-  getJointOrientation(jointName){
-    const result = new Quaternion()
+  /**
+   *
+   * @param jointName
+   */
+  getJointOrientation(jointName) {
+    const result = new Quaternion();
 
     if (!this.mesh) {
-      return result
+      return result;
     }
-    const joint = this.mesh.skeleton.getBoneByName(jointName)
+    const joint = this.mesh.skeleton.getBoneByName(jointName);
 
     if (joint == null) {
-      return result
+      return result;
     }
 
-    joint.getWorldQuaternion(result)
+    joint.getWorldQuaternion(result);
 
-    return result
+    return result;
   }
 
+  /**
+   *
+   * @param jointName
+   */
   getJointPosition(jointName) {
-    const result = new three_module_Vector3()
+    const result = new three_module_Vector3();
 
     if (!this.mesh) {
-      result.addScalar(10000)
-      return result
+      result.addScalar(10000);
+      return result;
     }
-    const joint = this.mesh.skeleton.getBoneByName(jointName)
+    const joint = this.mesh.skeleton.getBoneByName(jointName);
 
     if (joint == null) {
-      result.addScalar(10000)
-      return result
+      result.addScalar(10000);
+      return result;
     }
 
-    joint.getWorldPosition(result)
+    joint.getWorldPosition(result);
 
     if (result.equals(this.identityPosition)) {
-      result.addScalar(10000)
+      result.addScalar(10000);
     }
 
-    return result
+    return result;
   }
 
+  /**
+   *
+   */
   getCursorPosition() {
-    const index = this.getJointPosition('index-finger-tip')
-    const thumb = this.getJointPosition('thumb-tip')
-    return index.lerp(thumb, 0.5)
+    const index = this.getJointPosition('index-finger-tip');
+    const thumb = this.getJointPosition('thumb-tip');
+    return index.lerp(thumb, 0.5);
   }
 }
 
@@ -67428,132 +67704,135 @@ class MRHand {
 
 
 
+/**
+ *
+ */
 class ControlSystem extends System {
+  /**
+   *
+   */
   constructor() {
-    super(false)
-    this.leftHand = new MRHand('left', this.app)
-    this.rightHand = new MRHand('right', this.app)
+    super(false);
+    this.leftHand = new MRHand('left', this.app);
+    this.rightHand = new MRHand('right', this.app);
 
-    this.pointerPosition = new three_module_Vector3()
+    this.pointerPosition = new three_module_Vector3();
     this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
-    this.hit
+    this.hit;
 
-    this.restPosition = new three_module_Vector3(1000,1000,1000)
-    this.hitPosition = new three_module_Vector3()
-    this.timer
+    this.restPosition = new three_module_Vector3(1000, 1000, 1000);
+    this.hitPosition = new three_module_Vector3();
+    this.timer;
 
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased();
+    const colDesc = RAPIER.ColliderDesc.ball(0.0001);
 
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-    let colDesc = RAPIER.ColliderDesc.ball(0.0001)
+    this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+    this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
-    this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
-    this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
+    this.cursorHover.collider = this.app.physicsWorld.createCollider(colDesc, this.cursorHover);
+    this.cursorClick.collider = this.app.physicsWorld.createCollider(colDesc, this.cursorClick);
 
-    this.cursorHover.collider = this.app.physicsWorld.createCollider(
-      colDesc,
-      this.cursorHover
-    )
-    this.cursorClick.collider = this.app.physicsWorld.createCollider(
-      colDesc,
-      this.cursorClick
-    )
+    this.cursorClick.setTranslation({ ...this.restPosition }, true);
+    this.cursorHover.setTranslation({ ...this.restPosition }, true);
 
-    this.cursorClick.setTranslation({ ...this.restPosition }, true)
-    this.cursorHover.setTranslation({ ...this.restPosition }, true)
+    INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor';
+    INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
 
-    INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor'
-    INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover'
+    this.cursor = this.cursorHover;
 
-    this.cursor = this.cursorHover
+    this.app.renderer.domElement.addEventListener('click', this.onClick);
+    this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown);
+    this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
+    this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
 
-
-    this.app.renderer.domElement.addEventListener('click', this.onClick)
-    this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown)
-    this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp)
-    this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver)
-
-    this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown)
-    this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp)
-    this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver)
+    this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
+    this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
+    this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
   }
 
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
   update(deltaTime, frame) {
-    this.leftHand.setMesh()
-    this.rightHand.setMesh()
+    this.leftHand.setMesh();
+    this.rightHand.setMesh();
 
-    this.leftHand.update()
-    this.rightHand.update()
+    this.leftHand.update();
+    this.rightHand.update();
   }
 
   mouseOver = (event) => {
-    event.stopPropagation()
-    
-      this.hit = this.castRay(event)
+    event.stopPropagation();
 
-      if (this.hit != null) {
+    this.hit = this.castRay(event);
 
-        this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
-        this.cursor.setTranslation({ ...this.hitPosition }, true)
-      }
-  }
+    if (this.hit != null) {
+      this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
+      this.cursor.setTranslation({ ...this.hitPosition }, true);
+    }
+  };
 
+  /**
+   *
+   * @param event
+   */
   castRay(event) {
-    let x = 0
-    let y = 0
-    if (event.type.includes('touch')){
-      x = event.touches[0].clientX
-      y = event.touches[0].clientY
+    let x = 0;
+    let y = 0;
+    if (event.type.includes('touch')) {
+      x = event.touches[0].clientX;
+      y = event.touches[0].clientY;
     } else {
-      x = event.clientX
-      y = event.clientY
+      x = event.clientX;
+      y = event.clientY;
     }
 
-    if(this.app.user instanceof OrthographicCamera) {
-      this.pointerPosition.set( ( x / window.innerWidth ) * 2 - 1, - ( y / window.innerHeight ) * 2 + 1, - 1 ); // z = - 1 important!
-      this.pointerPosition.unproject( this.app.user );
-      let direction = new three_module_Vector3(0, 0, -1)
-      direction.transformDirection( this.app.user.matrixWorld );
+    if (this.app.user instanceof OrthographicCamera) {
+      this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
+      this.pointerPosition.unproject(this.app.user);
+      const direction = new three_module_Vector3(0, 0, -1);
+      direction.transformDirection(this.app.user.matrixWorld);
 
-      this.ray.origin = {...this.pointerPosition}
-      this.ray.dir = {...direction}
-
+      this.ray.origin = { ...this.pointerPosition };
+      this.ray.dir = { ...direction };
     } else {
-      this.pointerPosition.set(( x / window.innerWidth ) * 2 - 1,
-      - ( y / window.innerHeight ) * 2 + 1,
-      0.5)
-      this.pointerPosition.unproject(this.app.user)
-      this.pointerPosition.sub( this.app.user.position ).normalize();
-      this.ray.origin = {...this.app.user.position}
-      this.ray.dir = {...this.pointerPosition}
+      this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+      this.pointerPosition.unproject(this.app.user);
+      this.pointerPosition.sub(this.app.user.position).normalize();
+      this.ray.origin = { ...this.app.user.position };
+      this.ray.dir = { ...this.pointerPosition };
     }
 
-      return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+    return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
   }
 
   removeCursor = () => {
-    this.cursorHover.setTranslation({ ...this.restPosition }, true)
-    this.cursorClick.setTranslation({ ...this.restPosition }, true)
-  }
+    this.cursorHover.setTranslation({ ...this.restPosition }, true);
+    this.cursorClick.setTranslation({ ...this.restPosition }, true);
+  };
 
   onMouseDown = (event) => {
-    event.stopPropagation()
-    this.removeCursor()
+    event.stopPropagation();
+    this.removeCursor();
 
-    this.cursor = this.cursorClick
+    this.cursor = this.cursorClick;
 
-    this.hit = this.castRay(event)
+    this.hit = this.castRay(event);
 
     if (this.hit != null) {
-      this.hitPosition.copy(this.ray.pointAt(this.hit.toi))
-      this.cursor.setTranslation({ ...this.hitPosition }, true)
+      this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
+      this.cursor.setTranslation({ ...this.hitPosition }, true);
     }
-  }
+  };
 
   onMouseUp = (event) => {
-    event.stopPropagation()
-    this.removeCursor()
-    this.cursor = this.cursorHover
-  }
+    event.stopPropagation();
+    this.removeCursor();
+    this.cursor = this.cursorHover;
+  };
 
   // onClick = (event) => {
   //   this.removeCursor()
@@ -67569,112 +67848,83 @@ class ControlSystem extends System {
 ;// CONCATENATED MODULE: ./src/geometry/UIPlane.js
 
 
+/**
+ *
+ * @param width
+ * @param height
+ * @param radii
+ * @param s
+ */
 function UIPlane(width, height, radii, s) {
   // width, height, radius corner, smoothness
 
-  let w = width == 'auto' ? 1 : width
-  let h = height == 'auto' ? 1 : height
+  const w = width == 'auto' ? 1 : width;
+  const h = height == 'auto' ? 1 : height;
 
-  let r = radii[0] == 0 ? 0.0001 : radii[0]
+  const r = radii[0] == 0 ? 0.0001 : radii[0];
 
-  if(!w || !h || !r || !s) { return }
+  if (!w || !h || !r || !s) {
+    return;
+  }
 
   // helper const's
-  const wi = w / 2 - r // inner width
-  const hi = h / 2 - r // inner height
-  const w2 = w / 2 // half width
-  const h2 = h / 2 // half height
-  const ul = r / w // u left
-  const ur = (w - r) / w // u right
-  const vl = r / h // v low
-  const vh = (h - r) / h // v high
+  const wi = w / 2 - r; // inner width
+  const hi = h / 2 - r; // inner height
+  const w2 = w / 2; // half width
+  const h2 = h / 2; // half height
+  const ul = r / w; // u left
+  const ur = (w - r) / w; // u right
+  const vl = r / h; // v low
+  const vh = (h - r) / h; // v high
 
-  const positions = [wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0]
+  const positions = [wi, hi, 0, -wi, hi, 0, -wi, -hi, 0, wi, -hi, 0];
 
-  const uvs = [ur, vh, ul, vh, ul, vl, ur, vl]
+  const uvs = [ur, vh, ul, vh, ul, vl, ur, vl];
 
-  const n = [
-    3 * (s + 1) + 3,
-    3 * (s + 1) + 4,
-    s + 4,
-    s + 5,
-    2 * (s + 1) + 4,
-    2,
-    1,
-    2 * (s + 1) + 3,
-    3,
-    4 * (s + 1) + 3,
-    4,
-    0,
-  ]
+  const n = [3 * (s + 1) + 3, 3 * (s + 1) + 4, s + 4, s + 5, 2 * (s + 1) + 4, 2, 1, 2 * (s + 1) + 3, 3, 4 * (s + 1) + 3, 4, 0];
 
-  const indices = [
-    n[0],
-    n[1],
-    n[2],
-    n[0],
-    n[2],
-    n[3],
-    n[4],
-    n[5],
-    n[6],
-    n[4],
-    n[6],
-    n[7],
-    n[8],
-    n[9],
-    n[10],
-    n[8],
-    n[10],
-    n[11],
-  ]
+  const indices = [n[0], n[1], n[2], n[0], n[2], n[3], n[4], n[5], n[6], n[4], n[6], n[7], n[8], n[9], n[10], n[8], n[10], n[11]];
 
-  let phi
-  let cos
-  let sin
-  let xc
-  let yc
-  let uc
-  let vc
-  let idx
+  let phi;
+  let cos;
+  let sin;
+  let xc;
+  let yc;
+  let uc;
+  let vc;
+  let idx;
 
   for (let i = 0; i < 4; i++) {
-    xc = i < 1 || i > 2 ? wi : -wi
-    yc = i < 2 ? hi : -hi
+    xc = i < 1 || i > 2 ? wi : -wi;
+    yc = i < 2 ? hi : -hi;
 
-    uc = i < 1 || i > 2 ? ur : ul
-    vc = i < 2 ? vh : vl
+    uc = i < 1 || i > 2 ? ur : ul;
+    vc = i < 2 ? vh : vl;
 
     for (let j = 0; j <= s; j++) {
-      phi = (Math.PI / 2) * (i + j / s)
-      cos = Math.cos(phi)
-      sin = Math.sin(phi)
+      phi = (Math.PI / 2) * (i + j / s);
+      cos = Math.cos(phi);
+      sin = Math.sin(phi);
 
-      positions.push(xc + r * cos, yc + r * sin, 0)
+      positions.push(xc + r * cos, yc + r * sin, 0);
 
-      uvs.push(uc + ul * cos, vc + vl * sin)
+      uvs.push(uc + ul * cos, vc + vl * sin);
 
       if (j < s) {
-        idx = (s + 1) * i + j + 4
-        indices.push(i, idx, idx + 1)
+        idx = (s + 1) * i + j + 4;
+        indices.push(i, idx, idx + 1);
       }
     }
   }
 
-  const geometry = new three_module_BufferGeometry()
-  geometry.setIndex(new three_module_BufferAttribute(new Uint32Array(indices), 1))
-  geometry.setAttribute(
-    'position',
-    new three_module_BufferAttribute(new Float32Array(positions), 3)
-  )
-  geometry.setAttribute(
-    'uv',
-    new three_module_BufferAttribute(new Float32Array(uvs), 2)
-  )
-  geometry.computeBoundingBox()
-  geometry.computeVertexNormals()
+  const geometry = new three_module_BufferGeometry();
+  geometry.setIndex(new three_module_BufferAttribute(new Uint32Array(indices), 1));
+  geometry.setAttribute('position', new three_module_BufferAttribute(new Float32Array(positions), 3));
+  geometry.setAttribute('uv', new three_module_BufferAttribute(new Float32Array(uvs), 2));
+  geometry.computeBoundingBox();
+  geometry.computeVertexNormals();
 
-  return geometry
+  return geometry;
 }
 
 ;// CONCATENATED MODULE: ./src/entities/Surface.js
@@ -67682,34 +67932,43 @@ function UIPlane(width, height, radii, s) {
 
 
 
+/**
+ *
+ */
 class Surface extends Entity {
+  /**
+   *
+   */
   constructor() {
-    super()
+    super();
 
-    this.anchored = false
-    this.anchorPosition = new three_module_Vector3()
-    this.anchorQuaternion = new Quaternion()
+    this.anchored = false;
+    this.anchorPosition = new three_module_Vector3();
+    this.anchorQuaternion = new Quaternion();
 
-    this.rotationPlane = new Group()
-    this.translation = new Group()
-    this.group = new Group()
-    this.orientation = 'any'
+    this.rotationPlane = new Group();
+    this.translation = new Group();
+    this.group = new Group();
+    this.orientation = 'any';
 
-    this.object3D.add(this.rotationPlane)
-    this.rotationPlane.add(this.translation)
+    this.object3D.add(this.rotationPlane);
+    this.rotationPlane.add(this.translation);
 
-    this.rotationPlane.receiveShadow = true
-    this.rotationPlane.renderOrder = 3
+    this.rotationPlane.receiveShadow = true;
+    this.rotationPlane.renderOrder = 3;
 
-    this.translation.receiveShadow = true
-    this.translation.renderOrder = 3
+    this.translation.receiveShadow = true;
+    this.translation.renderOrder = 3;
+  }
 
-    this.aspectRatio = 1.333333
+  /**
+   *
+   */
+  connected() {
+    this.windowVerticalScale = this.height / 3;
+    this.windowHorizontalScale = this.width / 3;
 
-    this.windowVerticalScale = 1 / 3
-    this.windowHorizontalScale = this.aspectRatio * 1 / 3
-
-    this.placed = false
+    this.placed = false;
 
     this.material = new MeshStandardMaterial({
       color: 0x3498db,
@@ -67718,796 +67977,953 @@ class Surface extends Entity {
       transparent: true,
       opacity: 0.7,
       side: 2,
-    })
+    });
 
-    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18)
+    this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
 
-    this.viz = new three_module_Mesh(this.geometry, this.material)
+    this.viz = new three_module_Mesh(this.geometry, this.material);
 
-    this.translation.add(this.group)
+    this.translation.add(this.group);
     if (this.viz.parent == null) {
-      this.translation.add(this.viz)
+      this.translation.add(this.viz);
     }
-    this.group.visible = true
-    this.viz.visible = false
-
+    this.group.visible = true;
+    this.viz.visible = false;
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.group.add(entity.object3D)
+    this.group.add(entity.object3D);
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.group.remove(entity.object3D)
+    this.group.remove(entity.object3D);
   }
 
+  /**
+   *
+   * @param mutation
+   */
   mutated(mutation) {
-    if(mutation.type != 'attributes') {
+    if (mutation.type != 'attributes') {
       switch (mutation.attributeName) {
         case 'orientation':
-          this.getAttribute('orientation')
+          this.getAttribute('orientation');
         default:
-          break
+          break;
       }
-
     }
   }
 
+  /**
+   *
+   */
   place() {
-    this.viz.removeFromParent()
-    this.group.visible = true
-    this.placed = true
+    this.viz.removeFromParent();
+    this.group.visible = true;
+    this.placed = true;
 
-    this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
-
+    this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
   }
 
+  /**
+   *
+   */
   replace() {
     console.log('replace');
-    this.object3D.position.copy(this.anchorPosition)
-    this.object3D.quaternion.copy(this.anchorQuaternion)
+    this.object3D.position.copy(this.anchorPosition);
+    this.object3D.quaternion.copy(this.anchorQuaternion);
 
-    this.placed = true
-    this.dispatchEvent( new CustomEvent('surface-placed', { bubbles: true }))
+    this.placed = true;
+    this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
   }
 
+  /**
+   *
+   */
   remove() {
     console.log('remove');
-    this.placed = false
-    this.object3D.position.set(0,0,0)
-    this.object3D.quaternion.set(0,0,0,1)
-    this.dispatchEvent( new CustomEvent('surface-removed', { bubbles: true }))
-
+    this.placed = false;
+    this.object3D.position.set(0, 0, 0);
+    this.object3D.quaternion.set(0, 0, 0, 1);
+    this.dispatchEvent(new CustomEvent('surface-removed', { bubbles: true }));
   }
 }
 
-customElements.get('mr-surface') || customElements.define('mr-surface', Surface)
+customElements.get('mr-surface') || customElements.define('mr-surface', Surface);
 
 ;// CONCATENATED MODULE: ./src/component-systems/LayoutSystem.js
 
 
 
+/**
+ *
+ */
 class LayoutSystem extends System {
-    constructor(){
-        super(false)
+  /**
+   *
+   */
+  constructor() {
+    super(false);
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-          let containers = this.app.querySelectorAll('mr-container')
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const containers = this.app.querySelectorAll('mr-container');
 
-          for(const container of containers) {
-            this.registry.add(container)
-          }
-        
-        })
-        
-    }
-
-    update(deltaTime,frame) {
-      for(const entity of this.registry) {
-        this.adjustContainerSize(entity)
+      for (const container of containers) {
+        this.registry.add(container);
       }
+    });
+  }
+
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
+  update(deltaTime, frame) {
+    for (const entity of this.registry) {
+      this.adjustContainerSize(entity);
     }
+  }
 
-    adjustContainerSize = (container) => {
-
-        container.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-
-    }
+  adjustContainerSize = (container) => {
+    container.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+  };
 }
+
 ;// CONCATENATED MODULE: ./src/UI/UIEntity.js
 
 
 
+/**
+ *
+ */
 class MRUIEntity extends Entity {
+  /**
+   *
+   */
+  get height() {
+    super.height;
 
-    get height() {
-        super.height
+    if (__webpack_require__.g.inXR) {
+      this.windowVerticalScale = this.parentElement.windowVerticalScale;
+      return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale;
+    }
+    return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight;
+  }
 
-        if(__webpack_require__.g.inXR) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale
-                return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale
+  /**
+   *
+   */
+  get width() {
+    super.width;
+
+    if (__webpack_require__.g.inXR) {
+      this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
+      return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth;
+  }
+
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.worldScale = new THREE.Vector3();
+    this.halfExtents = new THREE.Vector3();
+    this.physics.type = 'ui';
+
+    const geometry = UIPlane(1, 1, [0], 18);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xfff,
+      roughness: 0.7,
+      metalness: 0.0,
+      side: 2,
+      colorWriter: false,
+    });
+
+    this.background = new THREE.Mesh(geometry, material);
+    this.background.receiveShadow = true;
+    this.background.renderOrder = 3;
+    this.background.visible = false;
+    this.object3D.add(this.background);
+
+    this.windowVerticalScale = 1;
+    this.windowHorizontalScale = 1;
+  }
+
+  /**
+   *
+   */
+  connected() {
+    this.background.geometry = UIPlane(this.width, this.height, [0], 18);
+  }
+
+  /**
+   *
+   */
+  updatePhysicsData() {
+    this.physics.halfExtents = new THREE.Vector3();
+    this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002));
+
+    this.worldScale.setFromMatrixScale(this.object3D.matrixWorld);
+    this.object3D.userData.bbox.getSize(this.object3D.userData.size);
+    this.object3D.userData.size.multiply(this.worldScale);
+
+    this.physics.halfExtents.copy(this.object3D.userData.size);
+    this.physics.halfExtents.divideScalar(2);
+  }
+
+  /**
+   *
+   * @param val
+   */
+  pxToThree(val) {
+    if (__webpack_require__.g.inXR) {
+      return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth;
+  }
+
+  /**
+   *
+   * @param val
+   */
+  domToThree(val) {
+    if (typeof val === 'string') {
+      const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
+      if (valuepair.length > 1) {
+        switch (valuepair[1]) {
+          case 'px':
+            if (__webpack_require__.g.inXR) {
+              return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
             }
-            return (this.compStyle.height.split('px')[0] / window.innerHeight) * __webpack_require__.g.viewPortHeight
-        }
-
-    get width() {
-        super.width
-
-        if(__webpack_require__.g.inXR) {
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale
-            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
-        }
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
-    }
-
-    constructor(){
-        super()
-        this.worldScale = new THREE.Vector3()
-        this.halfExtents = new THREE.Vector3()
-        this.physics.type = 'ui'
-
-        let geometry = UIPlane(1, 1, [0], 18)
-        let material = new THREE.MeshStandardMaterial({
-            color: 0xfff,
-            roughness: 0.7,
-            metalness: 0.0,
-            side: 2,
-            colorWriter: false
-          })
-
-        this.background = new THREE.Mesh(geometry, material)
-        this.background.receiveShadow = true
-        this.background.renderOrder = 3
-        this.background.visible = false
-        this.object3D.add(this.background)
-
-
-        this.windowVerticalScale = 1
-        this.windowHorizontalScale = 1
-    }
-
-    connected() {
-        this.background.geometry = UIPlane(this.width, this.height, [0], 18)
-    }
-
-    updatePhysicsData() {
-        this.physics.halfExtents = new THREE.Vector3()
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position,new THREE.Vector3(this.width, this.height, 0.002))
-        
-        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld)
-        this.object3D.userData.bbox.getSize(this.object3D.userData.size)
-        this.object3D.userData.size.multiply(this.worldScale)
-
-        this.physics.halfExtents.copy(this.object3D.userData.size)
-        this.physics.halfExtents.divideScalar(2)
-    }
-
-    pxToThree(val) {
-        if(__webpack_require__.g.inXR) {
-            return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
-        }
-        return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
-    }
-
-    domToThree(val) {
-        if (typeof val == 'string') {
-          let valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
-          if(valuepair.length > 1){
-            switch(valuepair[1]){
-              case 'px':
-                if(__webpack_require__.g.inXR) {
-                    return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
-                }
-                return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth
-              case '%':
-                if(__webpack_require__.g.inXR) {
-                    return (parseFloat(val) / 100) * this.windowHorizontalScale
-                }
-                return (parseFloat(val) / 100) * __webpack_require__.g.viewPortWidth
-              default:
-                return val
-    
+            return (val.split('px')[0] / window.innerWidth) * __webpack_require__.g.viewPortWidth;
+          case '%':
+            if (__webpack_require__.g.inXR) {
+              return (parseFloat(val) / 100) * this.windowHorizontalScale;
             }
-          }
+            return (parseFloat(val) / 100) * __webpack_require__.g.viewPortWidth;
+          default:
+            return val;
         }
-        return val
+      }
+    }
+    return val;
+  }
+
+  /**
+   *
+   */
+  updateStyle() {
+    // background
+    this.setBorder();
+    this.setBackground();
+  }
+
+  /**
+   *
+   */
+  setBorder() {
+    const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    this.background.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+  }
+
+  /**
+   *
+   */
+  setBackground() {
+    const color = this.compStyle.backgroundColor;
+    if (color.includes('rgba')) {
+      const rgba = color
+        .substring(5, color.length - 1)
+        .split(',')
+        .map((part) => parseFloat(part.trim()));
+      if (rgba[3] == 0) {
+        return;
       }
 
-    updateStyle() {
-        // background
-        this.setBorder()
-        this.setBackground()
+      this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
+    } else {
+      this.background.material.color.setStyle(color);
     }
-
-    setBorder() {
-        let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
-        this.background.geometry = UIPlane(this.width, this.height, borderRadii, 18)
-    }
-
-    setBackground() {
-        let color = this.compStyle.backgroundColor
-        if (color.includes('rgba')) {
-          let rgba = color.substring(5, color.length - 1).split(',').map(part => parseFloat(part.trim()));
-          if(rgba[3] == 0) { return }
-
-          this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`)
-        
-        } else {
-            this.background.material.color.setStyle(color)    
-        }
-        this.background.visible = true
-    }
+    this.background.visible = true;
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/UI/Text/Text.js
 
 
 
 
+/**
+ *
+ */
 class MRText extends MRUIEntity {
-    get height() {
-        super.height
-        this.aabb.setFromObject(this.textObj).getSize(this.size)
-        return this.size.y
+  /**
+   *
+   */
+  get height() {
+    super.height;
+    this.aabb.setFromObject(this.textObj).getSize(this.size);
+    return this.size.y;
+  }
+
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.textObj = new Text();
+    this.object3D.add(this.textObj);
+    this.editable = false;
+
+    this.needsUpdate = true;
+
+    document.addEventListener('container-mutated', () => {
+      this.needsUpdate = true;
+    });
+  }
+
+  /**
+   *
+   */
+  connected() {
+    const text = this.textContent.trim();
+    this.textObj.text = text.length > 0 ? text : ' ';
+    this.style = parseAttributeString(this.getAttribute('text-style'));
+  }
+
+  mutated = (mutation) => {
+    if (mutation.type != 'attributes') {
+      return;
     }
-
-
-    constructor(){
-        super()
-        this.textObj = new Text()
-        this.object3D.add(this.textObj)
-        this.editable = false
-
-        this.needsUpdate = true
-
-        document.addEventListener('container-mutated', () => {
-            this.needsUpdate = true
-        })
-        
+    if (mutation.attributeName == 'text-style') {
+      this.style = parseAttributeString(this.getAttribute('text-style'));
     }
-
-    connected(){
-        let text = this.textContent.trim()
-        this.textObj.text = text.length > 0 ? text : ' '
-       this.style = parseAttributeString(this.getAttribute('text-style'))
-    }
-
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
-        if (mutation.attributeName == 'text-style') {
-            this.style = parseAttributeString(this.getAttribute('text-style'))
-        }
-    }
+  };
 }
 
-customElements.get('mr-text') || customElements.define('mr-text', MRText)
+customElements.get('mr-text') || customElements.define('mr-text', MRText);
+
 ;// CONCATENATED MODULE: ./src/UI/Text/TextEditor.js
 
 
+/**
+ *
+ */
 class TextEditor extends MRText {
-    constructor(){
-        super()
-        this.src
-        this.srcElement
-        this.newSrc = false
-        this.edited = false
-        this.editable = true
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.src;
+    this.srcElement;
+    this.newSrc = false;
+    this.edited = false;
+    this.editable = true;
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.updateSrc()
-        })
-    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+      this.updateSrc();
+    });
+  }
 
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
-        if (mutation.attributeName == 'src') {
-            this.updateSrc()
-        }
+  mutated = (mutation) => {
+    if (mutation.type != 'attributes') {
+      return;
     }
+    if (mutation.attributeName == 'src') {
+      this.updateSrc();
+    }
+  };
 
-    updateSrc = () => {
-        this.src = this.getAttribute('src')
-        this.srcElement = document.getElementById(this.src)
-        this.newSrc = true
-    }
+  updateSrc = () => {
+    this.src = this.getAttribute('src');
+    this.srcElement = document.getElementById(this.src);
+    this.newSrc = true;
+  };
 }
 
-customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor)
+customElements.get('mr-texteditor') || customElements.define('mr-texteditor', TextEditor);
+
 ;// CONCATENATED MODULE: ./src/component-systems/TextInputSystem.js
 
 
 
 
+/**
+ *
+ */
 class TextInputSystem extends System {
-  hasComponents = false
+  hasComponents = false;
+
+  /**
+   *
+   */
   constructor() {
-    super(false)
+    super(false);
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
 
-    const entities = this.app.querySelectorAll('mr-textfield, mr-texteditor')
+    const entities = this.app.querySelectorAll('mr-textfield, mr-texteditor');
 
-    this.counter = 0
+    this.counter = 0;
 
-    this.syncPeriod = 5
+    this.syncPeriod = 5;
 
     for (const entity of entities) {
-      this.registry.add(entity)
-      this.loadSrcText(entity)
+      this.registry.add(entity);
+      this.loadSrcText(entity);
     }
   }
 
-  update(deltaTime, frame){
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
+  update(deltaTime, frame) {
     // for (const entity of this.registry) {
     //   if (!entity.edited || !this.app.focusEntity == entity) {
     //     this.loadSrcText(entity)
     //   }
-
     // }
   }
 
-
+  /**
+   *
+   * @param entity
+   */
   loadSrcText(entity) {
     if (entity?.srcElement) {
-      entity.textContent = entity.srcElement.innerHTML 
+      entity.textContent = entity.srcElement.innerHTML;
     }
     // TODO: load from file
   }
 
-
-
-  saveUpdate(){
-    if(this.app.focusEntity instanceof TextEditor) {
-      this.spliceSplit(this.currentIndex, 1, '')
-      this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent
-      this.spliceSplit(this.currentIndex, 0, '|')
-      this.counter = 0
-      this.edited = false
+  /**
+   *
+   */
+  saveUpdate() {
+    if (this.app.focusEntity instanceof TextEditor) {
+      this.spliceSplit(this.currentIndex, 1, '');
+      this.app.focusEntity.srcElement.innerHTML = this.app.focusEntity.textContent;
+      this.spliceSplit(this.currentIndex, 0, '|');
+      this.counter = 0;
+      this.edited = false;
     }
   }
 
   // NOT USED YET
+  /**
+   *
+   * @param src
+   * @param text
+   */
   updateSourceText(src, text) {
-
     // TODO: update file
   }
 
   handleMetaKeys = (key) => {
     switch (key) {
       case 's':
-        this.saveUpdate()
+        this.saveUpdate();
         break;
-    
+
       default:
         break;
     }
-  }
+  };
 
   onKeyUp = (event) => {
-    let key = event.key;
+    const { key } = event;
     switch (key) {
       case 'Control':
-        this.meta = false
-        break
+        this.meta = false;
+        break;
 
       default:
-        break
+        break;
     }
-  }
-  
+  };
 
   onKeyDown = (event) => {
-    this.counter = 0
-    this.edited = true
+    this.counter = 0;
+    this.edited = true;
 
+    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) {
+      return;
+    }
+    if (!this.app.focusEntity.editable) {
+      return;
+    }
+    event.stopPropagation();
 
-    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) { return }
-    if (!this.app.focusEntity.editable) { return }
-    event.stopPropagation()
-
-
-    let key = event.key;
+    const { key } = event;
 
     if (this.meta) {
-      this.handleMetaKeys(key)
-      return
+      this.handleMetaKeys(key);
+      return;
     }
 
     switch (true) {
-        case key == 'Control':
-          this.meta = true
-          break
-        case key == 'Meta':
-          this.meta = true
-          break
-        case key == 'Enter':
-          this.spliceSplit(this.currentIndex, 0, '\n')
-          this.currentIndex += 1
-          break
-  
-        case key == 'Backspace':
-          if (this.currentIndex == 0) {
-            return
-          }
-          this.spliceSplit(this.currentIndex - 1, 1, '')
-          this.currentIndex -= 1
-          break
-  
-        case key == 'Tab':
-          this.app.focusEntity.textContent += '\t'
-          break
-  
-        case key == 'ArrowLeft':
-          if (this.currentIndex == 0) {
-            return
-          }
-          this.setCursorPosition(this.currentIndex, this.currentIndex - 1)
-          break
-  
-        case key == 'ArrowRight':
-          if (this.currentIndex == this.app.focusEntity.textContent.length) {
-            return
-          }
-          this.setCursorPosition(this.currentIndex, this.currentIndex + 1)
-          break
-        case key == 'ArrowUp':
-          if (this.currentIndex == 0) {
-            return
-          }
-  
-          const oneLineBack = this.app.focusEntity.textContent.lastIndexOf(
-            '\n',
-            this.currentIndex - 1
-          )
-          const twoLinesBack = this.app.focusEntity.textContent.lastIndexOf(
-            '\n',
-            this.oneLineBack - 1
-          )
-          let newUpIndex = this.currentIndex - oneLineBack + twoLinesBack
-  
-          newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack
-  
-          this.setCursorPosition(this.currentIndex, newUpIndex)
-          break
-        case key == 'ArrowDown':
-          if (this.currentIndex == this.app.focusEntity.textContent.length) {
-            return
-          }
-          const prevLine = this.app.focusEntity.textContent.lastIndexOf(
-            '\n',
-            this.currentIndex - 1
-          )
-          const nextLine = this.app.focusEntity.textContent.indexOf(
-            '\n',
-            this.currentIndex + 1
-          )
-          const lineAfter = this.app.focusEntity.textContent.indexOf('\n', nextLine + 1)
-          let newDownIndex = this.currentIndex - prevLine + nextLine
-  
-          newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter
-          newDownIndex =
-            newDownIndex < this.app.focusEntity.textContent.length - 1
-              ? newDownIndex
-              : this.app.focusEntity.textContent.length - 1
-          newDownIndex =
-            newDownIndex > 0 ? newDownIndex : this.app.focusEntity.textContent.length - 1
-  
-          this.setCursorPosition(this.currentIndex, newDownIndex)
-          break
-        case key.length == 1:
-          this.spliceSplit(this.currentIndex, 0, key)
-          this.currentIndex += 1
-  
-          break
+      case key == 'Control':
+        this.meta = true;
+        break;
+      case key == 'Meta':
+        this.meta = true;
+        break;
+      case key == 'Enter':
+        this.spliceSplit(this.currentIndex, 0, '\n');
+        this.currentIndex += 1;
+        break;
 
-        default:
-          break
-      }
-  }
+      case key == 'Backspace':
+        if (this.currentIndex == 0) {
+          return;
+        }
+        this.spliceSplit(this.currentIndex - 1, 1, '');
+        this.currentIndex -= 1;
+        break;
 
+      case key == 'Tab':
+        this.app.focusEntity.textContent += '\t';
+        break;
+
+      case key == 'ArrowLeft':
+        if (this.currentIndex == 0) {
+          return;
+        }
+        this.setCursorPosition(this.currentIndex, this.currentIndex - 1);
+        break;
+
+      case key == 'ArrowRight':
+        if (this.currentIndex == this.app.focusEntity.textContent.length) {
+          return;
+        }
+        this.setCursorPosition(this.currentIndex, this.currentIndex + 1);
+        break;
+      case key == 'ArrowUp':
+        if (this.currentIndex == 0) {
+          return;
+        }
+
+        const oneLineBack = this.app.focusEntity.textContent.lastIndexOf('\n', this.currentIndex - 1);
+        const twoLinesBack = this.app.focusEntity.textContent.lastIndexOf('\n', this.oneLineBack - 1);
+        let newUpIndex = this.currentIndex - oneLineBack + twoLinesBack;
+
+        newUpIndex = newUpIndex < oneLineBack ? newUpIndex : oneLineBack;
+
+        this.setCursorPosition(this.currentIndex, newUpIndex);
+        break;
+      case key == 'ArrowDown':
+        if (this.currentIndex == this.app.focusEntity.textContent.length) {
+          return;
+        }
+        const prevLine = this.app.focusEntity.textContent.lastIndexOf('\n', this.currentIndex - 1);
+        const nextLine = this.app.focusEntity.textContent.indexOf('\n', this.currentIndex + 1);
+        const lineAfter = this.app.focusEntity.textContent.indexOf('\n', nextLine + 1);
+        let newDownIndex = this.currentIndex - prevLine + nextLine;
+
+        newDownIndex = newDownIndex < lineAfter ? newDownIndex : lineAfter;
+        newDownIndex = newDownIndex < this.app.focusEntity.textContent.length - 1 ? newDownIndex : this.app.focusEntity.textContent.length - 1;
+        newDownIndex = newDownIndex > 0 ? newDownIndex : this.app.focusEntity.textContent.length - 1;
+
+        this.setCursorPosition(this.currentIndex, newDownIndex);
+        break;
+      case key.length == 1:
+        this.spliceSplit(this.currentIndex, 0, key);
+        this.currentIndex += 1;
+
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  /**
+   *
+   * @param oldIndex
+   * @param newIndex
+   */
   setCursorPosition(oldIndex, newIndex) {
     if (oldIndex == newIndex) {
-      return
+      return;
     }
     if (newIndex < 0) {
-      return
+      return;
     }
-    this.spliceSplit(oldIndex, 1, '')
-    this.spliceSplit(newIndex, 0, '|')
-    this.currentIndex = newIndex
+    this.spliceSplit(oldIndex, 1, '');
+    this.spliceSplit(newIndex, 0, '|');
+    this.currentIndex = newIndex;
   }
 
+  /**
+   *
+   * @param index
+   * @param count
+   * @param add
+   */
   spliceSplit(index, count, add) {
-    const ar = this.app.focusEntity.textContent.split('')
-    ar.splice(index, count, add)
-    this.app.focusEntity.textContent = ar.join('')
+    const ar = this.app.focusEntity.textContent.split('');
+    ar.splice(index, count, add);
+    this.app.focusEntity.textContent = ar.join('');
   }
-
 }
+
 ;// CONCATENATED MODULE: ./src/component-systems/SurfaceSystem.js
 
 
 
+/**
+ *
+ */
 class SurfaceSystem extends System {
+  /**
+   *
+   */
   constructor() {
-    super(false)
-    this.referenceSpace
-    this.sourceRequest = false
-    this.source
-    this.currentSurface = null
-    this.tempMatrix = new three_module_Matrix4()
+    super(false);
+    this.referenceSpace;
+    this.sourceRequest = false;
+    this.source;
+    this.currentSurface = null;
+    this.tempMatrix = new three_module_Matrix4();
 
-    this.userWorldPosition = new three_module_Vector3()
-    this.cameraForward = new three_module_Vector3()
-    this.pinchDistance = 0
+    this.userWorldPosition = new three_module_Vector3();
+    this.cameraForward = new three_module_Vector3();
+    this.pinchDistance = 0;
 
-    this.hand = null
+    this.hand = null;
 
-    this.snapDistance = 0.6
+    this.snapDistance = 0.6;
 
-    this.scale = 1
-    
+    this.scale = 1;
 
-    const entities = this.app.querySelectorAll('mr-surface')
+    const entities = this.app.querySelectorAll('mr-surface');
 
-    for ( const surface of entities) {
-        this.registry.add(surface)
-        surface.group.visible = false
-        surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
+    for (const surface of entities) {
+      this.registry.add(surface);
+      surface.group.visible = false;
+      surface.rotationPlane.rotation.x = 3 * (Math.PI / 2);
     }
 
     document.addEventListener('pinchstart', (event) => {
-        if (this.currentSurface == null || (this.hand && this.hand != event.detail.handedness)) { return }
-        this.pinchDistance = this.cameraForward.distanceTo(event.detail.position)
-        if(this.pinchDistance < 0.3) {
-            this.hand = event.detail.handedness
-        }
-    })
+      if (this.currentSurface == null || (this.hand && this.hand != event.detail.handedness)) {
+        return;
+      }
+      this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
+      if (this.pinchDistance < 0.3) {
+        this.hand = event.detail.handedness;
+      }
+    });
 
     document.addEventListener('pinchmoved', (event) => {
-        this.pinchDistance = this.cameraForward.distanceTo(event.detail.position)
-        if (this.currentSurface && this.hand == event.detail.handedness) {
-            this.scale = Math.exp(2 * this.pinchDistance)
-            this.app.anchor.position.z = this.app.forward.position.z * this.scale
-            this.currentSurface.viz.scale.setScalar(this.scale)
-        }
-    })
+      this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
+      if (this.currentSurface && this.hand == event.detail.handedness) {
+        this.scale = Math.exp(2 * this.pinchDistance);
+        this.app.anchor.position.z = this.app.forward.position.z * this.scale;
+        this.currentSurface.viz.scale.setScalar(this.scale);
+      }
+    });
 
     document.addEventListener('pinchend', (event) => {
-        if (this.currentSurface == null || this.hand != event.detail.handedness) { return }
-        this.lockWindow()
+      if (this.currentSurface == null || this.hand != event.detail.handedness) {
+        return;
+      }
+      this.lockWindow();
 
-        this.hand = null
-        this.app.anchor.position.z = this.app.forward.position.z
-
-    })
-
+      this.hand = null;
+      this.app.anchor.position.z = this.app.forward.position.z;
+    });
   }
 
-  lockWindow() {
-    this.currentSurface.windowVerticalScale = (this.scale / 3) * this.currentSurface.height
-    this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.width
-    this.currentSurface.place()
-
-    this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
-    this.currentSurface.anchorQuaternion.copy(this.currentSurface.object3D.quaternion)
-
-    this.currentSurface.anchored = true
-    
-    this.currentSurface = null
-  }
-
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
   update(deltaTime, frame) {
-    for(const surface of this.registry) {
-        if(this.currentSurface == null && surface.anchored == false) {
-            this.currentSurface = surface
-        } else if (surface.anchored && !surface.placed) {
-            if(!__webpack_require__.g.inXR) { return }
-            surface.replace()
-            surface.rotationPlane.rotation.x = 3 * (Math.PI / 2)
-
+    for (const surface of this.registry) {
+      if (this.currentSurface == null && surface.anchored == false) {
+        this.currentSurface = surface;
+      } else if (surface.anchored && !surface.placed) {
+        if (!__webpack_require__.g.inXR) {
+          return;
         }
+        surface.replace();
+        surface.rotationPlane.rotation.x = 3 * (Math.PI / 2);
+      }
     }
 
-    if ( this.sourceRequest == false ) {
-        this.referenceSpace = this.app.renderer.xr.getReferenceSpace();
+    if (this.sourceRequest == false) {
+      this.referenceSpace = this.app.renderer.xr.getReferenceSpace();
 
-        this.session = this.app.renderer.xr.getSession();
+      this.session = this.app.renderer.xr.getSession();
 
-        this.session.requestReferenceSpace( 'viewer' ).then( ( referenceSpace ) => {
+      this.session.requestReferenceSpace('viewer').then((referenceSpace) => {
+        this.session.requestHitTestSource({ space: referenceSpace }).then((source) => {
+          this.source = source;
+        });
+      });
 
-            this.session.requestHitTestSource( { space: referenceSpace } ).then( ( source ) => {
+      this.session.addEventListener('end', () => {
+        __webpack_require__.g.inXR = false;
+        this.app.user.position.set(0, 0, 1);
+        this.app.user.quaternion.set(0, 0, 0, 1);
+        this.resetAllSurfaces();
 
-                this.source = source;
+        this.sourceRequest = false;
+        this.source = null;
+      });
 
-            } );
-
-        } );
-
-        this.session.addEventListener( 'end', () => {
-            __webpack_require__.g.inXR = false
-            this.app.user.position.set(0, 0, 1)
-            this.app.user.quaternion.set(0,0,0,1)
-            this.resetAllSurfaces()
-
-            this.sourceRequest = false;
-            this.source = null;
-
-        } );
-
-        this.sourceRequest = true;
-
-        
+      this.sourceRequest = true;
     }
-    if(this.currentSurface == null) { return }
-    if ( this.source) {
-
-        const results = frame.getHitTestResults( this.source );
-        
-        this.placeSurface(results, frame)
-
-
+    if (this.currentSurface == null) {
+      return;
+    }
+    if (this.source) {
+      const results = frame.getHitTestResults(this.source);
+      this.placeSurface(results, frame);
     }
   }
 
+  /**
+   *
+   */
   resetAllSurfaces() {
     for (const surface of this.registry) {
-        surface.remove()
-        surface.rotationPlane.rotation.x = 0
-
+      surface.remove();
+      surface.rotationPlane.rotation.x = 0;
     }
   }
 
+  /**
+   *
+   */
+  lockWindow() {
+    this.currentSurface.windowVerticalScale = (this.scale / 3) * this.currentSurface.height;
+    this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.width;
+    this.currentSurface.place();
+
+    this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position);
+    this.currentSurface.anchorQuaternion.copy(this.currentSurface.object3D.quaternion);
+
+    this.currentSurface.anchored = true;
+
+    this.currentSurface = null;
+  }
+
+  /**
+   *
+   * @param hitResults
+   * @param frame
+   */
   placeSurface(hitResults, frame) {
-
     if (!this.currentSurface.viz.visible) {
-        this.currentSurface.viz.visible = true
+      this.currentSurface.viz.visible = true;
     }
 
-    const hit = hitResults[ 0 ];
-    let pose = hit?.getPose(this.referenceSpace)
-    this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld)
-    this.cameraForward.setFromMatrixPosition(this.app.forward.matrixWorld)
+    const hit = hitResults[0];
+    const pose = hit?.getPose(this.referenceSpace);
+    this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld);
+    this.cameraForward.setFromMatrixPosition(this.app.forward.matrixWorld);
 
-    if ( pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
+    if (pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
+      this.currentSurface.rotationPlane.rotation.x = (3 * Math.PI) / 2;
 
-        this.currentSurface.rotationPlane.rotation.x = 3 * Math.PI / 2
-        
-        this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
-        this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
-
+      this.currentSurface.object3D.position.fromArray([pose.transform.position.x, pose.transform.position.y, pose.transform.position.z]);
+      this.currentSurface.object3D.quaternion.fromArray([
+        pose.transform.orientation.x,
+        pose.transform.orientation.y,
+        pose.transform.orientation.z,
+        pose.transform.orientation.w,
+      ]);
     } else {
-        this.currentSurface.rotationPlane.rotation.x = 0
-        this.currentSurface.object3D.position.setFromMatrixPosition(this.app.anchor.matrixWorld)
-        this.currentSurface.object3D.lookAt(this.app.user.position)
+      this.currentSurface.rotationPlane.rotation.x = 0;
+      this.currentSurface.object3D.position.setFromMatrixPosition(this.app.anchor.matrixWorld);
+      this.currentSurface.object3D.lookAt(this.app.user.position);
 
-        if(this.currentSurface.getAttribute('fixed')) {
-            this.lockWindow()
-        }
-
+      if (this.currentSurface.getAttribute('fixed')) {
+        this.lockWindow();
+      }
     }
   }
-
 }
 
 ;// CONCATENATED MODULE: ./src/component-systems/ClippingSystem.js
 
 
-
+/**
+ *
+ */
 class ClippingSystem extends System {
-    constructor(){
-        super(false)
-        this.a = new THREE.Vector3();
-        this.b = new THREE.Vector3();
-        this.c = new THREE.Vector3();
-        this.geometry = new THREE.BufferGeometry()
-    }
+  /**
+   *
+   */
+  constructor() {
+    super(false);
+    this.a = new THREE.Vector3();
+    this.b = new THREE.Vector3();
+    this.c = new THREE.Vector3();
+    this.geometry = new THREE.BufferGeometry();
+  }
 
-    update(deltaTime, frame){
-        for (const entity of this.registry) {
-          this.updatePlanes(entity)
-    
-        }
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
+  update(deltaTime, frame) {
+    for (const entity of this.registry) {
+      this.updatePlanes(entity);
+    }
+  }
+
+  /**
+   *
+   * @param entity
+   */
+  onNewEntity(entity) {
+    if (entity.clipping == null) {
+      return;
+    }
+    this.registry.add(entity);
+    this.addClippingPlanes(entity);
+    entity.object3D.traverse((child) => {
+      this.applyClipping(child, entity.clipping);
+    });
+  }
+
+  /**
+   *
+   * @param entity
+   */
+  addClippingPlanes(entity) {
+    this.geometry = entity.clipping.geometry.toNonIndexed();
+
+    for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
+      this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
+      this.b.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
+      this.c.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
+
+      entity.object3D.localToWorld(this.a);
+      entity.object3D.localToWorld(this.b);
+      entity.object3D.localToWorld(this.c);
+
+      const newPlane = new THREE.Plane();
+
+      newPlane.setFromCoplanarPoints(this.a, this.b, this.c);
+      // if (this.app.debug) {
+      //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
+      //     this.app.scene.add( helper );
+      // }
+
+      entity.clipping.planes.push(newPlane);
+      entity.clipping.planeIDs.push(f);
+    }
+  }
+
+  /**
+   *
+   * @param object
+   * @param clipping
+   */
+  applyClipping(object, clipping) {
+    if (!object.isMesh) {
+      return;
+    }
+    object.material.clippingPlanes = clipping.planes;
+    object.material.clipIntersection = clipping.intersection;
+  }
+
+  /**
+   *
+   * @param entity
+   */
+  updatePlanes(entity) {
+    this.geometry = entity.clipping.geometry.toNonIndexed();
+
+    let planeIndex = 0;
+
+    for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
+      if (!entity.clipping.planeIDs.includes(f)) {
+        continue;
       }
 
-    onNewEntity(entity) {
-        if (entity.clipping == null) { return }
-        this.registry.add(entity)
-        this.addClippingPlanes(entity)
-        entity.object3D.traverse(child => {
-            this.applyClipping(child, entity.clipping)
-        })
+      this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
+      this.b.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
+      this.c.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
+
+      entity.object3D.localToWorld(this.a);
+      entity.object3D.localToWorld(this.b);
+      entity.object3D.localToWorld(this.c);
+
+      entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.a, this.b, this.c);
+
+      planeIndex += 1;
     }
-
-    addClippingPlanes(entity) {
-        this.geometry = entity.clipping.geometry.toNonIndexed()
-
-        for(let f=0; f<this.geometry.attributes.position.count * 3; f += 9){
-            
-            this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f+1], -this.geometry.attributes.position.array[f+2])
-            this.b.set(-this.geometry.attributes.position.array[f+3], -this.geometry.attributes.position.array[f+4], -this.geometry.attributes.position.array[f+5])
-            this.c.set(-this.geometry.attributes.position.array[f+6], -this.geometry.attributes.position.array[f+7], -this.geometry.attributes.position.array[f+8])
-            
-            entity.object3D.localToWorld(this.a)
-            entity.object3D.localToWorld(this.b)
-            entity.object3D.localToWorld(this.c)
-            
-            let newPlane = new THREE.Plane()
-
-            newPlane.setFromCoplanarPoints(this.a, this.b, this.c)
-            // if (this.app.debug) {
-            //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
-            //     this.app.scene.add( helper );
-            // }
-    
-            entity.clipping.planes.push(newPlane)
-            entity.clipping.planeIDs.push(f)
-        }
-    }
-
-    applyClipping(object, clipping) {
-        if (!object.isMesh) {return}
-        object.material.clippingPlanes = clipping.planes
-        object.material.clipIntersection = clipping.intersection
-    }
-
-    updatePlanes(entity) {
-        this.geometry = entity.clipping.geometry.toNonIndexed()
-
-        let planeIndex = 0
-
-        for(let f=0; f<this.geometry.attributes.position.count * 3; f += 9){
-            if(!entity.clipping.planeIDs.includes(f)) { continue }
-
-            
-            this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f+1], -this.geometry.attributes.position.array[f+2])
-            this.b.set(-this.geometry.attributes.position.array[f+3], -this.geometry.attributes.position.array[f+4], -this.geometry.attributes.position.array[f+5])
-            this.c.set(-this.geometry.attributes.position.array[f+6], -this.geometry.attributes.position.array[f+7], -this.geometry.attributes.position.array[f+8])
-            
-            entity.object3D.localToWorld(this.a)
-            entity.object3D.localToWorld(this.b)
-            entity.object3D.localToWorld(this.c)
-            
-            entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.a, this.b, this.c)
-
-            planeIndex += 1
-        }
-    }
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/component-systems/StyleSystem.js
 
 
 
+/**
+ *
+ */
 class StyleSystem extends System {
-    constructor(){
-        super(false, 1 / 15)
+  /**
+   *
+   */
+  constructor() {
+    super(false, 1 / 15);
+  }
+
+  /**
+   *
+   * @param deltaTime
+   * @param frame
+   */
+  update(deltaTime, frame) {
+    for (const entity of this.registry) {
+      if (entity.compStyle.scale != 'none') {
+        entity.object3D.scale.setScalar(entity.compStyle.scale);
+      } else {
+        entity.object3D.scale.setScalar(1);
+      }
+
+      if (entity.compStyle.zIndex != 'auto') {
+        entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
+      }
+
+      if (entity instanceof MRUIEntity) {
+        entity.updateStyle();
+      }
     }
+  }
 
-    update(deltaTime,frame) {
-        for (const entity of this.registry) {
-            
-            if(entity.compStyle.scale != 'none') {
-                entity.object3D.scale.setScalar(entity.compStyle.scale)
-            } else {
-                entity.object3D.scale.setScalar(1)
-            }
-
-            if(entity.compStyle.zIndex != 'auto') {
-                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000)
-            }
-
-            if(entity instanceof MRUIEntity) {
-                entity.updateStyle()
-            }
-
-        }
-    }
-
-    // called when a new entity is added to the scene
-    onNewEntity (entity) {
-        this.registry.add(entity)
-    }
-
+  // called when a new entity is added to the scene
+  /**
+   *
+   * @param entity
+   */
+  onNewEntity(entity) {
+    this.registry.add(entity);
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/core/MRApp.js
 
 
@@ -68526,319 +68942,366 @@ class StyleSystem extends System {
 
 
 
-('use strict')
 
-window.mobileCheck = function() {
+
+('use strict');
+
+window.mobileCheck = function () {
   let check = false;
-  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  (function (a) {
+    if (
+      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+        a,
+      )
+            || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+              a.substr(0, 4),
+            )
+    ) check = true;
+  }(navigator.userAgent || navigator.vendor || window.opera));
   return check;
 };
 
+/**
+ *
+ */
 class MRApp extends MRElement {
+  /**
+   *
+   */
   constructor() {
-    super()
+    super();
     Object.defineProperty(this, 'isApp', {
       value: true,
       writable: false,
-    })
+    });
 
-    this.xrsupport = false
-    this.isMobile = window.mobileCheck(); //resolves true/false
-    __webpack_require__.g.inXR = false
+    this.xrsupport = false;
+    this.isMobile = window.mobileCheck(); // resolves true/false
+    __webpack_require__.g.inXR = false;
 
-    this.focusEntity = null
+    this.focusEntity = null;
 
-    this.clock = new Clock()
-    this.systems = new Set()
-    this.scene = new Scene()
+    this.clock = new Clock();
+    this.systems = new Set();
+    this.scene = new Scene();
 
-    this.renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
 
     this.lighting = {
       enabled: true,
       color: 0xffffff,
       intensity: 1,
       radius: 5,
-      shadows: true
-    }
+      shadows: true,
+    };
 
     this.cameraOptions = {
-      camera: 'perspective'
-    }
-    this.render = this.render.bind(this)
-    this.onWindowResize = this.onWindowResize.bind(this)
-
+      camera: 'perspective',
+    };
+    this.render = this.render.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
   }
 
+  /**
+   *
+   */
   connectedCallback() {
-    this.init()
+    this.init();
 
-    this.observer = new MutationObserver(this.mutationCallback)
-    this.observer.observe(this, { attributes: true, childList: true })
+    this.observer = new MutationObserver(this.mutationCallback);
+    this.observer.observe(this, { attributes: true, childList: true });
 
     this.addEventListener('wheel', (event) => {
-      this.focusEntity?.onScroll(event)
-    })
+      this.focusEntity?.onScroll(event);
+    });
 
-    this.layoutSystem = new LayoutSystem()
-    this.styleSystem = new StyleSystem()
+    this.layoutSystem = new LayoutSystem();
+    this.styleSystem = new StyleSystem();
 
     // initialize built in Systems
     document.addEventListener('engine-started', (event) => {
-        this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 })
-        this.physicsSystem = new RapierPhysicsSystem()
-        this.controlSystem = new ControlSystem()
-        this.textInputSystem = new TextInputSystem()
-        this.textSystem = new TextSystem()
+      this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+      this.physicsSystem = new RapierPhysicsSystem();
+      this.controlSystem = new ControlSystem();
+      this.textInputSystem = new TextInputSystem();
+      this.textSystem = new TextSystem();
 
-        this.clippingSystem = new ClippingSystem()
-
-    })
+      this.clippingSystem = new ClippingSystem();
+    });
   }
 
+  /**
+   *
+   */
   disconnectedCallback() {
-    this.denit()
-    this.observer.disconnect()
+    this.denit();
+    this.observer.disconnect();
   }
 
   mutationCallback = (mutationList, observer) => {
     for (const mutation of mutationList) {
       if (mutation.type === 'childList') {
-        this.mutatedChildList(mutation)
+        this.mutatedChildList(mutation);
       }
       if (mutation.type === 'attributes') {
-        this.mutatedAttribute(mutation)
+        this.mutatedAttribute(mutation);
       }
     }
-  }
+  };
 
-  // TODO: These are for toggling debug and app level flags in realtime. 
+  // TODO: These are for toggling debug and app level flags in realtime.
   //       Currently only 'debug' is implemented. but we should add:
   //       - stats
   //       - lighting
   //       - controllers
   //       - ?
+  /**
+   *
+   * @param mutation
+   */
   mutatedAttribute(mutation) {}
 
+  /**
+   *
+   * @param mutation
+   */
   mutatedChildList(mutation) {}
 
+  /**
+   *
+   */
   init() {
-    this.debug = this.getAttribute('debug') ?? false
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.renderer.autoClear = false
-    this.renderer.shadowMap.enabled = true
-    this.renderer.xr.enabled = true
+    this.debug = this.getAttribute('debug') ?? false;
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.autoClear = false;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.xr.enabled = true;
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.renderer.localClippingEnabled = true;
 
-    this.cameraOptionString = this.getAttribute('camera')
-    if(this.cameraOptionString) {
-      this.cameraOptions = parseAttributeString(this.cameraOptionString)
+    this.cameraOptionString = this.getAttribute('camera');
+    if (this.cameraOptionString) {
+      this.cameraOptions = parseAttributeString(this.cameraOptionString);
     }
 
-    this.initUser()
+    this.initUser();
 
-    this.user.position.set(0, 0, 1)
+    this.user.position.set(0, 0, 1);
 
-    let layersString = this.getAttribute('layers')
+    const layersString = this.getAttribute('layers');
 
-    if(layersString) {
-      this.layers = parseVector(layersString)
+    if (layersString) {
+      this.layers = parseVector(layersString);
 
-      for(const layer of this.layers) {
-        this.user.layers.enable(layer)
+      for (const layer of this.layers) {
+        this.user.layers.enable(layer);
       }
     }
 
+    if (this.debug) {
+      this.stats = new (stats_min_default())();
+      this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+      document.body.appendChild(this.stats.dom);
 
-
-    if(this.debug){
-      this.stats = new (stats_min_default())()
-      this.stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-      document.body.appendChild(this.stats.dom)
-
-      const orbitControls = new OrbitControls(this.user, this.renderer.domElement)
-      orbitControls.minDistance = 1
-      orbitControls.maxDistance = 2
-      orbitControls.enabled = false
-
+      const orbitControls = new OrbitControls(this.user, this.renderer.domElement);
+      orbitControls.minDistance = 1;
+      orbitControls.maxDistance = 2;
+      orbitControls.enabled = false;
 
       document.addEventListener('keydown', (event) => {
-        if (event.key == '='){
-          orbitControls.enabled = true
+        if (event.key == '=') {
+          orbitControls.enabled = true;
         }
-      })
+      });
 
       document.addEventListener('keyup', (event) => {
-        if (event.key == '='){
-          orbitControls.enabled = false
+        if (event.key == '=') {
+          orbitControls.enabled = false;
         }
-      })
-
+      });
     }
 
-    this.appendChild(this.renderer.domElement)
+    this.appendChild(this.renderer.domElement);
 
-    navigator.xr?.isSessionSupported( 'immersive-ar' ).then( ( supported ) => {
-
-      this.xrsupport = supported
+    navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
+      this.xrsupport = supported;
 
       if (this.xrsupport) {
         this.ARButton = ARButton.createButton(this.renderer, {
           requiredFeatures: ['hand-tracking'],
-          optionalFeatures: ['hit-test']
-        })
-    
+          optionalFeatures: ['hit-test'],
+        });
+
         this.ARButton.addEventListener('click', () => {
-          if(!this.surfaceSystem) {
-            this.surfaceSystem = new SurfaceSystem()
+          if (!this.surfaceSystem) {
+            this.surfaceSystem = new SurfaceSystem();
           }
-          this.ARButton.blur()
-          __webpack_require__.g.inXR = true
-        })
-        this.appendChild(this.ARButton)
+          this.ARButton.blur();
+          __webpack_require__.g.inXR = true;
+        });
+        this.appendChild(this.ARButton);
 
-        this.ARButton.style.position = "fixed"
-
+        this.ARButton.style.position = 'fixed';
       }
+    });
 
-    } )
+    this.renderer.setAnimationLoop(this.render);
 
-    this.renderer.setAnimationLoop(this.render)
+    window.addEventListener('resize', this.onWindowResize);
 
-    window.addEventListener('resize', this.onWindowResize)
+    const lightString = this.getAttribute('lighting');
 
-    let lightString = this.getAttribute('lighting')
-
-    if(lightString) {
-      this.lighting = parseAttributeString(this.lighting)
+    if (lightString) {
+      this.lighting = parseAttributeString(this.lighting);
     }
 
-    this.initLights(this.lighting)
-
+    this.initLights(this.lighting);
   }
 
   initUser = () => {
-    switch(this.cameraOptions.camera) {
+    switch (this.cameraOptions.camera) {
       case 'orthographic':
-        __webpack_require__.g.viewPortWidth  = window.innerWidth / 1000
-		    __webpack_require__.g.viewPortHeight = window.innerHeight / 1000
+        __webpack_require__.g.viewPortWidth = window.innerWidth / 1000;
+        __webpack_require__.g.viewPortHeight = window.innerHeight / 1000;
 
-        this.user = new OrthographicCamera( __webpack_require__.g.viewPortWidth / - 2, __webpack_require__.g.viewPortWidth / 2, __webpack_require__.g.viewPortHeight / 2, __webpack_require__.g.viewPortHeight / - 2, 0.01, 1000 );
+        this.user = new OrthographicCamera(__webpack_require__.g.viewPortWidth / -2, __webpack_require__.g.viewPortWidth / 2, __webpack_require__.g.viewPortHeight / 2, __webpack_require__.g.viewPortHeight / -2, 0.01, 1000);
         break;
       case 'perspective':
       default:
-        this.user = new PerspectiveCamera(
-          70,
-          window.innerWidth / window.innerHeight,
-          0.01,
-          20
-        )
-        this.vFOV = MathUtils.degToRad( this.user.fov );
-        __webpack_require__.g.viewPortHeight = 2 * Math.tan( this.vFOV / 2 )
-        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect; 
-      break
+        this.user = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+        this.vFOV = MathUtils.degToRad(this.user.fov);
+        __webpack_require__.g.viewPortHeight = 2 * Math.tan(this.vFOV / 2);
+        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect;
+        break;
     }
 
-    //weird bug fix in getting camera position in webXR
-    this.forward = new Object3D(); 
-    this.user.add(this.forward)
+    // weird bug fix in getting camera position in webXR
+    this.forward = new Object3D();
+    this.user.add(this.forward);
 
-    this.forward.position.setZ(-0.5)
+    this.forward.position.setZ(-0.5);
 
     // for widnow placement
-    this.anchor = new Object3D(); 
-    this.user.add(this.anchor)
+    this.anchor = new Object3D();
+    this.user.add(this.anchor);
 
-    this.anchor.position.setZ(-0.5)
-
-    
-  }
+    this.anchor.position.setZ(-0.5);
+  };
 
   initLights = (data) => {
-    if(!data.enabled) { return }
-    this.globalLight = new AmbientLight(data.color)
-    this.globalLight.intensity = data.intensity
-    this.globalLight.position.set(0, 0, 0)
-    this.scene.add(this.globalLight)
+    if (!data.enabled) {
+      return;
+    }
+    this.globalLight = new AmbientLight(data.color);
+    this.globalLight.intensity = data.intensity;
+    this.globalLight.position.set(0, 0, 0);
+    this.scene.add(this.globalLight);
 
-    if(!this.isMobile) {
-      if(data.shadows) {
-        this.shadowLight = new PointLight(data.color)
-        this.shadowLight.position.set(0, 0, 0)
-        this.shadowLight.intensity = data.intensity
-        this.shadowLight.castShadow = data.shadows
-        this.shadowLight.shadow.radius = data.radius
+    if (!this.isMobile) {
+      if (data.shadows) {
+        this.shadowLight = new PointLight(data.color);
+        this.shadowLight.position.set(0, 0, 0);
+        this.shadowLight.intensity = data.intensity;
+        this.shadowLight.castShadow = data.shadows;
+        this.shadowLight.shadow.radius = data.radius;
         this.shadowLight.shadow.camera.near = 0.01; // default
         this.shadowLight.shadow.camera.far = 20; // default
-        this.shadowLight.shadow.mapSize.set(2048, 2048)
-        this.scene.add(this.shadowLight)
-
+        this.shadowLight.shadow.mapSize.set(2048, 2048);
+        this.scene.add(this.shadowLight);
       }
     }
-  }
+  };
 
+  /**
+   *
+   */
   denit() {
-    document.body.removeChild(this.renderer.domElement)
-    this.removeChild(this.ARButton)
-    window.removeEventListener('resize', this.onWindowResize)
+    document.body.removeChild(this.renderer.domElement);
+    this.removeChild(this.ARButton);
+    window.removeEventListener('resize', this.onWindowResize);
   }
 
+  /**
+   *
+   * @param system
+   */
   registerSystem(system) {
-    this.systems.add(system)
+    this.systems.add(system);
   }
 
+  /**
+   *
+   * @param system
+   */
   unregisterSystem(system) {
-    this.systems.delete(system)
+    this.systems.delete(system);
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.scene.add(entity.object3D)
+    this.scene.add(entity.object3D);
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.scene.remove(entity.object3D)
+    this.scene.remove(entity.object3D);
   }
 
+  /**
+   *
+   */
   onWindowResize() {
-
-    switch(this.cameraOptions.camera) {
+    switch (this.cameraOptions.camera) {
       case 'orthographic':
-        __webpack_require__.g.viewPortWidth  = window.innerWidth / 1000
-		    __webpack_require__.g.viewPortHeight = window.innerHeight / 1000
+        __webpack_require__.g.viewPortWidth = window.innerWidth / 1000;
+        __webpack_require__.g.viewPortHeight = window.innerHeight / 1000;
 
-        this.user.left = __webpack_require__.g.viewPortWidth / - 2
-        this.user.right = __webpack_require__.g.viewPortWidth / 2
-        this.user.top = __webpack_require__.g.viewPortHeight / 2
-        this.user.bottom = __webpack_require__.g.viewPortHeight / - 2
+        this.user.left = __webpack_require__.g.viewPortWidth / -2;
+        this.user.right = __webpack_require__.g.viewPortWidth / 2;
+        this.user.top = __webpack_require__.g.viewPortHeight / 2;
+        this.user.bottom = __webpack_require__.g.viewPortHeight / -2;
         break;
       case 'perspective':
       default:
-        this.user.aspect = window.innerWidth / window.innerHeight
-        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect; 
+        this.user.aspect = window.innerWidth / window.innerHeight;
+        __webpack_require__.g.viewPortWidth = __webpack_require__.g.viewPortHeight * this.user.aspect;
         break;
     }
-    this.user.updateProjectionMatrix()
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-
+    this.user.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  /**
+   *
+   * @param timeStamp
+   * @param frame
+   */
   render(timeStamp, frame) {
-    const deltaTime = this.clock.getDelta()
+    const deltaTime = this.clock.getDelta();
 
-    if( this.debug ) { this.stats.begin() }
-    for (const system of this.systems) {
-      system.__update(deltaTime, frame)
+    if (this.debug) {
+      this.stats.begin();
     }
-    if( this.debug ) { this.stats.end() }
+    for (const system of this.systems) {
+      system.__update(deltaTime, frame);
+    }
+    if (this.debug) {
+      this.stats.end();
+    }
 
-    this.renderer.render(this.scene, this.user)
+    this.renderer.render(this.scene, this.user);
   }
 }
 
-customElements.get('mr-app') || customElements.define('mr-app', MRApp)
+customElements.get('mr-app') || customElements.define('mr-app', MRApp);
 
 ;// CONCATENATED MODULE: ./src/utils/STLLoader.js
 
@@ -68894,352 +69357,330 @@ customElements.get('mr-app') || customElements.define('mr-app', MRApp)
  *  const mesh = new THREE.Mesh(geometry, materials);
  */
 
-
+/**
+ *
+ */
 class STLLoader extends Loader {
-
-	constructor( manager ) {
-
-		super( manager );
-
-	}
-
-	load( url, onLoad, onProgress, onError ) {
-
-		const scope = this;
-
-		const loader = new FileLoader( this.manager );
-		loader.setPath( this.path );
-		loader.setResponseType( 'arraybuffer' );
-		loader.setRequestHeader( this.requestHeader );
-		loader.setWithCredentials( this.withCredentials );
-
-		loader.load( url, function ( text ) {
-
-			try {
-
-				onLoad( scope.parse( text ) );
-
-			} catch ( e ) {
-
-				if ( onError ) {
-
-					onError( e );
-
-				} else {
-
-					console.error( e );
-
-				}
-
-				scope.manager.itemError( url );
-
-			}
-
-		}, onProgress, onError );
-
-	}
-
-	parse( data ) {
-
-		function isBinary( data ) {
-
-			const reader = new DataView( data );
-			const face_size = ( 32 / 8 * 3 ) + ( ( 32 / 8 * 3 ) * 3 ) + ( 16 / 8 );
-			const n_faces = reader.getUint32( 80, true );
-			const expect = 80 + ( 32 / 8 ) + ( n_faces * face_size );
-
-			if ( expect === reader.byteLength ) {
-
-				return true;
-
-			}
-
-			// An ASCII STL data must begin with 'solid ' as the first six bytes.
-			// However, ASCII STLs lacking the SPACE after the 'd' are known to be
-			// plentiful.  So, check the first 5 bytes for 'solid'.
-
-			// Several encodings, such as UTF-8, precede the text with up to 5 bytes:
-			// https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding
-			// Search for "solid" to start anywhere after those prefixes.
-
-			// US-ASCII ordinal values for 's', 'o', 'l', 'i', 'd'
-
-			const solid = [ 115, 111, 108, 105, 100 ];
-
-			for ( let off = 0; off < 5; off ++ ) {
-
-				// If "solid" text is matched to the current offset, declare it to be an ASCII STL.
-
-				if ( matchDataViewAt( solid, reader, off ) ) return false;
-
-			}
-
-			// Couldn't find "solid" text at the beginning; it is binary STL.
-
-			return true;
-
-		}
-
-		function matchDataViewAt( query, reader, offset ) {
-
-			// Check if each byte in query matches the corresponding byte from the current offset
-
-			for ( let i = 0, il = query.length; i < il; i ++ ) {
-
-				if ( query[ i ] !== reader.getUint8( offset + i ) ) return false;
-
-			}
-
-			return true;
-
-		}
-
-		function parseBinary( data ) {
-
-			const reader = new DataView( data );
-			const faces = reader.getUint32( 80, true );
-
-			let r, g, b, hasColors = false, colors;
-			let defaultR, defaultG, defaultB, alpha;
-
-			// process STL header
-			// check for default color in header ("COLOR=rgba" sequence).
-
-			for ( let index = 0; index < 80 - 10; index ++ ) {
-
-				if ( ( reader.getUint32( index, false ) == 0x434F4C4F /*COLO*/ ) &&
-					( reader.getUint8( index + 4 ) == 0x52 /*'R'*/ ) &&
-					( reader.getUint8( index + 5 ) == 0x3D /*'='*/ ) ) {
-
-					hasColors = true;
-					colors = new Float32Array( faces * 3 * 3 );
-
-					defaultR = reader.getUint8( index + 6 ) / 255;
-					defaultG = reader.getUint8( index + 7 ) / 255;
-					defaultB = reader.getUint8( index + 8 ) / 255;
-					alpha = reader.getUint8( index + 9 ) / 255;
-
-				}
-
-			}
-
-			const dataOffset = 84;
-			const faceLength = 12 * 4 + 2;
-
-			const geometry = new three_module_BufferGeometry();
-
-			const vertices = new Float32Array( faces * 3 * 3 );
-			const normals = new Float32Array( faces * 3 * 3 );
-
-			const color = new Color();
-
-			for ( let face = 0; face < faces; face ++ ) {
-
-				const start = dataOffset + face * faceLength;
-				const normalX = reader.getFloat32( start, true );
-				const normalY = reader.getFloat32( start + 4, true );
-				const normalZ = reader.getFloat32( start + 8, true );
-
-				if ( hasColors ) {
-
-					const packedColor = reader.getUint16( start + 48, true );
-
-					if ( ( packedColor & 0x8000 ) === 0 ) {
-
-						// facet has its own unique color
-
-						r = ( packedColor & 0x1F ) / 31;
-						g = ( ( packedColor >> 5 ) & 0x1F ) / 31;
-						b = ( ( packedColor >> 10 ) & 0x1F ) / 31;
-
-					} else {
-
-						r = defaultR;
-						g = defaultG;
-						b = defaultB;
-
-					}
-
-				}
-
-				for ( let i = 1; i <= 3; i ++ ) {
-
-					const vertexstart = start + i * 12;
-					const componentIdx = ( face * 3 * 3 ) + ( ( i - 1 ) * 3 );
-
-					vertices[ componentIdx ] = reader.getFloat32( vertexstart, true );
-					vertices[ componentIdx + 1 ] = reader.getFloat32( vertexstart + 4, true );
-					vertices[ componentIdx + 2 ] = reader.getFloat32( vertexstart + 8, true );
-
-					normals[ componentIdx ] = normalX;
-					normals[ componentIdx + 1 ] = normalY;
-					normals[ componentIdx + 2 ] = normalZ;
-
-					if ( hasColors ) {
-
-						color.set( r, g, b ).convertSRGBToLinear();
-
-						colors[ componentIdx ] = color.r;
-						colors[ componentIdx + 1 ] = color.g;
-						colors[ componentIdx + 2 ] = color.b;
-
-					}
-
-				}
-
-			}
-
-			geometry.setAttribute( 'position', new three_module_BufferAttribute( vertices, 3 ) );
-			geometry.setAttribute( 'normal', new three_module_BufferAttribute( normals, 3 ) );
-
-			if ( hasColors ) {
-
-				geometry.setAttribute( 'color', new three_module_BufferAttribute( colors, 3 ) );
-				geometry.hasColors = true;
-				geometry.alpha = alpha;
-
-			}
-
-			return geometry;
-
-		}
-
-		function parseASCII( data ) {
-
-			const geometry = new three_module_BufferGeometry();
-			const patternSolid = /solid([\s\S]*?)endsolid/g;
-			const patternFace = /facet([\s\S]*?)endfacet/g;
-			const patternName = /solid\s(.+)/;
-			let faceCounter = 0;
-
-			const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
-			const patternVertex = new RegExp( 'vertex' + patternFloat + patternFloat + patternFloat, 'g' );
-			const patternNormal = new RegExp( 'normal' + patternFloat + patternFloat + patternFloat, 'g' );
-
-			const vertices = [];
-			const normals = [];
-			const groupNames = [];
-
-			const normal = new three_module_Vector3();
-
-			let result;
-
-			let groupCount = 0;
-			let startVertex = 0;
-			let endVertex = 0;
-
-			while ( ( result = patternSolid.exec( data ) ) !== null ) {
-
-				startVertex = endVertex;
-
-				const solid = result[ 0 ];
-
-				const name = ( result = patternName.exec( solid ) ) !== null ? result[ 1 ] : '';
-				groupNames.push( name );
-
-				while ( ( result = patternFace.exec( solid ) ) !== null ) {
-
-					let vertexCountPerFace = 0;
-					let normalCountPerFace = 0;
-
-					const text = result[ 0 ];
-
-					while ( ( result = patternNormal.exec( text ) ) !== null ) {
-
-						normal.x = parseFloat( result[ 1 ] );
-						normal.y = parseFloat( result[ 2 ] );
-						normal.z = parseFloat( result[ 3 ] );
-						normalCountPerFace ++;
-
-					}
-
-					while ( ( result = patternVertex.exec( text ) ) !== null ) {
-
-						vertices.push( parseFloat( result[ 1 ] ), parseFloat( result[ 2 ] ), parseFloat( result[ 3 ] ) );
-						normals.push( normal.x, normal.y, normal.z );
-						vertexCountPerFace ++;
-						endVertex ++;
-
-					}
-
-					// every face have to own ONE valid normal
-
-					if ( normalCountPerFace !== 1 ) {
-
-						console.error( 'THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter );
-
-					}
-
-					// each face have to own THREE valid vertices
-
-					if ( vertexCountPerFace !== 3 ) {
-
-						console.error( 'THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter );
-
-					}
-
-					faceCounter ++;
-
-				}
-
-				const start = startVertex;
-				const count = endVertex - startVertex;
-
-				geometry.userData.groupNames = groupNames;
-
-				geometry.addGroup( start, count, groupCount );
-				groupCount ++;
-
-			}
-
-			geometry.setAttribute( 'position', new three_module_Float32BufferAttribute( vertices, 3 ) );
-			geometry.setAttribute( 'normal', new three_module_Float32BufferAttribute( normals, 3 ) );
-
-			return geometry;
-
-		}
-
-		function ensureString( buffer ) {
-
-			if ( typeof buffer !== 'string' ) {
-
-				return new TextDecoder().decode( buffer );
-
-			}
-
-			return buffer;
-
-		}
-
-		function ensureBinary( buffer ) {
-
-			if ( typeof buffer === 'string' ) {
-
-				const array_buffer = new Uint8Array( buffer.length );
-				for ( let i = 0; i < buffer.length; i ++ ) {
-
-					array_buffer[ i ] = buffer.charCodeAt( i ) & 0xff; // implicitly assumes little-endian
-
-				}
-
-				return array_buffer.buffer || array_buffer;
-
-			} else {
-
-				return buffer;
-
-			}
-
-		}
-
-		// start
-
-		const binData = ensureBinary( data );
-
-		return isBinary( binData ) ? parseBinary( binData ) : parseASCII( ensureString( data ) );
-
-	}
-
+  /**
+   *
+   * @param manager
+   */
+  constructor(manager) {
+    super(manager);
+  }
+
+  /**
+   *
+   * @param url
+   * @param onLoad
+   * @param onProgress
+   * @param onError
+   */
+  load(url, onLoad, onProgress, onError) {
+    const scope = this;
+
+    const loader = new FileLoader(this.manager);
+    loader.setPath(this.path);
+    loader.setResponseType('arraybuffer');
+    loader.setRequestHeader(this.requestHeader);
+    loader.setWithCredentials(this.withCredentials);
+
+    loader.load(
+      url,
+      (text) => {
+        try {
+          onLoad(scope.parse(text));
+        } catch (e) {
+          if (onError) {
+            onError(e);
+          } else {
+            console.error(e);
+          }
+
+          scope.manager.itemError(url);
+        }
+      },
+      onProgress,
+      onError,
+    );
+  }
+
+  /**
+   *
+   * @param data
+   */
+  parse(data) {
+    /**
+     *
+     * @param data
+     */
+    function isBinary(data) {
+      const reader = new DataView(data);
+      const face_size = (32 / 8) * 3 + (32 / 8) * 3 * 3 + 16 / 8;
+      const n_faces = reader.getUint32(80, true);
+      const expect = 80 + 32 / 8 + n_faces * face_size;
+
+      if (expect === reader.byteLength) {
+        return true;
+      }
+
+      // An ASCII STL data must begin with 'solid ' as the first six bytes.
+      // However, ASCII STLs lacking the SPACE after the 'd' are known to be
+      // plentiful.  So, check the first 5 bytes for 'solid'.
+
+      // Several encodings, such as UTF-8, precede the text with up to 5 bytes:
+      // https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding
+      // Search for "solid" to start anywhere after those prefixes.
+
+      // US-ASCII ordinal values for 's', 'o', 'l', 'i', 'd'
+
+      const solid = [115, 111, 108, 105, 100];
+
+      for (let off = 0; off < 5; off++) {
+        // If "solid" text is matched to the current offset, declare it to be an ASCII STL.
+
+        if (matchDataViewAt(solid, reader, off)) return false;
+      }
+
+      // Couldn't find "solid" text at the beginning; it is binary STL.
+
+      return true;
+    }
+
+    /**
+     *
+     * @param query
+     * @param reader
+     * @param offset
+     */
+    function matchDataViewAt(query, reader, offset) {
+      // Check if each byte in query matches the corresponding byte from the current offset
+
+      for (let i = 0, il = query.length; i < il; i++) {
+        if (query[i] !== reader.getUint8(offset + i)) return false;
+      }
+
+      return true;
+    }
+
+    /**
+     *
+     * @param data
+     */
+    function parseBinary(data) {
+      const reader = new DataView(data);
+      const faces = reader.getUint32(80, true);
+
+      let r;
+      let g;
+      let b;
+      let hasColors = false;
+      let colors;
+      let defaultR;
+      let defaultG;
+      let defaultB;
+      let alpha;
+
+      // process STL header
+      // check for default color in header ("COLOR=rgba" sequence).
+
+      for (let index = 0; index < 80 - 10; index++) {
+        if (reader.getUint32(index, false) == 0x434f4c4f /* COLO */ && reader.getUint8(index + 4) == 0x52 /* 'R' */ && reader.getUint8(index + 5) == 0x3d /* '=' */) {
+          hasColors = true;
+          colors = new Float32Array(faces * 3 * 3);
+
+          defaultR = reader.getUint8(index + 6) / 255;
+          defaultG = reader.getUint8(index + 7) / 255;
+          defaultB = reader.getUint8(index + 8) / 255;
+          alpha = reader.getUint8(index + 9) / 255;
+        }
+      }
+
+      const dataOffset = 84;
+      const faceLength = 12 * 4 + 2;
+
+      const geometry = new three_module_BufferGeometry();
+
+      const vertices = new Float32Array(faces * 3 * 3);
+      const normals = new Float32Array(faces * 3 * 3);
+
+      const color = new Color();
+
+      for (let face = 0; face < faces; face++) {
+        const start = dataOffset + face * faceLength;
+        const normalX = reader.getFloat32(start, true);
+        const normalY = reader.getFloat32(start + 4, true);
+        const normalZ = reader.getFloat32(start + 8, true);
+
+        if (hasColors) {
+          const packedColor = reader.getUint16(start + 48, true);
+
+          if ((packedColor & 0x8000) === 0) {
+            // facet has its own unique color
+
+            r = (packedColor & 0x1f) / 31;
+            g = ((packedColor >> 5) & 0x1f) / 31;
+            b = ((packedColor >> 10) & 0x1f) / 31;
+          } else {
+            r = defaultR;
+            g = defaultG;
+            b = defaultB;
+          }
+        }
+
+        for (let i = 1; i <= 3; i++) {
+          const vertexstart = start + i * 12;
+          const componentIdx = face * 3 * 3 + (i - 1) * 3;
+
+          vertices[componentIdx] = reader.getFloat32(vertexstart, true);
+          vertices[componentIdx + 1] = reader.getFloat32(vertexstart + 4, true);
+          vertices[componentIdx + 2] = reader.getFloat32(vertexstart + 8, true);
+
+          normals[componentIdx] = normalX;
+          normals[componentIdx + 1] = normalY;
+          normals[componentIdx + 2] = normalZ;
+
+          if (hasColors) {
+            color.set(r, g, b).convertSRGBToLinear();
+
+            colors[componentIdx] = color.r;
+            colors[componentIdx + 1] = color.g;
+            colors[componentIdx + 2] = color.b;
+          }
+        }
+      }
+
+      geometry.setAttribute('position', new three_module_BufferAttribute(vertices, 3));
+      geometry.setAttribute('normal', new three_module_BufferAttribute(normals, 3));
+
+      if (hasColors) {
+        geometry.setAttribute('color', new three_module_BufferAttribute(colors, 3));
+        geometry.hasColors = true;
+        geometry.alpha = alpha;
+      }
+
+      return geometry;
+    }
+
+    /**
+     *
+     * @param data
+     */
+    function parseASCII(data) {
+      const geometry = new three_module_BufferGeometry();
+      const patternSolid = /solid([\s\S]*?)endsolid/g;
+      const patternFace = /facet([\s\S]*?)endfacet/g;
+      const patternName = /solid\s(.+)/;
+      let faceCounter = 0;
+
+      const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
+      const patternVertex = new RegExp(`vertex${patternFloat}${patternFloat}${patternFloat}`, 'g');
+      const patternNormal = new RegExp(`normal${patternFloat}${patternFloat}${patternFloat}`, 'g');
+
+      const vertices = [];
+      const normals = [];
+      const groupNames = [];
+
+      const normal = new three_module_Vector3();
+
+      let result;
+
+      let groupCount = 0;
+      let startVertex = 0;
+      let endVertex = 0;
+
+      while ((result = patternSolid.exec(data)) !== null) {
+        startVertex = endVertex;
+
+        const solid = result[0];
+
+        const name = (result = patternName.exec(solid)) !== null ? result[1] : '';
+        groupNames.push(name);
+
+        while ((result = patternFace.exec(solid)) !== null) {
+          let vertexCountPerFace = 0;
+          let normalCountPerFace = 0;
+
+          const text = result[0];
+
+          while ((result = patternNormal.exec(text)) !== null) {
+            normal.x = parseFloat(result[1]);
+            normal.y = parseFloat(result[2]);
+            normal.z = parseFloat(result[3]);
+            normalCountPerFace++;
+          }
+
+          while ((result = patternVertex.exec(text)) !== null) {
+            vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+            normals.push(normal.x, normal.y, normal.z);
+            vertexCountPerFace++;
+            endVertex++;
+          }
+
+          // every face have to own ONE valid normal
+
+          if (normalCountPerFace !== 1) {
+            console.error(`THREE.STLLoader: Something isn't right with the normal of face number ${faceCounter}`);
+          }
+
+          // each face have to own THREE valid vertices
+
+          if (vertexCountPerFace !== 3) {
+            console.error(`THREE.STLLoader: Something isn't right with the vertices of face number ${faceCounter}`);
+          }
+
+          faceCounter++;
+        }
+
+        const start = startVertex;
+        const count = endVertex - startVertex;
+
+        geometry.userData.groupNames = groupNames;
+
+        geometry.addGroup(start, count, groupCount);
+        groupCount++;
+      }
+
+      geometry.setAttribute('position', new three_module_Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('normal', new three_module_Float32BufferAttribute(normals, 3));
+
+      return geometry;
+    }
+
+    /**
+     *
+     * @param buffer
+     */
+    function ensureString(buffer) {
+      if (typeof buffer !== 'string') {
+        return new TextDecoder().decode(buffer);
+      }
+
+      return buffer;
+    }
+
+    /**
+     *
+     * @param buffer
+     */
+    function ensureBinary(buffer) {
+      if (typeof buffer === 'string') {
+        const array_buffer = new Uint8Array(buffer.length);
+        for (let i = 0; i < buffer.length; i++) {
+          array_buffer[i] = buffer.charCodeAt(i) & 0xff; // implicitly assumes little-endian
+        }
+
+        return array_buffer.buffer || array_buffer;
+      }
+      return buffer;
+    }
+
+    // start
+
+    const binData = ensureBinary(data);
+
+    return isBinary(binData) ? parseBinary(binData) : parseASCII(ensureString(data));
+  }
 }
 
 
@@ -69248,609 +69689,768 @@ class STLLoader extends Loader {
 
 
 
-
 const LOADERS = {
-    'stl' : new STLLoader()
-}
+  stl: new STLLoader(),
+};
 
-
+/**
+ *
+ */
 class Model extends Entity {
-    get height() {
-        super.height
-        return this.contentHeight
-    }
-    constructor(){
-        super()
-    }
+  /**
+   *
+   */
+  get height() {
+    super.height;
+    return this.contentHeight;
+  }
 
-    connected(){
-        this.src = this.getAttribute('src')
+  /**
+   *
+   */
+  constructor() {
+    super();
+  }
 
-        if (!this.src) { return }
+  /**
+   *
+   */
+  connected() {
+    this.src = this.getAttribute('src');
 
-        let ext = this.src.slice((this.src.lastIndexOf(".") - 1 >>> 0) + 2);
-
-        let loader = LOADERS[ext]
-
-        if (!loader) { return }
-
-        loader.load(this.src, (geometry) => {
-
-            const material = new THREE.MeshPhysicalMaterial({
-                clearcoat: 0.75,
-                clearcoatRoughness: 0.5,
-                metalness: 0.5,
-                roughness: 0.6,
-                envMapIntensity: 0.75,
-            });
-
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.receiveShadow = true
-            mesh.renderOrder = 3
-
-            this.object3D.add(mesh);
-
-            this.dispatchEvent(new CustomEvent(`new-entity`, {bubbles: true}))
-
-
-        });
-
+    if (!this.src) {
+      return;
     }
 
-    onLoad = () => {
+    const ext = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
+    const loader = LOADERS[ext];
+
+    if (!loader) {
+      return;
     }
+
+    loader.load(this.src, (geometry) => {
+      const material = new THREE.MeshPhysicalMaterial({
+        clearcoat: 0.75,
+        clearcoatRoughness: 0.5,
+        metalness: 0.5,
+        roughness: 0.6,
+        envMapIntensity: 0.75,
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.receiveShadow = true;
+      mesh.renderOrder = 3;
+
+      this.object3D.add(mesh);
+
+      this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+    });
+  }
+
+  onLoad = () => {};
 }
 
-customElements.get('mr-model') || customElements.define('mr-model', Model)
+customElements.get('mr-model') || customElements.define('mr-model', Model);
+
 ;// CONCATENATED MODULE: ./src/entities/Light.js
 
 
+/**
+ *
+ */
 class Light_Light extends Entity {
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.object3D = new THREE.PointLight({});
+  }
 
-    constructor(){
-        super()
-        this.object3D = new THREE.PointLight({});
+  /**
+   *
+   */
+  connected() {
+    const color = this.getAttribute('color');
+    this.object3D.color.setStyle(color);
+
+    this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1;
+  }
+
+  mutated = (mutation) => {
+    if (mutation.type != 'attributes') {
+      return;
     }
+    switch (mutation.attributeName) {
+      case 'color':
+        const color = this.getAttribute('color');
+        this.object3D.color.setStyle(color);
+        break;
 
-    connected(){
-        let color = this.getAttribute('color')
-        this.object3D.color.setStyle(color)
+      case 'intensity':
+        this.object3D.intensity = this.getAttribute('intensity');
+        break;
 
-        this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
+      default:
+        break;
     }
-
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
-        switch (mutation.attributeName) {
-            case 'color':
-                let color = this.getAttribute('color')
-                this.object3D.color.setStyle(color)
-                break;
-
-            case 'intensity':
-                this.object3D.intensity = this.getAttribute('intensity')
-                break;
-        
-            default:
-                break;
-        }
-    }
+  };
 }
 
-customElements.get('mr-light') || customElements.define('mr-light', Light_Light)
+customElements.get('mr-light') || customElements.define('mr-light', Light_Light);
+
 ;// CONCATENATED MODULE: ./src/UI/Panel.js
 
 
 
 
 
+/**
+ *
+ */
 class Panel extends MRUIEntity {
-  radius = 0.02
-  smoothness = 18
-  #color = 0xecf0f1
+  radius = 0.02;
 
+  smoothness = 18;
+
+  #color = 0xecf0f1;
+
+  /**
+   *
+   */
   set color(value) {
-    this.#color = value
-    this.object3D.material.color.setStyle(this.#color)
-    
+    this.#color = value;
+    this.object3D.material.color.setStyle(this.#color);
   }
+
+  /**
+   *
+   */
   get color() {
-    return this.#color
+    return this.#color;
   }
 
+  /**
+   *
+   */
   set height(value) {
-    super.height = value
-    this.updatePlane()
-    
+    super.height = value;
+    this.updatePlane();
   }
+
+  /**
+   *
+   */
   get height() {
-    return super.height
+    return super.height;
   }
 
+  /**
+   *
+   */
   set width(value) {
-    super.width = value
-    this.updatePlane()
+    super.width = value;
+    this.updatePlane();
   }
+
+  /**
+   *
+   */
   get width() {
-    return super.width
+    return super.width;
   }
 
+  /**
+   *
+   */
   get offsetHeight() {
-    return super.offsetHeight - this.radius
+    return super.offsetHeight - this.radius;
   }
 
+  /**
+   *
+   */
   get offsetWidth() {
-    return super.offsetWidth - this.radius
+    return super.offsetWidth - this.radius;
   }
 
+  /**
+   *
+   */
   updatePlane() {
-    
-    this.object3D.geometry = UIPlane(
-      this.width,
-      this.height,
-      this.radius,
-      this.smoothness
-    )
+    this.object3D.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness);
   }
 
+  /**
+   *
+   */
   constructor() {
-    super()
+    super();
 
-    this.geometry = UIPlane(
-      this.width,
-      this.height,
-      this.radius,
-      this.smoothness
-    )
+    this.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness);
     this.material = new MeshStandardMaterial({
       color: this.color,
       roughness: 0.7,
       metalness: 0.0,
       side: 2,
-    })
+    });
 
-    this.object3D = new three_module_Mesh(this.geometry, this.material)
-    this.object3D.receiveShadow = true
-    this.object3D.renderOrder = 3
-
-
-
+    this.object3D = new three_module_Mesh(this.geometry, this.material);
+    this.object3D.receiveShadow = true;
+    this.object3D.renderOrder = 3;
   }
 
+  /**
+   *
+   * @param mutation
+   */
   mutated(mutation) {
-    if(mutation.type != 'attributes') {
+    if (mutation.type != 'attributes') {
       switch (mutation.attributeName) {
         case 'width':
-          this.width = parseFloat(this.getAttribute('width'))
-          break
+          this.width = parseFloat(this.getAttribute('width'));
+          break;
         case 'height':
-          this.height = parseFloat(this.getAttribute('height'))
-          break
+          this.height = parseFloat(this.getAttribute('height'));
+          break;
         case 'corner-radius':
-          this.radius = parseFloat(this.getAttribute('corner-radius'))
+          this.radius = parseFloat(this.getAttribute('corner-radius'));
           console.log(this.radius);
-          this.padding.all = this.radius
-          break
+          this.padding.all = this.radius;
+          break;
         case 'smoothness':
-          this.smoothness = parseFloat(this.getAttribute('smoothness'))
-          break
+          this.smoothness = parseFloat(this.getAttribute('smoothness'));
+          break;
         case 'color':
-          this.object3D.material.color.setStyle(this.getAttribute('color'))
-          break
+          this.object3D.material.color.setStyle(this.getAttribute('color'));
+          break;
         default:
-          break
+          break;
       }
-
     }
   }
 }
 
-customElements.get('mr-panel') || customElements.define('mr-panel', Panel)
+customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
 
 ;// CONCATENATED MODULE: ./src/UI/Button.js
 
 
+/**
+ *
+ */
 class Button extends Panel {
-
+  /**
+   *
+   */
   constructor() {
-    super()
-
-
+    super();
   }
 
   onHover = (event) => {
     switch (event.type) {
-        case 'hover-start':
-          this.object3D.scale.addScalar(0.1)
-          this.object3D.position.z += 0.001
+      case 'hover-start':
+        this.object3D.scale.addScalar(0.1);
+        this.object3D.position.z += 0.001;
 
-          break;
+        break;
 
-        case 'hover-end':
-          this.object3D.scale.subScalar(0.1)
-          this.object3D.position.z -= 0.001
+      case 'hover-end':
+        this.object3D.scale.subScalar(0.1);
+        this.object3D.position.z -= 0.001;
 
-          break;
-      
-        default:
-          break;
-      }
-  }
+        break;
+
+      default:
+        break;
+    }
+  };
 }
 
-customElements.get('mr-button') || customElements.define('mr-button', Button)
+customElements.get('mr-button') || customElements.define('mr-button', Button);
 
 ;// CONCATENATED MODULE: ./src/entities/Volume.js
 
 
 
 
+/**
+ *
+ */
 class Volume extends Entity {
+  /**
+   *
+   */
   constructor() {
-    super()
+    super();
 
-    this.width = 1
-    this.depth = 1
-    this.height = this.width
-    this.object3D.receiveShadow = true
-    this.object3D.renderOrder = 3
+    this.width = 1;
+    this.depth = 1;
+    this.height = this.width;
+    this.object3D.receiveShadow = true;
+    this.object3D.renderOrder = 3;
   }
 
   // FIXME: doesn't actually respond to switch in surface orientation.
+  /**
+   *
+   */
   connected() {
     if (this.parentElement instanceof Surface) {
       this.parentElement.addEventListener('surface-placed', (event) => {
-        this.width = this.parentElement.width
-        this.depth = this.parentElement.height
-        this.height = this.parentElement.height
-        let orientation = this.parentElement.getAttribute('orientation')
+        this.width = this.parentElement.width;
+        this.depth = this.parentElement.height;
+        this.height = this.parentElement.height;
+        const orientation = this.parentElement.getAttribute('orientation');
         if (orientation == 'horizontal') {
-          this.object3D.position.setZ(this.depth / 2)
-          this.object3D.rotation.x = Math.PI / 2
+          this.object3D.position.setZ(this.depth / 2);
+          this.object3D.rotation.x = Math.PI / 2;
         } else {
-          this.object3D.rotation.x = 0
+          this.object3D.rotation.x = 0;
         }
-        this.arrangeChildren()
-      })
+        this.arrangeChildren();
+      });
 
       this.parentElement.addEventListener('surface-removed', (event) => {
-        this.object3D.position.setZ(0)
-        this.object3D.rotation.x = 0
-      })
+        this.object3D.position.setZ(0);
+        this.object3D.rotation.x = 0;
+      });
     }
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.object3D.add(entity.object3D)
-    const wall = entity.getAttribute('snap-to')
+    this.object3D.add(entity.object3D);
+    const wall = entity.getAttribute('snap-to');
     if (wall) {
-      this.snapChildToWall(wall, entity.object3D.position)
+      this.snapChildToWall(wall, entity.object3D.position);
     }
   }
 
+  /**
+   *
+   */
   arrangeChildren() {
-    const children = [...this.children]
+    const children = [...this.children];
     children.forEach((child) => {
-      const wall = child.getAttribute('snap-to')
+      const wall = child.getAttribute('snap-to');
       if (wall) {
-        this.snapChildToWall(wall, child.object3D.position)
+        this.snapChildToWall(wall, child.object3D.position);
       }
-    })
+    });
   }
 
+  /**
+   *
+   * @param key
+   * @param vector
+   */
   snapChildToWall(key, vector) {
     switch (key) {
       // bottom
       case 'bottom':
-        vector.setY(-this.height / 2)
-        break
-      // left
+        vector.setY(-this.height / 2);
+        break;
+        // left
       case 'left':
-        vector.setX(-this.width / 2)
-        break
-      // back
+        vector.setX(-this.width / 2);
+        break;
+        // back
       case 'back':
-        vector.setZ(-this.depth / 2)
-        break
-      // right
+        vector.setZ(-this.depth / 2);
+        break;
+        // right
       case 'right':
-        vector.setX(this.width / 2)
-        break
-      // front
+        vector.setX(this.width / 2);
+        break;
+        // front
       case 'front':
-        vector.setZ(this.depth / 2)
-        break
-      // top
+        vector.setZ(this.depth / 2);
+        break;
+        // top
       case 'top':
-        vector.setY(this.height / 2)
-        break
-      // default to floor
+        vector.setY(this.height / 2);
+        break;
+        // default to floor
       default:
-        vector.setY(-this.height / 2)
-        break
+        vector.setY(-this.height / 2);
+        break;
     }
   }
 }
 
-customElements.get('mr-volume') || customElements.define('mr-volume', Volume)
+customElements.get('mr-volume') || customElements.define('mr-volume', Volume);
 
 ;// CONCATENATED MODULE: ./src/UI/media/Image.js
 
 
+/**
+ *
+ */
 class MRImage extends Panel {
-    constructor(){
-        super()
-    }
+  /**
+   *
+   */
+  constructor() {
+    super();
+  }
 
-    connected() {
-        this.material = new THREE.MeshBasicMaterial({
-            side: 1
-          })
-        this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'))
-    }
+  /**
+   *
+   */
+  connected() {
+    this.material = new THREE.MeshBasicMaterial({
+      side: 1,
+    });
+    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'));
+  }
 
-    mutated(mutation) {
-        super.mutated()
-        if(mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'))
-        }
+  /**
+   *
+   * @param mutation
+   */
+  mutated(mutation) {
+    super.mutated();
+    if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
+      this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'));
     }
-
+  }
 }
 
-customElements.get('mr-image') || customElements.define('mr-image', MRImage)
+customElements.get('mr-image') || customElements.define('mr-image', MRImage);
 
 ;// CONCATENATED MODULE: ./src/UI/Text/Font.js
 
 
 
+/**
+ *
+ */
 class MRFont extends MRElement {
-    constructor(){
-        super()
-        this.src = null
-        this.size = 'fit'
-        this.targets = []
-        
-    }
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.src = null;
+    this.size = 'fit';
+    this.targets = [];
+  }
 
-    connectedCallback(){
-        this.src = this.getAttribute('src')
-        let sizeAttr = this.getAttribute('size') ?? this.size
-        this.size = parseFloat(sizeAttr)
-        this.targets = this.getAttribute('target')?.split(',').map(val => val.trim()) ?? []
-    }
+  /**
+   *
+   */
+  connectedCallback() {
+    this.src = this.getAttribute('src');
+    const sizeAttr = this.getAttribute('size') ?? this.size;
+    this.size = parseFloat(sizeAttr);
+    this.targets = this.getAttribute('target')
+      ?.split(',')
+      .map((val) => val.trim()) ?? [];
+  }
 }
 
-customElements.get('mr-font') || customElements.define('mr-font', MRFont)
+customElements.get('mr-font') || customElements.define('mr-font', MRFont);
+
 ;// CONCATENATED MODULE: ./src/UI/Text/TextField.js
 
 
+/**
+ *
+ */
 class TextField extends MRText {
-    constructor(){
-        super()
-        this.focused = false
-    }
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.focused = false;
+  }
 }
 
-customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField)
+customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField);
+
 ;// CONCATENATED MODULE: ./src/datatypes/ClippingGeometry.js
-//NOTE: There is probably a better way to do this
+// NOTE: There is probably a better way to do this
 
+/**
+ *
+ */
 class ClippingGeometry {
-    planes = []
-    planeIDs = []
-    intersection = false
-    global = false
+  planes = [];
 
-    constructor(geometry){
-        this.geometry = geometry
-    }
+  planeIDs = [];
+
+  intersection = false;
+
+  global = false;
+
+  /**
+   *
+   * @param geometry
+   */
+  constructor(geometry) {
+    this.geometry = geometry;
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/entities/layout/LayoutEntity.js
 
 
+/**
+ *
+ */
 class LayoutEntity extends MRUIEntity {
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.shuttle = new THREE.Group(); // will shift based on bounding box width
+    this.object3D.userData.bbox = new THREE.Box3();
+    this.object3D.userData.size = new THREE.Vector3();
+    this.object3D.add(this.shuttle);
 
-    constructor(){
-        super()
-        this.shuttle = new THREE.Group() // will shift based on bounding box width
-        this.object3D.userData.bbox = new THREE.Box3()
-        this.object3D.userData.size = new THREE.Vector3()
-        this.object3D.add(this.shuttle)
-
-        this.shuttle.position.setZ(0.0001)
-
-
-    }
-
+    this.shuttle.position.setZ(0.0001);
+  }
 }
+
 ;// CONCATENATED MODULE: ./src/entities/layout/Container.js
 
 
 
 
 
+/**
+ *
+ */
 class Container extends LayoutEntity {
-
-
+  /**
+   *
+   */
   constructor() {
-    super()
-    this.currentPosition = new THREE.Vector3()
-    this.prevPosition = new THREE.Vector3()
-    this.delta = new THREE.Vector3()
+    super();
+    this.currentPosition = new THREE.Vector3();
+    this.prevPosition = new THREE.Vector3();
+    this.delta = new THREE.Vector3();
   }
 
-  connected(){
-    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
+  /**
+   *
+   */
+  connected() {
+    this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
     document.addEventListener('DOMContentLoaded', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
+      this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+    });
 
     window.addEventListener('resize', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
+      this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+    });
 
     this.parentElement.addEventListener('surface-placed', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-    })
+      this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+    });
 
     this.parentElement.addEventListener('surface-removed', (event) => {
-      this.dispatchEvent( new CustomEvent('container-mutated', { bubbles: true }))
-
-    })
+      this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+    });
 
     this.parentElement.addEventListener('container-mutated', (event) => {
-      this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3))
-    })
-
-
+      this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
+    });
   }
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.shuttle.add(entity.object3D)
+    this.shuttle.add(entity.object3D);
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.shuttle.remove(entity.object3D)
+    this.shuttle.remove(entity.object3D);
   }
 
   onTouch = (event) => {
-    if(event.type =='touch-end') {
-      this.prevPosition.set(0,0,0)
-      return
+    if (event.type == 'touch-end') {
+      this.prevPosition.set(0, 0, 0);
+      return;
     }
-    event.stopPropagation()
-    let scrollMax = (this.contentHeight) - this.height
-    let scrollMin =  0
-    this.currentPosition.copy(event.detail.worldPosition)
-    this.object3D.worldToLocal(this.currentPosition)
-    if(this.prevPosition.y != 0) {
-      this.delta.subVectors(this.currentPosition, this.prevPosition)
+    event.stopPropagation();
+    const scrollMax = this.contentHeight - this.height;
+    const scrollMin = 0;
+    this.currentPosition.copy(event.detail.worldPosition);
+    this.object3D.worldToLocal(this.currentPosition);
+    if (this.prevPosition.y != 0) {
+      this.delta.subVectors(this.currentPosition, this.prevPosition);
     }
-    this.prevPosition.copy(this.currentPosition)
+    this.prevPosition.copy(this.currentPosition);
 
-    let delta = this.delta.y * 1.33
+    const delta = this.delta.y * 1.33;
 
-    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax){
-      this.shuttle.position.y += delta
+    if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax) {
+      this.shuttle.position.y += delta;
     }
-  }
+  };
 
   onScroll = (event) => {
-    let scrollMax = (this.contentHeight) - this.height
-    let scrollMin =  0
-    let delta = event.deltaY * 0.001
-    if( this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax){
-      this.shuttle.position.y += delta
+    const scrollMax = this.contentHeight - this.height;
+    const scrollMin = 0;
+    const delta = event.deltaY * 0.001;
+    if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax) {
+      this.shuttle.position.y += delta;
     }
-  }
+  };
 }
 
-customElements.get('mr-container') ||
-  customElements.define('mr-container', Container)
+customElements.get('mr-container') || customElements.define('mr-container', Container);
 
 ;// CONCATENATED MODULE: ./src/entities/layout/Column.js
 
 
 
+/**
+ *
+ */
 class Column extends LayoutEntity {
-
+  /**
+   *
+   */
   constructor() {
-    super()
-    this.accumulatedY = 0
+    super();
+    this.accumulatedY = 0;
 
     document.addEventListener('container-mutated', (event) => {
-      if (event.target != this.closest('mr-container')) { return }
-      this.update()
-    })
+      if (event.target != this.closest('mr-container')) {
+        return;
+      }
+      this.update();
+    });
   }
 
   update = () => {
-        const children = Array.from(this.children)
-        this.accumulatedY = -this.pxToThree(this.compStyle.paddingTop)
-        for (const index in children) {
-            let child = children[index]
-            this.accumulatedY -= this.pxToThree(child.compStyle.marginTop)
-            child.object3D.position.setY( this.accumulatedY - child.height / 2)
-            this.accumulatedY -= child.height
-            this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom)
-        }
-        this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom)
-        this.shuttle.position.setY(this.parentElement.height / 2)
+    const children = Array.from(this.children);
+    this.accumulatedY = -this.pxToThree(this.compStyle.paddingTop);
+    for (const index in children) {
+      const child = children[index];
+      this.accumulatedY -= this.pxToThree(child.compStyle.marginTop);
+      child.object3D.position.setY(this.accumulatedY - child.height / 2);
+      this.accumulatedY -= child.height;
+      this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom);
     }
+    this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom);
+    this.shuttle.position.setY(this.parentElement.height / 2);
+  };
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
+    this.shuttle.add(entity.object3D);
+    this.update();
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
+    this.shuttle.remove(entity.object3D);
+    this.update();
   }
 
+  /**
+   *
+   */
   setBorder() {
-    let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
-    let height = -this.accumulatedY + this.domToThree(this.compStyle.paddingTop) + this.domToThree(this.compStyle.paddingBottom)
-    let width = this.width + this.domToThree(this.compStyle.paddingLeft) + this.domToThree(this.compStyle.paddingRight)
-    this.background.geometry = UIPlane(width, height, borderRadii, 18)
-    this.background.position.setY((-height / 2) + this.parentElement.height / 2)
+    const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    const height = -this.accumulatedY + this.domToThree(this.compStyle.paddingTop) + this.domToThree(this.compStyle.paddingBottom);
+    const width = this.width + this.domToThree(this.compStyle.paddingLeft) + this.domToThree(this.compStyle.paddingRight);
+    this.background.geometry = UIPlane(width, height, borderRadii, 18);
+    this.background.position.setY(-height / 2 + this.parentElement.height / 2);
   }
 }
 
-customElements.get('mr-column') || customElements.define('mr-column', Column)
+customElements.get('mr-column') || customElements.define('mr-column', Column);
 
 ;// CONCATENATED MODULE: ./src/entities/layout/Row.js
 
 
 
+/**
+ *
+ */
 class Row extends LayoutEntity {
-
-
+  /**
+   *
+   */
   constructor() {
-    super()
-    this.accumulatedX = 0
+    super();
+    this.accumulatedX = 0;
 
     document.addEventListener('container-mutated', (event) => {
-      if (event.target != this.closest('mr-container')) { return }
-      this.update()
-    })
+      if (event.target != this.closest('mr-container')) {
+        return;
+      }
+      this.update();
+    });
 
-    this.currentPosition = new THREE.Vector3()
-    this.prevPosition = new THREE.Vector3()
-    this.delta = new THREE.Vector3()
+    this.currentPosition = new THREE.Vector3();
+    this.prevPosition = new THREE.Vector3();
+    this.delta = new THREE.Vector3();
   }
 
   update = () => {
-    const children = Array.from(this.children)
-    this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft)
+    const children = Array.from(this.children);
+    this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft);
     for (const index in children) {
-        let child = children[index]
-        if (!(child instanceof Column)) { continue }
+      const child = children[index];
+      if (!(child instanceof Column)) {
+        continue;
+      }
 
-        this.accumulatedX += this.pxToThree(child.compStyle.marginLeft)
-        child.object3D.position.setX( this.accumulatedX + child.width / 2)
-        this.accumulatedX += child.width
-        this.accumulatedX += this.pxToThree(child.compStyle.marginRight)
+      this.accumulatedX += this.pxToThree(child.compStyle.marginLeft);
+      child.object3D.position.setX(this.accumulatedX + child.width / 2);
+      this.accumulatedX += child.width;
+      this.accumulatedX += this.pxToThree(child.compStyle.marginRight);
     }
-    this.accumulatedX += this.pxToThree(this.compStyle.paddingRight)
+    this.accumulatedX += this.pxToThree(this.compStyle.paddingRight);
 
-    this.shuttle.position.setX(-this.parentElement.width / 2)
-    }
+    this.shuttle.position.setX(-this.parentElement.width / 2);
+  };
 
+  /**
+   *
+   * @param entity
+   */
   add(entity) {
-    this.shuttle.add(entity.object3D)
-    this.update()
+    this.shuttle.add(entity.object3D);
+    this.update();
   }
 
+  /**
+   *
+   * @param entity
+   */
   remove(entity) {
-    this.shuttle.remove(entity.object3D)
-    this.update()
+    this.shuttle.remove(entity.object3D);
+    this.update();
   }
 }
 
-customElements.get('mr-row') || customElements.define('mr-row', Row)
+customElements.get('mr-row') || customElements.define('mr-row', Row);
 
 ;// CONCATENATED MODULE: ./src/index.js
 // UTILS
@@ -69904,6 +70504,7 @@ customElements.get('mr-row') || customElements.define('mr-row', Row)
 // GEOMETRY
 
 // UI
+
 
 })();
 
