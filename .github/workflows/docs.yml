@@ -57,6 +57,7 @@ jobs:
         mv -f ../doc/* ./docs/
         ls -al
         ls docs
+        git diff
 
     - name: Commit only if there are changes
       run: |
