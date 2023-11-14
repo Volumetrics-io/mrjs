@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { MRUIEntity } from '../../UI/UIEntity';
 
 /**
