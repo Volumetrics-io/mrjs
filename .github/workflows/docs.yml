@@ -4,6 +4,8 @@ name: npm run docs
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -51,12 +53,20 @@ jobs:
 
     - name: Update Docs
       run: |
-        mkdir -p ./auto
+        rm -rf auto && mkdir auto
         mv -f ../doc/* ./auto/
-        git config user.name 'github-actions[bot]'
-        git config user.email 'github-actions[bot]@users.noreply.github.com'
-        git add auto/*
-        git commit -m "👷 MR.js - Auto Generated Docs 👷" 
-        git push --quiet --set-upstream origin HEAD
+
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git diff --exit-code) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add auto/*
+          git commit -m "👷 MR.js - Auto Generated Docs 👷" 
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
       env:
           PAT_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
