@@ -47,6 +47,7 @@ jobs:
         repository: Volumetrics-io/docs
         token: ${{ secrets.PAT }}
         ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
     - name: Update Docs
       run: |
@@ -56,6 +57,6 @@ jobs:
         git add auto/*
         git commit -m "👷 MR.js - Auto Generated Docs 👷" 
         git push --quiet --set-upstream origin HEAD
-      env:
-        TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+      with:
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
