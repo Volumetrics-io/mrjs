@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { MRUIEntity } from '../../UI/UIEntity';
 import { ClippingGeometry } from '../../datatypes/ClippingGeometry';
 import { Surface } from '../Surface';
