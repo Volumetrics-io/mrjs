@@ -7,12 +7,12 @@
     "build": "npx webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npx jsdoc src/*.js --destination ./docs",
-    "prettier": "prettier --list-different \"src/**/*.js\" \"*.js\"",
+    "prettier-list": "prettier --list-different \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
-    "lint": "eslint \"src/**/*.js\" \"*.js\"",
+    "lint-list": "eslint \"src/**/*.js\" \"*.js\"",
     "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --fix",
     "format": "npm run prettier-fix && npm run lint-fix",
-    "check-format": "npm run prettier && npm run lint"
+    "check-format": "npm run prettier-list && npm run lint-list"
   },
   "repository": {
     "type": "git",
