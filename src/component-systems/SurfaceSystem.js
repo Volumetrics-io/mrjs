@@ -64,7 +64,6 @@ export class SurfaceSystem extends System {
 
     if ( this.sourceRequest == false ) {
         this.referenceSpace = this.app.renderer.xr.getReferenceSpace();
-        console.log(this.referenceSpace);
 
         this.session = this.app.renderer.xr.getSession();
 
@@ -119,10 +118,13 @@ export class SurfaceSystem extends System {
         this.currentSurface.viz.visible = true
     }
 
+    console.log(this.currentSurface.rotationPlane.rotation.x);
 
     if ( hitResults.length ) {
         const hit = hitResults[ 0 ];
         let pose = hit.getPose( this.referenceSpace )
+
+        this.currentSurface.rotationPlane.rotation.x = 3 * Math.PI / 2
         
         this.currentSurface.object3D.position.fromArray( [pose.transform.position.x, pose.transform.position.y,pose.transform.position.z] )
         this.currentSurface.object3D.quaternion.fromArray( [pose.transform.orientation.x, pose.transform.orientation.y, pose.transform.orientation.z, pose.transform.orientation.w] )
