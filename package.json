@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --config webpack.config.js",
     "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx}\"",
-    "docs": "jsDoc src/*.js --destination ./docs"
+    "docs": "npx jsDoc src/*.js --destination ./docs"
   },
   "repository": {
     "type": "git",
