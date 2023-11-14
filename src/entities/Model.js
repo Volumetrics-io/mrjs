@@ -33,4 +33,4 @@ export class Model extends Entity {
     onLoad = () => {}
 }
 
-customElements.get('mr-model') || customElements.define('mr-model', Model)
+customElements.get('mr-model') || customElements.define('mr-model', Model);

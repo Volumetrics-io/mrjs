@@ -39,7 +39,7 @@ import './entities/layout/Row'
 import './entities/layout/Column'
 
 //   EXPORTS
-export * as THREE from 'three'
+export * as THREE from 'three';
 
 // CORE
 export { default as MRElement } from './core/MRElement'

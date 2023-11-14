@@ -24,8 +24,6 @@ export default {
         asyncWebAssembly: true,
     },
 
-    mode: process.env.NODE_ENV || 'development',
-
     resolve: {
         extensions: ['', '.mjs', '.js'],
         alias: {
@@ -39,8 +37,10 @@ export default {
     },
 
     plugins: [
-        // ...
+        // ... 
 
+        mode: process.env.NODE_ENV || 'development',
+    
         new webpack.ProvidePlugin({
             MRJS: 'MRJS',
         }),

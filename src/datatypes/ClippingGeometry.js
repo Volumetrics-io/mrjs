@@ -4,19 +4,19 @@
  *
  */
 export class ClippingGeometry {
-    planes = []
+  planes = [];
 
-    planeIDs = []
+  planeIDs = [];
 
-    intersection = false
+  intersection = false;
 
-    global = false
+  global = false;
 
-    /**
-     *
-     * @param geometry
-     */
-    constructor(geometry) {
-        this.geometry = geometry
-    }
+  /**
+   *
+   * @param geometry
+   */
+  constructor(geometry) {
+    this.geometry = geometry;
+  }
 }
