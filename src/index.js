@@ -52,4 +52,4 @@ export { default as UIPlane } from './geometry/UIPlane'
 export { default as Panel } from './UI/Panel'
 
 // For testing
-export { default as loadModel } from './utils/loadModel'
+export * from './utils/loadModel'
