@@ -1,10 +1,10 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import path from 'path';
-import webpack from 'webpack';
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import path from 'path'
+import webpack from 'webpack'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 export default {
     entry: './src/index.js',
@@ -24,10 +24,10 @@ export default {
         asyncWebAssembly: true,
     },
 
-    mode: 'none', // disable default behavior for now
+    mode: process.env.NODE_ENV || 'development',
 
     resolve: {
-        extensions: ['', '.js'],
+        extensions: ['', '.mjs', '.js'],
         alias: {
             MRJS: path.resolve(__dirname, 'src/utils/global'), // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
         },
@@ -35,6 +35,7 @@ export default {
             fs: false,
             path: false,
         },
+        fullySpecified: false, // disable required .js / .mjs when importing
     },
 
     plugins: [
@@ -44,4 +45,22 @@ export default {
             MRJS: 'MRJS',
         }),
     ],
+    module: {
+        rules: [
+            {
+                test: /\.m?js/,
+                type: 'javascript/auto',
+            },
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false,
+                },
+            },
+            {
+                test: /\.wasm$/,
+                type: 'webassembly/async', // or 'webassembly/sync'
+            },
+        ],
+    },
 }

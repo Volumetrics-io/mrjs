@@ -1,13 +1,14 @@
 {
   "name": "volumetrics",
   "version": "0.0.1",
+  "type": "module",
   "description": "an MR first webXR framework",
   "main": "dist/build.js",
   "scripts": {
-    "test": "jest",
-    "build": "npx webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js",
     "format": "prettier --write \"src/**/*.js\" \"*.js\"",
-    "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\""
+    "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\"",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -44,9 +45,5 @@
     "stats.js": "^0.17.0",
     "three": "^0.151.3",
     "troika-three-text": "^0.48.0-unicode.1"
-  },
-  "type": "module",
-  "exports": {
-    "./src/*": "./src/*.js"
   }
 }
