@@ -373,7 +373,7 @@ async function loadUSDZ(filePath) {
 export function loadModel(filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
-    if (extension == 'stl') {
+    if (extension == 'stl') { 
         return loadSTL(filePath);
     } else if (extension == 'gltf') {
         return loadGLTF(filePath);
