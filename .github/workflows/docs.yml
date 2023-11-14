@@ -1,9 +1,11 @@
-# Build MRjs and confirm everything passes
-name: npm build
+# Auto generate docs as a new commit for the docs repo
+name: npm run docs
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -20,11 +22,22 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: 21
-   
-    - name: Install Dependencies
-      run: |
-        npm install
 
-    - name: 👷 Build
+    - name: 👷 Write the html docs
       run: |
-        npm run build
+        npm run docs
+
+    - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git remote add target-repo https://github.com/volumetrics-io/docs.git
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "👷 MR.js - Auto Generated Docs 👷" 
+          git push target-repo main
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
