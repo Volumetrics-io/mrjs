@@ -49,8 +49,6 @@ jobs:
         token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
     - name: Update Docs
-      with:
-        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
       run: |
         cp -rf ../docs ./auto
         git config user.name "GitHub Actions"
@@ -58,3 +56,5 @@ jobs:
         git add auto/*
         git commit -m "👷 MR.js - Auto Generated Docs 👷" 
         git push --quiet --set-upstream origin HEAD
+      env:
+          PAT_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
