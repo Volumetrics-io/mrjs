@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
       # todo - run the npm install with a dockerfile setup instead of pure
       # install but not important to do right now since install isnt too long
