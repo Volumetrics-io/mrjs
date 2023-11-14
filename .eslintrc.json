@@ -8,6 +8,7 @@
         "sourceType": "module"
     },
     "extends": ["airbnb-base", "plugin:jsdoc/recommended", "prettier"],
+    // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
     "plugins": ["jsdoc", "prettier"],
     "rules": {
         "prettier/prettier": ["error"],
