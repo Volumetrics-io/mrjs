@@ -53,3 +53,4 @@ export { default as Panel } from './UI/Panel'
 
 // For testing
 export * from './utils/loadModel'
+export * from './utils/loadModel.test'
