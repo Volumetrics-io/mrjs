@@ -1,10 +1,9 @@
-# Auto generate docs as a new commit for the docs repo
-name: npm run docs
+# Build MRjs and confirm everything passes
+name: npm build
 
 on:
   workflow_dispatch:
   push:
-    branches: main
 
 permissions:
   contents: read
@@ -21,10 +20,11 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: 21
-
-    - name: 👷 Write the html docs
+   
+    - name: Install Dependencies
       run: |
-        npm run docs
+        npm install
 
-    - name: commit to the docs repo
-      
+    - name: 👷 Build
+      run: |
+        npm run build
