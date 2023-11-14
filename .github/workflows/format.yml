@@ -1,6 +1,5 @@
 # Check MRjs has been linted
-name: npm run format
-
+name: npm run check-format
 on:
   workflow_dispatch:
   push:
