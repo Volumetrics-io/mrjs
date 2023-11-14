@@ -56,6 +56,6 @@ jobs:
         git add auto/*
         git commit -m "👷 MR.js - Auto Generated Docs 👷" 
         git push --quiet --set-upstream origin HEAD
-      #env:
-        #PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      env:
+        TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
