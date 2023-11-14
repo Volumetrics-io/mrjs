@@ -27,6 +27,8 @@ jobs:
 
     - name: 👷 Write the html docs
       run: |
+        ls -al
+        ls node_modules/*
         npm run docs
 
     - name: Configure Git
