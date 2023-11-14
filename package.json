@@ -10,9 +10,9 @@
     "prettier": "prettier --list-different \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
     "lint": "eslint \"src/**/*.js\" \"*.js\"",
-    "lint-fix": "npm run lint -- --fix",
+    "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --fix",
     "format": "npm run prettier-fix && npm run lint-fix",
-    "check-format": "npm run prettier && npm run lint",
+    "check-format": "npm run prettier && npm run lint"
   },
   "repository": {
     "type": "git",
