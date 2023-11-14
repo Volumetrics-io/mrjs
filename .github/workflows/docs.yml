@@ -11,8 +11,9 @@ permissions:
 jobs:
   docs:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+    
+    - name: Checkout Current Repository
+      uses: actions/checkout@v3
     
     # todo - run the npm install with a dockerfile setup instead of pure
     # install but not important to do right now since install isnt too long
@@ -21,26 +22,46 @@ jobs:
       with:
         node-version: 21
 
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+
     - name: Install Dependencies
       run: |
         npm install
 
     - name: 👷 Write the html docs
       run: |
-        ls node_modules/*
         npm run docs
 
-    - name: Configure Git
+    - name: Get Docs content
+        id: get-docs
+        run: |
+          cp -rf docs/* > ../docs
+
+    - name: see if info is there
       run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout docs Repository
+      uses: actions/checkout@v3
+      with:
+        repository: Volumetrics-io/docs
+        token: ${{ secrets.PAT }}
+        ref: main
+
+    - name: Update Docs
+      run: |
+        cp -rf ../docs ./auto
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git remote add target-repo https://github.com/volumetrics-io/docs.git
-
-    - name: Commit and push changes
-      run: |
-        git add .
+        git add auto/*
         git commit -m "👷 MR.js - Auto Generated Docs 👷" 
-        git push target-repo main
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        git push --quiet --set-upstream origin HEAD
+      #env:
+        #PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
