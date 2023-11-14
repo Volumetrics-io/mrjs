@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+       - main
 
 permissions:
   contents: read
@@ -62,7 +62,7 @@ jobs:
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add auto/*
+          git add .
           git commit -m "👷 MR.js - Auto Generated Docs 👷" 
           git push --quiet --set-upstream origin HEAD
         else
