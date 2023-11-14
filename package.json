@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npx jsdoc src/*.js --destination ./docs",
     "prettier": "prettier --list-different \"src/**/*.js\" \"*.js\"",
-    "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
+    "prettier-fix": "prettier \"src/**/*.js\" \"*.js\"",
     "lint": "eslint \"src/**/*.js\" \"*.js\"",
     "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --fix",
     "format": "npm run prettier-fix && npm run lint-fix",
