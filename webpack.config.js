@@ -45,6 +45,7 @@ export default {
             MRJS: 'MRJS',
         }),
     ],
+
     module: {
         rules: [
             {

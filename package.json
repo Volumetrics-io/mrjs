@@ -6,9 +6,9 @@
   "main": "dist/build.js",
   "scripts": {
     "build": "npx webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.js\" \"*.js\"",
     "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\"",
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
     "docs": "npx jsdoc src/*.js --destination ./docs"
   },
   "repository": {
