@@ -31,7 +31,7 @@ jobs:
     - name: 👷 Check if format is needed
       run: |
         # npm run check-format
-        if [ npm run check-format ]; then
+        if ! npm run check-format; then
           echo "Some files need formatting. Run 'npm run format' to format them."
           exit 1
         fi
