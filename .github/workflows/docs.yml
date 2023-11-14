@@ -33,7 +33,7 @@ jobs:
       id: get-docs
       run: |
         mkdir -p ../doc
-        cp -rf docs > ../doc
+        cp -rf docs ../doc
 
     - name: see if info is there
       run: |
