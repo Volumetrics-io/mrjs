@@ -1,7 +1,13 @@
 import { Column } from './Column'
 import { LayoutEntity } from './LayoutEntity'
 
+/**
+ *
+ */
 export class Row extends LayoutEntity {
+    /**
+     *
+     */
     constructor() {
         super()
         this.accumulatedX = 0
@@ -22,7 +28,7 @@ export class Row extends LayoutEntity {
         const children = Array.from(this.children)
         this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft)
         for (const index in children) {
-            let child = children[index]
+            const child = children[index]
             if (!(child instanceof Column)) {
                 continue
             }
@@ -37,11 +43,19 @@ export class Row extends LayoutEntity {
         this.shuttle.position.setX(-this.parentElement.width / 2)
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         this.shuttle.add(entity.object3D)
         this.update()
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
         this.shuttle.remove(entity.object3D)
         this.update()

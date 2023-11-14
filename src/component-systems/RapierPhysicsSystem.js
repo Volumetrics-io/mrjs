@@ -14,7 +14,13 @@ export const COLLIDER_ENTITY_MAP = {}
 //
 // Alternatively, you can also expressly attatch a comp-physics
 // attribute for more detailed control.
+/**
+ *
+ */
 export class RapierPhysicsSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false)
         this.debug = this.app.debug
@@ -43,6 +49,11 @@ export class RapierPhysicsSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         this.app.physicsWorld.step(this.eventQueue)
 
@@ -63,7 +74,7 @@ export class RapierPhysicsSystem extends System {
             this.updateBody(entity)
 
             this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-                let joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
+                const joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle]
 
                 if (joint) {
                     if (!joint.includes('hover') && entity.touch) {
@@ -75,10 +86,10 @@ export class RapierPhysicsSystem extends System {
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition)
 
                         entity.dispatchEvent(
-                            new CustomEvent(`touch`, {
+                            new CustomEvent('touch', {
                                 bubbles: true,
                                 detail: {
-                                    joint: joint,
+                                    joint,
                                     worldPosition: collider2.translation(),
                                     position: this.tempLocalPosition,
                                     delta: this.touchDelta,
@@ -94,11 +105,11 @@ export class RapierPhysicsSystem extends System {
     }
 
     onContactStart = (handle1, handle2) => {
-        let collider1 = this.app.physicsWorld.colliders.get(handle1)
-        let collider2 = this.app.physicsWorld.colliders.get(handle2)
+        const collider1 = this.app.physicsWorld.colliders.get(handle1)
+        const collider2 = this.app.physicsWorld.colliders.get(handle2)
 
-        let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
-        let entity = COLLIDER_ENTITY_MAP[handle2]
+        const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
+        const entity = COLLIDER_ENTITY_MAP[handle2]
 
         if (joint && entity && !joint.includes('hover')) {
             // if(this.currentEntity) {
@@ -110,13 +121,17 @@ export class RapierPhysicsSystem extends System {
 
         if (joint && entity && joint.includes('hover')) {
             this.hoverStart(collider1, collider2, entity)
-            return
         }
     }
 
+    /**
+     *
+     * @param handle1
+     * @param handle2
+     */
     onContactEnd(handle1, handle2) {
-        let joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
-        let entity = COLLIDER_ENTITY_MAP[handle2]
+        const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1]
+        const entity = COLLIDER_ENTITY_MAP[handle2]
 
         if (joint && entity && !joint.includes('hover')) {
             // if(entity != this.currentEntity) {
@@ -128,7 +143,6 @@ export class RapierPhysicsSystem extends System {
 
         if (joint && entity && joint.includes('hover')) {
             this.hoverEnd(entity)
-            return
         }
     }
 
@@ -143,7 +157,7 @@ export class RapierPhysicsSystem extends System {
 
             // Contact information can be read from `manifold`.
             entity.dispatchEvent(
-                new CustomEvent(`click`, {
+                new CustomEvent('click', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -152,7 +166,7 @@ export class RapierPhysicsSystem extends System {
                 })
             )
             entity.dispatchEvent(
-                new CustomEvent(`touch-start`, {
+                new CustomEvent('touch-start', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -171,7 +185,7 @@ export class RapierPhysicsSystem extends System {
         this.tempWorldPosition.set(0, 0, 0)
         entity.touch = false
         entity.dispatchEvent(
-            new CustomEvent(`touch-end`, {
+            new CustomEvent('touch-end', {
                 bubbles: true,
             })
         )
@@ -183,7 +197,7 @@ export class RapierPhysicsSystem extends System {
             this.tempWorldPosition.copy(manifold.localContactPoint2(0))
             entity.object3D.localToWorld(this.tempWorldPosition)
             entity.dispatchEvent(
-                new CustomEvent(`hover-start`, {
+                new CustomEvent('hover-start', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -196,17 +210,25 @@ export class RapierPhysicsSystem extends System {
 
     hoverEnd = (entity) => {
         entity.dispatchEvent(
-            new CustomEvent(`hover-end`, {
+            new CustomEvent('hover-end', {
                 bubbles: true,
             })
         )
     }
 
+    /**
+     *
+     * @param entity
+     */
     onNewEntity(entity) {
         this.initPhysicsBody(entity)
         this.registry.add(entity)
     }
 
+    /**
+     *
+     * @param entity
+     */
     initPhysicsBody(entity) {
         if (entity.physics.type == 'none') {
             return
@@ -229,6 +251,10 @@ export class RapierPhysicsSystem extends System {
         entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS)
     }
 
+    /**
+     *
+     * @param entity
+     */
     updateBody(entity) {
         if (entity.physics.type == 'none') {
             return
@@ -243,6 +269,10 @@ export class RapierPhysicsSystem extends System {
         this.updateCollider(entity)
     }
 
+    /**
+     *
+     * @param physicsData
+     */
     initColliderDesc(physicsData) {
         switch (physicsData.type) {
             case 'box':
@@ -253,6 +283,10 @@ export class RapierPhysicsSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     updateCollider(entity) {
         switch (entity.physics.type) {
             case 'box':
@@ -264,6 +298,9 @@ export class RapierPhysicsSystem extends System {
         }
     }
 
+    /**
+     *
+     */
     updateDebugRenderer() {
         if (!this.debug || this.debug == 'false') {
             return

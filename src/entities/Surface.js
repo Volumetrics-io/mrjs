@@ -2,7 +2,13 @@ import * as THREE from 'three'
 import Entity from '../core/entity.js'
 import { UIPlane } from '../geometry/UIPlane.js'
 
+/**
+ *
+ */
 export class Surface extends Entity {
+    /**
+     *
+     */
     constructor() {
         super()
 
@@ -52,14 +58,26 @@ export class Surface extends Entity {
         this.viz.visible = false
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         this.group.add(entity.object3D)
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
         this.group.remove(entity.object3D)
     }
 
+    /**
+     *
+     * @param mutation
+     */
     mutated(mutation) {
         if (mutation.type != 'attributes') {
             switch (mutation.attributeName) {
@@ -71,6 +89,9 @@ export class Surface extends Entity {
         }
     }
 
+    /**
+     *
+     */
     place() {
         this.viz.removeFromParent()
         this.group.visible = true
@@ -79,6 +100,9 @@ export class Surface extends Entity {
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }))
     }
 
+    /**
+     *
+     */
     replace() {
         console.log('replace')
         this.object3D.position.copy(this.anchorPosition)
@@ -88,6 +112,9 @@ export class Surface extends Entity {
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }))
     }
 
+    /**
+     *
+     */
     remove() {
         console.log('remove')
         this.placed = false

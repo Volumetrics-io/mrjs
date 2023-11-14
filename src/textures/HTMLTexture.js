@@ -3,7 +3,16 @@ import html2canvas from 'html2canvas'
 
 // Borrowed from HTMLMesh: https://github.com/mrdoob/three.js/blob/674400e2ccf07f5fe81c287c294f0e15a199100d/examples/jsm/interactive/HTMLMesh.js#L11
 
+/**
+ *
+ */
 export default class HTMLTexture extends CanvasTexture {
+    /**
+     *
+     * @param html
+     * @param width
+     * @param height
+     */
     constructor(html, width, height) {
         const canvas = document.createElement('canvas')
 
@@ -44,12 +53,19 @@ export default class HTMLTexture extends CanvasTexture {
         this.observer = observer
     }
 
+    /**
+     *
+     * @param event
+     */
     dispatchDOMEvent(event) {
         if (event.data) {
             htmlevent(this.this.html, event.type, event.data.x, event.data.y)
         }
     }
 
+    /**
+     *
+     */
     update() {
         console.log('update')
         html2canvas(this.html, {
@@ -62,6 +78,9 @@ export default class HTMLTexture extends CanvasTexture {
         })
     }
 
+    /**
+     *
+     */
     dispose() {
         if (this.observer) {
             this.observer.disconnect()

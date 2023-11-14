@@ -5,15 +5,28 @@ const LOADERS = {
     stl: new STLLoader(),
 }
 
+/**
+ *
+ */
 export class Model extends Entity {
+    /**
+     *
+     */
     get height() {
         super.height
         return this.contentHeight
     }
+
+    /**
+     *
+     */
     constructor() {
         super()
     }
 
+    /**
+     *
+     */
     connected() {
         this.src = this.getAttribute('src')
 
@@ -21,9 +34,9 @@ export class Model extends Entity {
             return
         }
 
-        let ext = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2)
+        const ext = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2)
 
-        let loader = LOADERS[ext]
+        const loader = LOADERS[ext]
 
         if (!loader) {
             return
@@ -44,7 +57,7 @@ export class Model extends Entity {
 
             this.object3D.add(mesh)
 
-            this.dispatchEvent(new CustomEvent(`new-entity`, { bubbles: true }))
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
         })
     }
 

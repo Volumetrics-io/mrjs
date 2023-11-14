@@ -1,7 +1,13 @@
 import * as THREE from 'three'
 import System from '../core/System'
 
+/**
+ *
+ */
 export class SurfaceSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false)
         this.referenceSpace
@@ -49,6 +55,11 @@ export class SurfaceSystem extends System {
         })
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         for (const surface of this.registry) {
             if (this.currentSurface == null && surface.anchored == false) {
@@ -97,6 +108,9 @@ export class SurfaceSystem extends System {
         }
     }
 
+    /**
+     *
+     */
     resetAllSurfaces() {
         for (const surface of this.registry) {
             surface.remove()
@@ -104,6 +118,11 @@ export class SurfaceSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param hitResults
+     * @param frame
+     */
     placeSurface(hitResults, frame) {
         if (!this.currentSurface.viz.visible) {
             this.currentSurface.viz.visible = true
@@ -111,7 +130,7 @@ export class SurfaceSystem extends System {
 
         if (hitResults.length) {
             const hit = hitResults[0]
-            let pose = hit.getPose(this.referenceSpace)
+            const pose = hit.getPose(this.referenceSpace)
 
             this.currentSurface.object3D.position.fromArray([pose.transform.position.x, pose.transform.position.y, pose.transform.position.z])
             this.currentSurface.object3D.quaternion.fromArray([

@@ -51,11 +51,25 @@ import { BufferAttribute, BufferGeometry, Color, FileLoader, Float32BufferAttrib
  *  const mesh = new THREE.Mesh(geometry, materials);
  */
 
+/**
+ *
+ */
 class STLLoader extends Loader {
+    /**
+     *
+     * @param manager
+     */
     constructor(manager) {
         super(manager)
     }
 
+    /**
+     *
+     * @param url
+     * @param onLoad
+     * @param onProgress
+     * @param onError
+     */
     load(url, onLoad, onProgress, onError) {
         const scope = this
 
@@ -67,7 +81,7 @@ class STLLoader extends Loader {
 
         loader.load(
             url,
-            function (text) {
+            (text) => {
                 try {
                     onLoad(scope.parse(text))
                 } catch (e) {
@@ -85,7 +99,15 @@ class STLLoader extends Loader {
         )
     }
 
+    /**
+     *
+     * @param data
+     */
     parse(data) {
+        /**
+         *
+         * @param data
+         */
         function isBinary(data) {
             const reader = new DataView(data)
             const face_size = (32 / 8) * 3 + (32 / 8) * 3 * 3 + 16 / 8
@@ -119,6 +141,12 @@ class STLLoader extends Loader {
             return true
         }
 
+        /**
+         *
+         * @param query
+         * @param reader
+         * @param offset
+         */
         function matchDataViewAt(query, reader, offset) {
             // Check if each byte in query matches the corresponding byte from the current offset
 
@@ -129,22 +157,29 @@ class STLLoader extends Loader {
             return true
         }
 
+        /**
+         *
+         * @param data
+         */
         function parseBinary(data) {
             const reader = new DataView(data)
             const faces = reader.getUint32(80, true)
 
-            let r,
-                g,
-                b,
-                hasColors = false,
-                colors
-            let defaultR, defaultG, defaultB, alpha
+            let r
+            let g
+            let b
+            let hasColors = false
+            let colors
+            let defaultR
+            let defaultG
+            let defaultB
+            let alpha
 
             // process STL header
             // check for default color in header ("COLOR=rgba" sequence).
 
             for (let index = 0; index < 80 - 10; index++) {
-                if (reader.getUint32(index, false) == 0x434f4c4f /*COLO*/ && reader.getUint8(index + 4) == 0x52 /*'R'*/ && reader.getUint8(index + 5) == 0x3d /*'='*/) {
+                if (reader.getUint32(index, false) == 0x434f4c4f /* COLO */ && reader.getUint8(index + 4) == 0x52 /* 'R' */ && reader.getUint8(index + 5) == 0x3d /* '=' */) {
                     hasColors = true
                     colors = new Float32Array(faces * 3 * 3)
 
@@ -221,6 +256,10 @@ class STLLoader extends Loader {
             return geometry
         }
 
+        /**
+         *
+         * @param data
+         */
         function parseASCII(data) {
             const geometry = new BufferGeometry()
             const patternSolid = /solid([\s\S]*?)endsolid/g
@@ -229,8 +268,8 @@ class STLLoader extends Loader {
             let faceCounter = 0
 
             const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source
-            const patternVertex = new RegExp('vertex' + patternFloat + patternFloat + patternFloat, 'g')
-            const patternNormal = new RegExp('normal' + patternFloat + patternFloat + patternFloat, 'g')
+            const patternVertex = new RegExp(`vertex${patternFloat}${patternFloat}${patternFloat}`, 'g')
+            const patternNormal = new RegExp(`normal${patternFloat}${patternFloat}${patternFloat}`, 'g')
 
             const vertices = []
             const normals = []
@@ -275,13 +314,13 @@ class STLLoader extends Loader {
                     // every face have to own ONE valid normal
 
                     if (normalCountPerFace !== 1) {
-                        console.error("THREE.STLLoader: Something isn't right with the normal of face number " + faceCounter)
+                        console.error(`THREE.STLLoader: Something isn't right with the normal of face number ${faceCounter}`)
                     }
 
                     // each face have to own THREE valid vertices
 
                     if (vertexCountPerFace !== 3) {
-                        console.error("THREE.STLLoader: Something isn't right with the vertices of face number " + faceCounter)
+                        console.error(`THREE.STLLoader: Something isn't right with the vertices of face number ${faceCounter}`)
                     }
 
                     faceCounter++
@@ -302,6 +341,10 @@ class STLLoader extends Loader {
             return geometry
         }
 
+        /**
+         *
+         * @param buffer
+         */
         function ensureString(buffer) {
             if (typeof buffer !== 'string') {
                 return new TextDecoder().decode(buffer)
@@ -310,6 +353,10 @@ class STLLoader extends Loader {
             return buffer
         }
 
+        /**
+         *
+         * @param buffer
+         */
         function ensureBinary(buffer) {
             if (typeof buffer === 'string') {
                 const array_buffer = new Uint8Array(buffer.length)
@@ -318,9 +365,8 @@ class STLLoader extends Loader {
                 }
 
                 return array_buffer.buffer || array_buffer
-            } else {
-                return buffer
             }
+            return buffer
         }
 
         // start

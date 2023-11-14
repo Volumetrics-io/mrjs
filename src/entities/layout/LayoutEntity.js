@@ -1,6 +1,12 @@
 import { MRUIEntity } from '../../UI/UIEntity'
 
+/**
+ *
+ */
 export class LayoutEntity extends MRUIEntity {
+    /**
+     *
+     */
     constructor() {
         super()
         this.shuttle = new THREE.Group() // will shift based on bounding box width
