@@ -51,7 +51,7 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm -rf ./auto
+        mkdir -p ./auto
         mv -f ../doc/* ./auto/
         git config user.name 'github-actions[bot]'
         git config user.email 'github-actions[bot]@users.noreply.github.com'
