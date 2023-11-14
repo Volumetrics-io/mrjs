@@ -32,7 +32,7 @@ jobs:
     - name: Get Docs content
       id: get-docs
       run: |
-        mkdir ../doc
+        mkdir -p ../doc
         cp -rf docs > ../doc
 
     - name: see if info is there
