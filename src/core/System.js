@@ -9,7 +9,7 @@ export default class System {
 
         if (!this.app) {
             return
-        }
+    }
 
         this.frameRate = frameRate
         // Need a way to register and deregister systems per environment
