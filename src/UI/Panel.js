@@ -3,47 +3,85 @@ import { UIPlane } from '../geometry/UIPlane.js'
 import Entity from '../core/entity.js'
 import { MRUIEntity } from './UIEntity.js'
 
+/**
+ *
+ */
 export default class Panel extends MRUIEntity {
     radius = 0.02
+
     smoothness = 18
+
     #color = 0xecf0f1
 
+    /**
+     *
+     */
     set color(value) {
         this.#color = value
         this.object3D.material.color.setStyle(this.#color)
     }
+
+    /**
+     *
+     */
     get color() {
         return this.#color
     }
 
+    /**
+     *
+     */
     set height(value) {
         super.height = value
         this.updatePlane()
     }
+
+    /**
+     *
+     */
     get height() {
         return super.height
     }
 
+    /**
+     *
+     */
     set width(value) {
         super.width = value
         this.updatePlane()
     }
+
+    /**
+     *
+     */
     get width() {
         return super.width
     }
 
+    /**
+     *
+     */
     get offsetHeight() {
         return super.offsetHeight - this.radius
     }
 
+    /**
+     *
+     */
     get offsetWidth() {
         return super.offsetWidth - this.radius
     }
 
+    /**
+     *
+     */
     updatePlane() {
         this.object3D.geometry = UIPlane(this.width, this.height, this.radius, this.smoothness)
     }
 
+    /**
+     *
+     */
     constructor() {
         super()
 
@@ -60,6 +98,10 @@ export default class Panel extends MRUIEntity {
         this.object3D.renderOrder = 3
     }
 
+    /**
+     *
+     * @param mutation
+     */
     mutated(mutation) {
         if (mutation.type != 'attributes') {
             switch (mutation.attributeName) {

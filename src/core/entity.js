@@ -2,43 +2,70 @@ import * as THREE from 'three'
 import { parseDegVector, parseVector } from '../utils/parser.js'
 import { MRElement } from './MRElement.js'
 
+/**
+ *
+ */
 export default class Entity extends MRElement {
     physics = {
         type: 'none',
     }
 
     aabb = new THREE.Box3()
+
     size = new THREE.Vector3()
 
+    /**
+     *
+     */
     get width() {
         return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
     }
 
+    /**
+     *
+     */
     get contentWidth() {
         this.aabb.setFromObject(this.object3D).getSize(this.size)
         return this.size.x
     }
 
+    /**
+     *
+     */
     get height() {
-        let styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
+        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight
         return (styleHeight / window.innerHeight) * global.viewPortHeight
     }
 
+    /**
+     *
+     */
     get contentHeight() {
         this.aabb.setFromObject(this.object3D).getSize(this.size)
         return this.size.y
     }
 
     #zOffeset = 0.001
+
+    /**
+     *
+     */
     set zOffeset(value) {
         this.#zOffeset = value
     }
+
+    /**
+     *
+     */
     get zOffeset() {
         return this.#zOffeset
     }
 
     layer = 0
 
+    /**
+     *
+     */
     constructor() {
         super()
 
@@ -64,20 +91,26 @@ export default class Entity extends MRElement {
         this.focus = false
     }
 
+    /**
+     *
+     */
     updatePhysicsData() {}
 
     onHover = (event) => {
-        //console.log(`${event.detail.joint} hover at:`, event.detail.position);
+        // console.log(`${event.detail.joint} hover at:`, event.detail.position);
     }
 
     onTouch = (event) => {
-        //console.log(`${event.detail.joint} touch at:`, event.detail.position);
+        // console.log(`${event.detail.joint} touch at:`, event.detail.position);
     }
 
     onScroll = (event) => {
         this.parentElement?.onScroll(event)
     }
 
+    /**
+     *
+     */
     connectedCallback() {
         this.compStyle = window.getComputedStyle(this)
 
@@ -138,6 +171,9 @@ export default class Entity extends MRElement {
         this.dispatchEvent(new CustomEvent(`new-entity`, { bubbles: true }))
     }
 
+    /**
+     *
+     */
     loadAttributes() {
         this.components = new Set()
         for (const attr of this.attributes) {
@@ -162,10 +198,19 @@ export default class Entity extends MRElement {
         }
     }
 
+    /**
+     *
+     */
     connected() {}
 
+    /**
+     *
+     */
     disconnected() {}
 
+    /**
+     *
+     */
     disconnectedCallback() {
         while (this.object3D.parent) {
             this.object3D.removeFromParent()
@@ -181,8 +226,17 @@ export default class Entity extends MRElement {
         this.disconnected()
     }
 
+    /**
+     *
+     * @param mutation
+     */
     mutated(mutation) {}
 
+    /**
+     *
+     * @param mutationList
+     * @param observer
+     */
     mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {
             this.mutated(mutation)
@@ -218,6 +272,10 @@ export default class Entity extends MRElement {
         }
     }
 
+    /**
+     *
+     * @param componentName
+     */
     componentMutated(componentName) {
         const component = this.getAttribute(componentName)
         if (!component) {
@@ -247,16 +305,28 @@ export default class Entity extends MRElement {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         entity.object3D.receiveShadow = true
         entity.object3D.renderOrder = 3
         this.object3D.add(entity.object3D)
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
         this.object3D.remove(entity.object3D)
     }
 
+    /**
+     *
+     * @param callBack
+     */
     traverse(callBack) {
         callBack(this)
         const children = Array.from(this.children)

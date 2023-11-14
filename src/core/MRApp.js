@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { RAPIER } from './rapier'
 
 import Stats from 'stats.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { ARButton } from 'three/addons/webxr/ARButton.js'
+import { RAPIER } from './rapier'
 import { MRElement } from './MRElement.js'
 
 // built in Systems
@@ -16,6 +16,7 @@ import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 import { ClippingSystem } from '../component-systems/ClippingSystem'
 import { StyleSystem } from '../component-systems/StyleSystem'
+
 ;('use strict')
 
 window.mobileCheck = function () {
@@ -34,7 +35,13 @@ window.mobileCheck = function () {
     return check
 }
 
+/**
+ *
+ */
 export class MRApp extends MRElement {
+    /**
+     *
+     */
     constructor() {
         super()
         Object.defineProperty(this, 'isApp', {
@@ -43,7 +50,7 @@ export class MRApp extends MRElement {
         })
 
         this.xrsupport = false
-        this.isMobile = window.mobileCheck() //resolves true/false
+        this.isMobile = window.mobileCheck() // resolves true/false
         global.inXR = false
 
         this.focusEntity = null
@@ -69,6 +76,9 @@ export class MRApp extends MRElement {
         this.onWindowResize = this.onWindowResize.bind(this)
     }
 
+    /**
+     *
+     */
     connectedCallback() {
         this.init()
 
@@ -94,6 +104,9 @@ export class MRApp extends MRElement {
         })
     }
 
+    /**
+     *
+     */
     disconnectedCallback() {
         this.denit()
         this.observer.disconnect()
@@ -116,10 +129,21 @@ export class MRApp extends MRElement {
     //       - lighting
     //       - controllers
     //       - ?
+    /**
+     *
+     * @param mutation
+     */
     mutatedAttribute(mutation) {}
 
+    /**
+     *
+     * @param mutation
+     */
     mutatedChildList(mutation) {}
 
+    /**
+     *
+     */
     init() {
         this.debug = this.getAttribute('debug') ?? false
         this.renderer.setPixelRatio(window.devicePixelRatio)
@@ -140,7 +164,7 @@ export class MRApp extends MRElement {
 
         this.user.position.set(0, 0, 1)
 
-        let layersString = this.getAttribute('layers')
+        const layersString = this.getAttribute('layers')
 
         if (layersString) {
             this.layers = parseVector(layersString)
@@ -201,7 +225,7 @@ export class MRApp extends MRElement {
 
         window.addEventListener('resize', this.onWindowResize)
 
-        let lightString = this.getAttribute('lighting')
+        const lightString = this.getAttribute('lighting')
 
         if (lightString) {
             this.lighting = parseAttributeString(this.lighting)
@@ -227,7 +251,7 @@ export class MRApp extends MRElement {
                 break
         }
 
-        //weird bug fix in getting camera position in webXR
+        // weird bug fix in getting camera position in webXR
         this.userPoseObject = new THREE.Object3D()
         this.user.add(this.userPoseObject)
 
@@ -258,28 +282,50 @@ export class MRApp extends MRElement {
         }
     }
 
+    /**
+     *
+     */
     denit() {
         document.body.removeChild(this.renderer.domElement)
         this.removeChild(this.ARButton)
         window.removeEventListener('resize', this.onWindowResize)
     }
 
+    /**
+     *
+     * @param system
+     */
     registerSystem(system) {
         this.systems.add(system)
     }
 
+    /**
+     *
+     * @param system
+     */
     unregisterSystem(system) {
         this.systems.delete(system)
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         this.scene.add(entity.object3D)
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
         this.scene.remove(entity.object3D)
     }
 
+    /**
+     *
+     */
     onWindowResize() {
         switch (this.cameraOptions.camera) {
             case 'orthographic':
@@ -301,6 +347,11 @@ export class MRApp extends MRElement {
         this.renderer.setSize(window.innerWidth, window.innerHeight)
     }
 
+    /**
+     *
+     * @param timeStamp
+     * @param frame
+     */
     render(timeStamp, frame) {
         const deltaTime = this.clock.getDelta()
 

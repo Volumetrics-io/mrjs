@@ -1,6 +1,12 @@
 import { MRText } from './Text'
 
+/**
+ *
+ */
 export class TextEditor extends MRText {
+    /**
+     *
+     */
     constructor() {
         super()
         this.src

@@ -1,7 +1,13 @@
 import { parseAttributeString } from '../../utils/parser'
 import { MRElement } from '../../core/MRElement'
 
+/**
+ *
+ */
 export class MRFont extends MRElement {
+    /**
+     *
+     */
     constructor() {
         super()
         this.src = null
@@ -9,9 +15,12 @@ export class MRFont extends MRElement {
         this.targets = []
     }
 
+    /**
+     *
+     */
     connectedCallback() {
         this.src = this.getAttribute('src')
-        let sizeAttr = this.getAttribute('size') ?? this.size
+        const sizeAttr = this.getAttribute('size') ?? this.size
         this.size = parseFloat(sizeAttr)
         this.targets =
             this.getAttribute('target')

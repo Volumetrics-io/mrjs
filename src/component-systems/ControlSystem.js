@@ -2,9 +2,15 @@ import * as THREE from 'three'
 import { RAPIER } from '../core/rapier'
 import { MRHand } from '../interaction/hand'
 import System from '../core/System'
-import { COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES } from '../component-systems/RapierPhysicsSystem'
+import { COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES } from './RapierPhysicsSystem'
 
+/**
+ *
+ */
 export class ControlSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false)
         this.leftHand = new MRHand('left', this.app)
@@ -19,7 +25,7 @@ export class ControlSystem extends System {
         this.timer
 
         const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-        let colDesc = RAPIER.ColliderDesc.ball(0.0001)
+        const colDesc = RAPIER.ColliderDesc.ball(0.0001)
 
         this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
         this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc)
@@ -45,6 +51,11 @@ export class ControlSystem extends System {
         this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver)
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         this.leftHand.setMesh()
         this.rightHand.setMesh()
@@ -64,6 +75,10 @@ export class ControlSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     castRay(event) {
         let x = 0
         let y = 0
@@ -78,7 +93,7 @@ export class ControlSystem extends System {
         if (this.app.user instanceof THREE.OrthographicCamera) {
             this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1) // z = - 1 important!
             this.pointerPosition.unproject(this.app.user)
-            let direction = new THREE.Vector3(0, 0, -1)
+            const direction = new THREE.Vector3(0, 0, -1)
             direction.transformDirection(this.app.user.matrixWorld)
 
             this.ray.origin = { ...this.pointerPosition }

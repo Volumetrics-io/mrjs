@@ -1,7 +1,13 @@
 import { preloadFont } from 'troika-three-text'
 import System from '../core/System'
 
+/**
+ *
+ */
 export class TextSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false, 1 / 30)
 
@@ -16,7 +22,7 @@ export class TextSystem extends System {
             const rulesFontFace = cssRules.filter((rule) => rule.cssText.startsWith('@font-face'))
 
             rulesFontFace.forEach((fontFace) => {
-                let fontData = this.parseFontFace(fontFace.cssText)
+                const fontData = this.parseFontFace(fontFace.cssText)
 
                 preloadFont(
                     {
@@ -39,9 +45,14 @@ export class TextSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            let text = entity.textContent.trim()
+            const text = entity.textContent.trim()
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' '
                 entity.textObj.sync()
@@ -58,7 +69,7 @@ export class TextSystem extends System {
     }
 
     updateStyle = (entity) => {
-        let textObj = entity.textObj
+        const { textObj } = entity
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity)
@@ -82,12 +93,16 @@ export class TextSystem extends System {
     }
 
     addText = (entity) => {
-        let text = entity.textContent.trim()
+        const text = entity.textContent.trim()
         entity.textObj.text = text.length > 0 ? text : ' '
 
         this.updateStyle(entity)
     }
 
+    /**
+     *
+     * @param weight
+     */
     parseFontWeight(weight) {
         if (weight >= 500) {
             return 'bold'
@@ -96,11 +111,16 @@ export class TextSystem extends System {
         return 'normal'
     }
 
+    /**
+     *
+     * @param verticalAlign
+     * @param entity
+     */
     getVerticalAlign(verticalAlign, entity) {
         let result = this.parseFontSize(verticalAlign, entity)
 
-        if (typeof result == 'number') {
-            result = result / this.parseFontSize(entity.compStyle.fontSize, entity)
+        if (typeof result === 'number') {
+            result /= this.parseFontSize(entity.compStyle.fontSize, entity)
         }
 
         switch (result) {
@@ -117,16 +137,25 @@ export class TextSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param lineHeight
+     * @param entity
+     */
     getLineHeight(lineHeight, entity) {
         let result = this.parseFontSize(lineHeight, entity)
 
-        if (typeof result == 'number') {
-            result = result / this.parseFontSize(entity.compStyle.fontSize, entity)
+        if (typeof result === 'number') {
+            result /= this.parseFontSize(entity.compStyle.fontSize, entity)
         }
 
         return result
     }
 
+    /**
+     *
+     * @param textAlign
+     */
     setTextAlign(textAlign) {
         switch (textAlign) {
             case 'start':
@@ -140,9 +169,14 @@ export class TextSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param textObj
+     * @param color
+     */
     setColor(textObj, color) {
         if (color.includes('rgba')) {
-            let rgba = color
+            const rgba = color
                 .substring(5, color.length - 1)
                 .split(',')
                 .map((part) => parseFloat(part.trim()))
@@ -154,34 +188,67 @@ export class TextSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param val
+     * @param el
+     */
     parseFontSize(val, el) {
-        let result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
+        const result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION
         if (global.inXR) {
             return result * el.windowHorizontalScale
         }
         return result
     }
 
+    /**
+     *
+     * @param el
+     */
     getEM(el) {}
 
+    /**
+     *
+     * @param el
+     */
     getREM(el) {}
 
+    /**
+     *
+     * @param el
+     */
     getVH(el) {
         return el.closest('mr-container').absoluteHeight
     }
 
+    /**
+     *
+     * @param el
+     */
     getVW(el) {
         return el.closest('mr-container').absoluteWidth
     }
 
+    /**
+     *
+     * @param el
+     */
     getVMax(el) {
         return Math.max(this.getVH(el), this.getVW(el))
     }
 
+    /**
+     *
+     * @param el
+     */
     getVMin(el) {
         return Math.min(this.getVH(el), this.getVW(el))
     }
 
+    /**
+     *
+     * @param cssString
+     */
     parseFontFace(cssString) {
         const obj = {}
         const match = cssString.match(/@font-face\s*{\s*([^}]*)\s*}/)

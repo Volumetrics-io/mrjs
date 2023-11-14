@@ -2,8 +2,15 @@ import { MRText } from '../UI/Text/Text'
 import { TextEditor } from '../UI/Text/TextEditor'
 import System from '../core/System'
 
+/**
+ *
+ */
 export class TextInputSystem extends System {
     hasComponents = false
+
+    /**
+     *
+     */
     constructor() {
         super(false)
         document.addEventListener('keydown', this.onKeyDown)
@@ -21,6 +28,11 @@ export class TextInputSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         // for (const entity of this.registry) {
         //   if (!entity.edited || !this.app.focusEntity == entity) {
@@ -29,6 +41,10 @@ export class TextInputSystem extends System {
         // }
     }
 
+    /**
+     *
+     * @param entity
+     */
     loadSrcText(entity) {
         if (entity?.srcElement) {
             entity.textContent = entity.srcElement.innerHTML
@@ -36,6 +52,9 @@ export class TextInputSystem extends System {
         // TODO: load from file
     }
 
+    /**
+     *
+     */
     saveUpdate() {
         if (this.app.focusEntity instanceof TextEditor) {
             this.spliceSplit(this.currentIndex, 1, '')
@@ -47,6 +66,11 @@ export class TextInputSystem extends System {
     }
 
     // NOT USED YET
+    /**
+     *
+     * @param src
+     * @param text
+     */
     updateSourceText(src, text) {
         // TODO: update file
     }
@@ -63,7 +87,7 @@ export class TextInputSystem extends System {
     }
 
     onKeyUp = (event) => {
-        let key = event.key
+        const { key } = event
         switch (key) {
             case 'Control':
                 this.meta = false
@@ -86,7 +110,7 @@ export class TextInputSystem extends System {
         }
         event.stopPropagation()
 
-        let key = event.key
+        const { key } = event
 
         if (this.meta) {
             this.handleMetaKeys(key)
@@ -169,6 +193,11 @@ export class TextInputSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param oldIndex
+     * @param newIndex
+     */
     setCursorPosition(oldIndex, newIndex) {
         if (oldIndex == newIndex) {
             return
@@ -181,6 +210,12 @@ export class TextInputSystem extends System {
         this.currentIndex = newIndex
     }
 
+    /**
+     *
+     * @param index
+     * @param count
+     * @param add
+     */
     spliceSplit(index, count, add) {
         const ar = this.app.focusEntity.textContent.split('')
         ar.splice(index, count, add)

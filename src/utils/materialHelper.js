@@ -4,7 +4,16 @@ import * as THREE from 'three'
 // mat-phong
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
+/**
+ *
+ */
 export class MaterialHelper {
+    /**
+     *
+     * @param object
+     * @param materialType
+     * @param parameterString
+     */
     static applyMaterial(object, materialType, parameterString) {
         const parameters = MaterialHelper.parseParameterString(parameterString)
         const result = MaterialHelper.initMaterial(materialType.split('mat-')[1], parameters)
@@ -14,6 +23,12 @@ export class MaterialHelper {
         object.material = result
     }
 
+    /**
+     *
+     * @param object
+     * @param textureType
+     * @param parameterString
+     */
     static applyTexture(object, textureType, parameterString) {
         const src = parameterString.split(':')[1].trim()
         const typeArray = textureType.split('-')
@@ -26,6 +41,10 @@ export class MaterialHelper {
         }
     }
 
+    /**
+     *
+     * @param parameterString
+     */
     static parseParameterString(parameterString) {
         let jsonString = parameterString.replaceAll(';', ',')
         jsonString = jsonString.spliceSplit(0, 0, '{')
@@ -44,6 +63,11 @@ export class MaterialHelper {
         return JSON.parse(jsonString)
     }
 
+    /**
+     *
+     * @param type
+     * @param parameters
+     */
     static initMaterial(type, parameters) {
         console.log(type)
         switch (type) {
@@ -86,6 +110,11 @@ export class MaterialHelper {
         }
     }
 
+    /**
+     *
+     * @param type
+     * @param src
+     */
     static initTexture(type, src) {
         switch (type) {
             case 'basic':
@@ -102,6 +131,12 @@ export class MaterialHelper {
         }
     }
 
+    /**
+     *
+     * @param object
+     * @param type
+     * @param texture
+     */
     static applyMap(object, type, texture) {
         switch (type) {
             case 'alpha':

@@ -1,6 +1,12 @@
 import System from '../core/System'
 
+/**
+ *
+ */
 export class ClippingSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false)
         this.a = new THREE.Vector3()
@@ -9,12 +15,21 @@ export class ClippingSystem extends System {
         this.geometry = new THREE.BufferGeometry()
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
             this.updatePlanes(entity)
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     onNewEntity(entity) {
         if (entity.clipping == null) {
             return
@@ -26,6 +41,10 @@ export class ClippingSystem extends System {
         })
     }
 
+    /**
+     *
+     * @param entity
+     */
     addClippingPlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed()
 
@@ -38,7 +57,7 @@ export class ClippingSystem extends System {
             entity.object3D.localToWorld(this.b)
             entity.object3D.localToWorld(this.c)
 
-            let newPlane = new THREE.Plane()
+            const newPlane = new THREE.Plane()
 
             newPlane.setFromCoplanarPoints(this.a, this.b, this.c)
             // if (this.app.debug) {
@@ -51,6 +70,11 @@ export class ClippingSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param object
+     * @param clipping
+     */
     applyClipping(object, clipping) {
         if (!object.isMesh) {
             return
@@ -59,6 +83,10 @@ export class ClippingSystem extends System {
         object.material.clipIntersection = clipping.intersection
     }
 
+    /**
+     *
+     * @param entity
+     */
     updatePlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed()
 

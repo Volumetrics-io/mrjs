@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { RAPIER } from '../core/rapier'
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js'
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js'
+import { RAPIER } from '../core/rapier'
 import { INPUT_COLLIDER_HANDLE_NAMES } from '../component-systems/RapierPhysicsSystem'
 
 const HOVER_DISTANCE = 0.05
@@ -40,7 +40,15 @@ const HAND_MAPPING = {
     right: 1,
 }
 
+/**
+ *
+ */
 export class MRHand {
+    /**
+     *
+     * @param handedness
+     * @param app
+     */
     constructor(handedness, app) {
         this.handedness = handedness
         this.pinch = false
@@ -83,6 +91,10 @@ export class MRHand {
         this.initPhysicsBodies(app)
     }
 
+    /**
+     *
+     * @param app
+     */
     initPhysicsBodies(app) {
         for (const joint of joints) {
             this.tempJointPosition = this.getJointPosition(joint)
@@ -113,7 +125,7 @@ export class MRHand {
                 this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation)
 
                 // This should be replaced with a cone or something
-                let hoverColDesc = RAPIER.ColliderDesc.ball(0.03)
+                const hoverColDesc = RAPIER.ColliderDesc.ball(0.03)
                 this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body)
                 INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint
                 INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`
@@ -121,11 +133,17 @@ export class MRHand {
         }
     }
 
+    /**
+     *
+     */
     update() {
         this.updatePhysicsBodies()
         this.pinchMoved()
     }
 
+    /**
+     *
+     */
     pinchMoved() {
         if (!this.pinch) {
             return
@@ -142,6 +160,9 @@ export class MRHand {
         )
     }
 
+    /**
+     *
+     */
     updatePhysicsBodies() {
         for (const joint of joints) {
             this.tempJointPosition = this.getJointPosition(joint)
@@ -187,6 +208,10 @@ export class MRHand {
         )
     }
 
+    /**
+     *
+     * @param jointName
+     */
     getJointOrientation(jointName) {
         const result = new THREE.Quaternion()
 
@@ -204,6 +229,10 @@ export class MRHand {
         return result
     }
 
+    /**
+     *
+     * @param jointName
+     */
     getJointPosition(jointName) {
         const result = new THREE.Vector3()
 
@@ -227,6 +256,9 @@ export class MRHand {
         return result
     }
 
+    /**
+     *
+     */
     getCursorPosition() {
         const index = this.getJointPosition('index-finger-tip')
         const thumb = this.getJointPosition('thumb-tip')

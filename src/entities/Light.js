@@ -1,13 +1,22 @@
 import Entity from '../core/entity'
 
+/**
+ *
+ */
 export default class Light extends Entity {
+    /**
+     *
+     */
     constructor() {
         super()
         this.object3D = new THREE.PointLight({})
     }
 
+    /**
+     *
+     */
     connected() {
-        let color = this.getAttribute('color')
+        const color = this.getAttribute('color')
         this.object3D.color.setStyle(color)
 
         this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1
@@ -19,7 +28,7 @@ export default class Light extends Entity {
         }
         switch (mutation.attributeName) {
             case 'color':
-                let color = this.getAttribute('color')
+                const color = this.getAttribute('color')
                 this.object3D.color.setStyle(color)
                 break
 
