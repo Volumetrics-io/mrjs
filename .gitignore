@@ -1,5 +1,6 @@
 # ignore dist
-*dist/*
+# todo - dont want merge conflicts in dist, but do want when publish, to resolve.
+# dist/*
 
 # Logs
 logs
