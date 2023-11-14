@@ -45,22 +45,6 @@ export default class Entity extends MRElement {
     return this.size.y;
   }
 
-  #zOffeset = 0.001;
-
-  /**
-   *
-   */
-  set zOffeset(value) {
-    this.#zOffeset = value;
-  }
-
-  /**
-   *
-   */
-  get zOffeset() {
-    return this.#zOffeset;
-  }
-
   layer = 0;
 
   /**
@@ -186,9 +170,6 @@ export default class Entity extends MRElement {
           break;
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value));
-          break;
-        case 'zoffset':
-          this.zOffeset = parseFloat(attr.value);
           break;
         case 'layer':
           this.layer = parseFloat(attr.value);
