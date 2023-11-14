@@ -219,7 +219,7 @@ function loadGCODE(filePath, scene) {
 
 // Loads GLTF/GLB file
 function loadGLTF(filePath) {
-    const loader = new GLTFLoader()
+    const loader = new THREE.GLTFLoader()
     loader.load(filePath, function (gltf) {
             // TODO - look into what that avif and anisotropy versions of loading are
             // compressed, instancing, etc, etc
@@ -334,7 +334,7 @@ function loadPLY(filePath, scene) {
 
 // Loads stl file
 function loadSTL(filePath) {
-    const loader = new STLLoader()
+    const loader = new THREE.STLLoader()
 
     console.log('hi');
 
@@ -362,7 +362,7 @@ function loadSTL(filePath) {
 
 // Loads USD/USDZ file
 async function loadUSDZ(filePath) {
-    const usdzLoader = new USDZLoader()
+    const usdzLoader = new THREE.USDZLoader()
 
     const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, function (error) {
         console.error(error)
