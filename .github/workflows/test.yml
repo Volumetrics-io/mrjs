@@ -18,7 +18,7 @@ jobs:
       # todo - run the npm install with a dockerfile setup instead of pure
       # install but not important to do right now since install isnt too long
     
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v4
       with:
         node-version: 18
     
