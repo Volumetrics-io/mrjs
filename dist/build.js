@@ -68274,22 +68274,26 @@ class SurfaceSystem extends System {
 
     document.addEventListener('pinchend', (event) => {
         if (this.currentSurface == null || this.hand != event.detail.handedness) { return }
-        this.currentSurface.windowVerticalScale = this.scale / 3
-        this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.aspectRatio
-        this.currentSurface.place()
-
-        this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
-        this.currentSurface.anchorQuaternion.copy(this.currentSurface.object3D.quaternion)
-
-        this.currentSurface.anchored = true
-        
-        this.currentSurface = null
+        this.lockWindow()
 
         this.hand = null
         this.app.anchor.position.z = this.app.forward.position.z
 
     })
 
+  }
+
+  lockWindow() {
+    this.currentSurface.windowVerticalScale = this.scale / 3
+    this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.aspectRatio
+    this.currentSurface.place()
+
+    this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position)
+    this.currentSurface.anchorQuaternion.copy(this.currentSurface.object3D.quaternion)
+
+    this.currentSurface.anchored = true
+    
+    this.currentSurface = null
   }
 
   update(deltaTime, frame) {
@@ -68375,6 +68379,10 @@ class SurfaceSystem extends System {
         this.currentSurface.rotationPlane.rotation.x = 0
         this.currentSurface.object3D.position.setFromMatrixPosition(this.app.anchor.matrixWorld)
         this.currentSurface.object3D.lookAt(this.app.user.position)
+
+        if(this.currentSurface.getAttribute('fixed')) {
+            this.lockWindow()
+        }
 
     }
   }
