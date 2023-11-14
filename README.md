@@ -1,5 +1,8 @@
 # MR.js
 
+[![npm run build](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml)
+[![npm run test](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml)
+
 An extendable WebComponents library for the Spatial Web
 
 ## Overview
