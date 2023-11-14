@@ -57,7 +57,7 @@ export class Model extends Entity {
 
             this.object3D.add(mesh)
 
-            this.dispatchEvent(new CustomEvent(`new-entity`, { bubbles: true }))
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
         })
     }
 

@@ -86,7 +86,7 @@ export class RapierPhysicsSystem extends System {
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition)
 
                         entity.dispatchEvent(
-                            new CustomEvent(`touch`, {
+                            new CustomEvent('touch', {
                                 bubbles: true,
                                 detail: {
                                     joint,
@@ -157,7 +157,7 @@ export class RapierPhysicsSystem extends System {
 
             // Contact information can be read from `manifold`.
             entity.dispatchEvent(
-                new CustomEvent(`click`, {
+                new CustomEvent('click', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -166,7 +166,7 @@ export class RapierPhysicsSystem extends System {
                 })
             )
             entity.dispatchEvent(
-                new CustomEvent(`touch-start`, {
+                new CustomEvent('touch-start', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -185,7 +185,7 @@ export class RapierPhysicsSystem extends System {
         this.tempWorldPosition.set(0, 0, 0)
         entity.touch = false
         entity.dispatchEvent(
-            new CustomEvent(`touch-end`, {
+            new CustomEvent('touch-end', {
                 bubbles: true,
             })
         )
@@ -197,7 +197,7 @@ export class RapierPhysicsSystem extends System {
             this.tempWorldPosition.copy(manifold.localContactPoint2(0))
             entity.object3D.localToWorld(this.tempWorldPosition)
             entity.dispatchEvent(
-                new CustomEvent(`hover-start`, {
+                new CustomEvent('hover-start', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -210,7 +210,7 @@ export class RapierPhysicsSystem extends System {
 
     hoverEnd = (entity) => {
         entity.dispatchEvent(
-            new CustomEvent(`hover-end`, {
+            new CustomEvent('hover-end', {
                 bubbles: true,
             })
         )

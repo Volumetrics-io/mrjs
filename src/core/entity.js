@@ -149,7 +149,7 @@ export default class Entity extends MRElement {
         this.connected()
 
         document.addEventListener('engine-started', (event) => {
-            this.dispatchEvent(new CustomEvent(`new-entity`, { bubbles: true }))
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
         })
 
         this.addEventListener('touch-start', (event) => {
@@ -168,7 +168,7 @@ export default class Entity extends MRElement {
             this.onHover(event)
         })
 
-        this.dispatchEvent(new CustomEvent(`new-entity`, { bubbles: true }))
+        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
     }
 
     /**

@@ -16,6 +16,7 @@ import { parseAttributeString, parseVector } from '../utils/parser.js'
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js'
 import { ClippingSystem } from '../component-systems/ClippingSystem'
 import { StyleSystem } from '../component-systems/StyleSystem'
+
 ;('use strict')
 
 window.mobileCheck = function () {
