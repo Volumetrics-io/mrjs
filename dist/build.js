@@ -68236,7 +68236,14 @@ class SurfaceSystem extends System {
     this.currentSurface = null
     this.tempMatrix = new three_module_Matrix4()
 
-    this.startPinchPos = new three_module_Vector3()
+    this.userWorldPosition = new three_module_Vector3()
+    this.cameraForward = new three_module_Vector3()
+    this.pinchDistance = 0
+
+    this.hand = null
+
+    this.snapDistance = 0.6
+
     this.scale = 1
     
 
@@ -68249,18 +68256,24 @@ class SurfaceSystem extends System {
     }
 
     document.addEventListener('pinchstart', (event) => {
-        this.startPinchPos.copy(event.detail.position)
+        if (this.currentSurface == null || (this.hand && this.hand != event.detail.handedness)) { return }
+        this.pinchDistance = this.cameraForward.distanceTo(event.detail.position)
+        if(this.pinchDistance < 0.3) {
+            this.hand = event.detail.handedness
+        }
     })
 
     document.addEventListener('pinchmoved', (event) => {
-        if (this.currentSurface) {
-            this.scale = 1 + (this.startPinchPos.distanceTo(event.detail.position) * 5)
+        this.pinchDistance = this.cameraForward.distanceTo(event.detail.position)
+        if (this.currentSurface && this.hand == event.detail.handedness) {
+            this.scale = Math.exp(2 * this.pinchDistance)
+            this.app.anchor.position.z = this.app.forward.position.z * this.scale
             this.currentSurface.viz.scale.setScalar(this.scale)
         }
     })
 
     document.addEventListener('pinchend', (event) => {
-        if (this.currentSurface == null) { return }
+        if (this.currentSurface == null || this.hand != event.detail.handedness) { return }
         this.currentSurface.windowVerticalScale = this.scale / 3
         this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.aspectRatio
         this.currentSurface.place()
@@ -68271,6 +68284,9 @@ class SurfaceSystem extends System {
         this.currentSurface.anchored = true
         
         this.currentSurface = null
+
+        this.hand = null
+        this.app.anchor.position.z = this.app.forward.position.z
 
     })
 
@@ -68319,7 +68335,6 @@ class SurfaceSystem extends System {
         
     }
     if(this.currentSurface == null) { return }
-    console.log(frame);
     if ( this.source) {
 
         const results = frame.getHitTestResults( this.source );
@@ -68344,11 +68359,12 @@ class SurfaceSystem extends System {
         this.currentSurface.viz.visible = true
     }
 
-    console.log(this.currentSurface.rotationPlane.rotation.x);
+    const hit = hitResults[ 0 ];
+    let pose = hit?.getPose(this.referenceSpace)
+    this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld)
+    this.cameraForward.setFromMatrixPosition(this.app.forward.matrixWorld)
 
-    if ( hitResults.length ) {
-        const hit = hitResults[ 0 ];
-        let pose = hit.getPose( this.referenceSpace )
+    if ( pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
 
         this.currentSurface.rotationPlane.rotation.x = 3 * Math.PI / 2
         
@@ -68357,8 +68373,9 @@ class SurfaceSystem extends System {
 
     } else {
         this.currentSurface.rotationPlane.rotation.x = 0
-        this.currentSurface.object3D.position.setFromMatrixPosition(this.app.userPoseObject.matrixWorld)
+        this.currentSurface.object3D.position.setFromMatrixPosition(this.app.anchor.matrixWorld)
         this.currentSurface.object3D.lookAt(this.app.user.position)
+
     }
   }
 
@@ -68718,10 +68735,16 @@ class MRApp extends MRElement {
     }
 
     //weird bug fix in getting camera position in webXR
-    this.userPoseObject = new Object3D(); 
-    this.user.add(this.userPoseObject)
+    this.forward = new Object3D(); 
+    this.user.add(this.forward)
 
-    this.userPoseObject.position.setZ(-0.6)
+    this.forward.position.setZ(-0.5)
+
+    // for widnow placement
+    this.anchor = new Object3D(); 
+    this.user.add(this.anchor)
+
+    this.anchor.position.setZ(-0.5)
 
     
   }

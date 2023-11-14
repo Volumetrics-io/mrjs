@@ -236,10 +236,16 @@ export class MRApp extends MRElement {
     }
 
     //weird bug fix in getting camera position in webXR
-    this.userPoseObject = new THREE.Object3D(); 
-    this.user.add(this.userPoseObject)
+    this.forward = new THREE.Object3D(); 
+    this.user.add(this.forward)
 
-    this.userPoseObject.position.setZ(-0.6)
+    this.forward.position.setZ(-0.5)
+
+    // for widnow placement
+    this.anchor = new THREE.Object3D(); 
+    this.user.add(this.anchor)
+
+    this.anchor.position.setZ(-0.5)
 
     
   }
