@@ -1,11 +1,22 @@
 import { MRUIEntity } from '../UI/UIEntity'
 import System from '../core/System'
 
+/**
+ *
+ */
 export class StyleSystem extends System {
+    /**
+     *
+     */
     constructor() {
         super(false, 1 / 15)
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
             if (entity.compStyle.scale != 'none') {
@@ -25,6 +36,10 @@ export class StyleSystem extends System {
     }
 
     // called when a new entity is added to the scene
+    /**
+     *
+     * @param entity
+     */
     onNewEntity(entity) {
         this.registry.add(entity)
     }

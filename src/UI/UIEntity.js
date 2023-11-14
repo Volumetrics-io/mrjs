@@ -1,7 +1,13 @@
 import Entity from '../core/entity'
 import { UIPlane } from '../geometry/UIPlane'
 
+/**
+ *
+ */
 export class MRUIEntity extends Entity {
+    /**
+     *
+     */
     get height() {
         super.height
 
@@ -12,6 +18,9 @@ export class MRUIEntity extends Entity {
         return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight
     }
 
+    /**
+     *
+     */
     get width() {
         super.width
 
@@ -22,14 +31,17 @@ export class MRUIEntity extends Entity {
         return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth
     }
 
+    /**
+     *
+     */
     constructor() {
         super()
         this.worldScale = new THREE.Vector3()
         this.halfExtents = new THREE.Vector3()
         this.physics.type = 'ui'
 
-        let geometry = UIPlane(1, 1, [0], 18)
-        let material = new THREE.MeshStandardMaterial({
+        const geometry = UIPlane(1, 1, [0], 18)
+        const material = new THREE.MeshStandardMaterial({
             color: 0xfff,
             roughness: 0.7,
             metalness: 0.0,
@@ -47,10 +59,16 @@ export class MRUIEntity extends Entity {
         this.windowHorizontalScale = 1
     }
 
+    /**
+     *
+     */
     connected() {
         this.background.geometry = UIPlane(this.width, this.height, [0], 18)
     }
 
+    /**
+     *
+     */
     updatePhysicsData() {
         this.physics.halfExtents = new THREE.Vector3()
         this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002))
@@ -63,6 +81,10 @@ export class MRUIEntity extends Entity {
         this.physics.halfExtents.divideScalar(2)
     }
 
+    /**
+     *
+     * @param val
+     */
     pxToThree(val) {
         if (global.inXR) {
             return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale
@@ -70,9 +92,13 @@ export class MRUIEntity extends Entity {
         return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth
     }
 
+    /**
+     *
+     * @param val
+     */
     domToThree(val) {
-        if (typeof val == 'string') {
-            let valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean)
+        if (typeof val === 'string') {
+            const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean)
             if (valuepair.length > 1) {
                 switch (valuepair[1]) {
                     case 'px':
@@ -93,21 +119,30 @@ export class MRUIEntity extends Entity {
         return val
     }
 
+    /**
+     *
+     */
     updateStyle() {
         // background
         this.setBorder()
         this.setBackground()
     }
 
+    /**
+     *
+     */
     setBorder() {
-        let borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r))
         this.background.geometry = UIPlane(this.width, this.height, borderRadii, 18)
     }
 
+    /**
+     *
+     */
     setBackground() {
-        let color = this.compStyle.backgroundColor
+        const color = this.compStyle.backgroundColor
         if (color.includes('rgba')) {
-            let rgba = color
+            const rgba = color
                 .substring(5, color.length - 1)
                 .split(',')
                 .map((part) => parseFloat(part.trim()))

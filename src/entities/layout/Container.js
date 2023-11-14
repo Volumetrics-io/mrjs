@@ -3,7 +3,13 @@ import { ClippingGeometry } from '../../datatypes/ClippingGeometry'
 import { Surface } from '../Surface'
 import { LayoutEntity } from './LayoutEntity'
 
+/**
+ *
+ */
 export class Container extends LayoutEntity {
+    /**
+     *
+     */
     constructor() {
         super()
         this.currentPosition = new THREE.Vector3()
@@ -11,6 +17,9 @@ export class Container extends LayoutEntity {
         this.delta = new THREE.Vector3()
     }
 
+    /**
+     *
+     */
     connected() {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3))
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -34,10 +43,18 @@ export class Container extends LayoutEntity {
         })
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         this.shuttle.add(entity.object3D)
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
         this.shuttle.remove(entity.object3D)
     }
@@ -48,8 +65,8 @@ export class Container extends LayoutEntity {
             return
         }
         event.stopPropagation()
-        let scrollMax = this.contentHeight - this.height
-        let scrollMin = 0
+        const scrollMax = this.contentHeight - this.height
+        const scrollMin = 0
         this.currentPosition.copy(event.detail.worldPosition)
         this.object3D.worldToLocal(this.currentPosition)
         if (this.prevPosition.y != 0) {
@@ -57,7 +74,7 @@ export class Container extends LayoutEntity {
         }
         this.prevPosition.copy(this.currentPosition)
 
-        let delta = this.delta.y * 1.33
+        const delta = this.delta.y * 1.33
 
         if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax) {
             this.shuttle.position.y += delta
@@ -65,9 +82,9 @@ export class Container extends LayoutEntity {
     }
 
     onScroll = (event) => {
-        let scrollMax = this.contentHeight - this.height
-        let scrollMin = 0
-        let delta = event.deltaY * 0.001
+        const scrollMax = this.contentHeight - this.height
+        const scrollMin = 0
+        const delta = event.deltaY * 0.001
         if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax) {
             this.shuttle.position.y += delta
         }

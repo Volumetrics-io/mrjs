@@ -1,19 +1,33 @@
 import * as THREE from 'three'
 
+/**
+ *
+ * @param str
+ */
 export function parseVector(str) {
     return str.split(' ').map(Number)
 }
 
+/**
+ *
+ * @param str
+ */
 export function parseDegVector(str) {
-    return str.split(' ').map((val) => {
-        return (parseFloat(val) * Math.PI) / 180
-    })
+    return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180)
 }
 
+/**
+ *
+ * @param val
+ */
 export function radToDeg(val) {
     return (val * Math.PI) / 180
 }
 
+/**
+ *
+ * @param val
+ */
 export function parseDimensionValue(val) {
     if (val.includes('%')) {
         return parseFloat(val) / 100
@@ -24,6 +38,10 @@ export function parseDimensionValue(val) {
     return val
 }
 
+/**
+ *
+ * @param entity
+ */
 export function setTransformValues(entity) {
     const position = entity.getAttribute('position')
     const scale = entity.getAttribute('scale')
@@ -45,6 +63,10 @@ export function setTransformValues(entity) {
     }
 }
 
+/**
+ *
+ * @param attrString
+ */
 export function parseAttributeString(attrString) {
     if (attrString == null) {
         return
@@ -74,10 +96,20 @@ export function parseAttributeString(attrString) {
     return jsonObject
 }
 
+/**
+ *
+ * @param val
+ * @param decimal
+ */
 export function roundTo(val, decimal) {
     return Math.round(val * decimal) / decimal
 }
 
+/**
+ *
+ * @param vector
+ * @param decimal
+ */
 export function roundVectorTo(vector, decimal) {
     vector.multiplyScalar(decimal)
     vector.roundToZero()

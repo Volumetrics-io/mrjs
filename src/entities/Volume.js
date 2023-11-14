@@ -2,7 +2,13 @@ import * as THREE from 'three'
 import Entity from '../core/entity.js'
 import { Surface } from './Surface.js'
 
+/**
+ *
+ */
 export default class Volume extends Entity {
+    /**
+     *
+     */
     constructor() {
         super()
 
@@ -14,13 +20,16 @@ export default class Volume extends Entity {
     }
 
     // FIXME: doesn't actually respond to switch in surface orientation.
+    /**
+     *
+     */
     connected() {
         if (this.parentElement instanceof Surface) {
             this.parentElement.addEventListener('surface-placed', (event) => {
                 this.width = this.parentElement.width
                 this.depth = this.parentElement.height
                 this.height = this.parentElement.height
-                let orientation = this.parentElement.getAttribute('orientation')
+                const orientation = this.parentElement.getAttribute('orientation')
                 if (orientation == 'horizontal') {
                     this.object3D.position.setZ(this.depth / 2)
                     this.object3D.rotation.x = Math.PI / 2
@@ -37,6 +46,10 @@ export default class Volume extends Entity {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
         this.object3D.add(entity.object3D)
         const wall = entity.getAttribute('snap-to')
@@ -45,6 +58,9 @@ export default class Volume extends Entity {
         }
     }
 
+    /**
+     *
+     */
     arrangeChildren() {
         const children = [...this.children]
         children.forEach((child) => {
@@ -55,6 +71,11 @@ export default class Volume extends Entity {
         })
     }
 
+    /**
+     *
+     * @param key
+     * @param vector
+     */
     snapChildToWall(key, vector) {
         switch (key) {
             // bottom

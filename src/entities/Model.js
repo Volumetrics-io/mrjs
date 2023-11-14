@@ -1,6 +1,9 @@
 import Entity from '../core/entity'
 import { loadModel } from '../utils/loadModel'
 
+/**
+ *
+ */
 export class Model extends Entity {
     constructor() {
         super()

@@ -1,3 +1,16 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "eslint.probe": [
+        "javascript",
+        "javascriptreact",
+        "vue"
+    ],
+    "editor.formatOnSave": false,
+    // Runs Prettier, then ESLint
+    "editor.codeActionsOnSave": [
+        "source.formatDocument",
+        "source.fixAll.eslint"
+    ],
+    "vetur.validation.template": false
 }

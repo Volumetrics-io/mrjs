@@ -2,13 +2,22 @@ import { Text } from 'troika-three-text'
 import { parseAttributeString } from '../../utils/parser'
 import { MRUIEntity } from '../UIEntity'
 
+/**
+ *
+ */
 export class MRText extends MRUIEntity {
+    /**
+     *
+     */
     get height() {
         super.height
         this.aabb.setFromObject(this.textObj).getSize(this.size)
         return this.size.y
     }
 
+    /**
+     *
+     */
     constructor() {
         super()
         this.textObj = new Text()
@@ -22,8 +31,11 @@ export class MRText extends MRUIEntity {
         })
     }
 
+    /**
+     *
+     */
     connected() {
-        let text = this.textContent.trim()
+        const text = this.textContent.trim()
         this.textObj.text = text.length > 0 ? text : ' '
         this.style = parseAttributeString(this.getAttribute('text-style'))
     }

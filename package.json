@@ -7,9 +7,13 @@
   "scripts": {
     "build": "npx webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write \"src/**/*.js\" \"*.js\"",
-    "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\"",
-    "docs": "npx jsdoc src/*.js --destination ./docs"
+    "docs": "npx jsdoc src/*.js --destination ./docs",
+    "prettier-list": "prettier --list-different \"src/**/*.js\" \"*.js\"",
+    "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
+    "lint-list": "eslint \"src/**/*.js\" \"*.js\"",
+    "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --fix",
+    "format": "npm run prettier-fix && npm run lint-fix",
+    "check-format": "npm run prettier-list && npm run lint-list"
   },
   "repository": {
     "type": "git",
@@ -24,11 +28,12 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "babel-jest": "^29.7.0",
-    "eslint": "^8.43.0",
+    "eslint": "^8.53.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",

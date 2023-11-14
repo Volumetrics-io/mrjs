@@ -1,10 +1,19 @@
 import Panel from '../Panel'
 
+/**
+ *
+ */
 export class MRImage extends Panel {
+    /**
+     *
+     */
     constructor() {
         super()
     }
 
+    /**
+     *
+     */
     connected() {
         this.material = new THREE.MeshBasicMaterial({
             side: 1,
@@ -12,6 +21,10 @@ export class MRImage extends Panel {
         this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'))
     }
 
+    /**
+     *
+     * @param mutation
+     */
     mutated(mutation) {
         super.mutated()
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {

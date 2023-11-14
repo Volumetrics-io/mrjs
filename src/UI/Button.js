@@ -1,6 +1,12 @@
 import Panel from './Panel.js'
 
+/**
+ *
+ */
 export default class Button extends Panel {
+    /**
+     *
+     */
     constructor() {
         super()
     }

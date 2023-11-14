@@ -13,7 +13,14 @@
 //   - left & right
 //   - up & down
 
+/**
+ *
+ */
 export default class KeyboardInput {
+    /**
+     *
+     * @param element
+     */
     constructor(element) {
         this.element = element
         this.rawText = element.textContent
@@ -21,6 +28,10 @@ export default class KeyboardInput {
         this.currentIndex = 0
     }
 
+    /**
+     *
+     * @param element
+     */
     setFocus(element) {
         if (this.element == element) {
             return
@@ -30,6 +41,10 @@ export default class KeyboardInput {
         this.setCursorPosition(this.currentIndex, this.currentIndex)
     }
 
+    /**
+     *
+     * @param keyEvent
+     */
     handleInput(keyEvent) {
         switch (keyEvent.key) {
             case 'Meta':
@@ -136,6 +151,11 @@ export default class KeyboardInput {
         console.log(this.element.textContent)
     }
 
+    /**
+     *
+     * @param oldIndex
+     * @param newIndex
+     */
     setCursorPosition(oldIndex, newIndex) {
         console.log(`old: ${oldIndex} new: ${newIndex}`)
         if (oldIndex == newIndex) {
@@ -149,6 +169,12 @@ export default class KeyboardInput {
         this.currentIndex = newIndex
     }
 
+    /**
+     *
+     * @param index
+     * @param count
+     * @param add
+     */
     spliceSplit(index, count, add) {
         const ar = this.element.textContent.split('')
         ar.splice(index, count, add)
