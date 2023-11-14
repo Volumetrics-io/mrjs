@@ -4,9 +4,10 @@
   "description": "an MR first webXR framework",
   "main": "dist/build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --config webpack.config.js",
-    "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx}\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.js\" \"*.js\"",
+    "check-format": "prettier --list-different \"src/**/*.js\" \"*.js\"",
     "docs": "npx jsdoc src/*.js --destination ./docs"
   },
   "repository": {

@@ -1,7 +1,7 @@
-import { MRText } from "./Text";
+import { MRText } from './Text'
 
 export class TextEditor extends MRText {
-    constructor(){
+    constructor() {
         super()
         this.src
         this.srcElement
@@ -15,7 +15,9 @@ export class TextEditor extends MRText {
     }
 
     mutated = (mutation) => {
-        if (mutation.type != 'attributes') { return }
+        if (mutation.type != 'attributes') {
+            return
+        }
         if (mutation.attributeName == 'src') {
             this.updateSrc()
         }
