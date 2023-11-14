@@ -29,7 +29,7 @@ import { USDZLoader } from 'three/addons/loaders/USDZLoader';
 // - if model already exists in the scene - add an instance of it instead of fully reloading
 
 /*
-// Loads 3dm file and adds it to the scene
+// Loads 3dm file
 // @param libraryPath - optional - default is 'jsm/libs/rhino3dm'. If not using the
 // default, set this variable to proper local path.
 // Assumes cdn path is https://cdn.jsdelivr.net/npm/rhino3dm@8.0.0-beta2/
@@ -47,7 +47,7 @@ function load3DM(filePath, scene, libraryPath) {
     return true;
 }
 
-// Loads 3ds file and adds it to the scene
+// Loads 3ds file
 // @param resourcePath - path to the additional 3ds file resources
 // @param normalMap - optional - 3ds files dont store normal maps, pass a THREE.TextureLoader
 // as the normal map if you'd like to add one. Otherwise, leave variable empty.
@@ -75,7 +75,7 @@ function load3DS(filePath, resourcePath, scene, normalMap) {
     return true;
 }
 
-// Loads 3mf file and adds it to the scene
+// Loads 3mf file
 // @param loadingManager - optional - User your own THREE.LoadingManager, otherwise defaults to
 // simplest loading manager with empty constructor.
 function load3MF(filePath, scene, loadingManager) {
@@ -108,7 +108,7 @@ function load3MF(filePath, scene, loadingManager) {
     return true;
 }
 
-// Loads amf file and adds it to the scene
+// Loads amf file
 function loadAMF(filePath, scene) {
     const loader = new AMFLoader();
 
@@ -121,7 +121,7 @@ function loadAMF(filePath, scene) {
     return true;
 }
 
-// Loads bvh file and adds it to the scene
+// Loads bvh file
 function loadBVH(filePath, scene) {
     const loader = new BVHLoader();
 
@@ -137,7 +137,7 @@ function loadBVH(filePath, scene) {
     return true;
 }
 
-// Loads Collada file and adds it to the scene
+// Loads Collada file
 // @param loadingManager - optional - User your own THREE.LoadingManager, otherwise defaults to
 // simplest loading manager with empty constructor.
 function loadDAE(filePath, scene, loadingManager) {
@@ -158,7 +158,7 @@ function loadDAE(filePath, scene, loadingManager) {
     return true;
 }
 
-// Loads Draco file and adds it to the scene
+// Loads Draco file
 // @param decoderConfig - required - example: 'js'
 // @param libraryPath - optional - default is 'jsm/libs/draco/'. If not using the
 // default, set this variable to proper local path.
@@ -188,7 +188,7 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
     return true;
 }
 
-// Loads fbx file and adds it to the scene
+// Loads fbx file
 function loadFBX(filePath, scene) {
     const loader = new FBXLoader();
     loader.load( filePath, function ( object ) {
@@ -203,7 +203,7 @@ function loadFBX(filePath, scene) {
     return true;
 }
 
-// Loads gcode file and adds it to the scene
+// Loads gcode file
 function loadGCODE(filePath, scene) {
     const loader = new GCodeLoader();
 
@@ -217,14 +217,13 @@ function loadGCODE(filePath, scene) {
 }
 */
 
-// Loads GLTF/GLB file and adds it to the scene
-function loadGLTF(filePath, scene) {
+// Loads GLTF/GLB file
+function loadGLTF(filePath) {
     const loader = new GLTFLoader()
     loader.load(filePath, function (gltf) {
             // TODO - look into what that avif and anisotropy versions of loading are
             // compressed, instancing, etc, etc
 
-            scene.add(gltf.scene)
             return gltf.scene
         }, undefined, function (error) {
             console.error(error)
@@ -234,7 +233,7 @@ function loadGLTF(filePath, scene) {
 }
 
 /*
-// Loads IFC file and adds it to the scene
+// Loads IFC file
 function loadIFC(filePath, scene) {
     const ifcLoader = new IFCLoader();
     await ifcLoader.ifcManager.setWasmPath( 'https://unpkg.com/web-ifc@0.0.36/', true );
@@ -260,7 +259,7 @@ function loadIFC(filePath, scene) {
 
 // TODO - see if can combine the two below obj methods
 
-// Loads OBJ file and adds it to the scene
+// Loads OBJ file
 function loadOBJ(filePath, scene) {
     const objLoader = new OBJLoader();
     objLoader.load(filePath, (root) => {
@@ -272,7 +271,7 @@ function loadOBJ(filePath, scene) {
     return true;
 }
 
-// Loads OBJ file with material and adds it to the scene
+// Loads OBJ file with material
 function loadOBJWithMTL(objFilePath, mtlFilePath, scene) {
     const objLoader = new OBJLoader();
     const mtlLoader = new MTLLoader();
@@ -298,7 +297,7 @@ function loadOBJWithMTL(objFilePath, mtlFilePath, scene) {
     return true;
 }
 
-// Loads pcd file and adds it to the scene
+// Loads pcd file
 function loadPCD(filePath, scene) {
     const loader = new PCDLoader();
 
@@ -313,7 +312,7 @@ function loadPCD(filePath, scene) {
 
 // TODO - pdb
 
-// Loads ply file and adds it to the scene
+// Loads ply file
 function loadPLY(filePath, scene) {
     const loader = new PLYLoader();
     loader.load( filePath, function ( geometry ) {
@@ -333,8 +332,8 @@ function loadPLY(filePath, scene) {
 }
 */
 
-// Loads stl file and adds it to the scene
-function loadSTL(filePath, scene) {
+// Loads stl file
+function loadSTL(filePath) {
     const loader = new STLLoader()
 
     loader.load(filePath, function (geometry) {
@@ -353,8 +352,8 @@ function loadSTL(filePath, scene) {
 
 // TODO - tilt, tff
 
-// Loads USD/USDZ file and adds it to the scene
-async function loadUSDZ(filePath, scene) {
+// Loads USD/USDZ file
+async function loadUSDZ(filePath) {
     const usdzLoader = new USDZLoader()
 
     const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, function (error) {
@@ -375,15 +374,15 @@ export function loadModel(filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
     if (extension == 'stl') {
-        return loadSTL(filePath, entityScene);
+        return loadSTL(filePath);
     } else if (extension == 'gltf') {
-        return loadGLTF(filePath, entityScene);
+        return loadGLTF(filePath);
     } else if (extension == 'glb') {
-        return loadGLTF(filePath, entityScene);
+        return loadGLTF(filePath);
     } else if (extension == 'usd') {
-        return loadUSDZ(filePath, entityScene);
+        return loadUSDZ(filePath);
     } else if (extension == 'usdz') {
-        return loadUSDZ(filePath, entityScene);
+        return loadUSDZ(filePath);
     }
     console.error('ERR: the extensions ' + extension + ' is not supported by MR.js');
     return null;
