@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO - REMOVE ME ONCE MOST FORMATTING AND DOCS BECOME CONVENTIONALIZED SO WE CAN JUST RELY ON THE ACTION
+
 # check if either need fixes
 
 npm run prettier-list
