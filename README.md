@@ -23,6 +23,23 @@ from source:
 
 `npm install && npm run build`
 
+in headset testing:
+
+`npm run server`
+
+## HTTPS Requirement
+
+In order to test on headset, WebXR requires that your project be served using an HTTPS server. If you're using WebPack you can achieve this by utilizing the [DevServer webpack plugin](https://webpack.js.org/configuration/dev-server/) with `https: true`. 
+
+Here are some additional solutions:
+
+- [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) for VS Code
+- [via python](https://anvileight.com/blog/posts/simple-python-http-server/)
+
+Both options require you generate an ssl certificate & key via openssl:
+
+`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365`
+
 # Features
 
 ## 2D UI & Layout Components

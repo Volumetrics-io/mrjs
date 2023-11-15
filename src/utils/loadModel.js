@@ -218,18 +218,25 @@ function loadGCODE(filePath, scene) {
 */
 
 // Loads GLTF/GLB file
+/**
+ *
+ * @param filePath
+ */
 function loadGLTF(filePath) {
-    const loader = new THREE.GLTFLoader()
-    loader.load(filePath, function (gltf) {
-            // TODO - look into what that avif and anisotropy versions of loading are
-            // compressed, instancing, etc, etc
+  const loader = new GLTFLoader();
+  loader.load(
+    filePath,
+    (gltf) =>
+    // TODO - look into what that avif and anisotropy versions of loading are
+    // compressed, instancing, etc, etc
 
-            return gltf.scene
-        }, undefined, function (error) {
-            console.error(error)
-        }
-    )
-    return null
+      gltf.scene,
+    undefined,
+    (error) => {
+      console.error(error);
+    },
+  );
+  return null;
 }
 
 /*
@@ -333,27 +340,36 @@ function loadPLY(filePath, scene) {
 */
 
 // Loads stl file
+/**
+ *
+ * @param filePath
+ */
 function loadSTL(filePath) {
-    const loader = new STLLoader()
+  const loader = new STLLoader();
 
-    console.log('hi');
+  console.log('hi');
 
-    loader.load(filePath, function (geometry) {
-        console.log('hi1');
-        const material = new THREE.MeshPhongMaterial();
-        console.log('hi2');
-        const mesh = new THREE.Mesh(geometry, material);
-        console.log('hi3');
+  loader.load(
+    filePath,
+    (geometry) => {
+      console.log('hi1');
+      const material = new THREE.MeshPhongMaterial();
+      console.log('hi2');
+      const mesh = new THREE.Mesh(geometry, material);
+      console.log('hi3');
 
-        return mesh;
-    }, undefined, function (error) {
-        console.log('hi4');
-        console.error(error)
-        console.log('hi5');
-    });
+      return mesh;
+    },
+    undefined,
+    (error) => {
+      console.log('hi4');
+      console.error(error);
+      console.log('hi5');
+    },
+  );
 
-    console.log('hi6');
-    return null
+  console.log('hi6');
+  return null;
 }
 
 // TODO - svg
@@ -361,41 +377,55 @@ function loadSTL(filePath) {
 // TODO - tilt, tff
 
 // Loads USD/USDZ file
+/**
+ *
+ * @param filePath
+ */
 async function loadUSDZ(filePath) {
-    const usdzLoader = new THREE.USDZLoader()
+  const usdzLoader = new USDZLoader();
 
-    const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, function (error) {
-        console.error(error)
-        return null
-    })
+  const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
+    console.error(error);
+    return null;
+  });
 
-    return model;
+  return model;
 }
 
 // TODO - vox <--> xyz
 
-///////////////////////////
+/// ////////////////////////
 // Main Loading Function //
-///////////////////////////
+/// ////////////////////////
 
+/**
+ *
+ * @param filePath
+ * @param extension
+ */
 export function loadModel(filePath, extension) {
-    // later on - this would be better//faster with enums<->string<-->num interop but
-    // quick impl for now
-    if (extension == 'stl') { 
-        return loadSTL(filePath);
-    } else if (extension == 'gltf') {
-        return loadGLTF(filePath);
-    } else if (extension == 'glb') {
-        return loadGLTF(filePath);
-    } else if (extension == 'usd') {
-        return loadUSDZ(filePath);
-    } else if (extension == 'usdz') {
-        return loadUSDZ(filePath);
-    }
-    console.error('ERR: the extensions ' + extension + ' is not supported by MR.js');
-    return null;
+  // later on - this would be better//faster with enums<->string<-->num interop but
+  // quick impl for now
+  if (extension == 'stl') {
+    return loadSTL(filePath);
+  } if (extension == 'gltf') {
+    return loadGLTF(filePath);
+  } if (extension == 'glb') {
+    return loadGLTF(filePath);
+  } if (extension == 'usd') {
+    return loadUSDZ(filePath);
+  } if (extension == 'usdz') {
+    return loadUSDZ(filePath);
+  }
+  console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
+  return null;
 }
 
+/**
+ *
+ * @param a
+ * @param b
+ */
 export function abc(a, b) {
-    return a + b
+  return a + b;
 }
