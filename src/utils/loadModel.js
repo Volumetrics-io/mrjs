@@ -1,24 +1,24 @@
 import * as THREE from 'three';
-import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
-import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
-import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
-import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-// import { IFCLoader }        from 'web-ifc-three';
-// import { IFCSPACE }         from 'web-ifc';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
-import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
-import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
-import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js';
-import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
-import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
-import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
-import { USDZLoader } from 'three/addons/loaders/USDZLoader.js';
+// import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
+// import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
+// import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
+// import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+// import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+// import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js';
+// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+// // import { IFCLoader }        from 'web-ifc-three';
+// // import { IFCSPACE }         from 'web-ifc';
+// import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+// import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+// import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
+// import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
+// import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
+// import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+// import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+// import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
+// import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
+// import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
+// import { USDZLoader } from 'three/addons/loaders/USDZLoader.js';
 
 // TODOs before merge
 // - look into smaller todos leftover
@@ -346,17 +346,19 @@ function loadPLY(filePath, scene) {
  */
 function loadSTL(filePath) {
     console.log("loadSTL");
-  const loader = new STLLoader();
+  const loader = new THREE.STLLoader();
   console.log(loader);
 
   console.log('hi');
   console.log(filePath);
 
   loader.load(filePath, (geometry) => {
+      console.log(geometry);
       console.log('hi1');
       const material = new THREE.MeshPhongMaterial();
       console.log('hi2');
       const mesh = new THREE.Mesh(geometry, material);
+      console.log(mesh);
       console.log('hi3');
 
       return mesh;
