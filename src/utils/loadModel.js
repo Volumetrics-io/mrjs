@@ -357,10 +357,12 @@ function loadSTL(filePath) {
   const loader = new STLLoader();
   console.log(loader);
 
-  console.log('hi');
-  console.log(filePath);
+  let path = currentDirectory + '/' + filePath;
 
-  loader.load(filePath, (geometry) => {
+  console.log('hi');
+  console.log(path);
+
+  loader.load(path, (geometry) => {
       console.log(geometry);
       console.log('hi1');
       const material = new THREE.MeshPhongMaterial();
