@@ -220,36 +220,39 @@ export default class Entity extends MRElement {
    */
   mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
-      console.log(mutation);
       this.mutated(mutation);
+
+      switch (mutation.type) {
+        case 'childList':
+          
+          break
+        case 'attributes':
+          if (mutation.attributeName.startsWith('comp-')) {
+            this.componentMutated(mutation.attributeName);
+          }
+          switch (mutation.attributeName) {
+            case 'position':
+              this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
+              break;
+            case 'scale':
+              this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
+              break;
+            case 'rotation':
+              this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
+              break;
+    
+            default:
+              break;
+          }
+          break;
+      
+        default:
+          break;
+      }
 
       if (mutation.type != 'attributes') {
         continue;
       }
-      if (mutation.attributeName.startsWith('comp-')) {
-        this.componentMutated(mutation.attributeName);
-      }
-
-      switch (mutation.attributeName) {
-        case 'position':
-          this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
-          break;
-        case 'scale':
-          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
-          break;
-        case 'rotation':
-          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
-          break;
-
-        default:
-          break;
-      }
-      this.traverse((child) => {
-        if (!child.physics) {
-          return;
-        }
-        child.physics.update = true;
-      });
     }
   }
 
