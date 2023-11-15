@@ -11,6 +11,21 @@ module.exports = {
     libraryTarget: 'window',
   },
 
+  devServer: {
+    https: true,
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: true,
+      },
+    },
+    compress: true,
+  },
+
   optimization: {
     minimize: false,
   },
