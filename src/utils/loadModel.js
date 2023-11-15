@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'three'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 // import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
@@ -223,21 +223,21 @@ function loadGCODE(filePath, scene) {
  *
  * @param filePath
  */
-function loadGLTF(filePath) {
-  const loader = new GLTFLoader();
-  loader.load(
-    filePath,
-    (gltf) =>
-    // TODO - look into what that avif and anisotropy versions of loading are
-    // compressed, instancing, etc, etc
+async function loadGLTF(filePath) {
+    const loader = new GLTFLoader()
+    loader.load(
+        filePath,
+        (gltf) =>
+            // TODO - look into what that avif and anisotropy versions of loading are
+            // compressed, instancing, etc, etc
 
-      gltf.scene,
-    undefined,
-    (error) => {
-      console.error(error);
-    },
-  );
-  return null;
+            gltf.scene,
+        undefined,
+        (error) => {
+            console.error(error)
+        }
+    )
+    return null
 }
 
 /*
@@ -345,44 +345,25 @@ function loadPLY(filePath, scene) {
  *
  * @param filePath
  */
-function loadSTL(filePath) {
-    console.log('Three.js revision:', THREE.REVISION);
-    console.log("loadSTL");
+async function loadSTL(filePath) {
+    const loader = new STLLoader()
 
-    const currentURL = window.location.href;
-    // Extract the directory from the URL
-    const currentDirectory = currentURL.substring(0, currentURL.lastIndexOf('/'));
-    console.log('Current directory:', currentDirectory);
+    return new Promise((resolve, reject) => {
+        loader.load(
+            path,
+            (geometry) => {
+                const material = new THREE.MeshPhongMaterial()
+                const mesh = new THREE.Mesh(geometry, material)
 
-  const loader = new STLLoader();
-  console.log(loader);
-
-  let path = currentDirectory + '/' + filePath;
-
-  console.log('hi');
-  console.log(path);
-
-  loader.load(path, (geometry) => {
-      console.log(geometry);
-      console.log('hi1');
-      const material = new THREE.MeshPhongMaterial();
-      console.log('hi2');
-      const mesh = new THREE.Mesh(geometry, material);
-      console.log(mesh);
-      console.log('hi3');
-
-      return mesh;
-    },
-    undefined,
-    (error) => {
-      console.log('hi4');
-      console.error(error);
-      console.log('hi5');
-    },
-  );
-
-  console.log('hi6');
-  return null;
+                resolve(mesh) // Resolve the promise with the loaded mesh
+            },
+            undefined,
+            (error) => {
+                console.error(error)
+                reject(error) // Reject the promise if there's an error
+            }
+        )
+    })
 }
 
 // TODO - svg
@@ -395,14 +376,14 @@ function loadSTL(filePath) {
  * @param filePath
  */
 async function loadUSDZ(filePath) {
-  const usdzLoader = new USDZLoader();
+    const usdzLoader = new USDZLoader()
 
-  const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
-    console.error(error);
-    return null;
-  });
+    const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
+        console.error(error)
+        return null
+    })
 
-  return model;
+    return model
 }
 
 // TODO - vox <--> xyz
@@ -417,21 +398,25 @@ async function loadUSDZ(filePath) {
  * @param extension
  */
 export function loadModel(filePath, extension) {
-  // later on - this would be better//faster with enums<->string<-->num interop but
-  // quick impl for now
-  if (extension == 'stl') {
-    return loadSTL(filePath);
-  } if (extension == 'gltf') {
-    return loadGLTF(filePath);
-  } if (extension == 'glb') {
-    return loadGLTF(filePath);
-  } if (extension == 'usd') {
-    return loadUSDZ(filePath);
-  } if (extension == 'usdz') {
-    return loadUSDZ(filePath);
-  }
-  console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
-  return null;
+    // later on - this would be better//faster with enums<->string<-->num interop but
+    // quick impl for now
+    if (extension == 'stl') {
+        return loadSTL(filePath)
+    }
+    if (extension == 'gltf') {
+        return loadGLTF(filePath)
+    }
+    if (extension == 'glb') {
+        return loadGLTF(filePath)
+    }
+    if (extension == 'usd') {
+        return loadUSDZ(filePath)
+    }
+    if (extension == 'usdz') {
+        return loadUSDZ(filePath)
+    }
+    console.error(`ERR: the extensions ${extension} is not supported by MR.js`)
+    return null
 }
 
 /**
@@ -440,5 +425,5 @@ export function loadModel(filePath, extension) {
  * @param b
  */
 export function abc(a, b) {
-  return a + b;
+    return a + b
 }
