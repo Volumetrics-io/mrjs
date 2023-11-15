@@ -24,12 +24,12 @@ export class Model extends Entity {
      *
      */
     connected() {
-        this.src = this.getAttribute('src')
+        this.src = this.getAttribute('src');
         if (!this.src) {
-            return
+            return;
         }
 
-        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2)
+        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         // todo - these material changes should be moved out of the loader at some point
         const material = new THREE.MeshPhysicalMaterial({
@@ -38,20 +38,20 @@ export class Model extends Entity {
             metalness: 0.5,
             roughness: 0.6,
             envMapIntensity: 0.75,
-        })
+        });
 
         loadModel(this.src, extension)
             .then((loadedMeshModel) => {
                  // todo - these material changes should be moved out of the loader at some point
                 loadedMeshModel.material = material;
-                loadedMeshModel.receiveShadow = true
-                loadedMeshModel.renderOrder = 3
+                loadedMeshModel.receiveShadow = true;
+                loadedMeshModel.renderOrder = 3;
 
                 // the below is the same as 'scene.add'
-                this.object3D.add(loadedMeshModel)
+                this.object3D.add(loadedMeshModel);
 
                 // TODO - recheck this lower part
-                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
+                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             })
             .catch((error) => {
                 console.log(`ERR: in loading model ${this.src}. Error was:`, error);
