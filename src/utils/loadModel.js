@@ -348,6 +348,12 @@ function loadPLY(filePath, scene) {
 function loadSTL(filePath) {
     console.log('Three.js revision:', THREE.REVISION);
     console.log("loadSTL");
+
+    const currentURL = window.location.href;
+    // Extract the directory from the URL
+    const currentDirectory = currentURL.substring(0, currentURL.lastIndexOf('/'));
+    console.log('Current directory:', currentDirectory);
+
   const loader = new STLLoader();
   console.log(loader);
 
