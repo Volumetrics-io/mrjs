@@ -98,7 +98,7 @@ export default class Entity extends MRElement {
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this);
 
-    if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
+    if (!(this.parentElement instanceof MRElement)) {
       return;
     }
     this.parentElement.add(this);
@@ -220,6 +220,7 @@ export default class Entity extends MRElement {
    */
   mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
+      console.log(mutation);
       this.mutated(mutation);
 
       if (mutation.type != 'attributes') {
@@ -232,7 +233,6 @@ export default class Entity extends MRElement {
       switch (mutation.attributeName) {
         case 'position':
           this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
-          console.log(this.object3D.position);
           break;
         case 'scale':
           this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));

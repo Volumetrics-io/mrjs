@@ -51944,7 +51944,7 @@ class Entity extends MRElement {
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this);
 
-    if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
+    if (!(this.parentElement instanceof MRElement)) {
       return;
     }
     this.parentElement.add(this);
@@ -52066,6 +52066,7 @@ class Entity extends MRElement {
    */
   mutationCallback(mutationList, observer) {
     for (const mutation of mutationList) {
+      console.log(mutation);
       this.mutated(mutation);
 
       if (mutation.type != 'attributes') {
