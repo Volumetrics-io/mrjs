@@ -31,6 +31,7 @@ export class Model extends Entity {
 
     const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
     const meshModel = loadModel(this.src, extension, this.object3D);
+    console.log('touching the meshModel outside of loader function');
     console.log(meshModel);
     if (meshModel == null) {
       console.log(`ERR: in loading model ${this.src}`);
