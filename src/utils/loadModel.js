@@ -334,7 +334,7 @@ function loadPLY(filePath, scene) {
 
 // Loads stl file
 function loadSTL(filePath) {
-    const loader = new THREE.STLLoader()
+    const loader = new STLLoader()
 
     console.log('hi');
 
