@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 // import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
