@@ -31,15 +31,14 @@ export class Model extends Entity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2)
 
-        let meshModel = null
+        let meshModel = null;
         loadModel(this.src, extension, this.object3D)
-            .then((meshModel) => {
-                // Do something with the loaded mesh
-                scene.add(meshModel)
+            .then((loadedMeshModel) => {
+                meshModel = loadedMeshModel;
             })
             .catch((error) => {
-                console.log(`ERR: in loading model ${this.src}. Error was:`, error)
-                return
+                console.log(`ERR: in loading model ${this.src}. Error was:`, error);
+                return;
             });
 
         // todo - this should be moved out of the loader at some point
