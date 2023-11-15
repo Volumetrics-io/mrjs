@@ -345,13 +345,14 @@ function loadPLY(filePath, scene) {
  * @param filePath
  */
 function loadSTL(filePath) {
+    console.log("loadSTL");
   const loader = new STLLoader();
+  console.log(loader);
 
   console.log('hi');
+  console.log(filePath);
 
-  loader.load(
-    filePath,
-    (geometry) => {
+  loader.load(filePath, (geometry) => {
       console.log('hi1');
       const material = new THREE.MeshPhongMaterial();
       console.log('hi2');
