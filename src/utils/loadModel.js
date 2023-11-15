@@ -350,7 +350,7 @@ async function loadSTL(filePath) {
 
     return new Promise((resolve, reject) => {
         loader.load(
-            path,
+            filePath,
             (geometry) => {
                 const material = new THREE.MeshPhongMaterial()
                 const mesh = new THREE.Mesh(geometry, material)
