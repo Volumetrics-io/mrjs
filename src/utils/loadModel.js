@@ -1,24 +1,24 @@
 import * as THREE from 'three';
-import { AMFLoader } from 'three/examples/jsm/loaders/AMFLoader';
-import { BVHLoader } from 'three/examples/jsm/loaders/BVHLoader';
-import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { GCodeLoader } from 'three/examples/jsm/loaders/GCodeLoader';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
+import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
+import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // import { IFCLoader }        from 'web-ifc-three';
 // import { IFCSPACE }         from 'web-ifc';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
-import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader';
-import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader';
-import { PDBLoader } from 'three/examples/jsm/loaders/PDBLoader';
-import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
-import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
-import { TDSLoader } from 'three/examples/jsm/loaders/TDSLoader';
-import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader';
-import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
+import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
+import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
+import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
+import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
+import { USDZLoader } from 'three/addons/loaders/USDZLoader.js';
 
 // TODOs before merge
 // - look into smaller todos leftover
