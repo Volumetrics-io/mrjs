@@ -31,35 +31,32 @@ export class Model extends Entity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2)
 
-        let meshModel = null;
-        loadModel(this.src, extension, this.object3D)
-            .then((loadedMeshModel) => {
-                meshModel = loadedMeshModel;
-            })
-            .catch((error) => {
-                console.log(`ERR: in loading model ${this.src}. Error was:`, error);
-                return;
-            });
-
-        // todo - this should be moved out of the loader at some point
-        meshModel.material = new THREE.MeshPhysicalMaterial({
+        // todo - these material changes should be moved out of the loader at some point
+        const material = new THREE.MeshPhysicalMaterial({
             clearcoat: 0.75,
             clearcoatRoughness: 0.5,
             metalness: 0.5,
             roughness: 0.6,
             envMapIntensity: 0.75,
         })
-        mesh.receiveShadow = true
-        mesh.renderOrder = 3
 
-        // the below is the same as 'scene.add'
-        this.object3D.add(meshModel)
+        loadModel(this.src, extension)
+            .then((loadedMeshModel) => {
+                 // todo - these material changes should be moved out of the loader at some point
+                loadedMeshModel.material = material;
+                loadedMeshModel.receiveShadow = true
+                loadedMeshModel.renderOrder = 3
 
-        if (!loadModel(this.src, extension, this.object3D)) {
-        }
+                // the below is the same as 'scene.add'
+                this.object3D.add(loadedMeshModel)
 
-        // TODO - recheck this lower part
-        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
+                // TODO - recheck this lower part
+                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }))
+            })
+            .catch((error) => {
+                console.log(`ERR: in loading model ${this.src}. Error was:`, error);
+                return;
+            });
     }
 
     onLoad = () => {}
