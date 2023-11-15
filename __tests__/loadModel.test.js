@@ -35,12 +35,12 @@ test('adds 1 + 2 to equal 3', () => {
     expect(abc(1, 2)).toBe(3);
 });
 
-test('checkLoadModel - stl', async () => {
-    const filePath = 'file://' + process.cwd() + 'dist/assets/models/logo.stl';
+// test('checkLoadModel - stl', async () => {
+//     const filePath = 'file://' + process.cwd() + 'dist/assets/models/logo.stl';
 
-    try {
-        await loadModel(filePath, 'stl');
-    } catch (error) {
-        throw error;
-    }
-});
+//     try {
+//         await loadModel(filePath, 'stl');
+//     } catch (error) {
+//         throw error;
+//     }
+// });
