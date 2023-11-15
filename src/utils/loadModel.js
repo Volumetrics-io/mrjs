@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 // import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
@@ -347,7 +348,7 @@ function loadPLY(filePath, scene) {
 function loadSTL(filePath) {
     console.log('Three.js revision:', THREE.REVISION);
     console.log("loadSTL");
-  const loader = new THREE.STLLoader();
+  const loader = new STLLoader();
   console.log(loader);
 
   console.log('hi');
