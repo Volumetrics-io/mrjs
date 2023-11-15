@@ -224,20 +224,34 @@ function loadGCODE(filePath, scene) {
  * @param filePath
  */
 async function loadGLTF(filePath) {
-    const loader = new GLTFLoader()
-    loader.load(
-        filePath,
-        (gltf) =>
-            // TODO - look into what that avif and anisotropy versions of loading are
-            // compressed, instancing, etc, etc
+    const loader = new GLTFLoader();
+    // loader.load(
+    //     filePath,
+    //     (gltf) =>
+    //         // TODO - look into what that avif and anisotropy versions of loading are
+    //         // compressed, instancing, etc, etc
 
-            gltf.scene,
-        undefined,
-        (error) => {
-            console.error(error)
-        }
-    )
-    return null
+    //         gltf.scene,
+    //     undefined,
+    //     (error) => {
+    //         console.error(error)
+    //     }
+    // )
+    // return null
+
+    return new Promise((resolve, reject) => {
+        loader.load(
+            filePath,
+            (gltf) => {
+                resolve(gltf.scene) // Resolve the promise with the loaded mesh
+            },
+            undefined,
+            (error) => {
+                console.error(error)
+                reject(error) // Reject the promise if there's an error
+            }
+        )
+    });
 }
 
 /*
@@ -363,7 +377,7 @@ async function loadSTL(filePath) {
                 reject(error) // Reject the promise if there's an error
             }
         )
-    })
+    });
 }
 
 // TODO - svg
@@ -380,10 +394,10 @@ async function loadUSDZ(filePath) {
 
     const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
         console.error(error)
-        return null
+        return null;
     })
 
-    return model
+    return model;
 }
 
 // TODO - vox <--> xyz
@@ -401,22 +415,22 @@ export function loadModel(filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
     if (extension == 'stl') {
-        return loadSTL(filePath)
+        return loadSTL(filePath);
     }
     if (extension == 'gltf') {
-        return loadGLTF(filePath)
+        return loadGLTF(filePath);
     }
     if (extension == 'glb') {
-        return loadGLTF(filePath)
+        return loadGLTF(filePath);
     }
     if (extension == 'usd') {
-        return loadUSDZ(filePath)
+        return loadUSDZ(filePath);
     }
     if (extension == 'usdz') {
-        return loadUSDZ(filePath)
+        return loadUSDZ(filePath);
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`)
-    return null
+    return null;
 }
 
 /**
@@ -425,5 +439,5 @@ export function loadModel(filePath, extension) {
  * @param b
  */
 export function abc(a, b) {
-    return a + b
+    return a + b;
 }
