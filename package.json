@@ -5,6 +5,7 @@
   "main": "dist/build.js",
   "scripts": {
     "build": "npx webpack --config webpack.config.js",
+    "server": "npx webpack serve",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "npx jsdoc src/*.js --destination ./docs",
     "prettier-list": "prettier --list-different \"src/**/*.js\" \"*.js\"",
@@ -37,7 +38,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "jsdoc": "^4.0.2",
     "webpack": "^5.79.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.23.3",
