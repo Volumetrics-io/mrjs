@@ -10,8 +10,11 @@ import * as THREE from 'three';
 export function UIPlane(width, height, radii, s) {
   // width, height, radius corner, smoothness
 
-  const w = width == 'auto' ? 1 : width;
-  const h = height == 'auto' ? 1 : height;
+  let w = width == 'auto' ? 1 : width;
+  w = w != 0 ? w : 1;
+  let h = height == 'auto' ? 1 : height;
+  h = h != 0 ? h : 1;
+
 
   const r = radii[0] == 0 ? 0.0001 : radii[0];
 
