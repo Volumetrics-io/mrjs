@@ -47,8 +47,4 @@ export { default as Entity } from './core/entity';
 // GEOMETRY
 export { default as UIPlane } from './geometry/UIPlane';
 // UI
-export { default as Panel } from './UI/Panel';
-
-// For testing
-export * from './utils/loadModel';
-export * from './utils/loadModel.test';
+// export { default as Panel } from './UI/Panel';
