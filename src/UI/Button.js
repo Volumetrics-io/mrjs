@@ -1,9 +1,9 @@
-import Panel from './Panel.js';
+import { MRUIEntity } from './UIEntity.js';
 
 /**
  *
  */
-export default class Button extends Panel {
+export default class Button extends MRUIEntity {
   /**
    *
    */

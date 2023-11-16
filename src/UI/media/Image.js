@@ -1,9 +1,9 @@
-import Panel from '../Panel';
+import { MRUIEntity } from '../UIEntity';
 
 /**
  *
  */
-export class MRImage extends Panel {
+export class MRImage extends MRUIEntity {
   /**
    *
    */
@@ -15,10 +15,12 @@ export class MRImage extends Panel {
    *
    */
   connected() {
+    this.geometry = UIPlane(this.width, this.height, borderRadii, 18);
     this.material = new THREE.MeshBasicMaterial({
       side: 1,
+      map: new THREE.TextureLoader().load(this.getAttribute('src'))
     });
-    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'));
+    this.object3D = new THREE.Mesh(this.geometry, this.material);
   }
 
   /**

@@ -45,22 +45,6 @@ export default class Entity extends MRElement {
     return this.size.y;
   }
 
-  #zOffeset = 0.001;
-
-  /**
-   *
-   */
-  set zOffeset(value) {
-    this.#zOffeset = value;
-  }
-
-  /**
-   *
-   */
-  get zOffeset() {
-    return this.#zOffeset;
-  }
-
   layer = 0;
 
   /**
@@ -114,7 +98,7 @@ export default class Entity extends MRElement {
   connectedCallback() {
     this.compStyle = window.getComputedStyle(this);
 
-    if (!this.parentElement.tagName.toLowerCase().includes('mr-')) {
+    if (!(this.parentElement instanceof MRElement)) {
       return;
     }
     this.parentElement.add(this);
@@ -187,9 +171,6 @@ export default class Entity extends MRElement {
         case 'position':
           this.object3D.position.fromArray(parseVector(attr.value));
           break;
-        case 'zoffset':
-          this.zOffeset = parseFloat(attr.value);
-          break;
         case 'layer':
           this.layer = parseFloat(attr.value);
           this.object3D.layers.set(this.layer);
@@ -241,34 +222,37 @@ export default class Entity extends MRElement {
     for (const mutation of mutationList) {
       this.mutated(mutation);
 
-      if (mutation.type != 'attributes') {
-        continue;
-      }
-      if (mutation.attributeName.startsWith('comp-')) {
-        this.componentMutated(mutation.attributeName);
-      }
-
-      switch (mutation.attributeName) {
-        case 'position':
-          this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
-          console.log(this.object3D.position);
+      switch (mutation.type) {
+        case 'childList':
+          
+          break
+        case 'attributes':
+          if (mutation.attributeName.startsWith('comp-')) {
+            this.componentMutated(mutation.attributeName);
+          }
+          switch (mutation.attributeName) {
+            case 'position':
+              this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
+              break;
+            case 'scale':
+              this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
+              break;
+            case 'rotation':
+              this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
+              break;
+    
+            default:
+              break;
+          }
           break;
-        case 'scale':
-          this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
-          break;
-        case 'rotation':
-          this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
-          break;
-
+      
         default:
           break;
       }
-      this.traverse((child) => {
-        if (!child.physics) {
-          return;
-        }
-        child.physics.update = true;
-      });
+
+      if (mutation.type != 'attributes') {
+        continue;
+      }
     }
   }
 

@@ -20,7 +20,6 @@ import './geometry/UIPlane';
 
 // UI
 import './UI/Button';
-import './UI/Panel';
 import './entities/Surface';
 import './entities/Volume';
 
@@ -28,7 +27,6 @@ import './entities/Volume';
 import './UI/media/Image';
 
 // TEXT
-import './UI/Text/Font';
 import './UI/Text/Text';
 import './UI/Text/TextField';
 import './UI/Text/TextEditor';
