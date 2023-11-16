@@ -52,7 +52,7 @@ export class TextSystem extends System {
    */
   update(deltaTime, frame) {
     for (const entity of this.registry) {
-      const text = entity.textContent.trim();
+      const text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
       if (entity.textObj.text != text) {
         entity.textObj.text = text.length > 0 ? text : ' ';
         entity.textObj.sync();
