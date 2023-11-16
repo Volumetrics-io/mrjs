@@ -12,7 +12,7 @@ export class MRImage extends MRUIEntity {
     super();
     this.geometry = UIPlane(1, 1, 0.0001, 18);
     this.material = new THREE.MeshBasicMaterial({
-      side: 0
+      side: 0,
     });
     this.object3D = new THREE.Mesh(this.geometry, this.material);
   }
@@ -23,10 +23,10 @@ export class MRImage extends MRUIEntity {
   connected() {
     const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
-    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), texture => {
+    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
       switch (this.compStyle.objectFit) {
         case 'cover':
-          this.cover(texture, this.width / this.height)
+          this.cover(texture, this.width / this.height);
           break;
         case 'fill':
         default:
@@ -42,15 +42,15 @@ export class MRImage extends MRUIEntity {
   mutated(mutation) {
     super.mutated();
     if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-      this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), texture => {
+      this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
         switch (this.compStyle.objectFit) {
           case 'cover':
-            this.cover(texture, this.width / this.height)
+            this.cover(texture, this.width / this.height);
             break;
           case 'fill':
           default:
             break;
-        }      
+        }
       });
     }
   }
@@ -60,21 +60,16 @@ export class MRImage extends MRUIEntity {
    * @param texture
    * @param aspect
    */
-  cover( texture, aspect ) {
+  cover(texture, aspect) {
     texture.matrixAutoUpdate = false;
 
-    var imageAspect = texture.image.width / texture.image.height;
-  
-    if ( aspect < imageAspect ) {
-  
-        texture.matrix.setUvTransform( 0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5 );
-  
+    const imageAspect = texture.image.width / texture.image.height;
+
+    if (aspect < imageAspect) {
+      texture.matrix.setUvTransform(0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5);
     } else {
-  
-        texture.matrix.setUvTransform( 0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5 );
-  
+      texture.matrix.setUvTransform(0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5);
     }
-  
   }
 }
 

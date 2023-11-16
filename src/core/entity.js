@@ -224,8 +224,7 @@ export default class Entity extends MRElement {
 
       switch (mutation.type) {
         case 'childList':
-          
-          break
+          break;
         case 'attributes':
           if (mutation.attributeName.startsWith('comp-')) {
             this.componentMutated(mutation.attributeName);
@@ -240,12 +239,12 @@ export default class Entity extends MRElement {
             case 'rotation':
               this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
               break;
-    
+
             default:
               break;
           }
           break;
-      
+
         default:
           break;
       }
@@ -316,7 +315,7 @@ export default class Entity extends MRElement {
     const children = Array.from(this.children);
     for (const child of children) {
       // if o is an object, traverse it again
-      if ((!child) instanceof Entity) {
+      if (!child instanceof Entity) {
         continue;
       }
       child.traverse(callBack);

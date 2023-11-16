@@ -15,7 +15,6 @@ export function UIPlane(width, height, radii, s) {
   let h = height == 'auto' ? 1 : height;
   h = h != 0 ? h : 1;
 
-
   const r = radii[0] == 0 ? 0.0001 : radii[0];
 
   if (!w || !h || !r || !s) {
