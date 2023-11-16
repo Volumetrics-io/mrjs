@@ -31,19 +31,19 @@ export class Model extends Entity {
 
     const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-    // todo - these material changes should be moved out of the loader at some point
-    const material = new THREE.MeshPhysicalMaterial({
-      clearcoat: 0.75,
-      clearcoatRoughness: 0.5,
-      metalness: 0.5,
-      roughness: 0.6,
-      envMapIntensity: 0.75,
-    });
+    // // todo - these material changes should be moved out of the loader at some point
+    // const material = new THREE.MeshPhysicalMaterial({
+    //   clearcoat: 0.75,
+    //   clearcoatRoughness: 0.5,
+    //   metalness: 0.5,
+    //   roughness: 0.6,
+    //   envMapIntensity: 0.75,
+    // });
 
     loadModel(this.src, extension)
       .then((loadedMeshModel) => {
         // todo - these material changes should be moved out of the loader at some point
-        loadedMeshModel.material = material;
+        // loadedMeshModel.material = material;
         loadedMeshModel.receiveShadow = true;
         loadedMeshModel.renderOrder = 3;
 
