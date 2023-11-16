@@ -425,7 +425,7 @@ export function loadModel(filePath, extension) {
   if (extension == 'glb') {
     return loadGLTF(filePath);
   }
-  if (extension == 'usd') {
+  if (extension == 'usdc') {
     return loadUSDZ(filePath);
   }
   if (extension == 'usdz') {
