@@ -1,0 +1,8 @@
+# services:
+#   - type: web
+#     name: mrjs
+#     env: node
+#     buildCommand: npm install && npm run build
+#     startCommand: npm run server
+#     nodeVersion: 16
+#     npmVersion: 8

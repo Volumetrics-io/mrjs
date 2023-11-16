@@ -1,0 +1,69 @@
+<head><script defer src="mr.js"></script></head>Html Webpack Plugin:
+<pre>
+  Error: Child compilation failed:
+  Module not found: Error: No parser registered for text/css
+  ModuleNotFoundError: Module not found: Error: No parser registered for text/css
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/Compilation.js:2016:28
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:805:13
+      at eval (eval at create (/Users/hbwork-macabanana/Desktop/MR.js/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:10:1)
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:272:22
+      at eval (eval at create (/Users/hbwork-macabanana/Desktop/MR.js/node_modules/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:9:1)
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:596:15
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:118:11
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:619:8
+      at done (/Users/hbwork-macabanana/Desktop/MR.js/node_modules/neo-async/async.js:2931:13)
+      at /Users/hbwork-macabanana/Desktop/MR.js/node_modules/webpack/lib/NormalModuleFactory.js:1060:14
+  
+  - Compilation.js:2016 
+    [MR.js]/[webpack]/lib/Compilation.js:2016:28
+  
+  - NormalModuleFactory.js:805 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:805:13
+  
+  
+  - NormalModuleFactory.js:272 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:272:22
+  
+  
+  - NormalModuleFactory.js:596 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:596:15
+  
+  - NormalModuleFactory.js:118 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:118:11
+  
+  - NormalModuleFactory.js:619 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:619:8
+  
+  - async.js:2931 done
+    [MR.js]/[neo-async]/async.js:2931:13
+  
+  - NormalModuleFactory.js:1060 
+    [MR.js]/[webpack]/lib/NormalModuleFactory.js:1060:14
+  
+  - child-compiler.js:169 
+    [MR.js]/[html-webpack-plugin]/lib/child-compiler.js:169:18
+  
+  - Compiler.js:551 finalCallback
+    [MR.js]/[webpack]/lib/Compiler.js:551:5
+  
+  - Compiler.js:577 
+    [MR.js]/[webpack]/lib/Compiler.js:577:11
+  
+  - Compiler.js:1199 
+    [MR.js]/[webpack]/lib/Compiler.js:1199:17
+  
+  
+  - Hook.js:18 Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+    [MR.js]/[tapable]/lib/Hook.js:18:14
+  
+  - Compiler.js:1195 
+    [MR.js]/[webpack]/lib/Compiler.js:1195:33
+  
+  - Compilation.js:2787 finalCallback
+    [MR.js]/[webpack]/lib/Compilation.js:2787:11
+  
+  - Compilation.js:3092 
+    [MR.js]/[webpack]/lib/Compilation.js:3092:11
+  
+  
+</pre>

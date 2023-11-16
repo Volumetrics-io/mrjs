@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "description": "an MR first webXR framework",
-  "main": "dist/main.bundle.js",
+  "main": "dist/mr.js",
   "homepage": "https://github.com/Volumetrics-io/volumetrics#readme",
   "scripts": {
     "build": "npx webpack --config webpack.config.js",
