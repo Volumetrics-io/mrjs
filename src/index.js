@@ -20,7 +20,6 @@ import './geometry/UIPlane.js';
 
 // UI
 import './UI/Button.js';
-import './UI/Panel.js';
 import './entities/Surface.js';
 import './entities/Volume.js';
 
@@ -28,7 +27,6 @@ import './entities/Volume.js';
 import './UI/media/Image.js';
 
 // TEXT
-import './UI/Text/Font.js';
 import './UI/Text/Text.js';
 import './UI/Text/TextField.js';
 import './UI/Text/TextEditor.js';
@@ -48,5 +46,3 @@ export { default as Entity } from './core/entity.js';
 
 // GEOMETRY
 export { default as UIPlane } from './geometry/UIPlane.js';
-// UI
-export { default as Panel } from './UI/Panel.js';
