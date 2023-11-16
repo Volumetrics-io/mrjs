@@ -1,5 +1,7 @@
 # MR.js
 
+[![npm run build](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml)
+
 An extendable WebComponents library for the Spatial Web
 
 ## Overview
@@ -7,7 +9,7 @@ An extendable WebComponents library for the Spatial Web
 MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
 ## Getting started
-
+ 
 CDN:
 
 `<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/build.js"></script>

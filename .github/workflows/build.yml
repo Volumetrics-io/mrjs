@@ -1,5 +1,5 @@
 # Build MRjs and confirm everything passes
-name: npm build
+name: npm run build
 
 on:
   workflow_dispatch:

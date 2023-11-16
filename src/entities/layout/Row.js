@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Column } from './Column';
 import { LayoutEntity } from './LayoutEntity';
 

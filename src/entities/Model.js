@@ -1,22 +1,10 @@
 import Entity from '../core/entity';
-import { STLLoader } from '../utils/STLLoader';
-
-const LOADERS = {
-  stl: new STLLoader(),
-};
+import { loadModel } from '../utils/loadModel';
 
 /**
  *
  */
 export class Model extends Entity {
-  /**
-   *
-   */
-  get height() {
-    super.height;
-    return this.contentHeight;
-  }
-
   /**
    *
    */
@@ -27,38 +15,47 @@ export class Model extends Entity {
   /**
    *
    */
+  get height() {
+    super.height; // TODO - why is this line here?
+    return this.contentHeight;
+  }
+
+  /**
+   *
+   */
   connected() {
     this.src = this.getAttribute('src');
-
     if (!this.src) {
       return;
     }
 
-    const ext = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
+    const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-    const loader = LOADERS[ext];
+    // // todo - these material changes should be moved out of the loader at some point
+    // const material = new THREE.MeshPhysicalMaterial({
+    //   clearcoat: 0.75,
+    //   clearcoatRoughness: 0.5,
+    //   metalness: 0.5,
+    //   roughness: 0.6,
+    //   envMapIntensity: 0.75,
+    // });
 
-    if (!loader) {
-      return;
-    }
+    loadModel(this.src, extension)
+      .then((loadedMeshModel) => {
+        // todo - these material changes should be moved out of the loader at some point
+        // loadedMeshModel.material = material;
+        loadedMeshModel.receiveShadow = true;
+        loadedMeshModel.renderOrder = 3;
 
-    loader.load(this.src, (geometry) => {
-      const material = new THREE.MeshPhysicalMaterial({
-        clearcoat: 0.75,
-        clearcoatRoughness: 0.5,
-        metalness: 0.5,
-        roughness: 0.6,
-        envMapIntensity: 0.75,
+        // the below is the same as 'scene.add'
+        this.object3D.add(loadedMeshModel);
+
+        // TODO - recheck this lower part
+        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+      })
+      .catch((error) => {
+        console.log(`ERR: in loading model ${this.src}. Error was:`, error);
       });
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.receiveShadow = true;
-      mesh.renderOrder = 3;
-
-      this.object3D.add(mesh);
-
-      this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-    });
   }
 
   onLoad = () => {};

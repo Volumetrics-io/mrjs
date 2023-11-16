@@ -1,5 +1,5 @@
-# Test MRjs and confirm everything passes
-name: npm test
+# Run MRjs testing
+name: npm run test
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    needs: build 
+    # needs: build # todo
     steps:
     - uses: actions/checkout@v4
     
@@ -30,6 +30,11 @@ jobs:
       run: |
         npm install
 
-        #- name: 👷 Test
-        #run: |
-        #  npm run build
+    - name: 👷 Build
+      run: npm run build
+    
+    # todo - have a way to run off a saved build image
+    # will do after getting testing up and running 
+    
+    - name: 👷 Test
+      run: npm test

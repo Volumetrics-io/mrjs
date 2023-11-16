@@ -316,7 +316,7 @@ export default class Entity extends MRElement {
     const children = Array.from(this.children);
     for (const child of children) {
       // if o is an object, traverse it again
-      if (!child instanceof Entity) {
+      if ((!child) instanceof Entity) {
         continue;
       }
       child.traverse(callBack);
