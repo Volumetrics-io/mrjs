@@ -1,4 +1,5 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import webpack from 'webpack';
@@ -61,6 +62,12 @@ export default {
       template: './samples/index.html', // Path to your HTML file (that you can modify)
       //chunks: ['sample1'], // Specify the chunks to include in this HTML file
       // Add other configurations as needed...
+    }),
+    new CopyPlugin({
+        patterns: [
+            { from: 'assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
+            { from: 'samples', to: 'samples' }, // make the MR.js/samples folder generate in the dist
+        ],
     }),
     new webpack.ProvidePlugin({
       MRJS: 'MRJS',
