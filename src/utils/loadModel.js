@@ -420,18 +420,18 @@ export function loadModel(filePath, extension) {
   if (extension == 'stl') {
     return loadSTL(filePath);
   }
-  if (extension == 'gltf') {
-    return loadGLTF(filePath);
-  }
+  // if (extension == 'gltf') {
+  //   return loadGLTF(filePath);
+  // }
   if (extension == 'glb') {
     return loadGLTF(filePath);
   }
   // if (extension == 'usdc') {
   //   return loadUSDZ(filePath);
   // }
-  if (extension == 'usdz') {
-    return loadUSDZ(filePath);
-  }
+  // if (extension == 'usdz') {
+  //   return loadUSDZ(filePath);
+  // }
   console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
   return null;
 }
