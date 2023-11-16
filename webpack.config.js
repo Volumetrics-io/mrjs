@@ -1,3 +1,4 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import webpack from 'webpack';
@@ -6,10 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default {
-  entry: './src/index.js',
+  entry: {
+    main: './src/index.js',
+    // sample0: './samples/sample.js',
+  },
   output: {
-    publicPath: 'auto',
-    filename: 'build.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'auto',
     libraryTarget: 'window',
@@ -47,14 +50,18 @@ export default {
       fs: false,
       path: false,
     },
-    fullySpecified: false, // disable required .js / .mjs when importing
+    fullySpecified: false, // disable required .js / .mjs extensions when importing
   },
 
   mode: process.env.NODE_ENV || 'development',
 
   plugins: [
-    // ...
-
+    new HtmlWebpackPlugin({
+      filename: 'index.html', // Output filename for the HTML file that will be generated in dist
+      template: './samples/index.html', // Path to your HTML file (that you can modify)
+      //chunks: ['sample1'], // Specify the chunks to include in this HTML file
+      // Add other configurations as needed...
+    }),
     new webpack.ProvidePlugin({
       MRJS: 'MRJS',
     }),
@@ -73,8 +80,16 @@ export default {
         },
       },
       {
+        test: /\.css/,
+        type: 'text/css',
+      },
+      {
         test: /\.wasm$/,
         type: 'webassembly/async', // or 'webassembly/sync'
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
