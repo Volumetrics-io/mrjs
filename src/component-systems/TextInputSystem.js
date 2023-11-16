@@ -102,7 +102,7 @@ export class TextInputSystem extends System {
     this.counter = 0;
     this.edited = true;
 
-    if (this.app.focusEntity == null || (!this.app.focusEntity) instanceof MRText) {
+    if (this.app.focusEntity == null || !this.app.focusEntity instanceof MRText) {
       return;
     }
     if (!this.app.focusEntity.editable) {
