@@ -7,16 +7,10 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "extends": ["airbnb-base", "import", "plugin:jsdoc/recommended"],
+    "extends": ["airbnb-base", "plugin:jsdoc/recommended"],
     // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
     "plugins": ["jsdoc"],
     "rules": {
-        "import/no-unused-modules": [
-            1,
-            {
-                "unusedExports": true
-            }
-        ],
         "jsdoc/require-jsdoc": [
             "error",
             {
@@ -28,6 +22,7 @@
                 }
             }
         ],
-        "no-var": "error",
+        "max-len": ["error", { "code": 180 }], // Make sure this matches prettier
+        "no-var": "error"
     }
 }
