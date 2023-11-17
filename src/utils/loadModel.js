@@ -363,7 +363,7 @@ function loadPLY(filePath, scene) {
  * @param filePath
  */
 async function loadSTL(filePath) {
-    console.log(filePath);
+  console.log(filePath);
   const loader = new STLLoader();
 
   return new Promise((resolve, reject) => {
@@ -418,8 +418,8 @@ async function loadUSDZ(filePath) {
 export function loadModel(filePath, extension) {
   // later on - this would be better//faster with enums<->string<-->num interop but
   // quick impl for now
-        console.log(filePath);
-        console.log(extension);
+  console.log(filePath);
+  console.log(extension);
 
   if (extension == 'stl') {
     return loadSTL(filePath);
