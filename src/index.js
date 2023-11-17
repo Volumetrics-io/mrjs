@@ -1,8 +1,6 @@
 // UTILS
 import './utils/extensions';
 
-import { RAPIER } from './core/rapier';
-
 // CORE
 import './core/MRElement';
 import './core/System';

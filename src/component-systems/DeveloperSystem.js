@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import System from '../core/System';
 import { COLLIDER_CURSOR_MAP } from './RapierPhysicsSystem';
-import { DevVolume } from '../entities/developer/DevVolume';
 
 /**
  *

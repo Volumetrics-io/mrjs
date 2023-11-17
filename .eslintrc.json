@@ -11,16 +11,18 @@
     // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
     "plugins": ["jsdoc"],
     "rules": {
-        "no-var": "error",
         "jsdoc/require-jsdoc": [
-          "error", {
-            "require": {
-              "FunctionDeclaration": true,
-              "MethodDefinition": true,
-              "ClassDeclaration": true
-              // You can add more as needed: ArrowFunctionExpression, FunctionExpression, etc.
+            "error",
+            {
+                "require": {
+                "FunctionDeclaration": true,
+                "MethodDefinition": true,
+                "ClassDeclaration": true
+                // You can add more as needed: ArrowFunctionExpression, FunctionExpression, etc.
+                }
             }
-          }
-        ]
+        ],
+        "max-len": ["error", { "code": 180 }], // Make sure this matches prettier
+        "no-var": "error"
     }
 }

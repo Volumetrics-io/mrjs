@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { RAPIER } from '../core/rapier';
 import { MRHand } from '../interaction/hand';
 import System from '../core/System';
-import { COLLIDER_ENTITY_MAP, INPUT_COLLIDER_HANDLE_NAMES } from './RapierPhysicsSystem';
+import { INPUT_COLLIDER_HANDLE_NAMES } from './RapierPhysicsSystem';
 
 /**
  *

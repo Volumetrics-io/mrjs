@@ -374,7 +374,10 @@ async function loadSTL(filePath) {
 
         resolve(mesh); // Resolve the promise with the loaded mesh
       },
-      undefined,
+      (xhr) => {
+        // Progress callback
+        console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
       (error) => {
         console.error(error);
         reject(error); // Reject the promise if there's an error
@@ -417,6 +420,7 @@ async function loadUSDZ(filePath) {
 export function loadModel(filePath, extension) {
   // later on - this would be better//faster with enums<->string<-->num interop but
   // quick impl for now
+
   if (extension == 'stl') {
     return loadSTL(filePath);
   }
@@ -434,13 +438,4 @@ export function loadModel(filePath, extension) {
   // }
   console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
   return null;
-}
-
-/**
- *
- * @param a
- * @param b
- */
-export function abc(a, b) {
-  return a + b;
 }

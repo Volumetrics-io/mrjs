@@ -57,12 +57,12 @@ export default {
 
   plugins: [
     new CopyPlugin({
-        patterns: [
-            { from: 'samples/index.html', to: 'index.html' },
-            { from: 'samples/style.css', to: 'style.css' },
-            { from: 'assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
-            { from: 'samples', to: 'samples' }, // make the MR.js/samples folder generate in the dist (for future when we have more)
-        ],
+      patterns: [
+        { from: 'samples/index.html', to: 'index.html' },
+        { from: 'samples/style.css', to: 'style.css' },
+        { from: 'assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
+        { from: 'samples', to: 'samples' }, // make the MR.js/samples folder generate in the dist (for future when we have more)
+      ],
     }),
     new webpack.ProvidePlugin({
       MRJS: 'MRJS',
