@@ -27,7 +27,7 @@
     "url": "https://github.com/Volumetrics-io/volumetrics/issues"
   },
   "engines": {
-    "node": "14.17.0"
+    "node": "^18.17.0 || >=20.5.0"
   },
   "testMatch": [
     "**/__tests__/**/*.test.mjs"

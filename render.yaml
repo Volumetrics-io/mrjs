@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: hello-world-your-service-name
-    env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run server
-    nodeVersion: ^18.17.0 || >=20.5.0
