@@ -23,35 +23,22 @@
 
 
 
-import { loadModel, abc } from '../src/utils/loadModel';
-import fs from 'fs';
+import { loadModel } from '../src/utils/loadModel';
 
-
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// import STLModel from '../assets/models/logo.stl';
-
-// Avoid reassigning __dirname, it's a special Node.js variable - using currDir instead.
-const currentDir = 'file://' + process.cwd();
-console.log(currentDir);
-
-test('adds 1 + 2 to equal 3', () => {
-    expect(abc(1, 2)).toBe(3);
-});
+// todo: in future dont hard code this, but the relative links based on filepath dont work
+// using a server to host them works best, so just grabbing from github is fine for now.
+const MODELS_URL = 'https://github.com/Volumetrics-io/MR.js/blob/main/assets/models/'
 
 test('checkLoadModel - stl', async () => {
-    const filePath = path.resolve(__dirname, '../assets/models/logo.stl');
-    console.log(filePath);
-    const urlFilePath = `file:/${filePath}`;
-    console.log(urlFilePath)
+    // Using async/await to handle potential asynchronous operations in loadModel
+    await expect(async () => {
+        await loadModel(`${MODELS_URL}logo.stl`, 'stl');
+      }).not.toThrow();
+});
 
-    try {
-        const result = await loadModel(urlFilePath, 'stl'); // Load the model synchronously for testing
-        expect(result).toBeDefined(); // Validate the result or returned object
-    } catch (error) {
-        throw error;
-    }
+test('checkLoadModel - glb', async () => {
+    // Using async/await to handle potential asynchronous operations in loadModel
+    await expect(async () => {
+        await loadModel(`${MODELS_URL}logo.glb`, 'glb');
+      }).not.toThrow();
 });

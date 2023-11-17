@@ -439,12 +439,3 @@ export function loadModel(filePath, extension) {
   console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
   return null;
 }
-
-/**
- *
- * @param a
- * @param b
- */
-export function abc(a, b) {
-  return a + b;
-}
