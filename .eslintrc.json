@@ -7,20 +7,27 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "extends": ["airbnb-base", "plugin:jsdoc/recommended"],
+    "extends": ["airbnb-base", "import", "plugin:jsdoc/recommended"],
     // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
     "plugins": ["jsdoc"],
     "rules": {
-        "no-var": "error",
-        "jsdoc/require-jsdoc": [
-          "error", {
-            "require": {
-              "FunctionDeclaration": true,
-              "MethodDefinition": true,
-              "ClassDeclaration": true
-              // You can add more as needed: ArrowFunctionExpression, FunctionExpression, etc.
+        "import/no-unused-modules": [
+            1,
+            {
+                "unusedExports": true
             }
-          }
-        ]
+        ],
+        "jsdoc/require-jsdoc": [
+            "error",
+            {
+                "require": {
+                "FunctionDeclaration": true,
+                "MethodDefinition": true,
+                "ClassDeclaration": true
+                // You can add more as needed: ArrowFunctionExpression, FunctionExpression, etc.
+                }
+            }
+        ],
+        "no-var": "error",
     }
 }
