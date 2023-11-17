@@ -1,5 +1,4 @@
 import System from '../core/System';
-import { Surface } from '../entities/Surface';
 
 /**
  *

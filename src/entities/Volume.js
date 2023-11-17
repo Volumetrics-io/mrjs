@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import Entity from '../core/entity.js';
 import { Surface } from './Surface.js';
 
