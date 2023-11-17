@@ -25,7 +25,14 @@
 
 import { loadModel, abc } from '../src/utils/loadModel';
 import fs from 'fs';
-import path from 'path';
+
+
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// import STLModel from '../assets/models/logo.stl';
 
 // Avoid reassigning __dirname, it's a special Node.js variable - using currDir instead.
 const currentDir = 'file://' + process.cwd();
@@ -35,12 +42,16 @@ test('adds 1 + 2 to equal 3', () => {
     expect(abc(1, 2)).toBe(3);
 });
 
-// test('checkLoadModel - stl', async () => {
-//     const filePath = 'file://' + process.cwd() + 'dist/assets/models/logo.stl';
+test('checkLoadModel - stl', async () => {
+    const filePath = path.resolve(__dirname, '../assets/models/logo.stl');
+    console.log(filePath);
+    const urlFilePath = `file:/${filePath}`;
+    console.log(urlFilePath)
 
-//     try {
-//         await loadModel(filePath, 'stl');
-//     } catch (error) {
-//         throw error;
-//     }
-// });
+    try {
+        const result = await loadModel(urlFilePath, 'stl'); // Load the model synchronously for testing
+        expect(result).toBeDefined(); // Validate the result or returned object
+    } catch (error) {
+        throw error;
+    }
+});

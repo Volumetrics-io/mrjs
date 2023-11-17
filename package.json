@@ -9,6 +9,8 @@
     "build": "npx webpack --config webpack.config.js",
     "server": "npx webpack serve",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test-serially": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
+    "test-randomized": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --random",
     "docs": "npx jsdoc src/*.js --destination ./docs",
     "prettier-list": "prettier --list-different \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
@@ -56,6 +58,7 @@
     "mini-css-extract-plugin": "^2.7.6",
     "npm": "^10.2.4",
     "style-loader": "^3.3.3",
+    "url": "^0.11.3",
     "webpack": "^5.79.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
