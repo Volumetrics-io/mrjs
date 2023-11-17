@@ -374,7 +374,10 @@ async function loadSTL(filePath) {
 
         resolve(mesh); // Resolve the promise with the loaded mesh
       },
-      undefined,
+      (xhr) => {
+        // Progress callback
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+      },
       (error) => {
         console.error(error);
         reject(error); // Reject the promise if there's an error
