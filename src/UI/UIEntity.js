@@ -152,8 +152,14 @@ export class MRUIEntity extends Entity {
       }
 
       this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
+      this.background.material.transparent = true;
+      this.background.material.opacity = rgba[3];
     } else {
       this.background.material.color.setStyle(color);
+    }
+
+    if (this.compStyle.opacity < 1) {
+      this.background.material.opacity = this.compStyle.opacity;
     }
     this.background.visible = true;
   }
