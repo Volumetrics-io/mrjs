@@ -159,7 +159,6 @@ export class MRUIEntity extends Entity {
     }
 
     if (this.compStyle.opacity < 1) {
-      console.log(this.compStyle.opacity);
       this.background.material.opacity = this.compStyle.opacity;
     }
     this.background.visible = true;
