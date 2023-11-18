@@ -14,6 +14,8 @@ export default class Entity extends MRElement {
 
   size = new THREE.Vector3();
 
+  components = {}
+
   /**
    *
    */
@@ -123,7 +125,7 @@ export default class Entity extends MRElement {
 
     this.mutationCallback = this.mutationCallback.bind(this);
     this.observer = new MutationObserver(this.mutationCallback);
-    this.observer.observe(this, { attributes: true, childList: true });
+    this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
     document.addEventListener('DOMContentLoaded', (event) => {
       this.loadAttributes();
@@ -159,22 +161,25 @@ export default class Entity extends MRElement {
    *
    */
   loadAttributes() {
-    this.components = new Set();
-    for (const attr of this.attributes) {
-      switch (attr.name.split('-')[0]) {
-        case 'comp':
-          this.componentMutated(attr.name);
-          break;
-        case 'rotation':
-          this.object3D.rotation.fromArray(parseDegVector(attr.value));
-          break;
-        case 'position':
-          this.object3D.position.fromArray(parseVector(attr.value));
-          break;
-        case 'layer':
-          this.layer = parseFloat(attr.value);
-          this.object3D.layers.set(this.layer);
-          break;
+    for ( let attr in this.dataset) {
+      if(attr.includes('comp')) {
+        let compName = attr.split('comp')[1].toLocaleLowerCase()
+        this.components[compName] = MRJS.parseComponentString(this.dataset[attr])
+        this.dispatchEvent(
+          new CustomEvent(`${attr}-attached`, {
+            bubbles: true,
+            detail: { entity: this },
+          }),
+        );
+      } else {
+        switch (attr) {
+          case 'rotation':
+            this.object3D.rotation.fromArray(parseDegVector(this.dataset[attr]));
+            break;
+          case 'position':
+            this.object3D.position.fromArray(parseVector(this.dataset[attr]));
+            break;
+        }
       }
     }
   }
@@ -226,18 +231,16 @@ export default class Entity extends MRElement {
         case 'childList':
           break;
         case 'attributes':
-          if (mutation.attributeName.startsWith('comp-')) {
-            this.componentMutated(mutation.attributeName);
+
+          if (mutation.attributeName.includes('comp')) {
+            this.componentMutated(mutation);
           }
           switch (mutation.attributeName) {
             case 'position':
-              this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
-              break;
-            case 'scale':
-              this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
+              this.object3D.position.fromArray(parseVector(this.dataset['position']));
               break;
             case 'rotation':
-              this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
+              this.object3D.rotation.fromArray(parseDegVector(this.dataset['rotation']));
               break;
 
             default:
@@ -249,40 +252,45 @@ export default class Entity extends MRElement {
           break;
       }
 
-      if (mutation.type != 'attributes') {
-        continue;
-      }
     }
   }
 
   /**
    *
-   * @param componentName
+   * @param mutation
    */
-  componentMutated(componentName) {
-    const component = this.getAttribute(componentName);
-    if (!component) {
-      this.components.delete(componentName);
+  componentMutated(mutation) {
+    let compName = mutation.attributeName.split('comp-')[1]
+    console.log(compName);
+    let dataName = 'comp' + compName[0].toUpperCase() + compName.slice(1)
+    console.log(dataName);
+    console.log(this.dataset);
+    if (!this.dataset[dataName]) {
+      console.log('detatched');
+      let oldData = this.components[compName]
+      this.components[compName] = null
       this.dispatchEvent(
-        new CustomEvent(`${componentName}-detached`, {
+        new CustomEvent(`${dataName}-detached`, {
           bubbles: true,
-          detail: { entity: this, component },
+          detail: { entity: this, oldData },
         }),
       );
-    } else if (!this.components.has(componentName)) {
-      this.components.add(componentName);
+    } else if (this.components[compName]) {
+      let oldData = this.components[compName]
+      this.components[compName] = MRJS.parseComponentString(this.dataset[dataName])
       this.dispatchEvent(
-        new CustomEvent(`${componentName}-attached`, {
+        new CustomEvent(`${dataName}-updated`, {
           bubbles: true,
-          detail: { entity: this, component },
+          detail: { entity: this, oldData },
         }),
       );
     } else {
+      this.components[compName] = MRJS.parseComponentString(this.dataset[dataName])
       this.dispatchEvent(
-        new CustomEvent(`${componentName}-updated`, {
+        new CustomEvent(`${dataName}-attached`, {
           bubbles: true,
           detail: this,
-          detail: { entity: this, component },
+          detail: { entity: this },
         }),
       );
     }

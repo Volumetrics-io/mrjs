@@ -18,8 +18,8 @@ class AnimationSystem extends System {
         }
     }
 
-    attachedComponent(entity, data) {
-        console.log(data);
+    attachedComponent(entity) {
+        console.log(entity.components.animation);
         entity.animation = data
         entity.animation.speed = 0
     }
