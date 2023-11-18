@@ -59,6 +59,7 @@ export class Container extends LayoutEntity {
   }
 
   onTouch = (event) => {
+    if(event.target != this) { return }
     if (event.type == 'touch-end') {
       this.prevPosition.set(0, 0, 0);
       return;
