@@ -23,7 +23,7 @@ export class MRImage extends MRUIEntity {
   connected() {
     const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
-    this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
+    this.texture = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
       switch (this.compStyle.objectFit) {
         case 'cover':
           this.cover(texture, this.width / this.height);
@@ -33,6 +33,19 @@ export class MRImage extends MRUIEntity {
           break;
       }
     });
+    this.object3D.material.map = this.texture;
+  }
+
+  /**
+   *
+   */
+  updateStyle() {
+    super.updateStyle();
+    const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+    if (this.texture.image) {
+      this.cover(this.texture, this.width / this.height);
+    }
   }
 
   /**
