@@ -96,6 +96,7 @@ export default class System {
    *
    * @param entity
    * @param data
+   * @param oldData
    */
   updatedComponent(entity, oldData) {
     console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
