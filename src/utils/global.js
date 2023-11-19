@@ -35,3 +35,28 @@ export function parseComponentString(compString) {
 
   return jsonObject;
 }
+
+/**
+ *
+ * @param componentData
+ */
+export function stringifyComponent(componentData) {
+  let compString = '';
+
+  for (const [key, value] of Object.entries(componentData)) {
+    let stringValue;
+    
+    if (Array.isArray(value)) {
+      // Convert array of numbers to space-separated string
+      stringValue = value.join(' ');
+    } else {
+      // Use the value directly for numbers and booleans
+      stringValue = value.toString();
+    }
+
+    // Append the key-value pair to the component string
+    compString += `${key}: ${stringValue}; `;
+  }
+
+  return compString.trim();
+}

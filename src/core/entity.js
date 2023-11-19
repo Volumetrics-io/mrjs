@@ -14,7 +14,19 @@ export default class Entity extends MRElement {
 
   size = new THREE.Vector3();
 
-  components = {};
+  component(name, data = null) {
+    let dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`
+    let component = MRJS.parseComponentString(this.dataset[dataName])
+    if(!data) {
+      return component
+    }
+
+    for(let key in data) {
+      component[key] = data[key]
+    }
+
+    this.dataset[dataName] = MRJS.stringifyComponent(component)
+  }
 
   /**
    *
@@ -164,7 +176,6 @@ export default class Entity extends MRElement {
     for (const attr in this.dataset) {
       if (attr.includes('comp')) {
         const compName = attr.split('comp')[1].toLocaleLowerCase();
-        this.components[compName] = MRJS.parseComponentString(this.dataset[attr]);
         this.dispatchEvent(
           new CustomEvent(`${attr}-attached`, {
             bubbles: true,
@@ -259,31 +270,23 @@ export default class Entity extends MRElement {
    */
   componentMutated(mutation) {
     const compName = mutation.attributeName.split('comp-')[1];
-    console.log(compName);
     const dataName = `comp${compName[0].toUpperCase()}${compName.slice(1)}`;
-    console.log(dataName);
-    console.log(this.dataset);
     if (!this.dataset[dataName]) {
       console.log('detatched');
-      const oldData = this.components[compName];
-      this.components[compName] = null;
       this.dispatchEvent(
         new CustomEvent(`${dataName}-detached`, {
           bubbles: true,
           detail: { entity: this, oldData },
         }),
       );
-    } else if (this.components[compName]) {
-      const oldData = this.components[compName];
-      this.components[compName] = MRJS.parseComponentString(this.dataset[dataName]);
+    } else if (mutation.oldValue) {
       this.dispatchEvent(
         new CustomEvent(`${dataName}-updated`, {
           bubbles: true,
-          detail: { entity: this, oldData },
+          detail: { entity: this, oldData: MRJS.parseComponentString(mutation.oldValue) },
         }),
       );
     } else {
-      this.components[compName] = MRJS.parseComponentString(this.dataset[dataName]);
       this.dispatchEvent(
         new CustomEvent(`${dataName}-attached`, {
           bubbles: true,
