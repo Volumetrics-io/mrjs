@@ -33,7 +33,7 @@ jobs:
     
     - name: 👷 Check if format is needed
       run: |
-        // check if either need fixes
+        # check if either need fixes
 
         npm run prettier-list
         exit_code_function_prettier=$?
@@ -41,14 +41,14 @@ jobs:
         npm run lint-list
         exit_code_function_lint=$?
 
-        // check lint first, because it might have changed some prettier items
-        // if lint is successful, then check against prettier to see if there were 
-        // any remaining problem items
-        //
-        // doing this ordering because prettier runs first and then is followed by lint
-        //
-        // this is also necessary because part of prettier and lint are in conflict atm
-        // but it's based on a specific formatting setting, to be resolved.
+        # check lint first, because it might have changed some prettier items
+        # if lint is successful, then check against prettier to see if there were 
+        # any remaining problem items
+        #
+        # doing this ordering because prettier runs first and then is followed by lint
+        #
+        # this is also necessary because part of prettier and lint are in conflict atm
+        # but it's based on a specific formatting setting, to be resolved.
         if [ $exit_code_function_lint -ne 0 ]; then
             echo "Function lint encountered an error"
             echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
