@@ -60,7 +60,7 @@ export class TextSystem extends System {
         if(entity == document.activeElement) {
           entity.updateCursorPosition()
         } else {
-          //entity.blur()
+          entity.blur()
         }
       } else {
         text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();

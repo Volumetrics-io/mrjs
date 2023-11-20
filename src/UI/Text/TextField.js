@@ -43,7 +43,6 @@ export class TextField extends MRText {
 
     this.addEventListener('click', (event) => {
       this.focus()
-      console.log(this.compStyle.caretColor);
     })
   }
 
@@ -63,6 +62,9 @@ export class TextField extends MRText {
   updateCursorPosition = () => {
     let end = this.input.selectionStart > 0 ? this.input.selectionStart : 1
     let selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop()
+    if (isNaN(selectBox.right) ) {
+      return
+    }
     if (this.input.selectionStart == 0) {
       this.cursor.position.setX(selectBox.left)
     } else {
