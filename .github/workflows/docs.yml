@@ -14,12 +14,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     # todo - run the npm install with a dockerfile setup instead of pure
     # install but not important to do right now since install isnt too long
     
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: 21
 
@@ -45,7 +45,7 @@ jobs:
         ls -al .
 
     - name: Checkout docs Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: Volumetrics-io/docs
         ref: main

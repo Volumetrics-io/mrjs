@@ -17,23 +17,36 @@ export class MRImage extends MRUIEntity {
         this.object3D = new THREE.Mesh(this.geometry, this.material);
     }
 
-    /**
-     *
-     */
-    connected() {
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
-        this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
-            switch (this.compStyle.objectFit) {
-                case 'cover':
-                    this.cover(texture, this.width / this.height);
-                    break;
-                case 'fill':
-                default:
-                    break;
-            }
-        });
+  /**
+   *
+   */
+  connected() {
+    const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+    this.texture = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
+      switch (this.compStyle.objectFit) {
+        case 'cover':
+          this.cover(texture, this.width / this.height);
+          break;
+        case 'fill':
+        default:
+          break;
+      }
+    });
+    this.object3D.material.map = this.texture;
+  }
+
+  /**
+   *
+   */
+  updateStyle() {
+    super.updateStyle();
+    const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+    if (this.texture.image) {
+      this.cover(this.texture, this.width / this.height);
     }
+  }
 
     /**
      *

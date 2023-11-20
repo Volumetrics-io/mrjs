@@ -6,48 +6,40 @@ import { MRUIEntity } from '../UIEntity';
  *
  */
 export class MRText extends MRUIEntity {
-    /**
-     *
-     */
-    get height() {
-        super.height;
-        this.aabb.setFromObject(this.textObj).getSize(this.size);
-        return this.size.y;
-    }
 
-    /**
-     *
-     */
-    constructor() {
-        super();
-        this.textObj = new Text();
-        this.object3D.add(this.textObj);
-        this.editable = false;
+  /**
+   *
+   */
+  get height() {
+    super.height;
+    this.aabb.setFromObject(this.textObj).getSize(this.size);
+    return this.size.y;
+  }
 
-        this.needsUpdate = true;
+  /**
+   *
+   */
+  constructor() {
+    super();
+    this.textObj = new Text();
+    this.object3D.add(this.textObj);
+    this.editable = false;
 
-        document.addEventListener('container-mutated', () => {
-            this.needsUpdate = true;
-        });
-    }
+    this.needsUpdate = true;
 
-    /**
-     *
-     */
-    connected() {
-        const text = this.textContent.trim();
-        this.textObj.text = text.length > 0 ? text : ' ';
-        this.style = parseAttributeString(this.getAttribute('text-style'));
-    }
+    document.addEventListener('container-mutated', () => {
+      this.needsUpdate = true;
+    });
+  }
 
-    mutated = (mutation) => {
-        if (mutation.type != 'attributes') {
-            return;
-        }
-        if (mutation.attributeName == 'text-style') {
-            this.style = parseAttributeString(this.getAttribute('text-style'));
-        }
-    };
+  /**
+   *
+   */
+  connected() {
+    const text = this.textContent.trim();
+    this.textObj.text = text.length > 0 ? text : ' ';
+  }
+
 }
 
 customElements.get('mr-text') || customElements.define('mr-text', MRText);
