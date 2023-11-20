@@ -44,9 +44,10 @@
 
         
 
-              <mr-model class="logo" layer="2" comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;" 
+              <mr-model class="logo" 
                 src="./assets/models/logo.stl" 
-                rotation="-22.91 17.1887 45.8366">
+                data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+                data-rotation="-22.91 17.1887 45.8366">
               </mr-model>
 
               <mr-text class="title" >
@@ -58,10 +59,11 @@
         </mr-container>
       </mr-surface>
 
-      <mr-entity comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" position="0 0 2">
-        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" position="0 1 0"></mr-light>
-        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" position="1 -1 0"></mr-light>
-        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" position="-1 -1 0"></mr-light>
+      <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
+                 data-position="0 0 2">
+        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
+        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
+        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
       </mr-entity>
         
     </mr-app>
