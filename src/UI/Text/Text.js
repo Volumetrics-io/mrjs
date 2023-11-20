@@ -37,17 +37,7 @@ export class MRText extends MRUIEntity {
   connected() {
     const text = this.textContent.trim();
     this.textObj.text = text.length > 0 ? text : ' ';
-    this.style = parseAttributeString(this.getAttribute('text-style'));
   }
-
-  mutated = (mutation) => {
-    if (mutation.type != 'attributes') {
-      return;
-    }
-    if (mutation.attributeName == 'text-style') {
-      this.style = parseAttributeString(this.getAttribute('text-style'));
-    }
-  };
 }
 
 customElements.get('mr-text') || customElements.define('mr-text', MRText);

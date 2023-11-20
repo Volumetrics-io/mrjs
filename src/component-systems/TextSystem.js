@@ -1,5 +1,7 @@
-import { preloadFont } from 'troika-three-text';
+import { getSelectionRects, preloadFont } from 'troika-three-text';
 import System from '../core/System';
+import { TextField } from '../UI/Text/TextField';
+import { TextArea } from '../UI/Text/TextArea';
 
 /**
  *
@@ -35,7 +37,7 @@ export class TextSystem extends System {
       });
     });
 
-    const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-texteditor');
+    const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-textarea');
     for (const entity of entities) {
       this.registry.add(entity);
       this.addText(entity);
@@ -52,11 +54,22 @@ export class TextSystem extends System {
    */
   update(deltaTime, frame) {
     for (const entity of this.registry) {
-      const text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
+      let text
+      if(entity instanceof TextField || entity instanceof TextArea) {
+        text = entity.input.value
+        if(entity == document.activeElement) {
+          entity.updateCursorPosition()
+        } else {
+          //entity.blur()
+        }
+      } else {
+        text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
+      }
       if (entity.textObj.text != text) {
         entity.textObj.text = text.length > 0 ? text : ' ';
         entity.textObj.sync();
       }
+
 
       if (entity.needsUpdate) {
         this.updateStyle(entity);

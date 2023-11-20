@@ -1,24 +1,22 @@
 import { getSelectionRects } from 'troika-three-text';
 import { MRText } from './Text';
-import { Object3D } from 'three';
 
 /**
  *
  */
-export class TextField extends MRText {
-  /**
+export class TextArea extends MRText {
+   /**
    *
    */
-  constructor() {
+   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
   connected(){
-    this.input = document.createElement('input');
-    this.input.setAttribute("type", "text");
+    this.input = document.createElement('textarea');
 
-    let geometry = new THREE.PlaneGeometry(0.0015,0.02)
+    let geometry = new THREE.PlaneGeometry(0.0015, 0.02)
     let material = new THREE.MeshBasicMaterial({
       color: 0x000000,
       side: 2
@@ -31,8 +29,7 @@ export class TextField extends MRText {
     this.cursor.visible = false
 
     document.addEventListener('DOMContentLoaded', (event) => {
-      this.input.setAttribute("value", this.textContent.replace(/(\n)\s+/g, '$1').trim());
-      console.log('textfield',this.textContent.replace(/(\n)\s+/g, '$1').trim());
+      this.input.textContent = this.textContent.replace(/(\n)\s+/g, '$1').trim()
     })
 
     
@@ -43,7 +40,6 @@ export class TextField extends MRText {
 
     this.addEventListener('click', (event) => {
       this.focus()
-      console.log(this.compStyle.caretColor);
     })
   }
 
@@ -72,4 +68,4 @@ export class TextField extends MRText {
   }
 }
 
-customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField);
+customElements.get('mr-textarea') || customElements.define('mr-textarea', TextArea);

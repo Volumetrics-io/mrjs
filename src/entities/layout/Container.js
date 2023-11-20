@@ -40,6 +40,10 @@ export class Container extends LayoutEntity {
     this.parentElement.addEventListener('container-mutated', (event) => {
       this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
     });
+
+    document.addEventListener('wheel', (event) => {
+      this.onScroll(event);
+    });
   }
 
   /**

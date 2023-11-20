@@ -11,7 +11,6 @@ import { TextSystem } from '../component-systems/TextSystem.js';
 import { ControlSystem } from '../component-systems/ControlSystem.js';
 import { RapierPhysicsSystem } from '../component-systems/RapierPhysicsSystem.js';
 import { LayoutSystem } from '../component-systems/LayoutSystem.js';
-import { TextInputSystem } from '../component-systems/TextInputSystem.js';
 import { parseAttributeString, parseVector } from '../utils/parser.js';
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js';
 import { ClippingSystem } from '../component-systems/ClippingSystem';
@@ -84,9 +83,6 @@ export class MRApp extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback);
     this.observer.observe(this, { attributes: true, childList: true });
 
-    this.addEventListener('wheel', (event) => {
-      this.focusEntity?.onScroll(event);
-    });
 
     this.layoutSystem = new LayoutSystem();
     this.styleSystem = new StyleSystem();
@@ -96,7 +92,7 @@ export class MRApp extends MRElement {
       this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
       this.physicsSystem = new RapierPhysicsSystem();
       this.controlSystem = new ControlSystem();
-      this.textInputSystem = new TextInputSystem();
+      //this.textInputSystem = new TextInputSystem();
       this.textSystem = new TextSystem();
 
       this.clippingSystem = new ClippingSystem();
