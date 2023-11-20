@@ -1,6 +1,6 @@
 class AnimationSystem extends System {
     constructor() {
-        super()
+        super();
 
         console.log(this.componentName);
     }
@@ -9,7 +9,7 @@ class AnimationSystem extends System {
         for(const entity of this.registry){
             switch (entity.animation?.type) {
                 case 'rotate':
-                    this.rotate(entity)
+                    this.rotate(entity);
                     break;
             
                 default:
@@ -20,8 +20,8 @@ class AnimationSystem extends System {
 
     attachedComponent(entity, data) {
         console.log(data);
-        entity.animation = data
-        entity.animation.speed = 0
+        entity.animation = data;
+        entity.animation.speed = 0;
     }
 
     updatedComponent(entity, data) {
@@ -34,10 +34,10 @@ class AnimationSystem extends System {
 
     rotate = (entity) => {
         if (Math.abs(entity.animation.speed) < Math.abs(entity.animation.maxspeed)) {
-            entity.animation.speed += parseFloat(entity.animation.acceleration)
+            entity.animation.speed += parseFloat(entity.animation.acceleration);
         }
         entity.object3D.rotation.z += entity.animation.speed;
     }
 }
 
-let animSystem = new AnimationSystem()
+let animSystem = new AnimationSystem();
