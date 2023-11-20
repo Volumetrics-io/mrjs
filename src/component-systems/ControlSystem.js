@@ -49,6 +49,12 @@ export class ControlSystem extends System {
     this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
     this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
     this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
+
+    // app.renderer.xr.getSession().addEventListener('visibilitychange', function(ev) {
+    //   if (ev.session.visibilityState === 'visible-blurred') {
+
+    //   }
+    // });
   }
 
   /**

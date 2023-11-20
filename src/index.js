@@ -27,7 +27,7 @@ import './UI/media/Image';
 // TEXT
 import './UI/Text/Text';
 import './UI/Text/TextField';
-import './UI/Text/TextEditor';
+import './UI/Text/TextArea';
 
 // UI: LAYOUT
 import './entities/layout/Container';
