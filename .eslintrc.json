@@ -7,8 +7,7 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "extends": ["airbnb-base", "plugin:jsdoc/recommended"],
-    // todo - prettierrc.json and eslintrc are fighting just a little bit on some formatting, need to cleanup
+    "extends": ["plugin:jsdoc/recommended"],
     "plugins": ["jsdoc"],
     "rules": {
         "jsdoc/require-jsdoc": [
