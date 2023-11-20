@@ -83,7 +83,6 @@ export class MRApp extends MRElement {
     this.observer = new MutationObserver(this.mutationCallback);
     this.observer.observe(this, { attributes: true, childList: true });
 
-
     this.layoutSystem = new LayoutSystem();
     this.styleSystem = new StyleSystem();
 

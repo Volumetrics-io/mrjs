@@ -30,7 +30,7 @@ export class StyleSystem extends System {
       }
 
       if (entity instanceof MRUIEntity) {
-       entity.updateStyle();
+        entity.updateStyle();
       }
     }
   }

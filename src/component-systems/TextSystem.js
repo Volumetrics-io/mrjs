@@ -54,13 +54,13 @@ export class TextSystem extends System {
    */
   update(deltaTime, frame) {
     for (const entity of this.registry) {
-      let text
-      if(entity instanceof TextField || entity instanceof TextArea) {
-        text = entity.input.value
-        if(entity == document.activeElement) {
-          entity.updateCursorPosition()
+      let text;
+      if (entity instanceof TextField || entity instanceof TextArea) {
+        text = entity.input.value;
+        if (entity == document.activeElement) {
+          entity.updateCursorPosition();
         } else {
-          entity.blur()
+          entity.blur();
         }
       } else {
         text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
@@ -69,7 +69,6 @@ export class TextSystem extends System {
         entity.textObj.text = text.length > 0 ? text : ' ';
         entity.textObj.sync();
       }
-
 
       if (entity.needsUpdate) {
         this.updateStyle(entity);

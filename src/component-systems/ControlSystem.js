@@ -52,7 +52,7 @@ export class ControlSystem extends System {
 
     // app.renderer.xr.getSession().addEventListener('visibilitychange', function(ev) {
     //   if (ev.session.visibilityState === 'visible-blurred') {
-        
+
     //   }
     // });
   }
