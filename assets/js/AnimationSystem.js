@@ -7,9 +7,9 @@ class AnimationSystem extends System {
 
     update(deltaTime, frame) {
         for(const entity of this.registry){
-            switch (entity.component("animation").type) {
+            switch (entity.components.get("animation").type) {
                 case 'rotate':
-                    this.rotate(entity, entity.component("animation"))
+                    this.rotate(entity, entity.components.get("animation"))
                     break;
             
                 default:
@@ -19,7 +19,7 @@ class AnimationSystem extends System {
     }
 
     attachedComponent(entity) {
-        entity.component("animation", { speed: 0 })
+        entity.components.set("animation", { speed: 0 })
     }
 
     detachedComponent(entity) {
@@ -28,7 +28,7 @@ class AnimationSystem extends System {
 
     rotate = (entity, component) => {
         if (Math.abs(component.speed) < Math.abs(component.maxspeed)) {
-            entity.component("animation", { speed: parseFloat(component.speed) + parseFloat(component.acceleration) })
+            entity.components.set("animation", { speed: parseFloat(component.speed) + parseFloat(component.acceleration) })
         }
         entity.object3D.rotation.z += parseFloat(component.speed);
     }

@@ -45,7 +45,7 @@ export function stringifyComponent(componentData) {
 
   for (const [key, value] of Object.entries(componentData)) {
     let stringValue;
-    
+
     if (Array.isArray(value)) {
       // Convert array of numbers to space-separated string
       stringValue = value.join(' ');

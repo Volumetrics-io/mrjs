@@ -14,19 +14,22 @@ export default class Entity extends MRElement {
 
   size = new THREE.Vector3();
 
-  component(name, data = null) {
-    let dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`
-    let component = MRJS.parseComponentString(this.dataset[dataName])
-    if(!data) {
-      return component
-    }
+  components = {
+    get: (name) => {
+      const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+      console.log(this.dataset);
+      return MRJS.parseComponentString(this.dataset[dataName]);
+    },
 
-    for(let key in data) {
-      component[key] = data[key]
-    }
-
-    this.dataset[dataName] = MRJS.stringifyComponent(component)
-  }
+    set: (name, data) => {
+      const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+      const component = MRJS.parseComponentString(this.dataset[dataName]);
+      for (const key in data) {
+        component[key] = data[key];
+      }
+      this.dataset[dataName] = MRJS.stringifyComponent(component);
+    },
+  };
 
   /**
    *
@@ -73,7 +76,6 @@ export default class Entity extends MRElement {
     });
 
     this.object3D = new THREE.Group();
-    this.components = new Set();
     this.object3D.userData.bbox = new THREE.Box3();
     this.object3D.userData.size = new THREE.Vector3();
 
