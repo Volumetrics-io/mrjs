@@ -92,7 +92,6 @@ export class MRApp extends MRElement {
       this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
       this.physicsSystem = new RapierPhysicsSystem();
       this.controlSystem = new ControlSystem();
-      //this.textInputSystem = new TextInputSystem();
       this.textSystem = new TextSystem();
 
       this.clippingSystem = new ClippingSystem();
