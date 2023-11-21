@@ -31,7 +31,14 @@ export class ClippingSystem extends System {
      * @param entity
      */
     onNewEntity(entity) {
-        if (entity.clipping == null) {
+        if (!entity.clipping) {
+            for (const parent of this.registry) {
+                if (parent.contains(entity)) {
+                    entity.object3D.traverse((child) => {
+                        this.applyClipping(child, parent.clipping);
+                    });
+                }
+            }
             return;
         }
         this.registry.add(entity);
