@@ -11,8 +11,10 @@ export class MRImage extends MRUIEntity {
     constructor() {
         super();
         this.geometry = UIPlane(1, 1, 0.0001, 18);
-        this.material = new THREE.MeshBasicMaterial({
+        this.material = new THREE.MeshStandardMaterial({
             side: 0,
+            receiveShadow: true,
+            renderOrder: 3,
         });
         this.object3D = new THREE.Mesh(this.geometry, this.material);
     }
