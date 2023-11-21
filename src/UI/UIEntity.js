@@ -47,7 +47,6 @@ export class MRUIEntity extends Entity {
             roughness: 0.7,
             metalness: 0.0,
             side: 2,
-            colorWriter: false,
         });
 
         this.background = new THREE.Mesh(geometry, material);
