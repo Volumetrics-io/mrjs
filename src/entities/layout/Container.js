@@ -14,6 +14,7 @@ export class Container extends LayoutEntity {
         this.currentPosition = new THREE.Vector3();
         this.prevPosition = new THREE.Vector3();
         this.delta = new THREE.Vector3();
+        this.scrollMax = 1000;
     }
 
     /**
@@ -23,18 +24,22 @@ export class Container extends LayoutEntity {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
         document.addEventListener('DOMContentLoaded', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle, this.object3D).radius - this.height;
         });
 
         window.addEventListener('resize', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle, this.object3D).radius - this.height;
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle, this.object3D).radius - this.height;
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle, this.object3D).radius - this.height;
         });
 
         this.parentElement.addEventListener('container-mutated', (event) => {
@@ -71,7 +76,6 @@ export class Container extends LayoutEntity {
             return;
         }
         event.stopPropagation();
-        const scrollMax = this.contentHeight - this.height;
         const scrollMin = 0;
         this.currentPosition.copy(event.detail.worldPosition);
         this.object3D.worldToLocal(this.currentPosition);
@@ -82,16 +86,15 @@ export class Container extends LayoutEntity {
 
         const delta = this.delta.y * 1.33;
 
-        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax) {
+        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < this.scrollMax) {
             this.shuttle.position.y += delta;
         }
     };
 
     onScroll = (event) => {
-        const scrollMax = this.contentHeight - this.height;
         const scrollMin = 0;
         const delta = event.deltaY * 0.001;
-        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax) {
+        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= this.scrollMax) {
             this.shuttle.position.y += delta;
         }
     };
