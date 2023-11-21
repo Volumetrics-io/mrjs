@@ -228,25 +228,35 @@ function loadGCODE(filePath, scene) {
  */
 async function loadGLTF(filePath) {
     const loader = new GLTFLoader();
-    // loader.load(
-    //     filePath,
-    //     (gltf) =>
-    //         // TODO - look into what that avif and anisotropy versions of loading are
-    //         // compressed, instancing, etc, etc
-
-    //         gltf.scene,
-    //     undefined,
-    //     (error) => {
-    //         console.error(error)
-    //     }
-    // )
-    // return null
 
     return new Promise((resolve, reject) => {
         loader.load(
             filePath,
             (gltf) => {
-                resolve(gltf.scene); // Resolve the promise with the loaded mesh
+                console.log('the gltf object');
+                console.log(gltf);
+
+                // Access all scenes within the loaded GLB file
+                const scenes = gltf.scenes;
+
+                // Loop through each scene in the glTF file
+                scenes.forEach((singleScene, index) => {
+                    // Access and manipulate each individual scene as needed
+                    console.log(`Scene ${index}:`, singleScene);
+
+                    // Display the desired scene, for example, the first one
+                    if (index === 0) {
+                      resolve(singleScene);//scene.add(singleScene); // Add the scene to your main scene
+                    }
+                });
+                
+                // if (children != null) {
+                //     let returning = null;
+                //     loadGLTFChildren(children, returning);
+                //     resolve(returning); // Resolve the promise with the loaded mesh array
+                // } else {
+                    resolve(gltf.scene); // Resolve the promise with the loaded mesh
+                // }
             },
             undefined,
             (error) => {
@@ -428,6 +438,7 @@ export function loadModel(filePath, extension) {
     //   return loadGLTF(filePath);
     // }
     if (extension == 'glb') {
+        console.log('loading + ' + filePath);
         return loadGLTF(filePath);
     }
     // if (extension == 'usdc') {
