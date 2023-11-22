@@ -1,8 +1,13 @@
+/**
+ *
+ */
 class InstancingSystem extends System {
-
     // System that allows for instancing of meshes based on a given
     // entity where the instances can be modified separately.
 
+    /**
+     *
+     */
     constructor() {
         super();
 
@@ -11,11 +16,16 @@ class InstancingSystem extends System {
         this.instancedMesh = null;
     }
 
+    /**
+     *
+     * @param deltaTime
+     * @param frame
+     */
     update(deltaTime, frame) {
-        for(const entity of this.registry){
+        for (const entity of this.registry) {
             switch (entity.components.get('instancing')?.type) {
                 case 'random':
-                    this.random(entity)
+                    this.random(entity);
                     break;
 
                 default:
@@ -24,6 +34,10 @@ class InstancingSystem extends System {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     attachedComponent(entity) {
         // ----- setup for instanced geometry -----
 
@@ -34,7 +48,7 @@ class InstancingSystem extends System {
         if (originalMesh instanceof THREE.Mesh) {
             combinedGeometry = originalMesh.geometry.clone();
         } else if (originalMesh instanceof THREE.Group) {
-            originalMesh.traverse(child => {
+            originalMesh.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
                     const geometry = child.geometry.clone();
                     geometry.applyMatrix4(child.matrixWorld); // Apply the child's world matrix
@@ -73,13 +87,17 @@ class InstancingSystem extends System {
         entity.object3D.add(instancedMesh);
     }
 
-    updatedComponent(entity) {
+    /**
+     *
+     * @param entity
+     */
+    updatedComponent(entity) {}
 
-    }
-
-    detachedComponent(entity) {
-
-    }
+    /**
+     *
+     * @param entity
+     */
+    detachedComponent(entity) {}
 
     random = (entity) => {
         // update mesh for each instance
@@ -92,7 +110,7 @@ class InstancingSystem extends System {
             this.transformations[i].copy(matrix);
             this.instancedMesh.setMatrixAt(i, this.transformations[i]);
         }
-    }
+    };
 }
 
 let instancingSystem = new InstancingSystem();
