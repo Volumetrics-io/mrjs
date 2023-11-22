@@ -1,5 +1,4 @@
 class SkyBox extends Entity {
-
     constructor() {
         super();
     }
@@ -18,7 +17,7 @@ class SkyBox extends Entity {
         let texture = null;
 
         let path = this.getAttribute('pathToTextures');
-        const texture = (!path) ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map(name => path + name));
+        const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));
 
         // scene.background
         this.object3D.background = texture;
