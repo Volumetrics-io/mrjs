@@ -24,6 +24,8 @@ export class MRText extends MRUIEntity {
         this.object3D.add(this.textObj);
         this.editable = false;
 
+        this.textObj.material.receiveShadow = true;
+
         this.needsUpdate = true;
 
         document.addEventListener('container-mutated', () => {

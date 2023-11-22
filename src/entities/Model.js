@@ -16,7 +16,6 @@ export class Model extends Entity {
      *
      */
     get height() {
-        super.height; // TODO - why is this line here?
         return this.contentHeight;
     }
 

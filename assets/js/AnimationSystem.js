@@ -1,15 +1,15 @@
 class AnimationSystem extends System {
     constructor() {
-        super();
+        super()
 
         console.log(this.componentName);
     }
 
     update(deltaTime, frame) {
         for(const entity of this.registry){
-            switch (entity.animation?.type) {
+            switch (entity.components.get("animation").type) {
                 case 'rotate':
-                    this.rotate(entity);
+                    this.rotate(entity, entity.components.get("animation"))
                     break;
             
                 default:
@@ -18,26 +18,20 @@ class AnimationSystem extends System {
         }
     }
 
-    attachedComponent(entity, data) {
-        console.log(data);
-        entity.animation = data;
-        entity.animation.speed = 0;
-    }
-
-    updatedComponent(entity, data) {
-        
+    attachedComponent(entity) {
+        entity.components.set("animation", { speed: 0 })
     }
 
     detachedComponent(entity) {
         
     }
 
-    rotate = (entity) => {
-        if (Math.abs(entity.animation.speed) < Math.abs(entity.animation.maxspeed)) {
-            entity.animation.speed += parseFloat(entity.animation.acceleration);
+    rotate = (entity, component) => {
+        if (Math.abs(component.speed) < Math.abs(component.maxspeed)) {
+            entity.components.set("animation", { speed: parseFloat(component.speed) + parseFloat(component.acceleration) })
         }
-        entity.object3D.rotation.z += entity.animation.speed;
+        entity.object3D.rotation.z += parseFloat(component.speed);
     }
 }
 
-let animSystem = new AnimationSystem();
+let animSystem = new AnimationSystem()

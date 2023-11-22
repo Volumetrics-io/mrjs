@@ -14,6 +14,22 @@ export default class Entity extends MRElement {
 
     size = new THREE.Vector3();
 
+    components = {
+        get: (name) => {
+            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+            return MRJS.parseComponentString(this.dataset[dataName]);
+        },
+
+        set: (name, data) => {
+            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+            const component = MRJS.parseComponentString(this.dataset[dataName]);
+            for (const key in data) {
+                component[key] = data[key];
+            }
+            this.dataset[dataName] = MRJS.stringifyComponent(component);
+        },
+    };
+
     /**
      *
      */
@@ -59,7 +75,6 @@ export default class Entity extends MRElement {
         });
 
         this.object3D = new THREE.Group();
-        this.components = new Set();
         this.object3D.userData.bbox = new THREE.Box3();
         this.object3D.userData.size = new THREE.Vector3();
 
@@ -123,7 +138,7 @@ export default class Entity extends MRElement {
 
         this.mutationCallback = this.mutationCallback.bind(this);
         this.observer = new MutationObserver(this.mutationCallback);
-        this.observer.observe(this, { attributes: true, childList: true });
+        this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
@@ -159,22 +174,24 @@ export default class Entity extends MRElement {
      *
      */
     loadAttributes() {
-        this.components = new Set();
-        for (const attr of this.attributes) {
-            switch (attr.name.split('-')[0]) {
-                case 'comp':
-                    this.componentMutated(attr.name);
-                    break;
-                case 'rotation':
-                    this.object3D.rotation.fromArray(parseDegVector(attr.value));
-                    break;
-                case 'position':
-                    this.object3D.position.fromArray(parseVector(attr.value));
-                    break;
-                case 'layer':
-                    this.layer = parseFloat(attr.value);
-                    this.object3D.layers.set(this.layer);
-                    break;
+        for (const attr in this.dataset) {
+            if (attr.includes('comp')) {
+                const compName = attr.split('comp')[1].toLocaleLowerCase();
+                this.dispatchEvent(
+                    new CustomEvent(`${attr}-attached`, {
+                        bubbles: true,
+                        detail: { entity: this },
+                    })
+                );
+            } else {
+                switch (attr) {
+                    case 'rotation':
+                        this.object3D.rotation.fromArray(parseDegVector(this.dataset.rotation));
+                        break;
+                    case 'position':
+                        this.object3D.position.fromArray(parseVector(this.dataset.position));
+                        break;
+                }
             }
         }
     }
@@ -226,18 +243,15 @@ export default class Entity extends MRElement {
                 case 'childList':
                     break;
                 case 'attributes':
-                    if (mutation.attributeName.startsWith('comp-')) {
-                        this.componentMutated(mutation.attributeName);
+                    if (mutation.attributeName.includes('comp')) {
+                        this.componentMutated(mutation);
                     }
                     switch (mutation.attributeName) {
-                        case 'position':
-                            this.object3D.position.fromArray(parseVector(this.getAttribute('position')));
+                        case 'data-position':
+                            this.object3D.position.fromArray(parseVector(this.dataset.position));
                             break;
-                        case 'scale':
-                            this.object3D.scale.setScalar(parseFloat(this.getAttribute('scale')));
-                            break;
-                        case 'rotation':
-                            this.object3D.rotation.fromArray(parseDegVector(this.getAttribute('rotation')));
+                        case 'data-rotation':
+                            this.object3D.rotation.fromArray(parseDegVector(this.dataset.rotation));
                             break;
 
                         default:
@@ -248,41 +262,36 @@ export default class Entity extends MRElement {
                 default:
                     break;
             }
-
-            if (mutation.type != 'attributes') {
-                continue;
-            }
         }
     }
 
     /**
      *
-     * @param componentName
+     * @param mutation
      */
-    componentMutated(componentName) {
-        const component = this.getAttribute(componentName);
-        if (!component) {
-            this.components.delete(componentName);
+    componentMutated(mutation) {
+        const compName = mutation.attributeName.split('comp-')[1];
+        const dataName = `comp${compName[0].toUpperCase()}${compName.slice(1)}`;
+        if (!this.dataset[dataName]) {
             this.dispatchEvent(
-                new CustomEvent(`${componentName}-detached`, {
+                new CustomEvent(`${dataName}-detached`, {
                     bubbles: true,
-                    detail: { entity: this, component },
+                    detail: { entity: this, oldData },
                 })
             );
-        } else if (!this.components.has(componentName)) {
-            this.components.add(componentName);
+        } else if (mutation.oldValue) {
             this.dispatchEvent(
-                new CustomEvent(`${componentName}-attached`, {
+                new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { entity: this, component },
+                    detail: { entity: this, oldData: MRJS.parseComponentString(mutation.oldValue) },
                 })
             );
         } else {
             this.dispatchEvent(
-                new CustomEvent(`${componentName}-updated`, {
+                new CustomEvent(`${dataName}-attached`, {
                     bubbles: true,
                     detail: this,
-                    detail: { entity: this, component },
+                    detail: { entity: this },
                 })
             );
         }
