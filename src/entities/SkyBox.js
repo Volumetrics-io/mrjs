@@ -2,23 +2,28 @@ class SkyBox extends Entity {
 
     constructor() {
         super();
-
-        const textureLoader = setLoaderType(this.data.loaderType);
-        const texture = textureLoader.load([this.data.texture);
-
-        // todo - what counts as scene in this case? entity? but that's specific to an object in the scene
-        scene.background = texture;
     }
 
-    function setLoaderType(type) {
-        switch this.data.type {
-        case 'sphere':
-            return new THREE.SphereTextureLoader();
-        case 'cube':
-            return new THREE.CubeTextureLoader();
-        default:
-            console.error('undefined type for skybox texture');
+    /**
+     *
+     */
+    connected() {
+        this.texturesList = this.getAttribute('textures');
+        if (!this.texturesList) {
             return;
+        }
+
+        const textureLoader = THREE.CubeTextureLoader();
+        const textureNames = texturesList.split(',');
+        let texture = null;
+
+        let path = this.getAttribute('pathToTextures');
+        const texture = (!path) ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map(name => path + name));
+
+        // scene.background
+        this.object3D.background = texture;
     }
+
+    onLoad = () => {};
 }
 customElements.define('mr-skybox', SkyBox);
