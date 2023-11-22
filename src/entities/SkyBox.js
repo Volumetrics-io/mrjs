@@ -7,6 +7,10 @@ class SkyBox extends Entity {
      *
      */
     connected() {
+        // you can have texturesList be all individual textures
+        // or you can store them in a specified path and just
+        // load them up solely by filename in that path.
+        
         this.texturesList = this.getAttribute('textures');
         if (!this.texturesList) {
             return;
