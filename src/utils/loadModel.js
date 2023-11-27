@@ -1,13 +1,14 @@
 import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
+import { ColladaLoader }    from 'three/addons/loaders/ColladaLoader.js';
+import { FBXLoader }        from 'three/addons/loaders/FBXLoader.js';
+import { GLTFLoader }       from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { STLLoader }        from 'three/examples/jsm/loaders/STLLoader.js';
+import { USDZLoader }       from 'three/examples/jsm/loaders/USDZLoader.js';
 
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
-// import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
 // import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-// import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
 // import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js';
 // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // // import { IFCLoader }        from 'web-ifc-three';
@@ -140,28 +141,29 @@ function loadBVH(filePath, scene) {
     } );
     return true;
 }
+*/
 
 // Loads Collada file
-// @param loadingManager - optional - User your own THREE.LoadingManager, otherwise defaults to
-// simplest loading manager with empty constructor.
-function loadDAE(filePath, scene, loadingManager) {
-    if (loadingManager == undefined) {
-        loadingManager = new THREE.LoadingManager();
-    }
-    const loader = new ColladaLoader( loadingManager );
+function loadDAE(filePath) {
 
-    // TODO - look into adding joints // kinematics setup sometimes used in this one
-    // TODO - look into skinning version as well
+    const loader = new ColladaLoader();
 
-    loader.load( filePath, function ( collada ) {
-        scene.add(collada.scene);
-    }, undefined, function ( error ) {
-        console.error( error );
-        return false;
-    } );
-    return true;
+    return new Promise((resolve, reject) => {
+        loader.load(
+            filePath,
+            (dae) => {
+                resolve(dae.scene);
+            },
+            undefined,
+            (error) => {
+                console.error(error);
+                reject(error);
+            }
+        );
+    });
 }
 
+/*
 // Loads Draco file
 // @param decoderConfig - required - example: 'js'
 // @param libraryPath - optional - default is 'jsm/libs/draco/'. If not using the
@@ -191,22 +193,28 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
 
     return true;
 }
+*/
 
 // Loads fbx file
-function loadFBX(filePath, scene) {
+function loadFBX(filePath) {
     const loader = new FBXLoader();
-    loader.load( filePath, function ( object ) {
 
-        // TODO - add a way to load with nurbs
-
-        scene.add( object );
-    }, undefined, function ( error ) {
-        console.error( error );
-        return false;
-    } );
-    return true;
+    return new Promise((resolve, reject) => {
+        loader.load(
+            filePath,
+            (fbx) => {
+                resolve(fbx);
+            },
+            undefined,
+            (error) => {
+                console.error(error);
+                reject(error);
+            }
+        );
+    });
 }
 
+/*
 // Loads gcode file
 function loadGCODE(filePath, scene) {
     const loader = new GCodeLoader();
@@ -228,30 +236,17 @@ function loadGCODE(filePath, scene) {
  */
 async function loadGLTF(filePath) {
     const loader = new GLTFLoader();
-    // loader.load(
-    //     filePath,
-    //     (gltf) =>
-    //         // TODO - look into what that avif and anisotropy versions of loading are
-    //         // compressed, instancing, etc, etc
-
-    //         gltf.scene,
-    //     undefined,
-    //     (error) => {
-    //         console.error(error)
-    //     }
-    // )
-    // return null
 
     return new Promise((resolve, reject) => {
         loader.load(
             filePath,
             (gltf) => {
-                resolve(gltf.scene); // Resolve the promise with the loaded mesh
+                resolve(gltf.scene);
             },
             undefined,
             (error) => {
                 console.error(error);
-                reject(error); // Reject the promise if there's an error
+                reject(error);
             }
         );
     });
@@ -421,14 +416,18 @@ export function loadModel(filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
 
-    if (extension == 'stl') {
-        return loadSTL(filePath);
-    }
-    // if (extension == 'gltf') {
+    // if (extension == 'gltf') { // - need to be able to have additional filepaths
     //   return loadGLTF(filePath);
     // }
-    if (extension == 'glb') {
+    // if (extension == 'dae') {
+    //     return loadDAE(filePath);
+    // } else
+    if (extension == 'fbx') {
+        return loadFBX(filePath);
+    } else if (extension == 'glb') {
         return loadGLTF(filePath);
+    } else if (extension == 'stl') {
+        return loadSTL(filePath);
     }
     // if (extension == 'usdc') {
     //   return loadUSDZ(filePath);
