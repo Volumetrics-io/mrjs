@@ -11,7 +11,7 @@ class SkyBox extends Entity {
         // or you can store them in a specified path and just
         // load them up solely by filename in that path.
         
-        this.texturesList = this.getAttribute('textures');
+        this.src = this.getAttribute('src');
         if (!this.texturesList) {
             return;
         }
