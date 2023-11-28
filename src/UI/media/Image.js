@@ -9,7 +9,6 @@ export class MRImage extends MRUIEntity {
      *
      */
     constructor() {
-        console.log('constructed mr image');
         super();
         this.geometry = UIPlane(1, 1, 0.0001, 18);
         this.material = new THREE.MeshStandardMaterial({
