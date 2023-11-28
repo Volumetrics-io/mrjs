@@ -24,6 +24,8 @@ class SkyBox extends Entity {
 
         // scene.background
         this.object3D.background = texture;
+        // css background
+        this.compStyle.background = texture;
     }
 
     onLoad = () => {};
