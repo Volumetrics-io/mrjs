@@ -33,7 +33,7 @@ export class Row extends LayoutEntity {
             if (!(child instanceof Column)) {
                 continue;
             }
-
+ 
             this.accumulatedX += this.pxToThree(child.compStyle.marginLeft);
             child.object3D.position.setX(this.accumulatedX + child.width / 2);
             this.accumulatedX += child.width;
