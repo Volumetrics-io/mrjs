@@ -7,7 +7,7 @@ An extendable WebComponents library for the Spatial Web
 ## Overview
 
 MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
-
+ 
 ## Getting started
  
 CDN:

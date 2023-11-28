@@ -18,3 +18,9 @@ test('checkLoadModel - glb', async () => {
         await loadModel(`${MODELS_URL}logo.glb`, 'glb');
       }).not.toThrow();
 });
+
+test('checkLoadModel - fbx', async () => {
+    await expect(async () => {
+        await loadModel(`${MODELS_URL}logo.fbx`, 'fbx');
+      }).not.toThrow();
+});
