@@ -24,14 +24,9 @@ export class MRImage extends MRUIEntity {
      *
      */
     connected() {
-        console.log('in mr image');
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
         this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
-        console.log('object3d exists as : ');
-        console.log(this.object3D);
         this.texture = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
-            console.log('texture was created as: ');
-            console.log(texture);
             switch (this.compStyle.objectFit) {
                 case 'cover':
                     this.cover(texture, this.width / this.height);
@@ -42,9 +37,6 @@ export class MRImage extends MRUIEntity {
             }
         });
         this.object3D.material.map = this.texture;
-        console.log('object 3d map now exists as: ');
-        console.log(this.object3D.material);
-        console.log(this.object3D.material.map);
     }
 
     /**
