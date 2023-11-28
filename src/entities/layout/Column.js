@@ -28,7 +28,7 @@ export class Column extends LayoutEntity {
             // this.accumulatedY -= this.pxToThree(child.compStyle.marginTop);
             child.object3D.position.setY(this.accumulatedY - child.height / 2);
             this.accumulatedY -= child.height;
-            this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom);
+            // this.accumulatedY -= this.pxToThree(child.compStyle.marginBottom);
         }
         this.accumulatedY -= this.pxToThree(this.compStyle.paddingBottom);
         this.shuttle.position.setY(this.parentElement.height / 2);
