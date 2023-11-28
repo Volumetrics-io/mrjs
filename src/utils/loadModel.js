@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
@@ -142,6 +144,7 @@ function loadBVH(filePath, scene) {
 }
 
 // Loads Collada file
+<<<<<<< Updated upstream
 // @param loadingManager - optional - User your own THREE.LoadingManager, otherwise defaults to
 // simplest loading manager with empty constructor.
 function loadDAE(filePath, scene, loadingManager) {
@@ -152,6 +155,14 @@ function loadDAE(filePath, scene, loadingManager) {
 
     // TODO - look into adding joints // kinematics setup sometimes used in this one
     // TODO - look into skinning version as well
+=======
+/**
+ *
+ * @param filePath
+ */
+function loadDAE(filePath) {
+    const loader = new ColladaLoader();
+>>>>>>> Stashed changes
 
     loader.load( filePath, function ( collada ) {
         scene.add(collada.scene);
@@ -193,7 +204,15 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
 }
 
 // Loads fbx file
+<<<<<<< Updated upstream
 function loadFBX(filePath, scene) {
+=======
+/**
+ *
+ * @param filePath
+ */
+function loadFBX(filePath) {
+>>>>>>> Stashed changes
     const loader = new FBXLoader();
     loader.load( filePath, function ( object ) {
 
