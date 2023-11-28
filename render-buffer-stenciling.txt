@@ -1,0 +1,45 @@
+// Initialize Three.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Create the objects
+const maskGeometry = new THREE.BoxGeometry(2, 2, 2);
+const maskMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const maskObject = new THREE.Mesh(maskGeometry, maskMaterial);
+scene.add(maskObject);
+
+const cubeGeometry = new THREE.BoxGeometry(3, 3, 3);
+const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, stencilWrite: true, stencilRef: 0, stencilFunc: THREE.EqualStencilFunc, stencilFail: THREE.ReplaceStencilOp, stencilZFail: THREE.ReplaceStencilOp, stencilZPass: THREE.ReplaceStencilOp });
+const cubeObject = new THREE.Mesh(cubeGeometry, cubeMaterial);
+scene.add(cubeObject);
+
+// Set up render targets
+const renderTargetMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+const renderTargetObject = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+
+// Configure materials
+maskMaterial.stencilWrite = true;
+maskMaterial.stencilRef = 1;
+maskMaterial.stencilFunc = THREE.AlwaysStencilFunc;
+maskMaterial.stencilFail = THREE.ReplaceStencilOp;
+maskMaterial.stencilZFail = THREE.ReplaceStencilOp;
+maskMaterial.stencilZPass = THREE.ReplaceStencilOp;
+
+cubeMaterial.stencilWrite = true;
+cubeMaterial.stencilRef = 1;
+cubeMaterial.stencilFunc = THREE.EqualStencilFunc;
+cubeMaterial.stencilFail = THREE.KeepStencilOp;
+cubeMaterial.stencilZFail = THREE.KeepStencilOp;
+cubeMaterial.stencilZPass = THREE.KeepStencilOp;
+
+// Render passes
+renderer.setRenderTarget(renderTargetMask);
+renderer.clear();
+renderer.render(scene, camera);
+
+renderer.setRenderTarget(renderTargetObject);
+renderer.clear();
+renderer.render(scene, camera);
