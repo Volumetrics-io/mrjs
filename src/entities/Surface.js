@@ -40,7 +40,11 @@ export class Surface extends Entity {
 
         this.placed = false;
 
-        this.material = new THREE.MeshStandardMaterial({
+        // TODO - can combine viz and stencil or nah?
+
+        // TODO - is it okay to switch this to let instead of this?
+        // i dont see it being used anywhere else and safer for uppdating
+        let vizMaterial = new THREE.MeshStandardMaterial({
             color: 0x3498db,
             roughness: 0.0,
             metalness: 0.7,
@@ -48,17 +52,36 @@ export class Surface extends Entity {
             opacity: 0.7,
             side: 2,
         });
+        objectMaterial.stencilWrite = true;
+        objectMaterial.stencilRef = 1;
+        objectMaterial.stencilFunc = THREE.EqualStencilFunc;
+        objectMaterial.stencilFail = THREE.KeepStencilOp;
+        objectMaterial.stencilZFail = THREE.KeepStencilOp;
+        objectMaterial.stencilZPass = THREE.KeepStencilOp;
+
+        let maskMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        maskMaterial.stencilWrite = true;
+        maskMaterial.stencilRef = 1;
+        maskMaterial.stencilFunc = THREE.AlwaysStencilFunc;
+        maskMaterial.stencilFail = THREE.ReplaceStencilOp;
+        maskMaterial.stencilZFail = THREE.ReplaceStencilOp;
+        maskMaterial.stencilZPass = THREE.ReplaceStencilOp;
 
         this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
 
         this.viz = new THREE.Mesh(this.geometry, this.material);
+        this.mask = new THREE.Mesh(this.geometry, maskMaterial);
 
+        // TODO - what is happening in the below - does stencil/mask need to be included?
+        // are these just included debug items with vis?
         this.translation.add(this.group);
         if (this.viz.parent == null) {
             this.translation.add(this.viz);
+            this.translation.add(this.mask);
         }
         this.group.visible = true;
         this.viz.visible = false;
+        this.mask.visible = false; // TODO - check on this.
     }
 
     /**
@@ -97,6 +120,8 @@ export class Surface extends Entity {
      */
     place() {
         this.viz.removeFromParent();
+        this.mask.removeFromParent();
+
         this.group.visible = true;
         this.placed = true;
 

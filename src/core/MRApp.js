@@ -95,6 +95,7 @@ export class MRApp extends MRElement {
             this.textSystem = new TextSystem();
 
             this.clippingSystem = new ClippingSystem();
+            this.stencilSystem = new StencilSystem();
         });
     }
 
@@ -251,7 +252,7 @@ export class MRApp extends MRElement {
 
         this.forward.position.setZ(-0.5);
 
-        // for widnow placement
+        // for window placement
         this.anchor = new THREE.Object3D();
         this.user.add(this.anchor);
 

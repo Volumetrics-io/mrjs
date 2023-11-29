@@ -46,4 +46,4 @@ renderer.render(scene, camera);
 
 --------------
 
-also going to be adding a 'stencil=true' based on mr-container feature as an option on UI Entity items
+also going to be adding a 'stencil=false' with default as true based on mr-container feature as an option on UI Entity items
