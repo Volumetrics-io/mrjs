@@ -97,7 +97,7 @@ export class MRApp extends MRElement {
             // these must be the last two systems since 
             // they affect rendering.
             this.clippingSystem = new ClippingSystem();
-            this.maskingSystem = new MaskingSystem();
+            // this.maskingSystem = new MaskingSystem();
         });
     }
 
