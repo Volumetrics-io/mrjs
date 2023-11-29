@@ -52,38 +52,47 @@ export class Surface extends Entity {
             opacity: 0.7,
             side: 2,
         });
-        objectMaterial.stencilWrite = true;
-        objectMaterial.stencilRef = 1;
-        objectMaterial.stencilFunc = THREE.EqualStencilFunc;
-        objectMaterial.stencilFail = THREE.KeepStencilOp;
-        objectMaterial.stencilZFail = THREE.KeepStencilOp;
-        objectMaterial.stencilZPass = THREE.KeepStencilOp;
-
-        let maskMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-        maskMaterial.stencilWrite = true;
-        maskMaterial.stencilRef = 1;
-        maskMaterial.stencilFunc = THREE.AlwaysStencilFunc;
-        maskMaterial.stencilFail = THREE.ReplaceStencilOp;
-        maskMaterial.stencilZFail = THREE.ReplaceStencilOp;
-        maskMaterial.stencilZPass = THREE.ReplaceStencilOp;
 
         // TODO - is it okay to switch this to let instead of this?
         // i dont see it being used anywhere else and safer for uppdating
         let geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
 
         this.viz = new THREE.Mesh(geometry, objectMaterial);
-        this.mask = new THREE.Mesh(geometry, maskMaterial);
 
         // TODO - what is happening in the below - does stencil/mask need to be included?
         // are these just included debug items with vis?
         this.translation.add(this.group);
         if (this.viz.parent == null) {
             this.translation.add(this.viz);
-            this.translation.add(this.mask);
         }
         this.group.visible = true;
         this.viz.visible = false;
-        this.mask.visible = false; // TODO - check on this.
+
+        this.stencilMeshes=[this.viz];
+        this.maskedMeshes=this.group;
+
+        // Use stencil operation for each stencil object
+        stencilMeshes.forEach((stencilMesh, index) => {
+            stencilMesh.renderOrder = index + 1;
+            stencilMesh.onBeforeRender = function (renderer) {
+                renderer.clearStencil();
+                renderer.clearDepth();
+                renderer.state.buffers.stencil.setTest(true);
+                renderer.state.buffers.stencil.setOp(THREE.StencilOp.REPLACE, THREE.StencilOp.REPLACE, THREE.StencilOp.REPLACE);
+                renderer.state.buffers.stencil.setFunc(THREE.AlwaysStencilFunc, index + 1, 0xff);
+            };
+        });
+
+        // Apply stencil masking to each masked object - this will include all objects that we want to be viewed as if theyre 'on the screen directly'
+        maskedMeshes.forEach((maskedMesh) => {
+            maskedMesh.renderOrder = stencilMeshes.length + 1;
+            maskedMesh.onBeforeRender = function (renderer) {
+                renderer.state.buffers.stencil.setOp(THREE.KeepStencilOp, THREE.KeepStencilOp, THREE.KeepStencilOp);
+                stencilMeshes.forEach((stencilMesh, index) => {
+                    renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, index + 1, 0xff);
+                });
+            };
+        });
     }
 
     /**

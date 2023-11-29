@@ -9,11 +9,6 @@ export class MaskingSystem extends System {
      */
     constructor() {
         super(false);
-        // todo
-
-const renderTargetMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-const renderTargetObject = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        this.renderer thingy 
     }
 
     /**
@@ -22,17 +17,31 @@ const renderTargetObject = new THREE.WebGLRenderTarget(window.innerWidth, window
      * @param frame
      */
     update(deltaTime, frame) {
-        // perform double first render pass for the connected material
+        // todo - figure out where this goes
 
-        // Render passes
-        renderer.setRenderTarget(renderTargetMask);
-        renderer.clear();
-        renderer.render(scene, camera);
+        // Use stencil operation for each stencil object
+        stencilMeshes.forEach((stencilMesh, index) => {
+            stencilMesh.renderOrder = index + 1;
+            stencilMesh.onBeforeRender = function (renderer) {
+                renderer.clearStencil();
+                renderer.clearDepth();
+                renderer.state.buffers.stencil.setTest(true);
+                renderer.state.buffers.stencil.setOp(THREE.StencilOp.REPLACE, THREE.StencilOp.REPLACE, THREE.StencilOp.REPLACE);
+                renderer.state.buffers.stencil.setFunc(THREE.AlwaysStencilFunc, index + 1, 0xff);
+            };
+        });
 
-        // switch back
-        renderer.setRenderTarget(renderTargetObject);
-        renderer.clear();
-        // renderer.render(scene, camera); - this step will be done in the actual render loop
+        // Apply stencil masking to each masked object - this will include all objects that we want to be viewed as if theyre 'on the screen directly'
+        maskedMeshes.forEach((maskedMesh) => {
+            maskedMesh.renderOrder = stencilMeshes.length + 1;
+            maskedMesh.onBeforeRender = function (renderer) {
+                renderer.state.buffers.stencil.setOp(THREE.KeepStencilOp, THREE.KeepStencilOp, THREE.KeepStencilOp);
+                stencilMeshes.forEach((stencilMesh, index) => {
+                    renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, index + 1, 0xff);
+                });
+            };
+        });
+
     }
 
     /**
@@ -40,21 +49,7 @@ const renderTargetObject = new THREE.WebGLRenderTarget(window.innerWidth, window
      * @param entity
      */
     onNewEntity(entity) {
-        if (!entity.masking) {
-            for (const parent of this.registry) {
-                if (parent.contains(entity)) {
-                    entity.object3D.traverse((child) => {
-                        this.applyMasking(child, parent.masking);
-                    });
-                }
-            }
-            return;
-        }
-        this.registry.add(entity);
-        this.addMasking(entity);
-        entity.object3D.traverse((child) => {
-            this.applyMasking(child, entity.masking);
-        });
+        // todo?
     }
 
     /**
