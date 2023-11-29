@@ -7,12 +7,12 @@ An extendable WebComponents library for the Spatial Web
 ## Overview
 
 MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
-
+ 
 ## Getting started
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/build.js"></script>
+`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/mr.js"></script>
 `
 
 NPM:
@@ -54,7 +54,7 @@ Both options require you generate an ssl certificate & key via openssl:
                 This is a quick example of an image gallery with explainer text.
             </mr-text>
             <mr-column>
-                <mr-image src="..."></mr-image>
+                <mr-img src="..."></mr-img>
                 <mr-row height="0.02">
                     <mr-button onClick="Prev()"> <- </mr-button>
                     <mr-button onClick="Next()"> -> </mr-button>

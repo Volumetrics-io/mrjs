@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { ColladaLoader }    from 'three/addons/loaders/ColladaLoader.js';
-import { FBXLoader }        from 'three/addons/loaders/FBXLoader.js';
-import { GLTFLoader }       from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { STLLoader }        from 'three/examples/jsm/loaders/STLLoader.js';
-import { USDZLoader }       from 'three/examples/jsm/loaders/USDZLoader.js';
+import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
@@ -144,8 +144,11 @@ function loadBVH(filePath, scene) {
 */
 
 // Loads Collada file
+/**
+ *
+ * @param filePath
+ */
 function loadDAE(filePath) {
-
     const loader = new ColladaLoader();
 
     return new Promise((resolve, reject) => {
@@ -196,6 +199,10 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
 */
 
 // Loads fbx file
+/**
+ *
+ * @param filePath
+ */
 function loadFBX(filePath) {
     const loader = new FBXLoader();
 
