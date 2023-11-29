@@ -20,6 +20,7 @@ export class Container extends LayoutEntity {
      *
      */
     connected() {
+        // TODO - why is the clipping geometry here instead of in Surface?
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
         document.addEventListener('DOMContentLoaded', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));

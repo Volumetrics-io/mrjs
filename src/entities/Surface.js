@@ -67,10 +67,12 @@ export class Surface extends Entity {
         maskMaterial.stencilZFail = THREE.ReplaceStencilOp;
         maskMaterial.stencilZPass = THREE.ReplaceStencilOp;
 
-        this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
+        // TODO - is it okay to switch this to let instead of this?
+        // i dont see it being used anywhere else and safer for uppdating
+        let geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
 
-        this.viz = new THREE.Mesh(this.geometry, this.material);
-        this.mask = new THREE.Mesh(this.geometry, maskMaterial);
+        this.viz = new THREE.Mesh(geometry, objectMaterial);
+        this.mask = new THREE.Mesh(geometry, maskMaterial);
 
         // TODO - what is happening in the below - does stencil/mask need to be included?
         // are these just included debug items with vis?

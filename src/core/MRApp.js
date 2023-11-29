@@ -55,7 +55,7 @@ export class MRApp extends MRElement {
         this.focusEntity = null;
 
         this.clock = new THREE.Clock();
-        this.systems = new Set();
+        this.systems = new Array(); // needs to be array as order will matter
         this.scene = new THREE.Scene();
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -94,8 +94,10 @@ export class MRApp extends MRElement {
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
 
+            // these must be the last two systems since 
+            // they affect rendering.
             this.clippingSystem = new ClippingSystem();
-            this.stencilSystem = new StencilSystem();
+            this.maskingSystem = new MaskingSystem();
         });
     }
 
