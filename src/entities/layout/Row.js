@@ -35,9 +35,8 @@ export class Row extends LayoutEntity {
             }
 
             this.accumulatedX += this.pxToThree(child.compStyle.marginLeft);
-            let width = child.width != this.width ? child.width : child.width / this.children.length;
-            child.object3D.position.setX(this.accumulatedX + width / 2);
-            this.accumulatedX += width;
+            child.object3D.position.setX(this.accumulatedX + child.width / 2);
+            this.accumulatedX += child.width / this.children.length;
             this.accumulatedX += this.pxToThree(child.compStyle.marginRight);
         }
         this.accumulatedX += this.pxToThree(this.compStyle.paddingRight);
