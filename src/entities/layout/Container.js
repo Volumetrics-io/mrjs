@@ -27,28 +27,27 @@ export class Container extends LayoutEntity {
 
             // TODO: fix this, it's a hack until we figure out where to fire off a final "app loaded" event
             setTimeout(() => {
-                this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height
-            }, 1000)
+                this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            }, 1000);
         });
 
         window.addEventListener('resize', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('container-mutated', (event) => {
             this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
-
         });
 
         document.addEventListener('wheel', (event) => {
@@ -98,11 +97,10 @@ export class Container extends LayoutEntity {
 
     onScroll = (event) => {
         const scrollMin = 0;
-        let delta = this.shuttle.position.y + (event.deltaY * 0.001);
+        let delta = this.shuttle.position.y + event.deltaY * 0.001;
         if (delta > scrollMin && delta <= this.scrollMax) {
             this.shuttle.position.y = delta;
         }
-
     };
 }
 
