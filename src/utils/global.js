@@ -75,6 +75,9 @@ export function computeBoundingSphere(group, relativeTo = null) {
 
     if (relativeTo) {
         sphere.applyMatrix4(relativeTo.matrixWorld);
+    } else {
+        sphere.applyMatrix4(group.matrixWorld);
+
     }
 
     return sphere;
