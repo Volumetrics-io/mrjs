@@ -14,6 +14,7 @@ export class Container extends LayoutEntity {
         this.currentPosition = new THREE.Vector3();
         this.prevPosition = new THREE.Vector3();
         this.delta = new THREE.Vector3();
+        this.scrollMax = 1000;
     }
 
     /**
@@ -21,20 +22,28 @@ export class Container extends LayoutEntity {
      */
     connected() {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
-        document.addEventListener('DOMContentLoaded', (event) => {
+        window.addEventListener('load', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+
+            // TODO: fix this, it's a hack until we figure out where to fire off a final "app loaded" event
+            setTimeout(() => {
+                this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            }, 1000);
         });
 
         window.addEventListener('resize', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('container-mutated', (event) => {
@@ -71,7 +80,6 @@ export class Container extends LayoutEntity {
             return;
         }
         event.stopPropagation();
-        const scrollMax = this.contentHeight - this.height;
         const scrollMin = 0;
         this.currentPosition.copy(event.detail.worldPosition);
         this.object3D.worldToLocal(this.currentPosition);
@@ -80,19 +88,18 @@ export class Container extends LayoutEntity {
         }
         this.prevPosition.copy(this.currentPosition);
 
-        const delta = this.delta.y * 1.33;
+        const delta = this.shuttle.position.y + this.delta.y * 1.33;
 
-        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta < scrollMax) {
-            this.shuttle.position.y += delta;
+        if (delta > scrollMin && delta < this.scrollMax) {
+            this.shuttle.position.y = delta;
         }
     };
 
     onScroll = (event) => {
-        const scrollMax = this.contentHeight - this.height;
         const scrollMin = 0;
-        const delta = event.deltaY * 0.001;
-        if (this.shuttle.position.y + delta > scrollMin && this.shuttle.position.y + delta <= scrollMax) {
-            this.shuttle.position.y += delta;
+        let delta = this.shuttle.position.y + event.deltaY * 0.001;
+        if (delta > scrollMin && delta <= this.scrollMax) {
+            this.shuttle.position.y = delta;
         }
     };
 }

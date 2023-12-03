@@ -11,8 +11,7 @@ export class MRText extends MRUIEntity {
      */
     get height() {
         super.height;
-        this.aabb.setFromObject(this.textObj).getSize(this.size);
-        return this.size.y;
+        return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
     }
 
     /**
