@@ -45,7 +45,7 @@ Both options require you generate an ssl certificate & key via openssl:
 ## General Starting CSS
 
 *For now there is some needed initial css for readability of the following feature examples*
-*Play around with the options as you get more used to the 3D html setup*
+*Play around with the options as you get more used to the 2D/3D html setup*
 
 ```css
 * {
