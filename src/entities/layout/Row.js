@@ -6,6 +6,12 @@ import { LayoutEntity } from './LayoutEntity';
  *
  */
 export class Row extends LayoutEntity {
+
+    maxChildHeight = 0
+
+    get height() {
+        return this.maxChildHeight > 0 ? this.maxChildHeight : super.height
+    }
     /**
      *
      */
@@ -30,14 +36,13 @@ export class Row extends LayoutEntity {
         this.accumulatedX = this.pxToThree(this.compStyle.paddingLeft);
         for (const index in children) {
             const child = children[index];
-            if (!(child instanceof Column)) {
-                continue;
-            }
 
             this.accumulatedX += this.pxToThree(child.compStyle.marginLeft);
             child.object3D.position.setX(this.accumulatedX + child.width / 2);
             this.accumulatedX += child.width;
             this.accumulatedX += this.pxToThree(child.compStyle.marginRight);
+
+            this.maxChildHeight = child.height > this.maxChildHeight ? child.height : this.maxChildHeight
         }
         this.accumulatedX += this.pxToThree(this.compStyle.paddingRight);
 
