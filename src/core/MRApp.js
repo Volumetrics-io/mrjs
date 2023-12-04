@@ -34,8 +34,9 @@ window.mobileCheck = function () {
     return check;
 };
 
+// TODO - to complete descriptions.
 /**
- *
+ * The engine handler for running MRjs as an App.
  */
 export class MRApp extends MRElement {
     /**

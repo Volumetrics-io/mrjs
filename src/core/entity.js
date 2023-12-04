@@ -2,17 +2,22 @@ import * as THREE from 'three';
 import { parseDegVector, parseVector } from '../utils/parser.js';
 import { MRElement } from './MRElement.js';
 
+// TODO - we should rename this to MREntity
+
 /**
  *
  */
 export default class Entity extends MRElement {
-    physics = {
-        type: 'none',
-    };
 
     aabb = new THREE.Box3();
 
     size = new THREE.Vector3();
+
+    layer = 0;
+
+    physics = {
+        type: 'none',
+    };
 
     components = {
         get: (name) => {
@@ -29,6 +34,33 @@ export default class Entity extends MRElement {
             this.dataset[dataName] = MRJS.stringifyComponent(component);
         },
     };
+
+    /**
+     *
+     */
+    constructor() {
+        super();
+
+        Object.defineProperty(this, 'isApp', {
+            value: false,
+            writable: false,
+        });
+
+        this.object3D = new THREE.Group();
+        this.object3D.userData.bbox = new THREE.Box3();
+        this.object3D.userData.size = new THREE.Vector3();
+
+        this.object3D.receiveShadow = true;
+        this.object3D.renderOrder = 3;
+
+        this.scale = 1;
+
+        this.componentMutated = this.componentMutated.bind(this);
+
+        this.touch = false;
+        this.grabbed = false;
+        this.focus = false;
+    }
 
     /**
      *
@@ -59,35 +91,6 @@ export default class Entity extends MRElement {
     get contentHeight() {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
         return this.size.y;
-    }
-
-    layer = 0;
-
-    /**
-     *
-     */
-    constructor() {
-        super();
-
-        Object.defineProperty(this, 'isApp', {
-            value: false,
-            writable: false,
-        });
-
-        this.object3D = new THREE.Group();
-        this.object3D.userData.bbox = new THREE.Box3();
-        this.object3D.userData.size = new THREE.Vector3();
-
-        this.object3D.receiveShadow = true;
-        this.object3D.renderOrder = 3;
-
-        this.scale = 1;
-
-        this.componentMutated = this.componentMutated.bind(this);
-
-        this.touch = false;
-        this.grabbed = false;
-        this.focus = false;
     }
 
     /**
@@ -328,6 +331,30 @@ export default class Entity extends MRElement {
                 continue;
             }
             child.traverse(callBack);
+        }
+    }
+
+    /**
+     *
+     */
+    setTransformValues() {
+        const position = this.getAttribute('position');
+        const scale = this.getAttribute('scale');
+        const rotation = this.getAttribute('rotation');
+
+        if (position) {
+            this.object3D.position.fromArray(stringToVector(position));
+        }
+
+        if (scale) {
+            this.object3D.scale.fromArray(stringToVector(scale));
+        }
+
+        if (rotation) {
+            const euler = new THREE.Euler();
+            const array = stringToVector(rotation).map(radToDeg);
+            euler.fromArray(array);
+            this.object3D.setRotationFromEuler(euler);
         }
     }
 }

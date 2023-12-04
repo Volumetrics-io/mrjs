@@ -4,6 +4,9 @@ import * as THREE from 'three';
 // mat-phong
 // "color: red; emissive: blue; specular: yellow; opacity: 0.5; shininess: 100; wireframe: true"
 
+// TODO - this should not be in this folder
+// TODO - is this even still needed? i dont see it used in the rest of the code
+
 /**
  *
  */
