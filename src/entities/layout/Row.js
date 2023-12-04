@@ -37,9 +37,15 @@ export class Row extends LayoutEntity {
         for (const index in children) {
             const child = children[index];
 
+            console.log(child);
+            console.log(child.style.width);
+            console.log(child.compStyle.width);
+
+            let positionX = child.width / children.length
+
             this.accumulatedX += this.pxToThree(child.compStyle.marginLeft);
-            child.object3D.position.setX(this.accumulatedX + child.width / 2);
-            this.accumulatedX += child.width;
+            child.object3D.position.setX(this.accumulatedX + positionX / 2);
+            this.accumulatedX += positionX;
             this.accumulatedX += this.pxToThree(child.compStyle.marginRight);
 
             this.maxChildHeight = child.height > this.maxChildHeight ? child.height : this.maxChildHeight
