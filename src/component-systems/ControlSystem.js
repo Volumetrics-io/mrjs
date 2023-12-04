@@ -5,11 +5,12 @@ import System from '../core/System';
 import { INPUT_COLLIDER_HANDLE_NAMES } from './RapierPhysicsSystem';
 
 /**
- *
+ * This system supports interaction event information including mouse and controller interfacing.
  */
 export class ControlSystem extends System {
     /**
-     *
+     * ControlSystem's Default constructor
+     * // TODO - add more info
      */
     constructor() {
         super(false);
@@ -58,9 +59,11 @@ export class ControlSystem extends System {
     }
 
     /**
-     *
-     * @param deltaTime
-     * @param frame
+     * The generic system update call.
+     * Updates the meshes and states for both the left and right hand visuals.
+     * 
+     * @param deltaTime - given timestep to be used for any feature changes
+     * @param frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         this.leftHand.setMesh();
@@ -69,6 +72,11 @@ export class ControlSystem extends System {
         this.leftHand.update();
         this.rightHand.update();
     }
+
+    /************ Interaction Events ************/
+
+    // TODO - need to figure out if the auto documenter can handle this setup
+    // for documenting 
 
     mouseOver = (event) => {
         event.stopPropagation();
@@ -79,45 +87,6 @@ export class ControlSystem extends System {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    };
-
-    /**
-     *
-     * @param event
-     */
-    castRay(event) {
-        let x = 0;
-        let y = 0;
-        if (event.type.includes('touch')) {
-            x = event.touches[0].clientX;
-            y = event.touches[0].clientY;
-        } else {
-            x = event.clientX;
-            y = event.clientY;
-        }
-
-        if (this.app.user instanceof THREE.OrthographicCamera) {
-            this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
-            this.pointerPosition.unproject(this.app.user);
-            const direction = new THREE.Vector3(0, 0, -1);
-            direction.transformDirection(this.app.user.matrixWorld);
-
-            this.ray.origin = { ...this.pointerPosition };
-            this.ray.dir = { ...direction };
-        } else {
-            this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
-            this.pointerPosition.unproject(this.app.user);
-            this.pointerPosition.sub(this.app.user.position).normalize();
-            this.ray.origin = { ...this.app.user.position };
-            this.ray.dir = { ...this.pointerPosition };
-        }
-
-        return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
-    }
-
-    removeCursor = () => {
-        this.cursorHover.setTranslation({ ...this.restPosition }, true);
-        this.cursorClick.setTranslation({ ...this.restPosition }, true);
     };
 
     onMouseDown = (event) => {
@@ -149,4 +118,45 @@ export class ControlSystem extends System {
     //       this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
     //     }
     // }
+
+    removeCursor = () => {
+        this.cursorHover.setTranslation({ ...this.restPosition }, true);
+        this.cursorClick.setTranslation({ ...this.restPosition }, true);
+    };
+
+    /************ Tools && Helpers ************/
+
+    /**
+     * Raycast into the scene using the information from the event that called it.
+     * @param event - the event being handled
+     */
+    castRay(event) {
+        let x = 0;
+        let y = 0;
+        if (event.type.includes('touch')) {
+            x = event.touches[0].clientX;
+            y = event.touches[0].clientY;
+        } else {
+            x = event.clientX;
+            y = event.clientY;
+        }
+
+        if (this.app.user instanceof THREE.OrthographicCamera) {
+            this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
+            this.pointerPosition.unproject(this.app.user);
+            const direction = new THREE.Vector3(0, 0, -1);
+            direction.transformDirection(this.app.user.matrixWorld);
+
+            this.ray.origin = { ...this.pointerPosition };
+            this.ray.dir = { ...direction };
+        } else {
+            this.pointerPosition.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+            this.pointerPosition.unproject(this.app.user);
+            this.pointerPosition.sub(this.app.user.position).normalize();
+            this.ray.origin = { ...this.app.user.position };
+            this.ray.dir = { ...this.pointerPosition };
+        }
+
+        return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+    }
 }

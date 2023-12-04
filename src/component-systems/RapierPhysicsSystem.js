@@ -5,21 +5,23 @@ import System from '../core/System.js';
 export const INPUT_COLLIDER_HANDLE_NAMES = {};
 export const COLLIDER_ENTITY_MAP = {};
 
-// The physics system functions differently from other systems,
-// Rather than attaching components, physical properties such as
-// shape, body, mass, etc are definied as attributes.
-// if shape and body are not defined, they default to the geometry
-// of the entity, if there is no geometry, there is no physics defined
-// on the entity.
-//
-// Alternatively, you can also expressly attatch a comp-physics
-// attribute for more detailed control.
+// TODO - more to fill out here still
+
 /**
- *
+ * The physics system functions differently from other systems,
+ * Rather than attaching components, physical properties such as
+ * shape, body, mass, etc are definied as attributes.
+ * if shape and body are not defined, they default to the geometry
+ * of the entity, if there is no geometry, there is no physics defined
+ * on the entity.
+ * 
+ * Alternatively, you can also expressly attatch a comp-physics
+ * attribute for more detailed control.
  */
 export class RapierPhysicsSystem extends System {
     /**
-     *
+     * RapierPhysicsSystem's default constructor
+     * // TODO - add more info
      */
     constructor() {
         super(false);
@@ -50,9 +52,11 @@ export class RapierPhysicsSystem extends System {
     }
 
     /**
-     *
-     * @param deltaTime
-     * @param frame
+     * The generic system update call.
+     * Based on the captured physics events for the frame, handles all items appropriately.
+     * 
+     * @param deltaTime - given timestep to be used for any feature changes
+     * @param frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         this.app.physicsWorld.step(this.eventQueue);
@@ -270,8 +274,9 @@ export class RapierPhysicsSystem extends System {
     }
 
     /**
-     *
-     * @param physicsData
+     * Initializes a collider based on the physics data.
+     * 
+     * @param physicsData - data needed to be used to setup the collider interaction
      */
     initColliderDesc(physicsData) {
         switch (physicsData.type) {
@@ -299,7 +304,8 @@ export class RapierPhysicsSystem extends System {
     }
 
     /**
-     *
+     * Updates the debug renderer to either be on or off based on the 'this.debug' variable.
+     * Handles the drawing of the visual lines.
      */
     updateDebugRenderer() {
         if (!this.debug || this.debug == 'false') {

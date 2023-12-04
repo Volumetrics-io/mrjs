@@ -2,20 +2,22 @@ import { MRUIEntity } from '../UI/UIEntity';
 import System from '../core/System';
 
 /**
- *
+ * Handles style updates for all items.
  */
 export class StyleSystem extends System {
     /**
-     *
+     * StyleSystem's default constructor
      */
     constructor() {
         super(false, 1 / 15);
     }
 
     /**
-     *
-     * @param deltaTime
-     * @param frame
+     * The generic system update call.
+     * Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.
+     * 
+     * @param deltaTime - given timestep to be used for any feature changes
+     * @param frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
@@ -35,10 +37,11 @@ export class StyleSystem extends System {
         }
     }
 
-    // called when a new entity is added to the scene
     /**
-     *
-     * @param entity
+     * Called when a new entity is added to the scene.
+     * Adds said new entity to the style's system registry.
+     * 
+     * @param entity - the entity being added.
      */
     onNewEntity(entity) {
         this.registry.add(entity);

@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import System from '../core/System';
 
+// TODO - more to add here
+
 /**
- *
+ * Handles all items (3D and 2D) associated with an mr-surface including the surface itself.
  */
 export class SurfaceSystem extends System {
     /**
-     *
+     * SurfaceSystem's default constructor
      */
     constructor() {
         super(false);
@@ -65,9 +67,11 @@ export class SurfaceSystem extends System {
     }
 
     /**
-     *
-     * @param deltaTime
-     * @param frame
+     * The generic system update call.
+     * // TODO - add better description here
+     * 
+     * @param deltaTime - given timestep to be used for any feature changes
+     * @param frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const surface of this.registry) {

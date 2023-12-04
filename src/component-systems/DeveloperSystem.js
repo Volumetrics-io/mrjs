@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import System from '../core/System';
 import { COLLIDER_CURSOR_MAP } from './RapierPhysicsSystem';
 
+// TODO - is this item still needed?
+
 /**
  *
  */
 export class DeveloperSystem extends System {
     /**
-     *
+     * DeveloperSystem's default constructor
+     * // TODO - add more info
      */
     constructor() {
         super();

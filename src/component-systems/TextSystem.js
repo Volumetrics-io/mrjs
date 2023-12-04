@@ -4,11 +4,11 @@ import { TextField } from '../UI/Text/TextField';
 import { TextArea } from '../UI/Text/TextArea';
 
 /**
- *
+ * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
  */
 export class TextSystem extends System {
     /**
-     *
+     * TextSystem's default constructor
      */
     constructor() {
         super(false, 1 / 30);
@@ -48,9 +48,11 @@ export class TextSystem extends System {
     }
 
     /**
-     *
-     * @param deltaTime
-     * @param frame
+     * The generic system update call.
+     * // TODO - add better description here
+     * 
+     * @param deltaTime - given timestep to be used for any feature changes
+     * @param frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
