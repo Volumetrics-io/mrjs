@@ -38,7 +38,7 @@ export class Container extends LayoutEntity {
 
         this.parentElement.addEventListener('surface-placed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            this.scrollMax = (MRJS.computeBoundingSphere(this.shuttle).radius * 2 * this.windowVerticalScale)// - this.height;
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
