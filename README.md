@@ -17,7 +17,7 @@ CDN:
 
 NPM:
 
-`npm install volumetrics-io/mr.js`
+`npm install mrjs`
 
 from source:
 
