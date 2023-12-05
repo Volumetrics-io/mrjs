@@ -9,7 +9,7 @@ import { MRElement } from './MRElement.js';
 // built in Systems
 import { TextSystem } from '../component-systems/TextSystem.js';
 import { ControlSystem } from '../component-systems/ControlSystem.js';
-import { RapierPhysicsSystem } from '../component-systems/RapierPhysicsSystem.js';
+import { PhysicsSystem } from '../component-systems/PhysicsSystem.js';
 import { LayoutSystem } from '../component-systems/LayoutSystem.js';
 import { parseAttributeString, parseVector } from '../utils/parser.js';
 import { SurfaceSystem } from '../component-systems/SurfaceSystem.js';
@@ -91,7 +91,7 @@ export class MRApp extends MRElement {
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
             this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
-            this.physicsSystem = new RapierPhysicsSystem();
+            this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
 

@@ -4,7 +4,7 @@ import { MRUIEntity } from '../UIEntity';
 /**
  *
  */
-export class MRImage extends MRUIEntity {
+export class Image extends MRUIEntity {
     /**
      *
      */

@@ -1,7 +1,7 @@
 /**
  *
  */
-class SkyBox extends Entity {
+class SkyBox extends MREntity {
     /**
      *
      */

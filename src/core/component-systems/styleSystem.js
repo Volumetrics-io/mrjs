@@ -1,10 +1,10 @@
 import { MRUIEntity } from '../UI/UIEntity';
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 
 /**
  * Handles style updates for all items.
  */
-export class StyleSystem extends System {
+export class StyleSystem extends MRSystem {
     /**
      * StyleSystem's default constructor
      */

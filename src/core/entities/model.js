@@ -4,7 +4,7 @@ import { loadModel } from '../utils/loadModel';
 /**
  *
  */
-export class Model extends Entity {
+export class Model extends MREntity {
     /**
      *
      */

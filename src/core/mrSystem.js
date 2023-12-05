@@ -3,7 +3,7 @@ import Entity from './entity';
 /**
  *
  */
-export default class System {
+export default class MRSystem {
     frameRate = null;
 
     delta = 0;

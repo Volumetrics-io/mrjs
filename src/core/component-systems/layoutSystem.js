@@ -1,9 +1,9 @@
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 
 /**
  * Adjusts the understood container for the layout to fit all necessary items.
  */
-export class LayoutSystem extends System {
+export class LayoutSystem extends MRSystem {
     /**
      * LayoutSystem's default constructor
      * // TODO - add more info

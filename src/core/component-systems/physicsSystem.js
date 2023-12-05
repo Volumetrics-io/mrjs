@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RAPIER } from '../core/rapier.js';
-import System from '../core/System.js';
+import MRSystem from '../core/MRSystem.js';
 
 export const INPUT_COLLIDER_HANDLE_NAMES = {};
 export const COLLIDER_ENTITY_MAP = {};
@@ -18,9 +18,9 @@ export const COLLIDER_ENTITY_MAP = {};
  * Alternatively, you can also expressly attatch a comp-physics
  * attribute for more detailed control.
  */
-export class RapierPhysicsSystem extends System {
+export class PhysicsSystem extends MRSystem {
     /**
-     * RapierPhysicsSystem's default constructor
+     * PhysicsSystem's default constructor
      * // TODO - add more info
      */
     constructor() {

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { MRUIEntity } from '../../UI/UIEntity';
+import { MRUIEntity } from '../../UI/MRUIEntity';
 
 /**
  *
  */
-export class LayoutEntity extends MRUIEntity {
+export class MRLayoutEntity extends MRUIEntity {
     /**
      *
      */

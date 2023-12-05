@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 
 /**
  * System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
  */
-class InstancingSystem extends System {
+class InstancingSystem extends MRSystem {
     /**
      * InstancingSystem's default constructor
      * // TODO - add more info

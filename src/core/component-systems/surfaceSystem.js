@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 
 // TODO - more to add here
 
 /**
  * Handles all items (3D and 2D) associated with an mr-surface including the surface itself.
  */
-export class SurfaceSystem extends System {
+export class SurfaceSystem extends MRSystem {
     /**
      * SurfaceSystem's default constructor
      */

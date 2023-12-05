@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import System from '../core/System';
-import { COLLIDER_CURSOR_MAP } from './RapierPhysicsSystem';
+import MRSystem from '../core/MRSystem';
+import { COLLIDER_CURSOR_MAP } from './PhysicsSystem';
 
 // TODO - is this item still needed?
 
 /**
  *
  */
-export class DeveloperSystem extends System {
+export class DeveloperSystem extends MRSystem {
     /**
      * DeveloperSystem's default constructor
      * // TODO - add more info

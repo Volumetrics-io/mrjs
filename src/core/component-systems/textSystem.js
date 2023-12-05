@@ -1,12 +1,12 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 import { TextField } from '../UI/Text/TextField';
 import { TextArea } from '../UI/Text/TextArea';
 
 /**
  * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
  */
-export class TextSystem extends System {
+export class TextSystem extends MRSystem {
     /**
      * TextSystem's default constructor
      */

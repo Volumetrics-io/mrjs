@@ -1,10 +1,11 @@
 import { getSelectionRects } from 'troika-three-text';
+import { Object3D } from 'three';
 import { MRText } from './Text';
 
 /**
  *
  */
-export class TextArea extends MRText {
+export class TextField extends Text {
     /**
      *
      */
@@ -17,7 +18,8 @@ export class TextArea extends MRText {
      *
      */
     connected() {
-        this.input = document.createElement('textarea');
+        this.input = document.createElement('input');
+        this.input.setAttribute('type', 'text');
 
         const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
         const material = new THREE.MeshBasicMaterial({
@@ -32,7 +34,8 @@ export class TextArea extends MRText {
         this.cursor.visible = false;
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            this.input.textContent = this.textContent.replace(/(\n)\s+/g, '$1').trim();
+            this.input.setAttribute('value', this.textContent.replace(/(\n)\s+/g, '$1').trim());
+            console.log('textfield', this.textContent.replace(/(\n)\s+/g, '$1').trim());
         });
 
         this.input.style.opacity = 0; // Make it invisible
@@ -72,4 +75,4 @@ export class TextArea extends MRText {
     };
 }
 
-customElements.get('mr-textarea') || customElements.define('mr-textarea', TextArea);
+customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField);

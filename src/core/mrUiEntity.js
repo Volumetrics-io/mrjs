@@ -5,7 +5,7 @@ import { UIPlane } from '../geometry/UIPlane';
 /**
  *
  */
-export class MRUIEntity extends Entity {
+export class MRUIEntity extends MREntity {
     /**
      *
      */

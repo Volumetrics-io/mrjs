@@ -2,12 +2,10 @@ import * as THREE from 'three';
 import { parseDegVector, parseVector } from '../utils/parser.js';
 import { MRElement } from './MRElement.js';
 
-// TODO - we should rename this to MREntity
-
 /**
  *
  */
-export default class Entity extends MRElement {
+export default class MREntity extends MRElement {
 
     aabb = new THREE.Box3();
 

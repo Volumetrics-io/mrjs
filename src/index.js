@@ -2,6 +2,28 @@
 
 // UTILS
 import './utils/extensions';
+import './utils/loadModel';
+import './utils/loadTexture';
+import './utils/materialHelper'; // tobedeleted
+import './utils/math'
+import './utils/RGBELoader'; // tobedeleted
+import './utils/string'
+import './utils/three'
+
+// ENTITIES
+
+// ENTITIES - layout
+import './utils/column'
+import './utils/container'
+import './utils/layoutEntity'
+
+// ENTITIES - ui
+import './utils/button'
+import './utils/image'
+import './utils/text'
+import './utils/textArea'
+import './utils/textField'
+
 
 // CORE
 import './core/MRElement';
@@ -12,7 +34,7 @@ import './entities/Model';
 import './entities/Light';
 
 // SYSTEMS
-import './component-systems/RapierPhysicsSystem';
+import './component-systems/PhysicsSystem';
 import './component-systems/LayoutSystem';
 
 // GEOMETRY

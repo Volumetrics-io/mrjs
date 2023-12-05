@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import Entity from '../core/entity';
+import MREntity from '../core/mrEntity';
 
 /**
  *
  */
-export default class Light extends Entity {
+export default class Light extends MREntity {
     /**
      *
      */

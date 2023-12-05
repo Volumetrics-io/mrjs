@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { RAPIER } from '../core/rapier';
 import { MRHand } from '../interaction/hand';
-import System from '../core/System';
-import { INPUT_COLLIDER_HANDLE_NAMES } from './RapierPhysicsSystem';
+import MRSystem from '../core/MRSystem';
+import { INPUT_COLLIDER_HANDLE_NAMES } from './PhysicsSystem';
 
 /**
  * This system supports interaction event information including mouse and controller interfacing.
  */
-export class ControlSystem extends System {
+export class ControlSystem extends MRSystem {
     /**
      * ControlSystem's Default constructor
      * // TODO - add more info

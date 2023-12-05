@@ -1,10 +1,10 @@
-import System from '../core/System';
+import MRSystem from '../core/MRSystem';
 
 /**
  * This system supports 3D clipping following threejs's clipping planes setup.
  * See https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes for more information.
  */
-export class ClippingSystem extends System {
+export class ClippingSystem extends MRSystem {
     /**
      * ClippingSystem's default constructor
      * // TODO - add more info

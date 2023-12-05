@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import Entity from '../core/entity.js';
+import MREntity from '../core/entity.js';
 import { UIPlane } from '../geometry/UIPlane.js';
 
 /**
  *
  */
-export class Surface extends Entity {
+export class Surface extends MREntity {
     /**
      *
      */

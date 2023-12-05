@@ -1,10 +1,10 @@
-import Entity from '../core/entity.js';
+import MREntity from '../core/entity.js';
 import { Surface } from './Surface.js';
 
 /**
  *
  */
-export default class Volume extends Entity {
+export default class Volume extends MREntity {
     /**
      *
      */

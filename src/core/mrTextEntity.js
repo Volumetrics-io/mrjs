@@ -5,7 +5,7 @@ import { MRUIEntity } from '../UIEntity';
 /**
  *
  */
-export class MRText extends MRUIEntity {
+export class Text extends MRUIEntity {
     /**
      *
      */
