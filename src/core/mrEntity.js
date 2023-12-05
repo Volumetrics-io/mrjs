@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRElement } from 'MRJS/core/mrElement';
-import { stringToDegVector, stringToVector } from 'MRJS/utils/string';
+import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'MRJS/utils/string';
 
 /**
  *
@@ -21,16 +21,16 @@ export class MREntity extends MRElement {
     components = {
         get: (name) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return MRJS.parseComponentString(this.dataset[dataName]);
+            return stringToJson(this.dataset[dataName]);
         },
 
         set: (name, data) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = MRJS.parseComponentString(this.dataset[dataName]);
+            const component = stringToJson(this.dataset[dataName]);
             for (const key in data) {
                 component[key] = data[key];
             }
-            this.dataset[dataName] = MRJS.stringifyComponent(component);
+            this.dataset[dataName] = jsonToString(component);
         },
     };
 
@@ -285,7 +285,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { entity: this, oldData: MRJS.parseComponentString(mutation.oldValue) },
+                    detail: { entity: this, oldData: stringToJson(mutation.oldValue) },
                 })
             );
         } else {
@@ -326,7 +326,7 @@ export class MREntity extends MRElement {
         const children = Array.from(this.children);
         for (const child of children) {
             // if o is an object, traverse it again
-            if ((!child) instanceof Entity) {
+            if ((!child) instanceof MREntity) {
                 continue;
             }
             child.traverse(callBack);
@@ -358,4 +358,4 @@ export class MREntity extends MRElement {
     }
 }
 
-customElements.get('mr-entity') || customElements.define('mr-entity', Entity);
+customElements.get('mr-entity') || customElements.define('mr-entity', MREntity);

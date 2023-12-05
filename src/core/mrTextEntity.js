@@ -41,4 +41,4 @@ export class MRTextEntity extends MRUIEntity {
     }
 }
 
-customElements.get('mr-text') || customElements.define('mr-text', MRText);
+customElements.get('mr-text') || customElements.define('mr-text', MRTextEntity);

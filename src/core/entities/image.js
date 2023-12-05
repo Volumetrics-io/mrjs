@@ -88,4 +88,4 @@ export class Image extends MRUIEntity {
     }
 }
 
-customElements.get('mr-img') || customElements.define('mr-img', MRImage);
+customElements.get('mr-img') || customElements.define('mr-img', Image);

@@ -8,7 +8,7 @@ String.prototype.spliceSplit = function (index, count, add) {
     return ar.join('');
 };
 
-/*********** String to Object *************/
+/*********** JSON // String interactions *************/
 
 /**
  *
@@ -48,7 +48,7 @@ export function stringToJson(attrString) {
  *
  * @param componentData
  */
-export function stringifyComponent(componentData) {
+export function jsonToString(componentData) {
     let compString = '';
 
     for (const [key, value] of Object.entries(componentData)) {

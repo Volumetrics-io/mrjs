@@ -1,59 +1,59 @@
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
 // GLOBAL
-import './global'
+import 'MRJS/global'
 
 // UTILS
-import './utils/geometry';
-import './utils/loadMaterial';
-import './utils/loadModel';
-import './utils/math';
-import './utils/physics';
-import './utils/string';
-import './utils/three';
+import 'MRJS/utils/geometry';
+import 'MRJS/utils/loadMaterial';
+import 'MRJS/utils/loadModel';
+import 'MRJS/utils/math';
+import 'MRJS/utils/physics';
+import 'MRJS/utils/string';
+import 'MRJS/utils/three';
 
 // DATATYPES
-import './datatypes/hand';
+import 'MRJS/datatypes/hand';
 
 // CORE
-import './core/mrApp';
-import './core/mrElement';
-import './core/mrEntity';
-import './core/mrLayoutEntity';
-import './core/mrSystem';
-import './core/mrTextEntity';
-import './core/mrUIEntity';
+import 'MRJS/core/mrApp';
+import 'MRJS/core/mrElement';
+import 'MRJS/core/mrEntity';
+import 'MRJS/core/mrLayoutEntity';
+import 'MRJS/core/mrSystem';
+import 'MRJS/core/mrTextEntity';
+import 'MRJS/core/mrUIEntity';
 // CORE - COMPONENT_SYSTEMS
-import './core/component-systems/clippingSystem';
-import './core/component-systems/controlSystem';
-import './core/component-systems/developerSystem';
-import './core/component-systems/instancingSystem';
-import './core/component-systems/layoutSystem';
-import './core/component-systems/physicsSystem';
-import './core/component-systems/styleSystem';
-import './core/component-systems/surfaceSystem';
-import './core/component-systems/textSystem';
+import 'MRJS/core/component-systems/clippingSystem';
+import 'MRJS/core/component-systems/controlSystem';
+import 'MRJS/core/component-systems/developerSystem';
+import 'MRJS/core/component-systems/instancingSystem';
+import 'MRJS/core/component-systems/layoutSystem';
+import 'MRJS/core/component-systems/physicsSystem';
+import 'MRJS/core/component-systems/styleSystem';
+import 'MRJS/core/component-systems/surfaceSystem';
+import 'MRJS/core/component-systems/textSystem';
 // CORE - ENTITIES
-import './core/entities/button';
-import './core/entities/column';
-import './core/entities/container';
-import './core/entities/image';
-import './core/entities/light';
-import './core/entities/model';
-import './core/entities/row';
-import './core/entities/skyBox';
-import './core/entities/surface';
-import './core/entities/textArea';
-import './core/entities/textField';
-import './core/entities/volume';
+import 'MRJS/core/entities/button';
+import 'MRJS/core/entities/column';
+import 'MRJS/core/entities/container';
+import 'MRJS/core/entities/image';
+import 'MRJS/core/entities/light';
+import 'MRJS/core/entities/model';
+import 'MRJS/core/entities/row';
+import 'MRJS/core/entities/skyBox';
+import 'MRJS/core/entities/surface';
+import 'MRJS/core/entities/textArea';
+import 'MRJS/core/entities/textField';
+import 'MRJS/core/entities/volume';
 
 //   EXPORTS
 export * as THREE from 'three';
 
 // CORE
-// export { MRElement } from './core/mrElement';
-// export { MRSystem } from './core/mrSystem';
-// export { MREntity } from './core/mrEntity';
+export { MRElement } from './core/mrElement';
+export { MRSystem } from './core/mrSystem';
+export { MREntity } from './core/mrEntity';
 
 // GEOMETRY
-export { UIPlane } from './utils/geometry';
+export { UIPlane } from 'MRJS/utils/geometry';

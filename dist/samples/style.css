@@ -31,7 +31,7 @@
 
 @font-face {
     font-family: 'Bricolage';
-    src: url('./assets/fonts/BricolageGrotesque.ttf') format('truetype');
+    src: url('../assets/fonts/BricolageGrotesque.ttf') format('truetype');
     font-weight: 100 900;
   }
   
