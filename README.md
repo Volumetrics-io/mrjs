@@ -20,6 +20,8 @@ NPM:
 
 from source:
 
+clone this repo and run:
+
 `npm install && npm run build`
 
 in headset testing:
