@@ -4,6 +4,7 @@
 import 'MRJS/global';
 
 // UTILS
+import 'MRJS/utils/display';
 import 'MRJS/utils/geometry';
 import 'MRJS/utils/loadMaterial';
 import 'MRJS/utils/loadModel';

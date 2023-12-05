@@ -209,55 +209,13 @@ export class TextSystem extends MRSystem {
      * @param el
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / MRJS.VIRTUAL_DISPLAY_RESOLUTION;
+        const result = parseFloat(val.split('px')[0]) / 1080; /*MRJS.VIRTUAL_DISPLAY_RESOLUTION;*/
+        console.log(result);
         if (global.inXR) {
+            console.log('hallooo');
             return result * el.windowHorizontalScale;
         }
         return result;
-    }
-
-    /**
-     *
-     * @param el
-     */
-    getEM(el) {}
-
-    /**
-     *
-     * @param el
-     */
-    getREM(el) {}
-
-    /**
-     *
-     * @param el
-     */
-    getVH(el) {
-        return el.closest('mr-container').absoluteHeight;
-    }
-
-    /**
-     *
-     * @param el
-     */
-    getVW(el) {
-        return el.closest('mr-container').absoluteWidth;
-    }
-
-    /**
-     *
-     * @param el
-     */
-    getVMax(el) {
-        return Math.max(this.getVH(el), this.getVW(el));
-    }
-
-    /**
-     *
-     * @param el
-     */
-    getVMin(el) {
-        return Math.min(this.getVH(el), this.getVW(el));
     }
 
     /**

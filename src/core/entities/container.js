@@ -29,23 +29,23 @@ export class Container extends MRLayoutEntity {
 
             // TODO: fix this, it's a hack until we figure out where to fire off a final "app loaded" event
             setTimeout(() => {
-                this.scrollMax = computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+                this.scrollMax = MRJSUtils.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
             }, 1000);
         });
 
         window.addEventListener('resize', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            this.scrollMax = MRJSUtils.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = (computeBoundingSphere(this.shuttle).radius * 2 * this.windowVerticalScale); // - this.height;
+            this.scrollMax = (MRJSUtils.computeBoundingSphere(this.shuttle).radius * 2 * this.windowVerticalScale); // - this.height;
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
             this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
-            this.scrollMax = computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            this.scrollMax = MRJSUtils.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
         this.parentElement.addEventListener('container-mutated', (event) => {
