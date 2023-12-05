@@ -6,4 +6,3 @@ import('@dimforge/rapier3d').then((rap) => {
 
 export const INPUT_COLLIDER_HANDLE_NAMES = {};
 export const COLLIDER_ENTITY_MAP = {};
-

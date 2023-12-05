@@ -61,7 +61,6 @@ export class ControlSystem extends MRSystem {
     /**
      * The generic system update call.
      * Updates the meshes and states for both the left and right hand visuals.
-     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
@@ -76,7 +75,7 @@ export class ControlSystem extends MRSystem {
     /************ Interaction Events ************/
 
     // TODO - need to figure out if the auto documenter can handle this setup
-    // for documenting 
+    // for documenting
 
     mouseOver = (event) => {
         event.stopPropagation();

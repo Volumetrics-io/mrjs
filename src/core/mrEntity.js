@@ -7,7 +7,6 @@ import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'M
  *
  */
 export class MREntity extends MRElement {
-
     aabb = new THREE.Box3();
 
     size = new THREE.Vector3();

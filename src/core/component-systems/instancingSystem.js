@@ -22,7 +22,6 @@ class InstancingSystem extends MRSystem {
      * The generic system update call.
      * Updates the entity and its instances to their appropriate transformations and visuals
      * based on the picked predefined option.
-     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
@@ -43,7 +42,6 @@ class InstancingSystem extends MRSystem {
      * Determines what meshes are attached from this entity and
      * When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether
      * that be a group or mesh).
-     * 
      * @param entity - the entity with the geometry to be instanced and the chosen setup option
      */
     attachedComponent(entity) {
@@ -95,7 +93,7 @@ class InstancingSystem extends MRSystem {
         entity.object3D.add(instancedMesh);
     }
 
-// TODO - can i delete the below two items?
+    // TODO - can i delete the below two items?
     /**
      *
      * @param entity
@@ -110,8 +108,8 @@ class InstancingSystem extends MRSystem {
 
     /************ Some options for default instancing setup ************/
 
-// TODO - need to figure out if the auto documenter can handle this setup
-// for documenting 
+    // TODO - need to figure out if the auto documenter can handle this setup
+    // for documenting
 
     random = (entity) => {
         // update mesh for each instance

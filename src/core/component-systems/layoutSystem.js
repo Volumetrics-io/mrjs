@@ -23,7 +23,6 @@ export class LayoutSystem extends MRSystem {
     /**
      * The generic system update call.
      * For every entity handled by the system, adjusts the container's size to fit properly.
-     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
@@ -33,8 +32,8 @@ export class LayoutSystem extends MRSystem {
         }
     }
 
-// TODO - need to figure out if the auto documenter can handle this setup
-// for documenting 
+    // TODO - need to figure out if the auto documenter can handle this setup
+    // for documenting
 
     adjustContainerSize = (container) => {
         container.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));

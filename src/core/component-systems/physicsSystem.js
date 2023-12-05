@@ -12,7 +12,7 @@ import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/u
  * if shape and body are not defined, they default to the geometry
  * of the entity, if there is no geometry, there is no physics defined
  * on the entity.
- * 
+ *
  * Alternatively, you can also expressly attatch a comp-physics
  * attribute for more detailed control.
  */
@@ -52,7 +52,6 @@ export class PhysicsSystem extends MRSystem {
     /**
      * The generic system update call.
      * Based on the captured physics events for the frame, handles all items appropriately.
-     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
@@ -273,7 +272,6 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * Initializes a collider based on the physics data.
-     * 
      * @param physicsData - data needed to be used to setup the collider interaction
      */
     initColliderDesc(physicsData) {

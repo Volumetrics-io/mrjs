@@ -70,7 +70,6 @@ export class SurfaceSystem extends MRSystem {
     /**
      * The generic system update call.
      * // TODO - add better description here
-     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
