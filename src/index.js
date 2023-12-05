@@ -36,7 +36,7 @@ import 'MRJS/core/entities/surface';
 import 'MRJS/core/entities/textArea';
 import 'MRJS/core/entities/textField';
 import 'MRJS/core/entities/volume';
-// CORE - COMPONENT_SYSTEMS
+// CORE - COMPONENT-SYSTEMS
 import 'MRJS/core/component-systems/clippingSystem';
 import 'MRJS/core/component-systems/controlSystem';
 import 'MRJS/core/component-systems/developerSystem';
@@ -47,13 +47,9 @@ import 'MRJS/core/component-systems/styleSystem';
 import 'MRJS/core/component-systems/surfaceSystem';
 import 'MRJS/core/component-systems/textSystem';
 
-//   EXPORTS
+// EXPORTS
 export * as THREE from 'three';
-
-// CORE
 export { MRElement } from 'MRJS/core/mrElement';
 export { MRSystem } from 'MRJS/core/mrSystem';
 export { MREntity } from 'MRJS/core/mrEntity';
-
-// GEOMETRY
 export { UIPlane } from 'MRJS/utils/geometry';
