@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MRUIEntity } from 'MRJS/core/mrUIEntity';
+import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
  *

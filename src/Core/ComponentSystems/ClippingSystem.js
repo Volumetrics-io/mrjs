@@ -1,4 +1,4 @@
-import { MRSystem } from 'MRJS/core/MRSystem';
+import { MRSystem } from 'MRJS/Core/MRSystem';
 
 /**
  * This system supports 3D clipping following threejs's clipping planes setup.

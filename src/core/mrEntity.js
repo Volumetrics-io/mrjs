@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { MRElement } from 'MRJS/core/mrElement';
-import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'MRJS/utils/string';
+import { MRElement } from 'MRJS/Core/MRElement';
+import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'MRJS/Utils/String';
 
 /**
  *

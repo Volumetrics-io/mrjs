@@ -1,4 +1,4 @@
-import { MREntity } from 'MRJS/core/mrEntity';
+import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
  *

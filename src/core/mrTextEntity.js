@@ -1,6 +1,6 @@
 import { Text } from 'troika-three-text';
 
-import { MRUIEntity } from 'MRJS/core/mrUIEntity';
+import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
  *

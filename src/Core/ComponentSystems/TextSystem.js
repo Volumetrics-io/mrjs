@@ -1,9 +1,10 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
-import { MRSystem } from 'MRJS/core/mrSystem';
-import { MRTextEntity } from 'MRJS/core/mrTextEntity';
-import { TextField } from 'MRJS/core/entities/textField';
-import { TextArea } from 'MRJS/core/entities/textArea';
+import { MRSystem } from 'MRJS/Core/MRSystem';
+import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
+import { TextField } from 'MRJS/Core/Entities/TextField';
+import { TextArea } from 'MRJS/Core/Entities/TextArea';
+import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display'
 
 /**
  * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
@@ -209,7 +210,7 @@ export class TextSystem extends MRSystem {
      * @param el
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / 1080; /*MRJS.VIRTUAL_DISPLAY_RESOLUTION;*/
+        const result = parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION;
         console.log(result);
         if (global.inXR) {
             console.log('hallooo');

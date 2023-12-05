@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { MRSystem } from 'MRJS/core/mrSystem';
-import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/utils/physics';
+import { MRSystem } from 'MRJS/Core/MRSystem';
+import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/Utils/Physics';
 
 // TODO - more to fill out here still
 

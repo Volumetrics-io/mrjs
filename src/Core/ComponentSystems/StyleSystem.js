@@ -1,5 +1,5 @@
-import { MRSystem } from 'MRJS/core/mrSystem';
-import { MRUIEntity } from 'MRJS/core/mrUIEntity';
+import { MRSystem } from 'MRJS/Core/MRSystem';
+import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
  * Handles style updates for all items.
