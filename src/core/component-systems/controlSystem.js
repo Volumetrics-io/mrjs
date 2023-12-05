@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MRSystem } from 'MRJS/core/mrSystem';
+import { MRSystem } from 'MRJS/core/MRSystem';
 import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/utils/physics';
 import { MRHand } from 'MRJS/datatypes/hand';
 
