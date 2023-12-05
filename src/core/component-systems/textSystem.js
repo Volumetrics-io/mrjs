@@ -1,6 +1,7 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'MRJS/core/mrSystem';
+import { MRTextEntity } from 'MRJS/core/mrTextEntity';
 import { TextField } from 'MRJS/core/entities/textField';
 import { TextArea } from 'MRJS/core/entities/textArea';
 

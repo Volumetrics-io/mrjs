@@ -23,16 +23,6 @@ import 'MRJS/core/mrLayoutEntity';
 import 'MRJS/core/mrSystem';
 import 'MRJS/core/mrTextEntity';
 import 'MRJS/core/mrUIEntity';
-// CORE - COMPONENT_SYSTEMS
-import 'MRJS/core/component-systems/clippingSystem';
-import 'MRJS/core/component-systems/controlSystem';
-import 'MRJS/core/component-systems/developerSystem';
-import 'MRJS/core/component-systems/instancingSystem';
-import 'MRJS/core/component-systems/layoutSystem';
-import 'MRJS/core/component-systems/physicsSystem';
-import 'MRJS/core/component-systems/styleSystem';
-import 'MRJS/core/component-systems/surfaceSystem';
-import 'MRJS/core/component-systems/textSystem';
 // CORE - ENTITIES
 import 'MRJS/core/entities/button';
 import 'MRJS/core/entities/column';
@@ -46,14 +36,24 @@ import 'MRJS/core/entities/surface';
 import 'MRJS/core/entities/textArea';
 import 'MRJS/core/entities/textField';
 import 'MRJS/core/entities/volume';
+// CORE - COMPONENT_SYSTEMS
+import 'MRJS/core/component-systems/clippingSystem';
+import 'MRJS/core/component-systems/controlSystem';
+import 'MRJS/core/component-systems/developerSystem';
+import 'MRJS/core/component-systems/instancingSystem';
+import 'MRJS/core/component-systems/layoutSystem';
+import 'MRJS/core/component-systems/physicsSystem';
+import 'MRJS/core/component-systems/styleSystem';
+import 'MRJS/core/component-systems/surfaceSystem';
+import 'MRJS/core/component-systems/textSystem';
 
 //   EXPORTS
 export * as THREE from 'three';
 
 // CORE
-export { MRElement } from './core/mrElement';
-export { MRSystem } from './core/mrSystem';
-export { MREntity } from './core/mrEntity';
+export { MRElement } from 'MRJS/core/mrElement';
+export { MRSystem } from 'MRJS/core/mrSystem';
+export { MREntity } from 'MRJS/core/mrEntity';
 
 // GEOMETRY
 export { UIPlane } from 'MRJS/utils/geometry';
