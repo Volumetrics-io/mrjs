@@ -11,10 +11,13 @@ export class ClippingSystem extends MRSystem {
      */
     constructor() {
         super(false);
-        // TODO - how would you describe these vectors in relation to the clipping planes?
-        this.a = new THREE.Vector3();
-        this.b = new THREE.Vector3();
-        this.c = new THREE.Vector3();
+        // Using coplanar points to calculate the orientation and position of the plane.
+        // They're here to be reused for every plane so we're not generating a ton of vectors
+        // to be garbage collected.
+        this.coplanarPointA = new THREE.Vector3();
+        this.coplanarPointB = new THREE.Vector3();
+        this.coplanarPointC = new THREE.Vector3();
+        // The plane geometry.
         this.geometry = new THREE.BufferGeometry();
     }
 
@@ -68,8 +71,9 @@ export class ClippingSystem extends MRSystem {
         });
     }
 
-    // TODO - is this function still needed? i dont see it called at all?
     /**
+     * Called on an event whenever a new entity is added. All systems have it but not all of them utilize it.
+     * 
      * Creates a clipping planes information (still writing this description)
      * @param entity - the entity to which we're adding the clipping planes information
      */
@@ -77,9 +81,9 @@ export class ClippingSystem extends MRSystem {
         this.geometry = entity.clipping.geometry.toNonIndexed();
 
         for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
-            this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
-            this.b.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
-            this.c.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
+            this.coplanarPointA.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
+            this.coplanarPointB.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
+            this.coplanarPointC.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
 
             entity.object3D.localToWorld(this.a);
             entity.object3D.localToWorld(this.b);
@@ -87,7 +91,7 @@ export class ClippingSystem extends MRSystem {
 
             const newPlane = new THREE.Plane();
 
-            newPlane.setFromCoplanarPoints(this.a, this.b, this.c);
+            newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
             // if (this.app.debug) {
             //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
             //     this.app.scene.add( helper );
@@ -112,15 +116,15 @@ export class ClippingSystem extends MRSystem {
                 continue;
             }
 
-            this.a.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
-            this.b.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
-            this.c.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
+            this.coplanarPointA.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
+            this.coplanarPointB.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
+            this.coplanarPointC.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
 
-            entity.object3D.localToWorld(this.a);
-            entity.object3D.localToWorld(this.b);
-            entity.object3D.localToWorld(this.c);
+            entity.object3D.localToWorld(this.coplanarPointA);
+            entity.object3D.localToWorld(this.coplanarPointB);
+            entity.object3D.localToWorld(this.coplanarPointC);
 
-            entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.a, this.b, this.c);
+            entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
 
             planeIndex += 1;
         }

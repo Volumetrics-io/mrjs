@@ -93,19 +93,6 @@ class InstancingSystem extends MRSystem {
         entity.object3D.add(instancedMesh);
     }
 
-    // TODO - can i delete the below two items?
-    /**
-     *
-     * @param entity
-     */
-    updatedComponent(entity) {}
-
-    /**
-     *
-     * @param entity
-     */
-    detachedComponent(entity) {}
-
     /************ Some options for default instancing setup ************/
 
     // TODO - need to figure out if the auto documenter can handle this setup
