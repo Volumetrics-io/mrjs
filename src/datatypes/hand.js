@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
-import { RAPIER } from '../core/rapier';
-import { INPUT_COLLIDER_HANDLE_NAMES } from '../component-systems/PhysicsSystem';
+
+import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/utils/physics';
 
 const HOVER_DISTANCE = 0.05;
 const PINCH_DISTANCE = 0.005;

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import MREntity from '../core/entity.js';
-import { UIPlane } from '../geometry/UIPlane.js';
+
+import { MREntity } from 'MRJS/core/mrEntity';
+import { UIPlane } from 'MRJS/utils/geometry';
 
 /**
  *

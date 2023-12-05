@@ -1,4 +1,4 @@
-import MRSystem from '../core/MRSystem';
+import { MRSystem } from 'MRJS/core/mrSystem';
 
 /**
  * Adjusts the understood container for the layout to fit all necessary items.

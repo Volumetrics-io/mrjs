@@ -1,9 +1,9 @@
-import Entity from './entity';
+import { MREntity } from 'MRJS/core/mrEntity';
 
 /**
  *
  */
-export default class MRSystem {
+export class MRSystem {
     frameRate = null;
 
     delta = 0;
@@ -44,7 +44,7 @@ export default class MRSystem {
 
         const entities = document.querySelectorAll(`[${this.componentName}]`);
         for (const entity of entities) {
-            if (!(entity instanceof Entity)) {
+            if (!(entity instanceof MREntity)) {
                 return;
             }
             this.registry.add(entity);

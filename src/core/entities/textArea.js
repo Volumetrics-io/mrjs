@@ -1,10 +1,11 @@
 import { getSelectionRects } from 'troika-three-text';
-import { Text } from './Text';
+
+import { MRTextEntity } from 'MRJS/core/mrTextEntity';
 
 /**
  *
  */
-export class TextArea extends Text {
+export class TextArea extends MRTextEntity {
     /**
      *
      */

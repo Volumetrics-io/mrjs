@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import MRSystem from '../core/MRSystem';
+
+import { MRSystem } from 'MRJS/core/mrSystem';
 
 /**
  * System that allows for instancing of meshes based on a given entity where the instances can be modified separately.

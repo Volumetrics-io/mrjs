@@ -1,5 +1,5 @@
-import { UIPlane } from '../../geometry/UIPlane';
-import { MRUIEntity } from '../UIEntity';
+import { MRUIEntity } from 'MRJS/core/mrUIEntity';
+import { UIPlane } from 'MRJS/utils/geometry';
 
 /**
  *

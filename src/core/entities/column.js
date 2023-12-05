@@ -1,10 +1,10 @@
-import { UIPlane } from '../../geometry/UIPlane';
-import { LayoutEntity } from './LayoutEntity';
+import { MRLayoutEntity } from 'MRJS/core/mrLayoutEntity';
+import { UIPlane } from 'MRJS/utils/geometry';
 
 /**
  *
  */
-export class Column extends LayoutEntity {
+export class Column extends MRLayoutEntity {
     /**
      *
      */

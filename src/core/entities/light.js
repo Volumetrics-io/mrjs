@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import MREntity from '../core/mrEntity';
+
+import { MREntity } from 'MRJS/core/mrEntity';
 
 /**
  *

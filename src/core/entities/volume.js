@@ -1,5 +1,5 @@
-import MREntity from '../core/entity.js';
-import { Surface } from './Surface.js';
+import { MREntity } from 'MRJS/core/mrEntity';
+import { Surface } from 'MRJS/core/entities/surface';
 
 /**
  *

@@ -1,5 +1,5 @@
-import { MRUIEntity } from '../UI/UIEntity';
-import MRSystem from '../core/MRSystem';
+import { MRSystem } from 'MRJS/core/mrSystem';
+import { MRUIEntity } from 'MRJS/core/mrUIEntity';
 
 /**
  * Handles style updates for all items.

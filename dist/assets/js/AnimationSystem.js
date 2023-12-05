@@ -1,4 +1,4 @@
-class AnimationSystem extends System {
+class AnimationSystem extends MRSystem {
     constructor() {
         super()
 

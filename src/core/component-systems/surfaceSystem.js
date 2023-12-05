@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import MRSystem from '../core/MRSystem';
+
+import { MRSystem } from 'MRJS/core/mrSystem';
 
 // TODO - more to add here
 

@@ -1,11 +1,11 @@
 import { Text } from 'troika-three-text';
-import { parseAttributeString } from '../../utils/parser';
-import { MRUIEntity } from '../UIEntity';
+
+import { MRUIEntity } from 'MRJS/core/mrUIEntity';
 
 /**
  *
  */
-export class Text extends MRUIEntity {
+export class MRTextEntity extends MRUIEntity {
     /**
      *
      */

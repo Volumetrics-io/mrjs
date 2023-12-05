@@ -1,4 +1,4 @@
-import { MRUIEntity } from './UIEntity.js';
+import { MRUIEntity } from 'MRJS/core/mrUIEntity';
 
 /**
  *

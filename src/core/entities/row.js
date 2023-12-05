@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { Column } from './Column';
-import { LayoutEntity } from './LayoutEntity';
+
+import { Column } from 'MRJS/core/entities/column';
+import { MRLayoutEntity } from 'MRJS/core/mrLayoutEntity';
 
 /**
  *
  */
-export class Row extends LayoutEntity {
+export class Row extends MRLayoutEntity {
     /**
      *
      */

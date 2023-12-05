@@ -1,20 +1,21 @@
 import * as THREE from 'three';
-
-import Stats from 'stats.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
-import { RAPIER } from './rapier';
-import { MRElement } from './MRElement.js';
 
-// built in Systems
-import { TextSystem } from '../component-systems/TextSystem.js';
-import { ControlSystem } from '../component-systems/ControlSystem.js';
-import { PhysicsSystem } from '../component-systems/PhysicsSystem.js';
-import { LayoutSystem } from '../component-systems/LayoutSystem.js';
-import { parseAttributeString, parseVector } from '../utils/parser.js';
-import { SurfaceSystem } from '../component-systems/SurfaceSystem.js';
-import { ClippingSystem } from '../component-systems/ClippingSystem';
-import { StyleSystem } from '../component-systems/StyleSystem';
+import Stats from 'stats.js';
+
+import { MRElement } from 'MRJS/core/mrElement';
+
+import { RAPIER } from 'MRJS/utils/physics';
+import { stringToJson, stringToVector } from 'MRJS/utils/string';
+
+import { TextSystem } from 'MRJS/core/component-systems/textSystem';
+import { ControlSystem } from 'MRJS/core/component-systems/controlSystem';
+import { PhysicsSystem } from 'MRJS/core/component-systems/physicsSystem';
+import { LayoutSystem } from 'MRJS/core/component-systems/layoutSystem';
+import { SurfaceSystem } from 'MRJS/core/component-systems/surfaceSystem';
+import { ClippingSystem } from 'MRJS/core/component-systems/clippingSystem';
+import { StyleSystem } from 'MRJS/core/component-systems/styleSystem';
 
 ('use strict');
 
@@ -33,6 +34,7 @@ window.mobileCheck = function () {
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 };
+
 
 // TODO - to complete descriptions.
 /**
@@ -152,7 +154,7 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = parseAttributeString(this.cameraOptionString);
+            this.cameraOptions = stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
@@ -162,7 +164,7 @@ export class MRApp extends MRElement {
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = parseVector(layersString);
+            this.layers = stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -223,7 +225,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = parseAttributeString(this.lighting);
+            this.lighting = stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);

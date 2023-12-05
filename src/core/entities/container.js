@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { ClippingGeometry } from '../../datatypes/ClippingGeometry';
-import { LayoutEntity } from './LayoutEntity';
+
+import { ClippingGeometry } from 'MRJS/to-delete/clippingGeometry'; // TODO
+import { MRLayoutEntity } from 'MRJS/core/mrLayoutEntity';
 
 /**
  *

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import MRSystem from '../core/MRSystem';
-import { COLLIDER_CURSOR_MAP } from './PhysicsSystem';
+
+import { MRSystem } from 'MRJS/core/mrSystem';
+import { COLLIDER_CURSOR_MAP } from 'MRJS/utils/physics';
 
 // TODO - is this item still needed?
 

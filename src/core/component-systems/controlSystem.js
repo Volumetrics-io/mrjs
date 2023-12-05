@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { RAPIER } from '../core/rapier';
-import { MRHand } from '../interaction/hand';
-import MRSystem from '../core/MRSystem';
-import { INPUT_COLLIDER_HANDLE_NAMES } from './PhysicsSystem';
+
+import { MRSystem } from 'MRJS/core/mrSystem';
+import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/utils/physics';
+import { MRHand } from 'MRJS/datatypes/hand';
 
 /**
  * This system supports interaction event information including mouse and controller interfacing.

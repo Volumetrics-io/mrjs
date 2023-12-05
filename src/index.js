@@ -51,9 +51,9 @@ import './core/entities/volume';
 export * as THREE from 'three';
 
 // CORE
-export { default as MRElement } from './core/MRElement';
-export { default as MRSystem } from './core/MRSystem';
-export { default as MREntity } from './core/MREntity';
+// export { MRElement } from './core/mrElement';
+// export { MRSystem } from './core/mrSystem';
+// export { MREntity } from './core/mrEntity';
 
 // GEOMETRY
-export { default as UIPlane } from './geometry/UIPlane';
+export { UIPlane } from './utils/geometry';

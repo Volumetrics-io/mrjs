@@ -1,7 +1,8 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
-import MRSystem from '../core/MRSystem';
-import { TextField } from '../UI/Text/TextField';
-import { TextArea } from '../UI/Text/TextArea';
+
+import { MRSystem } from 'MRJS/core/mrSystem';
+import { TextField } from 'MRJS/core/entities/textField';
+import { TextArea } from 'MRJS/core/entities/textArea';
 
 /**
  * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`

@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import { parseDegVector, parseVector } from '../utils/parser.js';
-import { MRElement } from './MRElement.js';
+
+import { MRElement } from 'MRJS/core/mrElement';
+import { stringToDegVector, stringToVector } from 'MRJS/utils/string';
 
 /**
  *
  */
-export default class MREntity extends MRElement {
+export class MREntity extends MRElement {
 
     aabb = new THREE.Box3();
 
@@ -187,10 +188,10 @@ export default class MREntity extends MRElement {
             } else {
                 switch (attr) {
                     case 'rotation':
-                        this.object3D.rotation.fromArray(parseDegVector(this.dataset.rotation));
+                        this.object3D.rotation.fromArray(stringToDegVector(this.dataset.rotation));
                         break;
                     case 'position':
-                        this.object3D.position.fromArray(parseVector(this.dataset.position));
+                        this.object3D.position.fromArray(stringToVector(this.dataset.position));
                         break;
                 }
             }
@@ -249,10 +250,10 @@ export default class MREntity extends MRElement {
                     }
                     switch (mutation.attributeName) {
                         case 'data-position':
-                            this.object3D.position.fromArray(parseVector(this.dataset.position));
+                            this.object3D.position.fromArray(stringToVector(this.dataset.position));
                             break;
                         case 'data-rotation':
-                            this.object3D.rotation.fromArray(parseDegVector(this.dataset.rotation));
+                            this.object3D.rotation.fromArray(stringToDegVector(this.dataset.rotation));
                             break;
 
                         default:

@@ -1,5 +1,5 @@
-import Entity from '../core/entity';
-import { loadModel } from '../utils/loadModel';
+import { MREntity } from 'MRJS/core/mrEntity';
+import { loadModel } from 'MRJS/utils/loadModel';
 
 /**
  *
