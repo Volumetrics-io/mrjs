@@ -9,27 +9,27 @@ export class MRUIEntity extends Entity {
     /**
      *
      */
-    get height() {
-        super.height;
+    get height() {  
+        const rect = this.getBoundingClientRect();      
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale;
-            return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale;
+            return (rect.height / window.innerHeight) * this.windowVerticalScale;
         }
-        return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight;
+        return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
 
     /**
      *
      */
     get width() {
-        super.width;
+        const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
-            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+            return (rect.width / window.innerWidth) * this.windowHorizontalScale;
         }
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
 
     /**
@@ -163,3 +163,5 @@ export class MRUIEntity extends Entity {
         this.background.visible = true;
     }
 }
+
+customElements.get('mr-div') || customElements.define('mr-div', MRUIEntity);

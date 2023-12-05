@@ -70,8 +70,8 @@ export class TextSystem extends System {
                 entity.textObj.sync();
             }
 
+            this.updateStyle(entity);
             if (entity.needsUpdate) {
-                this.updateStyle(entity);
                 entity.needsUpdate = false;
                 entity.textObj.sync(() => {
                     entity.textObj.position.setY(entity.height / 2);

@@ -34,7 +34,8 @@ export default class Entity extends MRElement {
      *
      */
     get width() {
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        const rect = this.getBoundingClientRect();
+        return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
 
     /**
@@ -49,8 +50,9 @@ export default class Entity extends MRElement {
      *
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
-        return (styleHeight / window.innerHeight) * global.viewPortHeight;
+        const rect = this.getBoundingClientRect();
+        // const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
+        return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
 
     /**

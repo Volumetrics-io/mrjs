@@ -101,6 +101,7 @@ export class Container extends LayoutEntity {
         if (delta > scrollMin && delta <= this.scrollMax) {
             this.shuttle.position.y = delta;
         }
+        console.log(this.shuttle.position.y);
     };
 }
 
