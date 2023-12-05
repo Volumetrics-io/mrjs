@@ -7,6 +7,8 @@ import * as THREE from 'three';
 // TODO - this should not be in this folder
 // TODO - is this even still needed? i dont see it used in the rest of the code
 
+// TODO - figure out what here is actually needed and keep
+
 /**
  *
  */
