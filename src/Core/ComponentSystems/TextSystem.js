@@ -211,9 +211,7 @@ export class TextSystem extends MRSystem {
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION;
-        console.log(result);
         if (global.inXR) {
-            console.log('hallooo');
             return result * el.windowHorizontalScale;
         }
         return result;

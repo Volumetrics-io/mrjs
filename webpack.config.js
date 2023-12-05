@@ -45,7 +45,6 @@ export default {
         extensions: ['.mjs', '.js'],
         alias: {
             MRJS: path.resolve(__dirname, './src'), // <-- When you build or restart dev-server, you'll get an error if the path to your global.js file is incorrect.
-            MRJSUtils: path.resolve(__dirname, './src/utils')
         },
         fallback: {
             fs: false,
