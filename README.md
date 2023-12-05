@@ -1,4 +1,4 @@
-# MR.js
+# mrjs
 
 [![npm run build](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/MR.js/blob/main/LICENSE)
 
@@ -12,12 +12,11 @@ MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web 
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/mr.js"></script>
-`
+`<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>`
 
 NPM:
 
-`npm install mrjs`
+`npm i mrjs`
 
 from source:
 
