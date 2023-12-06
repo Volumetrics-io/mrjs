@@ -24,6 +24,7 @@ export class ClippingSystem extends MRSystem {
     /**
      * The generic system update call.
      * Updates the clipped view of every entity in this system's registry.
+     * 
      * @param deltaTime - given timestep to be used for any feature changes
      * @param frame - given frame information to be used for any feature changes
      */
@@ -38,6 +39,7 @@ export class ClippingSystem extends MRSystem {
      *
      * Actually applies the clipping planes to the material setup for rendering.
      * Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
+     * 
      * @param object - the object3D item to be clipped
      * @param clipping - the clipping information to be passed to the material
      */
@@ -53,6 +55,7 @@ export class ClippingSystem extends MRSystem {
      * Helper method for `onNewEntity`.
      *
      * Creates a clipping planes information (still writing this description)
+     * 
      * @param entity - the entity to which we're adding the clipping planes information
      */
     addClippingPlanes(entity) {
@@ -82,6 +85,7 @@ export class ClippingSystem extends MRSystem {
 
     /**
      * When the system swaps to a new entity, this handles applying the clipping planes as needed in the system run.
+     * 
      * @param entity - given entity that will be clipped by the planes.
      */
     onNewEntity(entity) {
@@ -103,8 +107,9 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Updates the stored clipping plans information (... still writing this description).
-     * @param entity
+     * Updates the stored clipping planes to be based on the passed in entity.
+     * 
+     * @param entity - given entity that will be used to create the clipping planes positioning.
      */
     updatePlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed();
