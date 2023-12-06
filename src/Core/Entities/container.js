@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 import { MRLayoutEntity } from 'MRJS/Core/MRLayoutEntity';
-import {MREntity} from 'MRJS/Core/MREntity';
+import { MREntity } from 'MRJS/Core/MREntity';
 import { computeBoundingSphere } from 'MRJS/Utils/Math3D';
 
 /**

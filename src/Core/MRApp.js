@@ -21,7 +21,9 @@ import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
 import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
 
 ('use strict');
-window.mobileCheck = function () { return mobileCheckFunction(); }
+window.mobileCheck = function () {
+    return mobileCheckFunction();
+};
 
 /**
  * @class
