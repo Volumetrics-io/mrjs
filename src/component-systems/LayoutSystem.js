@@ -50,13 +50,15 @@ export class LayoutSystem extends System {
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
 
+        let windowWidth = global.inXR ? container.windowHorizontalScale : global.viewPortWidth;
+        let windowHeight = global.inXR ? container.windowVerticalScale : global.viewPortHeight;
+
         // Adjust the element's position to be relative to the center of the viewport
         const centeredX = rect.left - centerX
-        const centeredY = rect.top - centerY// - window.innerHeight
+        const centeredY = rect.top - centerY
 
-        let threeX = (centeredX / window.innerWidth) * global.viewPortWidth;
-        let threeY = (centeredY / window.innerHeight) * global.viewPortHeight;
-
+        let threeX = (centeredX / window.innerWidth) * windowWidth;
+        let threeY = (centeredY / window.innerHeight) * windowHeight;
 
         threeX += entity.width / 2
         threeY += entity.height / 2
@@ -64,8 +66,6 @@ export class LayoutSystem extends System {
 
         this.tempPosition.setX(threeX)
         this.tempPosition.setY(-threeY)
-
-       let local = container.object3D.worldToLocal(this.tempPosition)
 
         entity.object3D.position.setX(this.tempPosition.x)
         entity.object3D.position.setY(this.tempPosition.y)

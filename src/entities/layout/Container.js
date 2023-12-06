@@ -37,8 +37,8 @@ export class Container extends LayoutEntity {
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
-            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
             this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
+            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
@@ -46,7 +46,7 @@ export class Container extends LayoutEntity {
             this.scrollMax = MRJS.computeBoundingSphere(this.shuttle).radius * 2 - this.height;
         });
 
-        this.parentElement.addEventListener('container-mutated', (event) => {
+        this.addEventListener('container-mutated', (event) => {
             this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
         });
 

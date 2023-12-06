@@ -209,9 +209,10 @@ export class MRApp extends MRElement {
                     this.ARButton.blur();
                     global.inXR = true;
                 });
-                this.appendChild(this.ARButton);
+                document.body.appendChild(this.ARButton);
 
                 this.ARButton.style.position = 'fixed';
+                this.ARButton.style.zIndex = 10000;
             }
         });
 

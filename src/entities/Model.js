@@ -15,9 +15,9 @@ export class Model extends Entity {
     /**
      *
      */
-    get height() {
-        return this.contentHeight;
-    }
+    // get height() {
+    //     return this.contentHeight;
+    // }
 
     /**
      *
