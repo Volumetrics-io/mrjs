@@ -1,25 +1,26 @@
-# MR.js
+# mrjs
 
-[![npm run build](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/MR.js/blob/main/LICENSE)
+[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
 
 An extendable WebComponents library for the Spatial Web
 
 ## Overview
 
-MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
  
 ## Getting started
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/mr.js"></script>
-`
+`<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>`
 
 NPM:
 
-`npm install mrjs`
+`npm i mrjs`
 
 from source:
+
+clone this repo and run:
 
 `npm install && npm run build`
 
@@ -147,11 +148,11 @@ Rapier.js is fully integrated out of the box. We use it to power collision based
 
 ## Extendable
 
-Built on top of THREE.js & WebComponents, and a built in ECS, MR.js provides a familiar interface to create custom Elements that can be reused through out your app.
+Built on top of THREE.js & WebComponents, and a built in ECS, mrjs provides a familiar interface to create custom Elements that can be reused through out your app.
 
 ### ECS
 
-MR.js is designed from the ground up using the Entity-Component-System Architecture. This is a common architecture implemented by Game Engines such as Unity, Unreal, and Apple's RealityKit.
+mrjs is designed from the ground up using the Entity-Component-System Architecture. This is a common architecture implemented by Game Engines such as Unity, Unreal, and Apple's RealityKit.
 
 #### Entity
 
@@ -180,7 +181,7 @@ customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Sp
 
 #### Components
 
-Components are attached to entities and used to store data. in MR.js they are implemented using attributes beginning with the prefix `comp-`.
+Components are attached to entities and used to store data. in mrjs they are implemented using attributes beginning with the prefix `comp-`.
 
 Example:
 
