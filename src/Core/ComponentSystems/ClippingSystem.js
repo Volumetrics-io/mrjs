@@ -50,6 +50,37 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
+     * Helper method for `onNewEntity`.
+     * 
+     * Creates a clipping planes information (still writing this description)
+     * @param entity - the entity to which we're adding the clipping planes information
+     */
+    addClippingPlanes(entity) {
+        this.geometry = entity.clipping.geometry.toNonIndexed();
+        let geoPositionArray = this.geometry.attributes.position.array;
+
+        for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
+            this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
+            this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
+            this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
+
+            entity.object3D.localToWorld(this.coplanarPointA);
+            entity.object3D.localToWorld(this.coplanarPointB);
+            entity.object3D.localToWorld(this.coplanarPointC);
+
+            const newPlane = new THREE.Plane();
+            newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
+            // if (this.app.debug) {
+            //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
+            //     this.app.scene.add( helper );
+            // }
+
+            entity.clipping.planes.push(newPlane);
+            entity.clipping.planeIDs.push(f);
+        }
+    }
+
+    /**
      * When the system swaps to a new entity, this handles applying the clipping planes as needed in the system run.
      * @param entity - given entity that will be clipped by the planes.
      */
@@ -72,60 +103,28 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Called on an event whenever a new entity is added. All systems have it but not all of them utilize it.
-     * 
-     * Creates a clipping planes information (still writing this description)
-     * @param entity - the entity to which we're adding the clipping planes information
-     */
-    addClippingPlanes(entity) {
-        this.geometry = entity.clipping.geometry.toNonIndexed();
-
-        for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
-            this.coplanarPointA.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
-            this.coplanarPointB.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
-            this.coplanarPointC.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
-
-            entity.object3D.localToWorld(this.a);
-            entity.object3D.localToWorld(this.b);
-            entity.object3D.localToWorld(this.c);
-
-            const newPlane = new THREE.Plane();
-
-            newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
-            // if (this.app.debug) {
-            //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
-            //     this.app.scene.add( helper );
-            // }
-
-            entity.clipping.planes.push(newPlane);
-            entity.clipping.planeIDs.push(f);
-        }
-    }
-
-    /**
      * Updates the stored clipping plans information (... still writing this description).
      * @param entity
      */
     updatePlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed();
+        let geoPositionArray = this.geometry.attributes.position.array;
 
         let planeIndex = 0;
-
         for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
             if (!entity.clipping.planeIDs.includes(f)) {
                 continue;
             }
 
-            this.coplanarPointA.set(-this.geometry.attributes.position.array[f], -this.geometry.attributes.position.array[f + 1], -this.geometry.attributes.position.array[f + 2]);
-            this.coplanarPointB.set(-this.geometry.attributes.position.array[f + 3], -this.geometry.attributes.position.array[f + 4], -this.geometry.attributes.position.array[f + 5]);
-            this.coplanarPointC.set(-this.geometry.attributes.position.array[f + 6], -this.geometry.attributes.position.array[f + 7], -this.geometry.attributes.position.array[f + 8]);
+            this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
+            this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
+            this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
             entity.object3D.localToWorld(this.coplanarPointA);
             entity.object3D.localToWorld(this.coplanarPointB);
             entity.object3D.localToWorld(this.coplanarPointC);
 
             entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
-
             planeIndex += 1;
         }
     }
