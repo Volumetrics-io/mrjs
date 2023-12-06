@@ -20,7 +20,7 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            entity.object3D.scale.setScalar((entity.compStyle.scale != 'none') ? entity.compStyle.scale : 1);
+            entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
 
             if (entity.compStyle.zIndex != 'auto') {
                 entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);

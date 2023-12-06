@@ -9,7 +9,6 @@ import { MRElement } from 'MRJS/Core/MRElement';
 import { RAPIER } from 'MRJS/Utils/Physics';
 import { stringToJson, stringToVector } from 'MRJS/Utils/String';
 
-
 import { TextSystem } from 'MRJS/Core/ComponentSystems/TextSystem';
 import { ControlSystem } from 'MRJS/Core/ComponentSystems/ControlSystem';
 import { PhysicsSystem } from 'MRJS/Core/ComponentSystems/PhysicsSystem';

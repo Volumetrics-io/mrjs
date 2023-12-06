@@ -4,7 +4,7 @@ import { MRSystem } from 'MRJS/Core/MRSystem';
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 import { TextField } from 'MRJS/Core/Entities/TextField';
 import { TextArea } from 'MRJS/Core/Entities/TextArea';
-import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display'
+import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display';
 
 /**
  * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`

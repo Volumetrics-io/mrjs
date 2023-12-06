@@ -64,7 +64,7 @@ export class TextArea extends MRTextEntity {
         if (isNaN(selectBox.right)) {
             return;
         }
-        this.cursor.position.setX((this.input.selectionStart == 0) ? selectBox.left : selectBox.right);
+        this.cursor.position.setX(this.input.selectionStart == 0 ? selectBox.left : selectBox.right);
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
     };
 }
