@@ -2,7 +2,9 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { loadModel } from 'MRJS/Utils/LoadModel';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MREntity
  */
 export class Model extends MREntity {
     /**
@@ -13,7 +15,7 @@ export class Model extends MREntity {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get height() {
         return this.contentHeight;

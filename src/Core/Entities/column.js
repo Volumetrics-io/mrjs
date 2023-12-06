@@ -1,8 +1,11 @@
 import { MRLayoutEntity } from 'MRJS/Core/MRLayoutEntity';
+import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRLayoutEntity
  */
 export class Column extends MRLayoutEntity {
     /**
@@ -36,7 +39,7 @@ export class Column extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.shuttle.add(entity.object3D);
@@ -45,7 +48,7 @@ export class Column extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.shuttle.remove(entity.object3D);

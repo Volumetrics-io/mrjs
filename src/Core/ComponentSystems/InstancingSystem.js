@@ -1,9 +1,12 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'MRJS/Core/MRSystem';
+import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
+ * @class
+ * @classdesc System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
+ * @augments MRSystem
  */
 class InstancingSystem extends MRSystem {
     /**
@@ -22,8 +25,8 @@ class InstancingSystem extends MRSystem {
      * The generic system update call.
      * Updates the entity and its instances to their appropriate transformations and visuals
      * based on the picked predefined option.
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
@@ -42,7 +45,7 @@ class InstancingSystem extends MRSystem {
      * Determines what meshes are attached from this entity and
      * When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether
      * that be a group or mesh).
-     * @param entity - the entity with the geometry to be instanced and the chosen setup option
+     * @param {MREntity} entity - the entity with the geometry to be instanced and the chosen setup option
      */
     attachedComponent(entity) {
         // ----- setup for instanced geometry -----

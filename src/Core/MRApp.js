@@ -10,7 +10,8 @@ import { RAPIER } from 'MRJS/Utils/Physics';
 import { stringToJson, stringToVector } from 'MRJS/Utils/String';
 import { mobileCheckFunction } from 'MRJS/Utils/Display';
 
-
+import { MREntity } from 'MRJS/Core/MREntity';
+import { MRSystem } from 'MRJS/Core/MRSystem';
 import { TextSystem } from 'MRJS/Core/ComponentSystems/TextSystem';
 import { ControlSystem } from 'MRJS/Core/ComponentSystems/ControlSystem';
 import { PhysicsSystem } from 'MRJS/Core/ComponentSystems/PhysicsSystem';
@@ -22,9 +23,10 @@ import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
 ('use strict');
 window.mobileCheck = function () { return mobileCheckFunction(); }
 
-// TODO - to complete descriptions.
 /**
- * The engine handler for running MRjs as an App.
+ * @class
+ * @classdesc The engine handler for running MRjs as an App.
+ * @augments MRElement
  */
 export class MRApp extends MRElement {
     /**
@@ -114,13 +116,13 @@ export class MRApp extends MRElement {
     //       - ?
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     mutatedAttribute(mutation) {}
 
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
 
@@ -282,7 +284,7 @@ export class MRApp extends MRElement {
 
     /**
      *
-     * @param system
+     * @param {MRSystem} system - TODO
      */
     registerSystem(system) {
         this.systems.add(system);
@@ -290,7 +292,7 @@ export class MRApp extends MRElement {
 
     /**
      *
-     * @param system
+     * @param {MRSystem} system - TODO
      */
     unregisterSystem(system) {
         this.systems.delete(system);
@@ -298,7 +300,7 @@ export class MRApp extends MRElement {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.scene.add(entity.object3D);
@@ -306,7 +308,7 @@ export class MRApp extends MRElement {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.scene.remove(entity.object3D);
@@ -338,8 +340,8 @@ export class MRApp extends MRElement {
 
     /**
      *
-     * @param timeStamp
-     * @param frame
+     * @param {number} timeStamp - TODO
+     * @param {object} frame - TODO
      */
     render(timeStamp, frame) {
         const deltaTime = this.clock.getDelta();

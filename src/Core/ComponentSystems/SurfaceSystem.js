@@ -2,10 +2,10 @@ import * as THREE from 'three';
 
 import { MRSystem } from 'MRJS/Core/MRSystem';
 
-// TODO - more to add here
-
 /**
- * Handles all items (3D and 2D) associated with an mr-surface including the surface itself.
+ * @class
+ * @classdesc Handles all items (3D and 2D) associated with an mr-surface including the surface itself.
+ * @augments MRSystem
  */
 export class SurfaceSystem extends MRSystem {
     /**
@@ -70,8 +70,8 @@ export class SurfaceSystem extends MRSystem {
     /**
      * The generic system update call.
      * // TODO - add better description here
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const surface of this.registry) {
@@ -146,8 +146,8 @@ export class SurfaceSystem extends MRSystem {
 
     /**
      *
-     * @param hitResults
-     * @param frame
+     * @param {object} hitResults - TODO
+     * @param {object} frame - TODO
      */
     placeSurface(hitResults, frame) {
         if (!this.currentSurface.viz.visible) {

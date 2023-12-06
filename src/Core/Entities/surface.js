@@ -4,7 +4,9 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MREntity
  */
 export class Surface extends MREntity {
     /**
@@ -64,7 +66,7 @@ export class Surface extends MREntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.group.add(entity.object3D);
@@ -72,7 +74,7 @@ export class Surface extends MREntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.group.remove(entity.object3D);
@@ -80,7 +82,7 @@ export class Surface extends MREntity {
 
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     mutated(mutation) {
         if (mutation.type != 'attributes') {

@@ -146,7 +146,8 @@ function loadBVH(filePath, scene) {
 // Loads Collada file
 /**
  *
- * @param filePath
+ * @param {string} filePath - TODO
+ * @returns {Promise<object>} - TODO
  */
 function loadDAE(filePath) {
     const loader = new ColladaLoader();
@@ -201,7 +202,8 @@ function loadDRACO(filePath, scene, decoderConfig, libraryPath) {
 // Loads fbx file
 /**
  *
- * @param filePath
+ * @param {string} filePath - TODO
+ * @returns {Promise<object>} - TODO
  */
 function loadFBX(filePath) {
     const loader = new FBXLoader();
@@ -239,7 +241,8 @@ function loadGCODE(filePath, scene) {
 // Loads GLTF/GLB file
 /**
  *
- * @param filePath
+ * @param {string} filePath - TODO
+ * @returns {Promise<object>} - TODO
  */
 async function loadGLTF(filePath) {
     const loader = new GLTFLoader();
@@ -362,7 +365,8 @@ function loadPLY(filePath, scene) {
 // Loads stl file
 /**
  *
- * @param filePath
+ * @param {string} filePath - TODO
+ * @returns {Promise<object>} - TODO
  */
 async function loadSTL(filePath) {
     const loader = new STLLoader();
@@ -395,7 +399,8 @@ async function loadSTL(filePath) {
 // Loads USD/USDZ file
 /**
  *
- * @param filePath
+ * @param {string} filePath - TODO
+ * @returns {Promise<object>} - TODO
  */
 async function loadUSDZ(filePath) {
     const usdzLoader = new USDZLoader();
@@ -416,8 +421,9 @@ async function loadUSDZ(filePath) {
 
 /**
  *
- * @param filePath
- * @param extension
+ * @param {string} filePath - TODO
+ * @param {string} extension - TODO
+ * @returns {object} - TODO
  */
 export function loadModel(filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but

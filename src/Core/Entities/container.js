@@ -2,10 +2,13 @@ import * as THREE from 'three';
 
 import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 import { MRLayoutEntity } from 'MRJS/Core/MRLayoutEntity';
+import {MREntity} from 'MRJS/Core/MREntity';
 import { computeBoundingSphere } from 'MRJS/Utils/Math3D';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRLayoutEntity
  */
 export class Container extends MRLayoutEntity {
     /**
@@ -59,7 +62,7 @@ export class Container extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.shuttle.add(entity.object3D);
@@ -67,7 +70,7 @@ export class Container extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.shuttle.remove(entity.object3D);

@@ -3,11 +3,13 @@ import { Text } from 'troika-three-text';
 import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRUIEntity
  */
 export class MRTextEntity extends MRUIEntity {
     /**
-     *
+     * @returns {number} - TODO
      */
     get height() {
         super.height;

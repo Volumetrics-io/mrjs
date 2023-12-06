@@ -2,7 +2,9 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { Surface } from 'MRJS/Core/Entities/Surface';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MREntity
  */
 export default class Volume extends MREntity {
     /**
@@ -47,7 +49,7 @@ export default class Volume extends MREntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.object3D.add(entity.object3D);
@@ -72,8 +74,8 @@ export default class Volume extends MREntity {
 
     /**
      *
-     * @param key
-     * @param vector
+     * @param {string} key - TODO
+     * @param {object} vector - TODO
      */
     snapChildToWall(key, vector) {
         switch (key) {

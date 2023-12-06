@@ -4,7 +4,9 @@ import { Object3D } from 'three';
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRTextEntity
  */
 export class TextField extends MRTextEntity {
     /**

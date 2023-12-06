@@ -1,7 +1,7 @@
-// TODO - is this class really needed?
-
 /**
- * The first step in MR.js extending an HTMLElement. Used as a base for both `mr-app` and `mr-entity`.
+ * @class
+ * @classdesc The first step in MR.js extending an HTMLElement. Used as a base for both `mr-app` and `mr-entity`.
+ * @augments HTMLElement
  */
 export class MRElement extends HTMLElement {
     /**
@@ -15,13 +15,13 @@ export class MRElement extends HTMLElement {
 
     /**
      *
-     * @param entity
+     * @param {object} entity - TODO
      */
     add(entity) {}
 
     /**
      *
-     * @param entity
+     * @param {object} entity - TODO
      */
     remove(entity) {}
 }

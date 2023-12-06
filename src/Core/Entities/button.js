@@ -1,7 +1,9 @@
 import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRUIEntity
  */
 export default class Button extends MRUIEntity {
     /**

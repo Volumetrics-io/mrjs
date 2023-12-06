@@ -4,7 +4,8 @@
 // must do that before deletion
 
 /**
- *
+ * @class
+ * @classdesc TODO
  */
 export class ClippingGeometry {
     planes = [];
@@ -17,7 +18,7 @@ export class ClippingGeometry {
 
     /**
      *
-     * @param geometry
+     * @param {object} geometry - TODO
      */
     constructor(geometry) {
         this.geometry = geometry;

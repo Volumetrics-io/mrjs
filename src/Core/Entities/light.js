@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MREntity
  */
 export default class Light extends MREntity {
     /**

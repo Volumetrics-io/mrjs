@@ -12,11 +12,12 @@ String.prototype.spliceSplit = function (index, count, add) {
 
 /**
  *
- * @param attrString
+ * @param {string} attrString - TODO
+ * @returns {object} - TODO
  */
 export function stringToJson(attrString) {
     if (attrString == null) {
-        return;
+        return null;
     }
     const regexPattern = /(\w+):\s*([^;]+)/g;
     const jsonObject = {};
@@ -46,7 +47,8 @@ export function stringToJson(attrString) {
 // TODO - is this fine here?
 /**
  *
- * @param componentData
+ * @param {object} componentData - TODO
+ * @returns {string} - TODO
  */
 export function jsonToString(componentData) {
     let compString = '';
@@ -73,7 +75,8 @@ export function jsonToString(componentData) {
 
 /**
  *
- * @param str
+ * @param {string} str - TODO
+ * @returns {object} - TODO
  */
 export function stringToVector(str) {
     return str.split(' ').map(Number);
@@ -81,7 +84,8 @@ export function stringToVector(str) {
 
 /**
  *
- * @param str
+ * @param {string} str - TODO
+ * @returns {object} - TODO
  */
 export function stringToDegVector(str) {
     return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
@@ -89,7 +93,8 @@ export function stringToDegVector(str) {
 
 /**
  *
- * @param val
+ * @param {string} val - TODO
+ * @returns {number} - TODO
  */
 export function stringToDimensionValue(val) {
     if (val.includes('%')) {

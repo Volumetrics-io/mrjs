@@ -2,7 +2,9 @@ import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRUIEntity
  */
 export class Image extends MRUIEntity {
     /**
@@ -52,7 +54,7 @@ export class Image extends MRUIEntity {
 
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     mutated(mutation) {
         super.mutated();
@@ -72,8 +74,8 @@ export class Image extends MRUIEntity {
 
     /**
      *
-     * @param texture
-     * @param aspect
+     * @param {object} texture - TODO
+     * @param {number} aspect - TODO
      */
     cover(texture, aspect) {
         texture.matrixAutoUpdate = false;

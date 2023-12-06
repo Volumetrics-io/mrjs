@@ -2,10 +2,11 @@ import * as THREE from 'three';
 
 /**
  *
- * @param width
- * @param height
- * @param radii
- * @param s
+ * @param {number} width - TODO
+ * @param {number} height - TODO
+ * @param {number} radii - TODO
+ * @param {number} s - TODO
+ * @returns {object} - TODO
  */
 export function UIPlane(width, height, radii, s) {
     // width, height, radius corner, smoothness
@@ -18,7 +19,7 @@ export function UIPlane(width, height, radii, s) {
     const r = radii[0] == 0 ? 0.0001 : radii[0];
 
     if (!w || !h || !r || !s) {
-        return;
+        return null;
     }
 
     // helper const's

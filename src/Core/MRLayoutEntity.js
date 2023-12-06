@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRUIEntity
  */
 export class MRLayoutEntity extends MRUIEntity {
     /**

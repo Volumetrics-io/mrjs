@@ -5,7 +5,9 @@ import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/Utils/Physics';
 import { MRHand } from 'MRJS/Datatypes/Hand';
 
 /**
- * This system supports interaction event information including mouse and controller interfacing.
+ * @class
+ * @classdesc This system supports interaction event information including mouse and controller interfacing.
+ * @augments MRSystem
  */
 export class ControlSystem extends MRSystem {
     /**
@@ -61,8 +63,8 @@ export class ControlSystem extends MRSystem {
     /**
      * The generic system update call.
      * Updates the meshes and states for both the left and right hand visuals.
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         this.leftHand.setMesh();
@@ -127,7 +129,8 @@ export class ControlSystem extends MRSystem {
 
     /**
      * Raycast into the scene using the information from the event that called it.
-     * @param event - the event being handled
+     * @param {object} event - the event being handled
+     * @returns {object} ....? TODO
      */
     castRay(event) {
         let x = 0;

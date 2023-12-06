@@ -2,12 +2,15 @@ import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'MRJS/Core/MRSystem';
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
+import { MREntity } from 'MRJS/Core/MREntity';
 import { TextField } from 'MRJS/Core/Entities/TextField';
 import { TextArea } from 'MRJS/Core/Entities/TextArea';
 import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display';
 
 /**
- * Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
+ * @class
+ * @classdesc Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
+ * @augments MRSystem
  */
 export class TextSystem extends MRSystem {
     /**
@@ -53,8 +56,8 @@ export class TextSystem extends MRSystem {
     /**
      * The generic system update call.
      * // TODO - add better description here
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
@@ -117,7 +120,8 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param weight
+     * @param {number} weight - TODO
+     * @returns {string} - TODO
      */
     parseFontWeight(weight) {
         if (weight >= 500) {
@@ -129,8 +133,9 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param verticalAlign
-     * @param entity
+     * @param {number} verticalAlign - TODO
+     * @param {MREntity} entity - TODO
+     * @returns {string} - TODO
      */
     getVerticalAlign(verticalAlign, entity) {
         let result = this.parseFontSize(verticalAlign, entity);
@@ -155,8 +160,9 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param lineHeight
-     * @param entity
+     * @param {number} lineHeight - TODO
+     * @param {number} entity - TODO
+     * @returns {number} - TODO
      */
     getLineHeight(lineHeight, entity) {
         let result = this.parseFontSize(lineHeight, entity);
@@ -170,7 +176,8 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param textAlign
+     * @param {string} textAlign - TODO
+     * @returns {string} - TODO
      */
     setTextAlign(textAlign) {
         switch (textAlign) {
@@ -187,8 +194,8 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param textObj
-     * @param color
+     * @param {object} textObj - TODO
+     * @param {object} color - TODO
      */
     setColor(textObj, color) {
         if (color.includes('rgba')) {
@@ -206,8 +213,9 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param val
-     * @param el
+     * @param {string} val - TODO
+     * @param {object} el - TODO
+     * @returns {number} - TODO
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION;
@@ -219,7 +227,8 @@ export class TextSystem extends MRSystem {
 
     /**
      *
-     * @param cssString
+     * @param {string} cssString - TODO
+     * @returns {object} - TODO
      */
     parseFontFace(cssString) {
         const obj = {};

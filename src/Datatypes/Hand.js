@@ -41,13 +41,14 @@ const HAND_MAPPING = {
 };
 
 /**
- *
+ * @class
+ * @classdesc TODO
  */
 export class MRHand {
     /**
      *
-     * @param handedness
-     * @param app
+     * @param {object} handedness - TODO
+     * @param {object} app - TODO
      */
     constructor(handedness, app) {
         this.handedness = handedness;
@@ -93,7 +94,7 @@ export class MRHand {
 
     /**
      *
-     * @param app
+     * @param {object} app - TODO
      */
     initPhysicsBodies(app) {
         for (const joint of joints) {
@@ -142,7 +143,6 @@ export class MRHand {
     }
 
     /**
-     *
      */
     pinchMoved() {
         if (!this.pinch) {
@@ -210,7 +210,8 @@ export class MRHand {
 
     /**
      *
-     * @param jointName
+     * @param {string} jointName - TODO
+     * @returns {object} - TODO
      */
     getJointOrientation(jointName) {
         const result = new THREE.Quaternion();
@@ -231,7 +232,8 @@ export class MRHand {
 
     /**
      *
-     * @param jointName
+     * @param {string} jointName - TODO
+     * @returns {object} - TODO
      */
     getJointPosition(jointName) {
         const result = new THREE.Vector3();
@@ -257,7 +259,7 @@ export class MRHand {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     getCursorPosition() {
         const index = this.getJointPosition('index-finger-tip');

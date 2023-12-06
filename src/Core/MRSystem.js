@@ -1,7 +1,8 @@
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
  */
 export class MRSystem {
     frameRate = null;
@@ -10,8 +11,8 @@ export class MRSystem {
 
     /**
      *
-     * @param useComponents
-     * @param frameRate
+     * @param {boolean} useComponents - TODO
+     * @param {number} frameRate - TODO
      */
     constructor(useComponents = true, frameRate = null) {
         this.app = document.querySelector('mr-app');
@@ -53,8 +54,8 @@ export class MRSystem {
 
     /**
      *
-     * @param deltaTime
-     * @param frame
+     * @param {number} deltaTime - TODO
+     * @param {object} frame - TODO
      */
     __update(deltaTime, frame) {
         if (this.frameRate) {
@@ -70,23 +71,23 @@ export class MRSystem {
     // Called per frame
     /**
      *
-     * @param deltaTime
-     * @param frame
+     * @param {number} deltaTime - TODO
+     * @param {object} frame - TODO
      */
     update(deltaTime, frame) {}
 
     // called when a new entity is added to the scene
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     onNewEntity(entity) {}
 
     // called when the component is initialized
     /**
      *
-     * @param entity
-     * @param data
+     * @param {MREntity} entity - TODO
+     * @param {object} data - TODO
      */
     attachedComponent(entity, data) {
         //console.log(`attached ${this.componentName} ${entity.dataset[this.componentName]}`);
@@ -94,9 +95,8 @@ export class MRSystem {
 
     /**
      *
-     * @param entity
-     * @param data
-     * @param oldData
+     * @param {MREntity} entity - TODO
+     * @param {object} oldData - TODO
      */
     updatedComponent(entity, oldData) {
         //console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
@@ -105,7 +105,7 @@ export class MRSystem {
     // called when the component is removed
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     detachedComponent(entity) {
         console.log(`detached ${this.componentName}`);

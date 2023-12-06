@@ -4,11 +4,13 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MREntity
  */
 export class MRUIEntity extends MREntity {
     /**
-     *
+     * @returns {number} - TODO
      */
     get height() {
         super.height;
@@ -21,7 +23,7 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get width() {
         super.width;
@@ -84,7 +86,8 @@ export class MRUIEntity extends MREntity {
 
     /**
      *
-     * @param val
+     * @param {string} val - TODO
+     * @returns {number} - TODO
      */
     pxToThree(val) {
         if (global.inXR) {
@@ -95,7 +98,8 @@ export class MRUIEntity extends MREntity {
 
     /**
      *
-     * @param val
+     * @param {string} val - TODO
+     * @returns {number} - TODO
      */
     domToThree(val) {
         if (typeof val === 'string') {

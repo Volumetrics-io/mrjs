@@ -4,7 +4,9 @@ import { MRElement } from 'MRJS/Core/MRElement';
 import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'MRJS/Utils/String';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRElement
  */
 export class MREntity extends MRElement {
     aabb = new THREE.Box3();
@@ -61,14 +63,14 @@ export class MREntity extends MRElement {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get width() {
         return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get contentWidth() {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
@@ -76,7 +78,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get height() {
         const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
@@ -84,7 +86,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     *
+     * @returns {number} - TODO
      */
     get contentHeight() {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
@@ -227,14 +229,14 @@ export class MREntity extends MRElement {
 
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     mutated(mutation) {}
 
     /**
      *
-     * @param mutationList
-     * @param observer
+     * @param {object} mutationList - TODO
+     * @param {object} observer - TODO
      */
     mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {
@@ -268,7 +270,7 @@ export class MREntity extends MRElement {
 
     /**
      *
-     * @param mutation
+     * @param {object} mutation - TODO
      */
     componentMutated(mutation) {
         const compName = mutation.attributeName.split('comp-')[1];
@@ -300,7 +302,7 @@ export class MREntity extends MRElement {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         entity.object3D.receiveShadow = true;
@@ -310,7 +312,7 @@ export class MREntity extends MRElement {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.object3D.remove(entity.object3D);
@@ -318,7 +320,7 @@ export class MREntity extends MRElement {
 
     /**
      *
-     * @param callBack
+     * @param {Function} callBack - TODO
      */
     traverse(callBack) {
         callBack(this);

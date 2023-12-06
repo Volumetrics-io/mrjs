@@ -2,8 +2,9 @@ import * as THREE from 'three';
 
 /**
  *
- * @param group
- * @param relativeTo
+ * @param {object} group - TODO
+ * @param {object} relativeTo - TODO
+ * @returns {object} - TODO
  */
 export function computeBoundingSphere(group, relativeTo = null) {
     let sphere = new THREE.Sphere();

@@ -1,5 +1,9 @@
 export const VIRTUAL_DISPLAY_RESOLUTION = 1080;
 
+/**
+ * Checks whether the user is on mobile or not based on a large list of potential options.
+ * @returns {boolean} - TODO
+ */
 export function mobileCheckFunction() {
     let userAgent = navigator.userAgent || navigator.vendor || window.opera;
     const userAgentRegex0 = new RegExp('(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|\

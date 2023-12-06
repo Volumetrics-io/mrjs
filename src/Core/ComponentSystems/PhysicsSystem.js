@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'MRJS/Core/MRSystem';
+import { MREntity } from 'MRJS/Core/MREntity';
 import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/Utils/Physics';
 
 // TODO - more to fill out here still
 
 /**
- * The physics system functions differently from other systems,
+ * @class
+ * @classdesc The physics system functions differently from other systems,
  * Rather than attaching components, physical properties such as
  * shape, body, mass, etc are definied as attributes.
  * if shape and body are not defined, they default to the geometry
@@ -15,6 +17,7 @@ import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/U
  *
  * Alternatively, you can also expressly attatch a comp-physics
  * attribute for more detailed control.
+ * @augments MRSystem
  */
 export class PhysicsSystem extends MRSystem {
     /**
@@ -52,8 +55,8 @@ export class PhysicsSystem extends MRSystem {
     /**
      * The generic system update call.
      * Based on the captured physics events for the frame, handles all items appropriately.
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         this.app.physicsWorld.step(this.eventQueue);
@@ -127,8 +130,8 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      *
-     * @param handle1
-     * @param handle2
+     * @param {number} handle1 - TODO
+     * @param {number} handle2 - TODO
      */
     onContactEnd(handle1, handle2) {
         const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
@@ -219,7 +222,7 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     onNewEntity(entity) {
         this.initPhysicsBody(entity);
@@ -228,7 +231,7 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     initPhysicsBody(entity) {
         if (entity.physics.type == 'none') {
@@ -254,7 +257,7 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     updateBody(entity) {
         if (entity.physics.type == 'none') {
@@ -272,7 +275,8 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * Initializes a collider based on the physics data.
-     * @param physicsData - data needed to be used to setup the collider interaction
+     * @param {object} physicsData - data needed to be used to setup the collider interaction
+     * @returns {object} ...? TODO
      */
     initColliderDesc(physicsData) {
         switch (physicsData.type) {
@@ -280,13 +284,13 @@ export class PhysicsSystem extends MRSystem {
             case 'ui':
                 return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
             default:
-                break;
+                return null;
         }
     }
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     updateCollider(entity) {
         switch (entity.physics.type) {

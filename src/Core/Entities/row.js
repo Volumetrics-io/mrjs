@@ -2,9 +2,12 @@ import * as THREE from 'three';
 
 import { Column } from 'MRJS/Core/Entities/Column';
 import { MRLayoutEntity } from 'MRJS/Core/MRLayoutEntity';
+import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- *
+ * @class
+ * @classdesc TODO
+ * @augments MRLayoutEntity
  */
 export class Row extends MRLayoutEntity {
     /**
@@ -47,7 +50,7 @@ export class Row extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.shuttle.add(entity.object3D);
@@ -56,7 +59,7 @@ export class Row extends MRLayoutEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.shuttle.remove(entity.object3D);

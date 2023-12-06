@@ -2,8 +2,9 @@ import * as THREE from 'three';
 
 /**
  *
- * @param val
- * @param decimal
+ * @param {number} val - TODO
+ * @param {number} decimal - TODO
+ * @returns {number} - TODO
  */
 export function roundTo(val, decimal) {
     return Math.round(val * decimal) / decimal;
@@ -11,8 +12,8 @@ export function roundTo(val, decimal) {
 
 /**
  *
- * @param vector
- * @param decimal
+ * @param {object} vector - TODO
+ * @param {number} decimal - TODO
  */
 export function roundVectorTo(vector, decimal) {
     vector.multiplyScalar(decimal);
@@ -22,7 +23,8 @@ export function roundVectorTo(vector, decimal) {
 
 /**
  *
- * @param val
+ * @param {number} val - TODO
+ * @returns {number} - TODO
  */
 export function radToDeg(val) {
     return (val * Math.PI) / 180;

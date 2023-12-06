@@ -1,7 +1,9 @@
 import { MRSystem } from 'MRJS/Core/MRSystem';
 
 /**
- * Adjusts the understood container for the layout to fit all necessary items.
+ * @class
+ * @classdesc Adjusts the understood container for the layout to fit all necessary items.
+ * @augments MRSystem
  */
 export class LayoutSystem extends MRSystem {
     /**
@@ -23,8 +25,8 @@ export class LayoutSystem extends MRSystem {
     /**
      * The generic system update call.
      * For every entity handled by the system, adjusts the container's size to fit properly.
-     * @param deltaTime - given timestep to be used for any feature changes
-     * @param frame - given frame information to be used for any feature changes
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
