@@ -20,7 +20,7 @@ import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
 import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
 
 ('use strict');
-window.mobileCheck = mobileCheckFunction();
+window.mobileCheck = function () { return mobileCheckFunction(); }
 
 // TODO - to complete descriptions.
 /**
