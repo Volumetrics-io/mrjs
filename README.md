@@ -1,25 +1,26 @@
-# MR.js
+# mrjs
 
-[![npm run build](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/MR.js/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/MR.js/blob/main/LICENSE)
+[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
 
 An extendable WebComponents library for the Spatial Web
 
 ## Overview
 
-MR.js is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
  
 ## Getting started
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs@latest/dist/mr.js"></script>
-`
+`<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>`
 
 NPM:
 
-`npm install volumetrics-io/mr.js`
+`npm i mrjs`
 
 from source:
+
+clone this repo and run:
 
 `npm install && npm run build`
 
@@ -42,64 +43,97 @@ Both options require you generate an ssl certificate & key via openssl:
 
 # Features
 
+## General Starting CSS
+
+*For now there is some needed initial css for readability of the following feature examples*
+*Play around with the options as you get more used to the 2D/3D html setup*
+
+```css
+* {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-collapse: collapse;
+}
+
+html {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+body {
+    position: fixed;
+}
+
+mr-container {
+    height: 100vh;
+    width: 100%;
+}
+
+mr-app * {
+    display: block;
+}
+
+mr-text {
+    color: red;
+    font-size: 100px;
+}
+
+mr-model {
+    scale: 0.001;
+    z-index: 100;
+}
+
+```
+
 ## 2D UI & Layout Components
 
 ```html
 <mr-app>
+    <!-- The 3D Area -->
     <mr-surface>
-    <mr-container>
-        <mr-panel></mr-panel>
-        <mr-row>
-            <mr-text>
-                This is a quick example of an image gallery with explainer text.
-            </mr-text>
-            <mr-column>
-                <mr-img src="..."></mr-img>
-                <mr-row height="0.02">
-                    <mr-button onClick="Prev()"> <- </mr-button>
-                    <mr-button onClick="Next()"> -> </mr-button>
-                </mr-row>
-            </mr-column>
-        </mr-row>
-    </mr-container>
+        <!-- The 3D UI Container -->
+        <mr-container>
+            <mr-row>
+                <mr-text>
+                    This is a quick example of an image gallery with explainer text.
+                </mr-text>
+                <mr-column>
+                    <mr-img src="..."></mr-img>
+                    <mr-row height="0.02">
+                        <mr-button onClick="Prev()"> <- </mr-button>
+                        <mr-button onClick="Next()"> -> </mr-button>
+                    </mr-row>
+                </mr-column>
+            </mr-row>
+        </mr-container>
     </mr-surface>
 </mr-app>
 ```
 
-## 3D Layout
+## 3D Layout && Content
 
 ```html
 <mr-app>
-    <mr-volume>
-        <mr-panel snap-to="top">
-                This panel snaps to the top of the volume
-        </mr-panel>
-        <mr-panel snap-to="right">
-                This panel snaps to the right of the volume
-        </mr-panel>
-        <mr-panel snap-to="bottom">
-                This panel snaps to the bottom of the volume
-        </mr-panel>
-        <mr-panel snap-to="left">
-                This panel snaps to the left of the volume
-        </mr-panel>
-    </mr-volume>
+    <!-- The 3D Area -->
+    <mr-surface>
+        <!-- The 3D UI Container -->
+        <mr-container>
+            <mr-row>
+                <mr-column>
+                    <mr-text>Loading some 3D Content with Lighting</mr-text>
+                    <mr-model src="./assets/models/logo.glb"></mr-model>
+                </mr-column>
+            </mr-row>
+        </mr-container>
+    </mr-surface>
+    <!-- Let's add some 3D lighting -->
+    <mr-entity data-position="0 0 2">
+        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
+        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
+        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
+    </mr-entity>
 </mr-app>
-```
-
-## 3D Content
-
-_**Currently unimplemented but here's the markup**_
-
-```html
-<mr-app>
-    <mr-volume>
-        <mr-panel snap-to="left">
-            This is an example of loading a 3D model
-        </mr-panel>
-        <mr-model src="model.gltf"></mr-model>
-    </mr-volume>
-<mr-app>
 ```
 ## Built-in Physics Engine
 
@@ -114,11 +148,11 @@ Rapier.js is fully integrated out of the box. We use it to power collision based
 
 ## Extendable
 
-Built on top of THREE.js & WebComponents, and a built in ECS, MR.js provides a familiar interface to create custom Elements that can be reused through out your app.
+Built on top of THREE.js & WebComponents, and a built in ECS, mrjs provides a familiar interface to create custom Elements that can be reused through out your app.
 
 ### ECS
 
-MR.js is designed from the ground up using the Entity-Component-System Architecture. This is a common architecture implemented by Game Engines such as Unity, Unreal, and Apple's RealityKit.
+mrjs is designed from the ground up using the Entity-Component-System Architecture. This is a common architecture implemented by Game Engines such as Unity, Unreal, and Apple's RealityKit.
 
 #### Entity
 
@@ -147,7 +181,7 @@ customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Sp
 
 #### Components
 
-Components are attached to entities and used to store data. in MR.js they are implemented using attributes beginning with the prefix `comp-`.
+Components are attached to entities and used to store data. in mrjs they are implemented using attributes beginning with the prefix `comp-`.
 
 Example:
 
