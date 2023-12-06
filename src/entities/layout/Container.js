@@ -97,7 +97,7 @@ export class Container extends LayoutEntity {
 
     onScroll = (event) => {
         const scrollMin = 0;
-        let delta = this.shuttle.position.y + event.deltaY * 0.001;
+        let delta = this.shuttle.position.y + event.deltaY * 0.00001;
         if (delta > scrollMin && delta <= this.scrollMax) {
             this.shuttle.position.y = delta;
         }

@@ -84,7 +84,7 @@ export class TextSystem extends System {
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
-        textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
+        textObj.fontSize = entity.pxToThree(entity.compStyle.fontSize)// this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
         textObj.fontStyle = entity.compStyle.fontStyle;
 

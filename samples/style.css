@@ -23,11 +23,11 @@
   font-weight: 200 800;
 } */
 
-/* @font-face {
-  font-family: 'Lexend';
-  src: url('./assets/readex.ttf') format('truetype');
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
   font-weight: 100 900;
-} */
+}
 
 @font-face {
     font-family: 'Bricolage';
@@ -171,28 +171,31 @@
   }
 
   mr-text {
+    font-family: 'Roboto', sans-serif;
+    line-height: 100%;
     margin: 10px;
     font-size: 16px;
   }
 
   mr-app {
-    position:fixed;
+    /* opacity:0.7; */
   }
 
   mr-app * {
     box-sizing: border-box;
-    visibility:hidden;
+    /* visibility:hidden; */
   }
 
   mr-app > canvas {
+    position:fixed;
     visibility:visible;
     z-index: 1;
   }
 
   mr-container {
-    background-color: rgba(24, 24, 24);
+    /* background-color: rgba(24, 24, 24); */
     border-radius: 2%;
-    height:100vh;
+    /* height:100vh; */
     width: 100vw;
 
     display: grid;
@@ -211,7 +214,7 @@
     font-variation-settings: 'opsz' 80, 'wght' 550;
     font-weight: bold;
 
-    grid-row: 1;
+    /* grid-row: 1; */
     grid-column: 2;
 
   }

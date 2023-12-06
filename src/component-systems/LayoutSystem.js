@@ -52,7 +52,7 @@ export class LayoutSystem extends System {
 
         // Adjust the element's position to be relative to the center of the viewport
         const centeredX = rect.left - centerX
-        const centeredY = rect.top - centerY - window.innerHeight
+        const centeredY = rect.top - centerY// - window.innerHeight
 
         let threeX = (centeredX / window.innerWidth) * global.viewPortWidth;
         let threeY = (centeredY / window.innerHeight) * global.viewPortHeight;
