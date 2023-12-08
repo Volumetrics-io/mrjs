@@ -1,3 +1,4 @@
+import { MRUIEntity } from '../UI/UIEntity';
 import System from '../core/System';
 import { Container } from '../entities/layout/Container';
 
@@ -23,8 +24,7 @@ export class LayoutSystem extends System {
     }
 
     onNewEntity(entity) { 
-        if (entity instanceof Container) { return }
-        if(entity.closest('mr-container')) {
+        if(entity instanceof MRUIEntity) {
             this.registry.add(entity);
             this.setLayoutPosition(entity)
         }

@@ -59,6 +59,27 @@ export class MRUIEntity extends Entity {
         this.windowHorizontalScale = 1;
     }
 
+    add(entity) {
+        let container = this.closest("mr-container")
+
+        if(container && entity instanceof MRUIEntity) {
+            container.add(entity)
+        } else {
+            this.object3D.add(entity.object3D)
+        }
+
+        entity.object3D.position.z += 0.0001
+    }
+
+    remove(entity) {
+        let container = this.closest("mr-container")
+        if(container && entity instanceof MRUIEntity) {
+            container.remove(entity)
+        } else {
+            this.object3D.remove(entity.object3D)
+        }
+    }
+
     /**
      *
      */

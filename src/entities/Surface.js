@@ -1,11 +1,25 @@
 import * as THREE from 'three';
 import Entity from '../core/entity.js';
 import { UIPlane } from '../geometry/UIPlane.js';
+import { ClippingGeometry } from '../datatypes/ClippingGeometry.js';
 
 /**
  *
  */
 export class Surface extends Entity {
+    /**
+     *
+     */
+    get height() {  
+        return  global.viewPortHeight;
+    }
+
+    /**
+     *
+     */
+    get width() {
+        return global.viewPortWidth;
+    }
     /**
      *
      */
@@ -35,8 +49,9 @@ export class Surface extends Entity {
      *
      */
     connected() {
-        this.windowVerticalScale = this.height / 3;
-        this.windowHorizontalScale = this.width / 3;
+        // this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
+        this.windowVerticalScale = this.height /// 3;
+        this.windowHorizontalScale = this.width// / 3;
 
         this.placed = false;
 
@@ -49,7 +64,7 @@ export class Surface extends Entity {
             side: 2,
         });
 
-        this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
+        this.geometry = UIPlane(this.windowHorizontalScale / 3, this.windowVerticalScale / 3, [0.01], 18);
 
         this.viz = new THREE.Mesh(this.geometry, this.material);
 
@@ -99,8 +114,11 @@ export class Surface extends Entity {
         this.viz.removeFromParent();
         this.group.visible = true;
         this.placed = true;
+        console.log(this.windowVerticalScale);
+
 
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
+        // this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.windowVerticalScale, 0.3));
     }
 
     /**
