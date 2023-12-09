@@ -10,8 +10,8 @@ export class Surface extends Entity {
     /**
      *
      */
-    get height() {  
-        return  global.viewPortHeight;
+    get height() {
+        return global.viewPortHeight;
     }
 
     /**
@@ -50,8 +50,8 @@ export class Surface extends Entity {
      */
     connected() {
         // this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
-        this.windowVerticalScale = this.height /// 3;
-        this.windowHorizontalScale = this.width// / 3;
+        this.windowVerticalScale = this.height; /// 3;
+        this.windowHorizontalScale = this.width; // / 3;
 
         this.placed = false;
 
@@ -115,7 +115,6 @@ export class Surface extends Entity {
         this.group.visible = true;
         this.placed = true;
         console.log(this.windowVerticalScale);
-
 
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
         // this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.windowVerticalScale, 0.3));

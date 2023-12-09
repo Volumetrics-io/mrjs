@@ -60,7 +60,7 @@ export default {
             patterns: [
                 { from: 'samples/index.html', to: 'index.html' },
                 { from: 'samples/style.css', to: 'style.css' },
-                { from: 'assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
+                { from: 'samples/assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
                 { from: 'samples', to: 'samples' }, // make the MR.js/samples folder generate in the dist (for future when we have more)
             ],
         }),
@@ -80,10 +80,6 @@ export default {
                 resolve: {
                     fullySpecified: false,
                 },
-            },
-            {
-                test: /\.css/,
-                type: 'text/css',
             },
             {
                 test: /\.wasm$/,

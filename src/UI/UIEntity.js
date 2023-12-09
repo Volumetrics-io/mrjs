@@ -9,8 +9,8 @@ export class MRUIEntity extends Entity {
     /**
      *
      */
-    get height() {  
-        const rect = this.getBoundingClientRect();      
+    get height() {
+        const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale;
@@ -59,24 +59,32 @@ export class MRUIEntity extends Entity {
         this.windowHorizontalScale = 1;
     }
 
+    /**
+     *
+     * @param entity
+     */
     add(entity) {
-        let container = this.closest("mr-container")
+        let container = this.closest('mr-container');
 
-        if(container && entity instanceof MRUIEntity) {
-            container.add(entity)
+        if (container && entity instanceof MRUIEntity) {
+            container.add(entity);
         } else {
-            this.object3D.add(entity.object3D)
+            this.object3D.add(entity.object3D);
         }
 
-        entity.object3D.position.z += 0.0001
+        entity.object3D.position.z += 0.0001;
     }
 
+    /**
+     *
+     * @param entity
+     */
     remove(entity) {
-        let container = this.closest("mr-container")
-        if(container && entity instanceof MRUIEntity) {
-            container.remove(entity)
+        let container = this.closest('mr-container');
+        if (container && entity instanceof MRUIEntity) {
+            container.remove(entity);
         } else {
-            this.object3D.remove(entity.object3D)
+            this.object3D.remove(entity.object3D);
         }
     }
 
@@ -100,17 +108,6 @@ export class MRUIEntity extends Entity {
 
         this.physics.halfExtents.copy(this.object3D.userData.size);
         this.physics.halfExtents.divideScalar(2);
-    }
-
-    /**
-     *
-     * @param val
-     */
-    pxToThree(val) {
-        if (global.inXR) {
-            return ((val.split('px')[0]) / window.innerWidth) * this.windowHorizontalScale;
-        }
-        return ((val.split('px')[0]) / window.innerWidth) * global.viewPortWidth;
     }
 
     /**

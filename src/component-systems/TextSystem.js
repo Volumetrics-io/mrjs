@@ -63,7 +63,10 @@ export class TextSystem extends System {
                     entity.blur();
                 }
             } else {
-                text = entity.textContent.replace(/(\n)\s+/g, '$1').replace(/(\r\n|\n|\r)/gm, "").trim();
+                text = entity.textContent
+                    .replace(/(\n)\s+/g, '$1')
+                    .replace(/(\r\n|\n|\r)/gm, '')
+                    .trim();
             }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
@@ -129,10 +132,10 @@ export class TextSystem extends System {
      * @param entity
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = entity.pxToThree(verticalAlign);
+        let result = MRJS.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= entity.pxToThree(entity.compStyle.fontSize);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -155,10 +158,10 @@ export class TextSystem extends System {
      * @param entity
      */
     getLineHeight(lineHeight, entity) {
-        let result = entity.pxToThree(lineHeight);
+        let result = MRJS.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= entity.pxToThree(entity.compStyle.fontSize);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

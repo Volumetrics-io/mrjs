@@ -81,3 +81,22 @@ export function computeBoundingSphere(group, relativeTo = null) {
 
     return sphere;
 }
+
+/**
+ *
+ * @param val
+ */
+export function threeToPx(val) {
+    return (val / global.viewPortHeight) * window.innerHeight;
+}
+
+/**
+ *
+ * @param val
+ */
+export function pxToThree(val) {
+    if (global.inXR) {
+        return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+}

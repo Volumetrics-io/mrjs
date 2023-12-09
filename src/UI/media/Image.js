@@ -37,7 +37,7 @@ export class MRImage extends MRUIEntity {
         });
         this.object3D.material.map = this.texture;
 
-        this.object3D.position.z += 0.00001
+        this.object3D.position.z += 0.00001;
     }
 
     /**

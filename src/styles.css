@@ -1,0 +1,13 @@
+mr-app * {
+    box-sizing: border-box;
+    visibility:hidden;
+}
+
+mr-app > canvas {
+    position:fixed;
+    visibility:visible;
+}
+
+body {
+    margin: 0; /* unclear why we need this */
+}

@@ -1,6 +1,5 @@
 import { MRUIEntity } from '../UI/UIEntity';
 import System from '../core/System';
-import { Container } from '../entities/layout/Container';
 
 /**
  *
@@ -12,7 +11,7 @@ export class LayoutSystem extends System {
     constructor() {
         super(false);
 
-        this.tempPosition = new THREE.Vector3()
+        this.tempPosition = new THREE.Vector3();
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const containers = this.app.querySelectorAll('mr-container');
@@ -23,10 +22,14 @@ export class LayoutSystem extends System {
         });
     }
 
-    onNewEntity(entity) { 
-        if(entity instanceof MRUIEntity) {
+    /**
+     *
+     * @param entity
+     */
+    onNewEntity(entity) {
+        if (entity instanceof MRUIEntity) {
             this.registry.add(entity);
-            this.setLayoutPosition(entity)
+            this.setLayoutPosition(entity);
         }
     }
 
@@ -37,14 +40,17 @@ export class LayoutSystem extends System {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            this.setLayoutPosition(entity)
-
+            this.setLayoutPosition(entity);
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     setLayoutPosition(entity) {
         const rect = entity.getBoundingClientRect();
-        const container = entity.closest('mr-container')
+        const container = entity.closest('mr-container');
 
         // Calculate the center of the viewport
         const centerX = window.innerWidth / 2;
@@ -54,22 +60,20 @@ export class LayoutSystem extends System {
         let windowHeight = global.inXR ? container.windowVerticalScale : global.viewPortHeight;
 
         // Adjust the element's position to be relative to the center of the viewport
-        const centeredX = rect.left - centerX
-        const centeredY = rect.top - centerY
+        const centeredX = rect.left - centerX;
+        const centeredY = rect.top - centerY;
 
         let threeX = (centeredX / window.innerWidth) * windowWidth;
         let threeY = (centeredY / window.innerHeight) * windowHeight;
 
-        threeX += entity.width / 2
-        threeY += entity.height / 2
+        threeX += entity.width / 2;
+        threeY += entity.height / 2;
 
+        this.tempPosition.setX(threeX);
+        this.tempPosition.setY(-threeY);
 
-        this.tempPosition.setX(threeX)
-        this.tempPosition.setY(-threeY)
-
-        entity.object3D.position.setX(this.tempPosition.x)
-        entity.object3D.position.setY(this.tempPosition.y)
-        
+        entity.object3D.position.setX(this.tempPosition.x);
+        entity.object3D.position.setY(this.tempPosition.y);
     }
 
     adjustContainerSize = (container) => {

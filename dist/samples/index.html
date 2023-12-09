@@ -9,10 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-    <mr-app camera="camera: orthographic" layers="0 1 2 3">
+   <mr-app camera="camera: orthographic" layers="0 1 2 3">
 
-      <mr-surface fixed="true">
+      <mr-surface >
         <mr-container data-rotation="0 0 0">
+        <mr-div class="container" data-rotation="0 0 0">
               <mr-text class="title" >
                 MR.js
               </mr-text>
@@ -42,17 +43,21 @@
 
         
 
-              <mr-model class="logo" 
-                src="./assets/models/logo.stl" 
-                data-comp-instancing="type: animate;"
-                data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
-                data-rotation="-22.91 17.1887 45.8366">
-              </mr-model>
+              <mr-div class="logo-div">
+                <mr-model 
+                  class="logo" 
+                  src="./assets/models/logo.stl" 
+                  data-comp-instancing="type: animate;"
+                  data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+                  data-rotation="-22.91 17.1887 45.8366">
+                </mr-model>
+              </mr-div>
 
               <mr-text class="company" >
                 volumetrics
               </mr-text>
 
+        </mr-div>
         </mr-container>
       </mr-surface>
 
