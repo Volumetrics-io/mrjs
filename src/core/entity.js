@@ -275,25 +275,18 @@ export default class Entity extends MRElement {
         const compName = mutation.attributeName.split('comp-')[1];
         const dataName = `comp${compName[0].toUpperCase()}${compName.slice(1)}`;
         if (!this.dataset[dataName]) {
-            this.dispatchEvent(
-                new CustomEvent(`${dataName}-detached`, {
-                    bubbles: true,
-                    detail: { entity: this, oldData },
-                })
-            );
+            this.dispatchEvent(new CustomEvent(`${dataName}-detached`, { bubbles: true }));
         } else if (mutation.oldValue) {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { entity: this, oldData: MRJS.parseComponentString(mutation.oldValue) },
+                    detail: { oldData: MRJS.parseComponentString(mutation.oldValue) },
                 })
             );
         } else {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-attached`, {
                     bubbles: true,
-                    detail: this,
-                    detail: { entity: this },
                 })
             );
         }

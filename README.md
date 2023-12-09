@@ -43,98 +43,59 @@ Both options require you generate an ssl certificate & key via openssl:
 
 # Features
 
-## General Starting CSS
+## Familiar 2D UI API
 
-*For now there is some needed initial css for readability of the following feature examples*
-*Play around with the options as you get more used to the 2D/3D html setup*
-
-```css
-* {
-    padding: 0;
-    margin: 0;
-    border: none;
-    border-collapse: collapse;
-}
-
-html {
-    overflow: hidden;
-    overscroll-behavior: none;
-}
-
-body {
-    position: fixed;
-}
-
-mr-container {
-    height: 100vh;
-    width: 100%;
-}
-
-mr-app * {
-    display: block;
-}
-
-mr-text {
-    color: red;
-    font-size: 100px;
-}
-
-mr-model {
-    scale: 0.001;
-    z-index: 100;
-}
-
-```
-
-## 2D UI & Layout Components
+Create 2D UI using CSS and `mr-container`
 
 ```html
+<style>
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+.title {
+    margin: 0 auto;
+    font-size: 5vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+
+    grid-column: 2;
+}
+
+mr-img {
+    object-fit: cover;
+    grid-row: 3 / 6;
+    grid-column: 1 / -1;
+}
+
+#logo {
+    grid-column : 2;
+    scale: 0.001; /* set 3D content size */
+    z-index: 100; /* set position on Z-axis */
+}
+</style>
 <mr-app>
-    <!-- The 3D Area -->
-    <mr-surface>
-        <!-- The 3D UI Container -->
-        <mr-container>
-            <mr-row>
-                <mr-text>
-                    This is a quick example of an image gallery with explainer text.
-                </mr-text>
-                <mr-column>
-                    <mr-img src="..."></mr-img>
-                    <mr-row height="0.02">
-                        <mr-button onClick="Prev()"> <- </mr-button>
-                        <mr-button onClick="Next()"> -> </mr-button>
-                    </mr-row>
-                </mr-column>
-            </mr-row>
-        </mr-container>
+    <!-- for anchoring -->
+    <mr-surface fixed="true">
+    <!-- The 2D UI Container -->
+    <mr-container>
+        <mr-div class="layout">
+        <mr-text class="title">
+            This is a quick example of an image gallery with explainer text.
+        </mr-text>
+        <mr-img src="..."></mr-img>
+        <!--wrap non-UI components in mr-div to anchor to UI-->
+        <mr-div id="logo">
+            <mr-model src="./assets/models/logo.glb"></mr-model> 
+        </mr-div>
+        </mr-div>
+    </mr-container>
     </mr-surface>
 </mr-app>
 ```
 
-## 3D Layout && Content
-
-```html
-<mr-app>
-    <!-- The 3D Area -->
-    <mr-surface>
-        <!-- The 3D UI Container -->
-        <mr-container>
-            <mr-row>
-                <mr-column>
-                    <mr-text>Loading some 3D Content with Lighting</mr-text>
-                    <mr-model src="./assets/models/logo.glb"></mr-model>
-                </mr-column>
-            </mr-row>
-        </mr-container>
-    </mr-surface>
-    <!-- Let's add some 3D lighting -->
-    <mr-entity data-position="0 0 2">
-        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
-        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
-        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
-    </mr-entity>
-</mr-app>
-```
 ## Built-in Physics Engine
 
 Rapier.js is fully integrated out of the box. We use it to power collision based hand-interactions, but ot also support other common features such as:
@@ -148,7 +109,7 @@ Rapier.js is fully integrated out of the box. We use it to power collision based
 
 ## Extendable
 
-Built on top of THREE.js & WebComponents, and a built in ECS, mrjs provides a familiar interface to create custom Elements that can be reused through out your app.
+Designed to be extendable, mrjs provides a familiar interface via THREE.js & the Custom Elements API, and leveled up with a built in ECS.
 
 ### ECS
 
@@ -179,16 +140,6 @@ class Spacecraft extends Entity {
 customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Spacecraft)
 ```
 
-#### Components
-
-Components are attached to entities and used to store data. in mrjs they are implemented using attributes beginning with the prefix `comp-`.
-
-Example:
-
-```html
-<mr-spacecraft comp-orbit="radius: 0.5; target: #user;"></mr-spacecraft>
-```
-
 #### Systems
 
 A System contains logic that is applied all entities that have a corresponding Component, using the data stored by the component. unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JS.
@@ -207,17 +158,22 @@ class OrbitSystem extends System{
     update(deltaTime, frame) {
         for(const entity in this.registry) {
             // Update entitiy position
+            let component = entity.components.get('orbit')
+            component.radius
+            component.target
+            ...
+            entity.component.set('orbit', { speed : 1 })
         }
     }
 
     // Called when an orbit component is attached
-    attachedComponent(entity, data) {
+    attachedComponent(entity) {
         ...
     }
 
 
     // do something when an orbit component is updated
-    updatedComponent(entity, data) {
+    updatedComponent(entity, oldData) {
         ...
     }
 
@@ -228,4 +184,16 @@ class OrbitSystem extends System{
 }
 ```
 
-Note: the mapping between components and systems is 1-to-1, and the naming convention (`comp-<name>` and `<Name>System`) is strictly enforced. components can only be modified by their matching system. You can also implement a System to do per frame logic without using components, but it's not recommended.
+When you define custom system, it listens for events triggered when the Systems corresponding component is attached, updated, or detatched. in the above case, `data-comp-orbit`.
+
+#### Components
+
+Components are attached to entities and used to store data. in mrjs they are implemented using data attributes beginning with the prefix `data-comp-`.
+
+Example:
+
+```html
+<mr-spacecraft data-comp-orbit="radius: 0.5; target: #user;"></mr-spacecraft>
+```
+
+Note: the mapping between components and systems is 1-to-1, and the naming convention (`data-comp-<name>` and `<Name>System`) is strictly enforced.
