@@ -129,8 +129,8 @@ export class SurfaceSystem extends System {
      *
      */
     lockWindow() {
-        this.currentSurface.windowVerticalScale = (this.scale / 3) * this.currentSurface.height;
-        this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.width;
+        this.currentSurface.windowVerticalScale = this.scale * global.XRScale * this.currentSurface.height;
+        this.currentSurface.windowHorizontalScale = this.scale * global.XRScale * this.currentSurface.width;
         this.currentSurface.place();
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position);

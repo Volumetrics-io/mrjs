@@ -17,7 +17,7 @@ export class Panel extends MRUIEntity {
         const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
+            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? global.XRScale;
             return this.windowVerticalScale;
         }
         return global.viewPortHeight;

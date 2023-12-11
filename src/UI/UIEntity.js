@@ -74,7 +74,7 @@ export class MRUIEntity extends Entity {
 
         // slight bump needed to avoid overlapping, glitchy visuals.
         // I'm sure there's a better solution lol.
-        entity.object3D.position.z += 0.001;
+        entity.object3D.position.z += 0.01;
     }
 
     /**
