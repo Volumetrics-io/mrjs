@@ -12,13 +12,12 @@ import { mobileCheckFunction } from 'MRJS/Utils/Display';
 
 import { MREntity } from 'MRJS/Core/MREntity';
 import { MRSystem } from 'MRJS/Core/MRSystem';
-import { TextSystem } from 'MRJS/Core/ComponentSystems/TextSystem';
+import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
 import { ControlSystem } from 'MRJS/Core/ComponentSystems/ControlSystem';
 import { PhysicsSystem } from 'MRJS/Core/ComponentSystems/PhysicsSystem';
-import { LayoutSystem } from 'MRJS/Core/ComponentSystems/LayoutSystem';
 import { SurfaceSystem } from 'MRJS/Core/ComponentSystems/SurfaceSystem';
-import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
 import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
+import { TextSystem } from 'MRJS/Core/ComponentSystems/TextSystem';
 
 ('use strict');
 window.mobileCheck = function () {
