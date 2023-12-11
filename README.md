@@ -45,7 +45,7 @@ Both options require you generate an ssl certificate & key via openssl:
 
 ## Familiar 2D UI API
 
-Create 2D UI using CSS and `mr-container`
+Create 2D UI using CSS and `mr-panel`
 
 ```html
 <style>
@@ -79,19 +79,17 @@ mr-img {
 <mr-app>
     <!-- for anchoring -->
     <mr-surface fixed="true">
-    <!-- The 2D UI Container -->
-    <mr-container>
-        <mr-div class="layout">
-        <mr-text class="title">
-            This is a quick example of an image gallery with explainer text.
-        </mr-text>
-        <mr-img src="..."></mr-img>
-        <!--wrap non-UI components in mr-div to anchor to UI-->
-        <mr-div id="logo">
-            <mr-model src="./assets/models/logo.glb"></mr-model> 
-        </mr-div>
-        </mr-div>
-    </mr-container>
+    <!-- The 2D UI Panel -->
+        <mr-panel class="layout">
+            <mr-text class="title">
+                This is a quick example of an image gallery with explainer text.
+            </mr-text>
+            <mr-img src="..."></mr-img>
+            <!--wrap non-UI components in mr-div to anchor to UI-->
+            <mr-div id="logo">
+                <mr-model src="./assets/models/logo.glb"></mr-model> 
+            </mr-div>
+        </mr-panel>
     </mr-surface>
 </mr-app>
 ```

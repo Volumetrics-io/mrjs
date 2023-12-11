@@ -1,11 +1,15 @@
 import * as THREE from 'three';
 import { ClippingGeometry } from '../datatypes/ClippingGeometry';
 import Entity from '../core/entity';
+import { MRUIEntity } from '../UI/UIEntity';
 
 /**
  *
  */
-export class Container extends Entity {
+export class Panel extends MRUIEntity {
+    // /**
+    //  *
+    //  */
     /**
      *
      */
@@ -14,23 +18,23 @@ export class Container extends Entity {
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale;
-            return (rect.height / window.innerHeight) * this.windowVerticalScale;
+            return this.windowVerticalScale;
         }
-        return (rect.height / window.innerHeight) * global.viewPortHeight;
+        return global.viewPortHeight;
     }
 
-    /**
-     *
-     */
-    get width() {
-        const rect = this.getBoundingClientRect();
+    // /**
+    //  *
+    //  */
+    // get width() {
+    //     const rect = this.getBoundingClientRect();
 
-        if (global.inXR) {
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
-            return (rect.width / window.innerWidth) * this.windowHorizontalScale;
-        }
-        return (rect.width / window.innerWidth) * global.viewPortWidth;
-    }
+    //     if (global.inXR) {
+    //         this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
+    //         return (rect.width / window.innerWidth) * this.windowHorizontalScale;
+    //     }
+    //     return (rect.width / window.innerWidth) * global.viewPortWidth;
+    // }
 
     /**
      *
@@ -57,22 +61,22 @@ export class Container extends Entity {
     connected() {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
         window.addEventListener('load', (event) => {
-            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
         window.addEventListener('resize', (event) => {
-            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
         this.parentElement.addEventListener('surface-placed', (event) => {
-            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
         this.parentElement.addEventListener('surface-removed', (event) => {
-            this.dispatchEvent(new CustomEvent('container-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
-        this.addEventListener('container-mutated', (event) => {
+        this.addEventListener('panel-mutated', (event) => {
             this.windowVerticalScale = this.parentElement.windowVerticalScale;
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
 
@@ -158,4 +162,4 @@ export class Container extends Entity {
     onScroll = (event) => {};
 }
 
-customElements.get('mr-container') || customElements.define('mr-container', Container);
+customElements.get('mr-panel') || customElements.define('mr-panel', Panel);

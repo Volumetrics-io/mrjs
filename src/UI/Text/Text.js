@@ -26,7 +26,7 @@ export class MRText extends MRUIEntity {
 
         this.needsUpdate = true;
 
-        document.addEventListener('container-mutated', () => {
+        document.addEventListener('panel-mutated', () => {
             this.needsUpdate = true;
         });
     }

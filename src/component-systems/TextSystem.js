@@ -233,7 +233,7 @@ export class TextSystem extends System {
      * @param el
      */
     getVH(el) {
-        return el.closest('mr-container').absoluteHeight;
+        return el.closest('mr-panel').absoluteHeight;
     }
 
     /**
@@ -241,7 +241,7 @@ export class TextSystem extends System {
      * @param el
      */
     getVW(el) {
-        return el.closest('mr-container').absoluteWidth;
+        return el.closest('mr-panel').absoluteWidth;
     }
 
     /**

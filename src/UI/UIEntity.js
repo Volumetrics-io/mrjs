@@ -64,7 +64,7 @@ export class MRUIEntity extends Entity {
      * @param entity
      */
     add(entity) {
-        let container = this.closest('mr-container');
+        let container = this.closest('mr-panel');
 
         if (container && entity instanceof MRUIEntity) {
             container.add(entity);
@@ -80,7 +80,7 @@ export class MRUIEntity extends Entity {
      * @param entity
      */
     remove(entity) {
-        let container = this.closest('mr-container');
+        let container = this.closest('mr-panel');
         if (container && entity instanceof MRUIEntity) {
             container.remove(entity);
         } else {

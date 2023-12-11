@@ -33,7 +33,7 @@ import './UI/Text/TextField';
 import './UI/Text/TextArea';
 
 // UI: LAYOUT
-import './entities/Container';
+import './entities/Panel';
 
 //   EXPORTS
 export * as THREE from 'three';
