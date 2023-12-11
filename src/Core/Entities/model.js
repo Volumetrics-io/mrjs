@@ -15,7 +15,7 @@ export class Model extends MREntity {
     }
 
     /**
-     * @returns {number} - TODO
+     * TODO
      */
     connected() {
         this.src = this.getAttribute('src');

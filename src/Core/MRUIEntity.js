@@ -9,6 +9,7 @@ import { UIPlane } from 'MRJS/Utils/Geometry';
  * @augments MREntity
  */
 export class MRUIEntity extends MREntity {
+
     /**
      * @returns {number} - TODO
      */
@@ -64,7 +65,7 @@ export class MRUIEntity extends MREntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         let container = this.closest('mr-panel');
@@ -82,7 +83,7 @@ export class MRUIEntity extends MREntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         let container = this.closest('mr-panel');
@@ -115,6 +116,11 @@ export class MRUIEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
+    /**
+     *
+     * @param {string} val - TODO
+     * @returns {number} - TODO
+     */
     domToThree(val) {
         if (typeof val === 'string') {
             const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);

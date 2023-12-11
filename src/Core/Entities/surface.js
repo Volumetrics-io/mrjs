@@ -10,14 +10,14 @@ import { UIPlane } from 'MRJS/Utils/Geometry';
  */
 export class Surface extends MREntity {
     /**
-     *
+     * @returns {number} - the height of the current viewport
      */
     get height() {
         return global.viewPortHeight;
     }
 
     /**
-     *
+     * @returns {number} - the width of the current viewport
      */
     get width() {
         return global.viewPortWidth;

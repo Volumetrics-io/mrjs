@@ -1,17 +1,15 @@
-import * as THREE from 'three';
-import { ClippingGeometry } from '../datatypes/ClippingGeometry';
-import { MRUIEntity } from '../UI/UIEntity';
-import { Surface } from './Surface';
+import { MREntity } from 'MRJS/Core/MREntity';
+import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
+import { Surface } from 'MRJS/Core/Entity/Surface';
+
+import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 
 /**
  *
  */
 export class Panel extends MRUIEntity {
-    // /**
-    //  *
-    //  */
     /**
-     *
+     * @returns {number} - TODO
      */
     get height() {
         const rect = this.getBoundingClientRect();
@@ -91,7 +89,7 @@ export class Panel extends MRUIEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     add(entity) {
         this.shuttle.add(entity.object3D);
@@ -99,7 +97,7 @@ export class Panel extends MRUIEntity {
 
     /**
      *
-     * @param entity
+     * @param {MREntity} entity - TODO
      */
     remove(entity) {
         this.shuttle.remove(entity.object3D);

@@ -87,7 +87,6 @@ export class MRSystem {
     /**
      *
      * @param {MREntity} entity - TODO
-     * @param {object} data - TODO
      */
     attachedComponent(entity) {
         //console.log(`attached ${this.componentName} ${entity.dataset[this.componentName]}`);
