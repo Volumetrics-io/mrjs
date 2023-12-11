@@ -63,6 +63,10 @@ export class TextSystem extends System {
                     entity.blur();
                 }
             } else {
+                // troika honors newlines/white space
+                // we want to mimic h1, p, etc which do not honor these values
+                // so we have to clean these from the text
+                // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
                 text = entity.textContent
                     .replace(/(\n)\s+/g, '$1')
                     .replace(/(\r\n|\n|\r)/gm, '')

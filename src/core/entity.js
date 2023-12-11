@@ -51,7 +51,6 @@ export default class Entity extends MRElement {
      */
     get height() {
         const rect = this.getBoundingClientRect();
-        // const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
         return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
 

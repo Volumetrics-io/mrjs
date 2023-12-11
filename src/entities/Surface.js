@@ -48,9 +48,8 @@ export class Surface extends Entity {
      *
      */
     connected() {
-        // this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
-        this.windowVerticalScale = this.height; /// 3;
-        this.windowHorizontalScale = this.width; // / 3;
+        this.windowVerticalScale = this.height;
+        this.windowHorizontalScale = this.width;
 
         this.placed = false;
         this.floating = true;
@@ -122,12 +121,12 @@ export class Surface extends Entity {
      *
      */
     replace() {
-        console.log('replace');
         this.object3D.position.copy(this.anchorPosition);
         this.object3D.quaternion.copy(this.anchorQuaternion);
 
-        console.log('floating', this.floating);
-
+        // the z-axis and y-axis are flipped for webXR anchors
+        // so when a surface is anchored to a wall/table we
+        // need to apply a rotation so the plane is oriented correctly
         if (!this.floating) {
             this.rotationPlane.rotation.x = (3 * Math.PI) / 2;
         }
