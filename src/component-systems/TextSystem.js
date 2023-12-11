@@ -63,15 +63,22 @@ export class TextSystem extends System {
                     entity.blur();
                 }
             } else {
-                text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
+                // troika honors newlines/white space
+                // we want to mimic h1, p, etc which do not honor these values
+                // so we have to clean these from the text
+                // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                text = entity.textContent
+                    .replace(/(\n)\s+/g, '$1')
+                    .replace(/(\r\n|\n|\r)/gm, '')
+                    .trim();
             }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
                 entity.textObj.sync();
             }
 
+            this.updateStyle(entity);
             if (entity.needsUpdate) {
-                this.updateStyle(entity);
                 entity.needsUpdate = false;
                 entity.textObj.sync(() => {
                     entity.textObj.position.setY(entity.height / 2);
@@ -129,10 +136,10 @@ export class TextSystem extends System {
      * @param entity
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = this.parseFontSize(verticalAlign, entity);
+        let result = MRJS.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= this.parseFontSize(entity.compStyle.fontSize, entity);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -155,10 +162,10 @@ export class TextSystem extends System {
      * @param entity
      */
     getLineHeight(lineHeight, entity) {
-        let result = this.parseFontSize(lineHeight, entity);
+        let result = MRJS.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= this.parseFontSize(entity.compStyle.fontSize, entity);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;
@@ -230,7 +237,7 @@ export class TextSystem extends System {
      * @param el
      */
     getVH(el) {
-        return el.closest('mr-container').absoluteHeight;
+        return el.closest('mr-panel').absoluteHeight;
     }
 
     /**
@@ -238,7 +245,7 @@ export class TextSystem extends System {
      * @param el
      */
     getVW(el) {
-        return el.closest('mr-container').absoluteWidth;
+        return el.closest('mr-panel').absoluteWidth;
     }
 
     /**

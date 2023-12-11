@@ -34,7 +34,8 @@ export default class Entity extends MRElement {
      *
      */
     get width() {
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        const rect = this.getBoundingClientRect();
+        return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
 
     /**
@@ -49,8 +50,8 @@ export default class Entity extends MRElement {
      *
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
-        return (styleHeight / window.innerHeight) * global.viewPortHeight;
+        const rect = this.getBoundingClientRect();
+        return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
 
     /**
@@ -273,25 +274,18 @@ export default class Entity extends MRElement {
         const compName = mutation.attributeName.split('comp-')[1];
         const dataName = `comp${compName[0].toUpperCase()}${compName.slice(1)}`;
         if (!this.dataset[dataName]) {
-            this.dispatchEvent(
-                new CustomEvent(`${dataName}-detached`, {
-                    bubbles: true,
-                    detail: { entity: this, oldData },
-                })
-            );
+            this.dispatchEvent(new CustomEvent(`${dataName}-detached`, { bubbles: true }));
         } else if (mutation.oldValue) {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { entity: this, oldData: MRJS.parseComponentString(mutation.oldValue) },
+                    detail: { oldData: MRJS.parseComponentString(mutation.oldValue) },
                 })
             );
         } else {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-attached`, {
                     bubbles: true,
-                    detail: this,
-                    detail: { entity: this },
                 })
             );
         }

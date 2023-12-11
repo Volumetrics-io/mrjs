@@ -9,6 +9,19 @@ export class Surface extends Entity {
     /**
      *
      */
+    get height() {
+        return global.viewPortHeight;
+    }
+
+    /**
+     *
+     */
+    get width() {
+        return global.viewPortWidth;
+    }
+    /**
+     *
+     */
     constructor() {
         super();
 
@@ -35,10 +48,11 @@ export class Surface extends Entity {
      *
      */
     connected() {
-        this.windowVerticalScale = this.height / 3;
-        this.windowHorizontalScale = this.width / 3;
+        this.windowVerticalScale = this.height;
+        this.windowHorizontalScale = this.width;
 
         this.placed = false;
+        this.floating = true;
 
         this.material = new THREE.MeshStandardMaterial({
             color: 0x3498db,
@@ -49,7 +63,7 @@ export class Surface extends Entity {
             side: 2,
         });
 
-        this.geometry = UIPlane(this.windowHorizontalScale, this.windowVerticalScale, [0.01], 18);
+        this.geometry = UIPlane(this.windowHorizontalScale * global.XRScale, this.windowVerticalScale * global.XRScale, [0.01], 18);
 
         this.viz = new THREE.Mesh(this.geometry, this.material);
 
@@ -107,9 +121,15 @@ export class Surface extends Entity {
      *
      */
     replace() {
-        console.log('replace');
         this.object3D.position.copy(this.anchorPosition);
         this.object3D.quaternion.copy(this.anchorQuaternion);
+
+        // the z-axis and y-axis are flipped for webXR anchors
+        // so when a surface is anchored to a wall/table we
+        // need to apply a rotation so the plane is oriented correctly
+        if (!this.floating) {
+            this.rotationPlane.rotation.x = (3 * Math.PI) / 2;
+        }
 
         this.placed = true;
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
@@ -118,11 +138,11 @@ export class Surface extends Entity {
     /**
      *
      */
-    remove() {
-        console.log('remove');
+    detatch() {
         this.placed = false;
         this.object3D.position.set(0, 0, 0);
         this.object3D.quaternion.set(0, 0, 0, 1);
+        this.rotationPlane.rotation.x = 0;
         this.dispatchEvent(new CustomEvent('surface-removed', { bubbles: true }));
     }
 }

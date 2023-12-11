@@ -15,13 +15,6 @@ export class Model extends Entity {
     /**
      *
      */
-    get height() {
-        return this.contentHeight;
-    }
-
-    /**
-     *
-     */
     connected() {
         this.src = this.getAttribute('src');
         if (!this.src) {

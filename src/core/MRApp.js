@@ -59,6 +59,7 @@ export class MRApp extends MRElement {
         this.scene = new THREE.Scene();
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.session;
 
         this.lighting = {
             enabled: true,
@@ -208,10 +209,12 @@ export class MRApp extends MRElement {
                     }
                     this.ARButton.blur();
                     global.inXR = true;
+                    this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
                 });
-                this.appendChild(this.ARButton);
+                document.body.appendChild(this.ARButton);
 
                 this.ARButton.style.position = 'fixed';
+                this.ARButton.style.zIndex = 10000;
             }
         });
 
@@ -354,6 +357,22 @@ export class MRApp extends MRElement {
      */
     render(timeStamp, frame) {
         const deltaTime = this.clock.getDelta();
+
+        if (global.inXR && !this.session) {
+            this.session = this.renderer.xr.getSession();
+            if (!this.session) {
+                return;
+            }
+
+            this.session.addEventListener('end', () => {
+                global.inXR = false;
+                this.user.position.set(0, 0, 1);
+                this.user.quaternion.set(0, 0, 0, 1);
+                this.session = null;
+                this.onWindowResize();
+                this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
+            });
+        }
 
         if (this.debug) {
             this.stats.begin();

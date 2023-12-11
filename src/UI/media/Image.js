@@ -36,6 +36,10 @@ export class MRImage extends MRUIEntity {
             }
         });
         this.object3D.material.map = this.texture;
+
+        // slight bump needed to avoid overlapping, glitchy visuals.
+        // I'm sure there's a better solution lol.
+        this.object3D.position.z += 0.001;
     }
 
     /**

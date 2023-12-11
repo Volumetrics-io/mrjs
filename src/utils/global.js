@@ -5,6 +5,9 @@ global.viewPortWidth = 0;
 
 global.inXR = false;
 
+// UI needs to be scaled down in XR, 1:1 scale is huuuuge
+global.XRScale = 1 / 2;
+
 // lol chatGPT made this.
 /**
  *
@@ -80,4 +83,23 @@ export function computeBoundingSphere(group, relativeTo = null) {
     }
 
     return sphere;
+}
+
+/**
+ *
+ * @param val
+ */
+export function threeToPx(val) {
+    return (val / global.viewPortHeight) * window.innerHeight;
+}
+
+/**
+ *
+ * @param val
+ */
+export function pxToThree(val) {
+    if (global.inXR) {
+        return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
 }

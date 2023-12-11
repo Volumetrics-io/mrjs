@@ -1,0 +1,19 @@
+mr-app * {
+    box-sizing: border-box;
+    visibility:hidden;
+}
+
+mr-app > canvas {
+    position:fixed;
+    visibility:visible;
+}
+
+mr-panel {
+    background-color: #fff;
+    border-radius: 2%;
+}
+
+
+body {
+    margin: 0; /* unclear why we need this */
+}
