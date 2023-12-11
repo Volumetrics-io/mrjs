@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import Entity from '../core/entity.js';
 import { UIPlane } from '../geometry/UIPlane.js';
-import { ClippingGeometry } from '../datatypes/ClippingGeometry.js';
 
 /**
  *
@@ -54,6 +53,7 @@ export class Surface extends Entity {
         this.windowHorizontalScale = this.width; // / 3;
 
         this.placed = false;
+        this.floating = true;
 
         this.material = new THREE.MeshStandardMaterial({
             color: 0x3498db,
@@ -114,10 +114,8 @@ export class Surface extends Entity {
         this.viz.removeFromParent();
         this.group.visible = true;
         this.placed = true;
-        console.log(this.windowVerticalScale);
 
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
-        // this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.windowVerticalScale, 0.3));
     }
 
     /**
@@ -128,6 +126,12 @@ export class Surface extends Entity {
         this.object3D.position.copy(this.anchorPosition);
         this.object3D.quaternion.copy(this.anchorQuaternion);
 
+        console.log('floating', this.floating);
+
+        if (!this.floating) {
+            this.rotationPlane.rotation.x = (3 * Math.PI) / 2;
+        }
+
         this.placed = true;
         this.dispatchEvent(new CustomEvent('surface-placed', { bubbles: true }));
     }
@@ -135,11 +139,11 @@ export class Surface extends Entity {
     /**
      *
      */
-    remove() {
-        console.log('remove');
+    detatch() {
         this.placed = false;
         this.object3D.position.set(0, 0, 0);
         this.object3D.quaternion.set(0, 0, 0, 1);
+        this.rotationPlane.rotation.x = 0;
         this.dispatchEvent(new CustomEvent('surface-removed', { bubbles: true }));
     }
 }

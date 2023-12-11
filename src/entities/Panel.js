@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ClippingGeometry } from '../datatypes/ClippingGeometry';
-import Entity from '../core/entity';
 import { MRUIEntity } from '../UI/UIEntity';
+import { Surface } from './Surface';
 
 /**
  *
@@ -17,24 +17,11 @@ export class Panel extends MRUIEntity {
         const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale;
+            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
             return this.windowVerticalScale;
         }
         return global.viewPortHeight;
     }
-
-    // /**
-    //  *
-    //  */
-    // get width() {
-    //     const rect = this.getBoundingClientRect();
-
-    //     if (global.inXR) {
-    //         this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
-    //         return (rect.width / window.innerWidth) * this.windowHorizontalScale;
-    //     }
-    //     return (rect.width / window.innerWidth) * global.viewPortWidth;
-    // }
 
     /**
      *
@@ -76,11 +63,23 @@ export class Panel extends MRUIEntity {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
-        this.addEventListener('panel-mutated', (event) => {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale;
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
+        document.addEventListener('enterXR', (event) => {
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+            if (!(this.parentElement instanceof Surface)) {
+                this.object3D.position.setZ(-0.4);
+            }
+        });
 
-            this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.windowVerticalScale, 0.3));
+        document.addEventListener('exitXR', (event) => {
+            console.log('exit');
+            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+            if (!(this.parentElement instanceof Surface)) {
+                this.object3D.position.setZ(0);
+            }
+        });
+
+        this.addEventListener('panel-mutated', (event) => {
+            this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
         });
 
         document.addEventListener('wheel', (event) => {
