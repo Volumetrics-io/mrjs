@@ -40,6 +40,8 @@ export class Panel extends MRUIEntity {
         this.prevPosition = new THREE.Vector3();
         this.deltaVector = new THREE.Vector3();
         this.delta = 0;
+
+        this.momentumTimeout;
     }
 
     /**
@@ -104,6 +106,9 @@ export class Panel extends MRUIEntity {
     }
 
     onTouch = (event) => {
+        if (!global.inXR) {
+            return;
+        }
         if (event.type == 'touch-end') {
             this.prevPosition.set(0, 0, 0);
             return;
@@ -115,22 +120,19 @@ export class Panel extends MRUIEntity {
         }
         this.prevPosition.copy(this.currentPosition);
 
-        this.delta = this.deltaVector.y * 2;
+        this.delta = this.deltaVector.y * 7;
 
         if (this.delta == 0) {
             return;
         }
 
-        if (global.inXR) {
-            this.delta *= 2;
-        }
-
-        this.momentumScroll(MRJS.threeToPx(this.delta * 3), 5000);
+        this.momentumScroll(MRJS.threeToPx(this.delta), 3000);
     };
 
     momentumScroll = (distance, duration) => {
         let start = null;
         let remainingDistance = distance;
+        clearTimeout(this.momentumTimeout);
 
         /**
          *
@@ -151,11 +153,11 @@ export class Panel extends MRUIEntity {
             remainingDistance -= scrollDistance;
 
             if (timeElapsed < duration) {
-                setTimeout(step, 10); // 10ms for the next step
+                this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
             }
         }
 
-        setTimeout(step, 10);
+        this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     };
 
     onScroll = (event) => {};
