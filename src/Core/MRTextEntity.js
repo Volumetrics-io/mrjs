@@ -12,7 +12,6 @@ export class MRTextEntity extends MRUIEntity {
      * @returns {number} - TODO
      */
     get height() {
-        super.height;
         return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
     }
 
@@ -29,7 +28,7 @@ export class MRTextEntity extends MRUIEntity {
 
         this.needsUpdate = true;
 
-        document.addEventListener('container-mutated', () => {
+        document.addEventListener('panel-mutated', () => {
             this.needsUpdate = true;
         });
     }

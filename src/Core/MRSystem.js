@@ -89,7 +89,7 @@ export class MRSystem {
      * @param {MREntity} entity - TODO
      * @param {object} data - TODO
      */
-    attachedComponent(entity, data) {
+    attachedComponent(entity) {
         //console.log(`attached ${this.componentName} ${entity.dataset[this.componentName]}`);
     }
 
@@ -112,16 +112,16 @@ export class MRSystem {
     }
 
     onAttach = (event) => {
-        this.registry.add(event.detail.entity);
-        this.attachedComponent(event.detail.entity);
+        this.registry.add(event.target);
+        this.attachedComponent(event.target);
     };
 
     onUpdate = (event) => {
-        this.updatedComponent(event.detail.entity, event.detail.oldData);
+        this.updatedComponent(event.target, event.detail.oldData);
     };
 
     onDetatch = (event) => {
-        this.registry.delete(event.detail.entity);
-        this.detachedComponent(event.detail.entity);
+        this.registry.delete(event.target);
+        this.detachedComponent(event.target);
     };
 }

@@ -74,6 +74,9 @@ export class SurfaceSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
+        if (this.registry.size == 0) {
+            return;
+        }
         for (const surface of this.registry) {
             if (this.currentSurface == null && surface.anchored == false) {
                 this.currentSurface = surface;
@@ -82,7 +85,6 @@ export class SurfaceSystem extends MRSystem {
                     return;
                 }
                 surface.replace();
-                surface.rotationPlane.rotation.x = 3 * (Math.PI / 2);
             }
         }
 
@@ -123,8 +125,7 @@ export class SurfaceSystem extends MRSystem {
      */
     resetAllSurfaces() {
         for (const surface of this.registry) {
-            surface.remove();
-            surface.rotationPlane.rotation.x = 0;
+            surface.detatch();
         }
     }
 
@@ -132,8 +133,8 @@ export class SurfaceSystem extends MRSystem {
      *
      */
     lockWindow() {
-        this.currentSurface.windowVerticalScale = (this.scale / 3) * this.currentSurface.height;
-        this.currentSurface.windowHorizontalScale = (this.scale / 3) * this.currentSurface.width;
+        this.currentSurface.windowVerticalScale = this.scale * global.XRScale * this.currentSurface.height;
+        this.currentSurface.windowHorizontalScale = this.scale * global.XRScale * this.currentSurface.width;
         this.currentSurface.place();
 
         this.currentSurface.anchorPosition.copy(this.currentSurface.object3D.position);
@@ -161,6 +162,7 @@ export class SurfaceSystem extends MRSystem {
 
         if (pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
             this.currentSurface.rotationPlane.rotation.x = (3 * Math.PI) / 2;
+            this.currentSurface.floating = false;
 
             this.currentSurface.object3D.position.fromArray([pose.transform.position.x, pose.transform.position.y, pose.transform.position.z]);
             this.currentSurface.object3D.quaternion.fromArray([
@@ -170,6 +172,7 @@ export class SurfaceSystem extends MRSystem {
                 pose.transform.orientation.w,
             ]);
         } else {
+            this.currentSurface.floating = true;
             this.currentSurface.rotationPlane.rotation.x = 0;
             this.currentSurface.object3D.position.setFromMatrixPosition(this.app.anchor.matrixWorld);
             this.currentSurface.object3D.lookAt(this.app.user.position);

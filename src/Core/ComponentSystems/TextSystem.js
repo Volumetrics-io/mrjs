@@ -70,15 +70,22 @@ export class TextSystem extends MRSystem {
                     entity.blur();
                 }
             } else {
-                text = entity.textContent.replace(/(\n)\s+/g, '$1').trim();
+                // troika honors newlines/white space
+                // we want to mimic h1, p, etc which do not honor these values
+                // so we have to clean these from the text
+                // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                text = entity.textContent
+                    .replace(/(\n)\s+/g, '$1')
+                    .replace(/(\r\n|\n|\r)/gm, '')
+                    .trim();
             }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
                 entity.textObj.sync();
             }
 
+            this.updateStyle(entity);
             if (entity.needsUpdate) {
-                this.updateStyle(entity);
                 entity.needsUpdate = false;
                 entity.textObj.sync(() => {
                     entity.textObj.position.setY(entity.height / 2);
@@ -138,10 +145,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - TODO
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = this.parseFontSize(verticalAlign, entity);
+        let result = MRJS.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= this.parseFontSize(entity.compStyle.fontSize, entity);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -165,10 +172,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - TODO
      */
     getLineHeight(lineHeight, entity) {
-        let result = this.parseFontSize(lineHeight, entity);
+        let result = MRJS.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= this.parseFontSize(entity.compStyle.fontSize, entity);
+            result /= MRJS.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

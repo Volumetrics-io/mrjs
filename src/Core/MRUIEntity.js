@@ -13,26 +13,26 @@ export class MRUIEntity extends MREntity {
      * @returns {number} - TODO
      */
     get height() {
-        super.height;
+        const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale;
-            return (this.compStyle.height.split('px')[0] / window.innerHeight) * this.windowVerticalScale;
+            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
+            return (rect.height / window.innerHeight) * this.windowVerticalScale;
         }
-        return (this.compStyle.height.split('px')[0] / window.innerHeight) * global.viewPortHeight;
+        return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
 
     /**
      * @returns {number} - TODO
      */
     get width() {
-        super.width;
+        const rect = this.getBoundingClientRect();
 
         if (global.inXR) {
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale;
-            return (this.compStyle.width.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+            this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
+            return (rect.width / window.innerWidth) * this.windowHorizontalScale;
         }
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
 
     /**
@@ -64,6 +64,37 @@ export class MRUIEntity extends MREntity {
 
     /**
      *
+     * @param entity
+     */
+    add(entity) {
+        let container = this.closest('mr-panel');
+
+        if (container && entity instanceof MRUIEntity) {
+            container.add(entity);
+        } else {
+            this.object3D.add(entity.object3D);
+        }
+
+        // slight bump needed to avoid overlapping, glitchy visuals.
+        // I'm sure there's a better solution lol.
+        entity.object3D.position.z += 0.01;
+    }
+
+    /**
+     *
+     * @param entity
+     */
+    remove(entity) {
+        let container = this.closest('mr-panel');
+        if (container && entity instanceof MRUIEntity) {
+            container.remove(entity);
+        } else {
+            this.object3D.remove(entity.object3D);
+        }
+    }
+
+    /**
+     *
      */
     connected() {
         this.background.geometry = UIPlane(this.width, this.height, [0], 18);
@@ -84,23 +115,6 @@ export class MRUIEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
-    /**
-     *
-     * @param {string} val - TODO
-     * @returns {number} - TODO
-     */
-    pxToThree(val) {
-        if (global.inXR) {
-            return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
-        }
-        return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
-    }
-
-    /**
-     *
-     * @param {string} val - TODO
-     * @returns {number} - TODO
-     */
     domToThree(val) {
         if (typeof val === 'string') {
             const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
@@ -168,3 +182,5 @@ export class MRUIEntity extends MREntity {
         this.background.visible = true;
     }
 }
+
+customElements.get('mr-div') || customElements.define('mr-div', MRUIEntity);
