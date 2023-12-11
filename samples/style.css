@@ -112,14 +112,7 @@
     font-size: 16px;
   }
 
-  mr-panel {
-    background-color: rgba(24, 24, 24);
-  }
-
   .layout {
-    border-radius: 2%;
-    /* width: 100vw; */
-
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 10px;
