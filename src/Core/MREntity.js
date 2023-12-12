@@ -281,7 +281,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { oldData: MRJS.parseComponentString(mutation.oldValue) },
+                    detail: { oldData: MRJS.jsonToString(mutation.oldValue) },
                 })
             );
         } else {

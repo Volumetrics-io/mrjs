@@ -124,7 +124,7 @@ export class Panel extends MRUIEntity {
             return;
         }
 
-        this.momentumScroll(MRJS.threeToPx(this.delta), 3000);
+        this.momentumScroll(threeToPx(this.delta), 3000);
     };
 
     momentumScroll = (distance, duration) => {

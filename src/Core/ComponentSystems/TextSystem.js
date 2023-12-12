@@ -145,10 +145,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - TODO
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = MRJS.pxToThree(verticalAlign);
+        let result = pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= MRJS.pxToThree(entity.compStyle.fontSize);
+            result /= pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -172,10 +172,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - TODO
      */
     getLineHeight(lineHeight, entity) {
-        let result = MRJS.pxToThree(lineHeight);
+        let result = pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= MRJS.pxToThree(entity.compStyle.fontSize);
+            result /= pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

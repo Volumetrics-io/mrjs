@@ -42,3 +42,24 @@ export function mobileCheckFunction() {
     );
     return userAgentRegex0.test(userAgent) || userAgentRegex1.test(userAgent.substr(0, 4));
 }
+
+/**
+ *
+ * @param {number} val - TODO
+ * @returns {number} - TODO
+ */
+export function threeToPx(val) {
+    return (val / global.viewPortHeight) * window.innerHeight;
+}
+
+/**
+ *
+ * @param {number} val - TODO
+ * @returns {number} - TODO
+ */
+export function pxToThree(val) {
+    if (global.inXR) {
+        return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+}
