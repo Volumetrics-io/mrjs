@@ -4,51 +4,51 @@
 import './styles.css';
 
 // GLOBAL
-import 'MRJS/global';
+import './global';
 
 // UTILS
-import 'MRJS/Utils/Display';
-import 'MRJS/Utils/Geometry';
-import 'MRJS/Utils/LoadMaterial';
-import 'MRJS/Utils/LoadModel';
-import 'MRJS/Utils/Math';
-import 'MRJS/Utils/Math3D';
-import 'MRJS/Utils/Physics';
-import 'MRJS/Utils/String';
+import './Utils/Display';
+import './Utils/Geometry';
+import './Utils/LoadMaterial';
+import './Utils/LoadModel';
+import './Utils/Math';
+import './Utils/Math3D';
+import './Utils/Physics';
+import './Utils/String';
 
 // DATATYPES
-import 'MRJS/Datatypes/Hand';
-import 'MRJS/Datatypes/ClippingGeometry';
+import './Datatypes/Hand';
+import './Datatypes/ClippingGeometry';
 
 // CORE
-import 'MRJS/Core/MRApp';
-import 'MRJS/Core/MRElement';
-import 'MRJS/Core/MREntity';
-import 'MRJS/Core/MRSystem';
-import 'MRJS/Core/MRTextEntity';
-import 'MRJS/Core/MRUIEntity';
+import './Core/MRApp';
+import './Core/MRElement';
+import './Core/MREntity';
+import './Core/MRSystem';
+import './Core/MRTextEntity';
+import './Core/MRUIEntity';
 // CORE - ENTITIES
-import 'MRJS/Core/Entities/Button';
-import 'MRJS/Core/Entities/Image';
-import 'MRJS/Core/Entities/Light';
-import 'MRJS/Core/Entities/Model';
-import 'MRJS/Core/Entities/SkyBox';
-import 'MRJS/Core/Entities/Surface';
-import 'MRJS/Core/Entities/TextArea';
-import 'MRJS/Core/Entities/TextField';
-import 'MRJS/Core/Entities/Volume';
+import './Core/Entities/Button';
+import './Core/Entities/Image';
+import './Core/Entities/Light';
+import './Core/Entities/Model';
+import './Core/Entities/SkyBox';
+import './Core/Entities/Surface';
+import './Core/Entities/TextArea';
+import './Core/Entities/TextField';
+import './Core/Entities/Volume';
 // CORE - COMPONENT-SYSTEMS
-import 'MRJS/Core/ComponentSystems/ClippingSystem';
-import 'MRJS/Core/ComponentSystems/ControlSystem';
-import 'MRJS/Core/ComponentSystems/InstancingSystem';
-import 'MRJS/Core/ComponentSystems/PhysicsSystem';
-import 'MRJS/Core/ComponentSystems/StyleSystem';
-import 'MRJS/Core/ComponentSystems/SurfaceSystem';
-import 'MRJS/Core/ComponentSystems/TextSystem';
+import './Core/ComponentSystems/ClippingSystem';
+import './Core/ComponentSystems/ControlSystem';
+import './Core/ComponentSystems/InstancingSystem';
+import './Core/ComponentSystems/PhysicsSystem';
+import './Core/ComponentSystems/StyleSystem';
+import './Core/ComponentSystems/SurfaceSystem';
+import './Core/ComponentSystems/TextSystem';
 
 // EXPORTS
 export * as THREE from 'three';
-export { MRElement } from 'MRJS/Core/MRElement';
-export { MRSystem } from 'MRJS/Core/MRSystem';
-export { MREntity } from 'MRJS/Core/MREntity';
-export { UIPlane } from 'MRJS/Utils/Geometry';
+export { MRElement } from './Core/MRElement';
+export { MRSystem } from './Core/MRSystem';
+export { MREntity } from './Core/MREntity';
+export { UIPlane } from './Utils/Geometry';
