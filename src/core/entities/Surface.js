@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
-import { UIPlane } from 'mrjs/utils/Geometry';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 // Anchoring system - leaving for michael to complete
 /**
@@ -68,7 +69,7 @@ export class Surface extends MREntity {
             side: 2,
         });
 
-        this.geometry = UIPlane(this.windowHorizontalScale * global.XRScale, this.windowVerticalScale * global.XRScale, [0.01], 18);
+        this.geometry = mrjsUtils.UIPlane(this.windowHorizontalScale * global.XRScale, this.windowVerticalScale * global.XRScale, [0.01], 18);
 
         this.viz = new THREE.Mesh(this.geometry, this.material);
 

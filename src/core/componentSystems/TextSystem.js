@@ -5,8 +5,8 @@ import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { TextField } from 'mrjs/core/entities/TextField';
 import { TextArea } from 'mrjs/core/entities/TextArea';
-import { VIRTUAL_DISPLAY_RESOLUTION } from 'mrjs/utils/Display';
-import { pxToThree, threeToPx } from 'mrjs/utils/Css';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 /**
  * @class TextSystem
@@ -154,10 +154,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = pxToThree(verticalAlign);
+        let result = mrjsUtils.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -181,10 +181,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
-        let result = pxToThree(lineHeight);
+        let result = mrjsUtils.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

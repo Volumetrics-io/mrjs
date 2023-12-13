@@ -2,7 +2,8 @@ import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
-import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'mrjs/utils/Physics';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 /**
  * @class PhysicsSystem
@@ -36,7 +37,7 @@ export class PhysicsSystem extends MRSystem {
         this.tempWorldQuaternion = new THREE.Quaternion();
         this.tempHalfExtents = new THREE.Vector3();
 
-        this.eventQueue = new RAPIER.EventQueue(true);
+        this.eventQueue = new mrjsUtils.RAPIER.EventQueue(true);
 
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
@@ -75,7 +76,7 @@ export class PhysicsSystem extends MRSystem {
             this.updateBody(entity);
 
             this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
-                const joint = INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
+                const joint = mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
 
                 if (joint) {
                     if (!joint.includes('hover') && entity.touch) {
@@ -114,8 +115,8 @@ export class PhysicsSystem extends MRSystem {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
-        const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             // if(this.currentEntity) {
@@ -138,8 +139,8 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} handle2 - the second collider
      */
     onContactEndImpl(handle1, handle2) {
-        const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             // if(entity != this.currentEntity) {
@@ -271,7 +272,7 @@ export class PhysicsSystem extends MRSystem {
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-        const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
+        const rigidBodyDesc = mrjsUtils.RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
@@ -279,10 +280,10 @@ export class PhysicsSystem extends MRSystem {
         const colliderDesc = this.initColliderDesc(entity.physics);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
-        COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
+        mrjsUtils.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
 
-        entity.physics.collider.setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.DEFAULT | RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-        entity.physics.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        entity.physics.collider.setActiveEvents(mrjsUtils.RAPIER.ActiveEvents.COLLISION_EVENTS);
     }
 
     /**
@@ -312,7 +313,7 @@ export class PhysicsSystem extends MRSystem {
         switch (physicsData.type) {
             case 'box':
             case 'ui':
-                return RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
+                return mrjsUtils.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
             default:
                 return null;
         }

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { UIPlane } from 'mrjs/utils/Geometry';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 /**
  * @class Image
@@ -14,7 +15,7 @@ export class Image extends MRDivEntity {
      */
     constructor() {
         super();
-        this.geometry = UIPlane(1, 1, 0.0001, 18);
+        this.geometry = mrjsUtils.UIPlane(1, 1, 0.0001, 18);
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
         });
@@ -28,7 +29,7 @@ export class Image extends MRDivEntity {
      */
     connected() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+        this.object3D.geometry = mrjsUtils.UIPlane(this.width, this.height, borderRadii, 18);
         this.texture = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
             switch (this.compStyle.objectFit) {
                 case 'cover':
@@ -52,7 +53,7 @@ export class Image extends MRDivEntity {
     updateStyle() {
         super.updateStyle();
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = UIPlane(this.width, this.height, borderRadii, 18);
+        this.object3D.geometry = mrjsUtils.UIPlane(this.width, this.height, borderRadii, 18);
         if (this.texture.image) {
             this.cover(this.texture, this.width / this.height);
         }

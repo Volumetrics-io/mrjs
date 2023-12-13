@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 import { MRElement } from 'mrjs/core/MRElement';
-import { stringToJson, stringToDegVector, stringToVector, jsonToString } from 'mrjs/utils/String';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 /**
  * @class MREntity
@@ -22,7 +23,7 @@ export class MREntity extends MRElement {
     components = {
         get: (name) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return stringToJson(this.dataset[dataName]);
+            return mrjsUtils.stringToJson(this.dataset[dataName]);
         },
 
         set: (name, data) => {

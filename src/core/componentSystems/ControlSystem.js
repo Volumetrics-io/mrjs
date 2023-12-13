@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'mrjs/utils/Physics';
 import { MRHand } from 'mrjs/datatypes/Hand';
+
+import * as mrjsUtils from 'mrjsUtils';
 
 /**
  * @class ControlSystem
@@ -19,15 +20,15 @@ export class ControlSystem extends MRSystem {
         this.rightHand = new MRHand('right', this.app);
 
         this.pointerPosition = new THREE.Vector3();
-        this.ray = new RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
+        this.ray = new mrjsUtils.RAPIER.Ray({ x: 1.0, y: 2.0, z: 3.0 }, { x: 0.0, y: 1.0, z: 0.0 });
         this.hit;
 
         this.restPosition = new THREE.Vector3(1000, 1000, 1000);
         this.hitPosition = new THREE.Vector3();
         this.timer;
 
-        const rigidBodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased();
-        const colDesc = RAPIER.ColliderDesc.ball(0.0001);
+        const rigidBodyDesc = mrjsUtils.RAPIER.RigidBodyDesc.kinematicPositionBased();
+        const colDesc = mrjsUtils.RAPIER.ColliderDesc.ball(0.0001);
 
         this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
         this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
@@ -38,8 +39,8 @@ export class ControlSystem extends MRSystem {
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
 
-        INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor';
-        INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
+        mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor';
+        mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
 
         this.cursor = this.cursorHover;
 

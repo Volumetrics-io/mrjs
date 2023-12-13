@@ -6,9 +6,7 @@ import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
 
-import { RAPIER } from 'mrjs/utils/Physics';
-import { stringToJson, stringToVector } from 'mrjs/utils/String';
-import { mobileCheckFunction } from 'mrjs/utils/Display';
+import * as mrjsUtils from 'mrjsUtils';
 
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
@@ -22,7 +20,7 @@ import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
 ('use strict');
 window.mobileCheck = function () {
-    return mobileCheckFunction();
+    return mrjsUtils.mobileCheckFunction();
 };
 
 /**
@@ -83,7 +81,7 @@ export class MRApp extends MRElement {
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.physicsWorld = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+            this.physicsWorld = new mrjsUtils.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
@@ -150,7 +148,7 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
@@ -160,7 +158,7 @@ export class MRApp extends MRElement {
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = stringToVector(layersString);
+            this.layers = mrjsUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -223,7 +221,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = stringToJson(this.lighting);
+            this.lighting = mrjsUtils.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);
