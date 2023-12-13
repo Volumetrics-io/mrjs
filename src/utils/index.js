@@ -10,7 +10,7 @@ import './String.js';
 
 export * from './Css.js';
 export * from './Display.js';
-export { UIPlane } from './Geometry.js';
+export * from './Geometry.js';
 export * from './LoadMaterial.js';
 export * from './LoadModel.js';
 export * from './Math.js';
