@@ -14,6 +14,7 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { MRSystem } from 'MRJS/Core/MRSystem';
 import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
 import { ControlSystem } from 'MRJS/Core/ComponentSystems/ControlSystem';
+import { LayoutSystem } from 'MRJS/Core/ComponentSystems/LayoutSystem';
 import { PhysicsSystem } from 'MRJS/Core/ComponentSystems/PhysicsSystem';
 import { SurfaceSystem } from 'MRJS/Core/ComponentSystems/SurfaceSystem';
 import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
@@ -99,22 +100,6 @@ export class MRApp extends MRElement {
         this.observer.disconnect();
     }
 
-    /**
-     * The mutationCallback function that runs whenever this entity component should be mutated.
-     * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
-     * @param {object} observer - TODO
-     */
-    mutationCallback(mutationList, observer) {
-        for (const mutation of mutationList) {
-            if (mutation.type === 'childList') {
-                this.mutatedChildList(mutation);
-            }
-            if (mutation.type === 'attributes') {
-                this.mutatedAttribute(mutation);
-            }
-        }
-    }
-
     // TODO: These are for toggling debug and app level flags in realtime.
     //       Currently only 'debug' is implemented. but we should add:
     //       - stats
@@ -132,7 +117,24 @@ export class MRApp extends MRElement {
      * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
+    
     // TODO - are the above two functions still needed? I dont see them used anywhere else
+
+    /**
+     * The mutationCallback function that runs whenever this entity component should be mutated.
+     * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
+     * @param {object} observer - TODO
+     */
+    mutationCallback(mutationList, observer) {
+        for (const mutation of mutationList) {
+            if (mutation.type === 'childList') {
+                this.mutatedChildList(mutation);
+            }
+            if (mutation.type === 'attributes') {
+                this.mutatedAttribute(mutation);
+            }
+        }
+    }
 
     /**
      * Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.

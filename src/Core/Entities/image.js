@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 

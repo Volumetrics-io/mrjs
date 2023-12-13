@@ -1,6 +1,8 @@
+import * as THREE from 'three';
+
 import { MREntity } from 'MRJS/Core/MREntity';
 import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
-import { Surface } from 'MRJS/Core/Entity/Surface';
+import { Surface } from 'MRJS/Core/Entities/Surface';
 
 import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 

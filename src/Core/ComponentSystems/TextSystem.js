@@ -5,7 +5,7 @@ import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 import { MREntity } from 'MRJS/Core/MREntity';
 import { TextField } from 'MRJS/Core/Entities/TextField';
 import { TextArea } from 'MRJS/Core/Entities/TextArea';
-import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display';
+import { VIRTUAL_DISPLAY_RESOLUTION, pxToThree, threeToPx } from 'MRJS/Utils/Display';
 
 /**
  * @class TextSystem
