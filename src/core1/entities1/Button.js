@@ -1,4 +1,4 @@
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
 
 /**
  * @class Button

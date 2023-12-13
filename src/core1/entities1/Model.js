@@ -1,5 +1,5 @@
-import { MREntity } from 'MRJS/Core/MREntity';
-import { loadModel } from 'MRJS/Utils/LoadModel';
+import { MREntity } from 'mrjs/core/MREntity';
+import { loadModel } from 'mrjs/utils/LoadModel';
 
 /**
  * @class Model

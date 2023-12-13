@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
-import { MREntity } from 'MRJS/Core/MREntity';
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
-import { Surface } from 'MRJS/Core/Entities/Surface';
+import { MREntity } from 'mrjs/core/MREntity';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { Surface } from 'mrjs/core/Entities/Surface';
 
-import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
+import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 
 /**
  * @class Panel

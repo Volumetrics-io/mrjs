@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
-import { UIPlane } from 'MRJS/Utils/Geometry';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { UIPlane } from 'mrjs/utils/Geometry';
 
 /**
  * @class Image

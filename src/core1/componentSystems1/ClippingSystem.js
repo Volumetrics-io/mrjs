@@ -1,6 +1,6 @@
-import { MRSystem } from 'MRJS/Core/MRSystem';
-import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
-import { MREntity } from 'MRJS/Core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
+import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
+import { MREntity } from 'mrjs/core/MREntity';
 
 /**
  * @class ClippingSystem

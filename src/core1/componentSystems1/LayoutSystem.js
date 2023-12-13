@@ -1,6 +1,6 @@
-import { MRSystem } from 'MRJS/Core/MRSystem';
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
-import { Panel } from 'MRJS/Core/Entities/Panel';
+import { MRSystem } from 'mrjs/core/MRSystem';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { Panel } from 'mrjs/core/entities/Panel';
 
 /**
  * @class Layout System

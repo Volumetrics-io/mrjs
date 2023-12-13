@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
-import { MRSystem } from 'MRJS/Core/MRSystem';
-import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/Utils/Physics';
-import { MRHand } from 'MRJS/Datatypes/Hand';
+import { MRSystem } from 'mrjs/core/MRSystem';
+import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'mrjs/utils/Physics';
+import { MRHand } from 'mrjs/datatypes/Hand';
 
 /**
  * @class ControlSystem

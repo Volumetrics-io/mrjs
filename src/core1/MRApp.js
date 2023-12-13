@@ -4,21 +4,21 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 
 import Stats from 'stats.js';
 
-import { MRElement } from 'MRJS/Core/MRElement';
+import { MRElement } from 'mrjs/core/MRElement';
 
-import { RAPIER } from 'MRJS/Utils/Physics';
-import { stringToJson, stringToVector } from 'MRJS/Utils/String';
-import { mobileCheckFunction } from 'MRJS/Utils/Display';
+import { RAPIER } from 'mrjs/utils/Physics';
+import { stringToJson, stringToVector } from 'mrjs/utils/String';
+import { mobileCheckFunction } from 'mrjs/utils/Display';
 
-import { MREntity } from 'MRJS/Core/MREntity';
-import { MRSystem } from 'MRJS/Core/MRSystem';
-import { ClippingSystem } from 'MRJS/Core/ComponentSystems/ClippingSystem';
-import { ControlSystem } from 'MRJS/Core/ComponentSystems/ControlSystem';
-import { LayoutSystem } from 'MRJS/Core/ComponentSystems/LayoutSystem';
-import { PhysicsSystem } from 'MRJS/Core/ComponentSystems/PhysicsSystem';
-import { SurfaceSystem } from 'MRJS/Core/ComponentSystems/SurfaceSystem';
-import { StyleSystem } from 'MRJS/Core/ComponentSystems/StyleSystem';
-import { TextSystem } from 'MRJS/Core/ComponentSystems/TextSystem';
+import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
+import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
+import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
+import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
+import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
+import { SurfaceSystem } from 'mrjs/core/componentSystems/SurfaceSystem';
+import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
+import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -117,7 +117,7 @@ export class MRApp extends MRElement {
      * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
-    
+
     /**
      * The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.

@@ -1,6 +1,6 @@
 import { getSelectionRects } from 'troika-three-text';
 
-import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
+import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 // TextArea is big text field is small (like google forms options) - text field should lock you to 1line
 /**

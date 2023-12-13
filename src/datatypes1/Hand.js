@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
-import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/Utils/Physics';
+import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'mrjs/utils/Physics';
 
 const HOVER_DISTANCE = 0.05;
 const PINCH_DISTANCE = 0.005;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { MREntity } from 'MRJS/Core/MREntity';
-import { UIPlane } from 'MRJS/Utils/Geometry';
+import { MREntity } from 'mrjs/core/MREntity';
+import { UIPlane } from 'mrjs/utils/Geometry';
 
 // TODO - should we just change this to MRDivEntity? that's already default understood as UI given the html build we're planning with.
 // - do that.

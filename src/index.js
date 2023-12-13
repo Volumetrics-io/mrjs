@@ -7,50 +7,50 @@ import './defaultStyle.css';
 import './global';
 
 // UTILS
-import './Utils/Display';
-import './Utils/Geometry';
-import './Utils/LoadMaterial';
-import './Utils/LoadModel';
-import './Utils/Math';
-import './Utils/Math3D';
-import './Utils/Physics';
-import './Utils/String';
+import './utils/Display';
+import './utils/Geometry';
+import './utils/LoadMaterial';
+import './utils/LoadModel';
+import './utils/Math';
+import './utils/Math3D';
+import './utils/Physics';
+import './utils/String';
 
 // DATATYPES
-import './Datatypes/Hand';
-import './Datatypes/ClippingGeometry';
+import './datatypes/Hand';
+import './datatypes/ClippingGeometry';
 
 // CORE
-import './Core/MRApp';
-import './Core/MRElement';
-import './Core/MREntity';
-import './Core/MRSystem';
-import './Core/MRTextEntity';
-import './Core/MRUIEntity';
+import './core/MRApp';
+import './core/MRElement';
+import './core/MREntity';
+import './core/MRSystem';
+import './core/MRTextEntity';
+import './core/MRUIEntity';
 // CORE - ENTITIES
-import './Core/Entities/Button';
-import './Core/Entities/Image';
-import './Core/Entities/Light';
-import './Core/Entities/Model';
-import './Core/Entities/Panel';
-import './Core/Entities/SkyBox';
-import './Core/Entities/Surface';
-import './Core/Entities/TextArea';
-import './Core/Entities/TextField';
-import './Core/Entities/Volume';
+import './core/entities/Button';
+import './core/entities/Image';
+import './core/entities/Light';
+import './core/entities/Model';
+import './core/entities/Panel';
+import './core/entities/SkyBox';
+import './core/entities/Surface';
+import './core/entities/TextArea';
+import './core/entities/TextField';
+import './core/entities/Volume';
 // CORE - COMPONENT-SYSTEMS
-import './Core/ComponentSystems/ClippingSystem';
-import './Core/ComponentSystems/ControlSystem';
-import './Core/ComponentSystems/InstancingSystem';
-import './Core/ComponentSystems/LayoutSystem';
-import './Core/ComponentSystems/PhysicsSystem';
-import './Core/ComponentSystems/StyleSystem';
-import './Core/ComponentSystems/SurfaceSystem';
-import './Core/ComponentSystems/TextSystem';
+import './core/componentSystems/ClippingSystem';
+import './core/componentSystems/ControlSystem';
+import './core/componentSystems/InstancingSystem';
+import './core/componentSystems/LayoutSystem';
+import './core/componentSystems/PhysicsSystem';
+import './core/componentSystems/StyleSystem';
+import './core/componentSystems/SurfaceSystem';
+import './core/componentSystems/TextSystem';
 
 // EXPORTS
 export * as THREE from 'three';
-export { MRElement } from './Core/MRElement';
-export { MRSystem } from './Core/MRSystem';
-export { MREntity } from './Core/MREntity';
-export { UIPlane } from './Utils/Geometry';
+export { MRElement } from './core/MRElement';
+export { MRSystem } from './core/MRSystem';
+export { MREntity } from './core/MREntity';
+export { UIPlane } from './utils/Geometry';

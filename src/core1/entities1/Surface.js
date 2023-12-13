@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import { MREntity } from 'MRJS/Core/MREntity';
-import { UIPlane } from 'MRJS/Utils/Geometry';
+import { MREntity } from 'mrjs/core/MREntity';
+import { UIPlane } from 'mrjs/utils/Geometry';
 
 // Anchoring system
 /**

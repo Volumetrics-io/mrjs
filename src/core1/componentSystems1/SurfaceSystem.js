@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MRSystem } from 'MRJS/Core/MRSystem';
+import { MRSystem } from 'mrjs/core/MRSystem';
 
 /**
  * @class SurfaceSystem

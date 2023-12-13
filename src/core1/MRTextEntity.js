@@ -1,6 +1,6 @@
 import { Text } from 'troika-three-text';
 
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
 
 /**
  * @class MRTextEntity

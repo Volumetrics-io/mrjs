@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MREntity } from 'MRJS/Core/MREntity';
+import { MREntity } from 'mrjs/core/MREntity';
 
 /**
  * @class Light

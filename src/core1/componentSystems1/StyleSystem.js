@@ -1,6 +1,6 @@
-import { MRSystem } from 'MRJS/Core/MRSystem';
-import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
-import { MREntity } from 'MRJS/Core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
+import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MREntity } from 'mrjs/core/MREntity';
 
 /**
  * @class StyleSystem
