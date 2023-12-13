@@ -40,7 +40,7 @@ export class MRDivEntity extends MREntity {
     /**
      * Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
      */
-    constructor() {
+    constructor(g) {
         super();
         this.worldScale = new THREE.Vector3();
         this.halfExtents = new THREE.Vector3();
@@ -71,7 +71,7 @@ export class MRDivEntity extends MREntity {
     add(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
         let panel = this.closest('mr-panel'); 
-        if (panel && entity instanceof MRUIEntity) {
+        if (panel && entity instanceof MRDivEntity) {
             panel.add(entity);
         } else {
             this.object3D.add(entity.object3D);
@@ -89,7 +89,7 @@ export class MRDivEntity extends MREntity {
     remove(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
         let panel = this.closest('mr-panel');
-        if (panel && entity instanceof MRUIEntity) {
+        if (panel && entity instanceof MRDivEntity) {
             panel.remove(entity);
         } else {
             this.object3D.remove(entity.object3D);
@@ -193,4 +193,4 @@ export class MRDivEntity extends MREntity {
     }
 }
 
-customElements.get('mr-div') || customElements.define('mr-div', MRUIEntity);
+customElements.get('mr-div') || customElements.define('mr-div', MRDivEntity);

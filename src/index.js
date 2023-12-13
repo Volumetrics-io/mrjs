@@ -22,11 +22,11 @@ import './datatypes/ClippingGeometry';
 
 // CORE
 import './core/MRApp';
+import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
-import './core/MRDivEntity';
 // CORE - ENTITIES
 import './core/entities/Button';
 import './core/entities/Image';
@@ -37,7 +37,6 @@ import './core/entities/SkyBox';
 import './core/entities/Surface';
 import './core/entities/TextArea';
 import './core/entities/TextField';
-import './core/entities/Volume';
 // CORE - COMPONENT-SYSTEMS
 import './core/componentSystems/ClippingSystem';
 import './core/componentSystems/ControlSystem';

@@ -1,11 +1,11 @@
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 
 /**
  * @class Button
  * @classdesc 3D representation of a Button mimicking the html version. `mr-button`
- * @augments MRUIEntity
+ * @augments MRDivEntity
  */
-export default class Button extends MRUIEntity {
+export default class Button extends MRDivEntity {
     /**
      * Constructor for the Model entity, does the default.
      */

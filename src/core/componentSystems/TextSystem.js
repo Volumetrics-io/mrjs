@@ -3,9 +3,10 @@ import { getSelectionRects, preloadFont } from 'troika-three-text';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { TextField } from 'mrjs/core/Entities/TextField';
-import { TextArea } from 'mrjs/core/Entities/TextArea';
-import { VIRTUAL_DISPLAY_RESOLUTION, pxToThree, threeToPx } from 'mrjs/utils/Display';
+import { TextField } from 'mrjs/core/entities/TextField';
+import { TextArea } from 'mrjs/core/entities/TextArea';
+import { VIRTUAL_DISPLAY_RESOLUTION } from 'mrjs/utils/Display';
+import { pxToThree, threeToPx } from 'mrjs/utils/Css';
 
 /**
  * @class TextSystem

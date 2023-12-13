@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 
 /**
@@ -30,7 +30,7 @@ export class StyleSystem extends MRSystem {
                 entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
             }
 
-            if (entity instanceof MRUIEntity) {
+            if (entity instanceof MRDivEntity) {
                 entity.updateStyle();
             }
         }

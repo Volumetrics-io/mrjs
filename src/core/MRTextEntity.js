@@ -1,13 +1,13 @@
 import { Text } from 'troika-three-text';
 
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 
 /**
  * @class MRTextEntity
  * @classdesc The text element that is used to represent normal html text one would expect in a web-browser. Used specifically on `mr-div` items. `mr-text`
- * @augments MRUIEntity
+ * @augments MRDivEntity
  */
-export class MRTextEntity extends MRUIEntity {
+export class MRTextEntity extends MRDivEntity {
     /**
      * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
      */

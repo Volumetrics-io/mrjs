@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
 
 /**
@@ -24,7 +24,7 @@ export class LayoutSystem extends MRSystem {
         if (entity instanceof Panel) {
             return;
         }
-        if (entity instanceof MRUIEntity) {
+        if (entity instanceof MRDivEntity) {
             this.registry.add(entity);
             this.setLayoutPosition(entity);
         }

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { UIPlane } from 'mrjs/utils/Geometry';
 
 /**
  * @class Image
  * @classdesc Base html image represented in 3D space. `mr-image`
- * @augments MRUIEntity
+ * @augments MRDivEntity
  */
-export class Image extends MRUIEntity {
+export class Image extends MRDivEntity {
     /**
      * Constructs a base image entity using a UIPlane and other 3D elements as necessary.
      */

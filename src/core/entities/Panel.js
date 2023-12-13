@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRUIEntity } from 'mrjs/core/MRUIEntity';
-import { Surface } from 'mrjs/core/Entities/Surface';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { Surface } from 'mrjs/core/entities/Surface';
 
 import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 
 /**
  * @class Panel
  * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
- * @augments MRUIEntity
+ * @augments MRDivEntity
  */
-export class Panel extends MRUIEntity {
+export class Panel extends MRDivEntity {
     /**
      * Calculates the height of the Entity based on the bounding client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
