@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
 
-import * as mrjsUtils from 'mrjsUtils';
+import mrjsUtils from 'mrjsUtils';
 
 /**
  * @class MRDivEntity
@@ -47,7 +47,7 @@ export class MRDivEntity extends MREntity {
         this.halfExtents = new THREE.Vector3();
         this.physics.type = 'ui';
 
-        const geometry = mrjsUtils.UIPlane(1, 1, [0], 18);
+        const geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0], 18);
         const material = new THREE.MeshStandardMaterial({
             color: 0xfff,
             roughness: 0.7,
@@ -101,7 +101,7 @@ export class MRDivEntity extends MREntity {
      * Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
      */
     connected() {
-        this.background.geometry = mrjsUtils.UIPlane(this.width, this.height, [0], 18);
+        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, [0], 18);
     }
 
     /**
@@ -163,7 +163,7 @@ export class MRDivEntity extends MREntity {
      */
     setBorder() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.background.geometry = mrjsUtils.UIPlane(this.width, this.height, borderRadii, 18);
+        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
     }
 
     /**

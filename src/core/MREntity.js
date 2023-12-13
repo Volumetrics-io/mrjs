@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { MRElement } from 'mrjs/core/MRElement';
 
-import * as mrjsUtils from 'mrjsUtils';
+import mrjsUtils from 'mrjsUtils';
 
 /**
  * @class MREntity
@@ -23,16 +23,16 @@ export class MREntity extends MRElement {
     components = {
         get: (name) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return mrjsUtils.stringToJson(this.dataset[dataName]);
+            return mrjsUtils.String.stringToJson(this.dataset[dataName]);
         },
 
         set: (name, data) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = mrjsUtils.stringToJson(this.dataset[dataName]);
+            const component = mrjsUtils.String.stringToJson(this.dataset[dataName]);
             for (const key in data) {
                 component[key] = data[key];
             }
-            this.dataset[dataName] = mrjsUtils.jsonToString(component);
+            this.dataset[dataName] = mrjsUtils.String.jsonToString(component);
         },
     };
 
@@ -205,10 +205,10 @@ export class MREntity extends MRElement {
             } else {
                 switch (attr) {
                     case 'rotation':
-                        this.object3D.rotation.fromArray(mrjsUtils.stringToDegVector(this.dataset.rotation));
+                        this.object3D.rotation.fromArray(mrjsUtils.String.stringToDegVector(this.dataset.rotation));
                         break;
                     case 'position':
-                        this.object3D.position.fromArray(mrjsUtils.stringToVector(this.dataset.position));
+                        this.object3D.position.fromArray(mrjsUtils.String.stringToVector(this.dataset.position));
                         break;
                 }
             }
@@ -267,10 +267,10 @@ export class MREntity extends MRElement {
                     }
                     switch (mutation.attributeName) {
                         case 'data-position':
-                            this.object3D.position.fromArray(mrjsUtils.stringToVector(this.dataset.position));
+                            this.object3D.position.fromArray(mrjsUtils.String.stringToVector(this.dataset.position));
                             break;
                         case 'data-rotation':
-                            this.object3D.rotation.fromArray(mrjsUtils.stringToDegVector(this.dataset.rotation));
+                            this.object3D.rotation.fromArray(mrjsUtils.String.stringToDegVector(this.dataset.rotation));
                             break;
 
                         default:
@@ -297,7 +297,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { oldData: mrjsUtils.jsonToString(mutation.oldValue) },
+                    detail: { oldData: mrjsUtils.String.jsonToString(mutation.oldValue) },
                 })
             );
         } else {
@@ -352,16 +352,16 @@ export class MREntity extends MRElement {
         const rotation = this.getAttribute('rotation');
 
         if (position) {
-            this.object3D.position.fromArray(mrjsUtils.stringToVector(position));
+            this.object3D.position.fromArray(mrjsUtils.String.stringToVector(position));
         }
 
         if (scale) {
-            this.object3D.scale.fromArray(mrjsUtils.stringToVector(scale));
+            this.object3D.scale.fromArray(mrjsUtils.String.stringToVector(scale));
         }
 
         if (rotation) {
             const euler = new THREE.Euler();
-            const array = mrjsUtils.stringToVector(rotation).map(radToDeg);
+            const array = mrjsUtils.String.stringToVector(rotation).map(radToDeg);
             euler.fromArray(array);
             this.object3D.setRotationFromEuler(euler);
         }

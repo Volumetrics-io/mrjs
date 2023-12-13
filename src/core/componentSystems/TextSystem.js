@@ -6,7 +6,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { TextField } from 'mrjs/core/entities/TextField';
 import { TextArea } from 'mrjs/core/entities/TextArea';
 
-import * as mrjsUtils from 'mrjsUtils';
+import mrjsUtils from 'mrjsUtils';
 
 /**
  * @class TextSystem
@@ -153,7 +153,7 @@ export class TextSystem extends MRSystem {
      * @param {object} el - the css element handler
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / mrjsUtils.VIRTUAL_DISPLAY_RESOLUTION;
+        const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
         if (global.inXR) {
             return result * el.windowHorizontalScale;
         }
@@ -167,10 +167,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = mrjsUtils.pxToThree(verticalAlign);
+        let result = mrjsUtils.Css.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.Css.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -194,10 +194,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
-        let result = mrjsUtils.pxToThree(lineHeight);
+        let result = mrjsUtils.Css.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.Css.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

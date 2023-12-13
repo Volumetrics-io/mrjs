@@ -1,6 +1,6 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
-import * as mrjsUtils from 'mrjsUtils';
+import mrjsUtils from 'mrjsUtils';
 
 /**
  * @class Model
@@ -26,7 +26,7 @@ export class Model extends MREntity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-        mrjsUtils.loadModel(this.src, extension)
+        mrjsUtils.Model.loadModel(this.src, extension)
             .then((loadedMeshModel) => {
                 // todo - these material changes should be moved out of the loader at some point
                 // loadedMeshModel.material = material;

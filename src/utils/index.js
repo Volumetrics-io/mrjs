@@ -1,19 +1,21 @@
-import './Css.js';
-import './Display.js';
-import './Geometry.js';
-import './LoadMaterial.js';
-import './LoadModel.js';
-import './Math.js';
-import './Math3D.js';
-import './Physics.js';
-import './String.js';
+import * as Css from './Css.js';
+import * as Display from './Display.js';
+import * as Geometry from './Geometry.js';
+import * as Material from './Material.js';
+import * as Model from './Model.js';
+import * as Math from './Math.js';
+import * as Math3D from './Math3D.js';
+import * as Physics from './Physics.js';
+import * as String from './String.js';
 
-export * from './Css.js';
-export * from './Display.js';
-export * from './Geometry.js';
-export * from './LoadMaterial.js';
-export * from './LoadModel.js';
-export * from './Math.js';
-export * from './Math3D.js';
-export * from './Physics.js';
-export * from './String.js';
+export default {
+  Css,
+  Display,
+  Geometry,
+  Material,
+  Model,
+  Math,
+  Math3D,
+  Physics,
+  String,
+};

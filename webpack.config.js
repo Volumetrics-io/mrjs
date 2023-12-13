@@ -67,10 +67,9 @@ export default {
                 { from: 'samples', to: 'samples' }, 
             ],
         }),
-        new webpack.ProvidePlugin({
-            mrjs: 'mrjs',
-            mrjsUtils: 'mrjsUtils'
-        }),
+        // new webpack.ProvidePlugin({
+        //     mrjs: 'mrjs',
+        // }),
     ],
 
     module: {

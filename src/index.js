@@ -38,19 +38,11 @@ import './core/componentSystems/SurfaceSystem';
 import './core/componentSystems/TextSystem';
 
 // UTILS
-import './utils/Css';
-import './utils/Display';
-import './utils/Geometry';
-import './utils/LoadMaterial';
-import './utils/LoadModel';
-import './utils/Math';
-import './utils/Math3D';
-import './utils/Physics';
-import './utils/String';
+import { Css, Display, Geometry, Material, Model, Math, Math3D, Physics, String } from 'mrjsUtils';
 
 // EXPORTS
 export * as THREE from 'three';
-export * as mrjsUtils from 'mrjsUtils';
+export * from 'mrjsUtils';
 export * from './core/MRElement';
 export * from './core/MRSystem';
 export * from './core/MREntity';

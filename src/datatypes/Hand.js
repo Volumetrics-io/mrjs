@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
-import * as mrjsUtils from 'mrjsUtils';
+import mrjsUtils from 'mrjsUtils';
 
 const HOVER_DISTANCE = 0.05;
 const PINCH_DISTANCE = 0.005;
@@ -100,14 +100,14 @@ export class MRHand {
         for (const joint of joints) {
             this.tempJointPosition = this.getJointPosition(joint);
             this.tempJointOrientation = this.getJointOrientation(joint);
-            const rigidBodyDesc = mrjsUtils.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempJointPosition);
+            const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempJointPosition);
 
             let colliderDesc;
 
             if (joint.includes('tip')) {
-                colliderDesc = mrjsUtils.RAPIER.ColliderDesc.ball(0.015);
+                colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.015);
             } else {
-                colliderDesc = mrjsUtils.RAPIER.ColliderDesc.capsule(0.01, 0.01);
+                colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
@@ -118,18 +118,18 @@ export class MRHand {
             this.jointPhysicsBodies[joint].body.enableCcd(true);
 
             // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to joint collisions
-            this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(mrjsUtils.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-            this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.RAPIER.ActiveEvents.COLLISION_EVENTS);
+            this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+            this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
             if (joint.includes('index-finger-tip')) {
                 this.jointPhysicsBodies[`${joint}-hover`] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
                 this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation);
 
                 // This should be replaced with a cone or something
-                const hoverColDesc = mrjsUtils.RAPIER.ColliderDesc.ball(0.03);
+                const hoverColDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.03);
                 this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
-                mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
-                mrjsUtils.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
+                mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
+                mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
             }
         }
     }
