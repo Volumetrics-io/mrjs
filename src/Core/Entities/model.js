@@ -42,6 +42,9 @@ export class Model extends MREntity {
             });
     }
 
+    /**
+     *
+     */
     onLoad() {}
 }
 

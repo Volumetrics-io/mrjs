@@ -264,6 +264,7 @@ export class MRApp extends MRElement {
 
     /**
      * Initializes default lighting and shadows for the main scene.
+     * @param {object} data - the lights data (color, intensity, shadows, etc)
      */
     initLights(data) {
         if (!data.enabled) {
@@ -356,7 +357,7 @@ export class MRApp extends MRElement {
 
     /**
      * The render function that is called during ever frame. Calls every systems' update function.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {number} timeStamp - TODO - this param isnt used at all - should it be?
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {

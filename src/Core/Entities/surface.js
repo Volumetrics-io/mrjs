@@ -142,7 +142,7 @@ export class Surface extends MREntity {
     /**
      * Handles when a surface should detach from /...? TODO
      */
-    detatch() {
+    detach() {
         this.placed = false;
         this.object3D.position.set(0, 0, 0);
         this.object3D.quaternion.set(0, 0, 0, 1);

@@ -125,7 +125,7 @@ export class SurfaceSystem extends MRSystem {
      */
     resetAllSurfaces() {
         for (const surface of this.registry) {
-            surface.detatch();
+            surface.detach();
         }
     }
 

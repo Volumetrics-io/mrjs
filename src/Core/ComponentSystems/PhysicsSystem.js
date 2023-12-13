@@ -156,9 +156,9 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * Handles the start of touch between two different colliders and the current entity.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     * @param {entity} the current entity
+     * @param {number} collider1 - the first collider
+     * @param {number} collider2 - the second collider
+     * @param {MREntity} entity - the current entity
      */
     touchStart(collider1, collider2, entity) {
         this.currentEntity = entity;
@@ -192,10 +192,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Handles the end of touch between two different colliders and the current entity.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     * @param {entity} the current entity
+     * Handles the end of touch for the current entity
+     * @param {MREntity} entity - the current entity
      */
     touchEnd(entity) {
         this.currentEntity = null;
@@ -213,7 +211,9 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * Handles the start of hovering over/around a specific entity.
-     * @param {entity} the current entity
+     * @param {number} collider1 - the first collider
+     * @param {number} collider2 - the second collider
+     * @param {MREntity} entity - the current entity
      */
     hoverStart(collider1, collider2, entity) {
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
@@ -234,7 +234,7 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * Handles the end of hovering over/around a specific entity.
-     * @param {entity} the current entity
+     * @param {MREntity} entity - the current entity
      */
     hoverEnd(entity) {
         entity.dispatchEvent(

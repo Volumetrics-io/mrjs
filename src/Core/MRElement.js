@@ -15,13 +15,13 @@ export class MRElement extends HTMLElement {
 
     /**
      * Adding an entity as a sub-object of this entity.
-     * @param {MREntity} entity - the entity to be added.
+     * @param {object} entity - the entity to be added.
      */
     add(entity) {}
 
     /**
      * Removing an entity as a sub-object of this entity.
-     * @param {MREntity} entity - the entity to be removed.
+     * @param {object} entity - the entity to be removed.
      */
     remove(entity) {}
 }

@@ -33,7 +33,7 @@ export class MRSystem {
         if (useComponents) {
             document.addEventListener(`${this.componentName}-attached`, this.onAttach);
             document.addEventListener(`${this.componentName}-updated`, this.onUpdate);
-            document.addEventListener(`${this.componentName}-detached`, this.onDetatch);
+            document.addEventListener(`${this.componentName}-detached`, this.onDetach);
         }
 
         this.app.addEventListener('new-entity', (event) => {
@@ -114,6 +114,7 @@ export class MRSystem {
 
     /**
      * Handles the component and registry aspect of the event when an entity component attaches to this system.
+     * @param {object} event - the attach event
      */
     onAttach(event) {
         this.registry.add(event.target);
@@ -122,6 +123,7 @@ export class MRSystem {
 
     /**
      * Handles the component and registry update of the even when an entity component needs to change.
+     * @param {object} event - the update event
      */
     onUpdate(event) {
         this.updatedComponent(event.target, event.detail.oldData);
@@ -129,8 +131,9 @@ export class MRSystem {
 
     /**
      * Handles the component and registry aspect of the even when an entity component detaches from this system.
+     * @param {object} event - the detach event
      */
-    onDetatch(event) {
+    onDetach(event) {
         this.registry.delete(event.target);
         this.detachedComponent(event.target);
     }

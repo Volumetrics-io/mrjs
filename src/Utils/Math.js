@@ -16,7 +16,6 @@ export function roundTo(val, decimal) {
  * For example: roundTo(<832.456, 92.10003, 23452.1>, 10) = <832.4, 92.1, 2342.1>;
  * @param {vector} vector - The vector of numbers to be rounded.
  * @param {number} decimal - The decimal place targeted in the rounding.
- * @returns {vector} - The vector of rounded numbers to the requested decimal amount.
  */
 export function roundVectorTo(vector, decimal) {
     vector.multiplyScalar(decimal);

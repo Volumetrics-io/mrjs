@@ -109,6 +109,7 @@ export class Panel extends MRUIEntity {
 
     /**
      * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
+     * @param {object} event - the touch event
      */
     onTouch(event) {
         if (!global.inXR) {
@@ -172,6 +173,7 @@ export class Panel extends MRUIEntity {
 
     /**
      * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
+     * @param {object} event - the scroll event
      */
     onScroll(event) {}
     // TODO - should the onScroll event item still exist? or is this just needed as an htmlelement

@@ -15,6 +15,7 @@ export default class Button extends MRUIEntity {
 
     /**
      * On Hover event function that handles how the button should visualize based on 'hover' aspect.
+     * @param {object} event - the hover event
      */
     onHover(event) {
         switch (event.type) {

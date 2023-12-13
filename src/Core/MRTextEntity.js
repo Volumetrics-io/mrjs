@@ -16,7 +16,8 @@ export class MRTextEntity extends MRUIEntity {
     }
 
     /**
-     * Constructor for the MRTextEntity object. Sets up the 3D aspect of the text including the object, texture, and update check. Additionally adds an event listener for the text to auto augment whenever the panel size changes.
+     * Constructor for the MRTextEntity object. Sets up the 3D aspect of the text including the object, texture, and update check.
+     * Additionally adds an event listener for the text to auto augment whenever the panel size changes.
      */
     constructor() {
         super();
