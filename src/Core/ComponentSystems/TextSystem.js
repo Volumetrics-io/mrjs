@@ -97,7 +97,7 @@ export class TextSystem extends MRSystem {
      * Updates the style for the text's information based on compStyle and inputted css elements.
      * @param {MRTextEntity} - the text entity whose style is being updated
      */
-    updateStyle(entity){
+    updateStyle(entity) {
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
@@ -119,18 +119,18 @@ export class TextSystem extends MRSystem {
         textObj.maxWidth = entity.width;
 
         textObj.position.z = 0.0001;
-    };
+    }
 
     /**
      * Handles when text is added as an entity updating content and style for the internal textObj appropriately.
      * @param {MRTextEntity} - the text entity being updated
      */
-    addText(entity){
+    addText(entity) {
         const text = entity.textContent.trim();
         entity.textObj.text = text.length > 0 ? text : ' ';
 
         this.updateStyle(entity);
-    };
+    }
 
     /**
      * parses the font weight as 'bold', 'normal', etc based on the given weight value
@@ -171,7 +171,7 @@ export class TextSystem extends MRSystem {
         }
     }
 
-     /**
+    /**
      * Gets the line height
      * @param {number} lineHeight - the numerical representation in pixel space of the line height
      * @param {MREntity} entity - the entity whose comp style (css) is relevant
@@ -241,7 +241,7 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face 
+     * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face
      * for use by the text object.
      * @param {string} cssString - the css string to be parsed for the font-face css value.
      * @returns {object} - TODO /...? not sure what this is as an object

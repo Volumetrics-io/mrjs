@@ -10,7 +10,6 @@ import { UIPlane } from 'MRJS/Utils/Geometry';
  * @augments MREntity
  */
 export class MRUIEntity extends MREntity {
-
     /**
      * Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
@@ -123,7 +122,7 @@ export class MRUIEntity extends MREntity {
     /**
      * Converts the dom string to a 3D numerical value
      * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
-     * @returns {number} - the 3D numerical represenation of the dom css value 
+     * @returns {number} - the 3D numerical represenation of the dom css value
      */
     domToThree(val) {
         if (typeof val === 'string') {

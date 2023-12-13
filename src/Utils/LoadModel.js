@@ -25,7 +25,7 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 
 /**
  * Loads Collada file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
@@ -49,7 +49,7 @@ function loadDAE(filePath) {
 
 /**
  * Loads FBX file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
@@ -73,7 +73,7 @@ function loadFBX(filePath) {
 
 /**
  * Loads GLTF/GLB file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
@@ -97,7 +97,7 @@ async function loadGLTF(filePath) {
 
 /**
  * Loads stl file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
@@ -127,7 +127,7 @@ async function loadSTL(filePath) {
 
 /**
  * Loads USD/USDZ file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
@@ -148,7 +148,7 @@ async function loadUSDZ(filePath) {
 
 /**
  *
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports 
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @param {string} extension - The extension of the file type. Current allowed extensions are `fbx`, `glb`, and `stl`.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.

@@ -103,21 +103,21 @@ export class MREntity extends MRElement {
      */
     updatePhysicsData() {}
 
-    onHover(event){
+    onHover(event) {
         // console.log(`${event.detail.joint} hover at:`, event.detail.position);
-    //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-    //     // TODO - should we delete the above console.log instead?
-    };
+        //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
+        //     // TODO - should we delete the above console.log instead?
+    }
 
-    onTouch(event){
+    onTouch(event) {
         // console.log(`${event.detail.joint} touch at:`, event.detail.position);
-            //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-    //     // TODO - should we delete the above console.log instead?
-    };
+        //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
+        //     // TODO - should we delete the above console.log instead?
+    }
 
-    onScroll(event){
+    onScroll(event) {
         this.parentElement?.onScroll(event);
-    };
+    }
 
     /**
      * The connectedCallback function that runs whenever this entity component becomes connected to something else.

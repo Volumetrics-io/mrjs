@@ -110,7 +110,7 @@ export class Panel extends MRUIEntity {
     /**
      * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
      */
-    onTouch(event){
+    onTouch(event) {
         if (!global.inXR) {
             return;
         }
@@ -132,14 +132,14 @@ export class Panel extends MRUIEntity {
         }
 
         this.momentumScroll(threeToPx(this.delta), 3000);
-    };
+    }
 
     /**
      * Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
      * @param {number} distance - the distance left to scroll
      * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
      */
-    momentumScroll(distance, duration){
+    momentumScroll(distance, duration) {
         let start = null;
         let remainingDistance = distance;
         clearTimeout(this.momentumTimeout);
@@ -168,12 +168,12 @@ export class Panel extends MRUIEntity {
         }
 
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
-    };
+    }
 
     /**
      * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
      */
-    onScroll(event){};
+    onScroll(event) {}
     // TODO - should the onScroll event item still exist? or is this just needed as an htmlelement
 }
 

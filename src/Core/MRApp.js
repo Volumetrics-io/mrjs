@@ -99,7 +99,6 @@ export class MRApp extends MRElement {
         this.observer.disconnect();
     }
 
-
     /**
      * The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
@@ -114,7 +113,7 @@ export class MRApp extends MRElement {
                 this.mutatedAttribute(mutation);
             }
         }
-    };
+    }
 
     // TODO: These are for toggling debug and app level flags in realtime.
     //       Currently only 'debug' is implemented. but we should add:
@@ -261,12 +260,12 @@ export class MRApp extends MRElement {
         this.user.add(this.anchor);
 
         this.anchor.position.setZ(-0.5);
-    };
+    }
 
     /**
      * Initializes default lighting and shadows for the main scene.
      */
-    initLights(data){
+    initLights(data) {
         if (!data.enabled) {
             return;
         }
@@ -288,7 +287,7 @@ export class MRApp extends MRElement {
                 this.scene.add(this.shadowLight);
             }
         }
-    };
+    }
 
     /**
      * De-initializes rendering and MR

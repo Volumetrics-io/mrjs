@@ -13,7 +13,7 @@ function spliceSplitImpl(index, count, add) {
     const ar = this.split('');
     ar.splice(index, count, add);
     return ar.join('');
-};
+}
 String.prototype.spliceSplit = spliceSplitImpl;
 
 /*********** JSON // String interactions *************/

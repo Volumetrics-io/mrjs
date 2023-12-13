@@ -9,7 +9,6 @@ import { UIPlane } from 'MRJS/Utils/Geometry';
  * @augments MREntity
  */
 export class Surface extends MREntity {
-
     /**
      * @returns {number} - the height of the current viewport
      */
@@ -25,7 +24,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Constructor 
+     * Constructor
      */
     constructor() {
         super();

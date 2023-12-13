@@ -74,7 +74,7 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {}
-    
+
     /**
      * Called when a new entity is added to the scene
      * @param {MREntity} entity - the entity being added.
@@ -91,11 +91,11 @@ export class MRSystem {
         // TODO - should we delete the above console.log instead?
     }
 
-// TODO - the below function doesnt exist in any of the Component Systems - good to remove?
+    // TODO - the below function doesnt exist in any of the Component Systems - good to remove?
     // /**
     //  * Called when a specific entity component is being updated
     //  * @param {MREntity} entity - the entity being updated
-    //  * @param {object} oldData - the 
+    //  * @param {object} oldData - the
     //  */
     // updatedComponent(entity, oldData) {
     //     //console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
@@ -103,7 +103,7 @@ export class MRSystem {
     //     // TODO - should we delete the above console.log instead?
     // }
 
-    // 
+    //
     /**
      * Called when the entity component is removed
      * @param {MREntity} entity - the entity component being removed.
@@ -115,23 +115,23 @@ export class MRSystem {
     /**
      * Handles the component and registry aspect of the event when an entity component attaches to this system.
      */
-    onAttach(event){
+    onAttach(event) {
         this.registry.add(event.target);
         this.attachedComponent(event.target);
-    };
+    }
 
     /**
      * Handles the component and registry update of the even when an entity component needs to change.
      */
-    onUpdate(event){
+    onUpdate(event) {
         this.updatedComponent(event.target, event.detail.oldData);
-    };
+    }
 
     /**
      * Handles the component and registry aspect of the even when an entity component detaches from this system.
      */
-    onDetatch(event){
+    onDetatch(event) {
         this.registry.delete(event.target);
         this.detachedComponent(event.target);
-    };
+    }
 }

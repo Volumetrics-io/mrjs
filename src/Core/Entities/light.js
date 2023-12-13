@@ -47,7 +47,7 @@ export default class Light extends MREntity {
             default:
                 break;
         }
-    };
+    }
 }
 
 customElements.get('mr-light') || customElements.define('mr-light', Light);

@@ -42,7 +42,7 @@ export class Model extends MREntity {
             });
     }
 
-    onLoad(){};
+    onLoad() {}
 }
 
 customElements.get('mr-model') || customElements.define('mr-model', Model);

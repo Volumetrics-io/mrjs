@@ -16,7 +16,7 @@ export default class Button extends MRUIEntity {
     /**
      * On Hover event function that handles how the button should visualize based on 'hover' aspect.
      */
-    onHover(event){
+    onHover(event) {
         switch (event.type) {
             case 'hover-start':
                 this.object3D.scale.addScalar(0.1);
@@ -33,7 +33,7 @@ export default class Button extends MRUIEntity {
             default:
                 break;
         }
-    };
+    }
 
     // TODO - why doesnt Button have the `connected` function?
 }

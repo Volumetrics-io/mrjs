@@ -102,7 +102,7 @@ class InstancingSystem extends MRSystem {
      * Uses threejs's `InstancedMesh`.
      * @param {MREntity} entity - the entity to be instanced in random locations
      */
-    random(entity){
+    random(entity) {
         // update mesh for each instance
         for (let i = 0; i < this.instanceCount; ++i) {
             const matrix = new THREE.Matrix4();
@@ -113,7 +113,7 @@ class InstancingSystem extends MRSystem {
             this.transformations[i].copy(matrix);
             this.instancedMesh.setMatrixAt(i, this.transformations[i]);
         }
-    };
+    }
 }
 
 let instancingSystem = new InstancingSystem();
