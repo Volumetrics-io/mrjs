@@ -9,7 +9,7 @@ import { MREntity } from 'MRJS/Core/MREntity';
  */
 class SkyBox extends MREntity {
     /**
-     *
+     * TODO - fill me out
      */
     constructor() {
         super();

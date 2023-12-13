@@ -108,9 +108,6 @@ export class MREntity extends MRElement {
      * @param {object} event - the hover event
      */
     onHover(event) {
-        // console.log(`${event.detail.joint} hover at:`, event.detail.position);
-        //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-        //     // TODO - should we delete the above console.log instead?
     }
 
     /**
@@ -118,9 +115,6 @@ export class MREntity extends MRElement {
      * @param {object} event - the touch event
      */
     onTouch(event) {
-        // console.log(`${event.detail.joint} touch at:`, event.detail.position);
-        //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-        //     // TODO - should we delete the above console.log instead?
     }
 
     /**
@@ -257,7 +251,7 @@ export class MREntity extends MRElement {
     /**
      * The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
-     * @param {object} observer - TODO
+     * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {

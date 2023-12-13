@@ -36,6 +36,7 @@ export default class Light extends MREntity {
         }
         switch (mutation.attributeName) {
             case 'color':
+                // TODO - set via css
                 const color = this.getAttribute('color');
                 this.object3D.color.setStyle(color);
                 break;

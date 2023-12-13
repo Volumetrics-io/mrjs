@@ -8,7 +8,7 @@ import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 
 /**
  * @class Panel
- * @classdesc The main panel entity used for webpages and UI elements in 3D space. `mr-panel`
+ * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
  * @augments MRUIEntity
  */
 export class Panel extends MRUIEntity {
@@ -112,6 +112,7 @@ export class Panel extends MRUIEntity {
     /**
      * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
      * @param {object} event - the touch event
+     * // TODO - triggers the browser's own scrolling(so we're not faking scrolling)
      */
     onTouch(event) {
         if (!global.inXR) {
@@ -178,7 +179,6 @@ export class Panel extends MRUIEntity {
      * @param {object} event - the scroll event
      */
     onScroll(event) {}
-    // TODO - should the onScroll event item still exist? or is this just needed as an htmlelement
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel);

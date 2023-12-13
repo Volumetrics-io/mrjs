@@ -86,22 +86,15 @@ export class MRSystem {
      * @param {MREntity} entity - the entity being attached/initialized.
      */
     attachedComponent(entity) {
-        //console.log(`attached ${this.componentName} ${entity.dataset[this.componentName]}`);
-        // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-        // TODO - should we delete the above console.log instead?
     }
 
-    // TODO - the below function doesnt exist in any of the Component Systems - good to remove?
-    // /**
-    //  * Called when a specific entity component is being updated
-    //  * @param {MREntity} entity - the entity being updated
-    //  * @param {object} oldData - the
-    //  */
-    // updatedComponent(entity, oldData) {
-    //     //console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
-    //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
-    //     // TODO - should we delete the above console.log instead?
-    // }
+    /**
+     * Called when a specific entity component is being updated
+     * @param {MREntity} entity - the entity being updated
+     * @param {object} oldData - the
+     */
+    updatedComponent(entity, oldData) {
+    }
 
     //
     /**
@@ -109,7 +102,6 @@ export class MRSystem {
      * @param {MREntity} entity - the entity component being removed.
      */
     detachedComponent(entity) {
-        console.log(`detached ${this.componentName}`);
     }
 
     /**

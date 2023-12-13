@@ -4,6 +4,7 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 // TODO - should we just change this to MRDivEntity? that's already default understood as UI given the html build we're planning with.
+// - do that.
 /**
  * @class MRUIEntity
  * @classdesc The MREntity that is used to solely describe UI Elements. Defaults as the html `mr-div` representation. `mr-div`
@@ -70,10 +71,11 @@ export class MRUIEntity extends MREntity {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        let container = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
+        let panel = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
+        // goes up parenting node tree and checks if mr-panel is in ancestry (needs to be a subchild of mr-panel for proper positioning) - must be child of panel and not a grandchild
 
-        if (container && entity instanceof MRUIEntity) {
-            container.add(entity);
+        if (panel && entity instanceof MRUIEntity) {
+            panel.add(entity);
         } else {
             this.object3D.add(entity.object3D);
         }
@@ -88,9 +90,9 @@ export class MRUIEntity extends MREntity {
      * @param {MREntity} entity - the entity to be removed added.
      */
     remove(entity) {
-        let container = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
-        if (container && entity instanceof MRUIEntity) {
-            container.remove(entity);
+        let panel = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
+        if (panel && entity instanceof MRUIEntity) {
+            panel.remove(entity);
         } else {
             this.object3D.remove(entity.object3D);
         }
@@ -118,7 +120,8 @@ export class MRUIEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
-    // TODO - can we move this to Utils/Display.js ?
+    // TODO - can we move this to Utils/Math.js ? ---- for border radius (which returns percentages instead of pixel values)
+    // leave here for now - to be moved after michael change
     /**
      * Converts the dom string to a 3D numerical value
      * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc

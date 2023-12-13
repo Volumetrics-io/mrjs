@@ -118,12 +118,10 @@ export class MRApp extends MRElement {
      */
     mutatedChildList(mutation) {}
     
-    // TODO - are the above two functions still needed? I dont see them used anywhere else
-
     /**
      * The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
-     * @param {object} observer - TODO
+     * @param {object} observer - TODO - handle it
      */
     mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {
@@ -359,7 +357,7 @@ export class MRApp extends MRElement {
 
     /**
      * The render function that is called during ever frame. Calls every systems' update function.
-     * @param {number} timeStamp - TODO - this param isnt used at all - should it be?
+     * @param {number} timeStamp - TODO - this param isnt used at all - should it be? - default threejs item
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {

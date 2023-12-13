@@ -35,8 +35,6 @@ export default class Button extends MRUIEntity {
                 break;
         }
     }
-
-    // TODO - why doesnt Button have the `connected` function?
 }
 
 customElements.get('mr-button') || customElements.define('mr-button', Button);

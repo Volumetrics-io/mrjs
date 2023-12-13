@@ -241,6 +241,9 @@ export class MRHand {
     getJointPosition(jointName) {
         const result = new THREE.Vector3();
 
+        // 10000 - bc cant turn of items when inactive in rapier, throwing them 10000 somethings into distance
+        // todo make better in future
+
         if (!this.mesh) {
             result.addScalar(10000); // TODO - what is this 10000 arbitrary number used for?
             return result;

@@ -51,13 +51,6 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
-
-        // app.renderer.xr.getSession().addEventListener('visibilitychange', function(ev) {
-        //   if (ev.session.visibilityState === 'visible-blurred') {
-
-        //   }
-        // });
-        // TODO - can the above commented code be deleted?
     }
 
     /**
@@ -110,17 +103,6 @@ export class ControlSystem extends MRSystem {
         this.cursor = this.cursorHover;
     };
 
-    // onClick = (event) => {
-    //   this.removeCursor()
-    //   this.cursor = this.cursorClick
-
-    //     this.hit = this.castRay(event)
-    //     if (this.hit != null) {
-    //       this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
-    //     }
-    // }
-    // TODO - should the above commented code be kept?
-
     // TODO - does this need a description?
     removeCursor = () => {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
@@ -129,10 +111,10 @@ export class ControlSystem extends MRSystem {
 
     /************ Tools && Helpers ************/
 
-    /**
+    /** // TODO - specific to 2d castray (for mouse)
      * Raycast into the scene using the information from the event that called it.
      * @param {object} event - the event being handled
-     * @returns {object} ....? TODO
+     * @returns {object} ....? TODO - returns collision item
      */
     castRay(event) {
         let x = 0;

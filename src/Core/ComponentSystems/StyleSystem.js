@@ -26,7 +26,7 @@ export class StyleSystem extends MRSystem {
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
 
             if (entity.compStyle.zIndex != 'auto') {
-                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
+                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000); ///TODO - 1000 converting z index to a threejs usable value, a bit arbitrary - its alwasy in the 1000s so making nice
             }
 
             if (entity instanceof MRUIEntity) {

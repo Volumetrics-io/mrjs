@@ -204,8 +204,8 @@ export class TextSystem extends MRSystem {
                 return textAlign;
         }
     }
-    // TODO - should the above not be 'getTextAlign'?
-    // TODO - so far these all seem the same except for end and start, cant we just filter those away and ignore this function?
+    // TODO - should the above not be 'getTextAlign'? √
+    // TODO - so far these all seem the same except for end and start, cant we just filter those away and fix this function? TODO
 
     /**
      * Sets the matrial color and opacity based on the css color element
@@ -227,24 +227,10 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Parses the font size from the given val string, adjusts for the display resolution, and returns an appropriate result.
-     * @param {string} val - the string representation from css of the font size as `XXXpx`
-     * @param {object} el - TODO - what is this?
-     * @returns {number} - the numerical representation of the font size
-     */
-    parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION;
-        if (global.inXR) {
-            return result * el.windowHorizontalScale;
-        }
-        return result;
-    }
-
-    /**
      * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face
      * for use by the text object.
      * @param {string} cssString - the css string to be parsed for the font-face css value.
-     * @returns {object} - TODO /...? not sure what this is as an object
+     * @returns {object} - TODO /...? not sure what this is as an object - is json object - necessary for preloading fonts
      */
     parseFontFace(cssString) {
         const obj = {};

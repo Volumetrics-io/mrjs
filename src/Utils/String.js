@@ -1,21 +1,5 @@
 import * as THREE from 'three';
 
-/*********** Extensions *************/
-
-/**
- * TODO
- * @param {number} index - TODO
- * @param {number} count - TODO
- * @param {number} add - TODO
- * @returns {string} - TODO
- */
-function spliceSplitImpl(index, count, add) {
-    const ar = this.split('');
-    ar.splice(index, count, add);
-    return ar.join('');
-}
-String.prototype.spliceSplit = spliceSplitImpl;
-
 /*********** JSON // String interactions *************/
 
 /**

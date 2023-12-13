@@ -33,3 +33,28 @@ export function roundVectorTo(vector, decimal) {
 export function radToDeg(val) {
     return (val * Math.PI) / 180;
 }
+
+// threejshelperthingy file
+/**
+ * Converts 3D world positions to display positions based on global viewPort information.
+ * @param {number} val - the 3D value to be converted to 2D pixel space
+ * @returns {number} - the 2D pixel space representation of value.
+ */
+export function threeToPx(val) { // threejsToPixel space - for layout system, css value handling (threejs<-->px)
+    // TODO - why is this calculation only height based? isnt this an index calculation? - height infinite
+    return (val / global.viewPortWidth) * window.innerWidth;
+}
+
+/**
+ * Converts display positions to 3D world positions to based on global viewPort information.
+ * @param {number} val - the 2D pixel space value to be converted to 3D space.
+ * @returns {number} - the 3D representation of value.
+ */
+export function pxToThree(val) {
+    // TODO - why is this calculation both height and width based when threeToPx is not
+    if (global.inXR) {
+        return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+    }
+    return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+}
+

@@ -24,7 +24,7 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     * Callback function of MREntity -
+     * Callback function of MREntity - TODO - finish writing this
      */
     connected() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));

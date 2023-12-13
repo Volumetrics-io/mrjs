@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
+// Anchoring system
 /**
  * @class Surface
  * @classdesc ...TODO... how is this different than Panel in terms of use? i understand panel has more too it, but is this just a sprite? `mr-surface`

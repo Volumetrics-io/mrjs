@@ -2,6 +2,7 @@ import { getSelectionRects } from 'troika-three-text';
 
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 
+// TextArea is big text field is small (like google forms options) - text field should lock you to 1line
 /**
  * @class MRTextArea //TODO - how is this different than TextField on use-case?
  * @classdesc The text element that is used to represent normal ....TODO.... `mr-textarea`
