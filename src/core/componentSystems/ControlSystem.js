@@ -75,7 +75,7 @@ export class ControlSystem extends MRSystem {
     mouseOverImpl(event) {
         event.stopPropagation();
 
-        this.hit = this.castRay(event);
+        this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
@@ -93,14 +93,14 @@ export class ControlSystem extends MRSystem {
 
         this.cursor = this.cursorClick;
 
-        this.hit = this.castRay(event);
+        this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
     }
-    onMouseDown = (event) => { return onMouseDownImpl(event); };
+    onMouseDown = (event) => { return this.onMouseDownImpl(event); };
         
     /**
      * 
@@ -110,7 +110,7 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.cursor = this.cursorHover;
     }
-    onMouseUp = (event) => { return onMouseUpImpl(event); };
+    onMouseUp = (event) => { return this.onMouseUpImpl(event); };
 
     /**
      * 
@@ -119,16 +119,16 @@ export class ControlSystem extends MRSystem {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
     }
-    removeCursor = () => { return removeCursorImpl(); };
+    removeCursor = () => { return this.removeCursorImpl(); };
 
     /************ Tools && Helpers ************/
 
-    /** // TODO - specific to 2d castray (for mouse)
+    /**
      * Raycast into the scene using the information from the event that called it.
      * @param {object} event - the event being handled
-     * @returns {object} ....? TODO - returns collision item
+     * @returns {object} - collision item for what the ray hit in the 3d scene.
      */
-    castRay(event) {
+    pixelRayCast(event) {
         let x = 0;
         let y = 0;
         if (event.type.includes('touch')) {

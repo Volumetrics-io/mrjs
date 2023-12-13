@@ -26,7 +26,7 @@ import './core/MRElement';
 import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
-import './core/MRUIEntity';
+import './core/MRDivEntity';
 // CORE - ENTITIES
 import './core/entities/Button';
 import './core/entities/Image';

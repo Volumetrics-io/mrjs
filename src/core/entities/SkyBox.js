@@ -38,6 +38,9 @@ class SkyBox extends MREntity {
         this.object3D.background = texture;
     }
 
+    /**
+     * On load event function - right now defaults to do nothing.
+     */
     onLoad = () => {};
 }
 customElements.define('mr-skybox', SkyBox);

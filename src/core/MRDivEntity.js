@@ -69,9 +69,8 @@ export class MRDivEntity extends MREntity {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        let panel = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
-        // goes up parenting node tree and checks if mr-panel is in ancestry (needs to be a subchild of mr-panel for proper positioning) - must be child of panel and not a grandchild
-
+        // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
+        let panel = this.closest('mr-panel'); 
         if (panel && entity instanceof MRUIEntity) {
             panel.add(entity);
         } else {
@@ -88,7 +87,8 @@ export class MRDivEntity extends MREntity {
      * @param {MREntity} entity - the entity to be removed added.
      */
     remove(entity) {
-        let panel = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
+        // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
+        let panel = this.closest('mr-panel');
         if (panel && entity instanceof MRUIEntity) {
             panel.remove(entity);
         } else {

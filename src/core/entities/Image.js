@@ -24,7 +24,7 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     * Callback function of MREntity - TODO - finish writing this
+     * Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));

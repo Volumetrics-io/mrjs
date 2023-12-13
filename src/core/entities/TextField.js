@@ -5,7 +5,7 @@ import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
  * @class MRTextField
- * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. `mr-textfield`
+ * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. Limits the one-line. `mr-textfield`
  * @augments MRTextEntity
  */
 export class TextField extends MRTextEntity {

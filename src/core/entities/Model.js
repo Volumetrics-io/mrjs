@@ -43,9 +43,9 @@ export class Model extends MREntity {
     }
 
     /**
-     * TODO - fill me out
+     * On load event function - right now defaults to do nothing.
      */
-    onLoad() {}
+    onLoad = () => {};
 }
 
 customElements.get('mr-model') || customElements.define('mr-model', Model);

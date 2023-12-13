@@ -111,8 +111,8 @@ export class Panel extends MRUIEntity {
 
     /**
      * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
+     * Triggers to use the browser's own scrolling without a need to fake the scrolling itself.
      * @param {object} event - the touch event
-     * // TODO - triggers the browser's own scrolling(so we're not faking scrolling)
      */
     onTouch(event) {
         if (!global.inXR) {

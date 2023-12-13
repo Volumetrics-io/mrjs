@@ -121,7 +121,7 @@ export class MRApp extends MRElement {
     /**
      * The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
-     * @param {object} observer - TODO - handle it
+     * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {
@@ -356,8 +356,9 @@ export class MRApp extends MRElement {
     }
 
     /**
+     * Default function header needed by threejs.
      * The render function that is called during ever frame. Calls every systems' update function.
-     * @param {number} timeStamp - TODO - this param isnt used at all - should it be? - default threejs item
+     * @param {number} timeStamp - timeStamp of the current frame. 
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
