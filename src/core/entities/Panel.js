@@ -114,7 +114,7 @@ export class Panel extends MRDivEntity {
      * Triggers to use the browser's own scrolling without a need to fake the scrolling itself.
      * @param {object} event - the touch event
      */
-    onTouch(event) {
+    onTouchImpl(event) {
         if (!global.inXR) {
             return;
         }
@@ -137,13 +137,16 @@ export class Panel extends MRDivEntity {
 
         this.momentumScroll(threeToPx(this.delta), 3000);
     }
+    onTouch = (event) => {
+        return this.onTouchImpl(event);
+    }
 
     /**
      * Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
      * @param {number} distance - the distance left to scroll
      * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
      */
-    momentumScroll(distance, duration) {
+    momentumScrollImpl(distance, duration) {
         let start = null;
         let remainingDistance = distance;
         clearTimeout(this.momentumTimeout);
@@ -173,12 +176,13 @@ export class Panel extends MRDivEntity {
 
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     }
+    momentumScroll = (distance, duration) => { return this.momentumScrollImpl(distance, duration); };
 
     /**
      * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
      * @param {object} event - the scroll event
      */
-    onScroll(event) {}
+    onScroll = (event) => {};
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel);

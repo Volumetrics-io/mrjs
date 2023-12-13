@@ -30,7 +30,7 @@ export default class Light extends MREntity {
      * Callback function of MREntity - Updates the lights color and intensity as requested.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
-    mutated(mutation) {
+    mutatedImpl(mutation) {
         if (mutation.type != 'attributes') {
             return;
         }
@@ -49,6 +49,7 @@ export default class Light extends MREntity {
                 break;
         }
     }
+    mutated = (mutation) => { return mutatedImpl(mutation); };
 }
 
 customElements.get('mr-light') || customElements.define('mr-light', Light);

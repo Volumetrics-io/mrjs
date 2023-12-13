@@ -98,7 +98,7 @@ export class TextSystem extends MRSystem {
      * Updates the style for the text's information based on compStyle and inputted css elements.
      * @param {MRTextEntity} entity - the text entity whose style is being updated
      */
-    updateStyle(entity) {
+    updateStyleImpl(entity) {
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
@@ -121,17 +121,19 @@ export class TextSystem extends MRSystem {
 
         textObj.position.z = 0.0001;
     }
+    updateStyle = (entity) => { return this.updateStyleImpl(entity); };
 
     /**
      * Handles when text is added as an entity updating content and style for the internal textObj appropriately.
      * @param {MRTextEntity} entity - the text entity being updated
      */
-    addText(entity) {
+    addTextImpl(entity) {
         const text = entity.textContent.trim();
         entity.textObj.text = text.length > 0 ? text : ' ';
 
         this.updateStyle(entity);
     }
+    addText = (entity) => { return this.addTextImpl(entity); };
 
     /**
      * parses the font weight as 'bold', 'normal', etc based on the given weight value

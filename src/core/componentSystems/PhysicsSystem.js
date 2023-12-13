@@ -110,7 +110,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactStart(handle1, handle2) {
+    onContactStartImpl(handle1, handle2) {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
@@ -130,13 +130,14 @@ export class PhysicsSystem extends MRSystem {
             this.hoverStart(collider1, collider2, entity);
         }
     }
+    onContactStart = (handle1, handle2) => { return onContactStartImpl(handle1, handle2); };
 
     /**
      * Handles the end of collisions between two different colliders.
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactEnd(handle1, handle2) {
+    onContactEndImpl(handle1, handle2) {
         const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = COLLIDER_ENTITY_MAP[handle2];
 
@@ -153,6 +154,7 @@ export class PhysicsSystem extends MRSystem {
             this.hoverEnd(entity);
         }
     }
+    onContactEnd = (handle1, handle2) => { return onContactEndImpl(handle1, handle2); };
 
     /**
      * Handles the start of touch between two different colliders and the current entity.
@@ -160,7 +162,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    touchStart(collider1, collider2, entity) {
+    touchStartImpl(collider1, collider2, entity) {
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
@@ -190,12 +192,13 @@ export class PhysicsSystem extends MRSystem {
             );
         });
     }
+    touchStart = (collider1, collider2, entity) => { return this.touchStartImpl(collider1, collider2, entity); };
 
     /**
      * Handles the end of touch for the current entity
      * @param {MREntity} entity - the current entity
      */
-    touchEnd(entity) {
+    touchEndImpl(entity) {
         this.currentEntity = null;
         // Contact information can be read from `manifold`.
         this.tempPreviousPosition.set(0, 0, 0);
@@ -208,6 +211,7 @@ export class PhysicsSystem extends MRSystem {
             })
         );
     }
+    touchEnd = (entity) => { return this.touchEndImpl(entity); };
 
     /**
      * Handles the start of hovering over/around a specific entity.
@@ -215,7 +219,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    hoverStart(collider1, collider2, entity) {
+    hoverStartImpl(collider1, collider2, entity) {
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -231,18 +235,20 @@ export class PhysicsSystem extends MRSystem {
             );
         });
     }
+    hoverStart = (collider1, collider2, entity) => { return this.hoverStartImpl(collider1, collider2, entity); };
 
     /**
      * Handles the end of hovering over/around a specific entity.
      * @param {MREntity} entity - the current entity
      */
-    hoverEnd(entity) {
+    hoverEndImpl(entity) {
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
             })
         );
     }
+    hoverEnd = (entity) => { return this.hoverEndImpl(entity); };
 
     /**
      * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.

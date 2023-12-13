@@ -50,21 +50,23 @@ export class TextArea extends MRTextEntity {
     /**
      * Blurs the inputted text value and cursor information
      */
-    blur() {
+    blurImpl() {
         this.input.blur();
         this.cursor.visible = false;
     }
+    blur = () => { return blurImpl(); };
 
     /**
      * Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
      */
-    focus() {
+    focusImpl() {
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
         this.updateCursorPosition();
     }
+    focus = () => { return focusImpl(); };
 
     /**
      * Updates the cursor position based on click and selection location.
