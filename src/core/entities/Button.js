@@ -35,7 +35,7 @@ export default class Button extends MRDivEntity {
                 break;
         }
     }
-    onHover = (event) => { return onHoverImpl(event); };
+    onHover = (event) => { return this.onHoverImpl(event); };
 }
 
 customElements.get('mr-button') || customElements.define('mr-button', Button);

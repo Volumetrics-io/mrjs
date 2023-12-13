@@ -6,16 +6,6 @@ import './defaultStyle.css';
 // GLOBAL
 import './global';
 
-// UTILS
-import './utils/Display';
-import './utils/Geometry';
-import './utils/LoadMaterial';
-import './utils/LoadModel';
-import './utils/Math';
-import './utils/Math3D';
-import './utils/Physics';
-import './utils/String';
-
 // DATATYPES
 import './datatypes/Hand';
 import './datatypes/ClippingGeometry';
@@ -47,9 +37,12 @@ import './core/componentSystems/StyleSystem';
 import './core/componentSystems/SurfaceSystem';
 import './core/componentSystems/TextSystem';
 
+// UTILS
+import './utils';
+
 // EXPORTS
 export * as THREE from 'three';
 export { MRElement } from './core/MRElement';
 export { MRSystem } from './core/MRSystem';
 export { MREntity } from './core/MREntity';
-export { UIPlane } from './utils/Geometry';
+export * from './utils';

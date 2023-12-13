@@ -19,6 +19,8 @@ export class Image extends MRDivEntity {
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
         });
+        console.log('geometry is not null: ');
+        console.log(this.geometry);
         this.object3D = new THREE.Mesh(this.geometry, this.material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;

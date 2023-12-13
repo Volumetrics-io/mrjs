@@ -108,21 +108,21 @@ export class MREntity extends MRElement {
      * Handles the hover event
      * @param {object} event - the hover event
      */
-    onHover(event) {
+    onHover = (event) => {
     }
 
     /**
      * Handles the touch event
      * @param {object} event - the touch event
      */
-    onTouch(event) {
+    onTouch = (event) => {
     }
 
     /**
      * Handles the scroll event
      * @param {object} event - the scroll event
      */
-    onScroll(event) {
+    onScroll = (event) => {
         this.parentElement?.onScroll(event);
     }
 

@@ -66,7 +66,7 @@ export default {
             ],
         }),
         new webpack.ProvidePlugin({
-            MRJS: 'MRJS',
+            mrjs: 'mrjs',
         }),
     ],
 

@@ -131,7 +131,7 @@ export class PhysicsSystem extends MRSystem {
             this.hoverStart(collider1, collider2, entity);
         }
     }
-    onContactStart = (handle1, handle2) => { return onContactStartImpl(handle1, handle2); };
+    onContactStart = (handle1, handle2) => { return this.onContactStartImpl(handle1, handle2); };
 
     /**
      * Handles the end of collisions between two different colliders.
@@ -155,7 +155,7 @@ export class PhysicsSystem extends MRSystem {
             this.hoverEnd(entity);
         }
     }
-    onContactEnd = (handle1, handle2) => { return onContactEndImpl(handle1, handle2); };
+    onContactEnd = (handle1, handle2) => { return this.onContactEndImpl(handle1, handle2); };
 
     /**
      * Handles the start of touch between two different colliders and the current entity.

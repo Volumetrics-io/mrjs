@@ -121,7 +121,7 @@ export class MRApp extends MRElement {
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
-    mutationCallback(mutationList, observer) {
+    mutationCallbackImpl(mutationList, observer) {
         for (const mutation of mutationList) {
             if (mutation.type === 'childList') {
                 this.mutatedChildList(mutation);
@@ -131,6 +131,7 @@ export class MRApp extends MRElement {
             }
         }
     }
+    mutationCallback = (mutationList, observer) => { return this.mutationCallbackImpl(mutationList, observer); };
 
     /**
      * Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
@@ -230,7 +231,7 @@ export class MRApp extends MRElement {
     /**
      * Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
-    initUser() {
+    initUserImpl() {
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = window.innerWidth / 1000;
@@ -259,12 +260,13 @@ export class MRApp extends MRElement {
 
         this.anchor.position.setZ(-0.5);
     }
+    initUser = () => { return this.initUserImpl(); };
 
     /**
      * Initializes default lighting and shadows for the main scene.
      * @param {object} data - the lights data (color, intensity, shadows, etc)
      */
-    initLights(data) {
+    initLightsImpl(data) {
         if (!data.enabled) {
             return;
         }
@@ -287,6 +289,7 @@ export class MRApp extends MRElement {
             }
         }
     }
+    initLights = (data) => { return this.initLightsImpl(data); };
 
     /**
      * De-initializes rendering and MR

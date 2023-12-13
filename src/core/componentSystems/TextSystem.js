@@ -148,6 +148,19 @@ export class TextSystem extends MRSystem {
     }
 
     /**
+     * parses the font size based on its `XXpx` value and converts it to a usable result based on the virtual display resolution
+     * @param {number} val - the value being adjusted
+     * @param {object} el - the css element handler
+     */
+    parseFontSize(val, el) {
+        const result = parseFloat(val.split('px')[0]) / mrjsUtils.VIRTUAL_DISPLAY_RESOLUTION;
+        if (global.inXR) {
+            return result * el.windowHorizontalScale;
+        }
+        return result;
+    }
+
+    /**
      * Gets the vertical align
      * @param {number} verticalAlign - the numerical representation in pixel space of the vertical Align
      * @param {MREntity} entity - the entity whose comp style (css) is relevant
