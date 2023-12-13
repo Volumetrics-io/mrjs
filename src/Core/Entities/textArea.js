@@ -3,13 +3,13 @@ import { getSelectionRects } from 'troika-three-text';
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 
 /**
- * @class
- * @classdesc TODO
+ * @class MRTextArea //TODO - how is this different than TextField on use-case?
+ * @classdesc The text element that is used to represent normal ....TODO.... `mr-textarea`
  * @augments MRTextEntity
  */
 export class TextArea extends MRTextEntity {
     /**
-     *
+     * Constructor for the textArea entity component.
      */
     constructor() {
         super();
@@ -17,7 +17,7 @@ export class TextArea extends MRTextEntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
      */
     connected() {
         this.input = document.createElement('textarea');
@@ -47,12 +47,18 @@ export class TextArea extends MRTextEntity {
         });
     }
 
-    blur = () => {
+    /**
+     * Blurs the inputted text value and cursor information
+     */
+    blur(){
         this.input.blur();
         this.cursor.visible = false;
     };
 
-    focus = () => {
+    /**
+     * Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
+     */
+    focus(){
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
@@ -60,6 +66,9 @@ export class TextArea extends MRTextEntity {
         this.updateCursorPosition();
     };
 
+    /**
+     * Updates the cursor position based on click and selection location.
+     */
     updateCursorPosition = () => {
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();

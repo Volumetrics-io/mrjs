@@ -2,18 +2,26 @@ import * as THREE from 'three';
 
 /*********** Extensions *************/
 
-String.prototype.spliceSplit = function (index, count, add) {
+/**
+ * TODO
+ * @param {number} index - TODO
+ * @param {number} count - TODO
+ * @param {number} add - TODO
+ * @returns {string} - TODO
+ */
+function spliceSplitImpl(index, count, add) {
     const ar = this.split('');
     ar.splice(index, count, add);
     return ar.join('');
 };
+String.prototype.spliceSplit = spliceSplitImpl;
 
 /*********** JSON // String interactions *************/
 
 /**
- *
- * @param {string} attrString - TODO
- * @returns {object} - TODO
+ * Converts and formats the inputted string to a json object.
+ * @param {string} attrString - the string to be formatted
+ * @returns {object} - object in json form
  */
 export function stringToJson(attrString) {
     if (attrString == null) {
@@ -44,11 +52,10 @@ export function stringToJson(attrString) {
     return jsonObject;
 }
 
-// TODO - is this fine here?
 /**
- *
- * @param {object} componentData - TODO
- * @returns {string} - TODO
+ * Converts and formats the inputted json object into a string.
+ * @param {object} componentData - the json object to be formatted into a string
+ * @returns {string} - the string representation of the json object
  */
 export function jsonToString(componentData) {
     let compString = '';
@@ -74,27 +81,27 @@ export function jsonToString(componentData) {
 /*********** String to Math *************/
 
 /**
- *
- * @param {string} str - TODO
- * @returns {object} - TODO
+ * Converts a string to vector format.
+ * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
+ * @returns {object} - the vector version of the inputted string.
  */
 export function stringToVector(str) {
     return str.split(' ').map(Number);
 }
 
 /**
- *
- * @param {string} str - TODO
- * @returns {object} - TODO
+ * Converts a string to vector format where the numbers are pre-converted from radians to degrees.
+ * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
+ * @returns {object} - the vector version of the inputted string.
  */
 export function stringToDegVector(str) {
     return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
 }
 
 /**
- *
- * @param {string} val - TODO
- * @returns {number} - TODO
+ * Converts a string to vector format where the numbers are pre-converted from a number to an appropriate representation
+ * @param {string} val - the string to be converted to a vector. Must be of format 'x%' or 'x/y'.
+ * @returns {number} - the vector version of the inputted string.
  */
 export function stringToDimensionValue(val) {
     if (val.includes('%')) {

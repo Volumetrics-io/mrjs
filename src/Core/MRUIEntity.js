@@ -3,15 +3,17 @@ import * as THREE from 'three';
 import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
+// TODO - should we just change this to MRDivEntity? that's already default understood as UI given the html build we're planning with.
 /**
- * @class
- * @classdesc TODO
+ * @class MRUIEntity
+ * @classdesc The MREntity that is used to solely describe UI Elements. Defaults as the html `mr-div` representation. `mr-div`
  * @augments MREntity
  */
 export class MRUIEntity extends MREntity {
 
     /**
-     * @returns {number} - TODO
+     * Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @returns {number} - the resolved height
      */
     get height() {
         const rect = this.getBoundingClientRect();
@@ -24,7 +26,8 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     * @returns {number} - TODO
+     * Calculates the width of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @returns {number} - the resolved width
      */
     get width() {
         const rect = this.getBoundingClientRect();
@@ -37,7 +40,7 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
      */
     constructor() {
         super();
@@ -64,11 +67,11 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Adding an entity as a sub-object of this panel (for example an mr-model, button, etc).
+     * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        let container = this.closest('mr-panel');
+        let container = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
 
         if (container && entity instanceof MRUIEntity) {
             container.add(entity);
@@ -82,11 +85,11 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Removing an entity as a sub-object of this panel (for example an mr-model, button, etc).
+     * @param {MREntity} entity - the entity to be removed added.
      */
     remove(entity) {
-        let container = this.closest('mr-panel');
+        let container = this.closest('mr-panel'); // TODO - what is this.closest? is that from HTMLElement? I dont see it implemented anywhere
         if (container && entity instanceof MRUIEntity) {
             container.remove(entity);
         } else {
@@ -95,14 +98,14 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
      */
     connected() {
         this.background.geometry = UIPlane(this.width, this.height, [0], 18);
     }
 
     /**
-     *
+     * Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
      */
     updatePhysicsData() {
         this.physics.halfExtents = new THREE.Vector3();
@@ -116,10 +119,11 @@ export class MRUIEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
+    // TODO - can we move this to Utils/Display.js ?
     /**
-     *
-     * @param {string} val - TODO
-     * @returns {number} - TODO
+     * Converts the dom string to a 3D numerical value
+     * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
+     * @returns {number} - the 3D numerical represenation of the dom css value 
      */
     domToThree(val) {
         if (typeof val === 'string') {
@@ -145,7 +149,7 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * Updates the style for the UIPlane's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
         // background
@@ -154,7 +158,7 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
@@ -162,7 +166,7 @@ export class MRUIEntity extends MREntity {
     }
 
     /**
-     *
+     * Sets the background based on compStyle and inputted css elements.
      */
     setBackground() {
         const color = this.compStyle.backgroundColor;

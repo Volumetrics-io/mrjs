@@ -2,8 +2,8 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { Surface } from 'MRJS/Core/Entities/Surface';
 
 /**
- * @class
- * @classdesc TODO
+ * @class Volume
+ * @classdesc Volume that represents ...? TODO - is this entity still used?
  * @augments MREntity
  */
 export default class Volume extends MREntity {
@@ -22,7 +22,7 @@ export default class Volume extends MREntity {
 
     // FIXME: doesn't actually respond to switch in surface orientation.
     /**
-     *
+     * Callback function of MREntity - ...
      */
     connected() {
         if (this.parentElement instanceof Surface) {
@@ -79,32 +79,26 @@ export default class Volume extends MREntity {
      */
     snapChildToWall(key, vector) {
         switch (key) {
-            // bottom
             case 'bottom':
                 vector.setY(-this.height / 2);
                 break;
-            // left
             case 'left':
                 vector.setX(-this.width / 2);
                 break;
-            // back
             case 'back':
                 vector.setZ(-this.depth / 2);
                 break;
-            // right
             case 'right':
                 vector.setX(this.width / 2);
                 break;
-            // front
             case 'front':
                 vector.setZ(this.depth / 2);
                 break;
-            // top
             case 'top':
                 vector.setY(this.height / 2);
                 break;
-            // default to floor
             default:
+                // default to floor
                 vector.setY(-this.height / 2);
                 break;
         }

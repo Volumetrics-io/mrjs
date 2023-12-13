@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
 /**
- *
- * @param {object} group - TODO
- * @param {object} relativeTo - TODO
- * @returns {object} - TODO
+ * Computes the bounding sphere of an inputted three group object.
+ * @param {THREE.group} group - the group to be enclosed in the bounding sphere.
+ * @param {THREE.group} relativeTo - object that the group is relative to. For example if the group is an apple held in a character's hand, relativeTo would be the characters hand. When left as null, the bounding sphere defaults to the inputted groups original world matrix.
+ * @returns {THREE.Sphere} - the resolved bounding sphere
  */
 export function computeBoundingSphere(group, relativeTo = null) {
     let sphere = new THREE.Sphere();
@@ -13,11 +13,7 @@ export function computeBoundingSphere(group, relativeTo = null) {
     box.setFromObject(group);
     box.getBoundingSphere(sphere);
 
-    if (relativeTo) {
-        sphere.applyMatrix4(relativeTo.matrixWorld);
-    } else {
-        sphere.applyMatrix4(group.matrixWorld);
-    }
+    sphere.applyMatrix4(relativeTo ? relativeTo.matrixWorld : group.matrixWorld);
 
     return sphere;
 }

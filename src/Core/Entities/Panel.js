@@ -5,11 +5,14 @@ import { Surface } from 'MRJS/Core/Entity/Surface';
 import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 
 /**
- *
+ * @class Panel
+ * @classdesc The main panel entity used for webpages and UI elements in 3D space. `mr-panel`
+ * @augments MRUIEntity
  */
 export class Panel extends MRUIEntity {
     /**
-     * @returns {number} - TODO
+     * Calculates the height of the Entity based on the bounding client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @returns {number} - the resolved height
      */
     get height() {
         const rect = this.getBoundingClientRect();
@@ -22,7 +25,7 @@ export class Panel extends MRUIEntity {
     }
 
     /**
-     *
+     * Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
      */
     constructor() {
         super();
@@ -43,7 +46,8 @@ export class Panel extends MRUIEntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
+     * Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     connected() {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
@@ -88,22 +92,25 @@ export class Panel extends MRUIEntity {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Adding an entity as a sub-object of this entity.
+     * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
         this.shuttle.add(entity.object3D);
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Remove an entity as a sub-object of this entity.
+     * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
         this.shuttle.remove(entity.object3D);
     }
 
-    onTouch = (event) => {
+    /**
+     * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
+     */
+    onTouch(event){
         if (!global.inXR) {
             return;
         }
@@ -127,13 +134,18 @@ export class Panel extends MRUIEntity {
         this.momentumScroll(threeToPx(this.delta), 3000);
     };
 
-    momentumScroll = (distance, duration) => {
+    /**
+     * Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
+     * @param {number} distance - the distance left to scroll
+     * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
+     */
+    momentumScroll(distance, duration){
         let start = null;
         let remainingDistance = distance;
         clearTimeout(this.momentumTimeout);
 
         /**
-         *
+         * Internal function - used to step through the remaining scroll distance iteratively.
          */
         function step() {
             if (start === null) {
@@ -158,7 +170,11 @@ export class Panel extends MRUIEntity {
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     };
 
-    onScroll = (event) => {};
+    /**
+     * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
+     */
+    onScroll(event){};
+    // TODO - should the onScroll event item still exist? or is this just needed as an htmlelement
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', Panel);

@@ -4,11 +4,12 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- * @class
- * @classdesc TODO
+ * @class Surface
+ * @classdesc ...TODO... how is this different than Panel in terms of use? i understand panel has more too it, but is this just a sprite? `mr-surface`
  * @augments MREntity
  */
 export class Surface extends MREntity {
+
     /**
      * @returns {number} - the height of the current viewport
      */
@@ -22,8 +23,9 @@ export class Surface extends MREntity {
     get width() {
         return global.viewPortWidth;
     }
+
     /**
-     *
+     * Constructor 
      */
     constructor() {
         super();
@@ -48,7 +50,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
      */
     connected() {
         this.windowVerticalScale = this.height;
@@ -79,24 +81,24 @@ export class Surface extends MREntity {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Adding an entity as a sub-object of this entity.
+     * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
         this.group.add(entity.object3D);
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Removing an entity as a sub-object of this entity.
+     * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
         this.group.remove(entity.object3D);
     }
 
     /**
-     *
-     * @param {object} mutation - TODO
+     * Callback function of MREntity - updates based on the changed attribute: orientation
+     * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
         if (mutation.type != 'attributes') {
@@ -110,7 +112,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     *
+     * Puts the surface into the scene and dispatches an event to confirm placement.
      */
     place() {
         this.viz.removeFromParent();
@@ -121,7 +123,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     *
+     * Replaces /...? TODO
      */
     replace() {
         this.object3D.position.copy(this.anchorPosition);
@@ -139,7 +141,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     *
+     * Handles when a surface should detach from /...? TODO
      */
     detatch() {
         this.placed = false;

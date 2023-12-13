@@ -1,22 +1,20 @@
 import * as THREE from 'three';
 
 /**
- *
- * @param {number} width - TODO
- * @param {number} height - TODO
- * @param {number} radii - TODO
- * @param {number} s - TODO
- * @returns {object} - TODO
+ * This construction function creates the UIPlane that is used as the backdrop for most mrjs Panel divs.
+ * @param {number} width - the expected width of the plane.
+ * @param {number} height - the expected height of the plane.
+ * @param {number} radius_corner - the expected radius value to curve the planes corners.
+ * @param {number} smoothness - the expected smoothness value.
+ * @returns {THREE.BufferGeometry} - The completed threejs plane object.
  */
-export function UIPlane(width, height, radii, s) {
-    // width, height, radius corner, smoothness
-
+export function UIPlane(width, height, radius_corner, smoothness) {
     let w = width == 'auto' ? 1 : width;
     w = w != 0 ? w : 1;
     let h = height == 'auto' ? 1 : height;
     h = h != 0 ? h : 1;
-
-    const r = radii[0] == 0 ? 0.0001 : radii[0];
+    const r = radius_corner[0] == 0 ? 0.0001 : radius_corner[0];
+    const s = smoothness; // shortening for calculation quickness.
 
     if (!w || !h || !r || !s) {
         return null;

@@ -1,8 +1,5 @@
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
-// CSS
-import './styles.css';
-
 // GLOBAL
 import './global';
 

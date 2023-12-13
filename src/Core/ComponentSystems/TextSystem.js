@@ -8,7 +8,7 @@ import { TextArea } from 'MRJS/Core/Entities/TextArea';
 import { VIRTUAL_DISPLAY_RESOLUTION } from 'MRJS/Utils/Display';
 
 /**
- * @class
+ * @class TextSystem
  * @classdesc Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
  * @augments MRSystem
  */
@@ -54,8 +54,7 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * // TODO - add better description here
+     * The generic system update call for all text items including updates for style and cleaning of content for special characters.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -94,7 +93,11 @@ export class TextSystem extends MRSystem {
         }
     }
 
-    updateStyle = (entity) => {
+    /**
+     * Updates the style for the text's information based on compStyle and inputted css elements.
+     * @param {MRTextEntity} - the text entity whose style is being updated
+     */
+    updateStyle(entity){
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
@@ -118,7 +121,11 @@ export class TextSystem extends MRSystem {
         textObj.position.z = 0.0001;
     };
 
-    addText = (entity) => {
+    /**
+     * Handles when text is added as an entity updating content and style for the internal textObj appropriately.
+     * @param {MRTextEntity} - the text entity being updated
+     */
+    addText(entity){
         const text = entity.textContent.trim();
         entity.textObj.text = text.length > 0 ? text : ' ';
 
@@ -126,23 +133,22 @@ export class TextSystem extends MRSystem {
     };
 
     /**
-     *
-     * @param {number} weight - TODO
-     * @returns {string} - TODO
+     * parses the font weight as 'bold', 'normal', etc based on the given weight value
+     * @param {number} weight - the numerical representation of the font-weight
+     * @returns {string} - the enum of 'bold', 'normal', etc
      */
     parseFontWeight(weight) {
         if (weight >= 500) {
             return 'bold';
         }
-
         return 'normal';
     }
 
     /**
-     *
-     * @param {number} verticalAlign - TODO
-     * @param {MREntity} entity - TODO
-     * @returns {string} - TODO
+     * Gets the vertical align
+     * @param {number} verticalAlign - the numerical representation in pixel space of the vertical Align
+     * @param {MREntity} entity - the entity whose comp style (css) is relevant
+     * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
         let result = pxToThree(verticalAlign);
@@ -165,11 +171,11 @@ export class TextSystem extends MRSystem {
         }
     }
 
-    /**
-     *
-     * @param {number} lineHeight - TODO
-     * @param {number} entity - TODO
-     * @returns {number} - TODO
+     /**
+     * Gets the line height
+     * @param {number} lineHeight - the numerical representation in pixel space of the line height
+     * @param {MREntity} entity - the entity whose comp style (css) is relevant
+     * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
         let result = pxToThree(lineHeight);
@@ -182,7 +188,7 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     *
+     * Gets the text alignment string
      * @param {string} textAlign - TODO
      * @returns {string} - TODO
      */
@@ -198,11 +204,13 @@ export class TextSystem extends MRSystem {
                 return textAlign;
         }
     }
+    // TODO - should the above not be 'getTextAlign'?
+    // TODO - so far these all seem the same except for end and start, cant we just filter those away and ignore this function?
 
     /**
-     *
-     * @param {object} textObj - TODO
-     * @param {object} color - TODO
+     * Sets the matrial color and opacity based on the css color element
+     * @param {object} textObj - the textObj whose color is being updated
+     * @param {object} color - the representation of color as `rgba(xxx,xxx,xxx)` or as `#xxx`
      */
     setColor(textObj, color) {
         if (color.includes('rgba')) {
@@ -219,10 +227,10 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param {string} val - TODO
-     * @param {object} el - TODO
-     * @returns {number} - TODO
+     * Parses the font size from the given val string, adjusts for the display resolution, and returns an appropriate result.
+     * @param {string} val - the string representation from css of the font size as `XXXpx`
+     * @param {object} el - TODO - what is this?
+     * @returns {number} - the numerical representation of the font size
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / VIRTUAL_DISPLAY_RESOLUTION;
@@ -233,9 +241,10 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param {string} cssString - TODO
-     * @returns {object} - TODO
+     * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face 
+     * for use by the text object.
+     * @param {string} cssString - the css string to be parsed for the font-face css value.
+     * @returns {object} - TODO /...? not sure what this is as an object
      */
     parseFontFace(cssString) {
         const obj = {};

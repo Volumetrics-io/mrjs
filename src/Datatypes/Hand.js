@@ -41,14 +41,14 @@ const HAND_MAPPING = {
 };
 
 /**
- * @class
- * @classdesc TODO
+ * @class MRHand
+ * @classdesc Class describing the MRHand object representing the UX of the hand object for MR interactions.
  */
 export class MRHand {
     /**
-     *
-     * @param {object} handedness - TODO
-     * @param {object} app - TODO
+     * Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model information.
+     * @param {object} handedness - enum for the `left`` or `right` hand.
+     * @param {object} app - the current MRApp that contains the scene for the hand.
      */
     constructor(handedness, app) {
         this.handedness = handedness;
@@ -93,8 +93,8 @@ export class MRHand {
     }
 
     /**
-     *
-     * @param {object} app - TODO
+     * Initializes the physics bodies that the hand represents. Useful for collision detection and UX interactions in MR space.
+     * @param {object} app - the current MRApp that contains the scene for the hand.
      */
     initPhysicsBodies(app) {
         for (const joint of joints) {
@@ -135,7 +135,7 @@ export class MRHand {
     }
 
     /**
-     *
+     * Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
      */
     update() {
         this.updatePhysicsBodies();
@@ -143,6 +143,7 @@ export class MRHand {
     }
 
     /**
+     * If a pinch happens, updates the MR cursor position while sending out an event that movement has occured from this hand.
      */
     pinchMoved() {
         if (!this.pinch) {
@@ -161,7 +162,7 @@ export class MRHand {
     }
 
     /**
-     *
+     * Update function for the physics associated with this hand. Runs for every joint in the system and moves all elements of the hand model.
      */
     updatePhysicsBodies() {
         for (const joint of joints) {
@@ -182,6 +183,7 @@ export class MRHand {
         }
     }
 
+    // TODO - does this need a description?
     setMesh = () => {
         if (this.mesh) {
             return;
@@ -194,6 +196,7 @@ export class MRHand {
         this.mesh.renderOrder = 2;
     };
 
+    // TODO - does this need a description?
     onPinch = (event) => {
         this.pinch = event.type == 'pinchstart';
         const position = this.getCursorPosition();
@@ -209,9 +212,9 @@ export class MRHand {
     };
 
     /**
-     *
-     * @param {string} jointName - TODO
-     * @returns {object} - TODO
+     * Gets the joint orientation of the named joint in the hand.
+     * @param {string} jointName - the string name of the joint whose information is requested.
+     * @returns {THREE.Quaternion} - the quaternion representation or the joint orientation.
      */
     getJointOrientation(jointName) {
         const result = new THREE.Quaternion();
@@ -231,15 +234,15 @@ export class MRHand {
     }
 
     /**
-     *
-     * @param {string} jointName - TODO
-     * @returns {object} - TODO
+     * Gets the joint position of the named joint in the hand.
+     * @param {string} jointName - the string name of the joint whose information is requested.
+     * @returns {THREE.Vector3} - the position representation or the joint orientation.
      */
     getJointPosition(jointName) {
         const result = new THREE.Vector3();
 
         if (!this.mesh) {
-            result.addScalar(10000);
+            result.addScalar(10000); // TODO - what is this 10000 arbitrary number used for?
             return result;
         }
         const joint = this.mesh.skeleton.getBoneByName(jointName);
@@ -259,7 +262,8 @@ export class MRHand {
     }
 
     /**
-     * @returns {number} - TODO
+     * Gets the expected cursor position of this hand based on the index finger and thumb's tip positions.
+     * @returns {number} - the resolved position of the cursor.
      */
     getCursorPosition() {
         const index = this.getJointPosition('index-finger-tip');

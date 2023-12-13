@@ -1,8 +1,8 @@
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * @class
- * @classdesc TODO
+ * @class MRSystem
+ * @classdesc The default representation of an MRSystem to be expanded upon by actual details ECS System items.
  */
 export class MRSystem {
     frameRate = null;
@@ -10,9 +10,9 @@ export class MRSystem {
     delta = 0;
 
     /**
-     *
-     * @param {boolean} useComponents - TODO
-     * @param {number} frameRate - TODO
+     * Constructor for MRSystem. Sets up appropriate document event listeners, component defaults, and system defaults that will be used for system runs ever frame.
+     * @param {boolean} useComponents - Default to true. Determines whether comonents need to be maintained (attached/updated/detached) with the system.
+     * @param {number} frameRate - Default to null. When set, used and updated as part of the System's update function.
      */
     constructor(useComponents = true, frameRate = null) {
         this.app = document.querySelector('mr-app');
@@ -53,9 +53,9 @@ export class MRSystem {
     }
 
     /**
-     *
-     * @param {number} deltaTime - TODO
-     * @param {object} frame - TODO
+     * The actual system update call.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     __update(deltaTime, frame) {
         if (this.frameRate) {
@@ -68,58 +68,69 @@ export class MRSystem {
         this.delta = 0;
     }
 
-    // Called per frame
     /**
-     *
-     * @param {number} deltaTime - TODO
-     * @param {object} frame - TODO
+     * The generic system update call.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {}
-
-    // called when a new entity is added to the scene
+    
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Called when a new entity is added to the scene
+     * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {}
 
-    // called when the component is initialized
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Called when the entity component is initialized
+     * @param {MREntity} entity - the entity being attached/initialized.
      */
     attachedComponent(entity) {
         //console.log(`attached ${this.componentName} ${entity.dataset[this.componentName]}`);
+        // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
+        // TODO - should we delete the above console.log instead?
     }
 
-    /**
-     *
-     * @param {MREntity} entity - TODO
-     * @param {object} oldData - TODO
-     */
-    updatedComponent(entity, oldData) {
-        //console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
-    }
+// TODO - the below function doesnt exist in any of the Component Systems - good to remove?
+    // /**
+    //  * Called when a specific entity component is being updated
+    //  * @param {MREntity} entity - the entity being updated
+    //  * @param {object} oldData - the 
+    //  */
+    // updatedComponent(entity, oldData) {
+    //     //console.log(`updated ${this.componentName} ${entity.dataset[this.componentName]}`);
+    //     // TODO - should we add anything as default here? or even to warn people if their class is falling back on this one instead?
+    //     // TODO - should we delete the above console.log instead?
+    // }
 
-    // called when the component is removed
+    // 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Called when the entity component is removed
+     * @param {MREntity} entity - the entity component being removed.
      */
     detachedComponent(entity) {
         console.log(`detached ${this.componentName}`);
     }
 
-    onAttach = (event) => {
+    /**
+     * Handles the component and registry aspect of the event when an entity component attaches to this system.
+     */
+    onAttach(event){
         this.registry.add(event.target);
         this.attachedComponent(event.target);
     };
 
-    onUpdate = (event) => {
+    /**
+     * Handles the component and registry update of the even when an entity component needs to change.
+     */
+    onUpdate(event){
         this.updatedComponent(event.target, event.detail.oldData);
     };
 
-    onDetatch = (event) => {
+    /**
+     * Handles the component and registry aspect of the even when an entity component detaches from this system.
+     */
+    onDetatch(event){
         this.registry.delete(event.target);
         this.detachedComponent(event.target);
     };

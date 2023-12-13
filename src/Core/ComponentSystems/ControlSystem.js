@@ -5,14 +5,13 @@ import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES } from 'MRJS/Utils/Physics';
 import { MRHand } from 'MRJS/Datatypes/Hand';
 
 /**
- * @class
+ * @class ControlSystem
  * @classdesc This system supports interaction event information including mouse and controller interfacing.
  * @augments MRSystem
  */
 export class ControlSystem extends MRSystem {
     /**
-     * ControlSystem's Default constructor
-     * // TODO - add more info
+     * ControlSystem's Default constructor that sets up the app's mouse information along with any relevant physics and cursor information.
      */
     constructor() {
         super(false);
@@ -58,6 +57,7 @@ export class ControlSystem extends MRSystem {
 
         //   }
         // });
+        // TODO - can the above commented code be deleted?
     }
 
     /**
@@ -76,9 +76,7 @@ export class ControlSystem extends MRSystem {
 
     /************ Interaction Events ************/
 
-    // TODO - need to figure out if the auto documenter can handle this setup
-    // for documenting
-
+    // TODO - does this need a description?
     mouseOver = (event) => {
         event.stopPropagation();
 
@@ -90,6 +88,7 @@ export class ControlSystem extends MRSystem {
         }
     };
 
+    // TODO - does this need a description?
     onMouseDown = (event) => {
         event.stopPropagation();
         this.removeCursor();
@@ -104,6 +103,7 @@ export class ControlSystem extends MRSystem {
         }
     };
 
+    // TODO - does this need a description?
     onMouseUp = (event) => {
         event.stopPropagation();
         this.removeCursor();
@@ -119,7 +119,9 @@ export class ControlSystem extends MRSystem {
     //       this.app.focusEntity = COLLIDER_ENTITY_MAP[this.hit.collider.handle]
     //     }
     // }
+    // TODO - should the above commented code be kept?
 
+    // TODO - does this need a description?
     removeCursor = () => {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);

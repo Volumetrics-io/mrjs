@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * @class
- * @classdesc TODO
+ * @class SkyBox
+ * @classdesc The skybox entity that allows users to give multiple images to pattern into the 3D background space. `mr-skybox`
  * @augments MREntity
  */
 class SkyBox extends MREntity {
@@ -16,7 +16,7 @@ class SkyBox extends MREntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
      */
     connected() {
         // you can have texturesList be all individual textures

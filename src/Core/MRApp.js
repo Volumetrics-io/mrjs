@@ -25,13 +25,13 @@ window.mobileCheck = function () {
 };
 
 /**
- * @class
- * @classdesc The engine handler for running MRjs as an App.
+ * @class MRApp
+ * @classdesc The engine handler for running MRjs as an App. `mr-app`
  * @augments MRElement
  */
 export class MRApp extends MRElement {
     /**
-     *
+     * Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
      */
     constructor() {
         super();
@@ -69,7 +69,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     *
+     * The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
         this.init();
@@ -92,14 +92,20 @@ export class MRApp extends MRElement {
     }
 
     /**
-     *
+     * The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     disconnectedCallback() {
         this.denit();
         this.observer.disconnect();
     }
 
-    mutationCallback = (mutationList, observer) => {
+
+    /**
+     * The mutationCallback function that runs whenever this entity component should be mutated.
+     * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
+     * @param {object} observer - TODO
+     */
+    mutationCallback(mutationList, observer) {
         for (const mutation of mutationList) {
             if (mutation.type === 'childList') {
                 this.mutatedChildList(mutation);
@@ -127,9 +133,10 @@ export class MRApp extends MRElement {
      * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
+    // TODO - are the above two functions still needed? I dont see them used anywhere else
 
     /**
-     *
+     * Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
      */
     init() {
         this.debug = this.getAttribute('debug') ?? false;
@@ -223,7 +230,10 @@ export class MRApp extends MRElement {
         this.initLights(this.lighting);
     }
 
-    initUser = () => {
+    /**
+     * Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
+     */
+    initUser() {
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = window.innerWidth / 1000;
@@ -253,7 +263,10 @@ export class MRApp extends MRElement {
         this.anchor.position.setZ(-0.5);
     };
 
-    initLights = (data) => {
+    /**
+     * Initializes default lighting and shadows for the main scene.
+     */
+    initLights(data){
         if (!data.enabled) {
             return;
         }
@@ -278,7 +291,7 @@ export class MRApp extends MRElement {
     };
 
     /**
-     *
+     * De-initializes rendering and MR
      */
     denit() {
         document.body.removeChild(this.renderer.domElement);
@@ -287,39 +300,39 @@ export class MRApp extends MRElement {
     }
 
     /**
-     *
-     * @param {MRSystem} system - TODO
+     * Registers a new system addition to the MRApp engine.
+     * @param {MRSystem} system - the system to be added.
      */
     registerSystem(system) {
         this.systems.add(system);
     }
 
     /**
-     *
-     * @param {MRSystem} system - TODO
+     * Unregisters a system from the MRApp engine.
+     * @param {MRSystem} system - the system to be removed.
      */
     unregisterSystem(system) {
         this.systems.delete(system);
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Adding an entity as an object in this MRApp engine's scene.
+     * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
         this.scene.add(entity.object3D);
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Removing an entity as an object in this MRApp engine's scene.
+     * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
         this.scene.remove(entity.object3D);
     }
 
     /**
-     *
+     * Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
         switch (this.cameraOptions.camera) {
@@ -343,9 +356,9 @@ export class MRApp extends MRElement {
     }
 
     /**
-     *
-     * @param {number} timeStamp - TODO
-     * @param {object} frame - TODO
+     * The render function that is called during ever frame. Calls every systems' update function.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
         const deltaTime = this.clock.getDelta();

@@ -4,13 +4,13 @@ import { Object3D } from 'three';
 import { MRTextEntity } from 'MRJS/Core/MRTextEntity';
 
 /**
- * @class
- * @classdesc TODO
+ * @class MRTextField
+ * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. `mr-textfield`
  * @augments MRTextEntity
  */
 export class TextField extends MRTextEntity {
     /**
-     *
+     * Constructor for the textField entity component.
      */
     constructor() {
         super();
@@ -18,7 +18,7 @@ export class TextField extends MRTextEntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
      */
     connected() {
         this.input = document.createElement('input');
@@ -50,12 +50,18 @@ export class TextField extends MRTextEntity {
         });
     }
 
-    blur = () => {
+    /**
+     * Blurs the inputted text value and cursor information
+     */
+    blur(){
         this.input.blur();
         this.cursor.visible = false;
     };
 
-    focus = () => {
+    /**
+     * Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
+     */
+    focus(){
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
@@ -63,7 +69,10 @@ export class TextField extends MRTextEntity {
         this.updateCursorPosition();
     };
 
-    updateCursorPosition = () => {
+    /**
+     * Updates the cursor position based on click and selection location.
+     */
+    updateCursorPosition(){
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
         if (isNaN(selectBox.right)) {

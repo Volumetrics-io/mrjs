@@ -2,13 +2,13 @@ import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 import { UIPlane } from 'MRJS/Utils/Geometry';
 
 /**
- * @class
- * @classdesc TODO
+ * @class Image
+ * @classdesc Base html image represented in 3D space. `mr-image`
  * @augments MRUIEntity
  */
 export class Image extends MRUIEntity {
     /**
-     *
+     * Constructs a base image entity using a UIPlane and other 3D elements as necessary.
      */
     constructor() {
         super();
@@ -22,7 +22,7 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     *
+     * Callback function of MREntity - 
      */
     connected() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
@@ -45,7 +45,7 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     *
+     * Updates the style for the Image's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
         super.updateStyle();
@@ -57,8 +57,8 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     *
-     * @param {object} mutation - TODO
+     * Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
+     * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
         super.mutated();
@@ -77,9 +77,9 @@ export class Image extends MRUIEntity {
     }
 
     /**
-     *
-     * @param {object} texture - TODO
-     * @param {number} aspect - TODO
+     * Calculates the texture UV transformation change based on the image's aspect ratio.
+     * @param {object} texture - the texture to augment
+     * @param {number} aspect - a given expected aspect ratio
      */
     cover(texture, aspect) {
         texture.matrixAutoUpdate = false;

@@ -4,14 +4,13 @@ import { MRSystem } from 'MRJS/Core/MRSystem';
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * @class
+ * @class Instancing System
  * @classdesc System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
  * @augments MRSystem
  */
 class InstancingSystem extends MRSystem {
     /**
-     * InstancingSystem's default constructor
-     * // TODO - add more info
+     * InstancingSystem's default constructor that sets up default instancing count, transformations, and mesh information.
      */
     constructor() {
         super();
@@ -98,10 +97,12 @@ class InstancingSystem extends MRSystem {
 
     /************ Some options for default instancing setup ************/
 
-    // TODO - need to figure out if the auto documenter can handle this setup
-    // for documenting
-
-    random = (entity) => {
+    /**
+     * An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations.
+     * Uses threejs's `InstancedMesh`.
+     * @param {MREntity} entity - the entity to be instanced in random locations
+     */
+    random(entity){
         // update mesh for each instance
         for (let i = 0; i < this.instanceCount; ++i) {
             const matrix = new THREE.Matrix4();

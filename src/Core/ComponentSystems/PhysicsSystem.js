@@ -4,10 +4,8 @@ import { MRSystem } from 'MRJS/Core/MRSystem';
 import { MREntity } from 'MRJS/Core/MREntity';
 import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/Utils/Physics';
 
-// TODO - more to fill out here still
-
 /**
- * @class
+ * @class PhysicsSystem
  * @classdesc The physics system functions differently from other systems,
  * Rather than attaching components, physical properties such as
  * shape, body, mass, etc are definied as attributes.
@@ -15,14 +13,13 @@ import { RAPIER, INPUT_COLLIDER_HANDLE_NAMES, COLLIDER_ENTITY_MAP } from 'MRJS/U
  * of the entity, if there is no geometry, there is no physics defined
  * on the entity.
  *
- * Alternatively, you can also expressly attatch a comp-physics
+ * Alternatively, you can also expressly attach a comp-physics
  * attribute for more detailed control.
  * @augments MRSystem
  */
 export class PhysicsSystem extends MRSystem {
     /**
-     * PhysicsSystem's default constructor
-     * // TODO - add more info
+     * PhysicsSystem's default constructor - sets up useful world and debug information alongside an initial `Rapier` event queue.
      */
     constructor() {
         super(false);
@@ -108,7 +105,12 @@ export class PhysicsSystem extends MRSystem {
         this.updateDebugRenderer();
     }
 
-    onContactStart = (handle1, handle2) => {
+    /**
+     * Handles the start of collisions between two different colliders.
+     * @param {number} handle1 - the first collider
+     * @param {number} handle2 - the second collider
+     */
+    onContactStart(handle1, handle2){
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
@@ -119,6 +121,7 @@ export class PhysicsSystem extends MRSystem {
             // if(this.currentEntity) {
             //   return
             // }
+            // TODO - can the above commented code be deleted?
             this.touchStart(collider1, collider2, entity);
             return;
         }
@@ -129,9 +132,9 @@ export class PhysicsSystem extends MRSystem {
     };
 
     /**
-     *
-     * @param {number} handle1 - TODO
-     * @param {number} handle2 - TODO
+     * Handles the end of collisions between two different colliders.
+     * @param {number} handle1 - the first collider
+     * @param {number} handle2 - the second collider
      */
     onContactEnd(handle1, handle2) {
         const joint = INPUT_COLLIDER_HANDLE_NAMES[handle1];
@@ -141,6 +144,7 @@ export class PhysicsSystem extends MRSystem {
             // if(entity != this.currentEntity) {
             //   return
             // }
+            // TODO - can the above commented code be deleted?
             this.touchEnd(entity);
             return;
         }
@@ -150,7 +154,13 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
-    touchStart = (collider1, collider2, entity) => {
+    /**
+     * Handles the start of touch between two different colliders and the current entity.
+     * @param {number} handle1 - the first collider
+     * @param {number} handle2 - the second collider
+     * @param {entity} the current entity
+     */
+    touchStart(collider1, collider2, entity){
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
@@ -181,7 +191,13 @@ export class PhysicsSystem extends MRSystem {
         });
     };
 
-    touchEnd = (entity) => {
+    /**
+     * Handles the end of touch between two different colliders and the current entity.
+     * @param {number} handle1 - the first collider
+     * @param {number} handle2 - the second collider
+     * @param {entity} the current entity
+     */
+    touchEnd(entity){
         this.currentEntity = null;
         // Contact information can be read from `manifold`.
         this.tempPreviousPosition.set(0, 0, 0);
@@ -195,7 +211,11 @@ export class PhysicsSystem extends MRSystem {
         );
     };
 
-    hoverStart = (collider1, collider2, entity) => {
+    /**
+     * Handles the start of hovering over/around a specific entity.
+     * @param {entity} the current entity
+     */
+    hoverStart(collider1, collider2, entity){
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -212,7 +232,11 @@ export class PhysicsSystem extends MRSystem {
         });
     };
 
-    hoverEnd = (entity) => {
+    /**
+     * Handles the end of hovering over/around a specific entity.
+     * @param {entity} the current entity
+     */
+    hoverEnd(entity){
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
@@ -221,17 +245,17 @@ export class PhysicsSystem extends MRSystem {
     };
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
+     * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
         this.initPhysicsBody(entity);
         this.registry.add(entity);
     }
 
-    /**
-     *
-     * @param {MREntity} entity - TODO
+     /**
+     * Initializes the rigid body used by the physics part of the entity
+     * @param {MREntity} entity - the entity being updated
      */
     initPhysicsBody(entity) {
         if (entity.physics.type == 'none') {
@@ -256,8 +280,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Updates the rigid body used by the physics part of the entity
+     * @param {MREntity} entity - the entity being updated
      */
     updateBody(entity) {
         if (entity.physics.type == 'none') {
@@ -276,7 +300,7 @@ export class PhysicsSystem extends MRSystem {
     /**
      * Initializes a collider based on the physics data.
      * @param {object} physicsData - data needed to be used to setup the collider interaction
-     * @returns {object} ...? TODO
+     * @returns {object} - the Rapier physics collider object
      */
     initColliderDesc(physicsData) {
         switch (physicsData.type) {
@@ -289,8 +313,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param {MREntity} entity - TODO
+     * Updates the collider used by the entity based on whether it's being used as a UI element, the main box element, etc.
+     * @param {MREntity} entity - the entity being updated
      */
     updateCollider(entity) {
         switch (entity.physics.type) {

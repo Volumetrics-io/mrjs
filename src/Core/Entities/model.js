@@ -2,20 +2,20 @@ import { MREntity } from 'MRJS/Core/MREntity';
 import { loadModel } from 'MRJS/Utils/LoadModel';
 
 /**
- * @class
- * @classdesc TODO
+ * @class Model
+ * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
  * @augments MREntity
  */
 export class Model extends MREntity {
     /**
-     *
+     * Constructor for the Model entity, does the default.
      */
     constructor() {
         super();
     }
 
     /**
-     * TODO
+     * Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
      */
     connected() {
         this.src = this.getAttribute('src');
@@ -35,7 +35,6 @@ export class Model extends MREntity {
                 // the below is the same as 'scene.add'
                 this.object3D.add(loadedMeshModel);
 
-                // TODO - recheck this lower part
                 this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             })
             .catch((error) => {
@@ -43,7 +42,7 @@ export class Model extends MREntity {
             });
     }
 
-    onLoad = () => {};
+    onLoad(){};
 }
 
 customElements.get('mr-model') || customElements.define('mr-model', Model);

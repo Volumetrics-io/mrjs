@@ -3,7 +3,7 @@ import { MRUIEntity } from 'MRJS/Core/MRUIEntity';
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * @class
+ * @class StyleSystem
  * @classdesc Handles style updates for all items.
  * @augments MRSystem
  */

@@ -4,8 +4,8 @@
 // must do that before deletion
 
 /**
- * @class
- * @classdesc TODO
+ * @class ClippingGeometry
+ * @classdesc Geometry used in the clipping plane step. Separated out for clarity in the calculations.
  */
 export class ClippingGeometry {
     planes = [];
@@ -17,8 +17,8 @@ export class ClippingGeometry {
     global = false;
 
     /**
-     *
-     * @param {object} geometry - TODO
+     * Constructor for the clipping geometry class. Sets the internal geometry object to the geometry that is passed through.
+     * @param {object} geometry - The geometry to be captured internally by `this.geometry`.
      */
     constructor(geometry) {
         this.geometry = geometry;

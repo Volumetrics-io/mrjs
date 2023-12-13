@@ -3,15 +3,14 @@ import { ClippingGeometry } from 'MRJS/Datatypes/ClippingGeometry';
 import { MREntity } from 'MRJS/Core/MREntity';
 
 /**
- * @class
+ * @class ClippingSystem
  * @classdesc This system supports 3D clipping following threejs's clipping planes setup.
  * See https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes for more information.
  * @augments MRSystem
  */
 export class ClippingSystem extends MRSystem {
     /**
-     * ClippingSystem's default constructor
-     * // TODO - add more info
+     * ClippingSystem's default constructor that sets up coplanar points and the default clipping information.
      */
     constructor() {
         super(false);
