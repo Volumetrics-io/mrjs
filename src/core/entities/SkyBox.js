@@ -9,7 +9,7 @@ import { MREntity } from 'mrjs/core/MREntity';
  */
 class SkyBox extends MREntity {
     /**
-     * TODO - fill me out
+     * Constructor for skybox - defaults to the usual impl of an Entity.
      */
     constructor() {
         super();

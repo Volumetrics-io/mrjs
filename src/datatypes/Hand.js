@@ -183,8 +183,7 @@ export class MRHand {
         }
     }
 
-    // TODO - does this need a description?
-    setMesh = () => {
+    setMeshImpl() {
         if (this.mesh) {
             return;
         }
@@ -194,10 +193,10 @@ export class MRHand {
         }
         this.mesh.material.colorWrite = false;
         this.mesh.renderOrder = 2;
-    };
+    }
+    setMesh = () => { return this.setMeshImpl(); };
 
-    // TODO - does this need a description?
-    onPinch = (event) => {
+    onPinchImpl(event) {
         this.pinch = event.type == 'pinchstart';
         const position = this.getCursorPosition();
         document.dispatchEvent(
@@ -209,7 +208,8 @@ export class MRHand {
                 },
             })
         );
-    };
+    }
+    onPinch = (event) => { return this.onPinchImpl(event); };
 
     /**
      * Gets the joint orientation of the named joint in the hand.
@@ -241,24 +241,25 @@ export class MRHand {
     getJointPosition(jointName) {
         const result = new THREE.Vector3();
 
-        // 10000 - bc cant turn of items when inactive in rapier, throwing them 10000 somethings into distance
-        // todo make better in future
+        // Using an offset value with rapier to throw the items into the distance when inactive since there
+        // is no way at the moment to remove them when inactive.
+        const offset = 10000;
 
         if (!this.mesh) {
-            result.addScalar(10000); // TODO - what is this 10000 arbitrary number used for?
+            result.addScalar(offset);
             return result;
         }
         const joint = this.mesh.skeleton.getBoneByName(jointName);
 
         if (joint == null) {
-            result.addScalar(10000);
+            result.addScalar(offset);
             return result;
         }
 
         joint.getWorldPosition(result);
 
         if (result.equals(this.identityPosition)) {
-            result.addScalar(10000);
+            result.addScalar(offset);
         }
 
         return result;

@@ -9,7 +9,7 @@ import { VIRTUAL_DISPLAY_RESOLUTION, pxToThree, threeToPx } from 'mrjs/utils/Dis
 
 /**
  * @class TextSystem
- * @classdesc Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea`
+ * @classdesc Handles text creation and font rendering for `mr-text`, `mr-textfield`, and `mr-textarea` with a starting framerate of 1/30.
  * @augments MRSystem
  */
 export class TextSystem extends MRSystem {
@@ -108,7 +108,7 @@ export class TextSystem extends MRSystem {
         textObj.anchorX = 'center';
         textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity);
 
-        textObj.textAlign = this.setTextAlign(entity.compStyle.textAlign);
+        textObj.textAlign = this.getTextAlign(entity.compStyle.textAlign);
         textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
         textObj.material.opacity = entity.compStyle.opacity ?? 1;
@@ -189,23 +189,17 @@ export class TextSystem extends MRSystem {
 
     /**
      * Gets the text alignment string
-     * @param {string} textAlign - TODO
-     * @returns {string} - TODO
+     * @param {string} textAlign - handles values for `start`, `end`, `left`, and `right`; otherwise, defaults to the same input as `textAlign`.
+     * @returns {string} - the resolved `textAlign`.
      */
-    setTextAlign(textAlign) {
-        switch (textAlign) {
-            case 'start':
-            case 'left':
-                return 'left';
-            case 'end':
-            case 'right':
-                return 'right';
-            default:
-                return textAlign;
+    getTextAlign(textAlign) {
+        if (textAlign == 'start') {
+            return 'left';
+        } else if (textAlign == 'end') {
+            return 'right';
         }
+        return textAlign;
     }
-    // TODO - should the above not be 'getTextAlign'? √
-    // TODO - so far these all seem the same except for end and start, cant we just filter those away and fix this function? TODO
 
     /**
      * Sets the matrial color and opacity based on the css color element
@@ -230,7 +224,7 @@ export class TextSystem extends MRSystem {
      * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face
      * for use by the text object.
      * @param {string} cssString - the css string to be parsed for the font-face css value.
-     * @returns {object} - TODO /...? not sure what this is as an object - is json object - necessary for preloading fonts
+     * @returns {object} - json object respresenting the preloaded font-face
      */
     parseFontFace(cssString) {
         const obj = {};

@@ -3,14 +3,12 @@ import * as THREE from 'three';
 import { MREntity } from 'mrjs/core/MREntity';
 import { UIPlane } from 'mrjs/utils/Geometry';
 
-// TODO - should we just change this to MRDivEntity? that's already default understood as UI given the html build we're planning with.
-// - do that.
 /**
- * @class MRUIEntity
+ * @class MRDivEntity
  * @classdesc The MREntity that is used to solely describe UI Elements. Defaults as the html `mr-div` representation. `mr-div`
  * @augments MREntity
  */
-export class MRUIEntity extends MREntity {
+export class MRDivEntity extends MREntity {
     /**
      * Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
@@ -120,7 +118,7 @@ export class MRUIEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
-    // TODO - can we move this to Utils/Math.js ? ---- for border radius (which returns percentages instead of pixel values)
+    // TODO - can we move this to utils/Css.js ? ---- for border radius (which returns percentages instead of pixel values)
     // leave here for now - to be moved after michael change
     /**
      * Converts the dom string to a 3D numerical value

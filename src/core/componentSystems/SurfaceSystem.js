@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
 
+// TODO - michael redoing as part of the anchor/surface change
 /**
  * @class SurfaceSystem
  * @classdesc Handles all items (3D and 2D) associated with an mr-surface including the surface itself.

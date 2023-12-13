@@ -9,7 +9,7 @@ import { MREntity } from 'mrjs/core/MREntity';
  */
 export class StyleSystem extends MRSystem {
     /**
-     * StyleSystem's default constructor
+     * StyleSystem's default constructor with a starting framerate of 1/15.
      */
     constructor() {
         super(false, 1 / 15);
@@ -26,7 +26,8 @@ export class StyleSystem extends MRSystem {
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
 
             if (entity.compStyle.zIndex != 'auto') {
-                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000); ///TODO - 1000 converting z index to a threejs usable value, a bit arbitrary - its alwasy in the 1000s so making nice
+                // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
+                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
             }
 
             if (entity instanceof MRUIEntity) {

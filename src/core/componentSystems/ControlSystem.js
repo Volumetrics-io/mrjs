@@ -69,8 +69,10 @@ export class ControlSystem extends MRSystem {
 
     /************ Interaction Events ************/
 
-    // TODO - does this need a description?
-    mouseOver = (event) => {
+    /**
+     * 
+     */
+    mouseOverImpl(event) {
         event.stopPropagation();
 
         this.hit = this.castRay(event);
@@ -79,10 +81,13 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    };
+    }
+    mouseOver = (event) => { return this.mouseOverImpl(event); };
 
-    // TODO - does this need a description?
-    onMouseDown = (event) => {
+    /**
+     * 
+     */
+    onMouseDownImpl(event) {
         event.stopPropagation();
         this.removeCursor();
 
@@ -94,20 +99,27 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    };
-
-    // TODO - does this need a description?
-    onMouseUp = (event) => {
+    }
+    onMouseDown = (event) => { return onMouseDownImpl(event); };
+        
+    /**
+     * 
+     */
+    onMouseUpImpl(event) {
         event.stopPropagation();
         this.removeCursor();
         this.cursor = this.cursorHover;
-    };
+    }
+    onMouseUp = (event) => { return onMouseUpImpl(event); };
 
-    // TODO - does this need a description?
-    removeCursor = () => {
+    /**
+     * 
+     */
+    removeCursorImpl() {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
-    };
+    }
+    removeCursor = () => { return removeCursorImpl(); };
 
     /************ Tools && Helpers ************/
 

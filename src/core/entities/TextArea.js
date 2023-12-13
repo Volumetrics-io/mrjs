@@ -70,7 +70,7 @@ export class TextArea extends MRTextEntity {
     /**
      * Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition = () => {
+    updateCursorPositionImpl() {
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
         if (isNaN(selectBox.right)) {
@@ -78,7 +78,8 @@ export class TextArea extends MRTextEntity {
         }
         this.cursor.position.setX(this.input.selectionStart == 0 ? selectBox.left : selectBox.right);
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
-    };
+    }
+    updateCursorPosition = () => { return updateCursorPositionImpl(); };
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', TextArea);

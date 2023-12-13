@@ -44,7 +44,8 @@ export default {
     resolve: {
         extensions: ['.mjs', '.js'],
         alias: {
-            MRJS: path.resolve(__dirname, './src'), // <-- When you build or restart dev-server, you'll get an error if the path to your global.js file is incorrect.
+            mrjs: path.resolve(__dirname, './src'), // <-- When you build or restart dev-server, you'll get an error if the path to your global.js file is incorrect.
+            mrjsUtils: path.resolve(__dirname, './src/utils'),
         },
         fallback: {
             fs: false,
@@ -65,7 +66,7 @@ export default {
             ],
         }),
         new webpack.ProvidePlugin({
-            MRJS: 'mrjs',
+            MRJS: 'MRJS',
         }),
     ],
 
