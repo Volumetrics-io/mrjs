@@ -49,7 +49,7 @@ export class TextSystem extends MRSystem {
             this.registry.add(entity);
             this.addText(entity);
             entity.textObj.sync(() => {
-                entity.textObj.position.setY(entity.height / 2);
+                entity.needsUpdate = true;
             });
         }
     }
@@ -172,10 +172,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = mrjsUtils.Css.pxToThree(verticalAlign);
+        let result = mrjsUtils.CSS.pxToThree(verticalAlign);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.Css.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -199,10 +199,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
-        let result = mrjsUtils.Css.pxToThree(lineHeight);
+        let result = mrjsUtils.CSS.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.Css.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

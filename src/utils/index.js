@@ -6,7 +6,7 @@
 
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
-import * as Css from './Css.js';
+import * as CSS from './CSS.js';
 import * as Display from './Display.js';
 import * as Geometry from './Geometry.js';
 import * as Material from './Material.js';
@@ -17,7 +17,7 @@ import * as Physics from './Physics.js';
 import * as String from './String.js';
 
 export default {
-    Css,
+    CSS,
     Display,
     Geometry,
     Material,
