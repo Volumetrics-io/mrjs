@@ -171,10 +171,10 @@ export function loadModel(filePath, extension) {
         return loadSTL(filePath);
     }
     const allowed = false;
-    if (allowed && (extension == 'dae')) {
+    if (allowed && extension == 'dae') {
         return loadDAE(filePath);
     } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
-      return loadUSDZ(filePath);
+        return loadUSDZ(filePath);
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
     return null;
