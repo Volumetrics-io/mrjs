@@ -29,7 +29,7 @@ class SkyBox extends MREntity {
         }
 
         const textureLoader = THREE.CubeTextureLoader();
-        const textureNames = texturesList.split(',');
+        const textureNames = this.texturesList.split(',');
 
         let path = this.getAttribute('pathToTextures');
         const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));

@@ -1,5 +1,7 @@
 import { getSelectionRects } from 'troika-three-text';
 
+import * as THREE from 'three';
+
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
@@ -55,7 +57,7 @@ export class TextArea extends MRTextEntity {
         this.cursor.visible = false;
     }
     blur = () => {
-        return blurImpl();
+        return this.blurImpl();
     };
 
     /**
@@ -69,7 +71,7 @@ export class TextArea extends MRTextEntity {
         this.updateCursorPosition();
     }
     focus = () => {
-        return focusImpl();
+        return this.focusImpl();
     };
 
     /**
@@ -85,7 +87,7 @@ export class TextArea extends MRTextEntity {
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
     }
     updateCursorPosition = () => {
-        return updateCursorPositionImpl();
+        return this.updateCursorPositionImpl();
     };
 }
 

@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 import { getSelectionRects } from 'troika-three-text';
 import { Object3D } from 'three';
 
@@ -58,7 +60,7 @@ export class TextField extends MRTextEntity {
         this.cursor.visible = false;
     }
     blur = () => {
-        return blurImpl();
+        return this.blurImpl();
     };
 
     /**
@@ -72,7 +74,7 @@ export class TextField extends MRTextEntity {
         this.updateCursorPosition();
     }
     focus = () => {
-        return focusImpl();
+        return this.focusImpl();
     };
 
     /**
@@ -92,7 +94,7 @@ export class TextField extends MRTextEntity {
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
     }
     updateCursorPosition = () => {
-        return updateCursorPositionImpl();
+        return this.updateCursorPositionImpl();
     };
 }
 

@@ -50,7 +50,7 @@ export default class Light extends MREntity {
         }
     }
     mutated = (mutation) => {
-        return mutatedImpl(mutation);
+        return this.mutatedImpl(mutation);
     };
 }
 

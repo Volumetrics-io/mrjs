@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 import { MREntity } from 'mrjs/core/MREntity';
