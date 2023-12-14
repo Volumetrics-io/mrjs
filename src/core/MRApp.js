@@ -61,7 +61,7 @@ export class MRApp extends MRElement {
         };
 
         this.cameraOptions = {
-            camera: 'perspective',
+            camera: 'orthographic',
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
