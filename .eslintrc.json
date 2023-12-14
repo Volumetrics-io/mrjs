@@ -11,8 +11,8 @@
     "extends": ["plugin:jsdoc/recommended"],
     "plugins": ["jsdoc"],
     "rules": {
-        // "no-undef": "warn",
-        "no-unused-vars": "warn",
+        // "no-undef": "warn", // useful when debuggin
+        // "no-unused-vars": "warn", // useful when debuggin
         "jsdoc/require-jsdoc": [
             "error",
             {
