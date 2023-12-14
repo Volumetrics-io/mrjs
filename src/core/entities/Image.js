@@ -15,7 +15,7 @@ export class Image extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.Css.pxToThree(this.objectFitDimensions.width);
+        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.width);
         return width > 0 ? width : super.width;
     }
 
@@ -24,7 +24,7 @@ export class Image extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.Css.pxToThree(this.objectFitDimensions.height);
+        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.height);
         return height > 0 ? height : super.height;
     }
 

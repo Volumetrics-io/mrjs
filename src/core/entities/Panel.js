@@ -135,7 +135,7 @@ export class Panel extends MRDivEntity {
             return;
         }
 
-        this.momentumScroll(mrjsUtils.Css.threeToPx(this.delta), 3000);
+        this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
     }
     onTouch = (event) => {
         return this.onTouchImpl(event);

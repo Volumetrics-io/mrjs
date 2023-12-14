@@ -15,12 +15,8 @@ export function threeToPx(val) {
  * @returns {number} - the 3D representation of value.
  */
 export function pxToThree(val) {
-    let px;
-    if (val instanceof String) {
-        px = val.split('px')[0];
-    } else {
-        px = val;
-    }
+    let px = val instanceof String ? val.split('px')[0] : val;
+
     if (global.inXR) {
         return (px / window.innerWidth) * this.windowHorizontalScale;
     }
