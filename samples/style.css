@@ -146,7 +146,8 @@
   }
 
   .headset {
-    object-fit: cover;
+    width: 100%;
+    object-fit: contain;
     grid-row: 3 / 6;
     grid-column: 1 / -1;
   }
