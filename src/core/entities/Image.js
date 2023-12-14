@@ -11,10 +11,30 @@ import { mrjsUtils } from 'mrjs';
  */
 export class Image extends MRDivEntity {
     /**
+     * Calculates the width of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved width
+     */
+    get width() {
+        let width = mrjsUtils.Css.pxToThree(this.img.width);
+        return width > 0 ? width : super.width;
+    }
+
+    /**
+     * Calculates the height of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get height() {
+        let height = mrjsUtils.Css.pxToThree(this.img.height);
+        return height > 0 ? height : super.height;
+    }
+
+    /**
      * Constructs a base image entity using a UIPlane and other 3D elements as necessary.
      */
     constructor() {
         super();
+        this.attachShadow({ mode: 'open' });
+        this.img = document.createElement('img');
         this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18);
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
@@ -28,9 +48,14 @@ export class Image extends MRDivEntity {
      * Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
+        this.img = document.createElement('img');
+        this.img.setAttribute('src', this.getAttribute('src'));
+        this.img.setAttribute('width', '100%');
+        this.shadowRoot.appendChild(this.img);
+
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
-        this.texture = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
+        this.texture = new THREE.TextureLoader().load(this.img.src, (texture) => {
             switch (this.compStyle.objectFit) {
                 case 'cover':
                     this.cover(texture, this.width / this.height);
@@ -66,7 +91,8 @@ export class Image extends MRDivEntity {
     mutated(mutation) {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.object3D.material.map = new THREE.TextureLoader().load(this.getAttribute('src'), (texture) => {
+            this.img.setAttribute('src', this.getAttribute('src'));
+            this.object3D.material.map = new THREE.TextureLoader().load(this.img.src, (texture) => {
                 switch (this.compStyle.objectFit) {
                     case 'cover':
                         this.cover(texture, this.width / this.height);
