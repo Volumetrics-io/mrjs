@@ -54,7 +54,9 @@ export class TextArea extends MRTextEntity {
         this.input.blur();
         this.cursor.visible = false;
     }
-    blur = () => { return blurImpl(); };
+    blur = () => {
+        return blurImpl();
+    };
 
     /**
      * Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
@@ -66,7 +68,9 @@ export class TextArea extends MRTextEntity {
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
         this.updateCursorPosition();
     }
-    focus = () => { return focusImpl(); };
+    focus = () => {
+        return focusImpl();
+    };
 
     /**
      * Updates the cursor position based on click and selection location.
@@ -80,7 +84,9 @@ export class TextArea extends MRTextEntity {
         this.cursor.position.setX(this.input.selectionStart == 0 ? selectBox.left : selectBox.right);
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
     }
-    updateCursorPosition = () => { return updateCursorPositionImpl(); };
+    updateCursorPosition = () => {
+        return updateCursorPositionImpl();
+    };
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', TextArea);

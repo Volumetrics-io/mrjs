@@ -121,7 +121,9 @@ export class TextSystem extends MRSystem {
 
         textObj.position.z = 0.0001;
     }
-    updateStyle = (entity) => { return this.updateStyleImpl(entity); };
+    updateStyle = (entity) => {
+        return this.updateStyleImpl(entity);
+    };
 
     /**
      * Handles when text is added as an entity updating content and style for the internal textObj appropriately.
@@ -133,7 +135,9 @@ export class TextSystem extends MRSystem {
 
         this.updateStyle(entity);
     }
-    addText = (entity) => { return this.addTextImpl(entity); };
+    addText = (entity) => {
+        return this.addTextImpl(entity);
+    };
 
     /**
      * parses the font weight as 'bold', 'normal', etc based on the given weight value

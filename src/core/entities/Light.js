@@ -49,7 +49,9 @@ export default class Light extends MREntity {
                 break;
         }
     }
-    mutated = (mutation) => { return mutatedImpl(mutation); };
+    mutated = (mutation) => {
+        return mutatedImpl(mutation);
+    };
 }
 
 customElements.get('mr-light') || customElements.define('mr-light', Light);

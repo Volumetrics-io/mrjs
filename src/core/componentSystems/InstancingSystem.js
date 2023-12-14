@@ -114,7 +114,9 @@ class InstancingSystem extends MRSystem {
             this.instancedMesh.setMatrixAt(i, this.transformations[i]);
         }
     }
-    random = (entity) => { return this.randomImpl(entity); };
+    random = (entity) => {
+        return this.randomImpl(entity);
+    };
 }
 
 let instancingSystem = new InstancingSystem();

@@ -131,7 +131,9 @@ export class MRApp extends MRElement {
             }
         }
     }
-    mutationCallback = (mutationList, observer) => { return this.mutationCallbackImpl(mutationList, observer); };
+    mutationCallback = (mutationList, observer) => {
+        return this.mutationCallbackImpl(mutationList, observer);
+    };
 
     /**
      * Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
@@ -260,7 +262,9 @@ export class MRApp extends MRElement {
 
         this.anchor.position.setZ(-0.5);
     }
-    initUser = () => { return this.initUserImpl(); };
+    initUser = () => {
+        return this.initUserImpl();
+    };
 
     /**
      * Initializes default lighting and shadows for the main scene.
@@ -289,7 +293,9 @@ export class MRApp extends MRElement {
             }
         }
     }
-    initLights = (data) => { return this.initLightsImpl(data); };
+    initLights = (data) => {
+        return this.initLightsImpl(data);
+    };
 
     /**
      * De-initializes rendering and MR
@@ -359,7 +365,7 @@ export class MRApp extends MRElement {
     /**
      * Default function header needed by threejs.
      * The render function that is called during ever frame. Calls every systems' update function.
-     * @param {number} timeStamp - timeStamp of the current frame. 
+     * @param {number} timeStamp - timeStamp of the current frame.
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {

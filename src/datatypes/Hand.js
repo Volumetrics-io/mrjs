@@ -118,7 +118,9 @@ export class MRHand {
             this.jointPhysicsBodies[joint].body.enableCcd(true);
 
             // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to joint collisions
-            this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+            this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(
+                mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED
+            );
             this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
             if (joint.includes('index-finger-tip')) {
@@ -194,7 +196,9 @@ export class MRHand {
         this.mesh.material.colorWrite = false;
         this.mesh.renderOrder = 2;
     }
-    setMesh = () => { return this.setMeshImpl(); };
+    setMesh = () => {
+        return this.setMeshImpl();
+    };
 
     onPinchImpl(event) {
         this.pinch = event.type == 'pinchstart';
@@ -209,7 +213,9 @@ export class MRHand {
             })
         );
     }
-    onPinch = (event) => { return this.onPinchImpl(event); };
+    onPinch = (event) => {
+        return this.onPinchImpl(event);
+    };
 
     /**
      * Gets the joint orientation of the named joint in the hand.

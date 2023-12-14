@@ -71,7 +71,7 @@ export class ControlSystem extends MRSystem {
     /************ Interaction Events ************/
 
     /**
-     * 
+     *
      */
     mouseOverImpl(event) {
         event.stopPropagation();
@@ -83,10 +83,12 @@ export class ControlSystem extends MRSystem {
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
     }
-    mouseOver = (event) => { return this.mouseOverImpl(event); };
+    mouseOver = (event) => {
+        return this.mouseOverImpl(event);
+    };
 
     /**
-     * 
+     *
      */
     onMouseDownImpl(event) {
         event.stopPropagation();
@@ -101,26 +103,32 @@ export class ControlSystem extends MRSystem {
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
     }
-    onMouseDown = (event) => { return this.onMouseDownImpl(event); };
-        
+    onMouseDown = (event) => {
+        return this.onMouseDownImpl(event);
+    };
+
     /**
-     * 
+     *
      */
     onMouseUpImpl(event) {
         event.stopPropagation();
         this.removeCursor();
         this.cursor = this.cursorHover;
     }
-    onMouseUp = (event) => { return this.onMouseUpImpl(event); };
+    onMouseUp = (event) => {
+        return this.onMouseUpImpl(event);
+    };
 
     /**
-     * 
+     *
      */
     removeCursorImpl() {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
     }
-    removeCursor = () => { return this.removeCursorImpl(); };
+    removeCursor = () => {
+        return this.removeCursorImpl();
+    };
 
     /************ Tools && Helpers ************/
 

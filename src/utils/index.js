@@ -9,13 +9,13 @@ import * as Physics from './Physics.js';
 import * as String from './String.js';
 
 export default {
-  Css,
-  Display,
-  Geometry,
-  Material,
-  Model,
-  Math,
-  Math3D,
-  Physics,
-  String,
+    Css,
+    Display,
+    Geometry,
+    Material,
+    Model,
+    Math,
+    Math3D,
+    Physics,
+    String,
 };

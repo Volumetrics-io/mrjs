@@ -131,7 +131,9 @@ export class PhysicsSystem extends MRSystem {
             this.hoverStart(collider1, collider2, entity);
         }
     }
-    onContactStart = (handle1, handle2) => { return this.onContactStartImpl(handle1, handle2); };
+    onContactStart = (handle1, handle2) => {
+        return this.onContactStartImpl(handle1, handle2);
+    };
 
     /**
      * Handles the end of collisions between two different colliders.
@@ -155,7 +157,9 @@ export class PhysicsSystem extends MRSystem {
             this.hoverEnd(entity);
         }
     }
-    onContactEnd = (handle1, handle2) => { return this.onContactEndImpl(handle1, handle2); };
+    onContactEnd = (handle1, handle2) => {
+        return this.onContactEndImpl(handle1, handle2);
+    };
 
     /**
      * Handles the start of touch between two different colliders and the current entity.
@@ -193,7 +197,9 @@ export class PhysicsSystem extends MRSystem {
             );
         });
     }
-    touchStart = (collider1, collider2, entity) => { return this.touchStartImpl(collider1, collider2, entity); };
+    touchStart = (collider1, collider2, entity) => {
+        return this.touchStartImpl(collider1, collider2, entity);
+    };
 
     /**
      * Handles the end of touch for the current entity
@@ -212,7 +218,9 @@ export class PhysicsSystem extends MRSystem {
             })
         );
     }
-    touchEnd = (entity) => { return this.touchEndImpl(entity); };
+    touchEnd = (entity) => {
+        return this.touchEndImpl(entity);
+    };
 
     /**
      * Handles the start of hovering over/around a specific entity.
@@ -236,7 +244,9 @@ export class PhysicsSystem extends MRSystem {
             );
         });
     }
-    hoverStart = (collider1, collider2, entity) => { return this.hoverStartImpl(collider1, collider2, entity); };
+    hoverStart = (collider1, collider2, entity) => {
+        return this.hoverStartImpl(collider1, collider2, entity);
+    };
 
     /**
      * Handles the end of hovering over/around a specific entity.
@@ -249,7 +259,9 @@ export class PhysicsSystem extends MRSystem {
             })
         );
     }
-    hoverEnd = (entity) => { return this.hoverEndImpl(entity); };
+    hoverEnd = (entity) => {
+        return this.hoverEndImpl(entity);
+    };
 
     /**
      * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.

@@ -71,7 +71,7 @@ export class MRDivEntity extends MREntity {
      */
     add(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
-        let panel = this.closest('mr-panel'); 
+        let panel = this.closest('mr-panel');
         if (panel && entity instanceof MRDivEntity) {
             panel.add(entity);
         } else {

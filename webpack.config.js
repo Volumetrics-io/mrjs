@@ -60,11 +60,11 @@ export default {
         new CopyPlugin({
             patterns: [
                 // make these items generate in dist as default for the runner: index.html, style.css, and assets folder
-                { from: 'samples/index.html', to: 'index.html' }, 
+                { from: 'samples/index.html', to: 'index.html' },
                 { from: 'samples/style.css', to: 'style.css' },
                 { from: 'samples/assets', to: 'assets' },
                 // make the MR.js/samples folder generate in the dist (for future when we have more or want them hot-swappable)
-                { from: 'samples', to: 'samples' }, 
+                { from: 'samples', to: 'samples' },
             ],
         }),
         // new webpack.ProvidePlugin({

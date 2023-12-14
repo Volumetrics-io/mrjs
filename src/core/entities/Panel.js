@@ -139,7 +139,7 @@ export class Panel extends MRDivEntity {
     }
     onTouch = (event) => {
         return this.onTouchImpl(event);
-    }
+    };
 
     /**
      * Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
@@ -176,7 +176,9 @@ export class Panel extends MRDivEntity {
 
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     }
-    momentumScroll = (distance, duration) => { return this.momentumScrollImpl(distance, duration); };
+    momentumScroll = (distance, duration) => {
+        return this.momentumScrollImpl(distance, duration);
+    };
 
     /**
      * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
