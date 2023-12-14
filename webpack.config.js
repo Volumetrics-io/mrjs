@@ -1,7 +1,7 @@
 import CopyPlugin from 'copy-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import webpack from 'webpack';
+// import webpack from 'webpack';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,7 +44,8 @@ export default {
     resolve: {
         extensions: ['.mjs', '.js'],
         alias: {
-            MRJS: path.resolve(__dirname, 'src/utils/global'), // <-- When you build or restart dev-server, you'll get an error if the path to your utils.js file is incorrect.
+            mrjs: path.resolve(__dirname, './src'), // <-- When you build or restart dev-server, you'll get an error if the path to your global.js file is incorrect.
+            mrjsUtils: path.resolve(__dirname, './src/utils'),
         },
         fallback: {
             fs: false,
@@ -58,15 +59,17 @@ export default {
     plugins: [
         new CopyPlugin({
             patterns: [
+                // make these items generate in dist as default for the runner: index.html, style.css, and assets folder
                 { from: 'samples/index.html', to: 'index.html' },
                 { from: 'samples/style.css', to: 'style.css' },
-                { from: 'samples/assets', to: 'assets' }, // make the MR.js/assets folder generate in the dist
-                { from: 'samples', to: 'samples' }, // make the MR.js/samples folder generate in the dist (for future when we have more)
+                { from: 'samples/assets', to: 'assets' },
+                // make the MR.js/samples folder generate in the dist (for future when we have more or want them hot-swappable)
+                { from: 'samples', to: 'samples' },
             ],
         }),
-        new webpack.ProvidePlugin({
-            MRJS: 'MRJS',
-        }),
+        // new webpack.ProvidePlugin({
+        //     mrjs: 'mrjs',
+        // }),
     ],
 
     module: {

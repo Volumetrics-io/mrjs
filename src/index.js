@@ -1,47 +1,50 @@
-// CSS
-import './styles.css';
+// TODO - this should auto grab instead of manually be updated as manual updates will create problems.
+
+// STYLE
+import './defaultStyle.css';
+
+// GLOBAL
+import './global';
+
+// DATATYPES
+import './datatypes/Hand';
+import './datatypes/ClippingGeometry';
+
+// CORE
+import './core/MRApp';
+import './core/MRDivEntity';
+import './core/MRElement';
+import './core/MREntity';
+import './core/MRSystem';
+import './core/MRTextEntity';
+// CORE - ENTITIES
+import './core/entities/Button';
+import './core/entities/Image';
+import './core/entities/Light';
+import './core/entities/Model';
+import './core/entities/Panel';
+import './core/entities/SkyBox';
+import './core/entities/Surface';
+import './core/entities/TextArea';
+import './core/entities/TextField';
+// CORE - COMPONENT-SYSTEMS
+import './core/componentSystems/ClippingSystem';
+import './core/componentSystems/ControlSystem';
+import './core/componentSystems/InstancingSystem';
+import './core/componentSystems/LayoutSystem';
+import './core/componentSystems/PhysicsSystem';
+import './core/componentSystems/StyleSystem';
+import './core/componentSystems/SurfaceSystem';
+import './core/componentSystems/TextSystem';
 
 // UTILS
-import './utils/extensions';
+// Import utilities from src/utils/index.js
+import utils from './utils/index.js';
+// Export utilities as mrjsUtils
+export const mrjsUtils = utils;
 
-// CORE
-import './core/MRElement';
-import './core/System';
-import './core/MRApp';
-import './core/entity';
-import './entities/Model';
-import './entities/Light';
-
-// SYSTEMS
-import './component-systems/RapierPhysicsSystem';
-import './component-systems/LayoutSystem';
-
-// GEOMETRY
-import './geometry/UIPlane';
-
-// UI
-import './UI/Button';
-import './entities/Surface';
-import './entities/Volume';
-
-// MEDIA
-import './UI/media/Image';
-
-// TEXT
-import './UI/Text/Text';
-import './UI/Text/TextField';
-import './UI/Text/TextArea';
-
-// UI: LAYOUT
-import './entities/Panel';
-
-//   EXPORTS
+// EXPORTS
 export * as THREE from 'three';
-
-// CORE
-export { default as MRElement } from './core/MRElement';
-export { default as System } from './core/System';
-export { default as Entity } from './core/entity';
-
-// GEOMETRY
-export { default as UIPlane } from './geometry/UIPlane';
+export * from './core/MRElement';
+export * from './core/MRSystem';
+export * from './core/MREntity';
