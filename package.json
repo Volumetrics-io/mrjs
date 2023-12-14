@@ -11,7 +11,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test-serially": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
     "test-randomized": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --random",
-    "docs": "npx jsdoc src/*.js --destination ./docs",
+    "docs": "npx jsdoc ./src/**/*.js --destination ./docs",
     "prettier-list": "prettier --list-different \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
     "lint-list": "eslint \"src/**/*.js\" \"*.js\"",
