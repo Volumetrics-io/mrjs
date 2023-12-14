@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { MRElement } from 'mrjs/core/MRElement';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class MREntity

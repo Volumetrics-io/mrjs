@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRHand } from 'mrjs/datatypes/Hand';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class ControlSystem

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class Image
@@ -15,7 +15,7 @@ export class Image extends MRDivEntity {
      */
     constructor() {
         super();
-        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, 0.0001, 18);
+        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18);
         console.log('geometry is ? ');
         console.log(this.geometry);
         this.material = new THREE.MeshStandardMaterial({

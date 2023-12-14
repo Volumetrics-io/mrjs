@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class PhysicsSystem

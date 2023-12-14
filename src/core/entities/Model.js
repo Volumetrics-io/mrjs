@@ -1,6 +1,6 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class Model

@@ -6,7 +6,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { TextField } from 'mrjs/core/entities/TextField';
 import { TextArea } from 'mrjs/core/entities/TextArea';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class TextSystem

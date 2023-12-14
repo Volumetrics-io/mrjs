@@ -6,7 +6,7 @@ import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
 
-import mrjsUtils from 'mrjsUtils';
+import { mrjsUtils } from 'mrjs';
 
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
