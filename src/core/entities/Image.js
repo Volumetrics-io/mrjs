@@ -16,13 +16,9 @@ export class Image extends MRDivEntity {
     constructor() {
         super();
         this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18);
-        console.log('geometry is ? ');
-        console.log(this.geometry);
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
         });
-        console.log('geometry is not null: ');
-        console.log(this.geometry);
         this.object3D = new THREE.Mesh(this.geometry, this.material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;

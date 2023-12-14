@@ -7,7 +7,7 @@ import * as THREE from 'three';
  * @returns {number} - the 2D pixel space representation of value.
  */
 export function threeToPx(val) {
-    return (val / global.viewPortWidth) * window.innerWidth;
+    return (val / global.viewPortHeight) * window.innerHeight;
 }
 
 /**
