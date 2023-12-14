@@ -1,3 +1,8 @@
+/**
+ * @module mrjs
+ * @description the overall one-stop-shop module for mrjs. Includes the ability to access threejs directly as well.
+ */
+
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
 // STYLE
