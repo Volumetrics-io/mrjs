@@ -1,7 +1,7 @@
 import CopyPlugin from 'copy-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import webpack from 'webpack';
+// import webpack from 'webpack';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

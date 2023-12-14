@@ -15,12 +15,10 @@ import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
  */
 export class Panel extends MRDivEntity {
     /**
-     * Calculates the height of the Entity based on the bounding client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
     get height() {
-        const rect = this.getBoundingClientRect();
-
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? global.XRScale;
             return this.windowVerticalScale;

@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
 import { getSelectionRects } from 'troika-three-text';
-import { Object3D } from 'three';
 
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 

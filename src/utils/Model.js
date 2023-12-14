@@ -170,12 +170,12 @@ export function loadModel(filePath, extension) {
     } else if (extension == 'stl') {
         return loadSTL(filePath);
     }
-    // if (extension == 'usdc') {
-    //   return loadUSDZ(filePath);
-    // }
-    // if (extension == 'usdz') {
-    //   return loadUSDZ(filePath);
-    // }
+    const allowed = false;
+    if (allowed && (extension == 'dae')) {
+        return loadDAE(filePath);
+    } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
+      return loadUSDZ(filePath);
+    }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
     return null;
 }

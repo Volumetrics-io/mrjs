@@ -118,5 +118,3 @@ class InstancingSystem extends MRSystem {
         return this.randomImpl(entity);
     };
 }
-
-let instancingSystem = new InstancingSystem();

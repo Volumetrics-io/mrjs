@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 /**
  * Rounds the inputted val to the nearest decimal place as denoted by the decimal parameter.
  * For example: roundTo(832.456, 10) = 832.4; roundTo(832.456, 1000) = 832.456; roundTo(832.456, 0.01) = 800;

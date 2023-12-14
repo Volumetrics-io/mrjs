@@ -23,8 +23,6 @@ export function UIPlane(width, height, radius_corner, smoothness) {
     // helper const's
     const wi = w / 2 - r; // inner width
     const hi = h / 2 - r; // inner height
-    const w2 = w / 2; // half width
-    const h2 = h / 2; // half height
     const ul = r / w; // u left
     const ur = (w - r) / w; // u right
     const vl = r / h; // v low

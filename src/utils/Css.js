@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 /**
  * Converts 3D world positions to display positions based on global viewPort information.
  * Useful as part of the layout system and css value handling (px<-->threejs).
