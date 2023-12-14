@@ -1,11 +1,33 @@
 {
+  "tags": {
+    "allowUnknownTags": true
+  },
   "source": {
     "include": ["src"],
     "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(^|\\/|\\\\)_"
+    "excludePattern": "(^|\\/|\\\\)_"//|src\\/(.+/)+index\\.js$"
   },
   "opts": {
+    "template": "node_modules/tui-jsdoc-template",
+    "name": "mrjs Docs",
+    "footerText": "My awesome footer text",
+    "useCollapsibles": true,
+    "tabNames": {
+        "api": "API",
+        "tutorials": "Examples"
+    },
     "recurse": true,
+    "verbose": true,
+    "encoding": "utf8",
     "destination": "./docs"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+        "outputSourceFiles": true,
+        "includeDate": false,
+        "useLongnameInNav": true
+    }
   }
 }
