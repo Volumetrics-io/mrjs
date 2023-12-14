@@ -4,6 +4,8 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Surface } from 'mrjs/core/entities/Surface';
 
+import { mrjsUtils } from 'mrjs';
+
 import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 
 /**
@@ -135,7 +137,7 @@ export class Panel extends MRDivEntity {
             return;
         }
 
-        this.momentumScroll(threeToPx(this.delta), 3000);
+        this.momentumScroll(mrjsUtils.Css.threeToPx(this.delta), 3000);
     }
     onTouch = (event) => {
         return this.onTouchImpl(event);

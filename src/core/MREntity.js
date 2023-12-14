@@ -340,30 +340,6 @@ export class MREntity extends MRElement {
             child.traverse(callBack);
         }
     }
-
-    /**
-     * Sets the position, scale, and rotational values of the stored object3D based on stored attribute information.
-     */
-    setTransformValues() {
-        const position = this.getAttribute('position');
-        const scale = this.getAttribute('scale');
-        const rotation = this.getAttribute('rotation');
-
-        if (position) {
-            this.object3D.position.fromArray(mrjsUtils.String.stringToVector(position));
-        }
-
-        if (scale) {
-            this.object3D.scale.fromArray(mrjsUtils.String.stringToVector(scale));
-        }
-
-        if (rotation) {
-            const euler = new THREE.Euler();
-            const array = mrjsUtils.String.stringToVector(rotation).map(radToDeg);
-            euler.fromArray(array);
-            this.object3D.setRotationFromEuler(euler);
-        }
-    }
 }
 
 customElements.get('mr-entity') || customElements.define('mr-entity', MREntity);
