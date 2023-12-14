@@ -41,7 +41,7 @@ export class MRDivEntity extends MREntity {
     /**
      * Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
      */
-    constructor(g) {
+    constructor() {
         super();
         this.worldScale = new THREE.Vector3();
         this.halfExtents = new THREE.Vector3();

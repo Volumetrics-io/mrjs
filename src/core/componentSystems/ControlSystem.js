@@ -71,7 +71,8 @@ export class ControlSystem extends MRSystem {
     /************ Interaction Events ************/
 
     /**
-     *
+     * Handles the mouse over event
+     * @param {event} event - the mouse over event
      */
     mouseOverImpl(event) {
         event.stopPropagation();
@@ -88,7 +89,8 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     *
+     * Handles the mouse down event
+     * @param {event} event - the mouse down event
      */
     onMouseDownImpl(event) {
         event.stopPropagation();
@@ -108,7 +110,8 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     *
+     * Handles the mouse up event
+     * @param {event} event - the mouse up event
      */
     onMouseUpImpl(event) {
         event.stopPropagation();
@@ -120,7 +123,7 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     *
+     * Handles the removeCursor callback.
      */
     removeCursorImpl() {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);

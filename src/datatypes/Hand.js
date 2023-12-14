@@ -185,6 +185,9 @@ export class MRHand {
         }
     }
 
+    /**
+     * Handles the setMesh callback.
+     */
     setMeshImpl() {
         if (this.mesh) {
             return;
@@ -200,6 +203,10 @@ export class MRHand {
         return this.setMeshImpl();
     };
 
+    /**
+     * Handles the onPinch event
+     * @param {event} event - the on pinch event object
+     */
     onPinchImpl(event) {
         this.pinch = event.type == 'pinchstart';
         const position = this.getCursorPosition();

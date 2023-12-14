@@ -1,4 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
+import { MREntity } from 'mrjs/core/MREntity';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
 

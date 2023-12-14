@@ -155,6 +155,7 @@ export class TextSystem extends MRSystem {
      * parses the font size based on its `XXpx` value and converts it to a usable result based on the virtual display resolution
      * @param {number} val - the value being adjusted
      * @param {object} el - the css element handler
+     * @returns {number} - the font size adjusted for the display as expected
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
