@@ -49,7 +49,7 @@ export class TextSystem extends MRSystem {
             this.registry.add(entity);
             this.addText(entity);
             entity.textObj.sync(() => {
-                entity.textObj.position.setY(entity.height / 2);
+                entity.needsUpdate = true
             });
         }
     }
