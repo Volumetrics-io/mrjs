@@ -15,7 +15,7 @@ export class Image extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.Css.pxToThree(this.img.width);
+        let width = mrjsUtils.Css.pxToThree(this.objectFitDimensions.width);
         return width > 0 ? width : super.width;
     }
 
@@ -24,7 +24,7 @@ export class Image extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.Css.pxToThree(this.img.height);
+        let height = mrjsUtils.Css.pxToThree(this.objectFitDimensions.height);
         return height > 0 ? height : super.height;
     }
 
@@ -50,26 +50,20 @@ export class Image extends MRDivEntity {
     connected() {
         this.img = document.createElement('img');
         this.img.setAttribute('src', this.getAttribute('src'));
-        this.img.setAttribute('width', '100%');
+        this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
+
+        this.objectFitDimensions = { height: 0, width: 0 };
+        this.computeObjectFitDimensions();
 
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
-        this.texture = new THREE.TextureLoader().load(this.img.src, (texture) => {
-            switch (this.compStyle.objectFit) {
-                case 'cover':
-                    this.cover(texture, this.width / this.height);
-                    break;
-                case 'fill':
-                default:
-                    break;
-            }
-        });
+        this.texture = new THREE.TextureLoader().load(this.img.src);
         this.object3D.material.map = this.texture;
 
         // slight bump needed to avoid overlapping, glitchy visuals.
         // I'm sure there's a better solution lol.
-        this.object3D.position.z += 0.001;
+        this.object3D.position.z += 0.0001;
     }
 
     /**
@@ -77,11 +71,9 @@ export class Image extends MRDivEntity {
      */
     updateStyle() {
         super.updateStyle();
+        this.computeObjectFitDimensions();
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
-        if (this.texture.image) {
-            this.cover(this.texture, this.width / this.height);
-        }
     }
 
     /**
@@ -92,16 +84,52 @@ export class Image extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.object3D.material.map = new THREE.TextureLoader().load(this.img.src, (texture) => {
-                switch (this.compStyle.objectFit) {
-                    case 'cover':
-                        this.cover(texture, this.width / this.height);
-                        break;
-                    case 'fill':
-                    default:
-                        break;
+            this.computeObjectFitDimensions();
+            this.texture = new THREE.TextureLoader().load(this.img.src);
+        }
+    }
+
+    /**
+     * computes the width and height values considering the value of object-fit
+     */
+    computeObjectFitDimensions() {
+        switch (this.compStyle.objectFit) {
+            case 'fill':
+                return { width: this.offsetWidth, height: this.offsetHeight };
+
+            case 'contain':
+            case 'scale-down': {
+                let ratio = Math.min(this.offsetWidth / this.img.width, this.offsetHeight / this.img.height);
+                let scaledWidth = this.img.width * ratio;
+                let scaledHeight = this.img.height * ratio;
+
+                if (this.compStyle.objectFit === 'scale-down') {
+                    scaledWidth = Math.min(scaledWidth, this.img.width);
+                    scaledHeight = Math.min(scaledHeight, this.img.height);
                 }
-            });
+
+                this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
+                break;
+            }
+
+            case 'cover': {
+                let imageRatio = this.img.width / this.img.height;
+                let containerRatio = this.offsetWidth / this.offsetHeight;
+
+                if (containerRatio > imageRatio) {
+                    this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
+                } else {
+                    this.objectFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
+                }
+                break;
+            }
+
+            case 'none':
+                this.objectFitDimensions = { width: this.img.width, height: this.img.height };
+                break;
+
+            default:
+                throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
         }
     }
 

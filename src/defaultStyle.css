@@ -17,7 +17,3 @@ mr-panel {
 body {
     margin: 0; /* unclear why we need this */
 }
-
-img {
-    width: 100%;
-}
