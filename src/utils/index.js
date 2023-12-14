@@ -1,3 +1,8 @@
+/**
+ * @module mrjsUtils
+ * @description mrjsUtils module acts as a one stop shop for all global util functions of mrjs. Items can be grabbed by importing as `import { mrjsUtils } from 'mrjs';` and calling them through `mrjsUtils.ParentFile.functionName(...);`
+ */
+
 import * as Css from './Css.js';
 import * as Display from './Display.js';
 import * as Geometry from './Geometry.js';
