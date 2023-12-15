@@ -163,6 +163,7 @@ export class MRApp extends MRElement {
         }
 
         this.initUser();
+        mrjsUtils.Physics.initializePhysics();
 
         this.user.position.set(0, 0, 1);
 

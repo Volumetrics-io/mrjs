@@ -4,13 +4,12 @@
  */
 var Display = {};
 
-const _VIRTUAL_DISPLAY_RESOLUTION = 1080;
+// const _VIRTUAL_DISPLAY_RESOLUTION = 1080;
 /**
- * @property
  * @memberof Display
  * @description Defaults to 1080;
  */
-Display.VIRTUAL_DISPLAY_RESOLUTION = alert(_VIRTUAL_DISPLAY_RESOLUTION);
+Display.VIRTUAL_DISPLAY_RESOLUTION = 1080; //alert(_VIRTUAL_DISPLAY_RESOLUTION);
 
 /**
  * @function
