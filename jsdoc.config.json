@@ -5,17 +5,10 @@
   "source": {
     "include": ["src"],
     "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(^|\\/|\\\\)_"//|src\\/(.+/)+index\\.js$"
+    "excludePattern": "(^|\\/|\\\\)_"
   },
   "opts": {
     "template": "node_modules/tui-jsdoc-template",
-    "name": "mrjs Docs",
-    "footerText": "My awesome footer text",
-    "useCollapsibles": true,
-    "tabNames": {
-        "api": "API",
-        "tutorials": "Examples"
-    },
     "recurse": true,
     "verbose": true,
     "encoding": "utf8",
@@ -28,6 +21,13 @@
         "outputSourceFiles": true,
         "includeDate": false,
         "useLongnameInNav": true
-    }
+    },
+    "tabNames": {
+        "api": "API",
+        "tutorials": "Tutorials"
+    },
+    "name": "mrjs Docs",
+    "footerText": "My awesome footer text",
+    "useCollapsibles": true
   }
 }

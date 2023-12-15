@@ -5,18 +5,20 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class Model
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
- * @augments MREntity
+ * @extends MREntity
  */
 export class Model extends MREntity {
     /**
-     * Constructor for the Model entity, does the default.
+     * @constructor
+     * @description Constructor for the Model entity, does the default.
      */
     constructor() {
         super();
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
+     * @method
+     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
      */
     connected() {
         this.src = this.getAttribute('src');
@@ -44,7 +46,8 @@ export class Model extends MREntity {
     }
 
     /**
-     * On load event function - right now defaults to do nothing.
+     * @event
+     * @description On load event function - right now defaults to do nothing.
      */
     onLoad = () => {};
 }

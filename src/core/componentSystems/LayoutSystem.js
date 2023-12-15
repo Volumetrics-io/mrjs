@@ -6,13 +6,14 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
 
 /**
- * @class Layout System
+ * @class LayoutSystem
  * @classdesc System that allows for setup and handling of changing layout.
- * @augments MRSystem
+ * @extends MRSystem
  */
 export class LayoutSystem extends MRSystem {
     /**
-     * Constructor for the layout system. Uses the default System setup.
+     * @constructor
+     * @description Constructor for the layout system. Uses the default System setup.
      */
     constructor() {
         super(false);
@@ -20,7 +21,8 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * Called when a new entity is added to this system
+     * @method
+     * @description Called when a new entity is added to this system
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
@@ -34,8 +36,8 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * Handles updating all 3D items to match whatever layout position is expected.
+     * @method
+     * @description The generic system update call. Handles updating all 3D items to match whatever layout position is expected.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -46,7 +48,8 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * Helper function for the update call. Sets the entity's appropriate 3D layout position based on window and entity expectations.
+     * @method
+     * @description Helper function for the update call. Sets the entity's appropriate 3D layout position based on window and entity expectations.
      * @param {MREntity} entity - the entity being updated.
      */
     setLayoutPosition(entity) {

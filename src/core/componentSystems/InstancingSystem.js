@@ -4,13 +4,14 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 /**
- * @class Instancing System
+ * @class InstancingSystem
  * @classdesc System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
- * @augments MRSystem
+ * @extends MRSystem
  */
-class InstancingSystem extends MRSystem {
+export class InstancingSystem extends MRSystem {
     /**
-     * InstancingSystem's default constructor that sets up default instancing count, transformations, and mesh information.
+     * @constructor
+     * @description InstancingSystem's default constructor that sets up default instancing count, transformations, and mesh information.
      */
     constructor() {
         super();
@@ -21,9 +22,9 @@ class InstancingSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * Updates the entity and its instances to their appropriate transformations and visuals
-     * based on the picked predefined option.
+     * @method
+     * @description  The generic system update call. Updates the entity and its instances to their appropriate transformations and visuals
+     *               based on the picked predefined option.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -41,9 +42,8 @@ class InstancingSystem extends MRSystem {
     }
 
     /**
-     * Determines what meshes are attached from this entity and
-     * When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether
-     * that be a group or mesh).
+     * @method
+     * @description Determines what meshes are attached from this entity and When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether that be a group or mesh).
      * @param {MREntity} entity - the entity with the geometry to be instanced and the chosen setup option
      */
     attachedComponent(entity) {
@@ -98,8 +98,8 @@ class InstancingSystem extends MRSystem {
     /************ Some options for default instancing setup ************/
 
     /**
-     * An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations.
-     * Uses threejs's `InstancedMesh`.
+     * @method
+     * @description An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations. Uses threejs's `InstancedMesh`.
      * @param {MREntity} entity - the entity to be instanced in random locations
      */
     randomImpl(entity) {
@@ -114,6 +114,9 @@ class InstancingSystem extends MRSystem {
             this.instancedMesh.setMatrixAt(i, this.transformations[i]);
         }
     }
+    /**
+     * @event
+     */
     random = (entity) => {
         return this.randomImpl(entity);
     };

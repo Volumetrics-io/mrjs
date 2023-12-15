@@ -12,7 +12,6 @@ import './defaultStyle.css';
 import './global';
 
 // DATATYPES
-import './datatypes/Hand';
 import './datatypes/ClippingGeometry';
 
 // CORE
@@ -20,6 +19,7 @@ import './core/MRApp';
 import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
+import './core/MRHand';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - ENTITIES
@@ -44,9 +44,10 @@ import './core/componentSystems/TextSystem';
 
 // UTILS
 // Import utilities from src/utils/index.js
-import utils from './utils/index.js';
+import { mrjsUtils } from './utils/index.js';
+export { mrjsUtils } from './utils/index.js';
 // Export utilities as mrjsUtils
-export const mrjsUtils = utils;
+// export const mrjsUtils = utils;
 
 // EXPORTS
 export * as THREE from 'three';

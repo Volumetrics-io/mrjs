@@ -11,11 +11,12 @@ import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 /**
  * @class Panel
  * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
- * @augments MRDivEntity
+ * @extends MRDivEntity
  */
 export class Panel extends MRDivEntity {
     /**
-     * Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
+     * @method
+     * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
     get height() {
@@ -27,7 +28,8 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
+     * @constructor
+     * @description Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
      */
     constructor() {
         super();
@@ -48,8 +50,9 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
-     * Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
+     * @method
+     * @description Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
+     *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     connected() {
         this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
@@ -94,7 +97,8 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * Adding an entity as a sub-object of this entity.
+     * @method
+     * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
@@ -102,7 +106,8 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * Remove an entity as a sub-object of this entity.
+     * @method
+     * @description Remove an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
@@ -110,8 +115,9 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
-     * Triggers to use the browser's own scrolling without a need to fake the scrolling itself.
+     * @method
+     * @description Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
+     *              Triggers to use the browser's own scrolling without a need to fake the scrolling itself.
      * @param {object} event - the touch event
      */
     onTouchImpl(event) {
@@ -137,12 +143,16 @@ export class Panel extends MRDivEntity {
 
         this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
     }
+    /**
+     * @event
+     */
     onTouch = (event) => {
         return this.onTouchImpl(event);
     };
 
     /**
-     * Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
+     * @method
+     * @description Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
      * @param {number} distance - the distance left to scroll
      * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
      */
@@ -176,12 +186,16 @@ export class Panel extends MRDivEntity {
 
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     }
+    /**
+     * @event
+     */
     momentumScroll = (distance, duration) => {
         return this.momentumScrollImpl(distance, duration);
     };
 
     /**
-     * Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
+     * @event 
+     * @description Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
      * @param {object} event - the scroll event
      */
     onScroll = (event) => {};

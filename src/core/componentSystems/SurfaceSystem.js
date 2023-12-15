@@ -6,11 +6,12 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 /**
  * @class SurfaceSystem
  * @classdesc Handles all items (3D and 2D) associated with an mr-surface including the surface itself.
- * @augments MRSystem
+ * @extends MRSystem
  */
 export class SurfaceSystem extends MRSystem {
     /**
-     * SurfaceSystem's default constructor including setting up /...? TODO - i need to understand what an mr-surface is first
+     * @constructor
+     * @description SurfaceSystem's default constructor including setting up /...? TODO - i need to understand what an mr-surface is first
      */
     constructor() {
         super(false);
@@ -69,8 +70,8 @@ export class SurfaceSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * // TODO - add better description here
+     * @method
+     * @description The generic system update call. // TODO - add better description here
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -122,7 +123,8 @@ export class SurfaceSystem extends MRSystem {
     }
 
     /**
-     * Detaches all surfaces in this system and resets them
+     * @method
+     * @description Detaches all surfaces in this system and resets them
      */
     resetAllSurfaces() {
         for (const surface of this.registry) {
@@ -131,7 +133,8 @@ export class SurfaceSystem extends MRSystem {
     }
 
     /**
-     * Locks the window in place where it has been positioned after being moved.
+     * @method
+     * @description Locks the window in place where it has been positioned after being moved.
      */
     lockWindow() {
         this.currentSurface.windowVerticalScale = this.scale * global.XRScale * this.currentSurface.height;
@@ -147,7 +150,8 @@ export class SurfaceSystem extends MRSystem {
     }
 
     /**
-     * Places the surface based on the user's current pose position??? TODO
+     * @method
+     * @description Places the surface based on the user's current pose position??? TODO
      * @param {object} hitResults - TODO
      * @param {object} frame - TODO
      */

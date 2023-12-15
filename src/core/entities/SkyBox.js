@@ -5,18 +5,20 @@ import { MREntity } from 'mrjs/core/MREntity';
 /**
  * @class SkyBox
  * @classdesc The skybox entity that allows users to give multiple images to pattern into the 3D background space. `mr-skybox`
- * @augments MREntity
+ * @extends MREntity
  */
-class SkyBox extends MREntity {
+export class SkyBox extends MREntity {
     /**
-     * Constructor for skybox - defaults to the usual impl of an Entity.
+     * @constructor
+     * @description Constructor for skybox - defaults to the usual impl of an Entity.
      */
     constructor() {
         super();
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
+     * @method
+     * @description Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
      */
     connected() {
         // you can have texturesList be all individual textures
@@ -39,7 +41,8 @@ class SkyBox extends MREntity {
     }
 
     /**
-     * On load event function - right now defaults to do nothing.
+     * @event
+     * @description On load event function - right now defaults to do nothing.
      */
     onLoad = () => {};
 }

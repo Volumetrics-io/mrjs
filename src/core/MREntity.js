@@ -7,7 +7,7 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class MREntity
  * @classdesc The default representation of an MRElement to be expanded upon by actual details ECS Entity items. `mr-entity`
- * @augments MRElement
+ * @extends MRElement
  */
 export class MREntity extends MRElement {
     aabb = new THREE.Box3();
@@ -23,22 +23,23 @@ export class MREntity extends MRElement {
     components = {
         get: (name) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return mrjsUtils.String.stringToJson(this.dataset[dataName]);
+            return mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]);
         },
 
         set: (name, data) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = mrjsUtils.String.stringToJson(this.dataset[dataName]);
+            const component = mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]);
             for (const key in data) {
                 component[key] = data[key];
             }
-            this.dataset[dataName] = mrjsUtils.String.jsonToString(component);
+            this.dataset[dataName] = mrjsUtils.StringUtils.jsonToString(component);
         },
     };
 
     /**
-     * Constructor for the default Entity Component (MREntity).
-     * Sets up the base object3D and useful Mixed Reality information including rendering, touching, and component basics.
+     * @constructor
+     * @description Constructor for the default Entity Component (MREntity).
+     *              Sets up the base object3D and useful Mixed Reality information including rendering, touching, and component basics.
      */
     constructor() {
         super();
@@ -65,7 +66,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Calculates the width of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @method
+     * @description Calculates the width of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved width
      */
     get width() {
@@ -73,7 +75,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * The actual 3D value of the content's width.
+     * @method
+     * @description The actual 3D value of the content's width.
      * @returns {number} - width of the 3D object.
      */
     get contentWidth() {
@@ -82,7 +85,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Calculates the height of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @method
+     * @description Calculates the height of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
     get height() {
@@ -91,7 +95,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * The actual 3D value of the content's height.
+     * @method
+     * @description The actual 3D value of the content's height.
      * @returns {number} - height of the 3D object.
      */
     get contentHeight() {
@@ -100,24 +105,28 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Default base for updating the physics data for the current iteration.
+     * @method
+     * @description Default base for updating the physics data for the current iteration.
      */
     updatePhysicsData() {}
 
     /**
-     * Handles the hover event
+     * @event
+     * @description Handles the hover event
      * @param {object} event - the hover event
      */
     onHover = (event) => {};
 
     /**
-     * Handles the touch event
+     * @event
+     * @description Handles the touch event
      * @param {object} event - the touch event
      */
     onTouch = (event) => {};
 
     /**
-     * Handles the scroll event
+     * @event
+     * @description Handles the scroll event
      * @param {object} event - the scroll event
      */
     onScroll = (event) => {
@@ -125,7 +134,8 @@ export class MREntity extends MRElement {
     };
 
     /**
-     * The connectedCallback function that runs whenever this entity component becomes connected to something else.
+     * @method
+     * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
@@ -188,7 +198,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Loads all attributes of this entity's stored dataset including components, attaching them, and their associated rotations and positions.
+     * @method
+     * @description Loads all attributes of this entity's stored dataset including components, attaching them, and their associated rotations and positions.
      */
     loadAttributes() {
         for (const attr in this.dataset) {
@@ -203,10 +214,10 @@ export class MREntity extends MRElement {
             } else {
                 switch (attr) {
                     case 'rotation':
-                        this.object3D.rotation.fromArray(mrjsUtils.String.stringToDegVector(this.dataset.rotation));
+                        this.object3D.rotation.fromArray(mrjsUtils.StringUtils.stringToDegVector(this.dataset.rotation));
                         break;
                     case 'position':
-                        this.object3D.position.fromArray(mrjsUtils.String.stringToVector(this.dataset.position));
+                        this.object3D.position.fromArray(mrjsUtils.StringUtils.stringToVector(this.dataset.position));
                         break;
                 }
             }
@@ -214,17 +225,20 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Callback function of MREntity - does nothing. Is called by the connectedCallback.
+     * @method
+     * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
     connected() {}
 
     /**
-     * Callback function of MREntity - does nothing. Is called by the disconnectedCallback.
+     * @method
+     * @description Callback function of MREntity - does nothing. Is called by the disconnectedCallback.
      */
     disconnected() {}
 
     /**
-     * The disconnectedCallback function that runs whenever this entity component becomes disconnected from something else.
+     * @method
+     * @description The disconnectedCallback function that runs whenever this entity component becomes disconnected from something else.
      */
     disconnectedCallback() {
         while (this.object3D.parent) {
@@ -242,13 +256,15 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Callback function of MREntity - does nothing. Is called by mutation Callback.
+     * @method
+     * @description Callback function of MREntity - does nothing. Is called by mutation Callback.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {}
 
     /**
-     * The mutationCallback function that runs whenever this entity component should be mutated.
+     * @method
+     * @description The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
@@ -265,10 +281,10 @@ export class MREntity extends MRElement {
                     }
                     switch (mutation.attributeName) {
                         case 'data-position':
-                            this.object3D.position.fromArray(mrjsUtils.String.stringToVector(this.dataset.position));
+                            this.object3D.position.fromArray(mrjsUtils.StringUtils.stringToVector(this.dataset.position));
                             break;
                         case 'data-rotation':
-                            this.object3D.rotation.fromArray(mrjsUtils.String.stringToDegVector(this.dataset.rotation));
+                            this.object3D.rotation.fromArray(mrjsUtils.StringUtils.stringToDegVector(this.dataset.rotation));
                             break;
 
                         default:
@@ -283,7 +299,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Helper function for the mutationCallback. Handles actually updating this entity component with all the associated dispatchEvents.
+     * @method
+     * @description Helper function for the mutationCallback. Handles actually updating this entity component with all the associated dispatchEvents.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     componentMutated(mutation) {
@@ -295,7 +312,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { oldData: mrjsUtils.String.jsonToString(mutation.oldValue) },
+                    detail: { oldData: mrjsUtils.StringUtils.jsonToString(mutation.oldValue) },
                 })
             );
         } else {
@@ -308,7 +325,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Adding an entity as a sub-object of this entity.
+     * @method
+     * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
@@ -318,7 +336,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Removing an entity as a sub-object of this entity.
+     * @method
+     * @description Removing an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
@@ -326,7 +345,8 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * Runs the passed through function on this object and every child of this object.
+     * @method
+     * @description Runs the passed through function on this object and every child of this object.
      * @param {Function} callBack - the function to run recursively.
      */
     traverse(callBack) {

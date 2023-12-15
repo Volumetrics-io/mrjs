@@ -4,21 +4,17 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 
 /**
  * @class MRTextEntity
- * @classdesc The text element that is used to represent normal html text one would expect in a web-browser. Used specifically on `mr-div` items. `mr-text`
- * @augments MRDivEntity
+ * @classdesc The text element that is used to represent normal HTML text one would expect in a web browser.
+ *            Used specifically on `mr-div` items.
+ *            Inherits from MRDivEntity.
+ * @extends MRDivEntity
  */
 export class MRTextEntity extends MRDivEntity {
     /**
-     * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
-     */
-    get height() {
-        return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
-    }
-
-    /**
-     * Constructor for the MRTextEntity object.
-     * Sets up the 3D aspect of the text including the object, texture, and update check.
-     * Additionally adds an event listener for the text to auto augment whenever the panel size changes.
+     * @constructor
+     * @description Constructor for the MRTextEntity object.
+     *              Sets up the 3D aspect of the text, including the object, texture, and update check.
+     *              Additionally, adds an event listener for the text to auto-augment whenever the panel size changes.
      */
     constructor() {
         super();
@@ -36,7 +32,16 @@ export class MRTextEntity extends MRDivEntity {
     }
 
     /**
-     * Callback function of MREntity - sets up the textObject of the text item.
+     * @property {number} height
+     * @description Represents the height of the rendering area for the text, counting as the CSS height in pixels.
+     */
+    get height() {
+        return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
+    }
+
+    /**
+     * @method
+     * @description Callback function of MREntity - sets up the textObject of the text item.
      */
     connected() {
         const text = this.textContent.trim();
