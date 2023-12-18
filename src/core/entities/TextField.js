@@ -5,13 +5,14 @@ import { getSelectionRects } from 'troika-three-text';
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
- * @class MRTextField
+ * @class TextField
  * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. Limits the one-line. `mr-textfield`
  * @augments MRTextEntity
  */
 export class TextField extends MRTextEntity {
     /**
-     * Constructor for the textField entity component.
+     * @class
+     * @description Constructor for the textField entity component.
      */
     constructor() {
         super();
@@ -19,7 +20,8 @@ export class TextField extends MRTextEntity {
     }
 
     /**
-     * Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
+     * @function
+     * @description Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
      */
     connected() {
         this.input = document.createElement('input');
@@ -52,34 +54,31 @@ export class TextField extends MRTextEntity {
     }
 
     /**
-     * Blurs the inputted text value and cursor information
+     * @function
+     * @description Blurs the inputted text value and cursor information
      */
-    blurImpl() {
+    blur = () => {
         this.input.blur();
         this.cursor.visible = false;
-    }
-    blur = () => {
-        return this.blurImpl();
     };
 
     /**
-     * Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
+     * @function
+     * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
      */
-    focusImpl() {
+    focus = () => {
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
         this.updateCursorPosition();
-    }
-    focus = () => {
-        return this.focusImpl();
     };
 
     /**
-     * Updates the cursor position based on click and selection location.
+     * @function
+     * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPositionImpl() {
+    updateCursorPosition = () => {
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
         if (isNaN(selectBox.right)) {
@@ -91,9 +90,6 @@ export class TextField extends MRTextEntity {
             this.cursor.position.setX(selectBox.right);
         }
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
-    }
-    updateCursorPosition = () => {
-        return this.updateCursorPositionImpl();
     };
 }
 

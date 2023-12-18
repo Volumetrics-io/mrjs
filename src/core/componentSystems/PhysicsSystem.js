@@ -20,7 +20,8 @@ import { mrjsUtils } from 'mrjs';
  */
 export class PhysicsSystem extends MRSystem {
     /**
-     * PhysicsSystem's default constructor - sets up useful world and debug information alongside an initial `Rapier` event queue.
+     * @class
+     * @description PhysicsSystem's default constructor - sets up useful world and debug information alongside an initial `Rapier` event queue.
      */
     constructor() {
         super(false);
@@ -51,8 +52,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * Based on the captured physics events for the frame, handles all items appropriately.
+     * @function
+     * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -107,11 +108,12 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Handles the start of collisions between two different colliders.
+     * @function
+     * @description Handles the start of collisions between two different colliders.
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactStartImpl(handle1, handle2) {
+    onContactStart = (handle1, handle2) => {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
@@ -130,17 +132,15 @@ export class PhysicsSystem extends MRSystem {
         if (joint && entity && joint.includes('hover')) {
             this.hoverStart(collider1, collider2, entity);
         }
-    }
-    onContactStart = (handle1, handle2) => {
-        return this.onContactStartImpl(handle1, handle2);
     };
 
     /**
-     * Handles the end of collisions between two different colliders.
+     * @function
+     * @description Handles the end of collisions between two different colliders.
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactEndImpl(handle1, handle2) {
+    onContactEnd = (handle1, handle2) => {
         const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
 
@@ -156,18 +156,16 @@ export class PhysicsSystem extends MRSystem {
         if (joint && entity && joint.includes('hover')) {
             this.hoverEnd(entity);
         }
-    }
-    onContactEnd = (handle1, handle2) => {
-        return this.onContactEndImpl(handle1, handle2);
     };
 
     /**
-     * Handles the start of touch between two different colliders and the current entity.
+     * @function
+     * @description Handles the start of touch between two different colliders and the current entity.
      * @param {number} collider1 - the first collider
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    touchStartImpl(collider1, collider2, entity) {
+    touchStart = (collider1, collider2, entity) => {
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
@@ -196,16 +194,14 @@ export class PhysicsSystem extends MRSystem {
                 })
             );
         });
-    }
-    touchStart = (collider1, collider2, entity) => {
-        return this.touchStartImpl(collider1, collider2, entity);
     };
 
     /**
-     * Handles the end of touch for the current entity
+     * @function
+     * @description Handles the end of touch for the current entity
      * @param {MREntity} entity - the current entity
      */
-    touchEndImpl(entity) {
+    touchEnd = (entity) => {
         this.currentEntity = null;
         // Contact information can be read from `manifold`.
         this.tempPreviousPosition.set(0, 0, 0);
@@ -217,18 +213,16 @@ export class PhysicsSystem extends MRSystem {
                 bubbles: true,
             })
         );
-    }
-    touchEnd = (entity) => {
-        return this.touchEndImpl(entity);
     };
 
     /**
-     * Handles the start of hovering over/around a specific entity.
+     * @function
+     * @description Handles the start of hovering over/around a specific entity.
      * @param {number} collider1 - the first collider
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    hoverStartImpl(collider1, collider2, entity) {
+    hoverStart = (collider1, collider2, entity) => {
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -243,28 +237,24 @@ export class PhysicsSystem extends MRSystem {
                 })
             );
         });
-    }
-    hoverStart = (collider1, collider2, entity) => {
-        return this.hoverStartImpl(collider1, collider2, entity);
     };
 
     /**
-     * Handles the end of hovering over/around a specific entity.
+     * @function
+     * @description Handles the end of hovering over/around a specific entity.
      * @param {MREntity} entity - the current entity
      */
-    hoverEndImpl(entity) {
+    hoverEnd = (entity) => {
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
             })
         );
-    }
-    hoverEnd = (entity) => {
-        return this.hoverEndImpl(entity);
     };
 
     /**
-     * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
+     * @function
+     * @description When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
@@ -273,7 +263,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Initializes the rigid body used by the physics part of the entity
+     * @function
+     * @description Initializes the rigid body used by the physics part of the entity
      * @param {MREntity} entity - the entity being updated
      */
     initPhysicsBody(entity) {
@@ -299,7 +290,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Updates the rigid body used by the physics part of the entity
+     * @function
+     * @description Updates the rigid body used by the physics part of the entity
      * @param {MREntity} entity - the entity being updated
      */
     updateBody(entity) {
@@ -317,7 +309,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Initializes a collider based on the physics data.
+     * @function
+     * @description Initializes a collider based on the physics data.
      * @param {object} physicsData - data needed to be used to setup the collider interaction
      * @returns {object} - the Rapier physics collider object
      */
@@ -332,7 +325,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Updates the collider used by the entity based on whether it's being used as a UI element, the main box element, etc.
+     * @function
+     * @description Updates the collider used by the entity based on whether it's being used as a UI element, the main box element, etc.
      * @param {MREntity} entity - the entity being updated
      */
     updateCollider(entity) {
@@ -347,8 +341,8 @@ export class PhysicsSystem extends MRSystem {
     }
 
     /**
-     * Updates the debug renderer to either be on or off based on the 'this.debug' variable.
-     * Handles the drawing of the visual lines.
+     * @function
+     * @description Updates the debug renderer to either be on or off based on the 'this.debug' variable. Handles the drawing of the visual lines.
      */
     updateDebugRenderer() {
         if (!this.debug || this.debug == 'false') {
