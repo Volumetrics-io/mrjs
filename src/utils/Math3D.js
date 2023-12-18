@@ -15,7 +15,7 @@ var Math3D = {};
  * character's hand, relativeTo would be the characters hand. When left as null, the bounding sphere defaults to the inputted groups original world matrix.
  * @returns {THREE.Sphere} - the resolved bounding sphere
  */
-Math3D.computeBoundingSphere = function(group, relativeTo = null) {
+Math3D.computeBoundingSphere = function (group, relativeTo = null) {
     let sphere = new THREE.Sphere();
     let box = new THREE.Box3();
 
@@ -25,6 +25,6 @@ Math3D.computeBoundingSphere = function(group, relativeTo = null) {
     sphere.applyMatrix4(relativeTo ? relativeTo.matrixWorld : group.matrixWorld);
 
     return sphere;
-}
+};
 
 export { Math3D };

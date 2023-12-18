@@ -12,9 +12,9 @@ var MathUtils = {};
  * @param {number} decimal - The decimal place targeted in the rounding.
  * @returns {number} - The rounded number to the requested decimal amount.
  */
-MathUtils.roundTo = function(val, decimal) {
+MathUtils.roundTo = function (val, decimal) {
     return Math.round(val * decimal) / decimal;
-}
+};
 
 /**
  * @function
@@ -23,11 +23,11 @@ MathUtils.roundTo = function(val, decimal) {
  * @param {vector} vector - The vector of numbers to be rounded.
  * @param {number} decimal - The decimal place targeted in the rounding.
  */
-MathUtils.roundVectorTo = function(vector, decimal) {
+MathUtils.roundVectorTo = function (vector, decimal) {
     vector.multiplyScalar(decimal);
     vector.roundToZero();
     vector.divideScalar(decimal);
-}
+};
 
 /**
  * @function
@@ -36,8 +36,8 @@ MathUtils.roundVectorTo = function(vector, decimal) {
  * @param {number} val - The number to be converted from radians to degrees
  * @returns {number} - the calculated degree representation of val.
  */
-MathUtils.radToDeg = function(val) {
+MathUtils.radToDeg = function (val) {
     return (val * Math.PI) / 180;
-}
+};
 
 export { MathUtils };

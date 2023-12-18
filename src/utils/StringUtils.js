@@ -13,7 +13,7 @@ var StringUtils = {};
  * @param {string} attrString - the string to be formatted
  * @returns {object} - object in json form
  */
-StringUtils.stringToJson = function(attrString) {
+StringUtils.stringToJson = function (attrString) {
     if (attrString == null) {
         return null;
     }
@@ -40,7 +40,7 @@ StringUtils.stringToJson = function(attrString) {
     }
 
     return jsonObject;
-}
+};
 
 /**
  * @function
@@ -49,7 +49,7 @@ StringUtils.stringToJson = function(attrString) {
  * @param {object} componentData - the json object to be formatted into a string
  * @returns {string} - the string representation of the json object
  */
-StringUtils.jsonToString = function(componentData) {
+StringUtils.jsonToString = function (componentData) {
     let compString = '';
 
     for (const [key, value] of Object.entries(componentData)) {
@@ -68,7 +68,7 @@ StringUtils.jsonToString = function(componentData) {
     }
 
     return compString.trim();
-}
+};
 
 /*********** String to Math *************/
 
@@ -79,9 +79,9 @@ StringUtils.jsonToString = function(componentData) {
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-StringUtils.stringToVector = function(str) {
+StringUtils.stringToVector = function (str) {
     return str.split(' ').map(Number);
-}
+};
 
 /**
  * @function
@@ -90,9 +90,9 @@ StringUtils.stringToVector = function(str) {
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-StringUtils.stringToDegVector = function(str) {
+StringUtils.stringToDegVector = function (str) {
     return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
-}
+};
 
 /**
  * @function
@@ -101,7 +101,7 @@ StringUtils.stringToDegVector = function(str) {
  * @param {string} val - the string to be converted to a vector. Must be of format 'x%' or 'x/y'.
  * @returns {number} - the vector version of the inputted string.
  */
-StringUtils.stringToDimensionValue = function(val) {
+StringUtils.stringToDimensionValue = function (val) {
     if (val.includes('%')) {
         return parseFloat(val) / 100;
     }
@@ -109,6 +109,6 @@ StringUtils.stringToDimensionValue = function(val) {
         return parseInt(val.split('/')[0]) / parseInt(val.split('/')[1]);
     }
     return val;
-}
+};
 
 export { StringUtils };

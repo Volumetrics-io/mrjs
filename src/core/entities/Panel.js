@@ -194,7 +194,7 @@ export class Panel extends MRDivEntity {
     };
 
     /**
-     * @event 
+     * @event
      * @description Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
      * @param {object} event - the scroll event
      */

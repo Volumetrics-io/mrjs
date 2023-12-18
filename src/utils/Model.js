@@ -37,7 +37,7 @@ var Model = {};
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadDAE = function(filePath) {
+Model.loadDAE = function (filePath) {
     const loader = new ColladaLoader();
 
     return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ Model.loadDAE = function(filePath) {
             }
         );
     });
-}
+};
 
 /**
  * @function
@@ -63,7 +63,7 @@ Model.loadDAE = function(filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadFBX = function(filePath) {
+Model.loadFBX = function (filePath) {
     const loader = new FBXLoader();
 
     return new Promise((resolve, reject) => {
@@ -79,7 +79,7 @@ Model.loadFBX = function(filePath) {
             }
         );
     });
-}
+};
 
 /**
  * @function
@@ -89,7 +89,7 @@ Model.loadFBX = function(filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadGLTF = function(filePath) {
+Model.loadGLTF = function (filePath) {
     const loader = new GLTFLoader();
 
     return new Promise((resolve, reject) => {
@@ -105,7 +105,7 @@ Model.loadGLTF = function(filePath) {
             }
         );
     });
-}
+};
 
 /**
  * @function
@@ -115,7 +115,7 @@ Model.loadGLTF = function(filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadSTL = function(filePath) {
+Model.loadSTL = function (filePath) {
     const loader = new STLLoader();
 
     return new Promise((resolve, reject) => {
@@ -137,7 +137,7 @@ Model.loadSTL = function(filePath) {
             }
         );
     });
-}
+};
 
 /**
  * @function
@@ -147,7 +147,7 @@ Model.loadSTL = function(filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadUSDZ = async function(filePath) {
+Model.loadUSDZ = async function (filePath) {
     const usdzLoader = new USDZLoader();
 
     const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
@@ -156,7 +156,7 @@ Model.loadUSDZ = async function(filePath) {
     });
 
     return model;
-}
+};
 
 /// ////////////////////////
 // Main Loading Function //
@@ -171,7 +171,7 @@ Model.loadUSDZ = async function(filePath) {
  * @param {string} extension - The extension of the file type. Current allowed extensions are `fbx`, `glb`, and `stl`.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadModel = function(filePath, extension) {
+Model.loadModel = function (filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
 
@@ -196,6 +196,6 @@ Model.loadModel = function(filePath, extension) {
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
     return null;
-}
+};
 
 export { Model };

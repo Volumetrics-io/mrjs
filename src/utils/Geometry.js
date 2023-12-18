@@ -16,7 +16,7 @@ var Geometry = {};
  * @param {number} smoothness - the expected smoothness value.
  * @returns {THREE.BufferGeometry} - The completed threejs plane object.
  */
-Geometry.UIPlane = function(width, height, radius_corner, smoothness) {
+Geometry.UIPlane = function (width, height, radius_corner, smoothness) {
     let w = width == 'auto' ? 1 : width;
     w = w != 0 ? w : 1;
     let h = height == 'auto' ? 1 : height;
@@ -84,6 +84,6 @@ Geometry.UIPlane = function(width, height, radius_corner, smoothness) {
     geometry.computeVertexNormals();
 
     return geometry;
-}
+};
 
 export { Geometry };
