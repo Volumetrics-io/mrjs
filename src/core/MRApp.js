@@ -125,7 +125,7 @@ export class MRApp extends MRElement {
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
-    mutationCallbackImpl(mutationList, observer) {
+    mutationCallback = (mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type === 'childList') {
                 this.mutatedChildList(mutation);
@@ -134,14 +134,6 @@ export class MRApp extends MRElement {
                 this.mutatedAttribute(mutation);
             }
         }
-    }
-    /**
-     * @callback Mutation
-     * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
-     * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
-     */
-    mutationCallback = (mutationList, observer) => {
-        this.mutationCallbackImpl(mutationList, observer);
     };
 
     /**
@@ -245,7 +237,7 @@ export class MRApp extends MRElement {
      * @function
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
-    initUserImpl() {
+    initUser = () => {
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = window.innerWidth / 1000;
@@ -273,12 +265,6 @@ export class MRApp extends MRElement {
         this.user.add(this.anchor);
 
         this.anchor.position.setZ(-0.5);
-    }
-    /**
-     * @callback InitUser
-     */
-    initUser = () => {
-        this.initUserImpl();
     };
 
     /**
@@ -286,7 +272,7 @@ export class MRApp extends MRElement {
      * @description Initializes default lighting and shadows for the main scene.
      * @param {object} data - the lights data (color, intensity, shadows, etc)
      */
-    initLightsImpl(data) {
+    initLights = (data) => {
         if (!data.enabled) {
             return;
         }
@@ -308,13 +294,6 @@ export class MRApp extends MRElement {
                 this.scene.add(this.shadowLight);
             }
         }
-    }
-    /**
-     * @param {object} data - the lights data (color, intensity, shadows, etc)
-     * @callback InitLights
-     */
-    initLights = (data) => {
-        this.initLightsImpl(data);
     };
 
     /**

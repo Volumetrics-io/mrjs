@@ -212,7 +212,7 @@ export class MRHand {
      * @function
      * @description Handles the setMesh callback.
      */
-    setMeshImpl() {
+    setMesh = () => {
         if (this.mesh) {
             return;
         }
@@ -222,9 +222,6 @@ export class MRHand {
         }
         this.mesh.material.colorWrite = false;
         this.mesh.renderOrder = 2;
-    }
-    setMesh = () => {
-        return this.setMeshImpl();
     };
 
     /**
@@ -232,7 +229,7 @@ export class MRHand {
      * @description Handles the onPinch event
      * @param {event} event - the on pinch event object
      */
-    onPinchImpl(event) {
+    onPinch = (event) => {
         this.pinch = event.type == 'pinchstart';
         const position = this.getCursorPosition();
         document.dispatchEvent(
@@ -244,13 +241,6 @@ export class MRHand {
                 },
             })
         );
-    }
-    /**
-     * @param {event} event - the on pinch event object
-     * @function
-     */
-    onPinch = (event) => {
-        this.onPinchImpl(event);
     };
 
     /**
