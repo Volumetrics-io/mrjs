@@ -53,6 +53,7 @@ export class MREntity extends MRElement {
         this.object3D.userData.size = new THREE.Vector3();
 
         this.object3D.receiveShadow = true;
+        this.object3D.castShadow = true
         this.object3D.renderOrder = 3;
 
         this.scale = 1;

@@ -13,6 +13,38 @@ mr-panel {
     border-radius: 2%;
 }
 
+mr-div, mr-button, mr-img {
+    z-index: 1;
+}
+
+mr-button {
+    padding: 5px;
+    animation: back 0.1s ease-out forwards;
+}
+
+mr-button.hover {
+    background-color: #fff;
+    border-radius: 1%;
+    animation: forward 0.25s ease-in forwards;
+}
+
+/* button animation! */
+
+@keyframes forward {
+    to {
+        z-index: 5; /* end */
+    }
+}
+
+@keyframes back {
+    from {
+        z-index: 5; /* start */
+    }
+    to {
+        z-index: 1; /* end */
+    }
+}
+
 
 body {
     margin: 0; /* unclear why we need this */

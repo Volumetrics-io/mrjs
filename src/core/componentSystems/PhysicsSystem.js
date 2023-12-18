@@ -145,10 +145,6 @@ export class PhysicsSystem extends MRSystem {
         const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
-            // if(entity != this.currentEntity) {
-            //   return
-            // }
-            // TODO - can the above commented code be deleted? - TBD
             this.touchEnd(entity);
             return;
         }
@@ -229,6 +225,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverStartImpl(collider1, collider2, entity) {
+        entity.classList.add('hover')
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -242,6 +239,8 @@ export class PhysicsSystem extends MRSystem {
                     },
                 })
             );
+
+            entity.dispatchEvent(new MouseEvent('mouseover'));
         });
     }
     hoverStart = (collider1, collider2, entity) => {
@@ -253,11 +252,14 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverEndImpl(entity) {
+        entity.classList.remove('hover')
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
             })
         );
+
+        entity.dispatchEvent(new MouseEvent('mouseleave'));
     }
     hoverEnd = (entity) => {
         return this.hoverEndImpl(entity);

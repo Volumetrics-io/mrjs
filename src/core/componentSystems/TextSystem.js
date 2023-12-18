@@ -44,7 +44,7 @@ export class TextSystem extends MRSystem {
             });
         });
 
-        const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-textarea');
+        const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-textarea, mr-button');
         for (const entity of entities) {
             this.registry.add(entity);
             this.addText(entity);

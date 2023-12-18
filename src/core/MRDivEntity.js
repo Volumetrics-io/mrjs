@@ -176,21 +176,24 @@ export class MRDivEntity extends MREntity {
                 .substring(5, color.length - 1)
                 .split(',')
                 .map((part) => parseFloat(part.trim()));
+            this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
             if (rgba[3] == 0) {
-                return;
+                this.background.visible = false;
+            } else {
+                this.background.material.transparent = true;
+                this.background.material.opacity = rgba[3];
+                this.background.visible = true;
             }
 
-            this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            this.background.material.transparent = true;
-            this.background.material.opacity = rgba[3];
+            
         } else {
             this.background.material.color.setStyle(color);
+            this.background.visible = true;
         }
 
         if (this.compStyle.opacity < 1) {
             this.background.material.opacity = this.compStyle.opacity;
         }
-        this.background.visible = true;
     }
 }
 
