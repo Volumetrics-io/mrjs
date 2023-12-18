@@ -5,11 +5,11 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class Model
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
- * @extends MREntity
+ * @augments MREntity
  */
 export class Model extends MREntity {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the Model entity, does the default.
      */
     constructor() {
@@ -17,7 +17,7 @@ export class Model extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
      */
     connected() {

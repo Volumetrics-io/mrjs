@@ -2,7 +2,7 @@
  * @namespace Physics
  * @description Useful namespace for helping with Physics utility functions
  */
-var Physics = {};
+let Physics = {};
 
 /**
  * @memberof Physics

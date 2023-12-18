@@ -8,11 +8,11 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class ControlSystem
  * @classdesc This system supports interaction event information including mouse and controller interfacing.
- * @extends MRSystem
+ * @augments MRSystem
  */
 export class ControlSystem extends MRSystem {
     /**
-     * @constructor
+     * @class
      * @description ControlSystem's Default constructor that sets up the app's mouse information along with any relevant physics and cursor information.
      */
     constructor() {
@@ -56,7 +56,7 @@ export class ControlSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description The generic system update call. Updates the meshes and states for both the left and right hand visuals.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -72,7 +72,7 @@ export class ControlSystem extends MRSystem {
     /************ Interaction Events ************/
 
     /**
-     * @method
+     * @function
      * @description Handles the mouse over event
      * @param {event} event - the mouse over event
      */
@@ -87,6 +87,7 @@ export class ControlSystem extends MRSystem {
         }
     }
     /**
+     * @param event
      * @event
      */
     mouseOver = (event) => {
@@ -94,7 +95,7 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the mouse down event
      * @param {event} event - the mouse down event
      */
@@ -112,6 +113,7 @@ export class ControlSystem extends MRSystem {
         }
     }
     /**
+     * @param event
      * @event
      */
     onMouseDown = (event) => {
@@ -119,7 +121,7 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the mouse up event
      * @param {event} event - the mouse up event
      */
@@ -129,6 +131,7 @@ export class ControlSystem extends MRSystem {
         this.cursor = this.cursorHover;
     }
     /**
+     * @param event
      * @event
      */
     onMouseUp = (event) => {
@@ -136,7 +139,7 @@ export class ControlSystem extends MRSystem {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the removeCursor callback.
      */
     removeCursorImpl() {
@@ -153,7 +156,7 @@ export class ControlSystem extends MRSystem {
     /************ Tools && Helpers ************/
 
     /**
-     * @method
+     * @function
      * @description Raycast into the scene using the information from the event that called it.
      * @param {object} event - the event being handled
      * @returns {object} - collision item for what the ray hit in the 3d scene.

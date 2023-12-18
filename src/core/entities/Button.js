@@ -3,11 +3,11 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 /**
  * @class Button
  * @classdesc 3D representation of a Button mimicking the html version. `mr-button`
- * @extends MRDivEntity
+ * @augments MRDivEntity
  */
 export class Button extends MRDivEntity {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the Model entity, does the default.
      */
     constructor() {
@@ -15,7 +15,7 @@ export class Button extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description On Hover event function that handles how the button should visualize based on 'hover' aspect.
      * @param {object} event - the hover event
      */
@@ -38,6 +38,7 @@ export class Button extends MRDivEntity {
         }
     }
     /**
+     * @param event
      * @event
      */
     onHover = (event) => {

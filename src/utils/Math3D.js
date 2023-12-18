@@ -4,7 +4,7 @@ import * as THREE from 'three';
  * @namespace Math3D
  * @description Useful namespace for helping with Math3D and threejs utility functions
  */
-var Math3D = {};
+let Math3D = {};
 
 /**
  * @function

@@ -7,11 +7,11 @@ import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 /**
  * @class TextField
  * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. Limits the one-line. `mr-textfield`
- * @extends MRTextEntity
+ * @augments MRTextEntity
  */
 export class TextField extends MRTextEntity {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the textField entity component.
      */
     constructor() {
@@ -20,7 +20,7 @@ export class TextField extends MRTextEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
      */
     connected() {
@@ -54,7 +54,7 @@ export class TextField extends MRTextEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Blurs the inputted text value and cursor information
      */
     blurImpl() {
@@ -69,7 +69,7 @@ export class TextField extends MRTextEntity {
     };
 
     /**
-     * @method
+     * @function
      * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
      */
     focusImpl() {
@@ -87,7 +87,7 @@ export class TextField extends MRTextEntity {
     };
 
     /**
-     * @method
+     * @function
      * @description Updates the cursor position based on click and selection location.
      */
     updateCursorPositionImpl() {

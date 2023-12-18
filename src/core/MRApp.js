@@ -26,11 +26,11 @@ window.mobileCheck = function () {
 /**
  * @class MRApp
  * @classdesc The engine handler for running MRjs as an App. `mr-app`
- * @extends MRElement
+ * @augments MRElement
  */
 export class MRApp extends MRElement {
     /**
-     * @constructor
+     * @class
      * @description Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
      */
     constructor() {
@@ -69,7 +69,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
@@ -93,7 +93,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     disconnectedCallback() {
@@ -108,19 +108,19 @@ export class MRApp extends MRElement {
     //       - controllers
     //       - ?
     /**
-     * @method
+     * @function
      * @param {object} mutation - TODO
      */
     mutatedAttribute(mutation) {}
 
     /**
-     * @method
+     * @function
      * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
 
     /**
-     * @method
+     * @function
      * @description The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
@@ -136,6 +136,8 @@ export class MRApp extends MRElement {
         }
     }
     /**
+     * @param mutationList
+     * @param observer
      * @event
      */
     mutationCallback = (mutationList, observer) => {
@@ -143,7 +145,7 @@ export class MRApp extends MRElement {
     };
 
     /**
-     * @method
+     * @function
      * @description Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
      */
     init() {
@@ -240,7 +242,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initUserImpl() {
@@ -280,7 +282,7 @@ export class MRApp extends MRElement {
     };
 
     /**
-     * @method
+     * @function
      * @description Initializes default lighting and shadows for the main scene.
      * @param {object} data - the lights data (color, intensity, shadows, etc)
      */
@@ -308,6 +310,7 @@ export class MRApp extends MRElement {
         }
     }
     /**
+     * @param data
      * @event
      */
     initLights = (data) => {
@@ -315,7 +318,7 @@ export class MRApp extends MRElement {
     };
 
     /**
-     * @method
+     * @function
      * @description De-initializes rendering and MR
      */
     denit() {
@@ -325,7 +328,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Registers a new system addition to the MRApp engine.
      * @param {MRSystem} system - the system to be added.
      */
@@ -334,7 +337,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Unregisters a system from the MRApp engine.
      * @param {MRSystem} system - the system to be removed.
      */
@@ -343,7 +346,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Adding an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be added.
      */
@@ -352,7 +355,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Removing an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be removed.
      */
@@ -361,7 +364,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
@@ -386,7 +389,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Default function header needed by threejs. The render function that is called during ever frame. Calls every systems' update function.
      * @param {number} timeStamp - timeStamp of the current frame.
      * @param {object} frame - given frame information to be used for any feature changes

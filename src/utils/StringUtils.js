@@ -2,7 +2,7 @@
  * @namespace StringUtils
  * @description Useful namespace for helping with String utility functions
  */
-var StringUtils = {};
+let StringUtils = {};
 
 /*********** JSON // String interactions *************/
 

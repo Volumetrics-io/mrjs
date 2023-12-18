@@ -7,11 +7,11 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class Image
  * @classdesc Base html image represented in 3D space. `mr-image`
- * @extends MRDivEntity
+ * @augments MRDivEntity
  */
 export class Image extends MRDivEntity {
     /**
-     * @constructor
+     * @class
      * @description Constructs a base image entity using a UIPlane and other 3D elements as necessary.
      */
     constructor() {
@@ -28,7 +28,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Calculates the width of the img based on the img tag in the shadow root
      * @returns {number} - the resolved width
      */
@@ -38,7 +38,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @overrrides
      * @description Calculates the height of the img based on the img tag in the shadow root
      * @returns {number} - the resolved height
@@ -49,7 +49,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
@@ -72,7 +72,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Updates the style for the Image's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
@@ -83,7 +83,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
@@ -97,7 +97,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description computes the width and height values considering the value of object-fit
      */
     computeObjectFitDimensions() {
@@ -142,7 +142,7 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Calculates the texture UV transformation change based on the image's aspect ratio.
      * @param {object} texture - the texture to augment
      * @param {number} aspect - a given expected aspect ratio

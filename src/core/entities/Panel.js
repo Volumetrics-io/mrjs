@@ -11,11 +11,11 @@ import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 /**
  * @class Panel
  * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
- * @extends MRDivEntity
+ * @augments MRDivEntity
  */
 export class Panel extends MRDivEntity {
     /**
-     * @method
+     * @function
      * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
@@ -28,7 +28,7 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * @constructor
+     * @class
      * @description Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
      */
     constructor() {
@@ -50,7 +50,7 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
@@ -97,7 +97,7 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
@@ -106,7 +106,7 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Remove an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
@@ -115,7 +115,7 @@ export class Panel extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Handles what should happen when a touch event is called. Updates items appropriately for scrolling on the panel.
      *              Triggers to use the browser's own scrolling without a need to fake the scrolling itself.
      * @param {object} event - the touch event
@@ -144,6 +144,7 @@ export class Panel extends MRDivEntity {
         this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
     }
     /**
+     * @param event
      * @event
      */
     onTouch = (event) => {
@@ -151,7 +152,7 @@ export class Panel extends MRDivEntity {
     };
 
     /**
-     * @method
+     * @function
      * @description Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
      * @param {number} distance - the distance left to scroll
      * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
@@ -187,6 +188,8 @@ export class Panel extends MRDivEntity {
         this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     }
     /**
+     * @param distance
+     * @param duration
      * @event
      */
     momentumScroll = (distance, duration) => {

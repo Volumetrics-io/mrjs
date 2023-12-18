@@ -7,11 +7,11 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class MRDivEntity
  * @classdesc The MREntity that is used to solely describe UI Elements. Defaults as the html `mr-div` representation. `mr-div`
- * @extends MREntity
+ * @augments MREntity
  */
 export class MRDivEntity extends MREntity {
     /**
-     * @method
+     * @function
      * @description Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
@@ -26,7 +26,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Calculates the width of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved width
      */
@@ -41,7 +41,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @constructor
+     * @class
      * @description Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
      */
     constructor() {
@@ -69,7 +69,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Adding an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be added.
      */
@@ -88,7 +88,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Removing an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be removed added.
      */
@@ -103,7 +103,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
      */
     connected() {
@@ -111,7 +111,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
      */
     updatePhysicsData() {
@@ -129,7 +129,7 @@ export class MRDivEntity extends MREntity {
     // TODO - can we move this to utils/Css.js ? ---- for border radius (which returns percentages instead of pixel values)
     // leave here for now - to be moved after michael change
     /**
-     * @method
+     * @function
      * @description Converts the dom string to a 3D numerical value
      * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
      * @returns {number} - the 3D numerical represenation of the dom css value
@@ -158,7 +158,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
@@ -168,7 +168,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
@@ -177,7 +177,7 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground() {

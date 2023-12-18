@@ -7,11 +7,11 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
  * @classdesc The text element that is used to represent normal HTML text one would expect in a web browser.
  *            Used specifically on `mr-div` items.
  *            Inherits from MRDivEntity.
- * @extends MRDivEntity
+ * @augments MRDivEntity
  */
 export class MRTextEntity extends MRDivEntity {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the MRTextEntity object.
      *              Sets up the 3D aspect of the text, including the object, texture, and update check.
      *              Additionally, adds an event listener for the text to auto-augment whenever the panel size changes.
@@ -40,7 +40,7 @@ export class MRTextEntity extends MRDivEntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - sets up the textObject of the text item.
      */
     connected() {

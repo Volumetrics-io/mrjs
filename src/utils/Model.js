@@ -27,7 +27,7 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
  * @namespace Model
  * @description Useful namespace for helping with Model utility functions
  */
-var Model = {};
+let Model = {};
 
 /**
  * @function

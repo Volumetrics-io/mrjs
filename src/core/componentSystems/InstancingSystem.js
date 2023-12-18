@@ -6,11 +6,11 @@ import { MREntity } from 'mrjs/core/MREntity';
 /**
  * @class InstancingSystem
  * @classdesc System that allows for instancing of meshes based on a given entity where the instances can be modified separately.
- * @extends MRSystem
+ * @augments MRSystem
  */
 export class InstancingSystem extends MRSystem {
     /**
-     * @constructor
+     * @class
      * @description InstancingSystem's default constructor that sets up default instancing count, transformations, and mesh information.
      */
     constructor() {
@@ -22,7 +22,7 @@ export class InstancingSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description  The generic system update call. Updates the entity and its instances to their appropriate transformations and visuals
      *               based on the picked predefined option.
      * @param {number} deltaTime - given timestep to be used for any feature changes
@@ -42,7 +42,7 @@ export class InstancingSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description Determines what meshes are attached from this entity and When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether that be a group or mesh).
      * @param {MREntity} entity - the entity with the geometry to be instanced and the chosen setup option
      */
@@ -98,7 +98,7 @@ export class InstancingSystem extends MRSystem {
     /************ Some options for default instancing setup ************/
 
     /**
-     * @method
+     * @function
      * @description An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations. Uses threejs's `InstancedMesh`.
      * @param {MREntity} entity - the entity to be instanced in random locations
      */
@@ -115,6 +115,7 @@ export class InstancingSystem extends MRSystem {
         }
     }
     /**
+     * @param entity
      * @event
      */
     random = (entity) => {

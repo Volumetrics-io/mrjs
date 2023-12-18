@@ -4,7 +4,7 @@ import * as THREE from 'three';
  * @namespace Geometry
  * @description Useful namespace for helping with Geometry utility functions
  */
-var Geometry = {};
+let Geometry = {};
 
 /**
  * @function

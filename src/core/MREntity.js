@@ -7,7 +7,7 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class MREntity
  * @classdesc The default representation of an MRElement to be expanded upon by actual details ECS Entity items. `mr-entity`
- * @extends MRElement
+ * @augments MRElement
  */
 export class MREntity extends MRElement {
     aabb = new THREE.Box3();
@@ -37,7 +37,7 @@ export class MREntity extends MRElement {
     };
 
     /**
-     * @constructor
+     * @class
      * @description Constructor for the default Entity Component (MREntity).
      *              Sets up the base object3D and useful Mixed Reality information including rendering, touching, and component basics.
      */
@@ -66,7 +66,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Calculates the width of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved width
      */
@@ -75,7 +75,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description The actual 3D value of the content's width.
      * @returns {number} - width of the 3D object.
      */
@@ -85,7 +85,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Calculates the height of the Entity based on the viewPort's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
@@ -95,7 +95,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description The actual 3D value of the content's height.
      * @returns {number} - height of the 3D object.
      */
@@ -105,7 +105,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Default base for updating the physics data for the current iteration.
      */
     updatePhysicsData() {}
@@ -134,7 +134,7 @@ export class MREntity extends MRElement {
     };
 
     /**
-     * @method
+     * @function
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
@@ -198,7 +198,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Loads all attributes of this entity's stored dataset including components, attaching them, and their associated rotations and positions.
      */
     loadAttributes() {
@@ -225,19 +225,19 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
     connected() {}
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - does nothing. Is called by the disconnectedCallback.
      */
     disconnected() {}
 
     /**
-     * @method
+     * @function
      * @description The disconnectedCallback function that runs whenever this entity component becomes disconnected from something else.
      */
     disconnectedCallback() {
@@ -256,14 +256,14 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - does nothing. Is called by mutation Callback.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {}
 
     /**
-     * @method
+     * @function
      * @description The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
@@ -299,7 +299,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Helper function for the mutationCallback. Handles actually updating this entity component with all the associated dispatchEvents.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
@@ -325,7 +325,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
@@ -336,7 +336,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Removing an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
@@ -345,7 +345,7 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @method
+     * @function
      * @description Runs the passed through function on this object and every child of this object.
      * @param {Function} callBack - the function to run recursively.
      */

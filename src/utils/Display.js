@@ -2,7 +2,7 @@
  * @namespace Display
  * @description Useful namespace for helping with Display utility functions
  */
-var Display = {};
+let Display = {};
 
 // const _VIRTUAL_DISPLAY_RESOLUTION = 1080;
 /**

@@ -10,7 +10,7 @@ export class MRSystem {
     delta = 0;
 
     /**
-     * @constructor
+     * @class
      * @description Constructor for MRSystem. Sets up appropriate document event listeners, component defaults, and system defaults that will be used for system runs ever frame.
      * @param {boolean} useComponents - Default to true. Determines whether comonents need to be maintained (attached/updated/detached) with the system.
      * @param {number} frameRate - Default to null. When set, used and updated as part of the System's update function.
@@ -54,7 +54,7 @@ export class MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description The actual system update call.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -71,7 +71,7 @@ export class MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description The generic system update call.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -79,21 +79,21 @@ export class MRSystem {
     update(deltaTime, frame) {}
 
     /**
-     * @method
+     * @function
      * @description Called when a new entity is added to the scene
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {}
 
     /**
-     * @method
+     * @function
      * @description Called when the entity component is initialized
      * @param {MREntity} entity - the entity being attached/initialized.
      */
     attachedComponent(entity) {}
 
     /**
-     * @method
+     * @function
      * @description Called when a specific entity component is being updated
      * @param {MREntity} entity - the entity being updated
      * @param {object} oldData - the
@@ -101,14 +101,14 @@ export class MRSystem {
     updatedComponent(entity, oldData) {}
 
     /**
-     * @method
+     * @function
      * @description Called when the entity component is removed
      * @param {MREntity} entity - the entity component being removed.
      */
     detachedComponent(entity) {}
 
     /**
-     * @method
+     * @function
      * @description Handles the component and registry aspect of the event when an entity component attaches to this system.
      * @param {object} event - the attach event
      */
@@ -117,6 +117,7 @@ export class MRSystem {
         this.attachedComponent(event.target);
     }
     /**
+     * @param event
      * @event
      */
     onAttach = (event) => {
@@ -124,7 +125,7 @@ export class MRSystem {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the component and registry update of the even when an entity component needs to change.
      * @param {object} event - the update event
      */
@@ -132,6 +133,7 @@ export class MRSystem {
         this.updatedComponent(event.target, event.detail.oldData);
     }
     /**
+     * @param event
      * @event
      */
     onUpdate = (event) => {
@@ -139,7 +141,7 @@ export class MRSystem {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the component and registry aspect of the even when an entity component detaches from this system.
      * @param {object} event - the detach event
      */
@@ -148,6 +150,7 @@ export class MRSystem {
         this.detachedComponent(event.target);
     }
     /**
+     * @param event
      * @event
      */
     onDetach = (event) => {

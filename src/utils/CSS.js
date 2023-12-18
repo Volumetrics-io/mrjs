@@ -2,7 +2,7 @@
  * @namespace CSS
  * @description Useful namespace for helping with CSS utility functions
  */
-var CSS = {};
+let CSS = {};
 
 /**
  * @function
@@ -19,7 +19,8 @@ CSS.threeToPx = function (val) {
 /**
  * @function
  * @memberof CSS
- * @description Converts display positions to 3D world positions to based on global viewPort information. Useful as part of the layout system and css value handling (px<-->threejs).
+ * @description Converts display positions to 3D world positions to based on global viewPort information.
+ * Useful as part of the layout system and css value handling (px<-->threejs).
  * @param {number} val - the 2D pixel space value to be converted to 3D space.
  * @returns {number} - the 3D representation of value.
  */

@@ -46,7 +46,7 @@ const HAND_MAPPING = {
  * @property {boolean} pinch - Indicates if the hand is in a pinch gesture.
  * @property {boolean} hover - Indicates if the hand is hovering over an interactive object.
  * @property {THREE.Vector3} cursorPosition - The position of the cursor in 3D space.
- * @property {Object} jointPhysicsBodies - Physics bodies associated with the hand joints.
+ * @property {object} jointPhysicsBodies - Physics bodies associated with the hand joints.
  * @property {THREE.Vector3} identityPosition - A reference position for the hand.
  * @property {THREE.Vector3} tempJointPosition - Temporary storage for a joint's position.
  * @property {THREE.Quaternion} tempJointOrientation - Temporary storage for a joint's orientation.
@@ -63,7 +63,7 @@ const HAND_MAPPING = {
  */
 export class MRHand {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model information.
      * @param {object} handedness - enum for the `left`` or `right` hand.
      * @param {object} app - the current MRApp that contains the scene for the hand.
@@ -111,7 +111,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Initializes the physics bodies that the hand represents. Useful for collision detection and UX interactions in MR space.
      * @param {object} app - the current MRApp that contains the scene for the hand.
      */
@@ -156,7 +156,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
      */
     update() {
@@ -165,7 +165,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description If a pinch happens, updates the MR cursor position while sending out an event that movement has occured from this hand.
      */
     pinchMoved() {
@@ -185,7 +185,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Update function for the physics associated with this hand. Runs for every joint in the system and moves all elements of the hand model.
      */
     updatePhysicsBodies() {
@@ -208,7 +208,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Handles the setMesh callback.
      */
     setMeshImpl() {
@@ -227,7 +227,7 @@ export class MRHand {
     };
 
     /**
-     * @method
+     * @function
      * @description Handles the onPinch event
      * @param {event} event - the on pinch event object
      */
@@ -245,6 +245,7 @@ export class MRHand {
         );
     }
     /**
+     * @param event
      * @event
      */
     onPinch = (event) => {
@@ -252,7 +253,7 @@ export class MRHand {
     };
 
     /**
-     * @method
+     * @function
      * @description Gets the joint orientation of the named joint in the hand.
      * @param {string} jointName - the string name of the joint whose information is requested.
      * @returns {THREE.Quaternion} - the quaternion representation or the joint orientation.
@@ -275,7 +276,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Gets the joint position of the named joint in the hand.
      * @param {string} jointName - the string name of the joint whose information is requested.
      * @returns {THREE.Vector3} - the position representation or the joint orientation.
@@ -308,7 +309,7 @@ export class MRHand {
     }
 
     /**
-     * @method
+     * @function
      * @description Gets the expected cursor position of this hand based on the index finger and thumb's tip positions.
      * @returns {number} - the resolved position of the cursor.
      */

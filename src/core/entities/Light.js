@@ -5,11 +5,11 @@ import { MREntity } from 'mrjs/core/MREntity';
 /**
  * @class Light
  * @classdesc Represents lights in 3D space. `mr-light`
- * @extends MREntity
+ * @augments MREntity
  */
 export class Light extends MREntity {
     /**
-     * @constructor
+     * @class
      * @description Constructs the base 3D object.
      */
     constructor() {
@@ -18,7 +18,7 @@ export class Light extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this Light once it is connected to run as an entity component.
      */
     connected() {
@@ -29,7 +29,7 @@ export class Light extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - Updates the lights color and intensity as requested.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
@@ -53,6 +53,7 @@ export class Light extends MREntity {
         }
     }
     /**
+     * @param mutation
      * @event
      */
     mutated = (mutation) => {

@@ -8,11 +8,11 @@ import { Panel } from 'mrjs/core/entities/Panel';
 /**
  * @class LayoutSystem
  * @classdesc System that allows for setup and handling of changing layout.
- * @extends MRSystem
+ * @augments MRSystem
  */
 export class LayoutSystem extends MRSystem {
     /**
-     * @constructor
+     * @class
      * @description Constructor for the layout system. Uses the default System setup.
      */
     constructor() {
@@ -21,7 +21,7 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description Called when a new entity is added to this system
      * @param {MREntity} entity - the entity being added.
      */
@@ -36,7 +36,7 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever layout position is expected.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -48,7 +48,7 @@ export class LayoutSystem extends MRSystem {
     }
 
     /**
-     * @method
+     * @function
      * @description Helper function for the update call. Sets the entity's appropriate 3D layout position based on window and entity expectations.
      * @param {MREntity} entity - the entity being updated.
      */

@@ -17,7 +17,7 @@ export class ClippingGeometry {
     // must do that before deletion
 
     /**
-     * @constructor
+     * @class
      * @description Constructor for the clipping geometry class. Sets the internal geometry object to the geometry that is passed through.
      * @param {object} geometry - The geometry to be captured internally by `this.geometry`.
      */

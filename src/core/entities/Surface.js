@@ -8,11 +8,11 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class Surface
  * @classdesc ...TODO... how is this different than Panel in terms of use? i understand panel has more too it, but is this just a sprite? `mr-surface`
- * @extends MREntity
+ * @augments MREntity
  */
 export class Surface extends MREntity {
     /**
-     * @method
+     * @function
      * @returns {number} - the height of the current viewport
      */
     get height() {
@@ -20,7 +20,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @returns {number} - the width of the current viewport
      */
     get width() {
@@ -28,7 +28,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @constructor
+     * @class
      */
     constructor() {
         super();
@@ -53,7 +53,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
      */
     connected() {
@@ -85,7 +85,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
@@ -94,7 +94,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Removing an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
@@ -103,7 +103,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Callback function of MREntity - updates based on the changed attribute: orientation
      * @param {object} mutation - the update/change/mutation to be handled.
      */
@@ -119,7 +119,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Puts the surface into the scene and dispatches an event to confirm placement.
      */
     place() {
@@ -131,7 +131,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Replaces /...? TODO
      */
     replace() {
@@ -150,7 +150,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * @method
+     * @function
      * @description Handles when a surface should detach from /...? TODO
      */
     detach() {
