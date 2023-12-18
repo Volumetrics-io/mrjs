@@ -43,11 +43,8 @@ import './core/componentSystems/SurfaceSystem';
 import './core/componentSystems/TextSystem';
 
 // UTILS
-// Import utilities from src/utils/index.js
 import { mrjsUtils } from './utils/index.js';
 export { mrjsUtils } from './utils/index.js';
-// Export utilities as mrjsUtils
-// export const mrjsUtils = utils;
 
 // EXPORTS
 export * as THREE from 'three';
