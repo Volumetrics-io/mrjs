@@ -98,12 +98,11 @@ export class Image extends MRDivEntity {
     /**
      * @function
      * @description computes the width and height values considering the value of object-fit
-     * @returns {object} the fit in the form of `{ width: xx, height: xx }`
      */
     computeObjectFitDimensions() {
         switch (this.compStyle.objectFit) {
             case 'fill':
-                return { width: this.offsetWidth, height: this.offsetHeight };
+                this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
 
             case 'contain':
             case 'scale-down': {
