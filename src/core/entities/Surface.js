@@ -12,6 +12,7 @@ import { mrjsUtils } from 'mrjs';
  */
 export class Surface extends MREntity {
     /**
+     * @function
      * @returns {number} - the height of the current viewport
      */
     get height() {
@@ -19,6 +20,7 @@ export class Surface extends MREntity {
     }
 
     /**
+     * @function
      * @returns {number} - the width of the current viewport
      */
     get width() {
@@ -26,7 +28,7 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Constructor
+     * @class
      */
     constructor() {
         super();
@@ -51,7 +53,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
+     * @function
+     * @description Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
      */
     connected() {
         this.windowVerticalScale = this.height;
@@ -82,7 +85,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Adding an entity as a sub-object of this entity.
+     * @function
+     * @description Adding an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
@@ -90,7 +94,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Removing an entity as a sub-object of this entity.
+     * @function
+     * @description Removing an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
@@ -98,7 +103,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Callback function of MREntity - updates based on the changed attribute: orientation
+     * @function
+     * @description Callback function of MREntity - updates based on the changed attribute: orientation
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
@@ -113,7 +119,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Puts the surface into the scene and dispatches an event to confirm placement.
+     * @function
+     * @description Puts the surface into the scene and dispatches an event to confirm placement.
      */
     place() {
         this.viz.removeFromParent();
@@ -124,7 +131,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Replaces /...? TODO
+     * @function
+     * @description Replaces /...? TODO
      */
     replace() {
         this.object3D.position.copy(this.anchorPosition);
@@ -142,7 +150,8 @@ export class Surface extends MREntity {
     }
 
     /**
-     * Handles when a surface should detach from /...? TODO
+     * @function
+     * @description Handles when a surface should detach from /...? TODO
      */
     detach() {
         this.placed = false;

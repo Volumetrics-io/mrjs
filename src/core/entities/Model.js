@@ -9,14 +9,17 @@ import { mrjsUtils } from 'mrjs';
  */
 export class Model extends MREntity {
     /**
-     * Constructor for the Model entity, does the default.
+     * @class
+     * @description Constructor for the Model entity, does the default.
      */
     constructor() {
         super();
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
+     * @function
+     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
+     * Includes loading up the model and associated data.
      */
     connected() {
         this.src = this.getAttribute('src');
@@ -44,7 +47,8 @@ export class Model extends MREntity {
     }
 
     /**
-     * On load event function - right now defaults to do nothing.
+     * @function
+     * @description On load event function - right now defaults to do nothing.
      */
     onLoad = () => {};
 }

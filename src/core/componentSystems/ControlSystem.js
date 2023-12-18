@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRHand } from 'mrjs/datatypes/Hand';
+import { MRHand } from 'mrjs/core/MRHand';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -12,7 +12,8 @@ import { mrjsUtils } from 'mrjs';
  */
 export class ControlSystem extends MRSystem {
     /**
-     * ControlSystem's Default constructor that sets up the app's mouse information along with any relevant physics and cursor information.
+     * @class
+     * @description ControlSystem's Default constructor that sets up the app's mouse information along with any relevant physics and cursor information.
      */
     constructor() {
         super(false);
@@ -55,8 +56,8 @@ export class ControlSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * Updates the meshes and states for both the left and right hand visuals.
+     * @function
+     * @description The generic system update call. Updates the meshes and states for both the left and right hand visuals.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -71,10 +72,11 @@ export class ControlSystem extends MRSystem {
     /************ Interaction Events ************/
 
     /**
-     * Handles the mouse over event
+     * @function
+     * @description Handles the mouse over event
      * @param {event} event - the mouse over event
      */
-    mouseOverImpl(event) {
+    mouseOver = (event) => {
         event.stopPropagation();
 
         this.hit = this.pixelRayCast(event);
@@ -83,16 +85,14 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    }
-    mouseOver = (event) => {
-        return this.mouseOverImpl(event);
     };
 
     /**
-     * Handles the mouse down event
+     * @function
+     * @description Handles the mouse down event
      * @param {event} event - the mouse down event
      */
-    onMouseDownImpl(event) {
+    onMouseDown = (event) => {
         event.stopPropagation();
         this.removeCursor();
 
@@ -104,39 +104,33 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    }
-    onMouseDown = (event) => {
-        return this.onMouseDownImpl(event);
     };
 
     /**
-     * Handles the mouse up event
+     * @function
+     * @description Handles the mouse up event
      * @param {event} event - the mouse up event
      */
-    onMouseUpImpl(event) {
+    onMouseUp = (event) => {
         event.stopPropagation();
         this.removeCursor();
         this.cursor = this.cursorHover;
-    }
-    onMouseUp = (event) => {
-        return this.onMouseUpImpl(event);
     };
 
     /**
-     * Handles the removeCursor callback.
+     * @function
+     * @description Handles the removeCursor callback.
      */
-    removeCursorImpl() {
+    removeCursor = () => {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
-    }
-    removeCursor = () => {
-        return this.removeCursorImpl();
     };
 
     /************ Tools && Helpers ************/
 
     /**
-     * Raycast into the scene using the information from the event that called it.
+     * @function
+     * @description Raycast into the scene using the information from the event that called it.
      * @param {object} event - the event being handled
      * @returns {object} - collision item for what the ray hit in the 3d scene.
      */
