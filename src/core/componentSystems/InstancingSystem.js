@@ -43,7 +43,8 @@ export class InstancingSystem extends MRSystem {
 
     /**
      * @function
-     * @description Determines what meshes are attached from this entity and When a component is attached, setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether that be a group or mesh).
+     * @description Determines what meshes are attached from this entity and When a component is attached.
+     * Setups up instancing based on the predefined setup option and the entity's geometry (handling properly whether that be a group or mesh).
      * @param {MREntity} entity - the entity with the geometry to be instanced and the chosen setup option
      */
     attachedComponent(entity) {
@@ -99,10 +100,10 @@ export class InstancingSystem extends MRSystem {
 
     /**
      * @function
-     * @description An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations. Uses threejs's `InstancedMesh`.
+     * @description An option for default instancing. Places the given entity instancing it at a bunch of random transformation locations.Uses threejs's `InstancedMesh`.
      * @param {MREntity} entity - the entity to be instanced in random locations
      */
-    randomImpl(entity) {
+    random = (entity) => {
         // update mesh for each instance
         for (let i = 0; i < this.instanceCount; ++i) {
             const matrix = new THREE.Matrix4();
@@ -113,12 +114,5 @@ export class InstancingSystem extends MRSystem {
             this.transformations[i].copy(matrix);
             this.instancedMesh.setMatrixAt(i, this.transformations[i]);
         }
-    }
-    /**
-     * @param entity
-     * @event
-     */
-    random = (entity) => {
-        return this.randomImpl(entity);
     };
 }

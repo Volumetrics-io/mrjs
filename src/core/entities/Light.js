@@ -33,7 +33,7 @@ export class Light extends MREntity {
      * @description Callback function of MREntity - Updates the lights color and intensity as requested.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
-    mutatedImpl(mutation) {
+    mutated = (mutation) => {
         if (mutation.type != 'attributes') {
             return;
         }
@@ -51,13 +51,6 @@ export class Light extends MREntity {
             default:
                 break;
         }
-    }
-    /**
-     * @param mutation
-     * @event
-     */
-    mutated = (mutation) => {
-        return this.mutatedImpl(mutation);
     };
 }
 

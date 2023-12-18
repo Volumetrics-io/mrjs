@@ -111,21 +111,21 @@ export class MREntity extends MRElement {
     updatePhysicsData() {}
 
     /**
-     * @event
+     * @function
      * @description Handles the hover event
      * @param {object} event - the hover event
      */
     onHover = (event) => {};
 
     /**
-     * @event
+     * @function
      * @description Handles the touch event
      * @param {object} event - the touch event
      */
     onTouch = (event) => {};
 
     /**
-     * @event
+     * @function
      * @description Handles the scroll event
      * @param {object} event - the scroll event
      */

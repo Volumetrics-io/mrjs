@@ -32,8 +32,8 @@ export class MRTextEntity extends MRDivEntity {
     }
 
     /**
-     * @property {number} height
      * @description Represents the height of the rendering area for the text, counting as the CSS height in pixels.
+     * @returns {number} the resolved height
      */
     get height() {
         return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);

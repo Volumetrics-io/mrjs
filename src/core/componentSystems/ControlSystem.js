@@ -76,7 +76,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the mouse over event
      * @param {event} event - the mouse over event
      */
-    mouseOverImpl(event) {
+    mouseOver = (event) => {
         event.stopPropagation();
 
         this.hit = this.pixelRayCast(event);
@@ -85,13 +85,6 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    }
-    /**
-     * @param event
-     * @event
-     */
-    mouseOver = (event) => {
-        return this.mouseOverImpl(event);
     };
 
     /**
@@ -99,7 +92,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the mouse down event
      * @param {event} event - the mouse down event
      */
-    onMouseDownImpl(event) {
+    onMouseDown = (event) => {
         event.stopPropagation();
         this.removeCursor();
 
@@ -111,13 +104,6 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    }
-    /**
-     * @param event
-     * @event
-     */
-    onMouseDown = (event) => {
-        return this.onMouseDownImpl(event);
     };
 
     /**
@@ -125,32 +111,19 @@ export class ControlSystem extends MRSystem {
      * @description Handles the mouse up event
      * @param {event} event - the mouse up event
      */
-    onMouseUpImpl(event) {
+    onMouseUp = (event) => {
         event.stopPropagation();
         this.removeCursor();
         this.cursor = this.cursorHover;
-    }
-    /**
-     * @param event
-     * @event
-     */
-    onMouseUp = (event) => {
-        return this.onMouseUpImpl(event);
     };
 
     /**
      * @function
      * @description Handles the removeCursor callback.
      */
-    removeCursorImpl() {
+    removeCursor = () => {
         this.cursorHover.setTranslation({ ...this.restPosition }, true);
         this.cursorClick.setTranslation({ ...this.restPosition }, true);
-    }
-    /**
-     * @event
-     */
-    removeCursor = () => {
-        return this.removeCursorImpl();
     };
 
     /************ Tools && Helpers ************/

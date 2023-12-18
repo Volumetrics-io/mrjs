@@ -112,16 +112,9 @@ export class MRSystem {
      * @description Handles the component and registry aspect of the event when an entity component attaches to this system.
      * @param {object} event - the attach event
      */
-    onAttachImpl(event) {
+    onAttach = (event) => {
         this.registry.add(event.target);
         this.attachedComponent(event.target);
-    }
-    /**
-     * @param event
-     * @event
-     */
-    onAttach = (event) => {
-        return this.onAttachImpl(event);
     };
 
     /**
@@ -129,15 +122,8 @@ export class MRSystem {
      * @description Handles the component and registry update of the even when an entity component needs to change.
      * @param {object} event - the update event
      */
-    onUpdateImpl(event) {
-        this.updatedComponent(event.target, event.detail.oldData);
-    }
-    /**
-     * @param event
-     * @event
-     */
     onUpdate = (event) => {
-        return this.onUpdateImpl(event);
+        this.updatedComponent(event.target, event.detail.oldData);
     };
 
     /**
@@ -145,15 +131,8 @@ export class MRSystem {
      * @description Handles the component and registry aspect of the even when an entity component detaches from this system.
      * @param {object} event - the detach event
      */
-    onDetachImpl(event) {
+    onDetach = (event) => {
         this.registry.delete(event.target);
         this.detachedComponent(event.target);
-    }
-    /**
-     * @param event
-     * @event
-     */
-    onDetach = (event) => {
-        return this.onDetachImpl(event);
     };
 }

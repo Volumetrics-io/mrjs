@@ -18,7 +18,8 @@ export class Model extends MREntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component. Includes loading up the model and associated data.
+     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
+     * Includes loading up the model and associated data.
      */
     connected() {
         this.src = this.getAttribute('src');
@@ -46,7 +47,7 @@ export class Model extends MREntity {
     }
 
     /**
-     * @event
+     * @function
      * @description On load event function - right now defaults to do nothing.
      */
     onLoad = () => {};

@@ -19,7 +19,7 @@ export class Button extends MRDivEntity {
      * @description On Hover event function that handles how the button should visualize based on 'hover' aspect.
      * @param {object} event - the hover event
      */
-    onHoverImpl(event) {
+    onHover = (event) => {
         switch (event.type) {
             case 'hover-start':
                 this.object3D.scale.addScalar(0.1);
@@ -36,13 +36,6 @@ export class Button extends MRDivEntity {
             default:
                 break;
         }
-    }
-    /**
-     * @param event
-     * @event
-     */
-    onHover = (event) => {
-        return this.onHoverImpl(event);
     };
 }
 

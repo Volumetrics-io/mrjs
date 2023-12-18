@@ -39,7 +39,6 @@ export class Image extends MRDivEntity {
 
     /**
      * @function
-     * @overrrides
      * @description Calculates the height of the img based on the img tag in the shadow root
      * @returns {number} - the resolved height
      */
@@ -99,6 +98,7 @@ export class Image extends MRDivEntity {
     /**
      * @function
      * @description computes the width and height values considering the value of object-fit
+     * @returns {object} the fit in the form of `{ width: xx, height: xx }`
      */
     computeObjectFitDimensions() {
         switch (this.compStyle.objectFit) {

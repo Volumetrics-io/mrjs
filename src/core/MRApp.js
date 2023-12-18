@@ -69,7 +69,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @function
+     * @callback Connected
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
@@ -93,7 +93,7 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @function
+     * @callback Disconnected
      * @description The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     disconnectedCallback() {
@@ -136,12 +136,12 @@ export class MRApp extends MRElement {
         }
     }
     /**
-     * @param mutationList
-     * @param observer
-     * @event
+     * @callback Mutation
+     * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
+     * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback = (mutationList, observer) => {
-        return this.mutationCallbackImpl(mutationList, observer);
+        this.mutationCallbackImpl(mutationList, observer);
     };
 
     /**
@@ -275,10 +275,10 @@ export class MRApp extends MRElement {
         this.anchor.position.setZ(-0.5);
     }
     /**
-     * @event
+     * @callback InitUser
      */
     initUser = () => {
-        return this.initUserImpl();
+        this.initUserImpl();
     };
 
     /**
@@ -310,11 +310,11 @@ export class MRApp extends MRElement {
         }
     }
     /**
-     * @param data
-     * @event
+     * @param {object} data - the lights data (color, intensity, shadows, etc)
+     * @callback InitLights
      */
     initLights = (data) => {
-        return this.initLightsImpl(data);
+        this.initLightsImpl(data);
     };
 
     /**

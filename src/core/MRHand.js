@@ -64,7 +64,8 @@ const HAND_MAPPING = {
 export class MRHand {
     /**
      * @class
-     * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model information.
+     * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model
+     * information.
      * @param {object} handedness - enum for the `left`` or `right` hand.
      * @param {object} app - the current MRApp that contains the scene for the hand.
      */
@@ -245,11 +246,11 @@ export class MRHand {
         );
     }
     /**
-     * @param event
-     * @event
+     * @param {event} event - the on pinch event object
+     * @function
      */
     onPinch = (event) => {
-        return this.onPinchImpl(event);
+        this.onPinchImpl(event);
     };
 
     /**

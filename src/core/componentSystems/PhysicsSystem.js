@@ -113,7 +113,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactStartImpl(handle1, handle2) {
+    onContactStart = (handle1, handle2) => {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
@@ -132,14 +132,6 @@ export class PhysicsSystem extends MRSystem {
         if (joint && entity && joint.includes('hover')) {
             this.hoverStart(collider1, collider2, entity);
         }
-    }
-    /**
-     * @param handle1
-     * @param handle2
-     * @event
-     */
-    onContactStart = (handle1, handle2) => {
-        return this.onContactStartImpl(handle1, handle2);
     };
 
     /**
@@ -148,7 +140,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} handle1 - the first collider
      * @param {number} handle2 - the second collider
      */
-    onContactEndImpl(handle1, handle2) {
+    onContactEnd = (handle1, handle2) => {
         const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
 
@@ -164,14 +156,6 @@ export class PhysicsSystem extends MRSystem {
         if (joint && entity && joint.includes('hover')) {
             this.hoverEnd(entity);
         }
-    }
-    /**
-     * @param handle1
-     * @param handle2
-     * @event
-     */
-    onContactEnd = (handle1, handle2) => {
-        return this.onContactEndImpl(handle1, handle2);
     };
 
     /**
@@ -181,7 +165,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    touchStartImpl(collider1, collider2, entity) {
+    touchStart = (collider1, collider2, entity) => {
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
@@ -210,15 +194,6 @@ export class PhysicsSystem extends MRSystem {
                 })
             );
         });
-    }
-    /**
-     * @param collider1
-     * @param collider2
-     * @param entity
-     * @event
-     */
-    touchStart = (collider1, collider2, entity) => {
-        return this.touchStartImpl(collider1, collider2, entity);
     };
 
     /**
@@ -226,7 +201,7 @@ export class PhysicsSystem extends MRSystem {
      * @description Handles the end of touch for the current entity
      * @param {MREntity} entity - the current entity
      */
-    touchEndImpl(entity) {
+    touchEnd = (entity) => {
         this.currentEntity = null;
         // Contact information can be read from `manifold`.
         this.tempPreviousPosition.set(0, 0, 0);
@@ -238,13 +213,6 @@ export class PhysicsSystem extends MRSystem {
                 bubbles: true,
             })
         );
-    }
-    /**
-     * @param entity
-     * @event
-     */
-    touchEnd = (entity) => {
-        return this.touchEndImpl(entity);
     };
 
     /**
@@ -254,7 +222,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} collider2 - the second collider
      * @param {MREntity} entity - the current entity
      */
-    hoverStartImpl(collider1, collider2, entity) {
+    hoverStart = (collider1, collider2, entity) => {
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -269,15 +237,6 @@ export class PhysicsSystem extends MRSystem {
                 })
             );
         });
-    }
-    /**
-     * @param collider1
-     * @param collider2
-     * @param entity
-     * @event
-     */
-    hoverStart = (collider1, collider2, entity) => {
-        return this.hoverStartImpl(collider1, collider2, entity);
     };
 
     /**
@@ -285,19 +244,12 @@ export class PhysicsSystem extends MRSystem {
      * @description Handles the end of hovering over/around a specific entity.
      * @param {MREntity} entity - the current entity
      */
-    hoverEndImpl(entity) {
+    hoverEnd = (entity) => {
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
             })
         );
-    }
-    /**
-     * @param entity
-     * @event
-     */
-    hoverEnd = (entity) => {
-        return this.hoverEndImpl(entity);
     };
 
     /**

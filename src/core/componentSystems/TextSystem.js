@@ -101,7 +101,7 @@ export class TextSystem extends MRSystem {
      * @description Updates the style for the text's information based on compStyle and inputted css elements.
      * @param {MRTextEntity} entity - the text entity whose style is being updated
      */
-    updateStyleImpl(entity) {
+    updateStyle = (entity) => {
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
@@ -123,13 +123,6 @@ export class TextSystem extends MRSystem {
         textObj.maxWidth = entity.width;
 
         textObj.position.z = 0.0001;
-    }
-    /**
-     * @param entity
-     * @event
-     */
-    updateStyle = (entity) => {
-        return this.updateStyleImpl(entity);
     };
 
     /**
@@ -137,18 +130,11 @@ export class TextSystem extends MRSystem {
      * @description Handles when text is added as an entity updating content and style for the internal textObj appropriately.
      * @param {MRTextEntity} entity - the text entity being updated
      */
-    addTextImpl(entity) {
+    addText = (entity) => {
         const text = entity.textContent.trim();
         entity.textObj.text = text.length > 0 ? text : ' ';
 
         this.updateStyle(entity);
-    }
-    /**
-     * @param entity
-     * @event
-     */
-    addText = (entity) => {
-        return this.addTextImpl(entity);
     };
 
     /**

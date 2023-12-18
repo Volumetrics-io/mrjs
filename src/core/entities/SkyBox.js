@@ -41,7 +41,7 @@ export class SkyBox extends MREntity {
     }
 
     /**
-     * @event
+     * @function
      * @description On load event function - right now defaults to do nothing.
      */
     onLoad = () => {};

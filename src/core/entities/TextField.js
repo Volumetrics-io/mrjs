@@ -57,40 +57,28 @@ export class TextField extends MRTextEntity {
      * @function
      * @description Blurs the inputted text value and cursor information
      */
-    blurImpl() {
+    blur = () => {
         this.input.blur();
         this.cursor.visible = false;
-    }
-    /**
-     * @event
-     */
-    blur = () => {
-        return this.blurImpl();
     };
 
     /**
      * @function
      * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
      */
-    focusImpl() {
+    focus = () => {
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
         this.updateCursorPosition();
-    }
-    /**
-     * @event
-     */
-    focus = () => {
-        return this.focusImpl();
     };
 
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPositionImpl() {
+    updateCursorPosition = () => {
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
         if (isNaN(selectBox.right)) {
@@ -102,12 +90,6 @@ export class TextField extends MRTextEntity {
             this.cursor.position.setX(selectBox.right);
         }
         this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
-    }
-    /**
-     * @event
-     */
-    updateCursorPosition = () => {
-        return this.updateCursorPositionImpl();
     };
 }
 

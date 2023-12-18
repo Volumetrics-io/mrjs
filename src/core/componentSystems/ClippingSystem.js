@@ -41,7 +41,8 @@ export class ClippingSystem extends MRSystem {
 
     /**
      * @function
-     * @description Helper method for `onNewEntity`. Actually applies the clipping planes to the material setup for rendering. Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
+     * @description Helper method for `onNewEntity`. Actually applies the clipping planes to the material setup for rendering.
+     * Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
      * @param {object} object - the object3D item to be clipped
      * @param {ClippingGeometry} clipping - the clipping information to be passed to the material
      */
