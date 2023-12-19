@@ -50,7 +50,7 @@ export class MRApp extends MRElement {
         this.systems = new Set();
         this.scene = new THREE.Scene();
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, stencil: true });
         this.session;
 
         this.lighting = {
