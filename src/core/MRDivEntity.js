@@ -36,6 +36,10 @@ export class MRDivEntity extends MREntity {
 
         this.windowVerticalScale = 1;
         this.windowHorizontalScale = 1;
+
+        // allow stenciling when needed by default for UI elements, but also allows 
+        // overriding when needed.
+        this.ignoreStencil = false;
     }
 
     /**

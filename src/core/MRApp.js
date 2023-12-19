@@ -93,7 +93,7 @@ export class MRApp extends MRElement {
             // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
             this.maskingSystem = new MaskingSystem();
-            this.renderSystem = new RenderSystem();
+            // this.renderSystem = new RenderSystem();
         });
     }
 
