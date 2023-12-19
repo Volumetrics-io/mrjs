@@ -39,7 +39,6 @@ export class ClippingSystem extends MRSystem {
         }
     }
 
-    
     /**
      * @function
      * @description Updates the stored clipping planes to be based on the passed in entity.

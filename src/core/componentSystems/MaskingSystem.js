@@ -16,7 +16,15 @@ export class MaskingSystem extends MRSystem {
         super(false);
 
         this.maskingMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        this.stencilMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, stencilWrite: true, stencilRef: 0, stencilFunc: THREE.EqualStencilFunc, stencilFail: THREE.ReplaceStencilOp, stencilZFail: THREE.ReplaceStencilOp, stencilZPass: THREE.ReplaceStencilOp });
+        this.stencilMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            stencilWrite: true,
+            stencilRef: 0,
+            stencilFunc: THREE.EqualStencilFunc,
+            stencilFail: THREE.ReplaceStencilOp,
+            stencilZFail: THREE.ReplaceStencilOp,
+            stencilZPass: THREE.ReplaceStencilOp,
+        });
 
         // // Set up render targets
         // this.renderTargetMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
@@ -49,18 +57,15 @@ export class MaskingSystem extends MRSystem {
     update(deltaTime, frame) {
         // technically no update is needed here. just a render target change
         // TODO - should that happen here or in the actual renderer?
-
         // should make this easier - sort all objects in the register by the panel being masked for better efficiency with the render target change
         //
         // // Render passes
         // renderer.setRenderTarget(renderTargetMask);
         // renderer.clear();
         // renderer.render(scene, camera);
-
         // renderer.setRenderTarget(renderTargetObject);
         // renderer.clear();
         // renderer.render(scene, camera);
-
     }
 
     /**
@@ -72,7 +77,7 @@ export class MaskingSystem extends MRSystem {
         if (entity instanceof Panel) {
             return;
         }
-        if ((entity instanceof MRDivEntity) && !entity.ignoreStencil) {
+        if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
             this.setupMaterials(entity);
             this.registry.add(entity);
         }
@@ -128,9 +133,9 @@ export class MaskingSystem extends MRSystem {
 
         // Setup it and its children to mask based on its parent panel
         // If the parent panel is already set to stencil for the mask properly, use its pre-existing
-        // ref number; otherwise, create a new ref number. 
+        // ref number; otherwise, create a new ref number.
         for (const parent of this.registry) {
-            if ((parent instanceof Panel) && parent.contains(entity)) {
+            if (parent instanceof Panel && parent.contains(entity)) {
                 // ---- Handle parent and parent info ---- //
                 // try to grab the parent panel's stencil ref info or make a new one. If parent already
                 // has one, it does not need to have its stencil material reset.
@@ -147,12 +152,12 @@ export class MaskingSystem extends MRSystem {
                     // use the stencil ref from parent
                     stencilRef = parent.material.stencilRef;
                 }
-                
+
                 // ---- Handle self and child info ---- //
                 // make sure the entity and all ui children are masked by the panel
                 this.setMaskMaterial(entity, stencilRef);
                 entity.object3D.traverse((child) => {
-                    if ((child instanceof MRDivEntity) && !child.ignoreStencil) {
+                    if (child instanceof MRDivEntity && !child.ignoreStencil) {
                         this.setMaskMaterial(child, stencilRef);
                     }
                 });

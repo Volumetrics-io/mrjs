@@ -89,7 +89,7 @@ export class MRApp extends MRElement {
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
 
-            // these must be the last three systems since 
+            // these must be the last three systems since
             // they affect rendering. Clipping must happen
             // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
