@@ -11,6 +11,34 @@ import { mrjsUtils } from 'mrjs';
  */
 export class MRDivEntity extends MREntity {
     /**
+     * @class
+     * @description Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
+     */
+    constructor() {
+        super();
+        this.worldScale = new THREE.Vector3();
+        this.halfExtents = new THREE.Vector3();
+        this.physics.type = 'ui';
+
+        const geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0], 18);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0xfff,
+            roughness: 0.7,
+            metalness: 0.0,
+            side: 2,
+        });
+
+        this.background = new THREE.Mesh(geometry, material);
+        this.background.receiveShadow = true;
+        this.background.renderOrder = 3;
+        this.background.visible = false;
+        this.object3D.add(this.background);
+
+        this.windowVerticalScale = 1;
+        this.windowHorizontalScale = 1;
+    }
+
+    /**
      * @function
      * @description Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
@@ -38,34 +66,6 @@ export class MRDivEntity extends MREntity {
             return (rect.width / window.innerWidth) * this.windowHorizontalScale;
         }
         return (rect.width / window.innerWidth) * global.viewPortWidth;
-    }
-
-    /**
-     * @class
-     * @description Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
-     */
-    constructor() {
-        super();
-        this.worldScale = new THREE.Vector3();
-        this.halfExtents = new THREE.Vector3();
-        this.physics.type = 'ui';
-
-        const geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0], 18);
-        const material = new THREE.MeshStandardMaterial({
-            color: 0xfff,
-            roughness: 0.7,
-            metalness: 0.0,
-            side: 2,
-        });
-
-        this.background = new THREE.Mesh(geometry, material);
-        this.background.receiveShadow = true;
-        this.background.renderOrder = 3;
-        this.background.visible = false;
-        this.object3D.add(this.background);
-
-        this.windowVerticalScale = 1;
-        this.windowHorizontalScale = 1;
     }
 
     /**
