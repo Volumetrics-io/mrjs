@@ -69,7 +69,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @callback Connected
+     * @function Connected
+     * @memberof MRApp
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
@@ -98,7 +99,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * @callback Disconnected
+     * @function Disconnected
+     * @memberof MRApp
      * @description The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     disconnectedCallback() {
