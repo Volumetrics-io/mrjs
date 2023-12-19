@@ -83,6 +83,11 @@ export class MaskingSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     * @param stencilRef
+     */
     setMaskMaterial(entity, stencilRef) {
         entity.maskMaterial.stencilWrite = this.maskMaterial.stencilWrite;
         entity.maskMaterial.stencilRef = stencilRef;
@@ -92,6 +97,11 @@ export class MaskingSystem extends MRSystem {
         entity.maskMaterial.stencilZPass = this.maskMaterial.stencilZPass;
     }
 
+    /**
+     *
+     * @param panel
+     * @param stencilRef
+     */
     setStencilMaterial(panel, stencilRef) {
         panel.material.stencilWrite = this.stencilMaterial.stencilWrite;
         panel.material.stencilRef = stencilRef;
@@ -101,6 +111,9 @@ export class MaskingSystem extends MRSystem {
         panel.material.stencilZPass = this.stencilMaterial.stencilZPass;
     }
 
+    /**
+     *
+     */
     pickNewActiveRefNumber() {
         // Finds the next active ref number first by searching within an available range
         // otherwise just adds based on the next max value.
@@ -128,6 +141,11 @@ export class MaskingSystem extends MRSystem {
         return maxVal + 1;
     }
 
+    /**
+     *
+     * @param entity
+     * @param panel
+     */
     setupMaterials(entity, panel) {
         // set entity as having mask material and its main mrDiv as having stencil material if not already set to that
 
