@@ -75,7 +75,6 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse over event
      */
     mouseOverImpl(event) {
-        event.stopPropagation();
 
         this.hit = this.pixelRayCast(event);
 

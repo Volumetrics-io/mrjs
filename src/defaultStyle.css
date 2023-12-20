@@ -19,15 +19,17 @@ mr-div, mr-button, mr-img {
 
 mr-button {
     padding: 5px;
-    animation: back 0.1s ease-out forwards;
+    /* animation: back 0.25s ease-out forwards; */
 }
 
 mr-button.hover {
-    background-color: #fff;
-    border-radius: 1%;
-    animation: forward 0.25s ease-in forwards;
+    background-color: #333;
+    border-radius: 0.5%;
+    z-index: 5; /* end */
+    /* animation: forward 0.25s ease-in forwards; */
 }
 
+/* these work differently from in XR than expected, laurent should look into it */
 /* button animation! */
 
 @keyframes forward {
@@ -37,9 +39,6 @@ mr-button.hover {
 }
 
 @keyframes back {
-    from {
-        z-index: 5; /* start */
-    }
     to {
         z-index: 1; /* end */
     }

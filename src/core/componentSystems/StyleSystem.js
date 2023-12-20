@@ -12,7 +12,7 @@ export class StyleSystem extends MRSystem {
      * StyleSystem's default constructor with a starting framerate of 1/15.
      */
     constructor() {
-        super(false, 1 / 15);
+        super(false, 1 / 30);
     }
 
     /**

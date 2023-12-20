@@ -19,7 +19,7 @@ export class MRDivEntity extends MREntity {
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
-            return (rect.height / window.innerHeight) * this.windowVerticalScale;
+            return (rect.height /  mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
         }
         return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
@@ -33,7 +33,7 @@ export class MRDivEntity extends MREntity {
 
         if (global.inXR) {
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
-            return (rect.width / window.innerWidth) * this.windowHorizontalScale;
+            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowHorizontalScale;
         }
         return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
