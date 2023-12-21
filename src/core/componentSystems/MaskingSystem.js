@@ -1,6 +1,9 @@
+import * as THREE from 'three';
+
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { Panel } from 'mrjs/core/entities/Panel';
 
 /**
  * @class MaskingSystem
@@ -15,37 +18,32 @@ export class MaskingSystem extends MRSystem {
     constructor() {
         super(false);
 
-        this.maskingMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        this.stencilMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff00,
-            stencilWrite: true,
-            stencilRef: 0,
-            stencilFunc: THREE.EqualStencilFunc,
-            stencilFail: THREE.ReplaceStencilOp,
-            stencilZFail: THREE.ReplaceStencilOp,
-            stencilZPass: THREE.ReplaceStencilOp,
-        });
-
-        // // Set up render targets
-        // this.renderTargetMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        // this.renderTargetStencilObject = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-
         // Configure materials
-        this.maskMaterial.stencilWrite = true;
-        this.maskMaterial.stencilRef = -1;
-        this.maskMaterial.stencilFunc = THREE.AlwaysStencilFunc;
-        this.maskMaterial.stencilFail = THREE.ReplaceStencilOp;
-        this.maskMaterial.stencilZFail = THREE.ReplaceStencilOp;
-        this.maskMaterial.stencilZPass = THREE.ReplaceStencilOp;
+        this.maskingMaterial = new THREE.MeshBasicMaterial({
+            color:          0xff0000,
+            stencilWrite:   true,
+            stencilRef:     -1,
+            stencilFunc:    THREE.AlwaysStencilFunc,
+            stencilFail:    THREE.ReplaceStencilOp,
+            stencilZFail:   THREE.ReplaceStencilOp,
+            stencilZPass:   THREE.ReplaceStencilOp
+        });
+        console.log('masking material is made:');
+        console.log(this.maskingMaterial);
+        this.stencilMaterial = new THREE.MeshBasicMaterial({
+            color:          0x00ff00,
+            stencilWrite:   true,
+            stencilRef:     -1,
+            stencilFunc:    THREE.EqualStencilFunc,
+            stencilFail:    THREE.KeepStencilOp,
+            stencilZFail:   THREE.KeepStencilOp,
+            stencilZPass:   THREE.KeepStencilOp,
+        });
+        console.log('stencil material is made:');
+        console.log(this.stencilMaterial);
 
-        this.stencilMaterial.stencilWrite = true;
-        this.stencilMaterial.stencilRef = -1;
-        this.stencilMaterial.stencilFunc = THREE.EqualStencilFunc;
-        this.stencilMaterial.stencilFail = THREE.KeepStencilOp;
-        this.stencilMaterial.stencilZFail = THREE.KeepStencilOp;
-        this.stencilMaterial.stencilZPass = THREE.KeepStencilOp;
-
-        this.activeRefNumbers = {};
+        this.activeRefNumbers = new Set();
+        this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
     }
 
     /**
@@ -74,41 +72,71 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
+        console.log('in masking system, new entity is: ');
+        console.log(entity);
         if (entity instanceof Panel) {
+            this.panels.add(entity);
             return;
         }
         if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
+            console.log('masking and handling current entity');
             this.setupMaterials(entity);
             this.registry.add(entity);
         }
     }
 
     /**
-     *
+     * Applies mask material to an entity. If the entity is a Group, apply to all Mesh children.
      * @param entity
      * @param stencilRef
      */
     setMaskMaterial(entity, stencilRef) {
-        entity.maskMaterial.stencilWrite = this.maskMaterial.stencilWrite;
-        entity.maskMaterial.stencilRef = stencilRef;
-        entity.maskMaterial.stencilFunc = this.maskMaterial.stencilFunc;
-        entity.maskMaterial.stencilFail = this.maskMaterial.stencilFail;
-        entity.maskMaterial.stencilZFail = this.maskMaterial.stencilZFail;
-        entity.maskMaterial.stencilZPass = this.maskMaterial.stencilZPass;
+        console.log('this.maskingMaterial');
+        console.log(this.maskingMaterial);
+        const applyMask = (obj) => {
+            obj.material.stencilWrite = this.maskingMaterial.stencilWrite;
+            obj.material.stencilRef = stencilRef;
+            obj.material.stencilFunc = this.maskingMaterial.stencilFunc;
+            obj.material.stencilFail = this.maskingMaterial.stencilFail;
+            obj.material.stencilZFail = this.maskingMaterial.stencilZFail;
+            obj.material.stencilZPass = this.maskingMaterial.stencilZPass;
+        };
+
+        if (entity.object3D instanceof THREE.Group) {
+            entity.object3D.traverse(child => {
+                if (child instanceof THREE.Mesh) {
+                    applyMask(child);
+                }
+            });
+        } else {
+            applyMask(entity.object3D);
+        }
     }
 
     /**
-     *
+     * Applies stencil material to a panel. If the panel is a Group, apply to all Mesh children.
      * @param panel
      * @param stencilRef
      */
     setStencilMaterial(panel, stencilRef) {
-        panel.material.stencilWrite = this.stencilMaterial.stencilWrite;
-        panel.material.stencilRef = stencilRef;
-        panel.material.stencilFunc = this.stencilMaterial.stencilFunc;
-        panel.material.stencilFail = this.stencilMaterial.stencilFail;
-        panel.material.stencilZFail = this.stencilMaterial.stencilZFail;
-        panel.material.stencilZPass = this.stencilMaterial.stencilZPass;
+        const applyStencil = (obj) => {
+            obj.material.stencilWrite = this.stencilMaterial.stencilWrite;
+            obj.material.stencilRef = stencilRef;
+            obj.material.stencilFunc = this.stencilMaterial.stencilFunc;
+            obj.material.stencilFail = this.stencilMaterial.stencilFail;
+            obj.material.stencilZFail = this.stencilMaterial.stencilZFail;
+            obj.material.stencilZPass = this.stencilMaterial.stencilZPass;
+        };
+
+        if (panel.object3D instanceof THREE.Group) {
+            panel.object3D.traverse(child => {
+                if (child instanceof THREE.Mesh) {
+                    applyStencil(child);
+                }
+            });
+        } else {
+            applyStencil(panel.object3D);
+        }
     }
 
     /**
@@ -125,16 +153,17 @@ export class MaskingSystem extends MRSystem {
             return allowedMin;
         }
 
-        let minVal = Math.min(...this.activeRefNumbers);
+        const activeRefNumbersArray = [...this.activeRefNumbers];
+        let minVal = Math.min(...activeRefNumbersArray);
         if (minVal > allowedMin) {
             return minVal - 1;
         }
-        let maxVal = Math.max(...this.activeRefNumbers);
+        let maxVal = Math.max(...activeRefNumbersArray);
 
         // todo - switch the below to be radix style for determining next available slot
         // or something more optimal for the algorithm (including 2x choosing)
         for (let num = minVal; num < maxVal; ++num) {
-            if (!numberSet.includes(num)) {
+            if (!this.activeRefNumbers.has(num)) {
                 return num;
             }
         }
@@ -144,42 +173,55 @@ export class MaskingSystem extends MRSystem {
     /**
      *
      * @param entity
-     * @param panel
      */
-    setupMaterials(entity, panel) {
+    setupMaterials(entity) {
+        const grabStencilRef = (parent) => {
+            let foundMesh = false;
+            if (parent.object3D instanceof THREE.Group) {
+                parent.object3D.traverse((child) => {
+                    if (!foundMesh && child instanceof THREE.Mesh) {
+                        return child.material.stencilRef;
+                    }
+                });
+            } else {
+                return parent.material.stencilRef;
+            }
+        }
+
         // set entity as having mask material and its main mrDiv as having stencil material if not already set to that
+        console.log('setting up the materials for the entity: ');
+        console.log(entity);
+        console.log('parent is: ');
+        console.log(entity.parent);
+        let parent = entity.parent;
 
         // Setup it and its children to mask based on its parent panel
         // If the parent panel is already set to stencil for the mask properly, use its pre-existing
         // ref number; otherwise, create a new ref number.
-        for (const parent of this.registry) {
-            if (parent instanceof Panel && parent.contains(entity)) {
-                // ---- Handle parent and parent info ---- //
-                // try to grab the parent panel's stencil ref info or make a new one. If parent already
-                // has one, it does not need to have its stencil material reset.
-                let stencilRef = -1;
-                if (parent.material.stencilRef != 0 || parent.material.stencilRef != -1) {
-                    // 0 is the default stencil ref, so we're avoiding that number and
-                    // we're avoiding -1 since that is our default as 'un-setup'
-                    // For this case we need to pick a new ref number.
-                    stencilRef = this.pickNewActiveRefNumber();
-                    this.activeRefNumbers.push(stencilRef);
-                    // set the panel to stencil properly
-                    this.setStencilMaterial(parent, stencilRef);
-                } else {
-                    // use the stencil ref from parent
-                    stencilRef = parent.material.stencilRef;
-                }
-
-                // ---- Handle self and child info ---- //
-                // make sure the entity and all ui children are masked by the panel
-                this.setMaskMaterial(entity, stencilRef);
-                entity.object3D.traverse((child) => {
-                    if (child instanceof MRDivEntity && !child.ignoreStencil) {
-                        this.setMaskMaterial(child, stencilRef);
-                    }
-                });
+        if (parent instanceof Panel && parent.contains(entity)) {
+            // ---- Handle parent and parent info ---- //
+            // try to grab the parent panel's stencil ref info or make a new one. If parent already
+            // has one, it does not need to have its stencil material reset.
+            let stencilRef = grabStencilRef(parent);
+            if (stencilRef == undefined || stencilRef == 0 || stencilRef == -1) {
+                // For this case we need to pick a new ref number. We're avoiding the two noted numbers:
+                //  0: because it is the default stencil ref
+                // -1: because that is our default as 'un-setup'
+                stencilRef = this.pickNewActiveRefNumber();
+                this.activeRefNumbers.add(stencilRef);
+                // set the panel to stencil properly
+                this.setStencilMaterial(parent, stencilRef);
             }
+
+            // ---- Handle self and child info ---- //
+            // make sure the entity and all ui children are masked by the panel
+            this.setMaskMaterial(entity, stencilRef);
+            entity.object3D.traverse((child) => {
+                if (child instanceof MRDivEntity && !child.ignoreStencil) {
+                    this.setMaskMaterial(child, stencilRef);
+                    console.log('setting the mask material ')
+                }
+            });
         }
     }
 }

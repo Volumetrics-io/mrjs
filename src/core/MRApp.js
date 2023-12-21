@@ -13,6 +13,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
+import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { SurfaceSystem } from 'mrjs/core/componentSystems/SurfaceSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
@@ -381,7 +382,11 @@ export class MRApp extends MRElement {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
+        // ----- grab important vars ----- //
+
         const deltaTime = this.clock.getDelta();
+
+        // ----- Update needed items ----- //
 
         if (global.inXR && !this.session) {
             this.session = this.renderer.xr.getSession();
@@ -409,7 +414,42 @@ export class MRApp extends MRElement {
             this.stats.end();
         }
 
-        this.renderer.render(this.scene, this.user);
+        // ----- Actually Render ----- //
+
+        // todo - clean this up to run more efficiently instead of doing the set manipulation here
+
+        let isStencilEnabled = this.renderer.getContext().getParameter(this.renderer.getContext().STENCIL_BITS) > 0;
+
+        console.log(this.renderer);
+        if (isStencilEnabled && this.maskingSystem != undefined) {
+            console.log('rendering with stencil');
+            // render with stencil passes included
+
+            this.renderer.clearStencil();
+            // Render panels first to set up the stencil buffer
+            for (const panel of this.maskingSystem.panels) {
+                this.renderer.render(panel.object3D, this.user);
+            }
+            // Render div entities which will be masked
+            for (const entity of this.maskingSystem.registry) {
+                this.renderer.render(entity.object3D, this.user);
+            }
+
+            // Render all other items
+            const combinedSet = new Set([
+                ...Array.from(this.maskingSystem.panels).map(item => item.object3D),
+                ...Array.from(this.maskingSystem.registry).map(item => item.object3D)
+            ]);
+            this.scene.traverse((object) => {
+                if (!combinedSet.has(object)) {
+                    this.renderer.render(object, this.user);
+                }
+            });
+        } else {
+            console.log('rendering as usual');
+            // render as usual
+            this.renderer.render(this.scene, this.user);
+        }
     }
 }
 
