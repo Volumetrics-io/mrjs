@@ -429,6 +429,7 @@ export class MRApp extends MRElement {
                 this.renderer.render(panel.object3D, this.user);
             }
             // Render div entities which will be masked
+            // console.log(this.maskingSystem.registry)
             for (const entity of this.maskingSystem.registry) {
                 this.renderer.render(entity.object3D, this.user);
             }
@@ -438,6 +439,8 @@ export class MRApp extends MRElement {
                 ...Array.from(this.maskingSystem.panels).map(item => item.object3D),
                 ...Array.from(this.maskingSystem.registry).map(item => item.object3D)
             ]);
+            // console.log(this.maskingSystem.panels);
+            // console.log(this.maskingSystem.registry);
             this.scene.traverse((object) => {
                 if (!combinedSet.has(object)) {
                     this.renderer.render(object, this.user);

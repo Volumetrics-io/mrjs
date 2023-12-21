@@ -143,9 +143,6 @@ export class MaskingSystem extends MRSystem {
      *
      */
     pickNewActiveRefNumber() {
-        // Finds the next active ref number first by searching within an available range
-        // otherwise just adds based on the next max value.
-
         // we dont want to allow 0 or -1 as values.
         // 0 is default by webgl and -1 we want to leave as 'un-setup'
         const allowedMin = 1;
@@ -158,7 +155,7 @@ export class MaskingSystem extends MRSystem {
         // Find the smallest number greater than the minimum allowed value that is not already in the set.
         let currentNumber = allowedMin;
         while (this.activeRefNumbers.has(currentNumber)) {
-            currentNumber++;
+            ++currentNumber;
         }
 
         return currentNumber;
@@ -171,27 +168,26 @@ export class MaskingSystem extends MRSystem {
     setupMaterials(entity) {
         const grabStencilRef = (parent) => {
             let foundMesh = false;
+            let stencilRef;
+
             if (parent.object3D instanceof THREE.Group) {
                 parent.object3D.traverse((child) => {
                     if (!foundMesh && child instanceof THREE.Mesh) {
-                        return child.material.stencilRef;
+                        stencilRef = child.material.stencilRef;
+                        foundMesh = true;
                     }
                 });
             } else {
-                return parent.material.stencilRef;
+                stencilRef = parent.material.stencilRef;
             }
-        }
 
-        // set entity as having mask material and its main mrDiv as having stencil material if not already set to that
-        console.log('setting up the materials for the entity: ');
-        console.log(entity);
-        console.log('parent is: ');
-        console.log(entity.parent);
-        let parent = entity.parent;
+            return stencilRef;
+        };
 
         // Setup it and its children to mask based on its parent panel
         // If the parent panel is already set to stencil for the mask properly, use its pre-existing
         // ref number; otherwise, create a new ref number.
+        let parent = entity.parent;
         if (parent instanceof Panel && parent.contains(entity)) {
             // ---- Handle parent and parent info ---- //
             // try to grab the parent panel's stencil ref info or make a new one. If parent already
@@ -203,8 +199,6 @@ export class MaskingSystem extends MRSystem {
                 // -1: because that is our default as 'un-setup'
                 stencilRef = this.pickNewActiveRefNumber();
                 this.activeRefNumbers.add(stencilRef);
-                console.log('new stencilref number is : ');
-                console.log(stencilRef);
                 // set the panel to stencil properly
                 this.setStencilMaterial(parent, stencilRef);
             }
