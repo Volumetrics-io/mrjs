@@ -170,7 +170,7 @@ export class PhysicsSystem extends MRSystem {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.classList.remove('hover')
+            entity.classList.remove('hover');
 
             entity.dispatchEvent(
                 new CustomEvent('touch-start', {
@@ -198,7 +198,7 @@ export class PhysicsSystem extends MRSystem {
         this.tempLocalPosition.set(0, 0, 0);
         this.tempWorldPosition.set(0, 0, 0);
         entity.touch = false;
-        entity.click()
+        entity.click();
 
         entity.dispatchEvent(
             new CustomEvent('touch-end', {
@@ -217,7 +217,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverStartImpl(collider1, collider2, entity) {
-        entity.classList.add('hover')
+        entity.classList.add('hover');
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -244,7 +244,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverEndImpl(entity) {
-        entity.classList.remove('hover')
+        entity.classList.remove('hover');
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
@@ -319,7 +319,7 @@ export class PhysicsSystem extends MRSystem {
         switch (physicsData.type) {
             case 'box':
             case 'ui':
-                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);    
+                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
             default:
                 return null;
         }

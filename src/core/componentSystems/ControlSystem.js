@@ -43,7 +43,7 @@ export class ControlSystem extends MRSystem {
         mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
 
         this.cursor = this.cursorHover;
-        this.down = false
+        this.down = false;
 
         this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
@@ -75,8 +75,7 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse over event
      */
     mouseOverImpl(event) {
-
-        if(this.down) {
+        if (this.down) {
             this.cursor = this.cursorClick;
         } else {
             this.cursor = this.cursorHover;
@@ -100,7 +99,7 @@ export class ControlSystem extends MRSystem {
     onMouseDownImpl(event) {
         event.stopPropagation();
         this.removeCursor();
-        this.down = true
+        this.down = true;
         this.cursor = this.cursorClick;
         this.hit = this.pixelRayCast(event);
 
@@ -108,7 +107,6 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-
     }
     onMouseDown = (event) => {
         return this.onMouseDownImpl(event);
@@ -121,7 +119,7 @@ export class ControlSystem extends MRSystem {
     onMouseUpImpl(event) {
         event.stopPropagation();
         this.removeCursor();
-        this.down = false
+        this.down = false;
         this.cursor = this.cursorHover;
 
         this.hit = this.pixelRayCast(event);

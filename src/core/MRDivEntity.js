@@ -19,7 +19,7 @@ export class MRDivEntity extends MREntity {
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
-            return (rect.height /  mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
+            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
         }
         return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
@@ -79,8 +79,7 @@ export class MRDivEntity extends MREntity {
         }
 
         // slight bump needed to avoid overlapping, glitchy visuals.
-        // I'm sure there's a better solution lol.
-        entity.object3D.position.z += 0.01;
+        entity.object3D.position.z = this.object3D.position.z + 0.001;
     }
 
     /**
@@ -184,8 +183,6 @@ export class MRDivEntity extends MREntity {
                 this.background.material.opacity = rgba[3];
                 this.background.visible = true;
             }
-
-            
         } else {
             this.background.material.color.setStyle(color);
             this.background.visible = true;

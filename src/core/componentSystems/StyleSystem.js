@@ -24,14 +24,13 @@ export class StyleSystem extends MRSystem {
     update(deltaTime, frame) {
         for (const entity of this.registry) {
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
-
             if (entity.compStyle.zIndex != 'auto') {
+                let parentZ = entity.parentElement.compStyle.zIndex == 'auto' ? 1 : parseFloat(entity.parentElement.compStyle.zIndex);
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
-                entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
+                entity.object3D.position.setZ((parseFloat(entity.compStyle.zIndex) + parentZ) / 1000);
             }
 
             entity instanceof MRDivEntity ? entity.updateStyle() : null;
-            
         }
     }
 
@@ -41,6 +40,6 @@ export class StyleSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        this.registry.add(entity)
+        this.registry.add(entity);
     }
 }

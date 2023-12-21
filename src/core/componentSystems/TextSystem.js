@@ -84,12 +84,7 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
-            if (entity.needsUpdate) {
-                entity.needsUpdate = false;
-                entity.textObj.sync(() => {
-                    entity.textObj.position.setY(entity.height / 2);
-                });
-            }
+            entity.textObj.position.setY(entity.height / 2);
         }
     }
 

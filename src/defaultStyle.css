@@ -14,7 +14,15 @@ mr-panel {
 }
 
 mr-div, mr-button, mr-img, mr-a {
-    z-index: 1;
+    display: inline-block;
+    position: relative;
+    z-index: inherit;
+}
+
+mr-img {
+    /* z-index: inherit; */
+    width: 100%;
+    object-fit: cover;
 }
 
 mr-button {
@@ -31,14 +39,12 @@ mr-button.hover {
 }
 
 mr-a {
-    color: blue;
-    /* animation: forward 0.25s ease-in forwards; */
+    color: darkblue;
 }
 
 mr-a.hover {
-    z-index: 5; /* end */
-    background-color: rgba(112, 112, 112, 0.7);
-    /* animation: forward 0.25s ease-in forwards; */
+    color: blue;
+    z-index: 5;
 }
 
 mr-a.active {
