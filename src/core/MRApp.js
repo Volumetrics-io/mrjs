@@ -419,8 +419,6 @@ export class MRApp extends MRElement {
         // todo - clean this up to run more efficiently instead of doing the set manipulation here
 
         let isStencilEnabled = this.renderer.getContext().getParameter(this.renderer.getContext().STENCIL_BITS) > 0;
-
-        console.log(this.renderer);
         if (isStencilEnabled && this.maskingSystem != undefined) {
             console.log('rendering with stencil');
             // render with stencil passes included

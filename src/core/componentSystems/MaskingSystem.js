@@ -146,28 +146,22 @@ export class MaskingSystem extends MRSystem {
         // Finds the next active ref number first by searching within an available range
         // otherwise just adds based on the next max value.
 
-        // we dont want to allow 0 as a min value.
+        // we dont want to allow 0 or -1 as values.
+        // 0 is default by webgl and -1 we want to leave as 'un-setup'
         const allowedMin = 1;
 
-        if (this.activeRefNumbers.length === 0) {
+        // If no active numbers, return the minimum allowed value.
+        if (this.activeRefNumbers.size === 0) {
             return allowedMin;
         }
 
-        const activeRefNumbersArray = [...this.activeRefNumbers];
-        let minVal = Math.min(...activeRefNumbersArray);
-        if (minVal > allowedMin) {
-            return minVal - 1;
+        // Find the smallest number greater than the minimum allowed value that is not already in the set.
+        let currentNumber = allowedMin;
+        while (this.activeRefNumbers.has(currentNumber)) {
+            currentNumber++;
         }
-        let maxVal = Math.max(...activeRefNumbersArray);
 
-        // todo - switch the below to be radix style for determining next available slot
-        // or something more optimal for the algorithm (including 2x choosing)
-        for (let num = minVal; num < maxVal; ++num) {
-            if (!this.activeRefNumbers.has(num)) {
-                return num;
-            }
-        }
-        return maxVal + 1;
+        return currentNumber;
     }
 
     /**
@@ -209,6 +203,8 @@ export class MaskingSystem extends MRSystem {
                 // -1: because that is our default as 'un-setup'
                 stencilRef = this.pickNewActiveRefNumber();
                 this.activeRefNumbers.add(stencilRef);
+                console.log('new stencilref number is : ');
+                console.log(stencilRef);
                 // set the panel to stencil properly
                 this.setStencilMaterial(parent, stencilRef);
             }
