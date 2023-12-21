@@ -24,6 +24,118 @@ window.mobileCheck = function () {
     return mrjsUtils.Display.mobileCheckFunction();
 };
 
+// Render target for texture1
+const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+const myscene = new THREE.Scene();
+
+const torusGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+// Torus material for rendering to texture
+const stencilRenderMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        void main() {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
+        }
+    `,
+});
+
+// Torus material
+const torusMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+// Shader material for cube and sphere
+const shaderMaterialUniforms = {
+    texture1: { value: renderTarget.texture },
+    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+};
+
+const objectShaderMaterial = {
+    uniforms: shaderMaterialUniforms,
+    vertexShader: `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D texture1;
+        uniform vec2 resolution;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+            if (textureColor.r < 0.1) {
+                discard;
+            } else {
+                gl_FragColor = vec4(0, 0, 0, 1);
+            }
+        }
+    `
+};
+
+// Cube and sphere materials
+const cubeMaterial = new THREE.ShaderMaterial({
+    ...objectShaderMaterial,
+    fragmentShader: `
+        uniform sampler2D texture1;
+        uniform vec2 resolution;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+            if (textureColor.r < 0.1) {
+                discard;
+            } else {
+                gl_FragColor = vec4(1, 0, 0, 1); // Red color
+            }
+        }
+    `
+});
+
+const sphereMaterial = new THREE.ShaderMaterial({
+    ...objectShaderMaterial,
+    fragmentShader: `
+        uniform sampler2D texture1;
+        uniform vec2 resolution;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+            if (textureColor.r < 0.1) {
+                discard;
+            } else {
+                gl_FragColor = vec4(0, 0, 1, 1); // Blue color
+            }
+        }
+    `
+});
+
+const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+// Positioning objects
+sphere.position.x = -1.5;
+cube.position.x = 1.5;
+
+// Adding objects to the scene
+myscene.add(torus, sphere, cube);
+
+// Debugging plane for texture1
+const planeGeometry = new THREE.PlaneGeometry(1, 1);
+const planeMaterial = new THREE.MeshBasicMaterial({ map: renderTarget.texture });
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+plane.position.set(-2, 2, 0);
+myscene.add(plane);
+
+///----------
+
 /**
  * @class MRApp
  * @classdesc The engine handler for running MRjs as an App. `mr-app`
@@ -67,6 +179,7 @@ export class MRApp extends MRElement {
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
+
     }
 
     /**
@@ -415,41 +528,62 @@ export class MRApp extends MRElement {
         }
 
         // ----- Actually Render ----- //
+        const myscene2 = new THREE.Scene();
+        const grabObjectMaterial = (parent) => {
+            let foundMesh = false;
+            let material;
 
-        // todo - clean this up to run more efficiently instead of doing the set manipulation here
-
-        let isStencilEnabled = this.renderer.getContext().getParameter(this.renderer.getContext().STENCIL_BITS) > 0;
-        if (isStencilEnabled && this.maskingSystem != undefined) {
-            console.log('rendering with stencil');
-            // render with stencil passes included
-
-            this.renderer.clearStencil();
-            // Render panels first to set up the stencil buffer
-            for (const panel of this.maskingSystem.panels) {
-                this.renderer.render(panel.object3D, this.user);
+            if (parent.object3D instanceof THREE.Group) {
+                parent.object3D.traverse((child) => {
+                    if (!foundMesh && child instanceof THREE.Mesh) {
+                        material = child.material;
+                        foundMesh = true;
+                    }
+                });
+            } else {
+                material = parent.material;
             }
-            // Render div entities which will be masked
-            // console.log(this.maskingSystem.registry)
+
+            return material;
+        };
+        const setObjectMaterial = (parent, material) => {
+            if (parent.object3D instanceof THREE.Group) {
+                parent.object3D.traverse((child) => {
+                    if (child instanceof THREE.Mesh) {
+                        child.material = material;
+                    }
+                });
+            } else {
+                parent.material = material;
+            }
+        };
+        // Render pass for the torus
+        const renderPanelToTexture = (panelObject3D) => {
+            setObjectMaterial(panelObject3D,stencilRenderMaterial);
+            this.renderer.setRenderTarget(renderTarget);
+            this.renderer.clear();
+            this.renderer.render(myscene2, this.user);
+            this.renderer.setRenderTarget(null);
+            setObjectMaterial(panelObject3D,torusMaterial);
+        }
+
+        if (this.maskingSystem != undefined) {
             for (const entity of this.maskingSystem.registry) {
-                this.renderer.render(entity.object3D, this.user);
+                const object = entity.object3D;
+                object.material = objectShaderMaterial;
+                myscene2.add(object);
             }
 
-            // Render all other items
-            const combinedSet = new Set([
-                ...Array.from(this.maskingSystem.panels).map(item => item.object3D),
-                ...Array.from(this.maskingSystem.registry).map(item => item.object3D)
-            ]);
-            // console.log(this.maskingSystem.panels);
-            // console.log(this.maskingSystem.registry);
-            this.scene.traverse((object) => {
-                if (!combinedSet.has(object)) {
-                    this.renderer.render(object, this.user);
-                }
-            });
-        } else {
-            console.log('rendering as usual');
-            // render as usual
-            this.renderer.render(this.scene, this.user);
+            let singlePanel = null;
+            for (const p of this.maskingSystem.panels.values()) {
+                singlePanel = p.object3D;
+                break;
+            }
+            myscene2.add(singlePanel);
+            renderPanelToTexture(singlePanel);
+            this.renderer.render(myscene2, this.user);
+
+            // this.controls.update();
         }
     }
 }
