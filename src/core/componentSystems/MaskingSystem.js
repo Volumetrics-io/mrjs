@@ -23,13 +23,11 @@ export class MaskingSystem extends MRSystem {
             color:          0xff0000,
             stencilWrite:   true,
             stencilRef:     -1,
-            stencilFunc:    THREE.AlwaysStencilFunc,
+            stencilFunc:    THREE.EqualStencilFunc,
             stencilFail:    THREE.ReplaceStencilOp,
             stencilZFail:   THREE.ReplaceStencilOp,
             stencilZPass:   THREE.ReplaceStencilOp
         });
-        console.log('masking material is made:');
-        console.log(this.maskingMaterial);
         this.stencilMaterial = new THREE.MeshBasicMaterial({
             color:          0x00ff00,
             stencilWrite:   true,
@@ -39,8 +37,6 @@ export class MaskingSystem extends MRSystem {
             stencilZFail:   THREE.KeepStencilOp,
             stencilZPass:   THREE.KeepStencilOp,
         });
-        console.log('stencil material is made:');
-        console.log(this.stencilMaterial);
 
         this.activeRefNumbers = new Set();
         this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
