@@ -43,10 +43,29 @@ const HAND_MAPPING = {
 /**
  * @class MRHand
  * @classdesc Class describing the MRHand object representing the UX of the hand object for MR interactions.
+ * @property {boolean} pinch - Indicates if the hand is in a pinch gesture.
+ * @property {boolean} hover - Indicates if the hand is hovering over an interactive object.
+ * @property {THREE.Vector3} cursorPosition - The position of the cursor in 3D space.
+ * @property {object} jointPhysicsBodies - Physics bodies associated with the hand joints.
+ * @property {THREE.Vector3} identityPosition - A reference position for the hand.
+ * @property {THREE.Vector3} tempJointPosition - Temporary storage for a joint's position.
+ * @property {THREE.Quaternion} tempJointOrientation - Temporary storage for a joint's orientation.
+ * @property {THREE.Quaternion} orientationOffset - An offset for the hand's orientation.
+ * @property {THREE.Vector3} hoverInitPosition - Initial position when hover starts.
+ * @property {THREE.Vector3} hoverPosition - Current position during a hover.
+ * @property {XRControllerModelFactory} controllerModelFactory - Factory for creating controller models.
+ * @property {XRHandModelFactory} handModelFactory - Factory for creating hand models.
+ * @property {THREE.Mesh} mesh - The 3D mesh representing the hand.
+ * @property {THREE.Object3D} controller - The controller object.
+ * @property {THREE.Object3D} grip - The grip associated with the controller.
+ * @property {THREE.Object3D} hand - The 3D object representing the hand.
+ * @property {THREE.Object3D} model - The model of the hand.
  */
 export class MRHand {
     /**
-     * Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model information.
+     * @class
+     * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model
+     * information.
      * @param {object} handedness - enum for the `left`` or `right` hand.
      * @param {object} app - the current MRApp that contains the scene for the hand.
      */
@@ -93,7 +112,8 @@ export class MRHand {
     }
 
     /**
-     * Initializes the physics bodies that the hand represents. Useful for collision detection and UX interactions in MR space.
+     * @function
+     * @description Initializes the physics bodies that the hand represents. Useful for collision detection and UX interactions in MR space.
      * @param {object} app - the current MRApp that contains the scene for the hand.
      */
     initPhysicsBodies(app) {
@@ -137,7 +157,8 @@ export class MRHand {
     }
 
     /**
-     * Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
+     * @function
+     * @description Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
      */
     update() {
         this.updatePhysicsBodies();
@@ -145,7 +166,8 @@ export class MRHand {
     }
 
     /**
-     * If a pinch happens, updates the MR cursor position while sending out an event that movement has occured from this hand.
+     * @function
+     * @description If a pinch happens, updates the MR cursor position while sending out an event that movement has occured from this hand.
      */
     pinchMoved() {
         if (!this.pinch) {
@@ -164,7 +186,8 @@ export class MRHand {
     }
 
     /**
-     * Update function for the physics associated with this hand. Runs for every joint in the system and moves all elements of the hand model.
+     * @function
+     * @description Update function for the physics associated with this hand. Runs for every joint in the system and moves all elements of the hand model.
      */
     updatePhysicsBodies() {
         for (const joint of joints) {
@@ -186,9 +209,10 @@ export class MRHand {
     }
 
     /**
-     * Handles the setMesh callback.
+     * @function
+     * @description Handles the setMesh callback.
      */
-    setMeshImpl() {
+    setMesh = () => {
         if (this.mesh) {
             return;
         }
@@ -198,16 +222,14 @@ export class MRHand {
         }
         this.mesh.material.colorWrite = false;
         this.mesh.renderOrder = 2;
-    }
-    setMesh = () => {
-        return this.setMeshImpl();
     };
 
     /**
-     * Handles the onPinch event
+     * @function
+     * @description Handles the onPinch event
      * @param {event} event - the on pinch event object
      */
-    onPinchImpl(event) {
+    onPinch = (event) => {
         this.pinch = event.type == 'pinchstart';
         const position = this.getCursorPosition();
         document.dispatchEvent(
@@ -219,13 +241,11 @@ export class MRHand {
                 },
             })
         );
-    }
-    onPinch = (event) => {
-        return this.onPinchImpl(event);
     };
 
     /**
-     * Gets the joint orientation of the named joint in the hand.
+     * @function
+     * @description Gets the joint orientation of the named joint in the hand.
      * @param {string} jointName - the string name of the joint whose information is requested.
      * @returns {THREE.Quaternion} - the quaternion representation or the joint orientation.
      */
@@ -247,7 +267,8 @@ export class MRHand {
     }
 
     /**
-     * Gets the joint position of the named joint in the hand.
+     * @function
+     * @description Gets the joint position of the named joint in the hand.
      * @param {string} jointName - the string name of the joint whose information is requested.
      * @returns {THREE.Vector3} - the position representation or the joint orientation.
      */
@@ -279,7 +300,8 @@ export class MRHand {
     }
 
     /**
-     * Gets the expected cursor position of this hand based on the index finger and thumb's tip positions.
+     * @function
+     * @description Gets the expected cursor position of this hand based on the index finger and thumb's tip positions.
      * @returns {number} - the resolved position of the cursor.
      */
     getCursorPosition() {

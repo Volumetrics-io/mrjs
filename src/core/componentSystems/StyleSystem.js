@@ -9,15 +9,16 @@ import { MREntity } from 'mrjs/core/MREntity';
  */
 export class StyleSystem extends MRSystem {
     /**
-     * StyleSystem's default constructor with a starting framerate of 1/15.
+     * @class
+     * @description StyleSystem's default constructor with a starting framerate of 1/15.
      */
     constructor() {
         super(false, 1 / 30);
     }
 
     /**
-     * The generic system update call.
-     * Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.
+     * @function
+     * @description The generic system update call. Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -35,8 +36,8 @@ export class StyleSystem extends MRSystem {
     }
 
     /**
-     * Called when a new entity is added to the scene.
-     * Adds said new entity to the style's system registry.
+     * @function
+     * @description Called when a new entity is added to the scene. Adds said new entity to the style's system registry.
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {

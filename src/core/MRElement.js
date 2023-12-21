@@ -5,7 +5,8 @@
  */
 export class MRElement extends HTMLElement {
     /**
-     * Constructs the basic information needed to separate an `MRElement` from an `HTMLElement`.
+     * @class
+     * @description Constructs the basic information needed to separate an `MRElement` from an `HTMLElement`.
      */
     constructor() {
         super();
@@ -14,13 +15,15 @@ export class MRElement extends HTMLElement {
     }
 
     /**
-     * Adding an entity as a sub-object of this entity.
+     * @function
+     * @description Adding an entity as a sub-object of this entity.
      * @param {object} entity - the entity to be added.
      */
     add(entity) {}
 
     /**
-     * Removing an entity as a sub-object of this entity.
+     * @function
+     * @description Removing an entity as a sub-object of this entity.
      * @param {object} entity - the entity to be removed.
      */
     remove(entity) {}

@@ -15,7 +15,8 @@ import { mrjsUtils } from 'mrjs';
  */
 export class TextSystem extends MRSystem {
     /**
-     * TextSystem's default constructor
+     * @class
+     * @description TextSystem's default constructor
      */
     constructor() {
         super(false, 1 / 30);
@@ -54,7 +55,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call for all text items including updates for style and cleaning of content for special characters.
+     * @function
+     * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -89,10 +91,11 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Updates the style for the text's information based on compStyle and inputted css elements.
+     * @function
+     * @description Updates the style for the text's information based on compStyle and inputted css elements.
      * @param {MRTextEntity} entity - the text entity whose style is being updated
      */
-    updateStyleImpl(entity) {
+    updateStyle = (entity) => {
         const { textObj } = entity;
 
         textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
@@ -114,27 +117,23 @@ export class TextSystem extends MRSystem {
         textObj.maxWidth = entity.width;
 
         textObj.position.z = 0.0001;
-    }
-    updateStyle = (entity) => {
-        return this.updateStyleImpl(entity);
     };
 
     /**
-     * Handles when text is added as an entity updating content and style for the internal textObj appropriately.
+     * @function
+     * @description Handles when text is added as an entity updating content and style for the internal textObj appropriately.
      * @param {MRTextEntity} entity - the text entity being updated
      */
-    addTextImpl(entity) {
+    addText = (entity) => {
         const text = entity.textContent.trim();
         entity.textObj.text = text.length > 0 ? text : ' ';
 
         this.updateStyle(entity);
-    }
-    addText = (entity) => {
-        return this.addTextImpl(entity);
     };
 
     /**
-     * parses the font weight as 'bold', 'normal', etc based on the given weight value
+     * @function
+     * @description parses the font weight as 'bold', 'normal', etc based on the given weight value
      * @param {number} weight - the numerical representation of the font-weight
      * @returns {string} - the enum of 'bold', 'normal', etc
      */
@@ -146,7 +145,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * parses the font size based on its `XXpx` value and converts it to a usable result based on the virtual display resolution
+     * @function
+     * @description parses the font size based on its `XXpx` value and converts it to a usable result based on the virtual display resolution
      * @param {number} val - the value being adjusted
      * @param {object} el - the css element handler
      * @returns {number} - the font size adjusted for the display as expected
@@ -160,7 +160,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Gets the vertical align
+     * @function
+     * @description Gets the vertical align
      * @param {number} verticalAlign - the numerical representation in pixel space of the vertical Align
      * @param {MREntity} entity - the entity whose comp style (css) is relevant
      * @returns {string} - the string representation of the the verticalAlign
@@ -187,7 +188,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Gets the line height
+     * @function
+     * @description Gets the line height
      * @param {number} lineHeight - the numerical representation in pixel space of the line height
      * @param {MREntity} entity - the entity whose comp style (css) is relevant
      * @returns {number} - the numerical representation of the the lineHeight
@@ -203,7 +205,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Gets the text alignment string
+     * @function
+     * @description Gets the text alignment string
      * @param {string} textAlign - handles values for `start`, `end`, `left`, and `right`; otherwise, defaults to the same input as `textAlign`.
      * @returns {string} - the resolved `textAlign`.
      */
@@ -217,7 +220,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Sets the matrial color and opacity based on the css color element
+     * @function
+     * @description Sets the matrial color and opacity based on the css color element
      * @param {object} textObj - the textObj whose color is being updated
      * @param {object} color - the representation of color as `rgba(xxx,xxx,xxx)` or as `#xxx`
      */
@@ -236,8 +240,9 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face
-     * for use by the text object.
+     * @function
+     * @description Based on the given font-face value in the passed cssString, tries to either use by default or download the requested font-face
+     *              for use by the text object.
      * @param {string} cssString - the css string to be parsed for the font-face css value.
      * @returns {object} - json object respresenting the preloaded font-face
      */

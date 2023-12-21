@@ -1,14 +1,22 @@
 import * as THREE from 'three';
 
 /**
- * This construction function creates the UIPlane that is used as the backdrop for most mrjs Panel divs.
+ * @namespace Geometry
+ * @description Useful namespace for helping with Geometry utility functions
+ */
+let Geometry = {};
+
+/**
+ * @function
+ * @memberof Geometry
+ * @description This construction function creates the UIPlane that is used as the backdrop for most mrjs Panel divs.
  * @param {number} width - the expected width of the plane.
  * @param {number} height - the expected height of the plane.
  * @param {number} radius_corner - the expected radius value to curve the planes corners.
  * @param {number} smoothness - the expected smoothness value.
  * @returns {THREE.BufferGeometry} - The completed threejs plane object.
  */
-export function UIPlane(width, height, radius_corner, smoothness) {
+Geometry.UIPlane = function (width, height, radius_corner, smoothness) {
     let w = width == 'auto' ? 1 : width;
     w = w != 0 ? w : 1;
     let h = height == 'auto' ? 1 : height;
@@ -76,4 +84,6 @@ export function UIPlane(width, height, radius_corner, smoothness) {
     geometry.computeVertexNormals();
 
     return geometry;
-}
+};
+
+export { Geometry };

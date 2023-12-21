@@ -7,7 +7,8 @@ import { MRTextEntity } from '../MRTextEntity';
  */
 export default class Button extends MRTextEntity {
     /**
-     * Constructor for the Model entity, does the default.
+     * @class
+     * @description Constructor for the Button entity, does the default.
      */
     constructor() {
         super();

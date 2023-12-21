@@ -6,13 +6,14 @@ import { MREntity } from 'mrjs/core/MREntity';
 
 /**
  * @class ClippingSystem
- * @classdesc This system supports 3D clipping following threejs's clipping planes setup.
- * See https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes for more information.
+ * @classdesc   This system supports 3D clipping following threejs's clipping planes setup.
+ *              See https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes for more information.
  * @augments MRSystem
  */
 export class ClippingSystem extends MRSystem {
     /**
-     * ClippingSystem's default constructor that sets up coplanar points and the default clipping information.
+     * @class
+     * @description ClippingSystem's default constructor that sets up coplanar points and the default clipping information.
      */
     constructor() {
         super(false);
@@ -27,8 +28,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * The generic system update call.
-     * Updates the clipped view of every entity in this system's registry.
+     * @function
+     * @description The generic system update call. Updates the clipped view of every entity in this system's registry.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -39,8 +40,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Helper method for `onNewEntity`.
-     * Actually applies the clipping planes to the material setup for rendering.
+     * @function
+     * @description Helper method for `onNewEntity`. Actually applies the clipping planes to the material setup for rendering.
      * Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
      * @param {object} object - the object3D item to be clipped
      * @param {ClippingGeometry} clipping - the clipping information to be passed to the material
@@ -54,8 +55,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Helper method for `onNewEntity`.
-     * Creates a clipping planes information (still writing this description)
+     * @function
+     * @description Helper method for `onNewEntity`. Creates a clipping planes information (still writing this description)
      * @param {MREntity} entity - the entity to which we're adding the clipping planes information
      */
     addClippingPlanes(entity) {
@@ -84,7 +85,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * When the system swaps to a new entity, this handles applying the clipping planes as needed in the system run.
+     * @function
+     * @description When the system swaps to a new entity, this handles applying the clipping planes as needed in the system run.
      * @param {MREntity} entity - given entity that will be clipped by the planes.
      */
     onNewEntity(entity) {
@@ -106,7 +108,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Updates the stored clipping planes to be based on the passed in entity.
+     * @function
+     * @description Updates the stored clipping planes to be based on the passed in entity.
      * @param {MREntity} entity - given entity that will be used to create the clipping planes positioning.
      */
     updatePlanes(entity) {

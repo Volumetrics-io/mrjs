@@ -30,7 +30,8 @@ window.mobileCheck = function () {
  */
 export class MRApp extends MRElement {
     /**
-     * Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
+     * @class
+     * @description Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
      */
     constructor() {
         super();
@@ -66,7 +67,9 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * The connectedCallback function that runs whenever this entity component becomes connected to something else.
+     * @function Connected
+     * @memberof MRApp
+     * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
         this.init();
@@ -89,7 +92,9 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
+     * @function Disconnected
+     * @memberof MRApp
+     * @description The disconnectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     disconnectedCallback() {
         this.denit();
@@ -103,23 +108,24 @@ export class MRApp extends MRElement {
     //       - controllers
     //       - ?
     /**
-     *
+     * @function
      * @param {object} mutation - TODO
      */
     mutatedAttribute(mutation) {}
 
     /**
-     *
+     * @function
      * @param {object} mutation - TODO
      */
     mutatedChildList(mutation) {}
 
     /**
-     * The mutationCallback function that runs whenever this entity component should be mutated.
+     * @function
+     * @description The mutationCallback function that runs whenever this entity component should be mutated.
      * @param {object} mutationList - the list of update/change/mutation(s) to be handled.
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
-    mutationCallbackImpl(mutationList, observer) {
+    mutationCallback = (mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type === 'childList') {
                 this.mutatedChildList(mutation);
@@ -128,13 +134,11 @@ export class MRApp extends MRElement {
                 this.mutatedAttribute(mutation);
             }
         }
-    }
-    mutationCallback = (mutationList, observer) => {
-        return this.mutationCallbackImpl(mutationList, observer);
     };
 
     /**
-     * Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
+     * @function
+     * @description Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
      */
     init() {
         this.debug = this.getAttribute('debug') ?? false;
@@ -149,17 +153,18 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.String.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.StringUtils.stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
+        mrjsUtils.Physics.initializePhysics();
 
         this.user.position.set(0, 0, 1);
 
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.String.stringToVector(layersString);
+            this.layers = mrjsUtils.StringUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -222,16 +227,17 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.String.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.StringUtils.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);
     }
 
     /**
-     * Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
+     * @function
+     * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
-    initUserImpl() {
+    initUser = () => {
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = window.innerWidth / 1000;
@@ -259,16 +265,14 @@ export class MRApp extends MRElement {
         this.user.add(this.anchor);
 
         this.anchor.position.setZ(-0.5);
-    }
-    initUser = () => {
-        return this.initUserImpl();
     };
 
     /**
-     * Initializes default lighting and shadows for the main scene.
+     * @function
+     * @description Initializes default lighting and shadows for the main scene.
      * @param {object} data - the lights data (color, intensity, shadows, etc)
      */
-    initLightsImpl(data) {
+    initLights = (data) => {
         if (!data.enabled) {
             return;
         }
@@ -290,13 +294,11 @@ export class MRApp extends MRElement {
                 this.scene.add(this.shadowLight);
             }
         }
-    }
-    initLights = (data) => {
-        return this.initLightsImpl(data);
     };
 
     /**
-     * De-initializes rendering and MR
+     * @function
+     * @description De-initializes rendering and MR
      */
     denit() {
         document.body.removeChild(this.renderer.domElement);
@@ -305,7 +307,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Registers a new system addition to the MRApp engine.
+     * @function
+     * @description Registers a new system addition to the MRApp engine.
      * @param {MRSystem} system - the system to be added.
      */
     registerSystem(system) {
@@ -313,7 +316,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Unregisters a system from the MRApp engine.
+     * @function
+     * @description Unregisters a system from the MRApp engine.
      * @param {MRSystem} system - the system to be removed.
      */
     unregisterSystem(system) {
@@ -321,7 +325,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Adding an entity as an object in this MRApp engine's scene.
+     * @function
+     * @description Adding an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
@@ -329,7 +334,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Removing an entity as an object in this MRApp engine's scene.
+     * @function
+     * @description Removing an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
@@ -337,7 +343,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
+     * @function
+     * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
         switch (this.cameraOptions.camera) {
@@ -361,8 +368,8 @@ export class MRApp extends MRElement {
     }
 
     /**
-     * Default function header needed by threejs.
-     * The render function that is called during ever frame. Calls every systems' update function.
+     * @function
+     * @description Default function header needed by threejs. The render function that is called during ever frame. Calls every systems' update function.
      * @param {number} timeStamp - timeStamp of the current frame.
      * @param {object} frame - given frame information to be used for any feature changes
      */

@@ -11,25 +11,8 @@ import { mrjsUtils } from 'mrjs';
  */
 export class Image extends MRDivEntity {
     /**
-     * Calculates the width of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved width
-     */
-    get width() {
-        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.width);
-        return width > 0 ? width : super.width;
-    }
-
-    /**
-     * Calculates the height of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get height() {
-        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.height);
-        return height > 0 ? height : super.height;
-    }
-
-    /**
-     * Constructs a base image entity using a UIPlane and other 3D elements as necessary.
+     * @class
+     * @description Constructs a base image entity using a UIPlane and other 3D elements as necessary.
      */
     constructor() {
         super();
@@ -45,7 +28,28 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
+     * @function
+     * @description Calculates the width of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved width
+     */
+    get width() {
+        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.width);
+        return width > 0 ? width : super.width;
+    }
+
+    /**
+     * @function
+     * @description Calculates the height of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get height() {
+        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.height);
+        return height > 0 ? height : super.height;
+    }
+
+    /**
+     * @function
+     * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
         this.img = document.createElement('img');
@@ -63,7 +67,8 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * Updates the style for the Image's border and background based on compStyle and inputted css elements.
+     * @function
+     * @description Updates the style for the Image's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
         super.updateStyle();
@@ -73,7 +78,8 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
+     * @function
+     * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
@@ -86,12 +92,13 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * computes the width and height values considering the value of object-fit
+     * @function
+     * @description computes the width and height values considering the value of object-fit
      */
     computeObjectFitDimensions() {
         switch (this.compStyle.objectFit) {
             case 'fill':
-                return { width: this.offsetWidth, height: this.offsetHeight };
+                this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
 
             case 'contain':
             case 'scale-down': {
@@ -130,7 +137,8 @@ export class Image extends MRDivEntity {
     }
 
     /**
-     * Calculates the texture UV transformation change based on the image's aspect ratio.
+     * @function
+     * @description Calculates the texture UV transformation change based on the image's aspect ratio.
      * @param {object} texture - the texture to augment
      * @param {number} aspect - a given expected aspect ratio
      */

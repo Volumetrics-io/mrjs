@@ -11,7 +11,8 @@ import { mrjsUtils } from 'mrjs';
  */
 export class MRDivEntity extends MREntity {
     /**
-     * Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @function
+     * @description Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved height
      */
     get height() {
@@ -25,7 +26,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Calculates the width of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
+     * @function
+     * @description Calculates the width of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.
      * @returns {number} - the resolved width
      */
     get width() {
@@ -39,7 +41,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
+     * @class
+     * @description Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
      */
     constructor() {
         super();
@@ -66,7 +69,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Adding an entity as a sub-object of this panel (for example an mr-model, button, etc).
+     * @function
+     * @description Adding an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
@@ -83,7 +87,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Removing an entity as a sub-object of this panel (for example an mr-model, button, etc).
+     * @function
+     * @description Removing an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be removed added.
      */
     remove(entity) {
@@ -97,14 +102,16 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
+     * @function
+     * @description Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
      */
     connected() {
         this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, [0], 18);
     }
 
     /**
-     * Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
+     * @function
+     * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
      */
     updatePhysicsData() {
         this.physics.halfExtents = new THREE.Vector3();
@@ -121,7 +128,8 @@ export class MRDivEntity extends MREntity {
     // TODO - can we move this to utils/Css.js ? ---- for border radius (which returns percentages instead of pixel values)
     // leave here for now - to be moved after michael change
     /**
-     * Converts the dom string to a 3D numerical value
+     * @function
+     * @description Converts the dom string to a 3D numerical value
      * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
      * @returns {number} - the 3D numerical represenation of the dom css value
      */
@@ -149,7 +157,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Updates the style for the UIPlane's border and background based on compStyle and inputted css elements.
+     * @function
+     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
         // background
@@ -158,7 +167,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Sets the border of the UI based on compStyle and inputted css elements.
+     * @function
+     * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
@@ -166,7 +176,8 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * Sets the background based on compStyle and inputted css elements.
+     * @function
+     * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground() {
         const color = this.compStyle.backgroundColor;
