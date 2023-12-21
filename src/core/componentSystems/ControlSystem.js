@@ -43,15 +43,15 @@ export class ControlSystem extends MRSystem {
         mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
 
         this.cursor = this.cursorHover;
+        this.down = false
 
-        this.app.renderer.domElement.addEventListener('click', this.onClick);
         this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
 
-        this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
-        this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
-        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('touch-start', this.onMouseDown);
+        this.app.renderer.domElement.addEventListener('touch-end', this.onMouseUp);
+        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
     }
 
     /**
@@ -76,6 +76,12 @@ export class ControlSystem extends MRSystem {
      */
     mouseOverImpl(event) {
 
+        if(this.down) {
+            this.cursor = this.cursorClick;
+        } else {
+            this.cursor = this.cursorHover;
+        }
+
         this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
@@ -94,15 +100,15 @@ export class ControlSystem extends MRSystem {
     onMouseDownImpl(event) {
         event.stopPropagation();
         this.removeCursor();
-
+        this.down = true
         this.cursor = this.cursorClick;
-
         this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
+
     }
     onMouseDown = (event) => {
         return this.onMouseDownImpl(event);
@@ -115,7 +121,15 @@ export class ControlSystem extends MRSystem {
     onMouseUpImpl(event) {
         event.stopPropagation();
         this.removeCursor();
+        this.down = false
         this.cursor = this.cursorHover;
+
+        this.hit = this.pixelRayCast(event);
+
+        if (this.hit != null) {
+            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
+            this.cursor.setTranslation({ ...this.hitPosition }, true);
+        }
     }
     onMouseUp = (event) => {
         return this.onMouseUpImpl(event);

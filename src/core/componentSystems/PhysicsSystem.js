@@ -167,21 +167,11 @@ export class PhysicsSystem extends MRSystem {
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.app.focusEntity = entity;
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
+            entity.classList.remove('hover')
 
-            // Contact information can be read from `manifold`.
-            entity.dispatchEvent(
-                new CustomEvent('click', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
             entity.dispatchEvent(
                 new CustomEvent('touch-start', {
                     bubbles: true,
@@ -208,6 +198,8 @@ export class PhysicsSystem extends MRSystem {
         this.tempLocalPosition.set(0, 0, 0);
         this.tempWorldPosition.set(0, 0, 0);
         entity.touch = false;
+        entity.click()
+
         entity.dispatchEvent(
             new CustomEvent('touch-end', {
                 bubbles: true,
@@ -327,7 +319,7 @@ export class PhysicsSystem extends MRSystem {
         switch (physicsData.type) {
             case 'box':
             case 'ui':
-                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
+                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);    
             default:
                 return null;
         }

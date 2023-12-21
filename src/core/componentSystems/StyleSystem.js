@@ -30,7 +30,8 @@ export class StyleSystem extends MRSystem {
                 entity.object3D.position.setZ(entity.compStyle.zIndex / 1000);
             }
 
-            entity.updateStyle();
+            entity instanceof MRDivEntity ? entity.updateStyle() : null;
+            
         }
     }
 
@@ -40,6 +41,6 @@ export class StyleSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        entity instanceof MRDivEntity ? this.registry.add(entity) : null
+        this.registry.add(entity)
     }
 }

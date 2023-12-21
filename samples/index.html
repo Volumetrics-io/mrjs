@@ -9,11 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app debug="true">
+   <mr-app>
     <mr-panel class="layout">
-      <mr-button class="title" >
-        MR.js
-      </mr-button>
+      <mr-text class="title" >
+        mr.js
+      </mr-text>
       <mr-text class="sub-title">
         Building for Mixed Reality, in Mixed Reality.
       </mr-text>
@@ -39,7 +39,8 @@
       </mr-text>
 
       <mr-div class="logo">
-        <mr-model  
+        <mr-model
+          id="logo-model"  
           src="./assets/models/logo.stl" 
           data-comp-instancing="type: animate;"
           data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
@@ -47,9 +48,14 @@
         </mr-model>
       </mr-div>
 
-      <mr-text class="company" >
+      <mr-button onclick="spin()" class="spin-button">
+        spin
+      </mr-button>
+
+      <mr-a href="https://volumetrics.io" class="company">
         volumetrics
-      </mr-text>
+      </mr-a>
+      
     </mr-panel>
 
       <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
@@ -64,5 +70,16 @@
 
   <footer>
     <script src="./assets/js/AnimationSystem.js"></script>
+    <script>
+
+      let model = document.querySelector('#logo-model')
+
+      function spin() {
+        let animationComp = model.components.get('animation')
+        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+      }
+
+      
+    </script>
   </footer>
 </html>

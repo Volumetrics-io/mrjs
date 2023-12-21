@@ -43,8 +43,6 @@ export class MRApp extends MRElement {
         this.isMobile = window.mobileCheck(); // resolves true/false
         global.inXR = false;
 
-        this.focusEntity = null;
-
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();

@@ -6,6 +6,16 @@ import { MRTextEntity } from '../MRTextEntity';
  * @augments MRDivEntity
  */
 export default class Button extends MRTextEntity {
+
+    get height(){
+        let result = super.height
+        return result > 0.03 ? result : 0.03
+    }
+
+    get width(){
+        let result = super.width
+        return result > 0.03 ? result : 0.03
+    }
     /**
      * Constructor for the Model entity, does the default.
      */
