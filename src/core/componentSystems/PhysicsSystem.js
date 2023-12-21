@@ -244,7 +244,7 @@ export class PhysicsSystem extends MRSystem {
         );
 
         entity.dispatchEvent(new MouseEvent('mouseleave'));
-    }
+    };
 
     /**
      * @function

@@ -126,7 +126,7 @@ export class ControlSystem extends MRSystem {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.cursor.setTranslation({ ...this.hitPosition }, true);
         }
-    }
+    };
 
     /**
      * @function
