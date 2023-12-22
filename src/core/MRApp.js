@@ -3,7 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { ClearPass } from 'three/addons/postprocessing/ClearPass.js';
-import { ClearMaskPass } from 'three/addons/postprocessing/ClearMaskPass.js';
+// import { OutPass } from 'three/addons/postprocessing/OutPass.js';
+// import { ClearMaskPass } from 'three/addons/postprocessing/ClearMaskPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 
 
@@ -33,111 +34,111 @@ window.mobileCheck = function () {
     return mrjsUtils.Display.mobileCheckFunction();
 };
 
-// Render target for texture1
-global.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-const myscene = new THREE.Scene();
+// // Render target for texture1
+// global.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+// const myscene = new THREE.Scene();
 
-const torusGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
-const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-// Torus material for rendering to texture
-const stencilRenderMaterial = new THREE.ShaderMaterial({
-    vertexShader: `
-        void main() {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        void main() {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
-        }
-    `,
-});
+// const torusGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+// const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+// const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+// // Torus material for rendering to texture
+// const stencilRenderMaterial = new THREE.ShaderMaterial({
+//     vertexShader: `
+//         void main() {
+//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//         }
+//     `,
+//     fragmentShader: `
+//         void main() {
+//             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
+//         }
+//     `,
+// });
 
-// Torus material
-const torusMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// // Torus material
+// const torusMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
-// Shader material for cube and sphere
-const shaderMaterialUniforms = {
-    texture1: { value: global.renderTarget.texture },
-    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-};
+// // Shader material for cube and sphere
+// const shaderMaterialUniforms = {
+//     texture1: { value: global.renderTarget.texture },
+//     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+// };
 
-const objectShaderMaterial = {
-    uniforms: shaderMaterialUniforms,
-    vertexShader: `
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        uniform sampler2D texture1;
-        uniform vec2 resolution;
+// const objectShaderMaterial = {
+//     uniforms: shaderMaterialUniforms,
+//     vertexShader: `
+//         void main() {
+//             vUv = uv;
+//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//         }
+//     `,
+//     fragmentShader: `
+//         uniform sampler2D texture1;
+//         uniform vec2 resolution;
 
-        void main() {
-            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-            if (textureColor.r < 0.1) {
-                discard;
-            } else {
-                gl_FragColor = vec4(0, 0, 0, 1);
-            }
-        }
-    `
-};
+//         void main() {
+//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+//             if (textureColor.r < 0.1) {
+//                 discard;
+//             } else {
+//                 gl_FragColor = vec4(0, 0, 0, 1);
+//             }
+//         }
+//     `
+// };
 
-// Cube and sphere materials
-const cubeMaterial = new THREE.ShaderMaterial({
-    ...objectShaderMaterial,
-    fragmentShader: `
-        uniform sampler2D texture1;
-        uniform vec2 resolution;
+// // Cube and sphere materials
+// const cubeMaterial = new THREE.ShaderMaterial({
+//     ...objectShaderMaterial,
+//     fragmentShader: `
+//         uniform sampler2D texture1;
+//         uniform vec2 resolution;
 
-        void main() {
-            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-            if (textureColor.r < 0.1) {
-                discard;
-            } else {
-                gl_FragColor = vec4(1, 0, 0, 1); // Red color
-            }
-        }
-    `
-});
+//         void main() {
+//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+//             if (textureColor.r < 0.1) {
+//                 discard;
+//             } else {
+//                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
+//             }
+//         }
+//     `
+// });
 
-const sphereMaterial = new THREE.ShaderMaterial({
-    ...objectShaderMaterial,
-    fragmentShader: `
-        uniform sampler2D texture1;
-        uniform vec2 resolution;
+// const sphereMaterial = new THREE.ShaderMaterial({
+//     ...objectShaderMaterial,
+//     fragmentShader: `
+//         uniform sampler2D texture1;
+//         uniform vec2 resolution;
 
-        void main() {
-            vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-            if (textureColor.r < 0.1) {
-                discard;
-            } else {
-                gl_FragColor = vec4(0, 0, 1, 1); // Blue color
-            }
-        }
-    `
-});
+//         void main() {
+//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+//             if (textureColor.r < 0.1) {
+//                 discard;
+//             } else {
+//                 gl_FragColor = vec4(0, 0, 1, 1); // Blue color
+//             }
+//         }
+//     `
+// });
 
-const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+// const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+// const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+// const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-// Positioning objects
-sphere.position.x = -1.5;
-cube.position.x = 1.5;
+// // Positioning objects
+// sphere.position.x = -1.5;
+// cube.position.x = 1.5;
 
-// Adding objects to the scene
-myscene.add(torus, sphere, cube);
+// // Adding objects to the scene
+// myscene.add(torus, sphere, cube);
 
-// Debugging plane for texture1
-const planeGeometry = new THREE.PlaneGeometry(1, 1);
-const planeMaterial = new THREE.MeshBasicMaterial({ map: global.renderTarget.texture });
-const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-plane.position.set(-2, 2, 0);
-myscene.add(plane);
+// // Debugging plane for texture1
+// const planeGeometry = new THREE.PlaneGeometry(1, 1);
+// const planeMaterial = new THREE.MeshBasicMaterial({ map: global.renderTarget.texture });
+// const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+// plane.position.set(-2, 2, 0);
+// myscene.add(plane);
 
 ///----------
 
@@ -575,49 +576,76 @@ export class MRApp extends MRElement {
 
         if (this.maskingSystem == undefined) { return; }
 
-        composer.addPass( clearPass );
-        composer.addPass( maskPass of (panel scene, camera) );
-        composer.addPass( texture of entities rendered that we want to show through this scene );
-        composer.addPass( clearMaskPass );
-        composer.addPass( outputPass );
+        // scene pass of panel to render white
+        // send that pass as a texture to the entities being rendered
+        //
+        // scene pass with panel masking the entities
+        // 
+
+        const camera = this.user;
+
+        const composer = new EffectComposer(this.renderer);
+
+        const mainScene = this.scene;
+        // create separate scenes of proper items
+        const entitiesObjects = [];
+        for (const entity of this.maskingSystem.registry.values()) {
+            entitiesObjects.push(entity.object3D);
+        }
+        const panelsObjects = [];
+        for (const panel of this.maskingSystem.panels.values()) {
+            panelsObjects.push(panel.object3D);
+            break; // only one for now
+        }
 
         // render torus offscreen
-        const torusRenderMaterial = new THREE.ShaderMaterial({
-        vertexShader: `
-            void main() {
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-        `,
-        fragmentShader: `
-            void main() {
-                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
-            }
-        `,
-        });
+        // const torusRenderMaterial = new THREE.ShaderMaterial({
+        // vertexShader: `
+        //     precision highp float;
+        //     void main() {
+        //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //     }
+        // `,
+        // fragmentShader: `
+        //     precision highp float;
+        //     void main() {
+        //         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render white
+        //     }
+        // `,
+        // });
+        // torusRenderMaterial.side = THREE.DoubleSide;
         var torusTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        const torusScene = new THREE.Scene();
-        let singlePanel = null;
-        for (const p of this.maskingSystem.panels.values()) {
-            singlePanel = p.object3D;
-            break;
-        }
-        const actualMaterial = mrjsUtils.Material.getObjectMaterial(singlePanel);
-        singlePanel.material = torusRenderMaterial;
-        torusScene.add(singlePanel);
-        var composer = new EffectComposer(this.renderer, torusTarget);
+        // let singlePanel = null;
+        // let actualMaterial = null;
 
-        composer.render();
-        singlePanel.material = actualMaterial; 
-
-        this.renderer.setRenderTarget(torusTarget);
-        this.renderer.clear();
-        this.renderer.render(torusScene, this.user);
-        this.renderer.setRenderTarget(null);
+        // const panelsScene = new THREE.Scene();
+        // for (const p of panelsObjects) {
+        //     actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
+        //     p.material = torusRenderMaterial;
+        //     panelsScene.add(p);
+        //     singlePanel = p;
+        // }
         
+        var composer1 = new EffectComposer(this.renderer, torusTarget);
+        const composer1renderPass = new RenderPass(mainScene, camera);//panelsScene, camera);
+        composer1.addPass(composer1renderPass);
+        composer1.render();
 
-        // post processing for the scene with torus
-        var mainScenePass = new RenderPass(this.scene, this.user);
-        composer.addPass(mainScenePass);
+
+
+        //singlePanel.material = actualMaterial; 
+
+        // todo - fix or refactor in a bit
+        // when done with them add them back to the main scene since there is
+        // a circular dependency issue atm with cloning a group (this might be
+        // due to how we're setting up our panels for now).
+        // this.scene.add(...entitiesObjects);
+        // this.scene.add(...panelsObjects);
+
+        // // post processing for the scene with torus
+        // var mainScenePass = new RenderPass(mainScene, camera);
+        // composer.addPass(mainScenePass);
+        // composer.render();
 
         // const shaderMaterialUniforms = {
         //     texture1: { value: torusTarget.texture },
@@ -626,33 +654,30 @@ export class MRApp extends MRElement {
         // const objectShaderMaterial = {
         //     uniforms: shaderMaterialUniforms,
         //     vertexShader: `
-        //         varying vec2 vUv;
         //         void main() {
-        //             vUv = uv;
         //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         //         }
         //     `,
         //     fragmentShader: `
         //         uniform sampler2D texture1;
         //         uniform vec2 resolution;
-        //         varying vec2 vUv;
 
         //         void main() {
         //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-        //             if (textureColor.r < 0.1) {
-        //                 gl_FragColor = vec4(1, 1, 0, 1); // Yellow // discard;
-        //             } else {
-        //                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
-        //             }
+        //             gl_FragColor = textureColor;
+        //             // if (textureColor.r < 0.1) {
+        //             //     gl_FragColor = vec4(1, 1, 0, 1); // Yellow // keep
+        //             // } else {
+        //             //     gl_FragColor = vec4(1, 0, 0, 1); // Red // discard;
+        //             // }
         //         }
         //     `
         // };
         // var customPass = new ShaderPass(objectShaderMaterial);
-        //composer.addPass(customPass);
-        const outputPass = new OutputPass();
-        composer.add(outputPass);
+        // composer.addPass(customPass);
+        // composer.render();
 
-        composer.render();
+        // composer1.render();
     }
 }
 
