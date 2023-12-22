@@ -51,17 +51,7 @@ export class MaskingSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        // technically no update is needed here. just a render target change
-        // TODO - should that happen here or in the actual renderer?
-        // should make this easier - sort all objects in the register by the panel being masked for better efficiency with the render target change
-        //
-        // // Render passes
-        // renderer.setRenderTarget(renderTargetMask);
-        // renderer.clear();
-        // renderer.render(scene, camera);
-        // renderer.setRenderTarget(renderTargetObject);
-        // renderer.clear();
-        // renderer.render(scene, camera);
+        // handle panel render to texture steps
     }
 
     /**
@@ -70,6 +60,74 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
+
+        // Shader material for cube and sphere
+        // const shaderMaterialUniforms = {
+        //     texture1: { value: global.renderTarget.texture },
+        //     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        // };
+
+        // const objectShaderMaterial = {
+        //     uniforms: shaderMaterialUniforms,
+        //     vertexShader: `
+        //         varying vec2 vUv;
+        //         void main() {
+        //             vUv = uv;
+        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
+
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 discard;
+        //             } else {
+        //                 gl_FragColor = vec4(0, 0, 0, 1);
+        //             }
+        //         }
+        //     `
+        // };
+
+        // // Cube and sphere materials
+        // const cubeMaterial = new THREE.ShaderMaterial({
+        //     ...objectShaderMaterial,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
+
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 discard;
+        //             } else {
+        //                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
+        //             }
+        //         }
+        //     `
+        // });
+
+        // const sphereMaterial = new THREE.ShaderMaterial({
+        //     ...objectShaderMaterial,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
+
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 discard;
+        //             } else {
+        //                 gl_FragColor = vec4(0, 0, 1, 1); // Blue color
+        //             }
+        //         }
+        //     `
+        // });
 
         const updateLiveMaterial = (material, texture, resolution) => {
             material.onBeforeCompile = (shader) => {
@@ -113,157 +171,47 @@ if (textureColor.r < 0.1) {
                 console.log('Fragment Shader:', shader.fragmentShader);
             };
 
+            // Cube and sphere materials
+            // const determinedMaterial = new THREE.ShaderMaterial({
+            //     ...object.material,
+            //     fragmentShader: `
+            //         uniform sampler2D texture1;
+            //         uniform vec2 resolution;
+            //         varying vec2 vUv;
+
+            //         void main() {
+            //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+            //             if (textureColor.r < 0.1) {
+            //                 gl_FragColor = vec4(1, 1, 0, 1); // yellow color // discard
+            //             } else {
+            //                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
+            //             }
+            //         }
+            //     `
+            // });
+            // material = determinedMaterial;
+
             // This is necessary to update the material with the new shader
             material.needsUpdate = true;
             return material;
         };
 
-        // todo - the below order of the logic is odd - would be nice to clean up to be panel first and entity children based off it
-
-        console.log
         if (entity instanceof Panel) {
-            this.panels.add(entity.background);
-            return;
+            this.panels.add(entity);
+
+            // handle panel material
+            
+            
+            // handle all children MRDivEntities
+            entity.traverse((child) => {
+                if (child instanceof MRDivEntity && !child.ignoreStencil && entity.contains(child)) {
+                    let material = mrjsUtils.Material.grabObjectMaterial(child.object3D);
+                    material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                    mrjsUtils.Material.setObjectMaterial(child.object3D, material)
+                    this.registry.add(child);
+                }
+            });
         }
-        if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
-            const parent = entity.parent;
-            if (parent instanceof Panel && parent.contains(entity)) {
-                let object = entity.object3D;
-                let material = mrjsUtils.Material.grabObjectMaterial(object);
-                material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                object = mrjsUtils.Material.setObjectMaterial(object, material)
-                this.registry.add(object);
-            }
-        }
+        // otherwise ignore.
     }
-
-    // /**
-    //  * Applies mask material to an entity. If the entity is a Group, apply to all Mesh children.
-    //  * @param entity
-    //  * @param stencilRef
-    //  */
-    // setMaskMaterial(entity, stencilRef) {
-    //     console.log('this.maskingMaterial');
-    //     console.log(this.maskingMaterial);
-    //     const applyMask = (obj) => {
-    //         obj.material.stencilWrite = this.maskingMaterial.stencilWrite;
-    //         obj.material.stencilRef = stencilRef;
-    //         obj.material.stencilFunc = this.maskingMaterial.stencilFunc;
-    //         obj.material.stencilFail = this.maskingMaterial.stencilFail;
-    //         obj.material.stencilZFail = this.maskingMaterial.stencilZFail;
-    //         obj.material.stencilZPass = this.maskingMaterial.stencilZPass;
-    //     };
-
-    //     if (entity.object3D instanceof THREE.Group) {
-    //         entity.object3D.traverse(child => {
-    //             if (child instanceof THREE.Mesh) {
-    //                 applyMask(child);
-    //             }
-    //         });
-    //     } else {
-    //         applyMask(entity.object3D);
-    //     }
-    // }
-
-    // /**
-    //  * Applies stencil material to a panel. If the panel is a Group, apply to all Mesh children.
-    //  * @param panel
-    //  * @param stencilRef
-    //  */
-    // setStencilMaterial(panel, stencilRef) {
-    //     const applyStencil = (obj) => {
-    //         obj.material.stencilWrite = this.stencilMaterial.stencilWrite;
-    //         obj.material.stencilRef = stencilRef;
-    //         obj.material.stencilFunc = this.stencilMaterial.stencilFunc;
-    //         obj.material.stencilFail = this.stencilMaterial.stencilFail;
-    //         obj.material.stencilZFail = this.stencilMaterial.stencilZFail;
-    //         obj.material.stencilZPass = this.stencilMaterial.stencilZPass;
-    //     };
-
-    //     if (panel.object3D instanceof THREE.Group) {
-    //         panel.object3D.traverse(child => {
-    //             if (child instanceof THREE.Mesh) {
-    //                 applyStencil(child);
-    //             }
-    //         });
-    //     } else {
-    //         applyStencil(panel.object3D);
-    //     }
-    // }
-
-    // /**
-    //  *
-    //  */
-    // pickNewActiveRefNumber() {
-    //     // we dont want to allow 0 or -1 as values.
-    //     // 0 is default by webgl and -1 we want to leave as 'un-setup'
-    //     const allowedMin = 1;
-
-    //     // If no active numbers, return the minimum allowed value.
-    //     if (this.activeRefNumbers.size === 0) {
-    //         return allowedMin;
-    //     }
-
-    //     // Find the smallest number greater than the minimum allowed value that is not already in the set.
-    //     let currentNumber = allowedMin;
-    //     while (this.activeRefNumbers.has(currentNumber)) {
-    //         ++currentNumber;
-    //     }
-
-    //     return currentNumber;
-    // }
-
-    // /**
-    //  *
-    //  * @param entity
-    //  */
-    // setupMaterials(entity) {
-    //     const grabStencilRef = (parent) => {
-    //         let foundMesh = false;
-    //         let stencilRef;
-
-    //         if (parent.object3D instanceof THREE.Group) {
-    //             parent.object3D.traverse((child) => {
-    //                 if (!foundMesh && child instanceof THREE.Mesh) {
-    //                     stencilRef = child.material.stencilRef;
-    //                     foundMesh = true;
-    //                 }
-    //             });
-    //         } else {
-    //             stencilRef = parent.material.stencilRef;
-    //         }
-
-    //         return stencilRef;
-    //     };
-
-    //     // Setup it and its children to mask based on its parent panel
-    //     // If the parent panel is already set to stencil for the mask properly, use its pre-existing
-    //     // ref number; otherwise, create a new ref number.
-    //     let parent = entity.parent;
-    //     if (parent instanceof Panel && parent.contains(entity)) {
-    //         // ---- Handle parent and parent info ---- //
-    //         // try to grab the parent panel's stencil ref info or make a new one. If parent already
-    //         // has one, it does not need to have its stencil material reset.
-    //         let stencilRef = grabStencilRef(parent);
-    //         if (stencilRef == undefined || stencilRef == 0 || stencilRef == -1) {
-    //             // For this case we need to pick a new ref number. We're avoiding the two noted numbers:
-    //             //  0: because it is the default stencil ref
-    //             // -1: because that is our default as 'un-setup'
-    //             stencilRef = this.pickNewActiveRefNumber();
-    //             this.activeRefNumbers.add(stencilRef);
-    //             // set the panel to stencil properly
-    //             this.setStencilMaterial(parent, stencilRef);
-    //         }
-
-    //         // ---- Handle self and child info ---- //
-    //         // make sure the entity and all ui children are masked by the panel
-    //         this.setMaskMaterial(entity, stencilRef);
-    //         entity.object3D.traverse((child) => {
-    //             if (child instanceof MRDivEntity && !child.ignoreStencil) {
-    //                 this.setMaskMaterial(child, stencilRef);
-    //                 console.log('setting the mask material ')
-    //             }
-    //         });
-    //     }
-    // }
 }

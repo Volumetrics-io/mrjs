@@ -539,23 +539,14 @@ export class MRApp extends MRElement {
             mrjsUtils.Material.setObjectMaterial(panelObject3D,torusMaterial);
         }
 
-
         if (this.maskingSystem != undefined) {
             for (const entity of this.maskingSystem.registry) {
-                // console.log(entity);
-                // let object = entity.object3D;
-                
-                // local setup here
-                // let material = mrjsUtils.Material.grabObjectMaterial(object);
-                // material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                // object = mrjsUtils.Material.setObjectMaterial(object, material)
-
-                myscene2.add(entity);
+                myscene2.add(entity.object3D);
             }
 
             let singlePanel = null;
             for (const p of this.maskingSystem.panels.values()) {
-                singlePanel = p;
+                singlePanel = p.object3D;
                 break;
             }
             myscene2.add(singlePanel);
