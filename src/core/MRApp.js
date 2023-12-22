@@ -25,7 +25,7 @@ window.mobileCheck = function () {
 };
 
 // Render target for texture1
-const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+global.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 const myscene = new THREE.Scene();
 
 const torusGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
@@ -50,7 +50,7 @@ const torusMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 // Shader material for cube and sphere
 const shaderMaterialUniforms = {
-    texture1: { value: renderTarget.texture },
+    texture1: { value: global.renderTarget.texture },
     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
 };
 
@@ -125,7 +125,7 @@ myscene.add(torus, sphere, cube);
 
 // Debugging plane for texture1
 const planeGeometry = new THREE.PlaneGeometry(1, 1);
-const planeMaterial = new THREE.MeshBasicMaterial({ map: renderTarget.texture });
+const planeMaterial = new THREE.MeshBasicMaterial({ map: global.renderTarget.texture });
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.position.set(-2, 2, 0);
 myscene.add(plane);
@@ -525,12 +525,14 @@ export class MRApp extends MRElement {
 
         // ----- Actually Render ----- //
         const myscene2 = new THREE.Scene();
+
+        myscene2.add(plane);
         
 
         // Render pass for the torus
         const renderPanelToTexture = (panelObject3D) => {
             mrjsUtils.Material.setObjectMaterial(panelObject3D,stencilRenderMaterial);
-            this.renderer.setRenderTarget(renderTarget);
+            this.renderer.setRenderTarget(global.renderTarget);
             this.renderer.clear();
             this.renderer.render(myscene2, this.user);
             this.renderer.setRenderTarget(null);
@@ -540,12 +542,15 @@ export class MRApp extends MRElement {
 
         if (this.maskingSystem != undefined) {
             for (const entity of this.maskingSystem.registry) {
-                let object = entity.object3D;
-                // object.material = objectShaderMaterial; // -- old setup
-                let material = mrjsUtils.Material.grabObjectMaterial(object);
-                material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                object = mrjsUtils.Material.setObjectMaterial(object, material)
-                // myscene2.add(object);
+                // console.log(entity);
+                // let object = entity.object3D;
+                
+                // local setup here
+                // let material = mrjsUtils.Material.grabObjectMaterial(object);
+                // material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                // object = mrjsUtils.Material.setObjectMaterial(object, material)
+
+                myscene2.add(entity);
             }
 
             let singlePanel = null;
@@ -553,7 +558,7 @@ export class MRApp extends MRElement {
                 singlePanel = p.object3D;
                 break;
             }
-            myscene2.add(singlePanel);
+            // myscene2.add(singlePanel);
             renderPanelToTexture(singlePanel);
             this.renderer.render(myscene2, this.user);
         }

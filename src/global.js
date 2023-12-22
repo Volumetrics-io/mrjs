@@ -25,3 +25,5 @@ global.inXR = false;
  * @description UI needs to be scaled down in XR, 1:1 scale is huuuuge
  */
 global.XRScale = 1 / 2;
+
+global.renderTarget = null;

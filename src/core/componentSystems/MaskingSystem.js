@@ -70,11 +70,8 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        console.log('in masking system, new entity is: ');
 
         const updateLiveMaterial = (material, texture, resolution) => {
-            console.log('in updateLiveMaterial');
-            console.log(material);
             material.onBeforeCompile = (shader) => {
                 // Add uniforms
                 shader.uniforms.texture1 = { value: texture };
@@ -83,16 +80,33 @@ export class MaskingSystem extends MRSystem {
                 // Inject custom code into the fragment shader
                 shader.fragmentShader = shader.fragmentShader.replace(
                     '#include <common>',
-                    `uniform sampler2D texture1;
-                     uniform vec2 resolution;
-                     #include <common>`
+                    `
+// ::BEGIN MRJS MODIFIED::
+uniform sampler2D texture1;
+uniform vec2 resolution;
+#include <common>
+// ::END MRJS MODIFIED::
+                    `
                 );
 
                 // Modify the main gl_FragColor assignment
                 // Here we use a regular expression to find the right place to inject the code
                 shader.fragmentShader = shader.fragmentShader.replace(
-                    /vec4\( outgoingLight, diffuseColor\.a \)/g,
-                    `( texture2D(texture1, gl_FragCoord.xy / resolution).r < 0.1 ? discard : vec4(0, 0, 0, 1) )`
+                    '#include <output_fragment>',
+                    `
+// ::BEGIN MRJS MODIFIED::
+// Modify the gl_FragColor
+vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+if (textureColor.r < 0.1) {
+    gl_FragColor = vec4(1, 1, 0, 1); // Green color // discard;
+} else {
+    gl_FragColor = vec4(1, 0, 0, 1); // Red color
+}
+
+// Include the Three.js output_fragment
+#include <output_fragment>
+// ::END MRJS MODIFIED::
+                    `
                 );
 
                 console.log('hiiiiii');
@@ -109,15 +123,15 @@ export class MaskingSystem extends MRSystem {
 
         if (entity instanceof Panel) {
             this.panels.add(entity);
-            return;
-        }
-        if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
+        } else if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
             const parent = entity.parent;
             if (parent instanceof Panel && parent.contains(entity)) {
-                let material = grabObjectMaterial(object);
-                material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                object = setObjectMaterial(object, material)
-                this.registry.add(entity);
+                let object = entity.object3D;
+                console.log(object instanceof mrjsUtils);
+                let material = mrjsUtils.Material.grabObjectMaterial(object);
+                material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                object = mrjsUtils.Material.setObjectMaterial(object, material)
+                this.registry.add(object);
             }
         }
     }

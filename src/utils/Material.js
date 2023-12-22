@@ -1,8 +1,19 @@
 import * as THREE from 'three';
 
+/**
+ * @namespace Material
+ * @description Useful namespace for helping with Materials and threejs utility functions
+ */
+let Material = {};
+
 // todo - follow same convention as loadModel.js
 
-const grabObjectMaterial = (parent) => {
+/**
+ * @function
+ * @memberof Material
+ * @description ...
+ */
+Material.grabObjectMaterial = function (parent) {
     let foundMesh = false;
     let material;
 
@@ -19,7 +30,13 @@ const grabObjectMaterial = (parent) => {
 
     return material;
 };
-const setObjectMaterial = (parent, material) => {
+
+/**
+ * @function
+ * @memberof Material
+ * @description ...
+ */
+Material.setObjectMaterial = function (parent, material) {
     if (parent instanceof THREE.Group) {
         parent.traverse((child) => {
             if (child instanceof THREE.Mesh) {
@@ -31,3 +48,5 @@ const setObjectMaterial = (parent, material) => {
     }
     return parent;
 };
+
+export { Material };
