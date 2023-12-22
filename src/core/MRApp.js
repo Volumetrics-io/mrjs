@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { ClearPass } from 'three/addons/postprocessing/ClearPass.js';
+import { MaskPass } from 'three/addons/postprocessing/MaskPass.js';
+
 // import { OutPass } from 'three/addons/postprocessing/OutPass.js';
 // import { ClearMaskPass } from 'three/addons/postprocessing/ClearMaskPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -169,7 +171,7 @@ export class MRApp extends MRElement {
         this.systems = new Set();
         this.scene = new THREE.Scene();
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, stencil: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.session;
 
         this.lighting = {
@@ -541,6 +543,22 @@ export class MRApp extends MRElement {
         // render the whole scene
         // take this pass and use it to determine if entities should be drawn or see thru
 
+        if (this.maskingSystem == undefined) { return; }
+
+        // const camera = this.user;
+
+        // const mainScene = this.scene;
+        // // create separate scenes of proper items
+        // const entitiesObjects = [];
+        // for (const entity of this.maskingSystem.registry.values()) {
+        //     entitiesObjects.push(entity.object3D);
+        // }
+        // const panelsObjects = [];
+        // for (const panel of this.maskingSystem.panels.values()) {
+        //     panelsObjects.push(panel.object3D);
+        //     break; // only one for now
+        // }
+
         // const myscene2 = new THREE.Scene();
         // myscene2.add(plane);
         // // Render pass for the torus
@@ -584,9 +602,8 @@ export class MRApp extends MRElement {
 
         const camera = this.user;
 
-        const composer = new EffectComposer(this.renderer);
+        // const composer = new EffectComposer(this.renderer);
 
-        const mainScene = this.scene;
         // create separate scenes of proper items
         const entitiesObjects = [];
         for (const entity of this.maskingSystem.registry.values()) {
@@ -618,64 +635,82 @@ export class MRApp extends MRElement {
         // let singlePanel = null;
         // let actualMaterial = null;
 
-        // const panelsScene = new THREE.Scene();
-        // for (const p of panelsObjects) {
-        //     actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
-        //     p.material = torusRenderMaterial;
-        //     panelsScene.add(p);
-        //     singlePanel = p;
-        // }
+        const panelsScene = new THREE.Scene();
+        for (const p of panelsObjects) {
+            // actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
+            // p.material = torusRenderMaterial;
+            panelsScene.add(p);
+            // singlePanel = p;
+        }
         
         var composer1 = new EffectComposer(this.renderer, torusTarget);
-        const composer1renderPass = new RenderPass(mainScene, camera);//panelsScene, camera);
+        const composer1renderPass = new RenderPass(panelsScene, camera);
         composer1.addPass(composer1renderPass);
         composer1.render();
 
-
-
-        //singlePanel.material = actualMaterial; 
+        var entitiesTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const entitiesScene = new THREE.Scene();
+        for (const p of entitiesObjects) {
+            // actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
+            // p.material = torusRenderMaterial;
+            entitiesScene.add(p);
+            // singlePanel = p;
+        }
+        
+        var composer3 = new EffectComposer(this.renderer, entitiesTarget);
+        const composer3renderPass = new RenderPass(panelsScene, camera);
+        composer3.addPass(composer1renderPass);
+        composer3.render();
 
         // todo - fix or refactor in a bit
         // when done with them add them back to the main scene since there is
         // a circular dependency issue atm with cloning a group (this might be
         // due to how we're setting up our panels for now).
-        // this.scene.add(...entitiesObjects);
-        // this.scene.add(...panelsObjects);
+        this.scene.add(...entitiesObjects);
+        this.scene.add(...panelsObjects);
 
         // // post processing for the scene with torus
-        // var mainScenePass = new RenderPass(mainScene, camera);
-        // composer.addPass(mainScenePass);
-        // composer.render();
+        var mainSceneTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
-        // const shaderMaterialUniforms = {
-        //     texture1: { value: torusTarget.texture },
-        //     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-        // };
-        // const objectShaderMaterial = {
-        //     uniforms: shaderMaterialUniforms,
-        //     vertexShader: `
-        //         void main() {
-        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        //         }
-        //     `,
-        //     fragmentShader: `
-        //         uniform sampler2D texture1;
-        //         uniform vec2 resolution;
+        var composer2 = new EffectComposer(this.renderer, mainSceneTarget);
+        var mainScenePass = new RenderPass(this.scene, camera);
+        composer2.addPass(mainScenePass);
+        composer2.render();
 
-        //         void main() {
-        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-        //             gl_FragColor = textureColor;
-        //             // if (textureColor.r < 0.1) {
-        //             //     gl_FragColor = vec4(1, 1, 0, 1); // Yellow // keep
-        //             // } else {
-        //             //     gl_FragColor = vec4(1, 0, 0, 1); // Red // discard;
-        //             // }
-        //         }
-        //     `
-        // };
-        // var customPass = new ShaderPass(objectShaderMaterial);
-        // composer.addPass(customPass);
-        // composer.render();
+        var composer = new EffectComposer(this.renderer);
+        const shaderMaterialUniforms = {
+            sceneTexture: { value: mainScenePass.texture },
+            panelTexture: { value: torusTarget.texture },
+            entitiesTexture: { value: entitiesTarget.texture },
+            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        };
+        const objectShaderMaterial = new THREE.ShaderMaterial({
+            uniforms: shaderMaterialUniforms,
+            vertexShader: `
+                void main() {
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D sceneTexture;
+                uniform sampler2D panelTexture;
+                uniform sampler2D entitiesTexture;
+                uniform vec2 resolution;
+
+                void main() {
+                    vec4 textureColor = texture2D(sceneTexture, gl_FragCoord.xy / resolution);
+                    gl_FragColor = textureColor;
+                    // if (textureColor.r < 0.1) {
+                    //     gl_FragColor = vec4(1, 1, 0, 1); // Yellow // keep
+                    // } else {
+                    //     gl_FragColor = vec4(1, 0, 0, 1); // Red // discard;
+                    // }
+                }
+            `
+        });
+        const shaderPass = new ShaderPass(objectShaderMaterial);
+        composer.addPass(shaderPass);
+        composer.render();
 
         // composer1.render();
     }
