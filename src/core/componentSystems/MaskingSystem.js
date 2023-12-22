@@ -112,7 +112,6 @@ if (textureColor.r < 0.1) {
                 console.log('hiiiiii');
                 console.log('Fragment Shader:', shader.fragmentShader);
             };
-            console.log('done with updateLiveMaterial');
 
             // This is necessary to update the material with the new shader
             material.needsUpdate = true;
@@ -121,13 +120,15 @@ if (textureColor.r < 0.1) {
 
         // todo - the below order of the logic is odd - would be nice to clean up to be panel first and entity children based off it
 
+        console.log
         if (entity instanceof Panel) {
-            this.panels.add(entity);
-        } else if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
+            this.panels.add(entity.background);
+            return;
+        }
+        if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
             const parent = entity.parent;
             if (parent instanceof Panel && parent.contains(entity)) {
                 let object = entity.object3D;
-                console.log(object instanceof mrjsUtils);
                 let material = mrjsUtils.Material.grabObjectMaterial(object);
                 material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
                 object = mrjsUtils.Material.setObjectMaterial(object, material)

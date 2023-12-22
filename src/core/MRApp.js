@@ -555,10 +555,10 @@ export class MRApp extends MRElement {
 
             let singlePanel = null;
             for (const p of this.maskingSystem.panels.values()) {
-                singlePanel = p.object3D;
+                singlePanel = p;
                 break;
             }
-            // myscene2.add(singlePanel);
+            myscene2.add(singlePanel);
             renderPanelToTexture(singlePanel);
             this.renderer.render(myscene2, this.user);
         }
