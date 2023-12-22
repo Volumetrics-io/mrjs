@@ -1,9 +1,9 @@
-import { MRTextEntity } from './MRTextEntity';
+import { MRTextEntity } from '../MRTextEntity';
 
 /**
  * @class A
  * @classdesc 3D representation of a hyperlink. `mr-a`
- * @augments MRDivEntity
+ * @augments MRTextEntity
  */
 export default class MRHyperlink extends MRTextEntity {
     /**

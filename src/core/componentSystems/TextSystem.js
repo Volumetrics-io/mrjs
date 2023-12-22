@@ -47,7 +47,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
+     * @function
+     * @description When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {

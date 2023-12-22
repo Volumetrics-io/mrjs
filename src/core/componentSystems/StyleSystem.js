@@ -10,7 +10,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 export class StyleSystem extends MRSystem {
     /**
      * @class
-     * @description StyleSystem's default constructor with a starting framerate of 1/15.
+     * @description StyleSystem's default constructor with a starting framerate of 1/30.
      */
     constructor() {
         super(false, 1 / 30);

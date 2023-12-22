@@ -3,7 +3,7 @@ import { MRTextEntity } from '../MRTextEntity';
 /**
  * @class Button
  * @classdesc 3D representation of a Button mimicking the html version. `mr-button`
- * @augments MRDivEntity
+ * @augments MRTextEntity
  */
 export default class Button extends MRTextEntity {
     /**

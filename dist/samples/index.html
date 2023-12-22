@@ -77,6 +77,8 @@
 
       let model = document.querySelector('#logo-model')
 
+
+      // increases the maxspeed and acceleration of the animation component on the logo
       function spin() {
         let animationComp = model.components.get('animation')
         model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
