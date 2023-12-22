@@ -44,15 +44,14 @@ export class TextSystem extends MRSystem {
                 );
             });
         });
+    }
 
-        const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-textarea');
-        for (const entity of entities) {
-            this.registry.add(entity);
-            this.addText(entity);
-            entity.textObj.sync(() => {
-                entity.needsUpdate = true;
-            });
-        }
+    /**
+     * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
+     * @param {MREntity} entity - the entity being set up
+     */
+    onNewEntity(entity) {
+        entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
     /**
@@ -87,12 +86,7 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
-            if (entity.needsUpdate) {
-                entity.needsUpdate = false;
-                entity.textObj.sync(() => {
-                    entity.textObj.position.setY(entity.height / 2);
-                });
-            }
+            entity.textObj.position.setY(entity.height / 2);
         }
     }
 
