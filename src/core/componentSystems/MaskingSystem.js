@@ -71,15 +71,54 @@ export class MaskingSystem extends MRSystem {
      */
     onNewEntity(entity) {
         console.log('in masking system, new entity is: ');
-        // console.log(entity);
+
+        const updateLiveMaterial = (material, texture, resolution) => {
+            console.log('in updateLiveMaterial');
+            console.log(material);
+            material.onBeforeCompile = (shader) => {
+                // Add uniforms
+                shader.uniforms.texture1 = { value: texture };
+                shader.uniforms.resolution = { value: resolution };
+
+                // Inject custom code into the fragment shader
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <common>',
+                    `uniform sampler2D texture1;
+                     uniform vec2 resolution;
+                     #include <common>`
+                );
+
+                // Modify the main gl_FragColor assignment
+                // Here we use a regular expression to find the right place to inject the code
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    /vec4\( outgoingLight, diffuseColor\.a \)/g,
+                    `( texture2D(texture1, gl_FragCoord.xy / resolution).r < 0.1 ? discard : vec4(0, 0, 0, 1) )`
+                );
+
+                console.log('hiiiiii');
+                console.log('Fragment Shader:', shader.fragmentShader);
+            };
+            console.log('done with updateLiveMaterial');
+
+            // This is necessary to update the material with the new shader
+            material.needsUpdate = true;
+            return material;
+        };
+
+        // todo - the below order of the logic is odd - would be nice to clean up to be panel first and entity children based off it
+
         if (entity instanceof Panel) {
             this.panels.add(entity);
             return;
         }
         if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
-            // console.log('masking and handling current entity');
-            // this.setupMaterials(entity);
-            this.registry.add(entity);
+            const parent = entity.parent;
+            if (parent instanceof Panel && parent.contains(entity)) {
+                let material = grabObjectMaterial(object);
+                material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                object = setObjectMaterial(object, material)
+                this.registry.add(entity);
+            }
         }
     }
 

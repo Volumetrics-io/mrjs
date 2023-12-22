@@ -57,7 +57,6 @@ const shaderMaterialUniforms = {
 const objectShaderMaterial = {
     uniforms: shaderMaterialUniforms,
     vertexShader: `
-        varying vec2 vUv;
         void main() {
             vUv = uv;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -66,7 +65,6 @@ const objectShaderMaterial = {
     fragmentShader: `
         uniform sampler2D texture1;
         uniform vec2 resolution;
-        varying vec2 vUv;
 
         void main() {
             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
@@ -85,7 +83,6 @@ const cubeMaterial = new THREE.ShaderMaterial({
     fragmentShader: `
         uniform sampler2D texture1;
         uniform vec2 resolution;
-        varying vec2 vUv;
 
         void main() {
             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
@@ -103,7 +100,6 @@ const sphereMaterial = new THREE.ShaderMaterial({
     fragmentShader: `
         uniform sampler2D texture1;
         uniform vec2 resolution;
-        varying vec2 vUv;
 
         void main() {
             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
@@ -529,49 +525,27 @@ export class MRApp extends MRElement {
 
         // ----- Actually Render ----- //
         const myscene2 = new THREE.Scene();
-        const grabObjectMaterial = (parent) => {
-            let foundMesh = false;
-            let material;
+        
 
-            if (parent.object3D instanceof THREE.Group) {
-                parent.object3D.traverse((child) => {
-                    if (!foundMesh && child instanceof THREE.Mesh) {
-                        material = child.material;
-                        foundMesh = true;
-                    }
-                });
-            } else {
-                material = parent.material;
-            }
-
-            return material;
-        };
-        const setObjectMaterial = (parent, material) => {
-            if (parent.object3D instanceof THREE.Group) {
-                parent.object3D.traverse((child) => {
-                    if (child instanceof THREE.Mesh) {
-                        child.material = material;
-                    }
-                });
-            } else {
-                parent.material = material;
-            }
-        };
         // Render pass for the torus
         const renderPanelToTexture = (panelObject3D) => {
-            setObjectMaterial(panelObject3D,stencilRenderMaterial);
+            mrjsUtils.Material.setObjectMaterial(panelObject3D,stencilRenderMaterial);
             this.renderer.setRenderTarget(renderTarget);
             this.renderer.clear();
             this.renderer.render(myscene2, this.user);
             this.renderer.setRenderTarget(null);
-            setObjectMaterial(panelObject3D,torusMaterial);
+            mrjsUtils.Material.setObjectMaterial(panelObject3D,torusMaterial);
         }
+
 
         if (this.maskingSystem != undefined) {
             for (const entity of this.maskingSystem.registry) {
-                const object = entity.object3D;
-                object.material = objectShaderMaterial;
-                myscene2.add(object);
+                let object = entity.object3D;
+                // object.material = objectShaderMaterial; // -- old setup
+                let material = mrjsUtils.Material.grabObjectMaterial(object);
+                material = updateLiveMaterial(material, renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                object = mrjsUtils.Material.setObjectMaterial(object, material)
+                // myscene2.add(object);
             }
 
             let singlePanel = null;
@@ -582,8 +556,6 @@ export class MRApp extends MRElement {
             myscene2.add(singlePanel);
             renderPanelToTexture(singlePanel);
             this.renderer.render(myscene2, this.user);
-
-            // this.controls.update();
         }
     }
 }
