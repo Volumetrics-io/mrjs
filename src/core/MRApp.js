@@ -44,8 +44,6 @@ export class MRApp extends MRElement {
         this.isMobile = window.mobileCheck(); // resolves true/false
         global.inXR = false;
 
-        this.focusEntity = null;
-
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
@@ -286,7 +284,7 @@ export class MRApp extends MRElement {
         if (!this.isMobile) {
             if (data.shadows) {
                 this.shadowLight = new THREE.PointLight(data.color);
-                this.shadowLight.position.set(0, 0, 0);
+                this.shadowLight.position.set(-1, 1, 1);
                 this.shadowLight.intensity = data.intensity;
                 this.shadowLight.castShadow = data.shadows;
                 this.shadowLight.shadow.radius = data.radius;

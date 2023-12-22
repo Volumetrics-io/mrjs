@@ -11,13 +11,34 @@
   <body >
    <mr-app>
     <mr-panel class="layout">
+      <mr-div id="navbar">
+        <mr-a href="https://volumetrics.io" class="company">
+          volumetrics
+        </mr-a>
+        <mr-div class="logo">
+          <mr-model
+            id="logo-model"  
+            src="./assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+          </mr-model>
+        </mr-div>
+        <mr-button onclick="spin()" class="spin-button">
+          spin
+        </mr-button>
+      </mr-div>
+
       <mr-text class="title" >
-        MR.js
+        mr.js
       </mr-text>
-      <mr-text class="sub-title">
-        Building for Mixed Reality, in Mixed Reality.
-      </mr-text>
-      <mr-img class="headset" src="./assets/textures/headset-keyboard.jpeg"></mr-img>
+      
+      <mr-div class="headset">
+        <mr-img src="./assets/textures/headset-keyboard.jpeg"></mr-img>
+        <mr-text class="sub-title">
+          Building for Mixed Reality, in Mixed Reality.
+        </mr-text>
+      </mr-div>
       <mr-text class="paragraph">
       Ex veniam sunt laboris magna commodo minim eiusmod consequat dolore velit ipsum dolore. Sit nisi id tempor occaecat aute commodo nulla fugiat eu ex sit anim duis. Non eiusmod dolore exercitation adipisicing laboris elit commodo enim proident et.
 
@@ -37,19 +58,7 @@
 
       Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
       </mr-text>
-
-      <mr-div class="logo">
-        <mr-model  
-          src="./assets/models/logo.stl" 
-          data-comp-instancing="type: animate;"
-          data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
-          data-rotation="-22.91 17.1887 45.8366">
-        </mr-model>
-      </mr-div>
-
-      <mr-text class="company" >
-        volumetrics
-      </mr-text>
+      
     </mr-panel>
 
       <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
@@ -64,5 +73,18 @@
 
   <footer>
     <script src="./assets/js/AnimationSystem.js"></script>
+    <script>
+
+      let model = document.querySelector('#logo-model')
+
+
+      // increases the maxspeed and acceleration of the animation component on the logo
+      function spin() {
+        let animationComp = model.components.get('animation')
+        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+      }
+
+      
+    </script>
   </footer>
 </html>

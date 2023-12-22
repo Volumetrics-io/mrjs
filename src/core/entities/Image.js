@@ -64,10 +64,6 @@ export class Image extends MRDivEntity {
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
         this.texture = new THREE.TextureLoader().load(this.img.src);
         this.object3D.material.map = this.texture;
-
-        // slight bump needed to avoid overlapping, glitchy visuals.
-        // I'm sure there's a better solution lol.
-        this.object3D.position.z += 0.0001;
     }
 
     /**

@@ -20,7 +20,7 @@ export class MRDivEntity extends MREntity {
 
         if (global.inXR) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
-            return (rect.height / window.innerHeight) * this.windowVerticalScale;
+            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
         }
         return (rect.height / window.innerHeight) * global.viewPortHeight;
     }
@@ -35,7 +35,7 @@ export class MRDivEntity extends MREntity {
 
         if (global.inXR) {
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
-            return (rect.width / window.innerWidth) * this.windowHorizontalScale;
+            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowHorizontalScale;
         }
         return (rect.width / window.innerWidth) * global.viewPortWidth;
     }
@@ -83,8 +83,7 @@ export class MRDivEntity extends MREntity {
         }
 
         // slight bump needed to avoid overlapping, glitchy visuals.
-        // I'm sure there's a better solution lol.
-        entity.object3D.position.z += 0.01;
+        entity.object3D.position.z = this.object3D.position.z + 0.001;
     }
 
     /**
@@ -187,21 +186,22 @@ export class MRDivEntity extends MREntity {
                 .substring(5, color.length - 1)
                 .split(',')
                 .map((part) => parseFloat(part.trim()));
-            if (rgba[3] == 0) {
-                return;
-            }
-
             this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            this.background.material.transparent = true;
-            this.background.material.opacity = rgba[3];
+            if (rgba[3] == 0) {
+                this.background.visible = false;
+            } else {
+                this.background.material.transparent = true;
+                this.background.material.opacity = rgba[3];
+                this.background.visible = true;
+            }
         } else {
             this.background.material.color.setStyle(color);
+            this.background.visible = true;
         }
 
         if (this.compStyle.opacity < 1) {
             this.background.material.opacity = this.compStyle.opacity;
         }
-        this.background.visible = true;
     }
 }
 
