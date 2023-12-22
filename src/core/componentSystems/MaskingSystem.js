@@ -52,7 +52,28 @@ export class MaskingSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         // handle panel render to texture steps
+        // let singlePanel = null;
+        // for (const p of this.maskingSystem.panels.values()) {
+        //     singlePanel = p.object3D;
+        //     break;
+        // }
+        // const scene = new THREE.scene();
+        // mrjsUtils.Material.setObjectMaterial(singlePanel,stencilRenderMaterial);
+        // this.renderer.setRenderTarget(global.renderTarget);
+        // this.renderer.clear();
+        // this.renderer.render(scene, this.user);
+        // this.renderer.setRenderTarget(null);
+        // mrjsUtils.Material.setObjectMaterial(panelObject3D,torusMaterial);
+
+        // // update children for the new uniform texture
+        // yourMesh.material.uniforms.yourUniform.value = global.renderTarget.texture;
+
+
+       
     }
+
+    // texture1UniformHandle = null;
+    // resolutionUniformHandle = null;
 
     /**
      * @function
@@ -129,74 +150,63 @@ export class MaskingSystem extends MRSystem {
         //     `
         // });
 
-        const updateLiveMaterial = (material, texture, resolution) => {
-            material.onBeforeCompile = (shader) => {
-                // Add uniforms
-                shader.uniforms.texture1 = { value: texture };
-                shader.uniforms.resolution = { value: resolution };
+//         const updateLiveMaterial = (material, texture, resolution) => {
+//             material.onBeforeCompile = (shader) => {
+//                 // Add uniforms
+//                 shader.uniforms.texture1 = { value: texture };
+//                 this.texture1UniformHandle = shader.uniforms.texture1; // for updating later
+//                 console.log('this.texture1UniformHandle is : ');
+//                 console.log(this.texture1UniformHandle);
+//                 shader.uniforms.resolution = { value: resolution };
+//                 this.resolutionUniformHandle = shader.uniforms.resolution; // for updating later
+//                 console.log('this.resolutionUniformHandle is : ');
+//                 console.log(this.resolutionUniformHandle);
 
-                // Inject custom code into the fragment shader
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <common>',
-                    `
-// ::BEGIN MRJS MODIFIED::
-uniform sampler2D texture1;
-uniform vec2 resolution;
-#include <common>
-// ::END MRJS MODIFIED::
-                    `
-                );
+//                 // Inject custom code into the fragment shader
+//                 shader.fragmentShader = shader.fragmentShader.replace(
+//                     '#include <common>',
+//                     `
+// // ::BEGIN MRJS MODIFIED::
+// uniform sampler2D texture1;
+// uniform vec2 resolution;
+// #include <common>
+// // ::END MRJS MODIFIED::
+//                     `
+//                 );
 
-                // Modify the main gl_FragColor assignment
-                // Here we use a regular expression to find the right place to inject the code
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <output_fragment>',
-                    `
-// ::BEGIN MRJS MODIFIED::
-// Modify the gl_FragColor
-vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-if (textureColor.r < 0.1) {
-    gl_FragColor = vec4(1, 1, 0, 1); // Green color // discard;
-} else {
-    gl_FragColor = vec4(1, 0, 0, 1); // Red color
-}
+//                 // Modify the main gl_FragColor assignment
+//                 // Here we use a regular expression to find the right place to inject the code
+//                 shader.fragmentShader = shader.fragmentShader.replace(
+//                     '#include <output_fragment>',
+//                     `
+// // ::BEGIN MRJS MODIFIED::
+// // Modify the gl_FragColor
+// vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+// if (textureColor.r < 0.1) {
+//     gl_FragColor = vec4(1, 1, 0, 1); // Green color // discard;
+// } else {
+//     gl_FragColor = vec4(1, 0, 0, 1); // Red color
+// }
 
-// Include the Three.js output_fragment
-#include <output_fragment>
-// ::END MRJS MODIFIED::
-                    `
-                );
+// // Include the Three.js output_fragment
+// #include <output_fragment>
+// // ::END MRJS MODIFIED::
+//                     `
+//                 );
 
-                console.log('hiiiiii');
-                console.log('Fragment Shader:', shader.fragmentShader);
-            };
+//                 console.log('hiiiiii');
+//                 console.log('Fragment Shader:', shader.fragmentShader);
+//             };
 
-            // Cube and sphere materials
-            // const determinedMaterial = new THREE.ShaderMaterial({
-            //     ...object.material,
-            //     fragmentShader: `
-            //         uniform sampler2D texture1;
-            //         uniform vec2 resolution;
-            //         varying vec2 vUv;
-
-            //         void main() {
-            //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-            //             if (textureColor.r < 0.1) {
-            //                 gl_FragColor = vec4(1, 1, 0, 1); // yellow color // discard
-            //             } else {
-            //                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
-            //             }
-            //         }
-            //     `
-            // });
-            // material = determinedMaterial;
-
-            // This is necessary to update the material with the new shader
-            material.needsUpdate = true;
-            return material;
-        };
+//             // This is necessary to update the material with the new shader
+//             material.needsUpdate = true;
+//             return material;
+//         };
 
         if (entity instanceof Panel) {
+            console.log('on new entity that is a panel');
+            console.log(entity);
+            console.log('added to panels listing');
             this.panels.add(entity);
 
             // handle panel material
@@ -204,10 +214,13 @@ if (textureColor.r < 0.1) {
             
             // handle all children MRDivEntities
             entity.traverse((child) => {
-                if (child instanceof MRDivEntity && !child.ignoreStencil && entity.contains(child)) {
-                    let material = mrjsUtils.Material.grabObjectMaterial(child.object3D);
-                    material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                    mrjsUtils.Material.setObjectMaterial(child.object3D, material)
+                console.log('traversing panel for children');
+                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+                    console.log('on new child to add to registry, child is:');
+                    console.log(child);
+                    // let material = mrjsUtils.Material.getObjectMaterial(child.object3D);
+                    // material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
+                    // mrjsUtils.Material.setObjectMaterial(child.object3D, material)
                     this.registry.add(child);
                 }
             });

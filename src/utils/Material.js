@@ -13,7 +13,7 @@ let Material = {};
  * @memberof Material
  * @description ...
  */
-Material.grabObjectMaterial = function (parent) {
+Material.getObjectMaterial = function (parent) {
     let foundMesh = false;
     let material;
 

@@ -1,5 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { ClearPass } from 'three/addons/postprocessing/ClearPass.js';
+import { ClearMaskPass } from 'three/addons/postprocessing/ClearMaskPass.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+
+
+
+
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 
 import Stats from 'stats.js';
@@ -524,35 +533,126 @@ export class MRApp extends MRElement {
         }
 
         // ----- Actually Render ----- //
-        const myscene2 = new THREE.Scene();
 
-        myscene2.add(plane);
+
+        // goal:
+        // render panel to offscreen - white is panel, black otherwise
+        // render the whole scene
+        // take this pass and use it to determine if entities should be drawn or see thru
+
+        // const myscene2 = new THREE.Scene();
+        // myscene2.add(plane);
+        // // Render pass for the torus
+        // const renderPanelToTexture = (panelObject3D) => {
+        //     mrjsUtils.Material.setObjectMaterial(panelObject3D,stencilRenderMaterial);
+        //     this.renderer.setRenderTarget(global.renderTarget);
+        //     this.renderer.clear();
+        //     this.renderer.render(myscene2, this.user);
+        //     this.renderer.setRenderTarget(null);
+        //     mrjsUtils.Material.setObjectMaterial(panelObject3D,torusMaterial);
+        // }
+
+        // if (this.maskingSystem != undefined) {
+        //     for (const entity of this.maskingSystem.registry) {
+        //         let material = mrjsUtils.Material.getObjectMaterial(entity.object3D);
+        //         console.log(material);
+        //         console.log(entity);
+        //         this.maskingSystem.texture1UniformHandle.value = global.renderTarget.texture;
+        //         this.maskingSystem.resolutionUniformHandle.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
+        //         mrjsUtils.Material.setObjectMaterial(entity.object3D, material);
+        //         myscene2.add(entity.object3D);
+        //     }
+
+        //     let singlePanel = null;
+        //     for (const p of this.maskingSystem.panels.values()) {
+        //         singlePanel = p.object3D;
+        //         break;
+        //     }
+        //     myscene2.add(singlePanel);
+        //     renderPanelToTexture(singlePanel);
+        //     this.renderer.render(myscene2, this.user);
+        // }
+
+        if (this.maskingSystem == undefined) { return; }
+
+        composer.addPass( clearPass );
+        composer.addPass( maskPass of (panel scene, camera) );
+        composer.addPass( texture of entities rendered that we want to show through this scene );
+        composer.addPass( clearMaskPass );
+        composer.addPass( outputPass );
+
+        // render torus offscreen
+        const torusRenderMaterial = new THREE.ShaderMaterial({
+        vertexShader: `
+            void main() {
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            void main() {
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
+            }
+        `,
+        });
+        var torusTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const torusScene = new THREE.Scene();
+        let singlePanel = null;
+        for (const p of this.maskingSystem.panels.values()) {
+            singlePanel = p.object3D;
+            break;
+        }
+        const actualMaterial = mrjsUtils.Material.getObjectMaterial(singlePanel);
+        singlePanel.material = torusRenderMaterial;
+        torusScene.add(singlePanel);
+        var composer = new EffectComposer(this.renderer, torusTarget);
+
+        composer.render();
+        singlePanel.material = actualMaterial; 
+
+        this.renderer.setRenderTarget(torusTarget);
+        this.renderer.clear();
+        this.renderer.render(torusScene, this.user);
+        this.renderer.setRenderTarget(null);
         
 
-        // Render pass for the torus
-        const renderPanelToTexture = (panelObject3D) => {
-            mrjsUtils.Material.setObjectMaterial(panelObject3D,stencilRenderMaterial);
-            this.renderer.setRenderTarget(global.renderTarget);
-            this.renderer.clear();
-            this.renderer.render(myscene2, this.user);
-            this.renderer.setRenderTarget(null);
-            mrjsUtils.Material.setObjectMaterial(panelObject3D,torusMaterial);
-        }
+        // post processing for the scene with torus
+        var mainScenePass = new RenderPass(this.scene, this.user);
+        composer.addPass(mainScenePass);
 
-        if (this.maskingSystem != undefined) {
-            for (const entity of this.maskingSystem.registry) {
-                myscene2.add(entity.object3D);
-            }
+        // const shaderMaterialUniforms = {
+        //     texture1: { value: torusTarget.texture },
+        //     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        // };
+        // const objectShaderMaterial = {
+        //     uniforms: shaderMaterialUniforms,
+        //     vertexShader: `
+        //         varying vec2 vUv;
+        //         void main() {
+        //             vUv = uv;
+        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
 
-            let singlePanel = null;
-            for (const p of this.maskingSystem.panels.values()) {
-                singlePanel = p.object3D;
-                break;
-            }
-            myscene2.add(singlePanel);
-            renderPanelToTexture(singlePanel);
-            this.renderer.render(myscene2, this.user);
-        }
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 gl_FragColor = vec4(1, 1, 0, 1); // Yellow // discard;
+        //             } else {
+        //                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
+        //             }
+        //         }
+        //     `
+        // };
+        // var customPass = new ShaderPass(objectShaderMaterial);
+        //composer.addPass(customPass);
+        const outputPass = new OutputPass();
+        composer.add(outputPass);
+
+        composer.render();
     }
 }
 
