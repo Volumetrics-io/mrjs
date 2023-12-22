@@ -106,98 +106,71 @@
     padding-top: 1rem;
   }
 
-  .layout {
-    background-color: var(--color-paper);
-    padding-top: 6vw;
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 1vw;
-    grid-auto-rows: minmax(100px, auto);
+  mr-text {
+    font-family: 'Roboto';
+    line-height: 100%;
+    font-size: 16px;
   }
 
-  #navbar {
-    background-color: rgb(51, 50, 50);
-    border-radius: 1%;
-    position:fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 4;
+  .layout {
     display: grid;
-    grid-template-columns: 1fr 2fr 0.5fr 0.5fr;
-    padding: 10px;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
   }
   
   .title {
     margin: 0 auto;
     font-family: var(--font-title);
     font-weight: 500;
-    font-size: 8vw;
+    font-size: 5vw;
     line-height: 100%;
     color: rgba(24, 24, 24, 0.75);
     font-variation-settings: 'opsz' 80, 'wght' 550;
     font-weight: bold;
-    align-self: center;
+
     grid-column: 2;
 
   }
 
-  .company {
-    font-family: var(--font-title);
-    font-size: 4vw;
-    line-height: 100%;
-    color: rgb(55, 55, 55);
-    align-self: center;
-    grid-column: 1;
-  }
-
-  .spin-button {
-    margin: auto;
-    grid-column: 4;
-    align-self: end;
-    font-family: var(--font-title);
-    font-size: 4vw;
-    line-height: 100%;
-  }
-
-  .logo {
-    grid-column: 3;
-    z-index: 25;
-  }
-
-  #logo-model{
-    scale: 0.0005;
-  }
-
   .sub-title {
     font-family: var(--font-title);
-    font-size: 6vw;
-    margin-bottom: 1vh;
+    font-size: 3vw;
     line-height: 100%;
-    text-align: center;
     color: rgba(24, 24, 24, 0.75);
-    position: absolute;
-    bottom: 10px;
-    left: 0;
+
+    text-align: center;
+    grid-row:2;
+    grid-column: 2;
 
   }
 
   .headset {
-    grid-row: 2 / 5;
+    width: 100%;
+    object-fit: contain;
+    grid-row: 3 / 6;
     grid-column: 1 / -1;
-    object-fit: cover;
   }
 
-  /* .headset > mr-img {
-    width: 100%;
-    object-fit: cover;
-  } */
-
   .paragraph {
-    font-family: 'Roboto';
-    line-height: 100%;
-    font-size: 16px;
+    grid-column: 2;
+  }
 
-    grid-row:5;
+  .logo {
+    grid-column: 2;
+    scale: 0.001;
+    z-index: 100;
+  }
+
+  .company {
+    margin: 0 auto;
+    font-family: var(--font-title);
+    font-weight: 500;
+    font-size: 5vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+    font-variation-settings: 'opsz' 80, 'wght' 550;
+    font-weight: bold;
+
     grid-column: 2;
   }

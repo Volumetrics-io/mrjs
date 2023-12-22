@@ -13,60 +13,6 @@ mr-panel {
     border-radius: 2%;
 }
 
-mr-div, mr-button, mr-img, mr-a {
-    display: inline-block;
-    position: relative;
-    z-index: inherit;
-}
-
-mr-img {
-    /* z-index: inherit; */
-    width: 100%;
-    object-fit: cover;
-}
-
-mr-button {
-    padding: 5px;
-    background-color: #8a8a8a;
-    border-radius: 0.5%;
-    /* animation: back 0.25s ease-out forwards; */
-}
-
-mr-button.hover {
-    background-color: #333;
-    z-index: 5; /* end */
-    /* animation: forward 0.25s ease-in forwards; */
-}
-
-mr-a {
-    color: darkblue;
-}
-
-mr-a.hover {
-    color: blue;
-    z-index: 5;
-}
-
-mr-a.active {
-    color: purple;
-
-}
-
-/* these work differently from in XR than expected, laurent should look into it */
-/* button animation! */
-
-@keyframes forward {
-    to {
-        z-index: 5; /* end */
-    }
-}
-
-@keyframes back {
-    to {
-        z-index: 1; /* end */
-    }
-}
-
 
 body {
     margin: 0; /* unclear why we need this */

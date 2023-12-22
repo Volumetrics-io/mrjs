@@ -44,14 +44,15 @@ export class TextSystem extends MRSystem {
                 );
             });
         });
-    }
 
-    /**
-     * When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
-     * @param {MREntity} entity - the entity being set up
-     */
-    onNewEntity(entity) {
-        entity instanceof MRTextEntity ? this.registry.add(entity) : null;
+        const entities = this.app.querySelectorAll('mr-text, mr-textfield, mr-textarea');
+        for (const entity of entities) {
+            this.registry.add(entity);
+            this.addText(entity);
+            entity.textObj.sync(() => {
+                entity.needsUpdate = true;
+            });
+        }
     }
 
     /**
@@ -86,7 +87,12 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
-            entity.textObj.position.setY(entity.height / 2);
+            if (entity.needsUpdate) {
+                entity.needsUpdate = false;
+                entity.textObj.sync(() => {
+                    entity.textObj.position.setY(entity.height / 2);
+                });
+            }
         }
     }
 

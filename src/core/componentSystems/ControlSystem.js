@@ -44,15 +44,15 @@ export class ControlSystem extends MRSystem {
         mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
 
         this.cursor = this.cursorHover;
-        this.down = false;
 
+        this.app.renderer.domElement.addEventListener('click', this.onClick);
         this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
 
-        this.app.renderer.domElement.addEventListener('touch-start', this.onMouseDown);
-        this.app.renderer.domElement.addEventListener('touch-end', this.onMouseUp);
-        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
+        this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
+        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
     }
 
     /**
@@ -77,11 +77,7 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse over event
      */
     mouseOver = (event) => {
-        if (this.down) {
-            this.cursor = this.cursorClick;
-        } else {
-            this.cursor = this.cursorHover;
-        }
+        event.stopPropagation();
 
         this.hit = this.pixelRayCast(event);
 
@@ -99,8 +95,9 @@ export class ControlSystem extends MRSystem {
     onMouseDown = (event) => {
         event.stopPropagation();
         this.removeCursor();
-        this.down = true;
+
         this.cursor = this.cursorClick;
+
         this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
@@ -117,15 +114,7 @@ export class ControlSystem extends MRSystem {
     onMouseUp = (event) => {
         event.stopPropagation();
         this.removeCursor();
-        this.down = false;
         this.cursor = this.cursorHover;
-
-        this.hit = this.pixelRayCast(event);
-
-        if (this.hit != null) {
-            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
-        }
     };
 
     /**
