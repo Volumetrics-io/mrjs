@@ -41,10 +41,12 @@ Material.setObjectMaterial = function (parent, material) {
         parent.traverse((child) => {
             if (child instanceof THREE.Mesh) {
                 child.material = material;
+                child.material.needsUpdate = true;
             }
         });
     } else {
         parent.material = material;
+        parent.material.needsUpdate = true;
     }
     return parent;
 };

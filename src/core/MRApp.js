@@ -545,23 +545,9 @@ export class MRApp extends MRElement {
 
         if (this.maskingSystem == undefined) { return; }
 
-        // const camera = this.user;
+        const camera = this.user;
 
-        // const mainScene = this.scene;
-        // // create separate scenes of proper items
-        // const entitiesObjects = [];
-        // for (const entity of this.maskingSystem.registry.values()) {
-        //     entitiesObjects.push(entity.object3D);
-        // }
-        // const panelsObjects = [];
-        // for (const panel of this.maskingSystem.panels.values()) {
-        //     panelsObjects.push(panel.object3D);
-        //     break; // only one for now
-        // }
-
-        // const myscene2 = new THREE.Scene();
-        // myscene2.add(plane);
-        // // Render pass for the torus
+        // Render pass for the torus
         // const renderPanelToTexture = (panelObject3D) => {
         //     mrjsUtils.Material.setObjectMaterial(panelObject3D,stencilRenderMaterial);
         //     this.renderer.setRenderTarget(global.renderTarget);
@@ -592,127 +578,119 @@ export class MRApp extends MRElement {
         //     this.renderer.render(myscene2, this.user);
         // }
 
-        if (this.maskingSystem == undefined) { return; }
+        // Panel Material
+        // const panelMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
-        // scene pass of panel to render white
-        // send that pass as a texture to the entities being rendered
-        //
-        // scene pass with panel masking the entities
-        // 
-
-        const camera = this.user;
-
-        // const composer = new EffectComposer(this.renderer);
-
-        // create separate scenes of proper items
-        const entitiesObjects = [];
-        for (const entity of this.maskingSystem.registry.values()) {
-            entitiesObjects.push(entity.object3D);
-        }
-        const panelsObjects = [];
-        for (const panel of this.maskingSystem.panels.values()) {
-            panelsObjects.push(panel.object3D);
-            break; // only one for now
-        }
-
-        // render torus offscreen
-        // const torusRenderMaterial = new THREE.ShaderMaterial({
-        // vertexShader: `
-        //     precision highp float;
-        //     void main() {
-        //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        //     }
-        // `,
-        // fragmentShader: `
-        //     precision highp float;
-        //     void main() {
-        //         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render white
-        //     }
-        // `,
+        // // Entity Material
+        // const entityMaterial = new THREE.MeshBasicMaterial({
+        //   color: 0x00ff00,
+        //   stencilWrite: true,
+        //   stencilFunc: THREE.EqualStencilFunc,
+        //   stencilRef: 1,
+        //   stencilMask: 0xFF,
+        //   stencilFail: THREE.ReplaceStencilOp,
+        //   stencilZFail: THREE.ReplaceStencilOp,
+        //   stencilZPass: THREE.ReplaceStencilOp,
         // });
-        // torusRenderMaterial.side = THREE.DoubleSide;
-        var torusTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        // let singlePanel = null;
-        // let actualMaterial = null;
 
-        const panelsScene = new THREE.Scene();
-        for (const p of panelsObjects) {
-            // actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
-            // p.material = torusRenderMaterial;
-            panelsScene.add(p);
-            // singlePanel = p;
-        }
-        
-        var composer1 = new EffectComposer(this.renderer, torusTarget);
-        const composer1renderPass = new RenderPass(panelsScene, camera);
-        composer1.addPass(composer1renderPass);
-        composer1.render();
+          ///////
+        // const panelObjects = [];
+        // for (p in this.maskingSystem.panels.values()) {
+        //     panelObjects.push(p.object3D);
+        // }
+        // const entityObjects = [];
+        // for (e in this.maskingSystem.registry.values()) {
+        //     entityObjects.push(e.object3D);
+        // }
 
-        var entitiesTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        const entitiesScene = new THREE.Scene();
-        for (const p of entitiesObjects) {
-            // actualMaterial = mrjsUtils.Material.getObjectMaterial(p);
-            // p.material = torusRenderMaterial;
-            entitiesScene.add(p);
-            // singlePanel = p;
-        }
-        
-        var composer3 = new EffectComposer(this.renderer, entitiesTarget);
-        const composer3renderPass = new RenderPass(panelsScene, camera);
-        composer3.addPass(composer1renderPass);
-        composer3.render();
+        // let camera = this.user;
 
-        // todo - fix or refactor in a bit
-        // when done with them add them back to the main scene since there is
-        // a circular dependency issue atm with cloning a group (this might be
-        // due to how we're setting up our panels for now).
-        this.scene.add(...entitiesObjects);
-        this.scene.add(...panelsObjects);
+        // const ENTITY_LAYER = 1;
+        // const PANEL_LAYER = 2;
 
-        // // post processing for the scene with torus
-        var mainSceneTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        // entityObjects.forEach(entity => {
+        //     entity.layers.set(ENTITY_LAYER);
+        // });
 
-        var composer2 = new EffectComposer(this.renderer, mainSceneTarget);
-        var mainScenePass = new RenderPass(this.scene, camera);
-        composer2.addPass(mainScenePass);
-        composer2.render();
+        // panelObjects.forEach(panel => {
+        //     panel.layers.set(PANEL_LAYER);
+        // });
 
-        var composer = new EffectComposer(this.renderer);
-        const shaderMaterialUniforms = {
-            sceneTexture: { value: mainScenePass.texture },
-            panelTexture: { value: torusTarget.texture },
-            entitiesTexture: { value: entitiesTarget.texture },
-            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-        };
-        const objectShaderMaterial = new THREE.ShaderMaterial({
-            uniforms: shaderMaterialUniforms,
-            vertexShader: `
-                void main() {
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform sampler2D sceneTexture;
-                uniform sampler2D panelTexture;
-                uniform sampler2D entitiesTexture;
-                uniform vec2 resolution;
+        // const composer = new EffectComposer(renderer);
 
-                void main() {
-                    vec4 textureColor = texture2D(sceneTexture, gl_FragCoord.xy / resolution);
-                    gl_FragColor = textureColor;
-                    // if (textureColor.r < 0.1) {
-                    //     gl_FragColor = vec4(1, 1, 0, 1); // Yellow // keep
-                    // } else {
-                    //     gl_FragColor = vec4(1, 0, 0, 1); // Red // discard;
-                    // }
-                }
-            `
-        });
-        const shaderPass = new ShaderPass(objectShaderMaterial);
-        composer.addPass(shaderPass);
-        composer.render();
+        // // Render pass for panels
+        // const panelRenderPass = new RenderPass(scene, camera);
+        // panelRenderPass.clear = false;
+        // panelRenderPass.clearDepth = true;
+        // composer.addPass(panelRenderPass);
 
-        // composer1.render();
+        // // Render pass for entities
+        // const entityRenderPass = new RenderPass(scene, camera);
+        // entityRenderPass.clear = false;
+        // composer.addPass(entityRenderPass);
+
+        // const panelRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        // const panelCamera = camera.clone();
+
+        // function renderPanels = () => {
+        //     camera.layers.set(PANEL_LAYER);
+        //     renderer.setRenderTarget(panelRenderTarget);
+        //     renderer.render(scene, panelCamera);
+        //     renderer.setRenderTarget(null); // Reset to render to the canvas
+        // }
+
+        // const overlapShader = {
+        //     uniforms: {
+        //         panelDepthTexture: { value: panelRenderTarget.depthTexture },
+        //         cameraNear: { value: camera.near },
+        //         cameraFar: { value: camera.far },
+        //     },
+        //     vertexShader: `
+        //         varying vec2 vUv;
+        //         void main() {
+        //             vUv = uv;
+        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         uniform sampler2D panelDepthTexture;
+        //         uniform float cameraNear;
+        //         uniform float cameraFar;
+        //         varying vec2 vUv;
+
+        //         float readDepth(sampler2D depthSampler, vec2 coord) {
+        //             float fragCoordZ = texture2D(depthSampler, coord).x;
+        //             float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
+        //             return viewZToOrthographicDepth(viewZ, cameraNear, cameraFar);
+        //         }
+
+        //         void main() {
+        //             float panelDepth = readDepth(panelDepthTexture, vUv);
+        //             float entityDepth = gl_FragCoord.z;
+
+        //             if (entityDepth > panelDepth) discard; // Discard fragment if entity is behind the panel
+
+        //             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render entity pixel
+        //         }
+        //     `
+        // };
+
+        // const overlapPass = new ShaderPass(overlapShader);
+        // composer.addPass(overlapPass);
+
+        // // Render panels
+        // camera.layers.set(PANEL_LAYER);
+        // panelRenderPass.renderToScreen = false;
+        // composer.render();
+
+        // // Render entities
+        // camera.layers.set(ENTITY_LAYER);
+        // entityRenderPass.renderToScreen = false;
+        // composer.render();
+
+        // // Process the overlap
+        // overlapPass.renderToScreen = true;
+        // composer.render();
     }
 }
 
