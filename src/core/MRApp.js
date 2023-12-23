@@ -545,7 +545,7 @@ export class MRApp extends MRElement {
 
         if (this.maskingSystem == undefined) { return; }
 
-        const camera = this.user;
+        // const camera = this.user;
 
         // Render pass for the torus
         // const renderPanelToTexture = (panelObject3D) => {
@@ -691,6 +691,124 @@ export class MRApp extends MRElement {
         // // Process the overlap
         // overlapPass.renderToScreen = true;
         // composer.render();
+
+        const camera = this.user;
+
+        const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const shaderMaterialUniforms = {
+            texture1: { value: renderTarget.texture },
+            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        };
+
+        const objectShaderMaterial = {
+            uniforms: shaderMaterialUniforms,
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D texture1;
+                uniform vec2 resolution;
+                varying vec2 vUv;
+
+                void main() {
+                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+                    if (textureColor.r < 0.1) {
+                        discard;
+                    } else {
+                        gl_FragColor = vec4(0, 0, 0, 1);
+                    }
+                }
+            `
+        };
+
+        function createEntityMaterial(color) {
+            return new THREE.ShaderMaterial({
+                ...objectShaderMaterial,
+                fragmentShader: `
+                    uniform sampler2D texture1;
+                    uniform vec2 resolution;
+                    varying vec2 vUv;
+
+                    void main() {
+                        vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+                        if (textureColor.r < 0.1) {
+                            gl_FragColor = vec4(1, 0, 0, 1);
+                        } else {
+                            gl_FragColor = vec4(${color}, 1); // Use the passed color
+                        }
+                    }
+                `
+            });
+        }
+
+        // Function to create panel material (similar to torus)
+        function createPanelMaterial() {
+            return new THREE.ShaderMaterial({
+                vertexShader: `
+                    void main() {
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    void main() {
+                        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); // Render yellow
+                    }
+                `,
+            });
+        }
+
+        const panels = [];
+        for (let p of this.maskingSystem.panels) {
+            panels.push(p.object3D);
+        }
+        const entities = [];
+        for (let e of this.maskingSystem.registry) {
+            entities.push(e.object3D);
+        }
+
+        // Create and add entities and panels to the scene
+        // You should populate these lists with actual THREE.Group objects
+        entities.forEach(entity => {
+            const material = createEntityMaterial('1, 0, 0'); // Red, for example
+            entity.children.forEach(child => {
+                child.material = material;
+                child.material.needsUpdate = true;
+            });
+        });
+
+        panels.forEach(panel => {
+            const material = createPanelMaterial();
+            panel.children.forEach(child => {
+                child.material = material;
+                child.material.needsUpdate = true;
+            });
+        });
+
+        // Adjusted render pass for panels
+        // function renderPanelsToTexture() {
+        this.renderer.clear();
+        this.renderer.setRenderTarget(renderTarget);
+
+        panels.forEach(panel => {
+            let material = mrjsUtils.Material.getObjectMaterial(panel);
+            mrjsUtils.Material.setObjectMaterial(panel, createPanelMaterial());
+
+            this.renderer.render(this.scene, camera);
+
+            mrjsUtils.Materila.setObjectMaterial(panel, material);
+        
+        });
+
+        this.renderer.setRenderTarget(null);
+
+        // }
+        // // renderPanelsToTexture();
+        
+        this.renderer.render(this.scene, camera);
     }
 }
 
