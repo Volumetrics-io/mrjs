@@ -33,6 +33,7 @@ export class MRDivEntity extends MREntity {
         this.background.renderOrder = 3;
         this.background.visible = false;
         this.object3D.add(this.background);
+        this.object3D.name = 'mrDivEntity'
 
         this.windowVerticalScale = 1;
         this.windowHorizontalScale = 1;

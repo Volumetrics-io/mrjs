@@ -488,22 +488,54 @@ export class MRApp extends MRElement {
 
         const camera = this.user;
 
+        console.log(this.scene.children);
+        let count = 0;
+        let panelsToEntities = new Map();
+        for (let c of this.scene.children) {
+            if (!c.visible || !c.isObject3D) {
+                continue;
+            }
+            // console.log('on child:');
+            console.log(c);
+            // console.log(c.children.length);
+            // console.log('did count' + count);
+            if (c.name === 'panel') {
+                let children = [];
+                let panel = null;
+                c.traverse((child) => {
+                    console.log(child);
+                    console.log(child.name);
+                    if (child.name === 'mrDivEntity') { // instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
+                        console.log('on new child to add, added');
+                        children.push(child.object3D);
+                    } else if (child.name === 'panel') {// instanceof Panel) {
+                        console.log('on panel to add, added');
+                        panel = child.object3D;
+                    } else {
+                        console.log('on new child to add, ignored');
+                    }
+                });
+                panelsToEntities.set(panel, children);
+                console.log('traversing panel for children');
+            }
+            ++count;
+        }
         const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
-        const panelsToEntities = new Map();
-        for (let p of this.maskingSystem.panels) {
-            const children = [];
-            p.traverse((panelChild) => {
-                if (panelChild instanceof Panel) {
+        // const panelsToEntities = new Map();
+        // for (let p of this.maskingSystem.panels) {
+        //     const children = [];
+        //     p.traverse((panelChild) => {
+        //         if (panelChild instanceof Panel) {
 
-                    if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
-                    console.log('on new child to add to registry, child is:');
-                    console.log(child);
-                    this.registry.add(child);
-                }
-                console.log('traversing panel for children');
-            });
-        }
+        //             if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+        //             console.log('on new child to add to registry, child is:');
+        //             console.log(child);
+        //             this.registry.add(child);
+        //         }
+        //         console.log('traversing panel for children');
+        //     });
+        // }
 
         // console.log('before all panels');
         // // grab items to use

@@ -91,6 +91,7 @@ export class ClippingSystem extends MRSystem {
         this.geometry = entity.clipping.geometry.toNonIndexed();
         let geoPositionArray = this.geometry.attributes.position.array;
 
+        const clippingPlanes = [];
         for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
             this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
@@ -102,42 +103,15 @@ export class ClippingSystem extends MRSystem {
 
             const newPlane = new THREE.Plane();
             newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
-            if (this.app.debug) {
-                const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
-                this.app.scene.add( helper );
-            }
+            // if (this.app.debug) {
+            //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
+            //     this.app.scene.add( helper );
+            // }
 
             entity.clipping.planes.push(newPlane);
             entity.clipping.planeIDs.push(f);
         }
         return clippingPlanes;
-
-        
-        // const clippingPlanes = [];
-
-        // // Extract the vertices and other necessary data from UIPlaneGeometry
-        //  this.geometry = entity.clipping.geometry.toNonIndexed();
-        // const vertices = this.geometry.attributes.position.array;
-
-        // // Loop through the vertices to identify triangles and create clipping planes
-        // for (let i = 0; i < vertices.length; i += 9) {
-        //     const vertex1 = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
-        //     const vertex2 = new THREE.Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
-        //     const vertex3 = new THREE.Vector3(vertices[i + 6], vertices[i + 7], vertices[i + 8]);
-
-        //     // Calculate a clipping plane based on the vertices of this triangle
-        //     const plane = new THREE.Plane();
-        //     plane.setFromCoplanarPoints(vertex1, vertex2, vertex3);
-        //     if (this.app.debug) {
-        //         const helper = new THREE.PlaneHelper( plane, 1, 0xff00ff );
-        //         this.app.scene.add( helper );
-        //     }
-
-
-        //     clippingPlanes.push(plane);
-        // }
-
-        // return clippingPlanes;
     }
 
     /**

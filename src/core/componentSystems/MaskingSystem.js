@@ -41,7 +41,8 @@ export class MaskingSystem extends MRSystem {
         // });
 
         // this.activeRefNumbers = new Set();
-        this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
+        // this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
+        let panelsToEntities = new Map();
     }
 
     /**
@@ -203,22 +204,41 @@ export class MaskingSystem extends MRSystem {
 //             return material;
 //         };
 
-        if (entity instanceof Panel) {
-            console.log('on new entity that is a panel');
-            console.log(entity);
-            console.log('added to panels listing');
-            this.panels.add(entity);
-            
-            // handle all children MRDivEntities
-            // entity.traverse((child) => {
-            //     console.log('traversing panel for children');
-            //     if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
-            //         console.log('on new child to add to registry, child is:');
-            //         console.log(child);
-            //         this.registry.add(child);
-            //     }
-            // });
+         if (entity instanceof Panel) {
+            let children = [];
+            let panel = null;
+            entity.traverse((child) => {
+                console.log(child);
+                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
+                    console.log('on new child to add, added');
+                    children.push(child.object3D);
+                } else if (child instanceof Panel) {
+                    console.log('on panel to add, added');
+                    panel = child.object3D;
+                } else {
+                    console.log('on new child to add, ignored');
+                }
+            });
+            panelsToEntities.set(panel, children);
+            console.log('traversing panel for children');
         }
+
+        // if (entity instanceof Panel) {
+        //     console.log('on new entity that is a panel');
+        //     console.log(entity);
+        //     console.log('added to panels listing');
+        //     this.panels.add(entity);
+            
+        //     // handle all children MRDivEntities
+        //     // entity.traverse((child) => {
+        //     //     console.log('traversing panel for children');
+        //     //     if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+        //     //         console.log('on new child to add to registry, child is:');
+        //     //         console.log(child);
+        //     //         this.registry.add(child);
+        //     //     }
+        //     // });
+        // }
         // otherwise ignore.
     }
 }
