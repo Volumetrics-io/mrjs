@@ -470,6 +470,9 @@ export class MRApp extends MRElement {
 
                 void main() {
                     vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+
+                    // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                    // pass thru right now
                     if (textureColor.r < 0.1) {
                         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
                     } else {
@@ -483,27 +486,35 @@ export class MRApp extends MRElement {
 
         const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
+        console.log('before all panels');
         // grab items to use
         const panels = [];
         for (let p of this.maskingSystem.panels) {
-            // ignore the background threeD object
-            
-            panels.push(p.object3D);
+            p.traverse((child) => {
+                if (child === p.background) {
+                    return; // Use return instead of continue
+                }
+                panels.push(child);
+                console.log('added a panel');
+            });
         }
+
+        console.log('start render pass for panels');
 
         // Adjusted render pass for panels
         this.renderer.clear();
         this.renderer.setRenderTarget(renderTarget);
         panels.forEach(panel => {
             let material = mrjsUtils.Material.getObjectMaterial(panel);
-            console.log(material);
             mrjsUtils.Material.setObjectMaterial(panel, panelMaterial);
-            console.log(panelMaterial);
-            console.log(material);
 
             this.renderer.render(this.scene, camera);
         });
         this.renderer.setRenderTarget(null);
+
+        console.log('end render pass for panels');
+
+        console.log('start entity setup');
 
         const texture1Uniform = { value: renderTarget.texture };
         entityMaterial.uniforms.texture1 = texture1Uniform;
@@ -516,7 +527,10 @@ export class MRApp extends MRElement {
         entities.forEach(entity => {
             mrjsUtils.Material.setObjectMaterial(entity, entityMaterial);
         });
+        console.log('do all scene render');
         this.renderer.render(this.scene, camera);
+
+        console.log('set entity material back');
 
         const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
         entities.forEach(entity => {
