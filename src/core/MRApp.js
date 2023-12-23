@@ -17,6 +17,7 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
+import { Panel } from 'mrjs/core/entities/Panel';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -460,6 +461,7 @@ export class MRApp extends MRElement {
         const entityMaterial = new THREE.ShaderMaterial({
             uniforms: shaderMaterialUniforms,
             vertexShader: `
+                varying vec2 vUv;
                 void main() {
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                 }
@@ -467,14 +469,15 @@ export class MRApp extends MRElement {
             fragmentShader: `
                 uniform sampler2D texture1;
                 uniform vec2 resolution;
+                varying vec2 vUv;
 
                 void main() {
-                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+                    vec4 textureColor = texture2D(texture1, vUv);//gl_FragCoord.xy / resolution);
 
                     // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
                     // pass thru right now 
                     if (textureColor.r < 0.1) {
-                        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
                     } else {
                         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // Use the passed color
                     }
@@ -491,13 +494,15 @@ export class MRApp extends MRElement {
         const panels = [];
         for (let p of this.maskingSystem.panels) {
             p.traverse((child) => {
-                if (child === p.background) {
-                    return; // Use return instead of continue
+                if (child instanceof Panel) {
+                    console.log(child);
+                    panels.push(child);
+                    console.log('added a panel');
                 }
-                panels.push(child);
-                console.log('added a panel');
             });
         }
+        console.log('panels.length');
+        console.log(panels.length);
 
         console.log('start render pass for panels');
 

@@ -208,19 +208,13 @@ export class MaskingSystem extends MRSystem {
             console.log(entity);
             console.log('added to panels listing');
             this.panels.add(entity);
-
-            // handle panel material
-            
             
             // handle all children MRDivEntities
             entity.traverse((child) => {
                 console.log('traversing panel for children');
-                if (child instanceof MRDivEntity && !child.ignoreStencil && entity.contains(child)) {
+                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
                     console.log('on new child to add to registry, child is:');
                     console.log(child);
-                    // let material = mrjsUtils.Material.getObjectMaterial(child.object3D);
-                    // material = updateLiveMaterial(material, global.renderTarget.texture, new THREE.Vector2(window.innerWidth, window.innerHeight));
-                    // mrjsUtils.Material.setObjectMaterial(child.object3D, material)
                     this.registry.add(child);
                 }
             });
