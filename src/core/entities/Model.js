@@ -14,6 +14,8 @@ export class Model extends MREntity {
      */
     constructor() {
         super();
+
+        this.ignoreStencil = true;
     }
 
     /**

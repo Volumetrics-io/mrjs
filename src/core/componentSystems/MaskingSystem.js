@@ -210,14 +210,14 @@ export class MaskingSystem extends MRSystem {
             this.panels.add(entity);
             
             // handle all children MRDivEntities
-            entity.traverse((child) => {
-                console.log('traversing panel for children');
-                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
-                    console.log('on new child to add to registry, child is:');
-                    console.log(child);
-                    this.registry.add(child);
-                }
-            });
+            // entity.traverse((child) => {
+            //     console.log('traversing panel for children');
+            //     if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+            //         console.log('on new child to add to registry, child is:');
+            //         console.log(child);
+            //         this.registry.add(child);
+            //     }
+            // });
         }
         // otherwise ignore.
     }

@@ -17,6 +17,7 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
 
 import { mrjsUtils } from 'mrjs';
@@ -489,58 +490,92 @@ export class MRApp extends MRElement {
 
         const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
-        console.log('before all panels');
-        // grab items to use
-        const panels = [];
+        const panelsToEntities = new Map();
         for (let p of this.maskingSystem.panels) {
-            p.traverse((child) => {
-                if (child instanceof Panel) {
+            const children = [];
+            p.traverse((panelChild) => {
+                if (panelChild instanceof Panel) {
+
+                    if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+                    console.log('on new child to add to registry, child is:');
                     console.log(child);
-                    panels.push(child);
-                    console.log('added a panel');
+                    this.registry.add(child);
                 }
+                console.log('traversing panel for children');
             });
         }
-        console.log('panels.length');
-        console.log(panels.length);
 
-        console.log('start render pass for panels');
+        // console.log('before all panels');
+        // // grab items to use
+        // const panels = [];
+        // for (let p of this.maskingSystem.panels) {
+        //     p.traverse((childEntity) => {
+        //         if (childEntity instanceof Panel) {
+        //             // panels.push(child.object3D);
+        //             const children = Array.from(childEntity.children);
+        //             const firstMesh = children.find(child => child.isMesh);
+        //             panels.push(firstMesh.clone());
+        //         }
+        //     });
+        // }
+        // console.log('panels.length');
+        // console.log(panels.length);
+
+        // console.log('start render pass for panels');
 
         // Adjusted render pass for panels
-        this.renderer.clear();
-        this.renderer.setRenderTarget(renderTarget);
-        panels.forEach(panel => {
-            let material = mrjsUtils.Material.getObjectMaterial(panel);
-            mrjsUtils.Material.setObjectMaterial(panel, panelMaterial);
+        // this.renderer.clear();
+        // // this.renderer.setRenderTarget(renderTarget);
+        // let panelMatOrig = null;
+        // panels.forEach(panel => {
+        //     console.log('inside panels for each:');
+        //     console.log(panel);
+        //     console.log(material);
+        //     let material = panel.material;
+        //     panel.material = panelMaterial;
+        //     panelMatOrig = material;
+        // });
+        // this.renderer.render(this.scene, camera);
+        // panels.forEach(panel => {
+        //     mrjsUtils.Material.setObjectMaterial(panel,panelMatOrig);
+        // });
+        // this.renderer.setRenderTarget(null);
 
-            this.renderer.render(this.scene, camera);
-        });
-        this.renderer.setRenderTarget(null);
+        // console.log('end render pass for panels');
 
-        console.log('end render pass for panels');
+        // console.log('start entity setup');
 
-        console.log('start entity setup');
+        // const texture1Uniform = { value: renderTarget.texture };
+        // entityMaterial.uniforms.texture1 = texture1Uniform;
+        // entityMaterial.needsUpdate = true;
 
-        const texture1Uniform = { value: renderTarget.texture };
-        entityMaterial.uniforms.texture1 = texture1Uniform;
-        entityMaterial.needsUpdate = true;
-
-        const entities = [];
-        for (let e of this.maskingSystem.registry) {
-            entities.push(e.object3D);
-        }
-        entities.forEach(entity => {
-            mrjsUtils.Material.setObjectMaterial(entity, entityMaterial);
-        });
-        console.log('do all scene render');
+        // console.log('filling out entities');
+        // const entities = [];
+        // for (let e of this.maskingSystem.registry) {
+        //     e.traverse((child) => {
+        //         console.log(child);
+        //         if (child instanceof MRDivEntity) {
+        //             entities.push(child.object3D);
+        //             console.log('added entity');
+        //         } else {
+        //             console.log('ignoring entity');
+        //         }
+        //     });
+        // }
+        // console.log('entities.length');
+        // console.log(entities.length);
+        // entities.forEach(entity => {
+        //     mrjsUtils.Material.setObjectMaterial(entity, entityMaterial);
+        // });
+        // console.log('do all scene render');
         this.renderer.render(this.scene, camera);
 
-        console.log('set entity material back');
+        // console.log('set entity material back');
 
-        const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
-        entities.forEach(entity => {
-            mrjsUtils.Material.setObjectMaterial(entity, standardMaterial);
-        });
+        // const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
+        // entities.forEach(entity => {
+        //     mrjsUtils.Material.setObjectMaterial(entity, standardMaterial);
+        // });
 
         console.log('ending renderpass:');
         console.log(this.renderPassCount);
