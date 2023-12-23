@@ -42,7 +42,8 @@ export class MaskingSystem extends MRSystem {
 
         // this.activeRefNumbers = new Set();
         // this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
-        let panelsToEntities = new Map();
+        this.panelsToEntities = new Map();
+        this.panels = [];
     }
 
     /**
@@ -205,6 +206,7 @@ export class MaskingSystem extends MRSystem {
 //         };
 
          if (entity instanceof Panel) {
+            this.panels.push(entity);
             let children = [];
             let panel = null;
             entity.traverse((child) => {
@@ -219,7 +221,7 @@ export class MaskingSystem extends MRSystem {
                     console.log('on new child to add, ignored');
                 }
             });
-            panelsToEntities.set(panel, children);
+            this.panelsToEntities.set(panel, children);
             console.log('traversing panel for children');
         }
 

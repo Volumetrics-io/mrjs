@@ -437,6 +437,10 @@ export class MRApp extends MRElement {
 
         if (this.maskingSystem == undefined) { return; }
 
+
+                const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+
+
         // create needed materials
         const panelMaterial = new THREE.ShaderMaterial({
             vertexShader: `
@@ -446,24 +450,28 @@ export class MRApp extends MRElement {
             `,
             fragmentShader: `
                 void main() {
-                    // Condition to check if the fragment is part of the object
-                    if (gl_FragCoord.z < 1.0) {
-                        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); // Render yellow where object exists
-                    } else {
-                        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render red
+                    // // Condition to check if the fragment is part of the object
+                    // if (gl_FragCoord.z < 1.0) {
+                    //     gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Render blue where object exists
+                    // } else {
+                    //     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render red
+                    // }
+                    void main() {
+                        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
                     }
                 }
             `,
         });
         const shaderMaterialUniforms = {
-            texture1: { value: null },
+            texture1: { value: renderTarget.texture },
             resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
         };
-        const entityMaterial = new THREE.ShaderMaterial({
+        const objectShaderMaterial = {
             uniforms: shaderMaterialUniforms,
             vertexShader: `
                 varying vec2 vUv;
                 void main() {
+                    vUv = uv;
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                 }
             `,
@@ -473,14 +481,63 @@ export class MRApp extends MRElement {
                 varying vec2 vUv;
 
                 void main() {
-                    vec4 textureColor = texture2D(texture1, vUv);//gl_FragCoord.xy / resolution);
-
-                    // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-                    // pass thru right now 
+                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
                     if (textureColor.r < 0.1) {
-                        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                        discard;
                     } else {
-                        gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // Use the passed color
+                        gl_FragColor = vec4(0, 0, 0, 1);
+                    }
+                }
+            `
+        };
+        const entityMaterial = new THREE.ShaderMaterial({
+            ...objectShaderMaterial,
+            //uniforms: shaderMaterialUniforms,
+            // vertexShader: `
+            //     void main() {
+            //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            //     }
+            // `,
+            fragmentShader: `
+                uniform sampler2D texture1;
+                uniform vec2 resolution;
+                varying vec2 vUv;
+
+                // void main() {
+                //     vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution); //vUv);//
+
+                //     // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                //     // pass thru right now 
+                //     if (textureColor.r==0.0 && textureColor.g==0.0 && textureColor.b==1.0) {
+                //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // pink
+                //     } else {
+                //         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // red//Use the passed color
+                //     }
+                // }
+
+                // // void main() {
+                // //     // Calculate the screenspace coordinates
+                // //     vec2 screenSpaceCoord = gl_FragCoord.xy / resolution;
+
+                // //     // Sample the texture at the screenspace coordinates
+                // //     vec4 textureColor = texture2D(texture1, screenSpaceCoord);
+
+                // //     // Check if the texture color is blue (assuming blue is in the R channel)
+                // //     if (textureColor.r == 0.0 && textureColor.g == 0.0 && textureColor.b == 1.0) {
+                // //         // Render pink when blue is detected
+                // //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+                // //     } else {
+                // //         // Discard this fragment if it's not in a blue spot
+                // //         discard;
+                // //     }
+                // // }
+
+                void main() {
+                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+                    if (textureColor.r < 0.1) {
+                        discard;
+                    } else {
+                        gl_FragColor = vec4(0.0, 1.0, 1.0, 1); // Blue color
                     }
                 }
             `
@@ -489,125 +546,77 @@ export class MRApp extends MRElement {
         const camera = this.user;
 
         console.log(this.scene.children);
-        let count = 0;
-        let panelsToEntities = new Map();
-        for (let c of this.scene.children) {
-            if (!c.visible || !c.isObject3D) {
-                continue;
-            }
-            // console.log('on child:');
-            console.log(c);
-            // console.log(c.children.length);
-            // console.log('did count' + count);
-            if (c.name === 'panel') {
-                let children = [];
-                let panel = null;
-                c.traverse((child) => {
-                    console.log(child);
-                    console.log(child.name);
-                    if (child.name === 'mrDivEntity') { // instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
-                        console.log('on new child to add, added');
-                        children.push(child.object3D);
-                    } else if (child.name === 'panel') {// instanceof Panel) {
-                        console.log('on panel to add, added');
-                        panel = child.object3D;
-                    } else {
-                        console.log('on new child to add, ignored');
-                    }
-                });
-                panelsToEntities.set(panel, children);
-                console.log('traversing panel for children');
-            }
-            ++count;
-        }
-        const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        
 
-        // const panelsToEntities = new Map();
-        // for (let p of this.maskingSystem.panels) {
-        //     const children = [];
-        //     p.traverse((panelChild) => {
-        //         if (panelChild instanceof Panel) {
+        // const panelsToEntities = this.maskingSystem.panelsToEntities;
+        // console.log('panelsToEntities is: ');
+        // console.log(panelsToEntities);
+        console.log(this.maskingSystem.panels);
+        const panelMesh = this.maskingSystem.panels[0].object3D.children[0];
+        console.log(panelMesh);
 
-        //             if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
-        //             console.log('on new child to add to registry, child is:');
-        //             console.log(child);
-        //             this.registry.add(child);
-        //         }
-        //         console.log('traversing panel for children');
-        //     });
-        // }
-
-        // console.log('before all panels');
-        // // grab items to use
-        // const panels = [];
-        // for (let p of this.maskingSystem.panels) {
-        //     p.traverse((childEntity) => {
-        //         if (childEntity instanceof Panel) {
-        //             // panels.push(child.object3D);
-        //             const children = Array.from(childEntity.children);
-        //             const firstMesh = children.find(child => child.isMesh);
-        //             panels.push(firstMesh.clone());
-        //         }
-        //     });
-        // }
-        // console.log('panels.length');
-        // console.log(panels.length);
-
-        // console.log('start render pass for panels');
+        console.log('start render pass for panels');
 
         // Adjusted render pass for panels
-        // this.renderer.clear();
-        // // this.renderer.setRenderTarget(renderTarget);
-        // let panelMatOrig = null;
-        // panels.forEach(panel => {
-        //     console.log('inside panels for each:');
-        //     console.log(panel);
-        //     console.log(material);
-        //     let material = panel.material;
-        //     panel.material = panelMaterial;
-        //     panelMatOrig = material;
-        // });
-        // this.renderer.render(this.scene, camera);
-        // panels.forEach(panel => {
-        //     mrjsUtils.Material.setObjectMaterial(panel,panelMatOrig);
-        // });
-        // this.renderer.setRenderTarget(null);
+        this.renderer.clear();
+        this.renderer.setRenderTarget(renderTarget);
+        let panelMatOrig = null;
+        let material = panelMesh.material;
+        panelMesh.material = panelMaterial;
+        panelMatOrig = material;
+        this.renderer.render(this.scene, camera);
+        this.renderer.setRenderTarget(null);
 
-        // console.log('end render pass for panels');
+        console.log('end render pass for panels');
 
-        // console.log('start entity setup');
+        console.log('start entity setup');
 
         // const texture1Uniform = { value: renderTarget.texture };
         // entityMaterial.uniforms.texture1 = texture1Uniform;
         // entityMaterial.needsUpdate = true;
 
-        // console.log('filling out entities');
-        // const entities = [];
-        // for (let e of this.maskingSystem.registry) {
-        //     e.traverse((child) => {
-        //         console.log(child);
-        //         if (child instanceof MRDivEntity) {
-        //             entities.push(child.object3D);
-        //             console.log('added entity');
-        //         } else {
-        //             console.log('ignoring entity');
-        //         }
-        //     });
-        // }
-        // console.log('entities.length');
-        // console.log(entities.length);
-        // entities.forEach(entity => {
-        //     mrjsUtils.Material.setObjectMaterial(entity, entityMaterial);
-        // });
-        // console.log('do all scene render');
+        for (let e of this.maskingSystem.panels[0].object3D.children) {
+            e.traverse((child) => {
+                console.log(child);
+                if (child instanceof Panel || child.ignoreStencil) {
+                    return;
+                }
+                if (child.isMesh) {
+                    if (child === panelMesh) { return; }
+                    child.material = entityMaterial;
+                    child.material.needsUpdate = true;
+                }
+            });
+        }
+
+        // Debugging plane for texture1
+        const planeGeometry = new THREE.PlaneGeometry(1, 1);
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: renderTarget.texture });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.position.set(-2, 2, 0);
+        this.scene.add(plane);
+
+        console.log('do all scene render');
         this.renderer.render(this.scene, camera);
 
         // console.log('set entity material back');
 
-        // const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
-        // entities.forEach(entity => {
-        //     mrjsUtils.Material.setObjectMaterial(entity, standardMaterial);
-        // });
+        const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
+        for (let e of this.maskingSystem.panels[0].object3D.children) {
+            e.traverse((child) => {
+                console.log(child);
+                if (child instanceof Panel || child.ignoreStencil) {
+                    return;
+                }
+                if (child.isMesh) {
+                    if (child === panelMesh) { return; }
+                    child.material = standardMaterial;
+                    child.material.needsUpdate = true;
+                }
+            });
+        }
+        panelMesh.material = panelMatOrig;
+
 
         console.log('ending renderpass:');
         console.log(this.renderPassCount);
