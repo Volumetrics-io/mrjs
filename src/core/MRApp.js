@@ -36,114 +36,6 @@ window.mobileCheck = function () {
     return mrjsUtils.Display.mobileCheckFunction();
 };
 
-// // Render target for texture1
-// global.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-// const myscene = new THREE.Scene();
-
-// const torusGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
-// const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-// const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-// // Torus material for rendering to texture
-// const stencilRenderMaterial = new THREE.ShaderMaterial({
-//     vertexShader: `
-//         void main() {
-//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-//         }
-//     `,
-//     fragmentShader: `
-//         void main() {
-//             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
-//         }
-//     `,
-// });
-
-// // Torus material
-// const torusMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-
-// // Shader material for cube and sphere
-// const shaderMaterialUniforms = {
-//     texture1: { value: global.renderTarget.texture },
-//     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-// };
-
-// const objectShaderMaterial = {
-//     uniforms: shaderMaterialUniforms,
-//     vertexShader: `
-//         void main() {
-//             vUv = uv;
-//             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-//         }
-//     `,
-//     fragmentShader: `
-//         uniform sampler2D texture1;
-//         uniform vec2 resolution;
-
-//         void main() {
-//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-//             if (textureColor.r < 0.1) {
-//                 discard;
-//             } else {
-//                 gl_FragColor = vec4(0, 0, 0, 1);
-//             }
-//         }
-//     `
-// };
-
-// // Cube and sphere materials
-// const cubeMaterial = new THREE.ShaderMaterial({
-//     ...objectShaderMaterial,
-//     fragmentShader: `
-//         uniform sampler2D texture1;
-//         uniform vec2 resolution;
-
-//         void main() {
-//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-//             if (textureColor.r < 0.1) {
-//                 discard;
-//             } else {
-//                 gl_FragColor = vec4(1, 0, 0, 1); // Red color
-//             }
-//         }
-//     `
-// });
-
-// const sphereMaterial = new THREE.ShaderMaterial({
-//     ...objectShaderMaterial,
-//     fragmentShader: `
-//         uniform sampler2D texture1;
-//         uniform vec2 resolution;
-
-//         void main() {
-//             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-//             if (textureColor.r < 0.1) {
-//                 discard;
-//             } else {
-//                 gl_FragColor = vec4(0, 0, 1, 1); // Blue color
-//             }
-//         }
-//     `
-// });
-
-// const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-// const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-// const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-
-// // Positioning objects
-// sphere.position.x = -1.5;
-// cube.position.x = 1.5;
-
-// // Adding objects to the scene
-// myscene.add(torus, sphere, cube);
-
-// // Debugging plane for texture1
-// const planeGeometry = new THREE.PlaneGeometry(1, 1);
-// const planeMaterial = new THREE.MeshBasicMaterial({ map: global.renderTarget.texture });
-// const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-// plane.position.set(-2, 2, 0);
-// myscene.add(plane);
-
-///----------
-
 /**
  * @class MRApp
  * @classdesc The engine handler for running MRjs as an App. `mr-app`
@@ -594,6 +486,8 @@ export class MRApp extends MRElement {
         // grab items to use
         const panels = [];
         for (let p of this.maskingSystem.panels) {
+            // ignore the background threeD object
+            
             panels.push(p.object3D);
         }
 
@@ -623,6 +517,11 @@ export class MRApp extends MRElement {
             mrjsUtils.Material.setObjectMaterial(entity, entityMaterial);
         });
         this.renderer.render(this.scene, camera);
+
+        const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
+        entities.forEach(entity => {
+            mrjsUtils.Material.setObjectMaterial(entity, standardMaterial);
+        });
 
         console.log('ending renderpass:');
         console.log(this.renderPassCount);

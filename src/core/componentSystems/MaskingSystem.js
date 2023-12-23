@@ -215,7 +215,7 @@ export class MaskingSystem extends MRSystem {
             // handle all children MRDivEntities
             entity.traverse((child) => {
                 console.log('traversing panel for children');
-                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
+                if (child instanceof MRDivEntity && !child.ignoreStencil && entity.contains(child)) {
                     console.log('on new child to add to registry, child is:');
                     console.log(child);
                     // let material = mrjsUtils.Material.getObjectMaterial(child.object3D);
