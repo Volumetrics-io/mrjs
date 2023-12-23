@@ -438,119 +438,117 @@ export class MRApp extends MRElement {
         if (this.maskingSystem == undefined) { return; }
 
 
-                const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-
+        const renderTargetBackgroundNoEntities = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const renderTargetFullBackground = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const renderTargetPanelsMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        const renderTargetEntitiesMask = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
         // create needed materials
-        const panelMaterial = new THREE.ShaderMaterial({
-            vertexShader: `
-                void main() {
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                void main() {
-                    // // Condition to check if the fragment is part of the object
-                    // if (gl_FragCoord.z < 1.0) {
-                    //     gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Render blue where object exists
-                    // } else {
-                    //     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render red
-                    // }
-                    void main() {
-                        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
-                    }
-                }
-            `,
-        });
-        const shaderMaterialUniforms = {
-            texture1: { value: renderTarget.texture },
-            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-        };
-        const objectShaderMaterial = {
-            uniforms: shaderMaterialUniforms,
-            vertexShader: `
-                varying vec2 vUv;
-                void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform sampler2D texture1;
-                uniform vec2 resolution;
-                varying vec2 vUv;
+        // const panelMaterial = new THREE.ShaderMaterial({
+        //     vertexShader: `
+        //         void main() {
+        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         void main() {
+        //             // // Condition to check if the fragment is part of the object
+        //             // if (gl_FragCoord.z < 1.0) {
+        //             //     gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Render blue where object exists
+        //             // } else {
+        //             //     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Render red
+        //             // }
+        //             void main() {
+        //                 gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Render white
+        //             }
+        //         }
+        //     `,
+        // });
+        // const shaderMaterialUniforms = {
+        //     texture1: { value: renderTarget.texture },
+        //     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        // };
+        // const objectShaderMaterial = {
+        //     uniforms: shaderMaterialUniforms,
+        //     vertexShader: `
+        //         varying vec2 vUv;
+        //         void main() {
+        //             vUv = uv;
+        //             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
 
-                void main() {
-                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-                    if (textureColor.r < 0.1) {
-                        discard;
-                    } else {
-                        gl_FragColor = vec4(0, 0, 0, 1);
-                    }
-                }
-            `
-        };
-        const entityMaterial = new THREE.ShaderMaterial({
-            ...objectShaderMaterial,
-            //uniforms: shaderMaterialUniforms,
-            // vertexShader: `
-            //     void main() {
-            //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            //     }
-            // `,
-            fragmentShader: `
-                uniform sampler2D texture1;
-                uniform vec2 resolution;
-                varying vec2 vUv;
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 discard;
+        //             } else {
+        //                 gl_FragColor = vec4(0, 0, 0, 1);
+        //             }
+        //         }
+        //     `
+        // };
+        // const entityMaterial = new THREE.ShaderMaterial({
+        //     ...objectShaderMaterial,
+        //     //uniforms: shaderMaterialUniforms,
+        //     // vertexShader: `
+        //     //     void main() {
+        //     //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //     //     }
+        //     // `,
+        //     fragmentShader: `
+        //         uniform sampler2D texture1;
+        //         uniform vec2 resolution;
+        //         varying vec2 vUv;
 
-                // void main() {
-                //     vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution); //vUv);//
+        //         // void main() {
+        //         //     vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution); //vUv);//
 
-                //     // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-                //     // pass thru right now 
-                //     if (textureColor.r==0.0 && textureColor.g==0.0 && textureColor.b==1.0) {
-                //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // pink
-                //     } else {
-                //         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // red//Use the passed color
-                //     }
-                // }
+        //         //     // gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        //         //     // pass thru right now 
+        //         //     if (textureColor.r==0.0 && textureColor.g==0.0 && textureColor.b==1.0) {
+        //         //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); // pink
+        //         //     } else {
+        //         //         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // red//Use the passed color
+        //         //     }
+        //         // }
 
-                // // void main() {
-                // //     // Calculate the screenspace coordinates
-                // //     vec2 screenSpaceCoord = gl_FragCoord.xy / resolution;
+        //         // // void main() {
+        //         // //     // Calculate the screenspace coordinates
+        //         // //     vec2 screenSpaceCoord = gl_FragCoord.xy / resolution;
 
-                // //     // Sample the texture at the screenspace coordinates
-                // //     vec4 textureColor = texture2D(texture1, screenSpaceCoord);
+        //         // //     // Sample the texture at the screenspace coordinates
+        //         // //     vec4 textureColor = texture2D(texture1, screenSpaceCoord);
 
-                // //     // Check if the texture color is blue (assuming blue is in the R channel)
-                // //     if (textureColor.r == 0.0 && textureColor.g == 0.0 && textureColor.b == 1.0) {
-                // //         // Render pink when blue is detected
-                // //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-                // //     } else {
-                // //         // Discard this fragment if it's not in a blue spot
-                // //         discard;
-                // //     }
-                // // }
+        //         // //     // Check if the texture color is blue (assuming blue is in the R channel)
+        //         // //     if (textureColor.r == 0.0 && textureColor.g == 0.0 && textureColor.b == 1.0) {
+        //         // //         // Render pink when blue is detected
+        //         // //         gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+        //         // //     } else {
+        //         // //         // Discard this fragment if it's not in a blue spot
+        //         // //         discard;
+        //         // //     }
+        //         // // }
 
-                void main() {
-                    vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
-                    if (textureColor.r < 0.1) {
-                        discard;
-                    } else {
-                        gl_FragColor = vec4(0.0, 1.0, 1.0, 1); // Blue color
-                    }
-                }
-            `
-        });
+        //         void main() {
+        //             vec4 textureColor = texture2D(texture1, gl_FragCoord.xy / resolution);
+        //             if (textureColor.r < 0.1) {
+        //                 discard;
+        //             } else {
+        //                 gl_FragColor = vec4(0.0, 1.0, 1.0, 1); // Blue color
+        //             }
+        //         }
+        //     `
+        // });
 
         const camera = this.user;
 
         console.log(this.scene.children);
         
-
-        // const panelsToEntities = this.maskingSystem.panelsToEntities;
-        // console.log('panelsToEntities is: ');
-        // console.log(panelsToEntities);
         console.log(this.maskingSystem.panels);
         const panelMesh = this.maskingSystem.panels[0].object3D.children[0];
         console.log(panelMesh);
@@ -558,14 +556,14 @@ export class MRApp extends MRElement {
         console.log('start render pass for panels');
 
         // Adjusted render pass for panels
-        this.renderer.clear();
-        this.renderer.setRenderTarget(renderTarget);
-        let panelMatOrig = null;
-        let material = panelMesh.material;
-        panelMesh.material = panelMaterial;
-        panelMatOrig = material;
-        this.renderer.render(this.scene, camera);
-        this.renderer.setRenderTarget(null);
+        // this.renderer.clear();
+        // this.renderer.setRenderTarget(renderTarget);
+        // let panelMatOrig = null;
+        // let material = panelMesh.material;
+        // panelMesh.material = panelMaterial;
+        // panelMatOrig = material;
+        // this.renderer.render(this.scene, camera);
+        // this.renderer.setRenderTarget(null);
 
         console.log('end render pass for panels');
 
@@ -575,33 +573,61 @@ export class MRApp extends MRElement {
         // entityMaterial.uniforms.texture1 = texture1Uniform;
         // entityMaterial.needsUpdate = true;
 
-        for (let e of this.maskingSystem.panels[0].object3D.children) {
-            e.traverse((child) => {
-                console.log(child);
-                if (child instanceof Panel || child.ignoreStencil) {
-                    return;
-                }
-                if (child.isMesh) {
-                    if (child === panelMesh) { return; }
-                    child.material = entityMaterial;
-                    child.material.needsUpdate = true;
-                }
-            });
-        }
+        // for (let e of this.maskingSystem.panels[0].object3D.children) {
+        //     e.traverse((child) => {
+        //         console.log(child);
+        //         if (child instanceof Panel || child.ignoreStencil) {
+        //             return;
+        //         }
+        //         if (child.isMesh) {
+        //             if (child === panelMesh) { return; }
+        //             child.material = entityMaterial;
+        //             child.material.needsUpdate = true;
+        //         }
+        //     });
+        // }
 
-        // Debugging plane for texture1
-        const planeGeometry = new THREE.PlaneGeometry(1, 1);
-        const planeMaterial = new THREE.MeshBasicMaterial({ map: renderTarget.texture });
-        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        plane.position.set(-2, 2, 0);
-        this.scene.add(plane);
+        // console.log('do all scene render');
+        // this.renderer.render(this.scene, camera);
 
-        console.log('do all scene render');
+        // // console.log('set entity material back');
+
+        // const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
+        // for (let e of this.maskingSystem.panels[0].object3D.children) {
+        //     e.traverse((child) => {
+        //         console.log(child);
+        //         if (child instanceof Panel || child.ignoreStencil) {
+        //             return;
+        //         }
+        //         if (child.isMesh) {
+        //             if (child === panelMesh) { return; }
+        //             child.material = standardMaterial;
+        //             child.material.needsUpdate = true;
+        //         }
+        //     });
+        // }
+        // panelMesh.material = panelMatOrig;
+
+        // console.log('ending renderpass:');
+        // console.log(this.renderPassCount);
+        // this.renderPassCount++;
+
+        ////----------
+
+        // 2. Render the scene to create the background texture
+        this.renderer.setRenderTarget(renderTargetFullBackground);
+        this.renderer.clear(); // Clear the render target
         this.renderer.render(this.scene, camera);
+        this.renderer.setRenderTarget(null);
 
-        // console.log('set entity material back');
+        // 3. Toggle visibility of objects as needed
+        function toggleVisibility(objects, visible) {
+          for (const object of objects) {
+            object.visible = visible;
+          }
+        }
 
-        const standardMaterial = new THREE.MeshStandardMaterial();// not saving atm
+        const entities = [];
         for (let e of this.maskingSystem.panels[0].object3D.children) {
             e.traverse((child) => {
                 console.log(child);
@@ -610,17 +636,120 @@ export class MRApp extends MRElement {
                 }
                 if (child.isMesh) {
                     if (child === panelMesh) { return; }
-                    child.material = standardMaterial;
-                    child.material.needsUpdate = true;
+                    entities.push(child);
                 }
             });
         }
-        panelMesh.material = panelMatOrig;
 
+        // 4. Render the scene to create the entityless background texture
+        toggleVisibility([panelMesh], true);
+        toggleVisibility(entities, false);
+        this.renderer.setRenderTarget(renderTargetBackgroundNoEntities);
+        this.renderer.clear(); // Clear the render target
+        this.renderer.render(this.scene, camera);
+        this.renderer.setRenderTarget(null);
 
-        console.log('ending renderpass:');
-        console.log(this.renderPassCount);
-        this.renderPassCount++;
+        const whiteMaskMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+        // Function to set material for all objects in the scene
+        function setMaterialForAllObjects(scene, material) {
+            const originalMaterials = []; // Store the original materials
+
+            scene.traverse((object) => {
+                if (object.isMesh) {
+                    originalMaterials.push(object.material); // Store the original material
+                    object.material = material; // Assign the temporary material
+                }
+            });
+
+            // Return a function to restore the original materials
+            return () => {
+                originalMaterials.forEach((originalMaterial, index) => {
+                    scene.traverse((object) => {
+                        if (object.isMesh && object.material === material) {
+                            object.material = originalMaterial; // Restore the original material
+                        }
+                    });
+                });
+            };
+        }
+
+        // white out the objects in the scene
+        const restoreMaterials = setMaterialForAllObjects(this.scene, whiteMaskMaterial); // Set temporary material
+
+        // 4. Render the scene to create panel only mask texture
+        toggleVisibility([panelMesh], true);
+        toggleVisibility(entities, false);
+        this.renderer.setRenderTarget(renderTargetPanelsMask);
+        this.renderer.clear(); // Clear the render target
+        this.renderer.render(this.scene, camera);
+        this.renderer.setRenderTarget(null);
+
+        // 6. Render the scene to create entities only mask texture
+        toggleVisibility([panelMesh], false);
+        toggleVisibility(entities, true);
+        this.renderer.setRenderTarget(renderTargetEntitiesMask);
+        this.renderer.clear(); // Clear the render target
+        this.renderer.render(this.scene, camera);
+        this.renderer.setRenderTarget(null);
+        
+        // Restore original materials after the pass
+        restoreMaterials();
+
+        // 7. Use post-processing shader to composite final image
+        const compositeMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                maskTexture: { value: renderTargetPanelsMask.texture },
+                entitiesMaskTexture: { value: renderTargetEntitiesMask.texture },
+                backgroundTexture: { value: renderTargetBackgroundNoEntities.texture },
+                fullBackgroundTexture: { value: renderTargetFullBackground.texture },
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position, 1.0); // projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+            varying vec2 vUv;
+                uniform sampler2D maskTexture;
+                uniform sampler2D entitiesMaskTexture;
+                uniform sampler2D backgroundTexture;
+                uniform sampler2D fullBackgroundTexture;
+
+                void main() {
+                  vec4 maskColor = texture2D(maskTexture, vUv);
+                  vec4 entitiesMaskColor = texture2D(entitiesMaskTexture, vUv);
+                  vec4 backgroundColor = texture2D(backgroundTexture, vUv);
+                  vec4 fullBackgroundColor = texture2D(fullBackgroundTexture, vUv);
+
+                  // gl_FragColor = fullBackgroundColor;
+                  
+                  // Check if entitiesMaskColor is white and maskColor is black
+                  if (entitiesMaskColor.r == 1.0 && maskColor.r == 0.0) {
+                    gl_FragColor = backgroundColor;
+                  } else {
+                    gl_FragColor = fullBackgroundColor;
+                  }
+                }
+            `,
+        });
+
+        // Create a full-screen quad to apply the composite material
+        const quadGeometry = new THREE.PlaneGeometry(2, 2);
+        const quad = new THREE.Mesh(quadGeometry, compositeMaterial);
+
+        // Add the quad to the scene
+        const scene2 = new THREE.Scene();
+        scene2.add(quad);
+
+        // 9. Render the final result on the screen
+        this.renderer.render(scene2, camera.clone());
+
+        // Reset visibility if needed for next pass
+        toggleVisibility([panelMesh], true);
+        toggleVisibility(entities, true);
     }
 }
 
