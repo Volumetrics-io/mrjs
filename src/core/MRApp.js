@@ -261,9 +261,13 @@ export class MRApp extends MRElement {
         this.forward.position.setZ(-0.5);
 
         // for widnow placement
+        this.userOrigin = new THREE.Object3D();
         this.anchor = new THREE.Object3D();
+        this.user.add(this.userOrigin);
         this.user.add(this.anchor);
 
+        this.userOrigin.position.setX(0.015);
+        this.anchor.position.setX(0.015);
         this.anchor.position.setZ(-0.5);
     };
 
@@ -381,6 +385,10 @@ export class MRApp extends MRElement {
             if (!this.session) {
                 return;
             }
+
+            this.session.addEventListener('inputsourceschange', (e) => {
+                console.log(e);
+            });
 
             this.session.addEventListener('end', () => {
                 global.inXR = false;
