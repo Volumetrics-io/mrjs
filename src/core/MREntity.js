@@ -56,6 +56,7 @@ export class MREntity extends MRElement {
         this.object3D.receiveShadow = true;
         this.object3D.castShadow = true;
         this.object3D.renderOrder = 3;
+        this.object3D.name = "entity";
 
         this.scale = 1;
 

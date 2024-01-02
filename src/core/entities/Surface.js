@@ -43,6 +43,7 @@ export class Surface extends MREntity {
         this.orientation = 'any';
 
         this.object3D.add(this.rotationPlane);
+        this.object3D.name = "surface";
         this.rotationPlane.add(this.translation);
 
         this.rotationPlane.receiveShadow = true;

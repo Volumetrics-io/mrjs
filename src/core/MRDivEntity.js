@@ -32,6 +32,7 @@ export class MRDivEntity extends MREntity {
         this.background.receiveShadow = true;
         this.background.renderOrder = 3;
         this.background.visible = false;
+        this.background.name = 'background';
         this.object3D.add(this.background);
         this.object3D.name = 'mrDivEntity'
 
@@ -161,14 +162,19 @@ export class MRDivEntity extends MREntity {
         return val;
     }
 
+    loop = 0;
+
     /**
      * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css elements.
+     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css elements for the first iteration. Updates ignoring css for remaining iterations.
      */
     updateStyle() {
         // background
-        this.setBorder();
-        this.setBackground();
+        if (this.loop < 1) {
+            this.setBorder();
+            this.setBackground();
+            ++this.loop;
+        }
     }
 
     /**
@@ -186,6 +192,11 @@ export class MRDivEntity extends MREntity {
      */
     setBackground() {
         const color = this.compStyle.backgroundColor;
+        console.log(this);
+        console.log('color is: ');
+        console.log(color);
+        console.log('background.material before is:');
+        console.log(this.background.material);
         if (color.includes('rgba')) {
             const rgba = color
                 .substring(5, color.length - 1)
@@ -207,6 +218,7 @@ export class MRDivEntity extends MREntity {
         if (this.compStyle.opacity < 1) {
             this.background.material.opacity = this.compStyle.opacity;
         }
+        this.background.material.needsUpdate = true;
     }
 }
 

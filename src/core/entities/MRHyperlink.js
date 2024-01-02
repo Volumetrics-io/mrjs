@@ -12,6 +12,7 @@ export default class MRHyperlink extends MRTextEntity {
     constructor() {
         super();
         this.background.castShadow = true;
+        this.object3D.name = "hyperlink";
     }
 
     /**
