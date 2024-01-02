@@ -22,6 +22,7 @@ import './core/MREntity';
 import './core/MRHand';
 import './core/MRSystem';
 import './core/MRTextEntity';
+import './core/entities/MRHyperlink.js';
 // CORE - ENTITIES
 import './core/entities/Button';
 import './core/entities/Image';
