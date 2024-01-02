@@ -401,7 +401,7 @@ export class MRApp extends MRElement {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
-        if (this.renderPassCount > 5) { return; }
+        // if (this.renderPassCount > 5) { return; }
         console.log(this.renderPassCount);
         console.log('starting renderpass:');
 
@@ -451,8 +451,8 @@ export class MRApp extends MRElement {
         console.log(this.scene.children);
         console.log(this.maskingSystem.panels);
 
-        const panelMesh = this.maskingSystem.panels[0].object3D.children[0];
-        console.log(panelMesh);
+        // const panelMesh = this.maskingSystem.panels[0].object3D.children[0];
+        // console.log(panelMesh);
 
         this.renderer.clear();
             

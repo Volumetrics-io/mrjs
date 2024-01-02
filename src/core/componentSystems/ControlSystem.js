@@ -22,7 +22,7 @@ export class ControlSystem extends MRSystem {
         this.activeHand = this.leftHand;
 
         document.addEventListener('selectstart', (event) => {
-            if (event.detail.handedness == 'left') {
+            if (event.detail?.handedness == 'left') {
                 this.activeHand = this.leftHand;
             } else {
                 this.activeHand = this.rightHand;

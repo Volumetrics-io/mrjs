@@ -229,42 +229,65 @@ export class MaskingSystem extends MRSystem {
 
                 if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
                     if (!child.object3D.isGroup) {
-                        console.log(`in weird state for panel's child, should be a group object, is:`);
-                        console.log(child.object3D);
-                    } else {
-                        console.log('on new child to add, added');
-                        // let objectMesh = child.object3D.children[0];
+                        child.object3D.material.color.set(0xffff00); // yellow
+                        child.object3D.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
+                        child.object3D.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                        child.object3D.material.stencilRef = this.objectStencilMaterial.stencilRef;
 
-                        child.object3D.children[0].material.stencilWrite = this.objectStencilMaterial.stencilWrite;
-                        child.object3D.children[0].material.stencilFunc = this.objectStencilMaterial.stencilFunc;
-                        child.object3D.children[0].material.stencilRef = this.objectStencilMaterial.stencilRef;
-
-                        objectMesh.material.needsUpdate = true;
-
-                        // child.object3D.children[0] = objectMesh;
-
-                        children.push(child.object3D);
+                        child.object3D.material.needsUpdate = true;
+                        console.log('updated child mesh material');
                     }
+
+                    //     console.log(`in weird state for panel's child, should be a group object, is:`);
+                    //     console.log(child.object3D);
+                    // } else {
+                    //     console.log('on new child to add, added');
+                    //     // let objectMesh = child.object3D.children[0];
+
+                    //     child.object3D.children[0].material.stencilWrite = this.objectStencilMaterial.stencilWrite;
+                    //     child.object3D.children[0].material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                    //     child.object3D.children[0].material.stencilRef = this.objectStencilMaterial.stencilRef;
+
+                    //     child.object3D.children[0].material.needsUpdate = true;
+
+                    //     // child.object3D.children[0] = objectMesh;
+
+                    //     children.push(child.object3D);
+                    // }
                 } else if (child instanceof Panel) {
-                    if (!child.object3D.isGroup) {
-                        console.log('in weird state for panel, should be a group object, is:');
-                        console.log(child.object3D);
-                    } else {
-                        console.log('on panel to add');
-                        // panel is always the first mesh child of the group
-                        // let panelMesh = child.object3D.children[0];
+                    if (child.object3D.isGroup) {
+                        // grab background
 
-                        child.object3D.children[0].material.stencilWrite = this.panelStencilMaterial.stencilWrite;
-                        child.object3D.children[0].material.stencilFunc = this.panelStencilMaterial.stencilFunc;
-                        child.object3D.children[0].material.stencilRef = this.panelStencilMaterial.stencilRef;
-                        child.object3D.children[0].material.stencilZPass = this.panelStencilMaterial.stencilZPass;
+                        let mesh = child.background;
+                        mesh.material.color.set(0xff00ff); // pink
+                        mesh.material.stencilWrite = this.panelStencilMaterial.stencilWrite;
+                        mesh.material.stencilFunc = this.panelStencilMaterial.stencilFunc;
+                        mesh.material.stencilRef = this.panelStencilMaterial.stencilRef;
+                        mesh.material.stencilZPass = this.panelStencilMaterial.stencilZPass;
 
-                        panelMesh.material.needsUpdate = true;
+                        mesh.material.needsUpdate = true;
 
-                        // child.object3D.children[0] = panelMesh;
-
-                        panel = child.object3D;
+                        console.log('updated panel material');
                     }
+
+                    //     console.log('in weird state for panel, should be a group object, is:');
+                    //     console.log(child.object3D);
+                    // } else {
+                    //     console.log('on panel to add');
+                    //     // panel is always the first mesh child of the group
+                    //     // let panelMesh = child.object3D.children[0];
+
+                    //     child.object3D.children[0].material.stencilWrite = this.panelStencilMaterial.stencilWrite;
+                    //     child.object3D.children[0].material.stencilFunc = this.panelStencilMaterial.stencilFunc;
+                    //     child.object3D.children[0].material.stencilRef = this.panelStencilMaterial.stencilRef;
+                    //     child.object3D.children[0].material.stencilZPass = this.panelStencilMaterial.stencilZPass;
+
+                    //     child.object3D.children[0].material.needsUpdate = true;
+
+                    //     // child.object3D.children[0] = panelMesh;
+
+                    //     panel = child.object3D;
+                    // }
                 } else if (child.object3D.isGroup) {
                     console.log('skipping child group:');
                     console.log(child);
