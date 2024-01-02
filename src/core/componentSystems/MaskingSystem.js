@@ -40,6 +40,17 @@ export class MaskingSystem extends MRSystem {
         //     stencilZPass:   THREE.KeepStencilOp,
         // });
 
+        this.panelStencilMaterial = new THREE.MeshBasicMaterial();
+        this.panelStencilMaterial.stencilWrite = true;
+        this.panelStencilMaterial.stencilFunc = THREE.AlwaysStencilFunc;
+        this.panelStencilMaterial.stencilRef = 1;
+        this.panelStencilMaterial.stencilZPass = THREE.ReplaceStencilOp;
+
+        this.objectStencilMaterial = new THREE.MeshBasicMaterial();
+        this.objectStencilMaterial.stencilWrite = true;
+        this.objectStencilMaterial.stencilFunc = THREE.EqualStencilFunc;
+        this.objectStencilMaterial.stencilRef = 1;
+
         // this.activeRefNumbers = new Set();
         // this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
         this.panelsToEntities = new Map();
@@ -210,37 +221,61 @@ export class MaskingSystem extends MRSystem {
             let children = [];
             let panel = null;
             entity.traverse((child) => {
+                // TODO - the below logic for the children array is slightly off - fix if needed
+                // but might not need the children array anymore
                 console.log(child);
+                console.log(child.object3D);
+                console.log(child.object3D.material);
+
                 if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
-                    console.log('on new child to add, added');
-                    children.push(child.object3D);
+                    if (!child.object3D.isGroup) {
+                        console.log(`in weird state for panel's child, should be a group object, is:`);
+                        console.log(child.object3D);
+                    } else {
+                        console.log('on new child to add, added');
+                        // let objectMesh = child.object3D.children[0];
+
+                        child.object3D.children[0].material.stencilWrite = this.objectStencilMaterial.stencilWrite;
+                        child.object3D.children[0].material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                        child.object3D.children[0].material.stencilRef = this.objectStencilMaterial.stencilRef;
+
+                        objectMesh.material.needsUpdate = true;
+
+                        // child.object3D.children[0] = objectMesh;
+
+                        children.push(child.object3D);
+                    }
                 } else if (child instanceof Panel) {
-                    console.log('on panel to add, added');
-                    panel = child.object3D;
+                    if (!child.object3D.isGroup) {
+                        console.log('in weird state for panel, should be a group object, is:');
+                        console.log(child.object3D);
+                    } else {
+                        console.log('on panel to add');
+                        // panel is always the first mesh child of the group
+                        // let panelMesh = child.object3D.children[0];
+
+                        child.object3D.children[0].material.stencilWrite = this.panelStencilMaterial.stencilWrite;
+                        child.object3D.children[0].material.stencilFunc = this.panelStencilMaterial.stencilFunc;
+                        child.object3D.children[0].material.stencilRef = this.panelStencilMaterial.stencilRef;
+                        child.object3D.children[0].material.stencilZPass = this.panelStencilMaterial.stencilZPass;
+
+                        panelMesh.material.needsUpdate = true;
+
+                        // child.object3D.children[0] = panelMesh;
+
+                        panel = child.object3D;
+                    }
+                } else if (child.object3D.isGroup) {
+                    console.log('skipping child group:');
+                    console.log(child);
+                    console.log(child.object3D);
                 } else {
-                    console.log('on new child to add, ignored');
+                    console.log('on new child to add, ignored:');
+                    console.log(child);
                 }
             });
             this.panelsToEntities.set(panel, children);
             console.log('traversing panel for children');
         }
-
-        // if (entity instanceof Panel) {
-        //     console.log('on new entity that is a panel');
-        //     console.log(entity);
-        //     console.log('added to panels listing');
-        //     this.panels.add(entity);
-            
-        //     // handle all children MRDivEntities
-        //     // entity.traverse((child) => {
-        //     //     console.log('traversing panel for children');
-        //     //     if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil && entity.contains(child)) {
-        //     //         console.log('on new child to add to registry, child is:');
-        //     //         console.log(child);
-        //     //         this.registry.add(child);
-        //     //     }
-        //     // });
-        // }
-        // otherwise ignore.
     }
 }

@@ -4,8 +4,8 @@ import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
 import { mrjsUtils } from 'mrjs';
 
-const HOVER_DISTANCE = 0.05;
-const PINCH_DISTANCE = 0.005;
+const ORIENTATION_OFFSET = new THREE.Quaternion(0.7071068, 0, 0, 0.7071068);
+const HAND_GROUP = 0x000b0001;
 
 const joints = [
     'wrist',
@@ -44,15 +44,10 @@ const HAND_MAPPING = {
  * @class MRHand
  * @classdesc Class describing the MRHand object representing the UX of the hand object for MR interactions.
  * @property {boolean} pinch - Indicates if the hand is in a pinch gesture.
- * @property {boolean} hover - Indicates if the hand is hovering over an interactive object.
- * @property {THREE.Vector3} cursorPosition - The position of the cursor in 3D space.
  * @property {object} jointPhysicsBodies - Physics bodies associated with the hand joints.
  * @property {THREE.Vector3} identityPosition - A reference position for the hand.
  * @property {THREE.Vector3} tempJointPosition - Temporary storage for a joint's position.
  * @property {THREE.Quaternion} tempJointOrientation - Temporary storage for a joint's orientation.
- * @property {THREE.Quaternion} orientationOffset - An offset for the hand's orientation.
- * @property {THREE.Vector3} hoverInitPosition - Initial position when hover starts.
- * @property {THREE.Vector3} hoverPosition - Current position during a hover.
  * @property {XRControllerModelFactory} controllerModelFactory - Factory for creating controller models.
  * @property {XRHandModelFactory} handModelFactory - Factory for creating hand models.
  * @property {THREE.Mesh} mesh - The 3D mesh representing the hand.
@@ -72,27 +67,23 @@ export class MRHand {
     constructor(handedness, app) {
         this.handedness = handedness;
         this.pinch = false;
-        this.hover = false;
-
-        this.cursorPosition = new THREE.Vector3();
+        this.active = false;
 
         this.jointPhysicsBodies = {};
+        this.pointer = new THREE.Object3D();
 
         this.identityPosition = new THREE.Vector3();
 
         this.tempJointPosition = new THREE.Vector3();
         this.tempJointOrientation = new THREE.Quaternion();
 
-        this.orientationOffset = new THREE.Quaternion(0.7071068, 0, 0, 0.7071068);
-
-        this.hoverInitPosition = new THREE.Vector3();
-        this.hoverPosition = new THREE.Vector3();
-
         this.controllerModelFactory = new XRControllerModelFactory();
         this.handModelFactory = new XRHandModelFactory();
 
         this.mesh;
         this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness]);
+        this.controller.add(this.pointer);
+        this.pointer.position.setZ(-0.5);
 
         this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness]);
         this.grip.add(this.controllerModelFactory.createControllerModel(this.grip));
@@ -102,8 +93,8 @@ export class MRHand {
 
         this.hand.add(this.model);
 
-        this.hand.addEventListener('pinchstart', this.onPinch);
-        this.hand.addEventListener('pinchend', this.onPinch);
+        this.hand.addEventListener('selectstart', this.onSelect);
+        this.hand.addEventListener('selectend', this.onSelect);
 
         app.scene.add(this.controller);
         app.scene.add(this.grip);
@@ -129,6 +120,8 @@ export class MRHand {
             } else {
                 colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
+
+            colliderDesc.setCollisionGroups(HAND_GROUP);
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
             this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);
@@ -175,7 +168,7 @@ export class MRHand {
         }
         const position = this.getCursorPosition();
         document.dispatchEvent(
-            new CustomEvent('pinchmoved', {
+            new CustomEvent('selectmoved', {
                 bubbles: true,
                 detail: {
                     handedness: this.handedness,
@@ -195,7 +188,7 @@ export class MRHand {
             this.tempJointOrientation = this.getJointOrientation(joint);
 
             if (!joint.includes('tip')) {
-                this.tempJointOrientation.multiply(this.orientationOffset);
+                this.tempJointOrientation.multiply(ORIENTATION_OFFSET);
             }
 
             this.jointPhysicsBodies[joint].body.setTranslation({ ...this.tempJointPosition }, true);
@@ -226,11 +219,11 @@ export class MRHand {
 
     /**
      * @function
-     * @description Handles the onPinch event
+     * @description Handles the onSelect event
      * @param {event} event - the on pinch event object
      */
-    onPinch = (event) => {
-        this.pinch = event.type == 'pinchstart';
+    onSelect = (event) => {
+        this.pinch = event.type == 'selectstart';
         const position = this.getCursorPosition();
         document.dispatchEvent(
             new CustomEvent(event.type, {

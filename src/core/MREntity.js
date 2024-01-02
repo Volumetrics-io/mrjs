@@ -54,7 +54,9 @@ export class MREntity extends MRElement {
         this.object3D.userData.size = new THREE.Vector3();
 
         this.object3D.receiveShadow = true;
+        this.object3D.castShadow = true;
         this.object3D.renderOrder = 3;
+        this.object3D.name = "entity";
 
         this.scale = 1;
 
@@ -144,8 +146,6 @@ export class MREntity extends MRElement {
             return;
         }
         this.parentElement.add(this);
-
-        this.parent = this.parentElement;
 
         if (this.parentElement.user) {
             this.user = this.parentElement.user;

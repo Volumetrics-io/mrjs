@@ -145,10 +145,6 @@ export class PhysicsSystem extends MRSystem {
         const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
-            // if(entity != this.currentEntity) {
-            //   return
-            // }
-            // TODO - can the above commented code be deleted? - TBD
             this.touchEnd(entity);
             return;
         }
@@ -169,21 +165,11 @@ export class PhysicsSystem extends MRSystem {
         this.currentEntity = entity;
         entity.touch = true;
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.app.focusEntity = entity;
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
+            entity.classList.remove('hover');
 
-            // Contact information can be read from `manifold`.
-            entity.dispatchEvent(
-                new CustomEvent('click', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
             entity.dispatchEvent(
                 new CustomEvent('touch-start', {
                     bubbles: true,
@@ -208,6 +194,8 @@ export class PhysicsSystem extends MRSystem {
         this.tempLocalPosition.set(0, 0, 0);
         this.tempWorldPosition.set(0, 0, 0);
         entity.touch = false;
+        entity.click();
+
         entity.dispatchEvent(
             new CustomEvent('touch-end', {
                 bubbles: true,
@@ -223,6 +211,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverStart = (collider1, collider2, entity) => {
+        entity.classList.add('hover');
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
@@ -236,6 +225,8 @@ export class PhysicsSystem extends MRSystem {
                     },
                 })
             );
+
+            entity.dispatchEvent(new MouseEvent('mouseover'));
         });
     };
 
@@ -245,11 +236,14 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverEnd = (entity) => {
+        entity.classList.remove('hover');
         entity.dispatchEvent(
             new CustomEvent('hover-end', {
                 bubbles: true,
             })
         );
+
+        entity.dispatchEvent(new MouseEvent('mouseleave'));
     };
 
     /**

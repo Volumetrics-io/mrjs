@@ -16,6 +16,7 @@ export class Model extends MREntity {
         super();
 
         this.ignoreStencil = true;
+        this.object3D.name = "model";
     }
 
     /**
