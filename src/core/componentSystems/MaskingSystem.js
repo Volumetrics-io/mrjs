@@ -23,17 +23,14 @@ export class MaskingSystem extends MRSystem {
         this.panelStencilMaterial = new THREE.MeshBasicMaterial();
         this.panelStencilMaterial.stencilWrite = true;
         this.panelStencilMaterial.stencilFunc = THREE.AlwaysStencilFunc;
-        this.panelStencilMaterial.stencilRef = 1;
+        this.panelStencilMaterial.stencilRef = -1; // our default unset
         this.panelStencilMaterial.stencilZPass = THREE.ReplaceStencilOp;
 
         this.objectStencilMaterial = new THREE.MeshBasicMaterial();
         this.objectStencilMaterial.stencilWrite = true;
         this.objectStencilMaterial.stencilFunc = THREE.EqualStencilFunc;
-        this.objectStencilMaterial.stencilRef = 1;
+        this.objectStencilMaterial.stencilRef = -1; // our default unset
 
-        // this.activeRefNumbers = new Set();
-        // this.panels = new Set(); // needed for rendering, we dont need one for the entities though since theyre added to the registry already.
-        this.panelsToEntities = new Map();
         this.panels = [];
     }
 
@@ -55,51 +52,52 @@ export class MaskingSystem extends MRSystem {
     onNewEntity(entity) {
          if (entity instanceof Panel) {
             this.panels.push(entity);
-            let children = [];
-            let panel = null;
-            entity.traverse((child) => {
-                // TODO - the below logic for the children array is slightly off - fix if needed
-                // but might not need the children array anymore
-                console.log(child);
-                console.log(child.object3D);
-                console.log(child.object3D.material);
 
-                if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
+            // Need to set stencilRef for the children of this panel to match that of this panel so 
+            // that when rendering the children they only mask based on the panel's geometry location instead
+            // of all panel geometry locations.
+            //
+            // stencilRef needs to be > 0 as 0 is the webgl default and -1 is our manual default of 'not set yet'.
+            // We're basing our stencilRef on the 1+index location (ie length of array at adding) of the panel entity.
+            const stencilRef = this.panels.length;
+
+            // Currently this setup will not be able to handle properly if there is a panel within another
+            // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
+            // passed through this function since that case is an edge case that will not be expected.
+
+            entity.traverse((child) => {
+                if (child instanceof Panel && child.object3D.isGroup) {
+                    // The panel entity should contain a group object where the first panel child we hit is this panel itself.
+                    // We need to mask based off the background mesh of this object.
+                    let mesh = child.background;
+                    if (this.app.debug) {
+                        mesh.material.color.set(0xff00ff); // pink
+                    }
+                    mesh.material.stencilWrite = this.panelStencilMaterial.stencilWrite;
+                    mesh.material.stencilFunc = this.panelStencilMaterial.stencilFunc;
+                    mesh.material.stencilRef = stencilRef;
+                    mesh.material.stencilZPass = this.panelStencilMaterial.stencilZPass;
+
+                    mesh.material.needsUpdate = true;
+                } else if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
+                    // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
+                    // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
+                    // to be manually excluded from this masking by default or manual addition.
+                    // 
+                    // Since we're stepping through every child, we only need to touch each mesh's material instead of 
+                    // updating group objects as a whole.
                     if (!child.object3D.isGroup) {
-                        child.object3D.material.color.set(0xffff00); // yellow
+                        if (this.app.debug) {
+                            child.object3D.material.color.set(0xffff00); // yellow
+                        }
                         child.object3D.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
                         child.object3D.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
-                        child.object3D.material.stencilRef = this.objectStencilMaterial.stencilRef;
+                        child.object3D.material.stencilRef = stencilRef;
 
                         child.object3D.material.needsUpdate = true;
-                        console.log('updated child mesh material');
                     }
-                } else if (child instanceof Panel) {
-                    if (child.object3D.isGroup) {
-                        // grab background
-
-                        let mesh = child.background;
-                        mesh.material.color.set(0xff00ff); // pink
-                        mesh.material.stencilWrite = this.panelStencilMaterial.stencilWrite;
-                        mesh.material.stencilFunc = this.panelStencilMaterial.stencilFunc;
-                        mesh.material.stencilRef = this.panelStencilMaterial.stencilRef;
-                        mesh.material.stencilZPass = this.panelStencilMaterial.stencilZPass;
-
-                        mesh.material.needsUpdate = true;
-
-                        console.log('updated panel material');
-                    }
-                } else if (child.object3D.isGroup) {
-                    console.log('skipping child group:');
-                    console.log(child);
-                    console.log(child.object3D);
-                } else {
-                    console.log('on new child to add, ignored:');
-                    console.log(child);
                 }
             });
-            this.panelsToEntities.set(panel, children);
-            console.log('traversing panel for children');
         }
     }
 }

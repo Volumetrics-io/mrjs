@@ -443,9 +443,30 @@ export class MRApp extends MRElement {
 
         const camera = this.user;
 
+    //     this.renderer.clear();
+
+    //     // TODO (before pr merge) - update this so content is stenciled per panel
+    //     // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
+    //     // from the pure loop but it is okay as is here for now.
+            
+    //     // Render panel to stencil buffer
+    //     this.renderer.state.buffers.stencil.setTest(true);
+    //     this.renderer.state.buffers.stencil.setMask(0xFF);
+    //     this.renderer.render(this.scene, camera);
+
+    //     // Render child-objects to where the stencil buffer is set
+    //     this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, 1, 0xFF);
+    //     this.renderer.render(this.scene, camera);
+
+    //     // Render the main scene without stencil operations
+    //     this.renderer.state.buffers.stencil.setTest(false);
+    //     this.renderer.render(this.scene, camera);
+
+    //     // Re-enable stencil test for subsequent renders if needed
+    //     this.renderer.state.buffers.stencil.setTest(true);
+
         this.renderer.clear();
 
-        // TODO (before pr merge) - update this so content is stenciled per panel
         // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
         // from the pure loop but it is okay as is here for now.
             
@@ -455,8 +476,17 @@ export class MRApp extends MRElement {
         this.renderer.render(this.scene, camera);
 
         // Render child-objects to where the stencil buffer is set
-        this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, 1, 0xFF);
-        this.renderer.render(this.scene, camera);
+        console.log('before panel_idx render');
+        console.log(this.maskingSystem);
+        console.log(this.maskingSystem.panels);
+        console.log(this.maskingSystem.panels.length);
+        for (let panel_idx = 1; panel_idx <= this.maskingSystem.panels.length; ++panel_idx) {
+            this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, panel_idx, 0xFF);
+            this.renderer.render(this.scene, camera);
+            console.log('panel idx is: ');
+            console.log(panel_idx);
+        }
+        console.log('after panel_idx render');
 
         // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
