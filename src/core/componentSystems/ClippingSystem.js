@@ -86,13 +86,11 @@ export class ClippingSystem extends MRSystem {
      * @function
      * @description Helper method for `onNewEntity`. Creates a clipping planes information (still writing this description)
      * @param {MREntity} entity - the entity to which we're adding the clipping planes information
-     * @returns {Array} - an array of clipping plane objects
      */
     addClippingPlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed();
         let geoPositionArray = this.geometry.attributes.position.array;
 
-        const clippingPlanes = [];
         for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
             this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
@@ -112,7 +110,6 @@ export class ClippingSystem extends MRSystem {
             entity.clipping.planes.push(newPlane);
             entity.clipping.planeIDs.push(f);
         }
-        return clippingPlanes;
     }
 
     /**

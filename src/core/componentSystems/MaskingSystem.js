@@ -51,6 +51,8 @@ export class MaskingSystem extends MRSystem {
      */
     onNewEntity(entity) {
         if (entity instanceof Panel) {
+            // Using an array for the panels in case we need them for more manipulations down the line instead
+            // of using the system's registry.
             this.panels.push(entity);
 
             // Need to set stencilRef for the children of this panel to match that of this panel so

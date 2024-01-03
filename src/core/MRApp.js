@@ -443,9 +443,9 @@ export class MRApp extends MRElement {
         this.renderer.state.buffers.stencil.setMask(0xff);
         this.renderer.render(this.scene, camera);
 
-        // Render child-objects to where the stencil buffer is set
-        for (let panel_idx = 1; panel_idx <= this.maskingSystem.panels.length; ++panel_idx) {
-            this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, panel_idx, 0xff);
+        // Render child-objects to where the stencil buffer is set; must start at 1, see MaskingSystem for more details.
+        for (let panel_ref = 1; panel_ref <= this.maskingSystem.panels.length; ++panel_ref) {
+            this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, panel_ref, 0xff);
             this.renderer.render(this.scene, camera);
         }
 
