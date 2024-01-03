@@ -36,7 +36,7 @@ Material.getObjectMaterial = function (parent) {
  * @function
  * @memberof Material
  * @param {object} parent - either a THREE.Group or a THREE.mesh/object
- * @param {object} material - a threejs material to be set for either the parent's direct material or 
+ * @param {object} material - a threejs material to be set for either the parent's direct material or
  * (in the case of a group) the material of all children within the parent group.
  * @description Given the parent, grabs either the parents direct material or (in the case of a group) the
  * material of the first child hit.
