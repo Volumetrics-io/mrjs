@@ -1,13 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { ClearPass } from 'three/addons/postprocessing/ClearPass.js';
-import { MaskPass } from 'three/addons/postprocessing/MaskPass.js';
-
-// import { OutPass } from 'three/addons/postprocessing/OutPass.js';
-// import { ClearMaskPass } from 'three/addons/postprocessing/ClearMaskPass.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 

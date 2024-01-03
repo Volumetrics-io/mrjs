@@ -162,20 +162,14 @@ export class MRDivEntity extends MREntity {
         return val;
     }
 
-    loop = 0; // TODO - for this pr make sure to check how much of this is needed for the update step
-
     /**
      * @function
      * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements for the first iteration. Updates ignoring css for remaining iterations.
+     * elements.
      */
     updateStyle() {
-        // background
-        if (this.loop < 1) {
-            this.setBorder();
-            this.setBackground();
-            ++this.loop;
-        }
+        this.setBorder();
+        this.setBackground();
     }
 
     /**
@@ -193,11 +187,6 @@ export class MRDivEntity extends MREntity {
      */
     setBackground() {
         const color = this.compStyle.backgroundColor;
-        console.log(this);
-        console.log('color is: ');
-        console.log(color);
-        console.log('background.material before is:');
-        console.log(this.background.material);
         if (color.includes('rgba')) {
             const rgba = color
                 .substring(5, color.length - 1)
