@@ -12,24 +12,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: count activity by non-members this month
+    - name: Count issues and PRs activity by non-members with pagination
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # Function to paginate through API results
-        # needed in case the count of any of the items gets too large to handle github's default
-        # for number of items per page of results
         function paginate() {
-          echo 'begin paginate'
           url=$1
-          all_data=""
-          loop_count=0
-          while [ "$url" != "null" ]; do
+          all_data="[]"
+          while [ -n "$url" ]; do
             response=$(curl -H "Authorization: token $GITHUB_TOKEN" -s -I "$url")
-            all_data+=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "$url")
-            url=$(echo "$response" | grep -oP '(?<=<)(.*?)(?=>; rel="next")')
-            echo "$loop_count"
-            loop_count = loop_count+1
+            data=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "$url")
+            all_data=$(echo "$all_data$data" | jq -s add)
+            next_link=$(echo "$response" | grep -oP '(?<=<)(.*?)(?=>; rel="next")')
+            url=${next_link:+$next_link}
           done
           echo "$all_data"
         }
