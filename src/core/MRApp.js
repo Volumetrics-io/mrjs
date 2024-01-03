@@ -108,7 +108,6 @@ export class MRApp extends MRElement {
             // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
             this.maskingSystem = new MaskingSystem();
-            // this.renderSystem = new RenderSystem();
         });
     }
 
@@ -392,8 +391,6 @@ export class MRApp extends MRElement {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    renderPassCount = 0;
-
     /**
      * @function
      * @description Default function header needed by threejs. The render function that is called during ever frame. Calls every systems' update function.
@@ -401,10 +398,6 @@ export class MRApp extends MRElement {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
-        // if (this.renderPassCount > 5) { return; }
-        console.log(this.renderPassCount);
-        console.log('starting renderpass:');
-
 
         // ----- grab important vars ----- //
 
@@ -432,6 +425,8 @@ export class MRApp extends MRElement {
             });
         }
 
+        // ----- System Updates ----- //
+
         if (this.debug) {
             this.stats.begin();
         }
@@ -448,31 +443,27 @@ export class MRApp extends MRElement {
 
         const camera = this.user;
 
-        console.log(this.scene.children);
-        console.log(this.maskingSystem.panels);
-
-        // const panelMesh = this.maskingSystem.panels[0].object3D.children[0];
-        // console.log(panelMesh);
-
         this.renderer.clear();
+
+        // TODO (before pr merge) - update this so content is stenciled per panel
+        // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
+        // from the pure loop but it is okay as is here for now.
             
-        // Render torus to stencil buffer
+        // Render panel to stencil buffer
         this.renderer.state.buffers.stencil.setTest(true);
         this.renderer.state.buffers.stencil.setMask(0xFF);
         this.renderer.render(this.scene, camera);
 
-        // Render sphere and cube where the stencil buffer is set
+        // Render child-objects to where the stencil buffer is set
         this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, 1, 0xFF);
         this.renderer.render(this.scene, camera);
 
-        // Render the additional orange cube without stencil operations
+        // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
         this.renderer.render(this.scene, camera);
 
         // Re-enable stencil test for subsequent renders if needed
         this.renderer.state.buffers.stencil.setTest(true);
-
-        ++this.renderPassCount;
     }
 }
 
