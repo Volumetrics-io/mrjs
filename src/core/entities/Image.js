@@ -25,7 +25,7 @@ export class Image extends MRDivEntity {
         this.object3D = new THREE.Mesh(this.geometry, this.material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
-        this.object3D.name = "image";
+        this.object3D.name = 'image';
     }
 
     /**

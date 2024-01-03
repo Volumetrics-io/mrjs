@@ -41,7 +41,7 @@ export class MaskingSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-       // leave for when needed.
+        // leave for when needed.
     }
 
     /**
@@ -50,10 +50,10 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-         if (entity instanceof Panel) {
+        if (entity instanceof Panel) {
             this.panels.push(entity);
 
-            // Need to set stencilRef for the children of this panel to match that of this panel so 
+            // Need to set stencilRef for the children of this panel to match that of this panel so
             // that when rendering the children they only mask based on the panel's geometry location instead
             // of all panel geometry locations.
             //
@@ -83,8 +83,8 @@ export class MaskingSystem extends MRSystem {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.
-                    // 
-                    // Since we're stepping through every child, we only need to touch each mesh's material instead of 
+                    //
+                    // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
                     if (!child.object3D.isGroup) {
                         if (this.app.debug) {

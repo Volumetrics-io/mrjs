@@ -86,6 +86,7 @@ export class ClippingSystem extends MRSystem {
      * @function
      * @description Helper method for `onNewEntity`. Creates a clipping planes information (still writing this description)
      * @param {MREntity} entity - the entity to which we're adding the clipping planes information
+     * @returns {Array} - an array of clipping plane objects
      */
     addClippingPlanes(entity) {
         this.geometry = entity.clipping.geometry.toNonIndexed();

@@ -34,7 +34,7 @@ export class MRDivEntity extends MREntity {
         this.background.visible = false;
         this.background.name = 'background';
         this.object3D.add(this.background);
-        this.object3D.name = 'mrDivEntity'
+        this.object3D.name = 'mrDivEntity';
 
         this.windowVerticalScale = 1;
         this.windowHorizontalScale = 1;
@@ -162,11 +162,12 @@ export class MRDivEntity extends MREntity {
         return val;
     }
 
-    loop = 0;
+    loop = 0; // TODO - for this pr make sure to check how much of this is needed for the update step
 
     /**
      * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css elements for the first iteration. Updates ignoring css for remaining iterations.
+     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
+     * elements for the first iteration. Updates ignoring css for remaining iterations.
      */
     updateStyle() {
         // background

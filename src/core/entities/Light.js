@@ -15,7 +15,7 @@ export class Light extends MREntity {
     constructor() {
         super();
         this.object3D = new THREE.PointLight({});
-        this.object3D.name = "pointLight";
+        this.object3D.name = 'pointLight';
     }
 
     /**

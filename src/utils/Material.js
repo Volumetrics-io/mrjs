@@ -9,7 +9,10 @@ let Material = {};
 /**
  * @function
  * @memberof Material
- * @description ...
+ * @param {object} parent - either a THREE.Group or a THREE.mesh/object
+ * @description Given the parent, grabs either the parent's direct material or (in the case of a group) the
+ * material of the first child hit.
+ * @returns {object} material - the grabbed material
  */
 Material.getObjectMaterial = function (parent) {
     let foundMesh = false;
@@ -32,7 +35,12 @@ Material.getObjectMaterial = function (parent) {
 /**
  * @function
  * @memberof Material
- * @description ...
+ * @param {object} parent - either a THREE.Group or a THREE.mesh/object
+ * @param {object} material - a threejs material to be set for either the parent's direct material or 
+ * (in the case of a group) the material of all children within the parent group.
+ * @description Given the parent, grabs either the parents direct material or (in the case of a group) the
+ * material of the first child hit.
+ * @returns {object} parent - the updated parent object
  */
 Material.setObjectMaterial = function (parent, material) {
     if (parent instanceof THREE.Group) {

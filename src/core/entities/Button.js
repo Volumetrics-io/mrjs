@@ -13,7 +13,7 @@ export default class Button extends MRTextEntity {
     constructor() {
         super();
         this.background.castShadow = true;
-        this.object3D.name = "button";
+        this.object3D.name = 'button';
     }
 }
 

@@ -20,7 +20,7 @@ export class MRTextEntity extends MRDivEntity {
         super();
         this.textObj = new Text();
         this.object3D.add(this.textObj);
-        this.object3D.name = "textObj";
+        this.object3D.name = 'textObj';
         this.editable = false;
 
         this.textObj.material.receiveShadow = true;
