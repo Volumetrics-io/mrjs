@@ -1,7 +1,6 @@
 name: count activity by non-members this month
 
 on:
-  push: # to delete
   workflow_dispatch:
 
 jobs:
