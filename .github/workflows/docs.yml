@@ -44,17 +44,17 @@ jobs:
         echo "ll ."
         ls -al .
 
-    - name: Checkout docs Repository
+    - name: Checkout documentation Repository
       uses: actions/checkout@v4
       with:
-        repository: Volumetrics-io/docs
+        repository: Volumetrics-io/documentation
         ref: main
         token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
     - name: Update Docs
       run: |
-        rm -rf docs && mkdir docs
-        mv -f ../doc/* ./docs/
+        rm -rf source/js-api && mkdir source/js-api
+        mv -f ../doc/* ./source/js-api/
 
     - name: Commit only if there are changes
       run: |
