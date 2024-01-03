@@ -1,35 +1,13 @@
-name: count activity by non-members this month
-
-on:
-  push: # to delete
-  workflow_dispatch:
-
-jobs:
-  count-activity:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: count activity by non-members this month
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Function to paginate through API results
+# Function to paginate through API results
         # needed in case the count of any of the items gets too large to handle github's default
         # for number of items per page of results
         function paginate() {
-          echo 'begin paginate'
           url=$1
           all_data=""
-          loop_count=0
           while [ "$url" != "null" ]; do
             response=$(curl -H "Authorization: token $GITHUB_TOKEN" -s -I "$url")
             all_data+=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "$url")
             url=$(echo "$response" | grep -oP '(?<=<)(.*?)(?=>; rel="next")')
-            echo "$loop_count"
-            loop_count = loop_count+1
           done
           echo "$all_data"
         }
