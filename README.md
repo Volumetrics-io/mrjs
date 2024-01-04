@@ -13,7 +13,7 @@ mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web a
 CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>
 ```
 
 NPM:
