@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { Panel } from 'mrjs/core/entities/Panel';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -13,6 +16,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
+import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { SurfaceSystem } from 'mrjs/core/componentSystems/SurfaceSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
@@ -87,7 +91,11 @@ export class MRApp extends MRElement {
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
 
+            // these must be the last three systems since
+            // they affect rendering. Clipping must happen
+            // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
+            this.maskingSystem = new MaskingSystem();
         });
     }
 
@@ -378,7 +386,11 @@ export class MRApp extends MRElement {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
+        // ----- grab important vars ----- //
+
         const deltaTime = this.clock.getDelta();
+
+        // ----- Update needed items ----- //
 
         if (global.inXR && !this.session) {
             this.session = this.renderer.xr.getSession();
@@ -400,6 +412,8 @@ export class MRApp extends MRElement {
             });
         }
 
+        // ----- System Updates ----- //
+
         if (this.debug) {
             this.stats.begin();
         }
@@ -410,6 +424,26 @@ export class MRApp extends MRElement {
             this.stats.end();
         }
 
+        // ----- Actually Render ----- //
+
+        // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
+        // from the pure loop but it is okay as is here for now.
+
+        // Need to wait until we have all needed rendering-associated systems loaded.
+        if (this.maskingSystem == undefined) {
+            return;
+        }
+
+        this.renderer.clear();
+
+        // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
+        // and internally handled stenciling functions.
+        this.renderer.state.buffers.stencil.setTest(true);
+        this.renderer.state.buffers.stencil.setMask(0xff);
+        this.renderer.render(this.scene, this.user);
+
+        // Render the main scene without stencil operations
+        this.renderer.state.buffers.stencil.setTest(false);
         this.renderer.render(this.scene, this.user);
     }
 }

@@ -83,6 +83,8 @@ Geometry.UIPlane = function (width, height, radius_corner, smoothness) {
     geometry.computeBoundingBox();
     geometry.computeVertexNormals();
 
+    geometry.name = 'uiPlane';
+
     return geometry;
 };
 

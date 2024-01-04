@@ -14,6 +14,7 @@ export class SkyBox extends MREntity {
      */
     constructor() {
         super();
+        this.object3D.name = 'skybox';
     }
 
     /**
