@@ -254,7 +254,7 @@ export class MRApp extends MRElement {
                 // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
                 // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
                 // terms of their distance from the camera, rather than affecting the size of the objects.
-                this.user = new THREE.OrthographicCamera(global.viewPortWidth / -2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / -2, 0.0001, 2000);
+                this.user = new THREE.OrthographicCamera(global.viewPortWidth / -2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / -2, 0.01, 1000);
                 break;
             case 'perspective':
             default:
