@@ -12,21 +12,29 @@ mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web a
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>`
+```html
+<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>
+```
 
 NPM:
 
-`npm i mrjs`
+```sh
+npm i mrjs
+```
 
 from source:
 
 clone this repo and run:
 
-`npm install && npm run build`
+```sh
+npm install && npm run build
+```
 
 in headset testing:
 
-`npm run server`
+```sh
+npm run server
+```
 
 ## HTTPS Requirement
 
@@ -39,7 +47,9 @@ Here are some additional solutions:
 
 Both options require you generate an ssl certificate & key via openssl:
 
-`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365`
+```sh
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
+```
 
 # Features
 
