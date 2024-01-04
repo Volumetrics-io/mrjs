@@ -61,6 +61,8 @@ export class MaskingSystem extends MRSystem {
             //
             // stencilRef needs to be > 0 as 0 is the webgl default and -1 is our manual default of 'not set yet'.
             // We're basing our stencilRef on the 1+index location (ie length of array at adding) of the panel entity.
+            // Even though we're not manually using this stencilRef in the render loop, threejs handles its use
+            // internally.
             const stencilRef = this.panels.length;
 
             // Currently this setup will not be able to handle properly if there is a panel within another

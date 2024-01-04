@@ -434,27 +434,17 @@ export class MRApp extends MRElement {
             return;
         }
 
-        const camera = this.user;
-
         this.renderer.clear();
 
-        // Render panel to stencil buffer
+        // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
+        // and internally handled stenciling functions.
         this.renderer.state.buffers.stencil.setTest(true);
         this.renderer.state.buffers.stencil.setMask(0xff);
-        this.renderer.render(this.scene, camera);
-
-        // Render child-objects to where the stencil buffer is set; must start at 1, see MaskingSystem for more details.
-        for (let panel_ref = 1; panel_ref <= this.maskingSystem.panels.length; ++panel_ref) {
-            this.renderer.state.buffers.stencil.setFunc(THREE.EqualStencilFunc, panel_ref, 0xff);
-            this.renderer.render(this.scene, camera);
-        }
+        this.renderer.render(this.scene, this.user);
 
         // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
-        this.renderer.render(this.scene, camera);
-
-        // Re-enable stencil test for subsequent renders if needed
-        this.renderer.state.buffers.stencil.setTest(true);
+        this.renderer.render(this.scene, this.user);
     }
 }
 
