@@ -27,7 +27,7 @@ jobs:
       run: |
         npm install
 
-    - name: 👷 Write the html docs
+    - name: 👷 Write the markdown docs
       run: |
         npm run docs
 
