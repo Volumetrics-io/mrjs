@@ -12,12 +12,23 @@ permissions:
 
 jobs:
   docs:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
     
     # todo - run the npm install with a dockerfile setup instead of pure
     # install but not important to do right now since install isnt too long
+
+    # NOTE - 
+    #
+    # For local documentation or to check the local output when writing your own pr to see how it will
+    # update, run `npm run docs`. As a heads up, order of creation of docs depends on your operating
+    # system, so if when you run this the order looks different, no worries - in the repo itself our
+    # action will handle that for you and default to use the right version for these automatically
+    # generated docs.
+    # 
+    # We're using mac as default for doc order generation (the order from that os makes the most sense
+    # from a readability perspective).
     
     - uses: actions/setup-node@v4
       with:
@@ -31,9 +42,14 @@ jobs:
       run: |
         npm run docs
 
+    - name: read the doc file
+      run: |
+        head -n 12 "./docs/js-api.md"
+
     - name: Get Docs content
       id: get-docs
       run: |
+        rm -rf ../doc
         mkdir -p ../doc
         cp -rf ./docs/* ../doc/
 
@@ -53,6 +69,7 @@ jobs:
 
     - name: Update Docs
       run: |
+        rm "./source/pages/02Javascript API.md"
         mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
 
     - name: Commit only if there are changes
