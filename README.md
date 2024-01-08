@@ -36,6 +36,16 @@ in headset testing:
 npm run server
 ```
 
+documentation:
+
+check [docs.mrjs.io](docs.mrjs.io) for the full documentation or our [repo](https://github.com/Volumetrics-io/documentation).
+
+For local documentation or to check the local output when writing your own pr to see how it will update, run the below command. As a heads up, order of creation of docs depends on your operating system, so if when you run this the order looks different, no worries - in the repo itself our action will handle that for you and default to use the right version for these automatically generated docs.
+
+```sh
+npm run docs
+```
+
 ## HTTPS Requirement
 
 In order to test on headset, WebXR requires that your project be served using an HTTPS server. If you're using WebPack you can achieve this by utilizing the [DevServer webpack plugin](https://webpack.js.org/configuration/dev-server/) with `https: true`. 

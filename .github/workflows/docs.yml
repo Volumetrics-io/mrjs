@@ -4,8 +4,8 @@ name: npm run docs
 on:
   workflow_dispatch:
   push:
-    # branches:
-    #    - main
+    branches:
+       - main
 
 permissions:
   contents: read
@@ -58,12 +58,8 @@ jobs:
 
     - name: Update Docs
       run: |
-        echo "---------\n---------\n---------\n---------BEFORE---------\n---------\n---------\n---------"
-        head -n 12 "./source/pages/02Javascript API.md"
         rm "./source/pages/02Javascript API.md"
         mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
-        echo "---------\n---------\n---------\n---------AFTER---------\n---------\n---------\n---------"
-        head -n 12 "./source/pages/02Javascript API.md"
 
     - name: Commit only if there are changes
       run: |
