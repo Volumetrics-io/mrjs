@@ -53,8 +53,7 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm -rf source/js-api && mkdir source/js-api
-        mv -f ../doc/* ./source/js-api/
+        mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
 
     - name: Commit only if there are changes
       run: |
