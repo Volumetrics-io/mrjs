@@ -53,7 +53,7 @@ jobs:
 
     - name: Update Docs
       run: |
-        mv -f ../doc/js-api.md ./source/pages/02Javascript_API.md
+        mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
 
     - name: Commit only if there are changes
       run: |
