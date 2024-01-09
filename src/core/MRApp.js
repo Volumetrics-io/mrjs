@@ -240,6 +240,15 @@ export class MRApp extends MRElement {
         }
 
         this.initLights(this.lighting);
+
+        // manually add skybox to check
+        var loader = new THREE.CubeTextureLoader();
+        var urlPrefix = './assets/textures/skybox_milkyway.jpg"';
+        var skymap = new THREE.CubeTextureLoader().load([
+          urlPrefix,
+        ] );
+        console.log(skymap);
+        this.scene.background = skymap;
     }
 
     /**
@@ -346,15 +355,15 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        console.log('adding entity: ');
-        console.log(entity);
-        if (entity instanceof SkyBox) {
-            this.scene.background = entity.background;
-            console.log('update this.scene.background');
-        } else {
+        // console.log('adding entity: ');
+        // console.log(entity);
+        // if (entity instanceof SkyBox) {
+        //     this.scene.background = entity.background;
+        //     console.log('update this.scene.background');
+        // } else {
             this.scene.add(entity.object3D);
-            console.log('just added item normally');
-        }
+        //     console.log('just added item normally');
+        // }
     }
 
     /**
