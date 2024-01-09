@@ -20,7 +20,7 @@ export class Panel extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? global.XRScale;
             return this.windowVerticalScale;
         }
@@ -81,7 +81,6 @@ export class Panel extends MRDivEntity {
         });
 
         document.addEventListener('exitXR', (event) => {
-            console.log('exit');
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
             if (!(this.parentElement instanceof Surface)) {
                 this.object3D.position.setZ(0);
@@ -122,7 +121,7 @@ export class Panel extends MRDivEntity {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {
-        if (!global.inXR) {
+        if (!mrjsUtils.xr.isPresenting) {
             return;
         }
         if (event.type == 'touch-end') {

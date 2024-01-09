@@ -94,7 +94,7 @@ export class ControlSystem extends MRSystem {
         this.leftHand.update();
         this.rightHand.update();
 
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.origin.setFromMatrixPosition(this.app.userOrigin.matrixWorld);
             this.direction.setFromMatrixPosition(this.activeHand.pointer.matrixWorld).sub(this.origin).normalize();
 

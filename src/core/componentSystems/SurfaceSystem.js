@@ -39,7 +39,7 @@ export class SurfaceSystem extends MRSystem {
             surface.rotationPlane.rotation.x = 3 * (Math.PI / 2);
         }
 
-        document.addEventListener('pinchstart', (event) => {
+        document.addEventListener('selectstart', (event) => {
             if (this.currentSurface == null || (this.hand && this.hand != event.detail.handedness)) {
                 return;
             }
@@ -49,7 +49,7 @@ export class SurfaceSystem extends MRSystem {
             }
         });
 
-        document.addEventListener('pinchmoved', (event) => {
+        document.addEventListener('selectmoved', (event) => {
             this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
             if (this.currentSurface && this.hand == event.detail.handedness) {
                 this.scale = Math.exp(2 * this.pinchDistance);
@@ -58,7 +58,7 @@ export class SurfaceSystem extends MRSystem {
             }
         });
 
-        document.addEventListener('pinchend', (event) => {
+        document.addEventListener('selectend', (event) => {
             if (this.currentSurface == null || this.hand != event.detail.handedness) {
                 return;
             }
@@ -83,7 +83,7 @@ export class SurfaceSystem extends MRSystem {
             if (this.currentSurface == null && surface.anchored == false) {
                 this.currentSurface = surface;
             } else if (surface.anchored && !surface.placed) {
-                if (!global.inXR) {
+                if (!mrjsUtils.xr.isPresenting) {
                     return;
                 }
                 surface.replace();
@@ -102,7 +102,7 @@ export class SurfaceSystem extends MRSystem {
             });
 
             this.session.addEventListener('end', () => {
-                global.inXR = false;
+                mrjsUtils.xr.isPresenting = false;
                 this.app.user.position.set(0, 0, 1);
                 this.app.user.quaternion.set(0, 0, 0, 1);
                 this.resetAllSurfaces();
