@@ -8,6 +8,7 @@ import Stats from 'stats.js';
 import { MRElement } from 'mrjs/core/MRElement';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
+import { SkyBox } from 'mrjs/core/entities/SkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -271,7 +272,7 @@ export class MRApp extends MRElement {
 
         this.forward.position.setZ(-0.5);
 
-        // for widnow placement
+        // for window placement
         this.userOrigin = new THREE.Object3D();
         this.anchor = new THREE.Object3D();
         this.user.add(this.userOrigin);
@@ -345,7 +346,15 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.scene.add(entity.object3D);
+        console.log('adding entity: ');
+        console.log(entity);
+        if (entity instanceof SkyBox) {
+            this.scene.background = entity.background;
+            console.log('update this.scene.background');
+        } else {
+            this.scene.add(entity.object3D);
+            console.log('just added item normally');
+        }
     }
 
     /**

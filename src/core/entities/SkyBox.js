@@ -15,11 +15,13 @@ export class SkyBox extends MREntity {
     constructor() {
         super();
         this.object3D.name = 'skybox';
+
+        this.background = null;
     }
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
+     * @description Callback function of MREntity - handles setting up this item once it is connected to run as an entity component.
      */
     connected() {
         // you can have texturesList be all individual textures
@@ -31,14 +33,14 @@ export class SkyBox extends MREntity {
             return;
         }
 
-        const textureLoader = THREE.CubeTextureLoader();
+        const textureLoader = new THREE.CubeTextureLoader();
         const textureNames = this.texturesList.split(',');
 
         let path = this.getAttribute('pathToTextures');
         const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));
 
         // scene.background
-        this.object3D.background = texture;
+        this.background = texture;
     }
 
     /**
