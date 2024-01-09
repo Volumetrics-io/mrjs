@@ -242,13 +242,13 @@ export class MRApp extends MRElement {
         this.initLights(this.lighting);
 
         // manually add skybox to check
-        var loader = new THREE.CubeTextureLoader();
+        var loader = new THREE.TextureLoader();
         var urlPrefix = './assets/textures/skybox_milkyway.jpg';
-        var skymap = new THREE.CubeTextureLoader().load([
-          urlPrefix,
-        ] );
+        var skymap = new THREE.TextureLoader().load(urlPrefix);
         console.log(skymap);
         this.scene.background = skymap;
+        console.log(this.scene);
+        console.log(this.scene.background);
     }
 
     /**
@@ -355,15 +355,16 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        // console.log('adding entity: ');
-        // console.log(entity);
-        // if (entity instanceof SkyBox) {
-        //     this.scene.background = entity.background;
-        //     console.log('update this.scene.background');
-        // } else {
+        console.log('adding entity: ');
+        console.log(entity);
+        if (entity instanceof SkyBox) {
+            this.scene.background = entity.background;
+            this.renderer.alpha = false;
+            console.log('update this.scene.background');
+        } else {
             this.scene.add(entity.object3D);
-        //     console.log('just added item normally');
-        // }
+            console.log('just added item normally');
+        }
     }
 
     /**
@@ -451,17 +452,15 @@ export class MRApp extends MRElement {
         // from the pure loop but it is okay as is here for now.
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem == undefined) {
-            return;
+        if (this.maskingSystem != undefined) {
+            this.renderer.clear();
+
+            // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
+            // and internally handled stenciling functions.
+            this.renderer.state.buffers.stencil.setTest(true);
+            this.renderer.state.buffers.stencil.setMask(0xff);
+            this.renderer.render(this.scene, this.user);
         }
-
-        this.renderer.clear();
-
-        // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
-        // and internally handled stenciling functions.
-        this.renderer.state.buffers.stencil.setTest(true);
-        this.renderer.state.buffers.stencil.setMask(0xff);
-        this.renderer.render(this.scene, this.user);
 
         // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
