@@ -243,7 +243,7 @@ export class MRApp extends MRElement {
 
         // manually add skybox to check
         var loader = new THREE.CubeTextureLoader();
-        var urlPrefix = './assets/textures/skybox_milkyway.jpg"';
+        var urlPrefix = './assets/textures/skybox_milkyway.jpg';
         var skymap = new THREE.CubeTextureLoader().load([
           urlPrefix,
         ] );
