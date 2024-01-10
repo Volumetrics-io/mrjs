@@ -240,15 +240,6 @@ export class MRApp extends MRElement {
         }
 
         this.initLights(this.lighting);
-
-        // manually add skybox to check
-        var loader = new THREE.TextureLoader();
-        var urlPrefix = './assets/textures/skybox_milkyway.jpg';
-        var skymap = new THREE.TextureLoader().load(urlPrefix);
-        console.log(skymap);
-        this.scene.background = skymap;
-        console.log(this.scene);
-        console.log(this.scene.background);
     }
 
     /**
@@ -355,15 +346,18 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        console.log('adding entity: ');
-        console.log(entity);
         if (entity instanceof SkyBox) {
-            this.scene.background = entity.background;
-            this.renderer.alpha = false;
-            console.log('update this.scene.background');
+            // TODO - in future there should be a way for an entity and a scene to interact with one
+            // another more specifically - maybe a SceneStyleSystem? or an update to the StyleSystem.
+            //
+            // Leaving this here for now because SkyBox is the one case the difference is needed
+            // at the moment.
+            entity.addTextureLoadedCallback(texture => {
+                this.scene.background = texture;
+                this.renderer.alpha = false;
+            });
         } else {
             this.scene.add(entity.object3D);
-            console.log('just added item normally');
         }
     }
 

@@ -17,11 +17,40 @@ export class SkyBox extends MREntity {
         this.object3D.name = 'skybox';
 
         this.background = null;
+        this.textureLoadedCallbacks = [];
     }
 
     /**
-     * @function
-     * @description Callback function of MREntity - handles setting up this item once it is connected to run as an entity component.
+     * @method
+     * @description Callback function triggered when the texture is successfully loaded. 
+     *              It sets the loaded texture as the background and notifies all registered callbacks.
+     * @param {THREE.Texture} texture - The loaded texture.
+     */
+    onTextureLoaded(texture) {
+        this.background = texture;
+        this.textureLoadedCallbacks.forEach(callback => callback(texture));
+    }
+
+    /**
+     * @method
+     * @description Registers a callback to be called when the texture is loaded. 
+     *              If the texture is already loaded, the callback is called immediately.
+     * @param {function(THREE.Texture): void} callback - The callback function to be called with the loaded texture.
+     */
+    addTextureLoadedCallback(callback) {
+        if (this.background) {
+            // If the texture is already loaded, call the callback immediately
+            callback(this.background);
+        } else {
+            // Otherwise, store the callback to be called when the texture loads
+            this.textureLoadedCallbacks.push(callback);
+        }
+    }
+
+    /**
+     * @method
+     * @description Lifecycle method that is called when the entity is connected. 
+     *              This method initializes and starts the texture loading process.
      */
     connected() {
         // you can have texturesList be all individual textures
@@ -33,14 +62,14 @@ export class SkyBox extends MREntity {
             return;
         }
 
-        const textureLoader = new THREE.CubeTextureLoader();
         const textureNames = this.texturesList.split(',');
+        const path = this.getAttribute('pathToTextures');
 
-        let path = this.getAttribute('pathToTextures');
-        const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));
-
-        // scene.background
-        this.background = texture;
+        const textureLoader = textureNames.length > 1 ? new THREE.CubeTextureLoader() : new THREE.TextureLoader();
+        textureLoader.load(
+            textureNames.map(name => path ? path + name : name),
+            this.onTextureLoaded.bind(this) // Ensuring the correct context
+        );
     }
 
     /**
