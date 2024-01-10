@@ -262,7 +262,7 @@ export class MRApp extends MRElement {
         this.forward = new THREE.Object3D();
         this.user.add(this.forward);
 
-        this.forward.position.setZ(-1);
+        this.forward.position.setZ(-0.5);
 
         // for widnow placement
         this.userOrigin = new THREE.Object3D();

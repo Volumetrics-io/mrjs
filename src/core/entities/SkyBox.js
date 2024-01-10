@@ -30,15 +30,20 @@ export class SkyBox extends MREntity {
         if (!this.texturesList) {
             return;
         }
+        this.geometry = new THREE.SphereGeometry(1000, 32, 16);
 
-        const textureLoader = THREE.CubeTextureLoader();
-        const textureNames = this.texturesList.split(',');
+        const textureLoader = new THREE.TextureLoader();
+        this.texture = textureLoader.load(this.texturesList);
+        this.material = new THREE.MeshStandardMaterial({
+            opacity: 1,
+            side:1,
+            map: this.texture
+        });
 
-        let path = this.getAttribute('pathToTextures');
-        const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));
+        this.skybox = new THREE.Mesh(this.geometry, this.material);
+        this.object3D.add(this.skybox)
+        this.skybox.rotateX(90)
 
-        // scene.background
-        this.object3D.background = texture;
     }
 
     /**

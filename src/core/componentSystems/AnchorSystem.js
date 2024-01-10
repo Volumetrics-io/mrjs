@@ -71,40 +71,32 @@ export class AnchorSystem extends MRSystem {
                 return;
             }
             if(!event.detail) { return }
-            this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
             this.hand = event.detail.handedness;
         });
 
         document.addEventListener('selectmoved', (event) => {
-            mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
 
-                if (this.currentEntity && this.hand == event.detail.handedness) {
-                    this.hitResults = frame.getHitTestResults(this.source);
-                    const hit = this.hitResults[0];
-                    const pose = hit?.getPose(mrjsUtils.xr.referenceSpace);
+            if (this.currentEntity && this.hand == event.detail.handedness) {
+                this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld);
+                this.cameraForward.setFromMatrixPosition(this.app.forward.matrixWorld);
 
-                    this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld);
-                    this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
-                    this.scale = Math.exp(2 * this.pinchDistance);
-
-                    if (pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
-                        let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform)
-                        this.currentEntity.object3D.matrix.copy(this.ensureYAxisUp(transform))
-                    } else {
-
-                        this.app.anchor.position.z = this.app.forward.position.z * this.scale;
-                        this.currentEntity.object3D.matrix.copy(this.app.anchor.matrixWorld);
-
-                    }
-                }
-            });
+                this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
+                this.scale = Math.exp(2 * this.pinchDistance);
+                this.app.anchor.position.z = this.app.forward.position.z * this.scale;
+                this.app.anchor.lookAt(this.userWorldPosition)
+            }
             
         });
 
         document.addEventListener('selectend', (event) => {
+            if (this.currentEntity == null || (this.hand && this.hand != event.detail.handedness)) {
+                return;
+            }
             mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
                 frame.createAnchor(this.matrix4ToXRRigidTransform(this.currentEntity.object3D.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
                     this.currentEntity.anchor = anchor
+                    this.anchoringQueue.delete(this.currentEntity)
+                    this.currentEntity = null
                     }, (error) => {
                     console.error("Could not create anchor: " + error);
                 });
@@ -121,27 +113,34 @@ export class AnchorSystem extends MRSystem {
      */
     update(deltaTime, frame) {
 
+        if (this.currentEntity) {
+            if(!mrjsUtils.xr.isPresenting) { return }
+            this.floating(frame)
+        }
+
         for (const entity of this.registry) {
             if(mrjsUtils.xr.isPresenting) {
+                let anchorComp = entity.components.get('anchor')
                 if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
-                    this.currentEntity = entity;
                     entity.object3D.matrixAutoUpdate = false
-                    let anchorComp = this.currentEntity.components.get('anchor')
-    
                     this.createAnchor(entity, anchorComp)
                 } else if(entity.anchor) {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform)
-                    entity.object3D.matrix.copy(this.ensureYAxisUp(transform))
+
+                    entity.object3D.matrix.copy(this.adjustTransform(transform))
                 }
              } else if(entity.anchor){
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix)
-                entity.mrPlane.occupied = false
-                entity.mrPlane.mesh.visible = true
-                entity.mrPlane = null
+                if (entity.mrPlane) {
+                    entity.mrPlane.occupied = false
+                    entity.mrPlane.mesh.visible = true
+                    entity.mrPlane = null
+                }
                 entity.anchor = null
              }
         }
+
     }
 
     attachedComponent(entity) {
@@ -171,19 +170,38 @@ export class AnchorSystem extends MRSystem {
             case 'plane':
                 this.plane(entity, comp)
                 break;
+            case 'floating':
+                this.currentEntity = entity
+                this.anchoringQueue.add(entity)
+                break;
             default:
                 break;
         }
     }
 
     fixed(entity) {
+        this.anchoringQueue.add(entity)
         mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
             frame.createAnchor(this.matrix4ToXRRigidTransform(entity.object3D.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
                 entity.anchor = anchor
+                this.anchoringQueue.delete(entity)
                 }, (error) => {
                 console.error("Could not create anchor: " + error);
             });
         })
+    }
+
+    floating(frame) {
+        this.hitResults = frame.getHitTestResults(this.source);
+        const hit = this.hitResults[0];
+        const pose = hit?.getPose(mrjsUtils.xr.referenceSpace);
+
+        if (pose && this.userWorldPosition.distanceTo(pose.transform.position) < this.snapDistance * this.scale) {
+            let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform)
+            this.currentEntity.object3D.matrix.copy(this.adjustTransform(transform))
+        } else {
+            this.currentEntity.object3D.matrix.copy(this.app.anchor.matrixWorld);
+        }
     }
 
     plane(entity, comp) {
@@ -197,17 +215,14 @@ export class AnchorSystem extends MRSystem {
             if (comp.label && comp.label != mrPlane.label) { continue }
             if (comp.orientation && comp.orientation != mrPlane.orientation) { continue }
             mrPlane.occupied = true
-            console.log('anchoring...');
 
             mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
                 frame.createAnchor(this.matrix4ToXRRigidTransform(mrPlane.mesh.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
                     this.anchoringQueue.delete(entity)
                     entity.anchor = anchor
                     entity.mrPlane = mrPlane
-                    console.log('anchored');
 
                     if(comp.occlusion == false) {
-                        console.log('disable occlusion');
                         mrPlane.mesh.visible = false;
                     }
                     }, (error) => {
@@ -221,7 +236,7 @@ export class AnchorSystem extends MRSystem {
     }
 
 
-    ensureYAxisUp(xrRigidTransform) {
+    adjustTransform(xrRigidTransform) {
         // Create a Three.js Quaternion for the XRRigidTransform's orientation
         let quaternion = new THREE.Quaternion(
             xrRigidTransform.orientation.x,
@@ -248,7 +263,17 @@ export class AnchorSystem extends MRSystem {
             xrRigidTransform.position.y,
             xrRigidTransform.position.z
         );
-        return new THREE.Matrix4().compose(position, quaternion, new THREE.Vector3(1, 1, 1)); // Assuming no scaling;
+        let originalMatrix = new THREE.Matrix4().compose(position, quaternion, new THREE.Vector3(1, 1, 1)); // Assuming no scaling;
+        let rotationMatrix = new THREE.Matrix4()
+        rotationMatrix.extractRotation(originalMatrix)
+
+        let forwardVector = new THREE.Vector3(0, 0, 0.025)
+        forwardVector.applyMatrix4(rotationMatrix)
+        let matrix = new THREE.Matrix4()
+        matrix.makeTranslation(forwardVector.x, forwardVector.y, forwardVector.y)
+        matrix.multiply(originalMatrix)
+
+        return matrix
     }
 
     matrix4ToXRRigidTransform(matrix4) {
