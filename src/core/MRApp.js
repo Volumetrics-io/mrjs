@@ -86,6 +86,7 @@ export class MRApp extends MRElement {
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
+            this.anchorSystem = new AnchorSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
@@ -261,7 +262,7 @@ export class MRApp extends MRElement {
         this.forward = new THREE.Object3D();
         this.user.add(this.forward);
 
-        this.forward.position.setZ(-0.5);
+        this.forward.position.setZ(-1);
 
         // for widnow placement
         this.userOrigin = new THREE.Object3D();
@@ -392,14 +393,13 @@ export class MRApp extends MRElement {
             mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
             this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
-            if (!this.anchorSystem) {
-                this.anchorSystem = new AnchorSystem();
-            }
 
             mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);
                 this.user.quaternion.set(0, 0, 0, 1);
-                mrjsUtils.xr.session = null;
+                mrjsUtils.xr.session = undefined;
+                mrjsUtils.xr.referenceSpace = undefined;
+
                 this.onWindowResize();
                 this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
             });

@@ -20,25 +20,24 @@ export class MRPlaneManager {
 
 		this.tempDimensions = new THREE.Vector3()
 
+		document.addEventListener('exitXR', () => {
+			for ( const [ plane, mrplane ] of this.currentPlanes ) {
+
+					mrplane.mesh.geometry.dispose();
+					mrplane.mesh.material.dispose();
+					this.scene.remove( mrplane.mesh );
+
+					this.physicsWorld.removeRigidBody(mrplane.body)
+
+					this.currentPlanes.delete( plane );
+
+
+				}
+		})
+
 
         mrjsUtils.xr.addEventListener( 'planesdetected', (event) => {
 			const planes = event.data;
-
-			let planeschanged = false;
-
-			// for ( const [ plane, mesh ] of this.currentPlanes ) {
-            //     if ( planes.has( plane ) === false ) {
-
-			// 		mesh.geometry.dispose();
-			// 		mesh.material.dispose();
-			// 		this.remove( mesh );
-
-			// 		this.currentPlanes.delete( plane );
-
-			// 		planeschanged = true;
-
-			// 	}
-            // }
 
 			mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
 				for ( const plane of planes ) {
@@ -93,9 +92,7 @@ export class MRPlaneManager {
 						mrPlane.body = this.initPhysicsBody(plane)
 	
 						this.currentPlanes.set( plane, mrPlane );
-	
-						planeschanged = true;
-	
+		
 					}
 	
 				}

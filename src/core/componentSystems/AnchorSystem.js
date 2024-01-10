@@ -22,6 +22,7 @@ export class AnchorSystem extends MRSystem {
         this.tempMatrix = new THREE.Matrix4();
 
         this.planeManager = new MRPlaneManager(this.app.scene, this.app.physicsWorld)
+        this.anchoringQueue = new Set()
 
         this.hitResults
 
@@ -44,8 +45,24 @@ export class AnchorSystem extends MRSystem {
             this.registry.add(entity)
         }
 
-        mrjsUtils.xr.addEventListener( 'planesdetected', (event) => {
+        this.app.addEventListener('enterXR', () => {
+            if (this.sourceRequest == false) {
 
+                mrjsUtils.xr.session.requestReferenceSpace('viewer').then((viewerSpace) => {
+                    mrjsUtils.xr.session.requestHitTestSource({ space: viewerSpace }).then((source) => {
+                        this.source = source;
+                    });
+                });
+    
+                mrjsUtils.xr.session.addEventListener('end', () => {
+    
+                    this.sourceRequest = false;
+                    this.source = null;
+                    this.hand = null
+                });
+    
+                this.sourceRequest = true;
+            }    
         })
 
 
@@ -53,10 +70,9 @@ export class AnchorSystem extends MRSystem {
             if (this.currentEntity == null || (this.hand && this.hand != event.detail.handedness)) {
                 return;
             }
+            if(!event.detail) { return }
             this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
-            // if (this.pinchDistance < 0.3) {
-                this.hand = event.detail.handedness;
-            // }
+            this.hand = event.detail.handedness;
         });
 
         document.addEventListener('selectmoved', (event) => {
@@ -104,46 +120,34 @@ export class AnchorSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        if(!mrjsUtils.xr.session) { return }
-        if (this.sourceRequest == false) {
-
-            mrjsUtils.xr.session.requestReferenceSpace('viewer').then((viewerSpace) => {
-                mrjsUtils.xr.session.requestHitTestSource({ space: viewerSpace }).then((source) => {
-                    this.source = source;
-                });
-            });
-
-            mrjsUtils.xr.session.addEventListener('end', () => {
-
-                this.sourceRequest = false;
-                this.source = null;
-            });
-
-            this.sourceRequest = true;
-        }
-
 
         for (const entity of this.registry) {
-            if (entity.anchor == null) {
-                this.currentEntity = entity;
-                entity.object3D.matrixAutoUpdate = false
-
-                let anchorComp = this.currentEntity.components.get('anchor')
-
-                this.createAnchor(entity, anchorComp)
-            } else if(entity.anchor) {
-                let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
-                let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform)
-                entity.object3D.matrix.copy(this.ensureYAxisUp(transform))
-            }
+            if(mrjsUtils.xr.isPresenting) {
+                if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
+                    this.currentEntity = entity;
+                    entity.object3D.matrixAutoUpdate = false
+                    let anchorComp = this.currentEntity.components.get('anchor')
+    
+                    this.createAnchor(entity, anchorComp)
+                } else if(entity.anchor) {
+                    let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
+                    let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform)
+                    entity.object3D.matrix.copy(this.ensureYAxisUp(transform))
+                }
+             } else if(entity.anchor){
+                entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix)
+                entity.mrPlane.occupied = false
+                entity.mrPlane.mesh.visible = true
+                entity.mrPlane = null
+                entity.anchor = null
+             }
         }
     }
 
     attachedComponent(entity) {
+        entity.object3D.userData.originalMatrix = new THREE.Matrix4()
+        entity.object3D.userData.originalMatrix.copy(entity.object3D.matrixWorld)
         entity.object3D.matrixAutoUpdate = false
-        let comp = entity.components.get('anchor')
-        // These cases can be managed instantly
-        this.createAnchor(entity, comp)
     }
 
     updatedComponent(entity) {
@@ -183,26 +187,35 @@ export class AnchorSystem extends MRSystem {
     }
 
     plane(entity, comp) {
-        for( const [ plane, mrPlane ] of this.planeManager.currentPlanes ) {
-            if (mrPlane.entity) { continue }
+        if(this.planeManager.currentPlanes.size == 0) { return }
+        this.anchoringQueue.add(entity)
+        this.userWorldPosition.setFromMatrixPosition(this.app.forward.matrixWorld);
+        let sort = Array.from(this.planeManager.currentPlanes.values())
+        sort.sort((a, b) => {return a.mesh.position.distanceTo(this.userWorldPosition) - b.mesh.position.distanceTo(this.userWorldPosition)})
+        for( const mrPlane of sort ) {
+            if (mrPlane.occupied) { continue }
             if (comp.label && comp.label != mrPlane.label) { continue }
             if (comp.orientation && comp.orientation != mrPlane.orientation) { continue }
-            mrPlane.entity = entity
-            console.log(mrPlane);
-
-            if(comp.occlusion == false) {
-                console.log('disable occlusion');
-                mrPlane.mesh.visible = false;
-            }
+            mrPlane.occupied = true
+            console.log('anchoring...');
 
             mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
                 frame.createAnchor(this.matrix4ToXRRigidTransform(mrPlane.mesh.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
+                    this.anchoringQueue.delete(entity)
                     entity.anchor = anchor
                     entity.mrPlane = mrPlane
+                    console.log('anchored');
+
+                    if(comp.occlusion == false) {
+                        console.log('disable occlusion');
+                        mrPlane.mesh.visible = false;
+                    }
                     }, (error) => {
                     console.error("Could not create anchor: " + error);
                 });
             })
+
+            return;
 
         }
     }
