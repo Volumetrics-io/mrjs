@@ -4,6 +4,12 @@
  */
 let Physics = {};
 
+Physics.CollisionGroups = {
+    USER: 0x000D0001,
+    PLANES: 0x000D0002,
+    UI:  0x00010001,
+}
+
 /**
  * @memberof Physics
  * @description the RAPIER physics controller object

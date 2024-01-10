@@ -105,6 +105,8 @@ export class MRPlaneManager {
 	initPhysicsBody(plane) {
 		const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
 		let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
+		console.log(mrjsUtils.Physics.CollisionGroups.PLANES);
+		colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.PLANES);
 		let body = this.physicsWorld.createRigidBody(rigidBodyDesc);
 		body.setRotation(this.tempQuaternion, true);
 		let collider = this.physicsWorld.createCollider(colliderDesc, body);

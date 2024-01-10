@@ -101,7 +101,7 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.origin };
             this.ray.dir = { ...this.direction };
 
-            this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+            this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
             if (this.hit != null) {
                 this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
                 this.cursor.setTranslation({ ...this.hitPosition }, true);
@@ -217,6 +217,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+        return this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
     }
 }
