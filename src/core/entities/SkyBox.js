@@ -21,19 +21,19 @@ export class SkyBox extends MREntity {
     }
 
     /**
-     * @method
-     * @description Callback function triggered when the texture is successfully loaded. 
+     * @function
+     * @description Callback function triggered when the texture is successfully loaded.
      *              It sets the loaded texture as the background and notifies all registered callbacks.
      * @param {THREE.Texture} texture - The loaded texture.
      */
     onTextureLoaded(texture) {
         this.background = texture;
-        this.textureLoadedCallbacks.forEach(callback => callback(texture));
+        this.textureLoadedCallbacks.forEach((callback) => callback(texture));
     }
 
     /**
-     * @method
-     * @description Registers a callback to be called when the texture is loaded. 
+     * @function
+     * @description Registers a callback to be called when the texture is loaded.
      *              If the texture is already loaded, the callback is called immediately.
      * @param {function(THREE.Texture): void} callback - The callback function to be called with the loaded texture.
      */
@@ -48,8 +48,8 @@ export class SkyBox extends MREntity {
     }
 
     /**
-     * @method
-     * @description Lifecycle method that is called when the entity is connected. 
+     * @function
+     * @description Lifecycle method that is called when the entity is connected.
      *              This method initializes and starts the texture loading process.
      */
     connected() {
@@ -67,7 +67,7 @@ export class SkyBox extends MREntity {
 
         const textureLoader = textureNames.length > 1 ? new THREE.CubeTextureLoader() : new THREE.TextureLoader();
         textureLoader.load(
-            textureNames.map(name => path ? path + name : name),
+            textureNames.map((name) => (path ? path + name : name)),
             this.onTextureLoaded.bind(this) // Ensuring the correct context
         );
     }

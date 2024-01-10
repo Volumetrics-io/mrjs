@@ -352,7 +352,7 @@ export class MRApp extends MRElement {
             //
             // Leaving this here for now because SkyBox is the one case the difference is needed
             // at the moment.
-            entity.addTextureLoadedCallback(texture => {
+            entity.addTextureLoadedCallback((texture) => {
                 this.scene.background = texture;
                 this.renderer.alpha = false;
             });
