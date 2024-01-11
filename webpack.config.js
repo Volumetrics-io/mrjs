@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Determine the environment (e.g., testing or development)
+const isTesting = process.env.NODE_ENV === 'testing';
+
 export default {
     entry: {
         main: './src/index.js',
@@ -19,7 +22,7 @@ export default {
     },
 
     devServer: {
-        https: true,
+        https: process.env.NODE_ENV !== 'testing'
         static: {
             directory: path.join(__dirname, 'dist'),
         },

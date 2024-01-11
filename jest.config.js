@@ -2,16 +2,15 @@ export default {
     transform: {},
     rootDir: './',
     preset: 'jest-puppeteer',
-
-    // Change the test environment to Puppeteer's environment
+    testMatch: ['**/__tests__/**/*.js'],
     testEnvironment: 'jest-environment-puppeteer',
 
     // Puppeteer specific configurations
     testEnvironmentOptions: {
         'jest-puppeteer': {
             launch: {
-                headless: true,
-                // Additional Puppeteer launch options
+                headless: "new", // new instead of true due to chromium change, this'll prob need to change back later
+                ignoreHTTPSErrors: true, // Add this line
             },
         },
     },
