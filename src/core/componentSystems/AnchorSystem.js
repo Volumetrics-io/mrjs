@@ -182,7 +182,7 @@ export class AnchorSystem extends MRSystem {
     fixed(entity) {
         this.anchoringQueue.add(entity)
         mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
-            frame.createAnchor(this.matrix4ToXRRigidTransform(entity.object3D.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
+            frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then((anchor) => {
                 entity.anchor = anchor
                 this.anchoringQueue.delete(entity)
                 }, (error) => {
@@ -229,12 +229,15 @@ export class AnchorSystem extends MRSystem {
                     console.error("Could not create anchor: " + error);
                 });
             })
-
             return;
 
         }
     }
 
+    originalAnchorMatrix = new THREE.Matrix4()
+    anchorForwardVector = new THREE.Vector3(0, 0, 0.03)
+    rotationMatrix = new THREE.Matrix4()
+    adjustedMatrix = new THREE.Matrix4()
 
     adjustTransform(xrRigidTransform) {
         // Create a Three.js Quaternion for the XRRigidTransform's orientation
@@ -263,17 +266,16 @@ export class AnchorSystem extends MRSystem {
             xrRigidTransform.position.y,
             xrRigidTransform.position.z
         );
-        let originalMatrix = new THREE.Matrix4().compose(position, quaternion, new THREE.Vector3(1, 1, 1)); // Assuming no scaling;
-        let rotationMatrix = new THREE.Matrix4()
-        rotationMatrix.extractRotation(originalMatrix)
 
-        let forwardVector = new THREE.Vector3(0, 0, 0.025)
-        forwardVector.applyMatrix4(rotationMatrix)
-        let matrix = new THREE.Matrix4()
-        matrix.makeTranslation(forwardVector.x, forwardVector.y, forwardVector.y)
-        matrix.multiply(originalMatrix)
+        this.originalAnchorMatrix.compose(position, quaternion, new THREE.Vector3(1, 1, 1));
+        this.rotationMatrix.extractRotation(this.originalAnchorMatrix)
 
-        return matrix
+        this.anchorForwardVector.applyMatrix4(this.rotationMatrix)
+        this.adjustedMatrix.makeTranslation(this.anchorForwardVector.x, this.anchorForwardVector.y, this.anchorForwardVector.y)
+        this.anchorForwardVector.set(0, 0, 0.03)
+        this.adjustedMatrix.multiply(this.originalAnchorMatrix)
+
+        return this.adjustedMatrix
     }
 
     matrix4ToXRRigidTransform(matrix4) {

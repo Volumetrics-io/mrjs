@@ -275,7 +275,6 @@ export class PhysicsSystem extends MRSystem {
 
         // Create a cuboid collider attached to the dynamic rigidBody.
         let colliderDesc = this.initColliderDesc(entity.physics);
-        console.log(mrjsUtils.Physics.CollisionGroups.UI);
         colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 

@@ -169,6 +169,10 @@
     scale: 0.0005;
   }
 
+  #table-model{
+    scale: 0.002;
+  }
+
   .sub-title {
     font-family: var(--font-title);
     font-size: 6vw;

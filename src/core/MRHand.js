@@ -121,7 +121,6 @@ export class MRHand {
                 colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
 
-            console.log(mrjsUtils.Physics.CollisionGroups.USER);
             colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.USER);
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
