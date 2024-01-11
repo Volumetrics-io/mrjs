@@ -12,21 +12,39 @@ mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web a
  
 CDN:
 
-`<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mrjs"></script>`
+```html
+<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>
+```
 
 NPM:
 
-`npm i mrjs`
+```sh
+npm i mrjs
+```
 
 from source:
 
 clone this repo and run:
 
-`npm install && npm run build`
+```sh
+npm install && npm run build
+```
 
 in headset testing:
 
-`npm run server`
+```sh
+npm run server
+```
+
+documentation:
+
+check [docs.mrjs.io](docs.mrjs.io) for the full documentation or our [repo](https://github.com/Volumetrics-io/documentation).
+
+For local documentation or to check the local output when writing your own pr to see how it will update, run the below command. As a heads up, order of creation of docs depends on your operating system, so if when you run this the order looks different, no worries - in the repo itself our action will handle that for you and default to use the right version for these automatically generated docs.
+
+```sh
+npm run docs
+```
 
 ## HTTPS Requirement
 
@@ -39,7 +57,9 @@ Here are some additional solutions:
 
 Both options require you generate an ssl certificate & key via openssl:
 
-`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365`
+```sh
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
+```
 
 # Features
 

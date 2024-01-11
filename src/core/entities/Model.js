@@ -17,6 +17,13 @@ export class Model extends MREntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+
+        // Store animations for the AnimationSystem to use
+        // Need to store this separately from the model, because with
+        // the threejs load from glb, we cant directly add it back to
+        // the model group itself as overarching animation as we're not
+        // guaranteed that theyre not animations for sub-group objects.
+        this.animations = [];
     }
 
     /**
@@ -33,14 +40,18 @@ export class Model extends MREntity {
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         mrjsUtils.Model.loadModel(this.src, extension)
-            .then((loadedMeshModel) => {
+            .then((result) => {
+                const { scene: loadedMeshModel, animations } = result;
+
                 // todo - these material changes should be moved out of the loader at some point
                 // loadedMeshModel.material = material;
                 loadedMeshModel.receiveShadow = true;
                 loadedMeshModel.renderOrder = 3;
-
-                // the below is the same as 'scene.add'
                 this.object3D.add(loadedMeshModel);
+
+                if (animations && animations.length > 0) {
+                    this.animations = animations;
+                }
 
                 this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             })

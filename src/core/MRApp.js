@@ -8,11 +8,13 @@ import Stats from 'stats.js';
 import { MRElement } from 'mrjs/core/MRElement';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
+import { SkyBox } from 'mrjs/core/entities/SkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
+import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
@@ -90,6 +92,7 @@ export class MRApp extends MRElement {
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
+            this.animationSystem = new AnimationSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
@@ -271,7 +274,7 @@ export class MRApp extends MRElement {
 
         this.forward.position.setZ(-0.5);
 
-        // for widnow placement
+        // for window placement
         this.userOrigin = new THREE.Object3D();
         this.anchor = new THREE.Object3D();
         this.user.add(this.userOrigin);
@@ -433,17 +436,15 @@ export class MRApp extends MRElement {
         // from the pure loop but it is okay as is here for now.
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem == undefined) {
-            return;
+        if (this.maskingSystem != undefined) {
+            this.renderer.clear();
+
+            // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
+            // and internally handled stenciling functions.
+            this.renderer.state.buffers.stencil.setTest(true);
+            this.renderer.state.buffers.stencil.setMask(0xff);
+            this.renderer.render(this.scene, this.user);
         }
-
-        this.renderer.clear();
-
-        // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
-        // and internally handled stenciling functions.
-        this.renderer.state.buffers.stencil.setTest(true);
-        this.renderer.state.buffers.stencil.setMask(0xff);
-        this.renderer.render(this.scene, this.user);
 
         // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
