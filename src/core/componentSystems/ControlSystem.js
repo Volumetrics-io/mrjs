@@ -81,6 +81,12 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
     }
 
+    needsUpdate(deltaTime, frame) {
+        // TODO
+        return true;
+        // return (this.registry.length > 0);
+    }
+
     /**
      * @function
      * @description The generic system update call. Updates the meshes and states for both the left and right hand visuals.

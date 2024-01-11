@@ -34,6 +34,11 @@ export class MaskingSystem extends MRSystem {
         this.panels = [];
     }
 
+    needsUpdate(deltaTime, frame) {
+        // based on the update function - leave for when needed.
+        return false;
+    }
+
     /**
      * @function
      * @description ...

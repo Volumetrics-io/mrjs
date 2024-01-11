@@ -51,6 +51,11 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
+    needsUpdate(deltaTime, frame) {
+        // TODO
+        return true;
+    }
+
     /**
      * @function
      * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.

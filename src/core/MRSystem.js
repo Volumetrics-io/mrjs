@@ -55,11 +55,23 @@ export class MRSystem {
 
     /**
      * @function
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    needsUpdate(deltaTime, frame) {
+        return (this.registry.length > 0);
+    }
+
+    /**
+     * @function
      * @description The actual system update call.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     __update(deltaTime, frame) {
+        if (! this.needsUpdate(deltaTime, frame)) { return; }
+        
         if (this.frameRate) {
             this.delta += deltaTime;
             if (this.delta < this.frameRate) {
