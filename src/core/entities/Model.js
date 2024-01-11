@@ -28,6 +28,45 @@ export class Model extends MREntity {
 
     /**
      * @function
+     * @description Async function that fills in this Model object based on src file information
+     */
+    async loadModel() {
+        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
+
+        try {
+            const result = await mrjsUtils.Model.loadModel(this.src, extension);
+
+            let loadedMeshModel, animations;
+
+            // Handle the different formats of the loaded result
+            if (result.scene) {
+                // For loaders that return an object with multiple properties (scene, animation, joints, etc)
+                // For ex: GLB
+                loadedMeshModel = result.scene;
+                animations = result.animations;
+            } else {
+                // For loaders that return the object directly
+                // For ex: STL
+                loadedMeshModel = result;
+            }
+
+            this.object3D.add(loadedMeshModel);
+
+            loadedMeshModel.receiveShadow = true;
+            loadedMeshModel.renderOrder = 3;
+
+            if (animations && animations.length > 0) {
+                this.animations = animations;
+            }
+
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        } catch (error) {
+            console.error(`ERR: in loading model ${this.src}. Error was:`, error);
+        }
+    }
+
+    /**
+     * @function
      * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
      * Includes loading up the model and associated data.
      */
@@ -37,27 +76,7 @@ export class Model extends MREntity {
             return;
         }
 
-        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
-
-        mrjsUtils.Model.loadModel(this.src, extension)
-            .then((result) => {
-                const { scene: loadedMeshModel, animations } = result;
-
-                // todo - these material changes should be moved out of the loader at some point
-                // loadedMeshModel.material = material;
-                loadedMeshModel.receiveShadow = true;
-                loadedMeshModel.renderOrder = 3;
-                this.object3D.add(loadedMeshModel);
-
-                if (animations && animations.length > 0) {
-                    this.animations = animations;
-                }
-
-                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            })
-            .catch((error) => {
-                console.log(`ERR: in loading model ${this.src}. Error was:`, error);
-            });
+        this.loadModel();
     }
 
     /**
