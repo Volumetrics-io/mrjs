@@ -1,14 +1,12 @@
-
-
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { Panel } from 'mrjs/core/entities/Panel';
+import { Model } from 'mrjs/core/entities/Model';
 
 /**
- * @class MaskingSystem
+ * @class AnimationSystem
  * @classdesc Handles specific needs for setting up the masking for all necessary items.
  * @augments MRSystem
  */
@@ -23,15 +21,19 @@ export class AnimationSystem extends MRSystem {
 
     /**
      * @function
-     * @description ...
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
+     * @description Updates each animation mixer in the registry. This function should be called 
+     *      within the main animation loop of the application. It iterates through all the 
+     *      animation mixers stored in the registry and updates them with the given deltaTime.
+     *      The deltaTime parameter is typically the time elapsed since the last frame 
+     *      which is used to ensure smooth animation playback.
+     * @param {number} deltaTime - The time elapsed since the last update call, used to update the animation mixers.
+     * @param {object} frame - Additional frame information, not used in the current implementation but can be utilized for future enhancements.
      */
     update(deltaTime, frame) {
-        // update the animations
         for (const mixer of this.registry) {
-            if (mixer == undefined) { continue; }
-            mixer.update(deltaTime);
+            if (mixer) {
+                mixer.update(deltaTime);
+            }
         }
     }
 
@@ -41,27 +43,16 @@ export class AnimationSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof Model) {
-            entity.traverse((child) => {
-                // Since we're stepping through every child, we only need to touch each mesh's material instead of
-                // updating group objects as a whole.
-                if (!child.object3D.isGroup) {
-                    if (this.app.debug) {
-                        child.object3D.material.color.set(0x00ff00); // green
-                    }
-                    if (child.object3D.animations.length > 0) {
-                        console.log('animation check');
-                        console.log(loadedMeshModel);
-                        
-                        mixer = new THREE.AnimationMixer(child.object3D);
-                        animations.forEach((clip) => {
-                          mixer.clipAction(clip).play();
-                        });
-                        this.registry.add(mixer);
-                    }
-                }
-            }
+        if (entity instanceof Model && entity.animations.length > 0) {
+            // Create a mixer for each Model instance with animations
+            const mixer = new THREE.AnimationMixer(entity.object3D);
+            entity.animations.forEach((clip) => {
+                mixer.clipAction(clip).play();
+            });
+            this.registry.add(mixer);
+
+            // Optional: Store the mixer in the Model instance for easy access
+            entity.mixer = mixer;
         }
-            
     }
 }
