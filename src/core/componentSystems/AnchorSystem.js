@@ -132,12 +132,7 @@ export class AnchorSystem extends MRSystem {
                 }
              } else if(entity.anchor){
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix)
-                if (entity.mrPlane) {
-                    entity.mrPlane.occupied = false
-                    entity.mrPlane.mesh.visible = true
-                    entity.mrPlane = null
-                }
-                entity.anchor = null
+                this.deleteAnchor(entity)
              }
         }
 
@@ -151,7 +146,7 @@ export class AnchorSystem extends MRSystem {
 
     updatedComponent(entity) {
         // delete before creating a new one.
-        entity.anchor.delete()
+        this.deleteAnchor(entity)
         let comp = entity.components.get('anchor')
         // These cases can be managed instantly
         this.createAnchor(entity, comp)
@@ -159,7 +154,17 @@ export class AnchorSystem extends MRSystem {
 
     detachedComponent(entity) {
         entity.object3D.matrixAutoUpdate = true
+        this.deleteAnchor(entity)
+    }
+
+    deleteAnchor(entity) {
+        if (entity.mrPlane) {
+            entity.mrPlane.occupied = false
+            entity.mrPlane.mesh.visible = true
+            entity.mrPlane = null
+        }
         entity.anchor.delete()
+        entity.anchor = null
     }
 
     createAnchor(entity, comp) {
