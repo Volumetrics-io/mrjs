@@ -30,7 +30,9 @@ export class SkyBox extends MREntity {
         if (this.skybox) {
             this.skybox.material = new THREE.MeshBasicMaterial({
                 map: texture,
-                side: THREE.BackSide, // Render only on the inside
+                //side: THREE.BackSide, // Render only on the inside
+                opacity: 1,
+                side:1,
             });
         }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));
