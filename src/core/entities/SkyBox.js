@@ -28,9 +28,9 @@ export class SkyBox extends MREntity {
      */
     onTextureLoaded(texture) {
         if (this.skybox) {
-            this.skybox.material = new THREE.MeshBasicMaterial({ 
-                map: texture, 
-                side: THREE.BackSide // Render only on the inside
+            this.skybox.material = new THREE.MeshBasicMaterial({
+                map: texture,
+                side: THREE.BackSide, // Render only on the inside
             });
         }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));
