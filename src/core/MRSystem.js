@@ -60,7 +60,7 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     needsUpdate(deltaTime, frame) {
-        return (this.registry.size > 0);
+        return this.registry.size > 0;
     }
 
     /**
@@ -70,8 +70,10 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     __update(deltaTime, frame) {
-        if (! this.needsUpdate(deltaTime, frame)) { return; }
-        
+        if (!this.needsUpdate(deltaTime, frame)) {
+            return;
+        }
+
         if (this.frameRate) {
             this.delta += deltaTime;
             if (this.delta < this.frameRate) {
