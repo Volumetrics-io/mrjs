@@ -26,6 +26,10 @@ export class Model extends MREntity {
         this.animations = [];
     }
 
+    /**
+     * @function
+     * @description Async function that fills in this Model object based on src file information
+     */
     async loadModel() {
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
