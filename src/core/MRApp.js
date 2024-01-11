@@ -8,6 +8,7 @@ import Stats from 'stats.js';
 import { MRElement } from 'mrjs/core/MRElement';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { Panel } from 'mrjs/core/entities/Panel';
+import { SkyBox } from 'mrjs/core/entities/SkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -273,7 +274,7 @@ export class MRApp extends MRElement {
 
         this.forward.position.setZ(-0.5);
 
-        // for widnow placement
+        // for window placement
         this.userOrigin = new THREE.Object3D();
         this.anchor = new THREE.Object3D();
         this.user.add(this.userOrigin);
@@ -435,17 +436,15 @@ export class MRApp extends MRElement {
         // from the pure loop but it is okay as is here for now.
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem == undefined) {
-            return;
+        if (this.maskingSystem != undefined) {
+            this.renderer.clear();
+
+            // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
+            // and internally handled stenciling functions.
+            this.renderer.state.buffers.stencil.setTest(true);
+            this.renderer.state.buffers.stencil.setMask(0xff);
+            this.renderer.render(this.scene, this.user);
         }
-
-        this.renderer.clear();
-
-        // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
-        // and internally handled stenciling functions.
-        this.renderer.state.buffers.stencil.setTest(true);
-        this.renderer.state.buffers.stencil.setMask(0xff);
-        this.renderer.render(this.scene, this.user);
 
         // Render the main scene without stencil operations
         this.renderer.state.buffers.stencil.setTest(false);
