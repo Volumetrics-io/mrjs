@@ -16,7 +16,7 @@ export class SkyBox extends MREntity {
         super();
         this.object3D.name = 'skybox';
 
-        this.background = null;
+        this.skybox = null;
         this.textureLoadedCallbacks = [];
     }
 
@@ -27,7 +27,12 @@ export class SkyBox extends MREntity {
      * @param {THREE.Texture} texture - The loaded texture.
      */
     onTextureLoaded(texture) {
-        this.background = texture;
+        if (this.skybox) {
+            this.skybox.material = new THREE.MeshBasicMaterial({ 
+                map: texture, 
+                side: THREE.BackSide // Render only on the inside
+            });
+        }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));
     }
 
@@ -70,6 +75,11 @@ export class SkyBox extends MREntity {
             textureNames.map((name) => (path ? path + name : name)),
             this.onTextureLoaded.bind(this) // Ensuring the correct context
         );
+        const geometry = new THREE.SphereGeometry(1000, 32, 16);
+
+        this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
+        this.object3D.add(this.skybox);
+        this.skybox.rotateX(90);
     }
 
     /**

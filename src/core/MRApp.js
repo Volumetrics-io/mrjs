@@ -346,19 +346,19 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        if (entity instanceof SkyBox) {
-            // TODO - in future there should be a way for an entity and a scene to interact with one
-            // another more specifically - maybe a SceneStyleSystem? or an update to the StyleSystem.
-            //
-            // Leaving this here for now because SkyBox is the one case the difference is needed
-            // at the moment.
-            entity.addTextureLoadedCallback((texture) => {
-                this.scene.background = texture;
-                this.renderer.alpha = false;
-            });
-        } else {
+        // if (entity instanceof SkyBox) {
+            // // TODO - in future there should be a way for an entity and a scene to interact with one
+            // // another more specifically - maybe a SceneStyleSystem? or an update to the StyleSystem.
+            // //
+            // // Leaving this here for now because SkyBox is the one case the difference is needed
+            // // at the moment.
+            // entity.addTextureLoadedCallback((texture) => {
+            //     this.scene.background = texture;
+            //     this.renderer.alpha = false;
+            // });
+        // } else {
             this.scene.add(entity.object3D);
-        }
+        // }
     }
 
     /**
