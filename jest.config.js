@@ -4,5 +4,5 @@ export default {
     rootDir: './',
 
     // Test environment options
-    testEnvironment: 'node', // Use Node.js environment for testing
+    testEnvironment: 'jest-environment-jsdom',
 };
