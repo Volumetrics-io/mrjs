@@ -14,6 +14,7 @@ import { mrjsUtils } from 'mrjs';
 
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
+import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
@@ -91,6 +92,7 @@ export class MRApp extends MRElement {
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
+            this.animationSystem = new AnimationSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
