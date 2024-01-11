@@ -35,12 +35,12 @@ export class Model extends MREntity {
             let loadedMeshModel, animations;
 
             // Handle the different formats of the loaded result
-            if (result.scene) { 
+            if (result.scene) {
                 // For loaders that return an object with multiple properties (scene, animation, joints, etc)
                 // For ex: GLB
                 loadedMeshModel = result.scene;
                 animations = result.animations;
-            } else { 
+            } else {
                 // For loaders that return the object directly
                 // For ex: STL
                 loadedMeshModel = result;
