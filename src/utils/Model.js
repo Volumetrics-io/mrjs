@@ -96,7 +96,11 @@ Model.loadGLTF = function (filePath) {
         loader.load(
             filePath,
             (gltf) => {
-                resolve(gltf.scene);
+                const scene = gltf.scene;
+                const animations = gltf.animations;
+
+                // Resolve the promise with the loaded scene and animations
+                resolve({ scene, animations });
             },
             undefined,
             (error) => {
