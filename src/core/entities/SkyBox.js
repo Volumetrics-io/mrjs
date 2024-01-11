@@ -38,22 +38,6 @@ export class SkyBox extends MREntity {
 
     /**
      * @function
-     * @description Registers a callback to be called when the texture is loaded.
-     *              If the texture is already loaded, the callback is called immediately.
-     * @param {function(THREE.Texture): void} callback - The callback function to be called with the loaded texture.
-     */
-    addTextureLoadedCallback(callback) {
-        if (this.background) {
-            // If the texture is already loaded, call the callback immediately
-            callback(this.background);
-        } else {
-            // Otherwise, store the callback to be called when the texture loads
-            this.textureLoadedCallbacks.push(callback);
-        }
-    }
-
-    /**
-     * @function
      * @description Lifecycle method that is called when the entity is connected.
      *              This method initializes and starts the texture loading process.
      */
