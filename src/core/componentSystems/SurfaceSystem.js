@@ -76,9 +76,6 @@ export class SurfaceSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        // if (this.registry.size == 0) { // TODO - can remove this because wont be called without the 'needsUpdate' returning true
-        //     return;
-        // }
         for (const surface of this.registry) {
             if (this.currentSurface == null && surface.anchored == false) {
                 this.currentSurface = surface;
