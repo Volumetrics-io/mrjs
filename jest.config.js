@@ -1,8 +1,18 @@
 export default {
     transform: {},
-    // Specify the root directory for Jest to run tests from
     rootDir: './',
+    preset: 'jest-puppeteer',
 
-    // Test environment options
-    testEnvironment: 'jest-environment-jsdom',
-};
+    // Change the test environment to Puppeteer's environment
+    testEnvironment: 'jest-environment-puppeteer',
+
+    // Puppeteer specific configurations
+    testEnvironmentOptions: {
+        'jest-puppeteer': {
+            launch: {
+                headless: true,
+                // Additional Puppeteer launch options
+            },
+        },
+    },
+}
