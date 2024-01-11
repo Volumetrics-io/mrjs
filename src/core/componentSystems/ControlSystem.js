@@ -82,9 +82,7 @@ export class ControlSystem extends MRSystem {
     }
 
     needsUpdate(deltaTime, frame) {
-        // TODO
         return true;
-        // return (this.registry.length > 0);
     }
 
     /**

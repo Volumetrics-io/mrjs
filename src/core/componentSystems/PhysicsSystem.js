@@ -52,7 +52,6 @@ export class PhysicsSystem extends MRSystem {
     }
 
     needsUpdate(deltaTime, frame) {
-        // TODO
         return true;
     }
 
