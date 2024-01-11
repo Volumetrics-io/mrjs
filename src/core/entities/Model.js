@@ -19,7 +19,7 @@ export class Model extends MREntity {
         this.object3D.name = 'model';
 
         // Store animations for the AnimationSystem to use
-        // Need to store this separately from the model, because with 
+        // Need to store this separately from the model, because with
         // the threejs load from glb, we cant directly add it back to
         // the model group itself as overarching animation as we're not
         // guaranteed that theyre not animations for sub-group objects.

@@ -18,7 +18,10 @@
         <mr-div class="logo">
           <mr-model
             id="logo-model"  
-            src="./assets/models/animation_duck.glb" >
+            src="./assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
           </mr-model>
         </mr-div>
         <mr-button onclick="spin()" class="spin-button">
@@ -55,8 +58,6 @@
 
       Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
       </mr-text>
-
-      <mr-model src="./assets/models/koifish.glb"></mr-model>
       
     </mr-panel>
 

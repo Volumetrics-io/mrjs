@@ -21,10 +21,10 @@ export class AnimationSystem extends MRSystem {
 
     /**
      * @function
-     * @description Updates each animation mixer in the registry. This function should be called 
-     *      within the main animation loop of the application. It iterates through all the 
+     * @description Updates each animation mixer in the registry. This function should be called
+     *      within the main animation loop of the application. It iterates through all the
      *      animation mixers stored in the registry and updates them with the given deltaTime.
-     *      The deltaTime parameter is typically the time elapsed since the last frame 
+     *      The deltaTime parameter is typically the time elapsed since the last frame
      *      which is used to ensure smooth animation playback.
      * @param {number} deltaTime - The time elapsed since the last update call, used to update the animation mixers.
      * @param {object} frame - Additional frame information, not used in the current implementation but can be utilized for future enhancements.
