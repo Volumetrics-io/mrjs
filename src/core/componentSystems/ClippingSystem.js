@@ -142,7 +142,11 @@ export class ClippingSystem extends MRSystem {
         this.registry.add(entity);
         this.addClippingPlanes(entity);
         entity.object3D.traverse((child) => {
-            this.applyClipping(child, entity.clipping);
+            // only apply clipping planes to entities that arent masked through the stencil
+            // since doubling up on that is redundant and not helpful for runtime
+            if (entity.ignoreStencil) { 
+                this.applyClipping(child, entity.clipping);
+            }
         });
     }
 }
