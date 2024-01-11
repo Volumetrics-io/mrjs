@@ -32,8 +32,6 @@ export class SkyBox extends MREntity {
                 map: texture,
                 side: THREE.BackSide, // Render only on the inside
                 opacity: 1,
-                //     side:1,
-                // map: this.texture
             });
         }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));
