@@ -18,11 +18,14 @@ export class Image extends MRDivEntity {
         super();
         this.attachShadow({ mode: 'open' });
         this.img = document.createElement('img');
-        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18); ///------------------- here
-        this.material = new THREE.MeshStandardMaterial({
+
+        // Create the object3D. Dont need default value for geometry
+        // until the connected call since this will get overwritten anyways.
+        let material = new THREE.MeshStandardMaterial({
             side: 0,
         });
-        this.object3D = new THREE.Mesh(this.geometry, this.material);
+        let geometry = undefined;
+        this.object3D = new THREE.Mesh(undefined, this.material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
@@ -65,7 +68,11 @@ export class Image extends MRDivEntity {
         this.objectFitDimensions = { height: 0, width: 0 };
         this.computeObjectFitDimensions();
 
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18); ///------------------- here
+        // first creation of the object3D geometry. dispose is not needed but adding just in case.
+        if (this.object3D.geometry != undefined) {
+            this.object3D.geometry.dispose();
+        }
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
         this.texture = new THREE.TextureLoader().load(this.img.src);
         this.object3D.material.map = this.texture;
     }
@@ -84,13 +91,16 @@ export class Image extends MRDivEntity {
 
     /**
      * @function
-     * @description Updates the style for the Image's border and background based on compStyle and inputted css elements.
+     * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
         this.computeObjectFitDimensions();
 
-        // check if need to update geometry
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18); ///------------------- here
+        // geometry will only update if width, height, or borderRadii have changed
+        if (this.object3D.geometry != undefined) {
+            this.object3D.geometry.dispose();
+        }
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
 
         // update for next iteration - already guaranteed one of these needs update
         // given the needsUpdate function
