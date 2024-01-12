@@ -83,6 +83,18 @@ export class ControlSystem extends MRSystem {
 
     /**
      * @function
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
+     * any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     */
+    needsUpdate(deltaTime, frame) {
+        return true;
+    }
+
+    /**
+     * @function
      * @description The generic system update call. Updates the meshes and states for both the left and right hand visuals.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -94,14 +106,14 @@ export class ControlSystem extends MRSystem {
         this.leftHand.update();
         this.rightHand.update();
 
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.origin.setFromMatrixPosition(this.app.userOrigin.matrixWorld);
             this.direction.setFromMatrixPosition(this.activeHand.pointer.matrixWorld).sub(this.origin).normalize();
 
             this.ray.origin = { ...this.origin };
             this.ray.dir = { ...this.direction };
 
-            this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+            this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
             if (this.hit != null) {
                 this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
                 this.cursor.setTranslation({ ...this.hitPosition }, true);
@@ -217,6 +229,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRay(this.ray, 100, true, null, null, null, this.cursor);
+        return this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
     }
 }

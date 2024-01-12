@@ -17,6 +17,79 @@ export class Model extends MREntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+
+        // Store animations for the AnimationSystem to use
+        // Need to store this separately from the model, because with
+        // the threejs load from glb, we cant directly add it back to
+        // the model group itself as overarching animation as we're not
+        // guaranteed that theyre not animations for sub-group objects.
+        this.animations = [];
+    }
+
+    /**
+     * @function
+     * @description Pair getter for the src property of <mr-model>. Important so that when a user tries
+     * to run modelObject.src = `...` or perform something on modelObject.src it properly gets the html
+     * attribute as expected instead of the pure js one.
+     *
+     * note: we can do this because only htmlimageelement has a `src` property by default, not htmlimagelement,
+     * and none of the above class extensions for Model have it as a defined property.
+     * @returns {string} the value of the src html attribute
+     */
+    get src() {
+        return this.getAttribute('src');
+    }
+
+    /**
+     * @function
+     * @description Setter for the src property of <mr-model>. Important so that when a user tries
+     * to run modelObject.src = `...` it properly sets the html attribute as expected instead of the
+     * pure js one.
+     *
+     * note: we can do this because only htmlimageelement has a `src` property by default, not htmlimagelement,
+     * and none of the above class extensions for Model have it as a defined property.
+     */
+    set src(value) {
+        this.setAttribute('src', value);
+    }
+
+    /**
+     * @function
+     * @description Async function that fills in this Model object based on src file information
+     */
+    async loadModel() {
+        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
+
+        try {
+            const result = await mrjsUtils.Model.loadModel(this.src, extension);
+
+            let loadedMeshModel, animations;
+
+            // Handle the different formats of the loaded result
+            if (result.scene) {
+                // For loaders that return an object with multiple properties (scene, animation, joints, etc)
+                // For ex: GLB
+                loadedMeshModel = result.scene;
+                animations = result.animations;
+            } else {
+                // For loaders that return the object directly
+                // For ex: STL
+                loadedMeshModel = result;
+            }
+
+            this.object3D.add(loadedMeshModel);
+
+            loadedMeshModel.receiveShadow = true;
+            loadedMeshModel.renderOrder = 3;
+
+            if (animations && animations.length > 0) {
+                this.animations = animations;
+            }
+
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        } catch (error) {
+            console.error(`ERR: in loading model ${this.src}. Error was:`, error);
+        }
     }
 
     /**
@@ -25,28 +98,11 @@ export class Model extends MREntity {
      * Includes loading up the model and associated data.
      */
     connected() {
-        this.src = this.getAttribute('src');
         if (!this.src) {
             return;
         }
 
-        const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
-
-        mrjsUtils.Model.loadModel(this.src, extension)
-            .then((loadedMeshModel) => {
-                // todo - these material changes should be moved out of the loader at some point
-                // loadedMeshModel.material = material;
-                loadedMeshModel.receiveShadow = true;
-                loadedMeshModel.renderOrder = 3;
-
-                // the below is the same as 'scene.add'
-                this.object3D.add(loadedMeshModel);
-
-                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            })
-            .catch((error) => {
-                console.log(`ERR: in loading model ${this.src}. Error was:`, error);
-            });
+        this.loadModel();
     }
 
     /**

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MR.js</title>
+    <meta name="description" content="MR.js example">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+   <mr-app>
+    <mr-panel class="layout" data-comp-anchor="type: fixed;">
+        <mr-div id="navbar">
+        <mr-a href="https://mrjs.io" class="mrjs">
+            mrjs
+        </mr-a>
+        <mr-div class="logo">
+            <mr-model
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
+        </mr-div>
+        <mr-a href="https://volumetrics.io" class="company">
+            volumetrics
+        </mr-a>
+        </mr-div>
+
+        <mr-text class="col-2 title" >
+        Anchors
+        </mr-text>
+        
+        <mr-text class="col-2">
+        Anchors enhance your spatial app by taking advantage of the real world environment.
+        </mr-text>
+        <mr-text class="col-2">
+        They can be used for table top games, turning any room into a virtual gallery, or ripping open the ceiling to get a view of another world
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Examples
+        </mr-text>
+
+        <mr-div class="col-2">
+            <mr-button onclick="ceiling()" class="col-2 label button" >
+                ceiling
+            </mr-button>
+
+            <mr-button onclick="wall()" class="col-2 label button" >
+                wall
+            </mr-button>
+
+            <mr-button onclick="table()" class="col-2 label button" >
+                table
+            </mr-button> 
+            
+            <mr-button onclick="floor()" class="col-2 label button" >
+                floor
+            </mr-button>
+        </mr-div>
+        <mr-text class="col-2 subtitle" >
+        data-comp-anchor
+        </mr-text>
+
+        <mr-text class="col-2">
+        Anchoring is achieved using the anchoring component, data-comp-anchor, it has 4 attributes:
+        </mr-text>
+
+        <mr-text class="label col-2">
+        type
+        </mr-text>
+
+        <mr-text class="col-2">
+        There are currently three types of anchors:
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        fixed
+        </mr-text>
+
+        <mr-text class="col-2">
+         positions the anchored element directly in front of the user whenever an XR sessions is started.
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        floating
+        </mr-text>
+
+        <mr-text class="col-2">
+            allows the user to place the anchored element where they choose using a look/pinch gesture. The user can place it floating in their space or on the scene mesh
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        plane
+        </mr-text>
+
+        <mr-text class="col-2">
+            anchors the element to the nearest plane that matches the specified label or orientation.
+        </mr-text>
+        <mr-text class="col-2">
+            if no label or orientation is specified, the element will be anchored to the nearest plane.
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Plane anchor attributes
+        </mr-text>
+
+        <mr-text class="col-2">
+            These attributes are only relevant to plane anchors
+        </mr-text>
+
+        <mr-text class="label col-2">
+        orientation
+        </mr-text>
+
+        <mr-text class="col-2">
+        This attribute is useful when you wish to anchor to a plane of any given orientation, regardless of label.
+        </mr-text>
+
+        <mr-text class="col-2">
+        supported values: horizontal, vertical
+        </mr-text>
+
+        <mr-text class="label col-2">
+        label (optional)
+        </mr-text>
+
+        <mr-text class="col-2">
+        Use this to target a specific type of plane, such as a table or wall.
+        </mr-text>
+
+        <mr-text class="col-2">
+        supported values: wall, floor, ceiling, table
+        </mr-text>
+
+        <mr-text class="label col-2">
+        occlusion
+        </mr-text>
+
+        <mr-text class="col-2">
+        by default, planes occlude virtual content behind them, use this flag disable occlusion.
+        </mr-text>
+
+        <mr-text class="col-2">
+        values: true (default), false
+        </mr-text>
+      
+    </mr-panel>
+
+    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
+        data-position="0 -200 0"
+        data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
+        </mr-skybox>
+
+    <!-- <mr-entity id="floating">
+    </mr-entity> -->
+
+    <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
+    </mr-entity>
+
+    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
+        
+    </mr-entity>
+
+    <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
+    </mr-entity>
+
+    <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
+        <mr-entity
+        data-rotation="-110 0 0"                        
+        data-position="0 0 -8"  
+        data-comp-animation="type: rotate; maxspeed: -0.003; acceleration: 0.000008;">
+            <mr-model
+            data-rotation="90 0 0"             
+            src="/assets/models/Mars.glb" 
+            style="scale: 0.01">
+            </mr-model>
+        </mr-entity>
+      </mr-entity>
+        
+    </mr-app>
+  </body>
+
+  <footer>
+    <script src="/assets/js/AnimationSystem.js"></script>
+    <script>
+
+        // let floatingAnchor = document.getElementById('floating')
+        let wallAnchor = document.getElementById('wall')
+        let tableAnchor = document.getElementById('table')
+        let floorAnchor = document.getElementById('floor')
+        let ceilingAnchor = document.getElementById('ceiling')
+
+        let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
+
+        for (const entity of allAnchors) {
+            entity.object3D.visible = false
+        }
+
+        function floating() {
+
+        }
+
+        function wall() {
+            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
+            wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
+        }
+
+        function table() {
+            
+        }
+
+        function floor() {
+            floorAnchor.object3D.visible = !floorAnchor.object3D.visible
+
+        }
+
+        function ceiling() {
+            ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
+            ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
+
+        }
+
+        document.addEventListener('exitXR', () => {
+            for (const entity of allAnchors) {
+                entity.components.set('anchor', {occlusion: true})
+                entity.object3D.visible = false
+            }
+        })
+      
+    </script>
+  </footer>
+</html>

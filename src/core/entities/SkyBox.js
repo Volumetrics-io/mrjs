@@ -15,11 +15,32 @@ export class SkyBox extends MREntity {
     constructor() {
         super();
         this.object3D.name = 'skybox';
+
+        this.skybox = null;
+        this.textureLoadedCallbacks = [];
     }
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Surface once it is connected to run as an entity component.
+     * @description Callback function triggered when the texture is successfully loaded.
+     *              It sets the loaded texture as the background and notifies all registered callbacks.
+     * @param {THREE.Texture} texture - The loaded texture.
+     */
+    onTextureLoaded(texture) {
+        if (this.skybox) {
+            this.skybox.material = new THREE.MeshBasicMaterial({
+                map: texture,
+                side: THREE.BackSide, // Render only on the inside
+                opacity: 1,
+            });
+        }
+        this.textureLoadedCallbacks.forEach((callback) => callback(texture));
+    }
+
+    /**
+     * @function
+     * @description Lifecycle method that is called when the entity is connected.
+     *              This method initializes and starts the texture loading process.
      */
     connected() {
         // you can have texturesList be all individual textures
@@ -30,15 +51,21 @@ export class SkyBox extends MREntity {
         if (!this.texturesList) {
             return;
         }
+        this.geometry = new THREE.SphereGeometry(1000, 32, 16);
 
-        const textureLoader = THREE.CubeTextureLoader();
         const textureNames = this.texturesList.split(',');
+        const path = this.getAttribute('pathToTextures');
 
-        let path = this.getAttribute('pathToTextures');
-        const texture = !path ? textureLoader.load(textureNames) : textureLoader.load(textureNames.map((name) => path + name));
+        const textureLoader = textureNames.length > 1 ? new THREE.CubeTextureLoader() : new THREE.TextureLoader();
+        textureLoader.load(
+            textureNames.map((name) => (path ? path + name : name)),
+            this.onTextureLoaded.bind(this) // Ensuring the correct context
+        );
+        const geometry = new THREE.SphereGeometry(900, 32, 16);
 
-        // scene.background
-        this.object3D.background = texture;
+        this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
+        this.object3D.add(this.skybox);
+        this.skybox.rotateX(90);
     }
 
     /**

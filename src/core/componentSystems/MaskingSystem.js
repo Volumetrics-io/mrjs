@@ -36,6 +36,19 @@ export class MaskingSystem extends MRSystem {
 
     /**
      * @function
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
+     * any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     */
+    needsUpdate(deltaTime, frame) {
+        // based on the update function - leave for when needed.
+        return false;
+    }
+
+    /**
+     * @function
      * @description ...
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes

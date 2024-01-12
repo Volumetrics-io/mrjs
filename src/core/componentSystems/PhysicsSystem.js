@@ -53,6 +53,18 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
+     * any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     */
+    needsUpdate(deltaTime, frame) {
+        return true;
+    }
+
+    /**
+     * @function
      * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -274,7 +286,8 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
         // Create a cuboid collider attached to the dynamic rigidBody.
-        const colliderDesc = this.initColliderDesc(entity.physics);
+        let colliderDesc = this.initColliderDesc(entity.physics);
+        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
         mrjsUtils.Physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;

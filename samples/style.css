@@ -1,12 +1,12 @@
 @font-face {
   font-family: 'Roboto';
-  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/Roboto-Regular.ttf') format('truetype');
   font-weight: 100 900;
 }
 
 @font-face {
     font-family: 'Bricolage';
-    src: url('./assets/fonts/BricolageGrotesque.ttf') format('truetype');
+    src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype');
     font-weight: 100 900;
   }
   
@@ -167,6 +167,10 @@
 
   #logo-model{
     scale: 0.0005;
+  }
+
+  #table-model{
+    scale: 0.002;
   }
 
   .sub-title {
