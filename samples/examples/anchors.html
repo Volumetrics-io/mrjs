@@ -45,6 +45,10 @@
         </mr-text>
 
         <mr-div class="col-2">
+            <mr-button onclick="ceiling()" class="col-2 label button" >
+                ceiling
+            </mr-button>
+
             <mr-button onclick="wall()" class="col-2 label button" >
                 wall
             </mr-button>
@@ -55,10 +59,6 @@
             
             <mr-button onclick="floor()" class="col-2 label button" >
                 floor
-            </mr-button>
-
-            <mr-button onclick="ceiling()" class="col-2 label button" >
-                open ceiling
             </mr-button>
         </mr-div>
         <mr-text class="col-2 subtitle" >
@@ -150,10 +150,12 @@
       
     </mr-panel>
 
-    <mr-entity id="floating">
-    </mr-entity>
+    <mr-skybox src="/assets/textures/starmap_4k.jpg"
+        data-position="0 -200 0"
+        data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
+        </mr-skybox>
 
-    <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
+    <mr-entity id="floating">
     </mr-entity>
 
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
@@ -164,25 +166,18 @@
     </mr-entity>
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
-        <mr-skybox src="/assets/textures/starmap_4k.jpg"
-        data-position="0 -200 0"
-        data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-        </mr-skybox>
+    </mr-entity>
 
+    <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
         <mr-entity
-        data-position="0 1 0"
-        data-rotation="-80 0 0"                        
-        data-comp-animation="type: rotate; maxspeed: 0.003; acceleration: 0.000008;">
-        <mr-entity
-        data-rotation="-10 0 0"                        
-        data-position="0 20 8"  
+        data-rotation="-110 0 0"                        
+        data-position="0 0 -8"  
         data-comp-animation="type: rotate; maxspeed: -0.003; acceleration: 0.000008;">
             <mr-model
             data-rotation="90 0 0"             
             src="/assets/models/Mars.glb" 
             style="scale: 0.01">
             </mr-model>
-        </mr-entity>
         </mr-entity>
       </mr-entity>
         
@@ -201,12 +196,17 @@
 
         let allAnchors = [floatingAnchor, wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
 
+        for (const entity of allAnchors) {
+            entity.object3D.visible = false
+        }
+
         function floating() {
 
         }
 
         function wall() {
-
+            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
+            wallAnchor.components.set('anchor', {occlusion: false})
         }
 
         function table() {
@@ -225,8 +225,8 @@
         }
 
         document.addEventListener('exitXR', () => {
-            ceilingAnchor.components.set('anchor', {occlusion: true})
             for (const entity of allAnchors) {
+                entity.components.set('anchor', {occlusion: true})
                 entity.object3D.visible = false
             }
         })

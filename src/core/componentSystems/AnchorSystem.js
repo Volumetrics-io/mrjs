@@ -163,7 +163,6 @@ export class AnchorSystem extends MRSystem {
             entity.mrPlane.mesh.visible = true
             entity.mrPlane = null
         }
-        entity.anchor.delete()
         entity.anchor = null
     }
 
