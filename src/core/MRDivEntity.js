@@ -164,12 +164,30 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements.
+     * @description Checks if we need to run the `updateStyle` function run by the `Style` system for this iteration.
+     * Default implementation returns true. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
+    needsStyleUpdate(deltaTime, frame) {
+        return true;
+    }
+
     updateStyle() {
         this.setBorder();
         this.setBackground();
+    }
+
+    /**
+     * @function
+     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
+     * elements.
+     */
+    __updateStyle() {
+        if (this.needsStyleUpdate) {
+            this.updateStyle();
+        }
     }
 
     /**

@@ -31,7 +31,9 @@ export class StyleSystem extends MRSystem {
                 entity.object3D.position.setZ((parseFloat(entity.compStyle.zIndex) + parentZ) / 1000);
             }
 
-            entity instanceof MRDivEntity ? entity.updateStyle() : null;
+            if (entity instanceof MRDivEntity) {
+                entity.__updateStyle();
+            }
         }
     }
 
