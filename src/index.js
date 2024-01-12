@@ -30,7 +30,6 @@ import './core/entities/Light';
 import './core/entities/Model';
 import './core/entities/Panel';
 import './core/entities/SkyBox';
-import './core/entities/Surface';
 import './core/entities/TextArea';
 import './core/entities/TextField';
 // CORE - COMPONENT-SYSTEMS
@@ -40,11 +39,9 @@ import './core/componentSystems/InstancingSystem';
 import './core/componentSystems/LayoutSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/StyleSystem';
-import './core/componentSystems/SurfaceSystem';
 import './core/componentSystems/TextSystem';
 
 // UTILS
-import { mrjsUtils } from './utils/index.js';
 export { mrjsUtils } from './utils/index.js';
 
 // EXPORTS
