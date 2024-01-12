@@ -27,9 +27,23 @@ export class MRTextEntity extends MRDivEntity {
 
         this.needsUpdate = true;
 
+        // This event listener is added so anytime a panel changes (resize, etc), the text changes
+        // accordingly
         document.addEventListener('panel-mutated', () => {
             this.needsUpdate = true;
         });
+    }
+
+    /**
+     * @function
+     * @description Checks if we need to run the `updateStyle` function run by the `Style` system for this iteration.
+     * Default implementation returns true. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     */
+    needsStyleUpdate(deltaTime, frame) {
+        return true;
     }
 
     /**
