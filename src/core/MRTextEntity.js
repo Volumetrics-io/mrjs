@@ -25,10 +25,9 @@ export class MRTextEntity extends MRDivEntity {
 
         this.textObj.material.receiveShadow = true;
 
-        this.needsUpdate = true;
-
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
-        // accordingly
+        // accordingly // TODO -- look back to see where/how this is called
+        this.needsUpdate = true;
         document.addEventListener('panel-mutated', () => {
             this.needsUpdate = true;
         });
