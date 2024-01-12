@@ -182,6 +182,7 @@ export class AnchorSystem extends MRSystem {
             entity.mrPlane = null;
         }
         entity.anchor = null;
+        entity.dispatchEvent(new CustomEvent('anchor-removed', { bubbles: true }));
     }
 
     /**
@@ -218,6 +219,7 @@ export class AnchorSystem extends MRSystem {
             frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
                 (anchor) => {
                     entity.anchor = anchor;
+                    entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                     this.anchoringQueue.delete(entity);
                 },
                 (error) => {
@@ -280,6 +282,7 @@ export class AnchorSystem extends MRSystem {
                     (anchor) => {
                         this.anchoringQueue.delete(entity);
                         entity.anchor = anchor;
+                        entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                         entity.mrPlane = mrPlane;
 
                         if (comp.occlusion == false) {

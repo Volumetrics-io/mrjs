@@ -6,9 +6,6 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { Panel } from 'mrjs/core/entities/Panel';
-import { SkyBox } from 'mrjs/core/entities/SkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
