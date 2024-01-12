@@ -188,13 +188,13 @@
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
-        let floatingAnchor = document.getElementById('floating')
+        // let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
         let tableAnchor = document.getElementById('table')
         let floorAnchor = document.getElementById('floor')
         let ceilingAnchor = document.getElementById('ceiling')
 
-        let allAnchors = [floatingAnchor, wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
+        let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
 
         for (const entity of allAnchors) {
             entity.object3D.visible = false
@@ -206,7 +206,7 @@
 
         function wall() {
             wallAnchor.object3D.visible = !wallAnchor.object3D.visible
-            wallAnchor.components.set('anchor', {occlusion: false})
+            wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
         }
 
         function table() {
@@ -220,7 +220,7 @@
 
         function ceiling() {
             ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
-            ceilingAnchor.components.set('anchor', {occlusion: false})
+            ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
 
         }
 
