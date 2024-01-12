@@ -7,6 +7,7 @@ import { TextField } from 'mrjs/core/entities/TextField';
 import { TextArea } from 'mrjs/core/entities/TextArea';
 
 import { mrjsUtils } from 'mrjs';
+import Button from '../entities/Button';
 
 /**
  * @class TextSystem
@@ -87,6 +88,11 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
+            if (entity instanceof Button) {
+                entity.textObj.anchorX = 'center';
+            } else {
+                entity.textObj.position.setX(-entity.width / 2);
+            }
             entity.textObj.position.setY(entity.height / 2);
         }
     }
@@ -104,10 +110,10 @@ export class TextSystem extends MRSystem {
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
         textObj.fontStyle = entity.compStyle.fontStyle;
 
-        textObj.anchorX = 'center';
         textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity);
 
         textObj.textAlign = this.getTextAlign(entity.compStyle.textAlign);
+
         textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
         textObj.material.opacity = entity.compStyle.opacity ?? 1;
@@ -154,7 +160,7 @@ export class TextSystem extends MRSystem {
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             return result * el.windowHorizontalScale;
         }
         return result;

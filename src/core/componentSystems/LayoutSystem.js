@@ -56,15 +56,15 @@ export class LayoutSystem extends MRSystem {
         const rect = entity.getBoundingClientRect();
         const panel = entity.closest('mr-panel');
 
-        const innerWidth = global.inXR ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : window.innerWidth;
-        const innerHeight = global.inXR ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : window.innerHeight;
+        const innerWidth = mrjsUtils.xr.isPresenting ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : window.innerWidth;
+        const innerHeight = mrjsUtils.xr.isPresenting ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : window.innerHeight;
 
         // Calculate the center of the viewport
         const centerX = window.innerWidth / 2;
         const centerY = innerHeight / 2;
 
-        let windowWidth = global.inXR ? panel.windowHorizontalScale : global.viewPortWidth;
-        let windowHeight = global.inXR ? panel.windowVerticalScale : global.viewPortHeight;
+        let windowWidth = mrjsUtils.xr.isPresenting ? panel.windowHorizontalScale : global.viewPortWidth;
+        let windowHeight = mrjsUtils.xr.isPresenting ? panel.windowVerticalScale : global.viewPortHeight;
 
         // Adjust the element's position to be relative to the center of the viewport
         const centeredX = rect.left - centerX;

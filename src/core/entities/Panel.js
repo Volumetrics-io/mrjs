@@ -2,7 +2,6 @@ import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { Surface } from 'mrjs/core/entities/Surface';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -20,7 +19,7 @@ export class Panel extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? global.XRScale;
             return this.windowVerticalScale;
         }
@@ -65,27 +64,20 @@ export class Panel extends MRDivEntity {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
-        this.parentElement.addEventListener('surface-placed', (event) => {
+        this.addEventListener('anchored', (event) => {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
-        this.parentElement.addEventListener('surface-removed', (event) => {
+        this.parentElement.addEventListener('anchor-removed', (event) => {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
         document.addEventListener('enterXR', (event) => {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
-            if (!(this.parentElement instanceof Surface)) {
-                this.object3D.position.setZ(-0.4);
-            }
         });
 
         document.addEventListener('exitXR', (event) => {
-            console.log('exit');
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
-            if (!(this.parentElement instanceof Surface)) {
-                this.object3D.position.setZ(0);
-            }
         });
 
         this.addEventListener('panel-mutated', (event) => {
@@ -122,7 +114,7 @@ export class Panel extends MRDivEntity {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {
-        if (!global.inXR) {
+        if (!mrjsUtils.xr.isPresenting) {
             return;
         }
         if (event.type == 'touch-end') {

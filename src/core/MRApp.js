@@ -6,9 +6,6 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { Panel } from 'mrjs/core/entities/Panel';
-import { SkyBox } from 'mrjs/core/entities/SkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -20,7 +17,7 @@ import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
-import { SurfaceSystem } from 'mrjs/core/componentSystems/SurfaceSystem';
+import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
@@ -48,14 +45,12 @@ export class MRApp extends MRElement {
 
         this.xrsupport = false;
         this.isMobile = window.mobileCheck(); // resolves true/false
-        global.inXR = false;
 
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.session;
 
         this.lighting = {
             enabled: true,
@@ -92,6 +87,7 @@ export class MRApp extends MRElement {
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.textSystem = new TextSystem();
+            this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
 
             // these must be the last three systems since
@@ -158,6 +154,7 @@ export class MRApp extends MRElement {
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
         this.renderer.xr.enabled = true;
+        mrjsUtils.xr = this.renderer.xr;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
@@ -212,17 +209,12 @@ export class MRApp extends MRElement {
 
             if (this.xrsupport) {
                 this.ARButton = ARButton.createButton(this.renderer, {
-                    requiredFeatures: ['hand-tracking'],
-                    optionalFeatures: ['hit-test'],
+                    requiredFeatures: ['local', 'hand-tracking'],
+                    optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 
                 this.ARButton.addEventListener('click', () => {
-                    if (!this.surfaceSystem) {
-                        this.surfaceSystem = new SurfaceSystem();
-                    }
                     this.ARButton.blur();
-                    global.inXR = true;
-                    this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
                 });
                 document.body.appendChild(this.ARButton);
 
@@ -398,21 +390,18 @@ export class MRApp extends MRElement {
 
         // ----- Update needed items ----- //
 
-        if (global.inXR && !this.session) {
-            this.session = this.renderer.xr.getSession();
-            if (!this.session) {
-                return;
-            }
+        if (mrjsUtils.xr.isPresenting && !mrjsUtils.xr.session) {
+            mrjsUtils.xr.session = this.renderer.xr.getSession();
+            mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
-            this.session.addEventListener('inputsourceschange', (e) => {
-                console.log(e);
-            });
+            this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
 
-            this.session.addEventListener('end', () => {
-                global.inXR = false;
+            mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);
                 this.user.quaternion.set(0, 0, 0, 1);
-                this.session = null;
+                mrjsUtils.xr.session = undefined;
+                mrjsUtils.xr.referenceSpace = undefined;
+
                 this.onWindowResize();
                 this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
             });
