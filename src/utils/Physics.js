@@ -4,11 +4,15 @@
  */
 let Physics = {};
 
+/**
+ * @memberof Physics
+ * @description the Rapier collision groups used throughout mr.js
+ */
 Physics.CollisionGroups = {
-    USER: 0x000D0001,
-    PLANES: 0x000D0002,
-    UI:  0x00010001,
-}
+    USER: 0x000d0001,
+    PLANES: 0x000d0002,
+    UI: 0x00010001,
+};
 
 /**
  * @memberof Physics

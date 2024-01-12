@@ -157,7 +157,7 @@ export class MRApp extends MRElement {
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
         this.renderer.xr.enabled = true;
-        mrjsUtils.xr = this.renderer.xr
+        mrjsUtils.xr = this.renderer.xr;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
@@ -212,7 +212,7 @@ export class MRApp extends MRElement {
 
             if (this.xrsupport) {
                 this.ARButton = ARButton.createButton(this.renderer, {
-                    requiredFeatures: ['local','hand-tracking'],
+                    requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 

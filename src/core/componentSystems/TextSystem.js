@@ -88,8 +88,8 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
-            if(entity instanceof Button) {
-                entity.textObj.anchorX = 'center'
+            if (entity instanceof Button) {
+                entity.textObj.anchorX = 'center';
             } else {
                 entity.textObj.position.setX(-entity.width / 2);
             }
@@ -113,7 +113,7 @@ export class TextSystem extends MRSystem {
         textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity);
 
         textObj.textAlign = this.getTextAlign(entity.compStyle.textAlign);
-        
+
         textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
         textObj.material.opacity = entity.compStyle.opacity ?? 1;

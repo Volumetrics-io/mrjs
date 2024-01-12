@@ -15,7 +15,7 @@ import { MathUtils } from './MathUtils.js';
 import { Math3D } from './Math3D.js';
 import { Physics } from './Physics.js';
 import { StringUtils } from './StringUtils.js';
-import { xr } from './XR.js'
+import { xr } from './XR.js';
 
 const mrjsUtils = {
     CSS,
@@ -27,7 +27,7 @@ const mrjsUtils = {
     Math3D,
     Physics,
     StringUtils,
-    xr
+    xr,
 };
 
 export { mrjsUtils }; // Export as named export
