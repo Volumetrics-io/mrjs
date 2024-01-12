@@ -176,20 +176,23 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements.
+     * @description 
      */
     updateStyle() {
-        this.setBorder();
-        this.setBackground();
     }
 
     /**
      * @function
      * @description The main style update function for a div entity - is called by the StyleSystem at each animation step.
+     * By default updates the style for the UIPlane's border and background based on compStyle and inputted css
+     * elements.
      */
     __updateStyle() {
         if (this.needsStyleUpdate) {
+            // this part acts as sub class's super.updateStyle
+            this.setBorder();
+            this.setBackground();
+            // calling the sub class's this.updateStyle
             this.updateStyle();
         }
     }

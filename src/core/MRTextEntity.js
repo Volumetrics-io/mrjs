@@ -43,7 +43,8 @@ export class MRTextEntity extends MRDivEntity {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     needsStyleUpdate(deltaTime, frame) {
-        return true;
+        // TODO - check this in relation to text entity's this.needsUpdate for panel-mutated
+        return false;
     }
 
     /**

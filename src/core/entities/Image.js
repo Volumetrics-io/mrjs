@@ -18,7 +18,7 @@ export class Image extends MRDivEntity {
         super();
         this.attachShadow({ mode: 'open' });
         this.img = document.createElement('img');
-        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18);
+        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18); ///------------------- here
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
         });
@@ -48,6 +48,10 @@ export class Image extends MRDivEntity {
         return height > 0 ? height : super.height;
     }
 
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
@@ -61,10 +65,21 @@ export class Image extends MRDivEntity {
         this.objectFitDimensions = { height: 0, width: 0 };
         this.computeObjectFitDimensions();
 
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18); ///------------------- here
         this.texture = new THREE.TextureLoader().load(this.img.src);
         this.object3D.material.map = this.texture;
+    }
+
+    /******************* Begin: Style Check and Update *******************/
+
+    // items most likely to change
+    _oldWidth = 0;
+    _oldHeight = 0;
+    // item not as likely to change
+    _oldBorderRadii = 0;
+
+    needsUpdate() {
+        return (this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii);
     }
 
     /**
@@ -72,11 +87,19 @@ export class Image extends MRDivEntity {
      * @description Updates the style for the Image's border and background based on compStyle and inputted css elements.
      */
     updateStyle() {
-        super.updateStyle();
         this.computeObjectFitDimensions();
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+
+        // check if need to update geometry
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18); ///------------------- here
+
+        // update for next iteration - already guaranteed one of these needs update
+        // given the needsUpdate function
+        this._oldWidth = this.width;
+        this._oldHeight = this.height;
+        this._oldBorderRadii = this.borderRadii;
     }
+
+    /******************* End: Style Check and Update *******************/
 
     /**
      * @function
