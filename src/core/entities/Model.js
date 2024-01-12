@@ -8,7 +8,6 @@ import { mrjsUtils } from 'mrjs';
  * @augments MREntity
  */
 export class Model extends MREntity {
-
     /**
      * @class
      * @description Constructor for the Model entity, does the default.
@@ -32,7 +31,7 @@ export class Model extends MREntity {
      * @description Pair getter for the src property of <mr-model>. Important so that when a user tries
      * to run modelObject.src = `...` or perform something on modelObject.src it properly gets the html
      * attribute as expected instead of the pure js one.
-     * 
+     *
      * note: we can do this because only htmlimageelement has a `src` property by default, not htmlimagelement,
      * and none of the above class extensions for Model have it as a defined property.
      * @returns {string} the value of the src html attribute
@@ -46,10 +45,9 @@ export class Model extends MREntity {
      * @description Setter for the src property of <mr-model>. Important so that when a user tries
      * to run modelObject.src = `...` it properly sets the html attribute as expected instead of the
      * pure js one.
-     * 
+     *
      * note: we can do this because only htmlimageelement has a `src` property by default, not htmlimagelement,
      * and none of the above class extensions for Model have it as a defined property.
-     * @returns {string} the value of the src html attribute
      */
     set src(value) {
         this.setAttribute('src', value);
