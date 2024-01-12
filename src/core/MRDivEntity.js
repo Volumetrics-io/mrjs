@@ -52,7 +52,7 @@ export class MRDivEntity extends MREntity {
     get height() {
         const rect = this.getBoundingClientRect();
 
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
             return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
         }
@@ -67,7 +67,7 @@ export class MRDivEntity extends MREntity {
     get width() {
         const rect = this.getBoundingClientRect();
 
-        if (global.inXR) {
+        if (mrjsUtils.xr.isPresenting) {
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
             return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowHorizontalScale;
         }
@@ -145,12 +145,12 @@ export class MRDivEntity extends MREntity {
             if (valuepair.length > 1) {
                 switch (valuepair[1]) {
                     case 'px':
-                        if (global.inXR) {
+                        if (mrjsUtils.xr.isPresenting) {
                             return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
                         }
                         return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
                     case '%':
-                        if (global.inXR) {
+                        if (mrjsUtils.xr.isPresenting) {
                             return (parseFloat(val) / 100) * this.windowHorizontalScale;
                         }
                         return (parseFloat(val) / 100) * global.viewPortWidth;
