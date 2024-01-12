@@ -114,7 +114,7 @@ export class AnchorSystem extends MRSystem {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     needsUpdate(deltaTime, frame) {
-        // for now leaving as always true instead of relying on the super.needsUpdate given the intial `if` in update.
+        // for now leaving as always true instead of relying on the super.needsUpdate given the intial `if` in the `AnchorSystem`'s `update` function.
         return true;
     }
 
