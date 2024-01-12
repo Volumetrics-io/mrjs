@@ -27,7 +27,7 @@ CSS.threeToPx = function (val) {
 CSS.pxToThree = function (val) {
     let px = val instanceof String ? val.split('px')[0] : val;
 
-    if (global.inXR) {
+    if (mrjsUtils.xr.isPresenting) {
         return (px / window.innerWidth) * this.windowHorizontalScale;
     }
     return (px / window.innerWidth) * global.viewPortWidth;

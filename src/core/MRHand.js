@@ -5,7 +5,7 @@ import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 import { mrjsUtils } from 'mrjs';
 
 const ORIENTATION_OFFSET = new THREE.Quaternion(0.7071068, 0, 0, 0.7071068);
-const HAND_GROUP = 0x000b0001;
+const mrjs = 0x000b0001;
 
 const joints = [
     'wrist',
@@ -121,7 +121,7 @@ export class MRHand {
                 colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
 
-            colliderDesc.setCollisionGroups(HAND_GROUP);
+            colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.USER);
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
             this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);
