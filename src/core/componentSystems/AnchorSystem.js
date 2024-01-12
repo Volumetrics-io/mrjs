@@ -107,6 +107,22 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
+<<<<<<< Updated upstream
+=======
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
+     * any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     */
+    needsUpdate(deltaTime, frame) {
+        // for now leaving as always true instead of relying on the super.needsUpdate given the intial `if` in update.
+        return true;
+    }
+
+    /**
+     * @function
+>>>>>>> Stashed changes
      * @description This update function maintains the transforms of anchored entities.
      * This overrides any other transform values set on the element when in mixed reality.
      * @param {number} deltaTime - given timestep to be used for any feature changes
