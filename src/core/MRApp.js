@@ -444,10 +444,10 @@ export class MRApp extends MRElement {
             this.renderer.state.buffers.stencil.setTest(true);
             this.renderer.state.buffers.stencil.setMask(0xff);
             this.renderer.render(this.scene, this.user);
-        }
 
-        // Render the main scene without stencil operations
-        this.renderer.state.buffers.stencil.setTest(false);
+            // Render the main scene without stencil operations
+            this.renderer.state.buffers.stencil.setTest(false);
+        }
         this.renderer.render(this.scene, this.user);
     }
 }
