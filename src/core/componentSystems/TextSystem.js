@@ -24,14 +24,14 @@ export class TextSystem extends MRSystem {
 
         this.preloadedFonts = {};
 
-        this.textUpdateNeeded = true
+        this.textUpdateNeeded = true;
 
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
 
         document.addEventListener('panel-mutated', (event) => {
-            this.textUpdateNeeded = true
-        })
+            this.textUpdateNeeded = true;
+        });
 
         styleSheets.forEach((styleSheet) => {
             const cssRules = Array.from(styleSheet.cssRules);
@@ -47,7 +47,7 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
-                        this.textUpdateNeeded = true
+                        this.textUpdateNeeded = true;
                     }
                 );
             });
@@ -70,9 +70,10 @@ export class TextSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        
         for (const entity of this.registry) {
-            if(!entity.needsStyleUpdate && !this.textUpdateNeeded) { continue }
+            if (!entity.needsStyleUpdate && !this.textUpdateNeeded) {
+                continue;
+            }
             let text;
             if (entity instanceof TextField || entity instanceof TextArea) {
                 text = entity.input.value;
@@ -96,9 +97,9 @@ export class TextSystem extends MRSystem {
             }
 
             this.updateStyle(entity);
-            
+
             entity.textObj.sync(() => {
-                entity.needsStyleUpdate = true
+                entity.needsStyleUpdate = true;
                 if (entity instanceof Button) {
                     entity.textObj.anchorX = 'center';
                 } else {
@@ -106,10 +107,8 @@ export class TextSystem extends MRSystem {
                 }
                 entity.textObj.position.setY(entity.height / 2);
             });
-
         }
-        this.textUpdateNeeded = false
-
+        this.textUpdateNeeded = false;
     }
 
     /**

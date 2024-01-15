@@ -66,7 +66,7 @@ export class MREntity extends MRElement {
         this.grabbed = false;
         this.focus = false;
 
-        this.needsStyleUpdate = true
+        this.needsStyleUpdate = true;
     }
 
     /**
@@ -181,23 +181,23 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('touch-start', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
             this.onHover(event);
         });
 
@@ -276,7 +276,7 @@ export class MREntity extends MRElement {
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
-        this.needsStyleUpdate = true
+        this.needsStyleUpdate = true;
         for (const mutation of mutationList) {
             this.mutated(mutation);
 
