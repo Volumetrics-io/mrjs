@@ -63,10 +63,6 @@ export class TextSystem extends MRSystem {
         entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
-    needsUpdate(detaTime, frame) {
-        return this.textUpdateNeeded
-    }
-
     /**
      * @function
      * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
@@ -74,7 +70,9 @@ export class TextSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
+        
         for (const entity of this.registry) {
+            if(!entity.needsStyleUpdate && !this.textUpdateNeeded) { continue }
             let text;
             if (entity instanceof TextField || entity instanceof TextArea) {
                 text = entity.input.value;
@@ -100,6 +98,7 @@ export class TextSystem extends MRSystem {
             this.updateStyle(entity);
             
             entity.textObj.sync(() => {
+                entity.needsStyleUpdate = true
                 if (entity instanceof Button) {
                     entity.textObj.anchorX = 'center';
                 } else {

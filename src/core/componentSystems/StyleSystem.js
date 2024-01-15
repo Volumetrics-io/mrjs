@@ -13,7 +13,12 @@ export class StyleSystem extends MRSystem {
      * @description StyleSystem's default constructor with a starting framerate of 1/30.
      */
     constructor() {
-        super(false, 1 / 30);
+        super(false, 1 / 10);
+        this.cssUpdateNeeded = true
+
+        document.addEventListener('panel-mutated', () => {
+            this.cssUpdateNeeded = true
+        })
     }
 
     /**
@@ -24,6 +29,7 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
+            if(!entity.needsStyleUpdate) { continue }
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
             if (entity.compStyle.zIndex != 'auto') {
                 let parentZ = entity.parentElement.compStyle.zIndex == 'auto' ? 1 : parseFloat(entity.parentElement.compStyle.zIndex);
@@ -32,7 +38,10 @@ export class StyleSystem extends MRSystem {
             }
 
             entity instanceof MRDivEntity ? entity.updateStyle() : null;
+            entity.needsStyleUpdate = false
         }
+
+        this.cssUpdateNeeded = false
     }
 
     /**
@@ -42,5 +51,6 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
+        this.cssUpdateNeeded = true
     }
 }
