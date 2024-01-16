@@ -31,6 +31,7 @@ export class MRTextEntity extends MRDivEntity {
         document.addEventListener('panel-mutated', () => {
             this.needsUpdate = true;
         });
+        // is the above supposed to be this.needsStyleUpdate? or is it a needsUpdate function for the object itself?
     }
 
     /**

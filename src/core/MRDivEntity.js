@@ -162,38 +162,21 @@ export class MRDivEntity extends MREntity {
         return val;
     }
 
-    /**
-     * @function
-     * @description 
-     */
     updateStyle() {
-    }
+        super.updateStyle();
 
-    /**
-     * @function
-     * @description The main style update function for a div entity - is called by the StyleSystem at each animation step.
-     * By default updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements.
-     */
-    __updateStyle() {
-        // TODO - update this based on michaelthat'sit 's change --> need to alter use of needsStyleUpdate compared to function itself so not overdone
-        // or need to look into doing this directly in MREntity instead of MRDivEntity - tbd - need to think on this a bit'
-        if (this.needsStyleUpdate(...)) {
-            // this part acts as sub class's super.updateStyle
-            this.setBorder();
-            this.setBackground();
-            // calling the sub class's this.updateStyle
-            this.updateStyle();
-        }
+        // all div entities needs these steps
+        this.setBorder();
+        this.setBackground();
     }
+                
 
     /**
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
     /**

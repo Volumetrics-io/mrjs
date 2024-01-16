@@ -46,12 +46,11 @@ export class StyleSystem extends MRSystem {
             }
 
             if (entity instanceof MRDivEntity) {
-                entity.__updateStyle();
+                entity.updateStyle();
             }
-            entity.needsStyleUpdate = false;
         }
 
-        this.needsSystemUpdate = false;
+        this.needsSystemUpdate = false; // TODO - check on this since this was a css update before??
     }
 
     /**
