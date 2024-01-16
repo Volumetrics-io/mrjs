@@ -19,6 +19,10 @@ export class AnimationSystem extends MRSystem {
         super(false);
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description Updates each animation mixer in the registry. This function should be called

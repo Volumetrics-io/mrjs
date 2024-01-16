@@ -27,6 +27,10 @@ export class ClippingSystem extends MRSystem {
         this.geometry = new THREE.BufferGeometry();
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description The generic system update call. Updates the clipped view of every entity in this system's registry.

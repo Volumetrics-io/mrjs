@@ -21,6 +21,10 @@ export class InstancingSystem extends MRSystem {
         this.instancedMesh = null;
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description  The generic system update call. Updates the entity and its instances to their appropriate transformations and visuals

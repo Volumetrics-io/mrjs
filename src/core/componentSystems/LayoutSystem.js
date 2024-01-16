@@ -35,6 +35,10 @@ export class LayoutSystem extends MRSystem {
         }
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever layout position is expected.

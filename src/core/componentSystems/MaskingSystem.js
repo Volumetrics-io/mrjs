@@ -42,7 +42,7 @@ export class MaskingSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
-    needsSystemUpdate(deltaTime, frame) {
+    get needsSystemUpdate(deltaTime, frame) {
         // based on the update function - leave for when needed.
         return false;
     }

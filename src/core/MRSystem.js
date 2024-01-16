@@ -53,16 +53,25 @@ export class MRSystem {
         }
     }
 
+    // undefined == always update, once set to true/false trigger, then updates based on that every frame
+    // setting back to undefined sets to always update.
+    __needsSystemUpdate = undefined;
+
     /**
      * @function
-     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
-     * any items in the system's registry. Allows subclasses to override with their own implementation.
+     * @description Checks if we need to run the generic system update call. Default implementation returns true if the needsSystemUpdate flag
+     * has been set to true and then only if there are any items in the system's registry to be updated. Allows subclasses to override with their
+     * own implementation. // TODO - update the documentation
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
-    needsSystemUpdate(deltaTime, frame) {
-        return this.registry.size > 0;
+    get needsSystemUpdate(deltaTime, frame) {
+        return (this.__needsSystemUpdate == undefined) || this.__needsSystemUpdate;
+    }
+
+    set needsSystemUpdate(bool) {
+        this.__needsSystemUpdate = bool;
     }
 
     /**
@@ -72,7 +81,7 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     __update(deltaTime, frame) {
-        if (!this.needsSystemUpdate(deltaTime, frame)) {
+        if (! this.needsSystemUpdate(...)) {
             return;
         }
 
@@ -84,6 +93,11 @@ export class MRSystem {
         }
         this.update(deltaTime, frame);
         this.delta = 0;
+
+        // reset update var if needed.
+        if (typeof this.__needsSystemUpdate != 'undefined') {
+            this.__needsSystemUpdate = false;
+        }
     }
 
     /**

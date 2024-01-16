@@ -21,6 +21,10 @@ export class StyleSystem extends MRSystem {
         });
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.

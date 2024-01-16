@@ -63,6 +63,10 @@ export class TextSystem extends MRSystem {
         entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
+    get needsSystemUpdate(...) {
+        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    }
+
     /**
      * @function
      * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
