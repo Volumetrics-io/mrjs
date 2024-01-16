@@ -108,6 +108,14 @@ export class MREntity extends MRElement {
         return this.size.y;
     }
 
+    get needsStyleUpdate() {
+        return this._needsStyleUpdate;
+    }
+
+    set needsStyleUpdate() {
+        this._needsStyleUpdate = true;
+    }
+
     /**
      * @function
      * @description Default base for updating the physics data for the current iteration.

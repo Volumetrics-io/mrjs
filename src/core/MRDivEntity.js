@@ -164,18 +164,6 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
-     * @description Checks if we need to run the `updateStyle` function run by the `Style` system for this iteration.
-     * Default implementation returns true. Allows subclasses to override with their own implementation.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
-     */
-    needsStyleUpdate(deltaTime, frame) {
-        return true;
-    }
-
-    /**
-     * @function
      * @description 
      */
     updateStyle() {
@@ -190,7 +178,7 @@ export class MRDivEntity extends MREntity {
     __updateStyle() {
         // TODO - update this based on michaelthat'sit 's change --> need to alter use of needsStyleUpdate compared to function itself so not overdone
         // or need to look into doing this directly in MREntity instead of MRDivEntity - tbd - need to think on this a bit'
-        if (this.needsStyleUpdate) {
+        if (this.needsStyleUpdate(...)) {
             // this part acts as sub class's super.updateStyle
             this.setBorder();
             this.setBackground();

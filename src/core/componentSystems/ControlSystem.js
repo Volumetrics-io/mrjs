@@ -90,7 +90,7 @@ export class ControlSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
-    needsUpdate(deltaTime, frame) {
+    needsSystemUpdate(deltaTime, frame) {
         return true;
     }
 
