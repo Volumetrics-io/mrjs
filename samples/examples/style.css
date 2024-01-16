@@ -85,7 +85,7 @@
     font-family: var(--font-title);
     font-size: 4vw;
     line-height: 100%;
-    color: rgb(55, 55, 55);
+    color: rgb(255, 255, 255);
     grid-column: 1;
   }
 
@@ -93,7 +93,7 @@
     font-family: var(--font-title);
     font-size: 4vw;
     line-height: 100%;
-    color: rgb(55, 55, 55);
+    color: rgb(255, 255, 255);
     align-self: center;
     grid-column: 4;
   }
@@ -130,7 +130,7 @@
   }
 
   #navbar {
-    background-color: rgb(51, 50, 50);
+    background-color: #141414;
     border-radius: 1%;
     position:fixed;
     top: 0;
@@ -186,5 +186,7 @@
   }
 
   .button {
+    padding: 10px;
+    margin: 0 10px;
     width: fit-content;
   }
