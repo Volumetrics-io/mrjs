@@ -24,8 +24,14 @@ export class TextSystem extends MRSystem {
 
         this.preloadedFonts = {};
 
+        this.textUpdateNeeded = true;
+
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
+
+        document.addEventListener('panel-mutated', (event) => {
+            this.textUpdateNeeded = true;
+        });
 
         styleSheets.forEach((styleSheet) => {
             const cssRules = Array.from(styleSheet.cssRules);
@@ -41,6 +47,7 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
+                        this.textUpdateNeeded = true;
                     }
                 );
             });
@@ -64,6 +71,9 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
+            if (!entity.needsStyleUpdate && !this.textUpdateNeeded) {
+                continue;
+            }
             let text;
             if (entity instanceof TextField || entity instanceof TextArea) {
                 text = entity.input.value;
@@ -84,17 +94,21 @@ export class TextSystem extends MRSystem {
             }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
-                entity.textObj.sync();
             }
 
             this.updateStyle(entity);
-            if (entity instanceof Button) {
-                entity.textObj.anchorX = 'center';
-            } else {
-                entity.textObj.position.setX(-entity.width / 2);
-            }
-            entity.textObj.position.setY(entity.height / 2);
+
+            entity.textObj.sync(() => {
+                entity.needsStyleUpdate = true;
+                if (entity instanceof Button) {
+                    entity.textObj.anchorX = 'center';
+                } else {
+                    entity.textObj.position.setX(-entity.width / 2);
+                }
+                entity.textObj.position.setY(entity.height / 2);
+            });
         }
+        this.textUpdateNeeded = false;
     }
 
     /**

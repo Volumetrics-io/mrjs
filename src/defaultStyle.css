@@ -29,6 +29,7 @@ mr-button {
     padding: 5px;
     background-color: #8a8a8a;
     border-radius: 0.5%;
+    z-index: 1; /* end */
     /* animation: back 0.25s ease-out forwards; */
 }
 
