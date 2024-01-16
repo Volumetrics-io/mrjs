@@ -18,11 +18,14 @@ export class Image extends MRDivEntity {
         super();
         this.attachShadow({ mode: 'open' });
         this.img = document.createElement('img');
-        this.geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0.0001], 18);
-        this.material = new THREE.MeshStandardMaterial({
+
+        // Create the object3D. Dont need default value for geometry
+        // until the connected call since this will get overwritten anyways.
+        let material = new THREE.MeshStandardMaterial({
             side: 0,
         });
-        this.object3D = new THREE.Mesh(this.geometry, this.material);
+        let geometry = undefined;
+        this.object3D = new THREE.Mesh(undefined, this.material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
@@ -50,6 +53,15 @@ export class Image extends MRDivEntity {
 
     /**
      * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    }
+
+    /**
+     * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
@@ -61,8 +73,11 @@ export class Image extends MRDivEntity {
         this.objectFitDimensions = { height: 0, width: 0 };
         this.computeObjectFitDimensions();
 
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+        // first creation of the object3D geometry. dispose is not needed but adding just in case.
+        if (this.object3D.geometry != undefined) {
+            this.object3D.geometry.dispose();
+        }
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
         this.texture = new THREE.TextureLoader().load(this.img.src);
         this.object3D.material.map = this.texture;
     }
@@ -74,8 +89,12 @@ export class Image extends MRDivEntity {
     updateStyle() {
         super.updateStyle();
         this.computeObjectFitDimensions();
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+
+        // make sure to dispose before new geometry created
+        if (this.object3D.geometry != undefined) {
+            this.object3D.geometry.dispose();
+        }
+        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
     /**
