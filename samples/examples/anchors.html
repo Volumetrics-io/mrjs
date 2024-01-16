@@ -10,7 +10,7 @@
   </head>
   <body >
    <mr-app>
-    <mr-panel class="layout" data-comp-anchor="type: fixed;">
+    <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
             mrjs
@@ -45,21 +45,35 @@
         </mr-text>
 
         <mr-div class="col-2">
-            <mr-button onclick="ceiling()" class="col-2 label button" >
+
+            <mr-button onclick="floating()" class=" label button" >
+                floating
+            </mr-button>
+
+            <mr-button onclick="fixed()" class=" label button" >
+                fixed
+            </mr-button>
+
+            <mr-button onclick="floor()" class=" label button" >
+                floor
+            </mr-button>
+
+            <mr-button onclick="table()" class=" label button" >
+                table
+            </mr-button>
+
+            <mr-button onclick="ceiling()" class=" label button" >
                 ceiling
             </mr-button>
 
-            <mr-button onclick="wall()" class="col-2 label button" >
+            <mr-button onclick="wall()" class=" label button" >
                 wall
             </mr-button>
 
-            <mr-button onclick="table()" class="col-2 label button" >
-                table
-            </mr-button> 
-            
-            <mr-button onclick="floor()" class="col-2 label button" >
-                floor
+            <mr-button onclick="reset()" class=" label button" >
+                reset
             </mr-button>
+            
         </mr-div>
         <mr-text class="col-2 subtitle" >
         data-comp-anchor
@@ -154,9 +168,6 @@
         data-position="0 -200 0"
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
         </mr-skybox>
-
-    <!-- <mr-entity id="floating">
-    </mr-entity> -->
 
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
         <mr-model
@@ -305,8 +316,14 @@ void main() {
             entity.object3D.visible = false
         }
 
-        function floating() {
+        let panel = document.getElementById('panel')
 
+        function floating() {
+            panel.components.set('anchor', {type: 'floating'})
+        }
+
+        function fixed() {
+            panel.components.set('anchor', {type: 'fixed'})
         }
 
         function wall() {

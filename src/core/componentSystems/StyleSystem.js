@@ -13,7 +13,7 @@ export class StyleSystem extends MRSystem {
      * @description StyleSystem's default constructor with a starting framerate of 1/30.
      */
     constructor() {
-        super(false, 1 / 10);
+        super(false);
         this.cssUpdateNeeded = true;
 
         document.addEventListener('panel-mutated', () => {

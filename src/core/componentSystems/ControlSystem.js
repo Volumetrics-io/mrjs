@@ -52,7 +52,7 @@ export class ControlSystem extends MRSystem {
         this.timer;
 
         const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
-        const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.0001);
+        const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.01);
 
         this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
         this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
