@@ -27,8 +27,8 @@ export class ClippingSystem extends MRSystem {
         this.geometry = new THREE.BufferGeometry();
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**

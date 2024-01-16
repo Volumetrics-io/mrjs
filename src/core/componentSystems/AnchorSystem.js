@@ -30,6 +30,9 @@ export class AnchorSystem extends MRSystem {
         this.cameraForward = new THREE.Vector3();
         this.pinchDistance = 0;
 
+        // want this system to run based on the true/false trigger
+        this.needsSystemUpdate = false;
+
         this.axisSwapQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -(3 * Math.PI) / 2);
 
         this.hand = null;

@@ -24,13 +24,14 @@ export class TextSystem extends MRSystem {
 
         this.preloadedFonts = {};
 
-        this.textUpdateNeeded = true;
+        // want this system to run based on the true/false trigger
+        this.needsSystemUpdate = true;
 
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
 
         document.addEventListener('panel-mutated', (event) => {
-            this.textUpdateNeeded = true;
+            this.needsSystemUpdate = true;
         });
 
         styleSheets.forEach((styleSheet) => {
@@ -47,7 +48,7 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
-                        this.textUpdateNeeded = true;
+                        this.needsSystemUpdate = true;
                     }
                 );
             });
@@ -63,8 +64,8 @@ export class TextSystem extends MRSystem {
         entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**
@@ -75,7 +76,7 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.textUpdateNeeded) {
+            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
                 continue;
             }
             let text;
@@ -112,7 +113,7 @@ export class TextSystem extends MRSystem {
                 entity.textObj.position.setY(entity.height / 2);
             });
         }
-        this.textUpdateNeeded = false;
+        this.needsSystemUpdate = false;
     }
 
     /**

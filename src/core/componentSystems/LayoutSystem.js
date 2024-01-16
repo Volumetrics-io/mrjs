@@ -35,8 +35,8 @@ export class LayoutSystem extends MRSystem {
         }
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**

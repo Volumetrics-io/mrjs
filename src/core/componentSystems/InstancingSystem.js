@@ -21,8 +21,8 @@ export class InstancingSystem extends MRSystem {
         this.instancedMesh = null;
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**

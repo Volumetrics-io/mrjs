@@ -19,8 +19,8 @@ export class AnimationSystem extends MRSystem {
         super(false);
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**

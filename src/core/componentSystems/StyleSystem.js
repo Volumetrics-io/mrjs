@@ -14,15 +14,17 @@ export class StyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
-        this.cssUpdateNeeded = true;
+
+        // want this system to run based on the true/false trigger
+        this.needsSystemUpdate = true;
 
         document.addEventListener('panel-mutated', () => {
-            this.cssUpdateNeeded = true;
+            this.needsSystemUpdate = true;
         });
     }
 
-    get needsSystemUpdate(...) {
-        return (this.registry.size > 0 && super.needsSystemUpdate(...));
+    get needsSystemUpdate() {
+        return (this.registry.size > 0 && super.needsSystemUpdate());
     }
 
     /**
@@ -49,7 +51,7 @@ export class StyleSystem extends MRSystem {
             entity.needsStyleUpdate = false;
         }
 
-        this.cssUpdateNeeded = false;
+        this.needsSystemUpdate = false;
     }
 
     /**
@@ -59,6 +61,6 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
-        this.cssUpdateNeeded = true;
+        this.needsSystemUpdate = true;
     }
 }
