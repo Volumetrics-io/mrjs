@@ -51,6 +51,11 @@ export class Image extends MRDivEntity {
         return height > 0 ? height : super.height;
     }
 
+    /**
+     * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
     get borderRadii() {
         return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     }
