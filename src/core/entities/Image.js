@@ -18,7 +18,7 @@ export class Image extends MRDivEntity {
         super();
         this.attachShadow({ mode: 'open' });
         this.img = document.createElement('img');
-        
+
         // Create the object3D. Dont need default value for geometry
         // until the connected call since this will get overwritten anyways.
         let material = new THREE.MeshStandardMaterial({
