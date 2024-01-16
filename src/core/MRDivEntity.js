@@ -188,6 +188,8 @@ export class MRDivEntity extends MREntity {
      * elements.
      */
     __updateStyle() {
+        // TODO - update this based on michaelthat'sit 's change --> need to alter use of needsStyleUpdate compared to function itself so not overdone
+        // or need to look into doing this directly in MREntity instead of MRDivEntity - tbd - need to think on this a bit'
         if (this.needsStyleUpdate) {
             // this part acts as sub class's super.updateStyle
             this.setBorder();
