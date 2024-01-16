@@ -154,7 +154,7 @@ export class AnchorSystem extends MRSystem {
                     this.anchorUpdateNeeded = false;
                 }
 
-                if(this.anchoringQueue.size > 0) {
+                if (this.anchoringQueue.size > 0) {
                     this.anchorUpdateNeeded = true;
                 }
             } else if (entity.anchor) {
