@@ -2,15 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>MR.js</title>
-    <meta name="description" content="MR.js example">
+    <title>mr.js - anchors</title>
+    <meta name="description" content="MR.js example - anchors">
     <script src="/mr.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
    <mr-app>
-    <mr-panel class="layout" data-comp-anchor="type: fixed;">
+    <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
             mrjs
@@ -45,21 +45,35 @@
         </mr-text>
 
         <mr-div class="col-2">
-            <mr-button onclick="ceiling()" class="col-2 label button" >
+
+            <mr-button onclick="floating()" class=" label button" >
+                floating
+            </mr-button>
+
+            <mr-button onclick="fixed()" class=" label button" >
+                fixed
+            </mr-button>
+
+            <mr-button onclick="floor()" class=" label button" >
+                floor
+            </mr-button>
+
+            <mr-button onclick="table()" class=" label button" >
+                table
+            </mr-button>
+
+            <mr-button onclick="ceiling()" class=" label button" >
                 ceiling
             </mr-button>
 
-            <mr-button onclick="wall()" class="col-2 label button" >
+            <mr-button onclick="wall()" class=" label button" >
                 wall
             </mr-button>
 
-            <mr-button onclick="table()" class="col-2 label button" >
-                table
-            </mr-button> 
-            
-            <mr-button onclick="floor()" class="col-2 label button" >
-                floor
+            <mr-button onclick="reset()" class=" label button" >
+                reset
             </mr-button>
+            
         </mr-div>
         <mr-text class="col-2 subtitle" >
         data-comp-anchor
@@ -155,14 +169,30 @@
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
         </mr-skybox>
 
-    <!-- <mr-entity id="floating">
-    </mr-entity> -->
-
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
+        <mr-model
+            data-rotation="0 180 0"  
+            data-position="0 0.3 0"                        
+            src="/assets/models/island3.glb" 
+            style="scale: 0.1">
+            </mr-model>
     </mr-entity>
 
     <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
-        
+       <mr-water 
+        data-rotation="-90 0 0"             
+        data-position="0 0.5 0"            
+        id="water"></mr-water> 
+        <mr-entity
+        data-rotation="-90 00 0"                        
+        data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
+            <mr-model
+            data-rotation="90 180 0"                        
+            data-position="0 0.5 0.3"             
+            src="/assets/models/animation_koifish.glb" 
+            style="scale: 0.05">
+            </mr-model>
+        </mr-entity>
     </mr-entity>
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
@@ -171,12 +201,12 @@
     <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
         <mr-entity
         data-rotation="-110 0 0"                        
-        data-position="0 0 -8"  
-        data-comp-animation="type: rotate; maxspeed: -0.003; acceleration: 0.000008;">
+        data-position="0 -100 -800"  
+        data-comp-animation="type: rotate; maxspeed: -0.001; acceleration: 0.000008;">
             <mr-model
             data-rotation="90 0 0"             
             src="/assets/models/Mars.glb" 
-            style="scale: 0.01">
+            style="scale: 1">
             </mr-model>
         </mr-entity>
       </mr-entity>
@@ -187,6 +217,92 @@
   <footer>
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
+
+        class Water extends MREntity {
+            
+            vertexShader = `
+            varying vec2 vUv;
+            varying float vWave;
+            uniform float u_time;
+
+            void main() {
+                vUv = uv;
+                vec3 pos = position;
+                float waveHeight = 0.01;
+                float waveSpeed = 2.0;
+                float waveSpeed2 = 3.0;
+                float waveFrequency = 0.2;
+                float waveFrequency2 = 1.0;
+                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
+                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
+                pos.z += wave;
+                vWave = wave;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+            }
+            `;
+
+            fragmentShader = `
+varying vec2 vUv;
+varying float vWave;
+
+void main() {
+    vec3 waterColor = vec3(0.0, 0.55, 0.5);
+    float alpha = 0.5;
+
+    // Froth effect at the crest of waves
+    float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
+    vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
+
+    // Blend water color with froth color based on wave height
+    vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
+
+    gl_FragColor = vec4(finalColor, alpha);
+}
+`;
+
+
+
+
+            constructor() {
+                super()
+
+                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+
+                let material = new THREE.ShaderMaterial({
+                    uniforms: {
+                        u_time: { value: 0.0 }
+                    },
+                    vertexShader: this.vertexShader,
+                    fragmentShader: this.fragmentShader,
+                    transparent: true
+                });
+
+                this.water = new THREE.Mesh(geomertry, material)
+                this.object3D.add(this.water)
+
+            }
+        }
+
+        class WaterSystem extends MRSystem {
+            constructor(){
+                super(false)
+                this.water = document.getElementById('water')
+
+                if(this.water) {
+                    this.registry.add(this.water)
+                }
+
+            }
+
+            update(deltaTime, frame) {
+                this.water.water.material.uniforms.u_time.value += deltaTime
+            }
+        }
+
+        let ws = new WaterSystem()
+
+        customElements.get('mr-water') || customElements.define('mr-water', Water);
+
 
         // let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
@@ -200,8 +316,14 @@
             entity.object3D.visible = false
         }
 
-        function floating() {
+        let panel = document.getElementById('panel')
 
+        function floating() {
+            panel.components.set('anchor', {type: 'floating'})
+        }
+
+        function fixed() {
+            panel.components.set('anchor', {type: 'fixed'})
         }
 
         function wall() {
@@ -210,7 +332,7 @@
         }
 
         function table() {
-            
+            tableAnchor.object3D.visible = !tableAnchor.object3D.visible
         }
 
         function floor() {
@@ -224,11 +346,15 @@
 
         }
 
-        document.addEventListener('exitXR', () => {
+        function reset() {
             for (const entity of allAnchors) {
                 entity.components.set('anchor', {occlusion: true})
                 entity.object3D.visible = false
             }
+        }
+
+        document.addEventListener('exitXR', () => {
+            reset()
         })
       
     </script>

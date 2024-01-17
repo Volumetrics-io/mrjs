@@ -48,10 +48,11 @@ export class ControlSystem extends MRSystem {
 
         this.restPosition = new THREE.Vector3(1000, 1000, 1000);
         this.hitPosition = new THREE.Vector3();
+        this.hitNormal = new THREE.Vector3();
         this.timer;
 
         const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
-        const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.0001);
+        const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.01);
 
         this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
         this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
@@ -113,12 +114,15 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.origin };
             this.ray.dir = { ...this.direction };
 
-            this.hit = this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
+            this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
             if (this.hit != null) {
                 this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
+                this.hitNormal.copy(this.hit.normal);
                 this.cursor.setTranslation({ ...this.hitPosition }, true);
                 this.cursorViz.visible = true;
                 this.cursorViz.position.copy(this.hitPosition);
+
+                this.cursorViz.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.hit.normal);
             } else {
                 this.removeCursor();
                 this.cursorViz.visible = false;
@@ -229,6 +233,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRay(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
+        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
     }
 }
