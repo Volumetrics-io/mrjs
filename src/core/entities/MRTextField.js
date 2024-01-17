@@ -56,7 +56,7 @@ export class MRTextField extends MRTextEntity {
     /**
      * @function
      * @description Blurs the inputted text value and cursor information
-     */
+     */ 
     blur = () => {
         this.input.blur();
         this.cursor.visible = false;
