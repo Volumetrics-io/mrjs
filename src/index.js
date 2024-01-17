@@ -12,31 +12,37 @@ import './defaultStyle.css';
 import './global';
 
 // DATATYPES
-import './datatypes/ClippingGeometry';
+import './dataTypes/MRClippingGeometry';
+import './dataTypes/MRHand';
+import './dataTypes/MRPlane';
+// DATAMANAGERS
+import './dataManagers/MRPlaneManager';
 
 // CORE
 import './core/MRApp';
 import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
-import './core/MRHand';
 import './core/MRSystem';
 import './core/MRTextEntity';
-import './core/entities/MRHyperlink.js';
 // CORE - ENTITIES
-import './core/entities/Button';
-import './core/entities/Image';
-import './core/entities/Light';
-import './core/entities/Model';
-import './core/entities/Panel';
-import './core/entities/SkyBox';
-import './core/entities/TextArea';
-import './core/entities/TextField';
+import './core/entities/MRButton';
+import './core/entities/MRHyperlink';
+import './core/entities/MRImage';
+import './core/entities/MRLight';
+import './core/entities/MRModel';
+import './core/entities/MRPanel';
+import './core/entities/MRSkyBox';
+import './core/entities/MRTextArea';
+import './core/entities/MRTextField';
 // CORE - COMPONENT-SYSTEMS
+import './core/componentSystems/AnchorSystem';
+import './core/componentSystems/AnimationSystem';
 import './core/componentSystems/ClippingSystem';
 import './core/componentSystems/ControlSystem';
 import './core/componentSystems/InstancingSystem';
 import './core/componentSystems/LayoutSystem';
+import './core/componentSystems/MaskingSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/StyleSystem';
 import './core/componentSystems/TextSystem';

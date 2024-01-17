@@ -1,7 +1,7 @@
-import { MRTextEntity } from '../MRTextEntity';
+import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
- * @class A
+ * @class MRHyperlink
  * @classdesc 3D representation of a hyperlink. `mr-a`
  * @augments MRTextEntity
  */
