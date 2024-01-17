@@ -5,11 +5,11 @@ import { getSelectionRects } from 'troika-three-text';
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
- * @class TextField
+ * @class MRTextField
  * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. Limits the one-line. `mr-textfield`
  * @augments MRTextEntity
  */
-export class TextField extends MRTextEntity {
+export class MRTextField extends MRTextEntity {
     /**
      * @class
      * @description Constructor for the textField entity component.
@@ -93,4 +93,4 @@ export class TextField extends MRTextEntity {
     };
 }
 
-customElements.get('mr-textfield') || customElements.define('mr-textfield', TextField);
+customElements.get('mr-textfield') || customElements.define('mr-textfield', MRTextField);

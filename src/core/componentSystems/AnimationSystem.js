@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { Model } from 'mrjs/core/entities/Model';
+import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
  * @class AnimationSystem
@@ -43,7 +43,7 @@ export class AnimationSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof Model && entity.animations.length > 0) {
+        if (entity instanceof MRModel && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
             const mixer = new THREE.AnimationMixer(entity.object3D);
             entity.animations.forEach((clip) => {

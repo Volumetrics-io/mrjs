@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { Panel } from 'mrjs/core/entities/Panel';
+import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
 /**
  * @class MaskingSystem
@@ -63,7 +63,7 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof Panel) {
+        if (entity instanceof MRPanel) {
             // Using an array for the panels in case we need them for more manipulations down the line instead
             // of using the system's registry.
             this.panels.push(entity);
@@ -83,7 +83,7 @@ export class MaskingSystem extends MRSystem {
             // passed through this function since that case is an edge case that will not be expected.
 
             entity.traverse((child) => {
-                if (child instanceof Panel && child.object3D.isGroup) {
+                if (child instanceof MRPanel && child.object3D.isGroup) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
                     let mesh = child.background;
@@ -96,7 +96,7 @@ export class MaskingSystem extends MRSystem {
                     mesh.material.stencilZPass = this.panelStencilMaterial.stencilZPass;
 
                     mesh.material.needsUpdate = true;
-                } else if (child instanceof MRDivEntity && !(child instanceof Panel) && !child.ignoreStencil) {
+                } else if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.

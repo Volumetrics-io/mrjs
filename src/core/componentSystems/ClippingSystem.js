@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 import { MREntity } from 'mrjs/core/MREntity';
+
+import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 
 /**
  * @class ClippingSystem
@@ -72,7 +73,7 @@ export class ClippingSystem extends MRSystem {
      * @description Helper method for `onNewEntity`. Actually applies the clipping planes to the material setup for rendering.
      * Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
      * @param {object} object - the object3D item to be clipped
-     * @param {ClippingGeometry} clipping - the clipping information to be passed to the material
+     * @param {MRClippingGeometry} clipping - the clipping information to be passed to the material
      */
     applyClipping(object, clipping) {
         if (!object.isMesh) {

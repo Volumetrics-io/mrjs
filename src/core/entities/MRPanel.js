@@ -3,16 +3,16 @@ import * as THREE from 'three';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 
+import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
+
 import { mrjsUtils } from 'mrjs';
 
-import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
-
 /**
- * @class Panel
+ * @class MRPanel
  * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
  * @augments MRDivEntity
  */
-export class Panel extends MRDivEntity {
+export class MRPanel extends MRDivEntity {
     /**
      * @function
      * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
@@ -55,7 +55,7 @@ export class Panel extends MRDivEntity {
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     connected() {
-        this.clipping = new ClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
+        this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
         window.addEventListener('load', (event) => {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
@@ -182,4 +182,4 @@ export class Panel extends MRDivEntity {
     onScroll = (event) => {};
 }
 
-customElements.get('mr-panel') || customElements.define('mr-panel', Panel);
+customElements.get('mr-panel') || customElements.define('mr-panel', MRPanel);
