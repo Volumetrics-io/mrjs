@@ -14,6 +14,7 @@ export class MRButton extends MRTextEntity {
         super();
         this.background.castShadow = true;
         this.object3D.name = 'button';
+        this.ignoreStencil = true;
     }
 }
 

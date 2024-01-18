@@ -4,6 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRTextEntity } from '../MRTextEntity';
 
 /**
  * @class MaskingSystem
@@ -112,6 +113,18 @@ export class MaskingSystem extends MRSystem {
                         child.object3D.material.stencilRef = stencilRef;
 
                         child.object3D.material.needsUpdate = true;
+                    }
+
+                    // @hanbollar This is a temporary fix,
+                    // I think there's a more general solution here using entity.object3D.traverse
+                    // rather than entity.traverse, but I think we'd also need to move
+                    // entity.ignoreStencil from entity, to entity.object3D.userData.ignoreStencil
+                    if (child instanceof MRTextEntity) {
+                        child.textObj.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
+                        child.textObj.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                        child.textObj.material.stencilRef = stencilRef;
+
+                        child.textObj.material.needsUpdate = true;
                     }
                 }
             });

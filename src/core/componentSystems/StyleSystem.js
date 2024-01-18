@@ -40,6 +40,7 @@ export class StyleSystem extends MRSystem {
             }
 
             entity instanceof MRDivEntity ? entity.updateStyle() : null;
+            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             entity.needsStyleUpdate = false;
         }
 
