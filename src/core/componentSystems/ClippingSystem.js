@@ -89,7 +89,6 @@ export class ClippingSystem extends MRSystem {
      * @param {MREntity} entity - the entity to which we're adding the clipping planes information
      */
     addClippingPlanes(entity) {
-        console.log(entity);
         this.geometry = entity.clipping.geometry.toNonIndexed();
         let geoPositionArray = this.geometry.attributes.position.array;
 

@@ -4,7 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRTextEntity } from '../MRTextEntity';
+import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
 /**
  * @class MaskingSystem
