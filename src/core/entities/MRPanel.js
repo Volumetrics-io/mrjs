@@ -37,6 +37,7 @@ export class MRPanel extends MRDivEntity {
         this.object3D.userData.size = new THREE.Vector3();
         this.object3D.add(this.shuttle);
         this.object3D.name = 'panel';
+        this.ignoreStencil = true;
 
         this.windowVerticalScale = 1;
         this.windowHorizontalScale = 1;
