@@ -108,10 +108,10 @@ export class MREntity extends MRElement {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
-    __needsStyleUpdate = undefined;
+    _needsStyleUpdate = undefined;
 
     get alwaysNeedsStyleUpdate() {
-        return typeof this.__needsStyleUpdate === undefined;
+        return typeof this._needsStyleUpdate === undefined;
     }
 
     /**
@@ -123,11 +123,11 @@ export class MREntity extends MRElement {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     get needsStyleUpdate() {
-        return this.alwaysNeedsStyleUpdate || this.__needsStyleUpdate;
+        return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
     }
 
     set needsStyleUpdate(bool) {
-        this.__needsStyleUpdate = bool;
+        this._needsStyleUpdate = bool;
     }
 
     /**

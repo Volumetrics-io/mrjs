@@ -169,8 +169,17 @@ export class MRDivEntity extends MREntity {
         this.setBorder();
         this.setBackground();
     }
-                
 
+    /**
+     * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+    }
+                
     /**
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.

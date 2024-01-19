@@ -48,6 +48,10 @@ export class MaskingSystem extends MRSystem {
         return false;
     }
 
+    set needsSystemUpdate(bool) {
+        super.needsSystemUpdate = bool;
+    }
+
     /**
      * @function
      * @description ...

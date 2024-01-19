@@ -53,15 +53,6 @@ export class MRImage extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the border radius of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-    }
-
-    /**
-     * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {

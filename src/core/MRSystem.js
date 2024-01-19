@@ -55,10 +55,10 @@ export class MRSystem {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
-    __needsSystemUpdate = undefined;
+    _needsSystemUpdate = undefined;
 
     get alwaysNeedsSystemUpdate() {
-        return typeof this.__needsSystemUpdate === undefined;
+        return typeof this._needsSystemUpdate === undefined;
     }
 
     /**
@@ -71,11 +71,11 @@ export class MRSystem {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     get needsSystemUpdate() {
-        return this.alwaysNeedsSystemUpdate || this.__needsSystemUpdate;
+        return this.alwaysNeedsSystemUpdate || this._needsSystemUpdate;
     }
 
     set needsSystemUpdate(bool) {
-        this.__needsSystemUpdate = bool;
+        this._needsSystemUpdate = bool;
     }
 
     /**
@@ -100,7 +100,7 @@ export class MRSystem {
 
         // reset update var if needed.
         if (!this.alwaysNeedsSystemUpdate) {
-            this.__needsSystemUpdate = false;
+            this.needsSystemUpdate = false;
         }
     }
 
