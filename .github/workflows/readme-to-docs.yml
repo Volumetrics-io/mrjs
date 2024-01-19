@@ -30,8 +30,14 @@ jobs:
 
     - name: add proper description to top of markdown file
       run: |
-        echo '---\ndescription: "An extendable WebComponents library for the Spatial Web"\n---' | cat - ../new-src-index.md > temp && mv temp ../new-src-index.md
-        cat ../new-src-index.md
+        FILE=../new-src-index.md
+        TEXT=''
+        echo '---' >> TEXT
+        echo description: "An extendable WebComponents library for the Spatial Web"\n---' >> TEXT
+        echo '---' >> TEXT
+        cat $TEXT $FILE > temp && mv temp $FILE
+        echo \"<div class='centered'><a href='https://github.com/volumetrics-io/mrjs/edit/main/README.ms' target='_blank'>Suggest an edit on GitHub for README.md</a></div>\" >> \"$FILE\"
+        cat $FILE
 
     - name: Checkout documentation Repository
       uses: actions/checkout@v4
