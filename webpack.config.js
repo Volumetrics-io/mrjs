@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Determine the environment (e.g., testing or development)
+const isTesting = process.env.NODE_ENV === 'testing';
+
 export default {
     entry: {
         main: './src/index.js',
@@ -61,7 +64,7 @@ export default {
             patterns: [
                 // make these items generate in dist as default for the runner: index.html, style.css, and assets folder
                 { from: 'samples/index.html', to: 'index.html' },
-                { from: 'samples/style.css', to: 'style.css' },
+                { from: 'samples/index-style.css', to: 'index-style.css' },
                 { from: 'samples/examples', to: 'examples' },
                 { from: 'samples/assets', to: 'assets' },
             ],

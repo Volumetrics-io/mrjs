@@ -30,11 +30,12 @@ jobs:
       run: |
         npm install
 
+    # todo - have a way to run off a saved build image or state of the previous action instead of 
+    # redoing the build every time since that's not-scalable
+    #
+    # will do after getting testing up and running 
     - name: 👷 Build
       run: npm run build
     
-    # todo - have a way to run off a saved build image
-    # will do after getting testing up and running 
-    
     - name: 👷 Test
-      run: npm test
+      run: npm run test
