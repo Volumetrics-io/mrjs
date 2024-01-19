@@ -49,7 +49,9 @@ export class StyleSystem extends MRSystem {
                 entity.updateStyle();
             }
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            entity.needsStyleUpdate = false;
+            if (! entity.alwaysNeedsStyleUpdate) {
+                entity.needsStyleUpdate = false;
+            }
         }
 
         this.needsSystemUpdate = false; // TODO - check on this since this was a css update before??

@@ -110,6 +110,10 @@ export class MREntity extends MRElement {
     // setting back to undefined sets to always update.
     __needsStyleUpdate = undefined;
 
+    get alwaysNeedsStyleUpdate() {
+        return typeof this.__needsStyleUpdate == undefined;
+    }
+
     /**
      * @function
      * @description Checks if we need to run the `updateStyle` function run by the `Style` system for this iteration.
@@ -119,14 +123,10 @@ export class MREntity extends MRElement {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     get needsStyleUpdate() {
-        return (typeof this.__needsStyleUpdate == undefined || this.__needsStyleUpdate);
+        return this.alwaysNeedsStyleUpdate || this.__needsStyleUpdate;
     }
 
-    set needsStyleUpdate(bool, onlyIfNotUndefined=false) {
-        if (onlyIfNotUndefined && typeof this.__needsStyleUpdate != undefined) {
-            this.__needsStyleUpdate = bool;
-            return;
-        }
+    set needsStyleUpdate(bool) {
         this.__needsStyleUpdate = bool;
     }
 
