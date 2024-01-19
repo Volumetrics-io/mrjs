@@ -2,12 +2,12 @@ import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
+import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MREntity } from 'mrjs/core/MREntity';
-import { TextField } from 'mrjs/core/entities/TextField';
-import { TextArea } from 'mrjs/core/entities/TextArea';
+import { MRTextField } from 'mrjs/core/entities/MRTextField';
+import { MRTextArea } from 'mrjs/core/entities/MRTextArea';
 
 import { mrjsUtils } from 'mrjs';
-import Button from '../entities/Button';
 
 /**
  * @class TextSystem
@@ -80,7 +80,7 @@ export class TextSystem extends MRSystem {
                 continue;
             }
             let text;
-            if (entity instanceof TextField || entity instanceof TextArea) {
+            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
                 text = entity.input.value;
                 if (entity == document.activeElement) {
                     entity.updateCursorPosition();
@@ -105,7 +105,7 @@ export class TextSystem extends MRSystem {
 
             entity.textObj.sync(() => {
                 entity.needsStyleUpdate = true;
-                if (entity instanceof Button) {
+                if (entity instanceof MRButton) {
                     entity.textObj.anchorX = 'center';
                 } else {
                     entity.textObj.position.setX(-entity.width / 2);

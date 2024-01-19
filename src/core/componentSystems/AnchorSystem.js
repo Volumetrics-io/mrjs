@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
+import { mrjsUtils } from 'mrjs';
+
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { mrjsUtils } from '../../utils';
-import { MRPlaneManager } from '../managers/MRPlaneManager';
+import { MRPlaneManager } from 'mrjs/dataManagers/MRPlaneManager';
 
 /**
  * @class AnchorSystem

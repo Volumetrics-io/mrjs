@@ -5,11 +5,11 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class Image
+ * @class MRImage
  * @classdesc Base html image represented in 3D space. `mr-image`
  * @augments MRDivEntity
  */
-export class Image extends MRDivEntity {
+export class MRImage extends MRDivEntity {
     /**
      * @class
      * @description Constructs a base image entity using a UIPlane and other 3D elements as necessary.
@@ -194,4 +194,4 @@ export class Image extends MRDivEntity {
     }
 }
 
-customElements.get('mr-img') || customElements.define('mr-img', Image);
+customElements.get('mr-img') || customElements.define('mr-img', MRImage);

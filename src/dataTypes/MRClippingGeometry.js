@@ -1,8 +1,8 @@
 /**
- * @class ClippingGeometry
+ * @class MRClippingGeometry
  * @classdesc Geometry used in the clipping plane step. Separated out for clarity in the calculations.
  */
-export class ClippingGeometry {
+export class MRClippingGeometry {
     planes = [];
 
     planeIDs = [];
