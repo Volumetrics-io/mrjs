@@ -122,8 +122,12 @@ export class MREntity extends MRElement {
         return (typeof this.__needsStyleUpdate == undefined || this.__needsStyleUpdate);
     }
 
-    set needsStyleUpdate(bool) {
-        this._needsStyleUpdate = bool;
+    set needsStyleUpdate(bool, onlyIfNotUndefined=false) {
+        if (onlyIfNotUndefined && typeof this.__needsStyleUpdate != undefined) {
+            this.__needsStyleUpdate = bool;
+            return;
+        }
+        this.__needsStyleUpdate = bool;
     }
 
     /**
