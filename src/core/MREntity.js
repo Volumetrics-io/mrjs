@@ -113,7 +113,7 @@ export class MREntity extends MRElement {
     /**
      * @function
      * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often. 
+     * Useful for readability and to not need to check against undefined often.
      * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
      */
     get alwaysNeedsStyleUpdate() {
@@ -143,10 +143,9 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description 
+     * @description
      */
-    updateStyle() {
-    }
+    updateStyle() {}
 
     /**
      * @function

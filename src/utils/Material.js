@@ -58,19 +58,24 @@ Material.setObjectMaterial = function (parent, material) {
 };
 
 // Function to load the texture asynchronously and return a promise
-Material.loadTextureAsync = function(src) {
+Material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
 
         // Use the img's src to load the texture
-        textureLoader.load(src, texture => {
-            // Resolve the promise when the texture is loaded
-            resolve(texture);
-        }, undefined, error => {
-            // Reject the promise if there's an error
-            reject(error);
-        });
+        textureLoader.load(
+            src,
+            (texture) => {
+                // Resolve the promise when the texture is loaded
+                resolve(texture);
+            },
+            undefined,
+            (error) => {
+                // Reject the promise if there's an error
+                reject(error);
+            }
+        );
     });
-}
+};
 
 export { Material };

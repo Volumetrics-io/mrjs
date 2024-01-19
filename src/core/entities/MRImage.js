@@ -69,12 +69,12 @@ export class MRImage extends MRDivEntity {
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
         mrjsUtils.Material.loadTextureAsync(this.img.src)
-            .then(texture => {
+            .then((texture) => {
                 this.texture = texture;
                 this.object3D.material.map = texture;
             })
-            .catch(error => {
-                console.error("Error loading texture:", error);
+            .catch((error) => {
+                console.error('Error loading texture:', error);
             });
     }
 
@@ -86,13 +86,21 @@ export class MRImage extends MRDivEntity {
     // item not as likely to change
     _oldBorderRadii = 0;
 
-    needsStyleUpdate() {
-        return (this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii);
+    /**
+     * @function
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * This returns true if the width/height/borderradii of the image has changed or if the default implementation for the style update check returns true.
+     * (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsStyleUpdate() {
+        return super.needsStyleUpdate || this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii;
     }
 
     /**
      * @function
-     * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background based on compStyle and inputted css elements.
+     * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
+     * based on compStyle and inputted css elements.
      */
     updateStyle() {
         this.computeObjectFitDimensions();
@@ -124,12 +132,12 @@ export class MRImage extends MRDivEntity {
             this.computeObjectFitDimensions();
 
             mrjsUtils.Material.loadTextureAsync(this.img.src)
-                .then(texture => {
+                .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;
                 })
-                .catch(error => {
-                    console.error("Error loading texture:", error);
+                .catch((error) => {
+                    console.error('Error loading texture:', error);
                 });
         }
     }

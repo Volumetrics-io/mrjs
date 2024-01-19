@@ -162,6 +162,9 @@ export class MRDivEntity extends MREntity {
         return val;
     }
 
+    /**
+     *
+     */
     updateStyle() {
         super.updateStyle();
 
@@ -179,7 +182,7 @@ export class MRDivEntity extends MREntity {
         return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
         const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     }
-                
+
     /**
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.

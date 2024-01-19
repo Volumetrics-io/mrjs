@@ -19,10 +19,21 @@ export class AnimationSystem extends MRSystem {
         super(false);
     }
 
+    /**
+     * @function
+     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
+     * systems registry that need to be run AND the default systemUpdateCheck is true
+     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
     get needsSystemUpdate() {
-        return (this.registry.size > 0 && super.needsSystemUpdate);
+        return this.registry.size > 0 && super.needsSystemUpdate;
     }
 
+    /**
+     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     */
     set needsSystemUpdate(bool) {
         super.needsSystemUpdate = bool;
     }

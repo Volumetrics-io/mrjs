@@ -37,17 +37,20 @@ export class MaskingSystem extends MRSystem {
 
     /**
      * @function
-     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
-     * any items in the system's registry. Allows subclasses to override with their own implementation.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
+     * systems registry that need to be run AND the default systemUpdateCheck is true
+     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
      */
     get needsSystemUpdate() {
         // based on the update function - leave for when needed.
         return false;
     }
 
+    /**
+     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     */
     set needsSystemUpdate(bool) {
         super.needsSystemUpdate = bool;
     }

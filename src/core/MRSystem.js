@@ -95,7 +95,7 @@ export class MRSystem {
      */
     _update(deltaTime, frame) {
         console.log('inside MRSystem update function');
-        if (! this.needsSystemUpdate) {
+        if (!this.needsSystemUpdate) {
             console.log('not updating');
             return;
         }
