@@ -201,6 +201,10 @@ export class MREntity extends MRElement {
             this.onHover(event);
         });
 
+        this.addEventListener('child-updated', (event) => {
+            this.needsStyleUpdate = true;
+        });
+
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
     }
 

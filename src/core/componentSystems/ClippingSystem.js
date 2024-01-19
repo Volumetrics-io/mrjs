@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { ClippingGeometry } from 'mrjs/datatypes/ClippingGeometry';
 import { MREntity } from 'mrjs/core/MREntity';
+
+import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 
 /**
  * @class ClippingSystem
@@ -72,7 +73,7 @@ export class ClippingSystem extends MRSystem {
      * @description Helper method for `onNewEntity`. Actually applies the clipping planes to the material setup for rendering.
      * Uses threejs in the background following https://threejs.org/docs/?q=material#api/en/materials/Material.clippingPlanes
      * @param {object} object - the object3D item to be clipped
-     * @param {ClippingGeometry} clipping - the clipping information to be passed to the material
+     * @param {MRClippingGeometry} clipping - the clipping information to be passed to the material
      */
     applyClipping(object, clipping) {
         if (!object.isMesh) {
@@ -118,20 +119,35 @@ export class ClippingSystem extends MRSystem {
      * @param {MREntity} entity - given entity that will be clipped by the planes.
      */
     onNewEntity(entity) {
+        if (!entity.ignoreStencil) {
+            // only apply clipping planes to entities that arent masked through the stencil
+            // since doubling up on that is redundant and not helpful for runtime
+            return;
+        }
+
         if (!entity.clipping) {
             for (const parent of this.registry) {
                 if (parent.contains(entity)) {
                     entity.object3D.traverse((child) => {
-                        this.applyClipping(child, parent.clipping);
+                        // only apply clipping planes to entities that arent masked through the stencil
+                        // since doubling up on that is redundant and not helpful for runtime
+                        if (entity.ignoreStencil) {
+                            this.applyClipping(child, parent.clipping);
+                        }
                     });
                 }
             }
             return;
         }
+
         this.registry.add(entity);
         this.addClippingPlanes(entity);
         entity.object3D.traverse((child) => {
-            this.applyClipping(child, entity.clipping);
+            // only apply clipping planes to entities that arent masked through the stencil
+            // since doubling up on that is redundant and not helpful for runtime
+            if (entity.ignoreStencil) {
+                this.applyClipping(child, entity.clipping);
+            }
         });
     }
 }

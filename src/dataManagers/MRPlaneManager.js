@@ -1,5 +1,5 @@
 import { mrjsUtils } from 'mrjs';
-import { MRPlane } from '../../datatypes/MRPlane';
+import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
 /**
  * @class MRPlaneManager

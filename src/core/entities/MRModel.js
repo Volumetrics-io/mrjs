@@ -3,11 +3,11 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class Model
+ * @class MRModel
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
  * @augments MREntity
  */
-export class Model extends MREntity {
+export class MRModel extends MREntity {
     /**
      * @class
      * @description Constructor for the Model entity, does the default.
@@ -112,4 +112,4 @@ export class Model extends MREntity {
     onLoad = () => {};
 }
 
-customElements.get('mr-model') || customElements.define('mr-model', Model);
+customElements.get('mr-model') || customElements.define('mr-model', MRModel);
