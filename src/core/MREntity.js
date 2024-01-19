@@ -110,22 +110,33 @@ export class MREntity extends MRElement {
     // setting back to undefined sets to always update.
     _needsStyleUpdate = undefined;
 
+    /**
+     * @function
+     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
+     * Useful for readability and to not need to check against undefined often. 
+     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
+     */
     get alwaysNeedsStyleUpdate() {
         return this._needsStyleUpdate === undefined;
     }
 
     /**
      * @function
-     * @description Checks if we need to run the `updateStyle` function run by the `Style` system for this iteration.
-     * Default implementation returns true. Allows subclasses to override with their own implementation.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
+     * Allows subclasses to override with their own implementation.
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
      */
     get needsStyleUpdate() {
         return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
     }
 
+    /**
+     * @function
+     * @description Set the needsStyleUpdate parameter.
+     * undefined - means the StyleSystem will update this entity's style every time the application loops.
+     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
+     */
     set needsStyleUpdate(bool) {
         this._needsStyleUpdate = bool;
     }
