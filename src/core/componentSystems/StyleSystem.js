@@ -58,7 +58,7 @@ export class StyleSystem extends MRSystem {
             }
         }
 
-        this.needsSystemUpdate = false; // TODO - check on this since this was a css update before??
+        this.needsSystemUpdate = false;
     }
 
     /**

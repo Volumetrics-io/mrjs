@@ -58,7 +58,7 @@ export class MRSystem {
     _needsSystemUpdate = undefined;
 
     get alwaysNeedsSystemUpdate() {
-        return typeof this._needsSystemUpdate === undefined;
+        return this._needsSystemUpdate === undefined;
     }
 
     /**
@@ -84,10 +84,13 @@ export class MRSystem {
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
-    __update(deltaTime, frame) {
+    _update(deltaTime, frame) {
+        console.log('inside MRSystem update function');
         if (! this.needsSystemUpdate) {
+            console.log('not updating');
             return;
         }
+        console.log('updating');
 
         if (this.frameRate) {
             this.delta += deltaTime;
@@ -100,6 +103,7 @@ export class MRSystem {
 
         // reset update var if needed.
         if (!this.alwaysNeedsSystemUpdate) {
+            console.log('choosing to toggle off this update');
             this.needsSystemUpdate = false;
         }
     }

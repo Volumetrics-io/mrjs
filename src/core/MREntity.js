@@ -111,7 +111,7 @@ export class MREntity extends MRElement {
     _needsStyleUpdate = undefined;
 
     get alwaysNeedsStyleUpdate() {
-        return typeof this._needsStyleUpdate === undefined;
+        return this._needsStyleUpdate === undefined;
     }
 
     /**
