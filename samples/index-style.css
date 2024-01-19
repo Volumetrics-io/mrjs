@@ -186,6 +186,21 @@
 
   }
 
+  .example-link {
+    font-family: var(--font-title);
+    font-size: 3vw;
+    margin-bottom: 1vh;
+    line-height: 100%;
+    text-align: center;
+    color: rgba(24, 24, 24, 0.75);
+    grid-row: 5;
+    grid-colum: 2;
+    position: absolute;
+    bottom: -10vh;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .headset {
     grid-row: 2 / 5;
     grid-column: 1 / -1;
@@ -202,6 +217,6 @@
     line-height: 100%;
     font-size: 16px;
 
-    grid-row:5;
+    grid-row:6;
     grid-column: 2;
   }
