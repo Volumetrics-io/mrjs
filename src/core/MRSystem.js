@@ -85,7 +85,7 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     __update(deltaTime, frame) {
-        if (! this.needsSystemUpdate()) {
+        if (! this.needsSystemUpdate) {
             return;
         }
 

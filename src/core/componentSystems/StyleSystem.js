@@ -24,7 +24,11 @@ export class StyleSystem extends MRSystem {
     }
 
     get needsSystemUpdate() {
-        return (this.registry.size > 0 && super.needsSystemUpdate());
+        return (this.registry.size > 0 && super.needsSystemUpdate);
+    }
+
+    set needsSystemUpdate(bool) {
+        super.needsSystemUpdate = bool;
     }
 
     /**
