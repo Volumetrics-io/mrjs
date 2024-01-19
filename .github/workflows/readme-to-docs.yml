@@ -33,7 +33,7 @@ jobs:
         FILE=../new-src-index.md
         TEXT=''
         echo '---' >> TEXT
-        echo description: "An extendable WebComponents library for the Spatial Web"\n---' >> TEXT
+        echo 'description: "An extendable WebComponents library for the Spatial Web"' >> TEXT
         echo '---' >> TEXT
         cat $TEXT $FILE > temp && mv temp $FILE
         echo \"<div class='centered'><a href='https://github.com/volumetrics-io/mrjs/edit/main/README.ms' target='_blank'>Suggest an edit on GitHub for README.md</a></div>\" >> \"$FILE\"
