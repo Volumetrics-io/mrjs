@@ -22,7 +22,7 @@ export default {
     },
 
     devServer: {
-        https: process.env.NODE_ENV !== 'testing'
+        https: true,
         static: {
             directory: path.join(__dirname, 'dist'),
         },

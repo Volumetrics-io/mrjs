@@ -36,9 +36,6 @@ jobs:
     # will do after getting testing up and running 
     - name: 👷 Build
       run: npm run build
-
-    - name: 👷 Start Server for Local mrjs
-      run: npm run server
     
     - name: 👷 Test
       run: npm run test
