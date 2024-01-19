@@ -57,6 +57,10 @@ export class MRSystem {
     // setting back to undefined sets to always update.
     __needsSystemUpdate = undefined;
 
+    get alwaysNeedsSystemUpdate() {
+        return typeof this.__needsSystemUpdate === undefined;
+    }
+
     /**
      * @function
      * @description Checks if we need to run the generic system update call. Default implementation returns true if the needsSystemUpdate flag
@@ -67,7 +71,7 @@ export class MRSystem {
      * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
      */
     get needsSystemUpdate() {
-        return (this.__needsSystemUpdate == undefined) || this.__needsSystemUpdate;
+        return this.alwaysNeedsSystemUpdate || this.__needsSystemUpdate;
     }
 
     set needsSystemUpdate(bool) {
@@ -95,7 +99,7 @@ export class MRSystem {
         this.delta = 0;
 
         // reset update var if needed.
-        if (typeof this.__needsSystemUpdate != 'undefined') {
+        if (!this.alwaysNeedsSystemUpdate) {
             this.__needsSystemUpdate = false;
         }
     }
