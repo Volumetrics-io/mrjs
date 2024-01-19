@@ -98,6 +98,14 @@ export class MRImage extends MRDivEntity {
     }
 
     /**
+     * Since this class overrides the default `get` for the `needsStyleUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
+     */
+    set needsStyleUpdate(bool) {
+        super.needsStyleUpdate = bool;
+    }
+
+    /**
      * @function
      * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
      * based on compStyle and inputted css elements.
