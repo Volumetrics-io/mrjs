@@ -31,6 +31,7 @@ jobs:
     - name: add proper description to top of markdown file
       run: |
         echo '---\ndescription: "An extendable WebComponents library for the Spatial Web"\n---' | cat ../new-src-index.md > temp && mv temp ../new-src-index.md
+        cat ../new-src-index.md
 
     - name: Checkout documentation Repository
       uses: actions/checkout@v4
