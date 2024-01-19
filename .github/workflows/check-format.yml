@@ -35,10 +35,10 @@ jobs:
       run: |
         # check if either need fixes
 
-        npm run prettier-list
+        npm run prettier-check
         exit_code_function_prettier=$?
 
-        npm run lint-list
+        npm run lint-check
         exit_code_function_lint=$?
 
         # check lint first, because it might have changed some prettier items

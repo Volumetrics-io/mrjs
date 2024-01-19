@@ -67,8 +67,6 @@ export default {
                 { from: 'samples/style.css', to: 'style.css' },
                 { from: 'samples/examples', to: 'examples' },
                 { from: 'samples/assets', to: 'assets' },
-                // make the MR.js/samples folder generate in the dist (for future when we have more or want them hot-swappable)
-                { from: 'samples', to: 'samples' },
             ],
         }),
         // new webpack.ProvidePlugin({
