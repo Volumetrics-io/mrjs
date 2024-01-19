@@ -30,7 +30,7 @@ jobs:
 
     - name: add proper description to top of markdown file
       run: |
-        FILE=../new-src-index.md
+        FILE="../new-src-index.md"
         TEXT=''
         echo '---' >> $TEXT
         echo 'description: "An extendable WebComponents library for the Spatial Web"' >> $TEXT
