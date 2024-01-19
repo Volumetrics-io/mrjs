@@ -4,8 +4,8 @@ name: update readme to docs
 on:
   workflow_dispatch:
   push:
-    # branches:
-    #    - main
+    branches:
+       - main
 
 permissions:
   contents: read
