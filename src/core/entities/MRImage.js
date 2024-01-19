@@ -24,8 +24,7 @@ export class MRImage extends MRDivEntity {
         let material = new THREE.MeshStandardMaterial({
             side: 0,
         });
-        let geometry = undefined;
-        this.object3D = new THREE.Mesh(undefined, this.material);
+        this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
