@@ -68,8 +68,14 @@ export class MRImage extends MRDivEntity {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        this.texture = new THREE.TextureLoader().load(this.img.src);
-        this.object3D.material.map = this.texture;
+        mrjsUtils.Material.loadTextureAsync(this.img.src)
+            .then(texture => {
+                this.texture = texture;
+                this.object3D.material.map = texture;
+            })
+            .catch(error => {
+                console.error("Error loading texture:", error);
+            });
     }
 
     /******************* Begin: Style Check and Update *******************/
@@ -80,7 +86,7 @@ export class MRImage extends MRDivEntity {
     // item not as likely to change
     _oldBorderRadii = 0;
 
-    needsUpdate() {
+    needsStyleUpdate() {
         return (this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii);
     }
 
@@ -116,7 +122,15 @@ export class MRImage extends MRDivEntity {
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
-            this.texture = new THREE.TextureLoader().load(this.img.src);
+
+            mrjsUtils.Material.loadTextureAsync(this.img.src)
+                .then(texture => {
+                    this.texture = texture;
+                    this.object3D.material.map = texture;
+                })
+                .catch(error => {
+                    console.error("Error loading texture:", error);
+                });
         }
     }
 
