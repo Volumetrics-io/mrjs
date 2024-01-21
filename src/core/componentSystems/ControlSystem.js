@@ -218,7 +218,7 @@ export class ControlSystem extends MRSystem {
         }
 
         if (this.app.user instanceof THREE.OrthographicCamera) {
-            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
+            this.direction.set((x / global.appWidth) * 2 - 1, -(y / global.appHeight) * 2 + 1, -1); // z = - 1 important!
             this.direction.unproject(this.app.user);
             const direction = new THREE.Vector3(0, 0, -1);
             direction.transformDirection(this.app.user.matrixWorld);
@@ -226,7 +226,7 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.direction };
             this.ray.dir = { ...direction };
         } else {
-            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+            this.direction.set((x / global.appWidth) * 2 - 1, -(y / global.appHeight) * 2 + 1, 0.5);
             this.direction.unproject(this.app.user);
             this.direction.sub(this.app.user.position).normalize();
             this.ray.origin = { ...this.app.user.position };
