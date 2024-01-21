@@ -32,13 +32,18 @@ window.mobileCheck = function () {
  * @augments MRElement
  */
 export class MRApp extends MRElement {
-
+    /**
+     *
+     */
     get appWidth() {
-        return parseFloat(this.compStyle.width.split('px')[0])
+        return parseFloat(this.compStyle.width.split('px')[0]);
     }
 
+    /**
+     *
+     */
     get appHeight() {
-        return parseFloat(this.compStyle.height.split('px')[0])
+        return parseFloat(this.compStyle.height.split('px')[0]);
     }
 
     /**
@@ -224,7 +229,7 @@ export class MRApp extends MRElement {
                 });
 
                 this.ARButton.addEventListener('click', () => {
-                    this.classList.add('inXR')
+                    this.classList.add('inXR');
                     this.ARButton.blur();
                 });
                 document.body.appendChild(this.ARButton);
@@ -252,8 +257,8 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initUser = () => {
-        global.appWidth = this.appWidth
-        global.appHeight = this.appHeight
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
@@ -370,8 +375,8 @@ export class MRApp extends MRElement {
      * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
-        global.appWidth = this.appWidth
-        global.appHeight = this.appHeight
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
         switch (this.cameraOptions.camera) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
@@ -416,7 +421,7 @@ export class MRApp extends MRElement {
                 this.user.quaternion.set(0, 0, 0, 1);
                 mrjsUtils.xr.session = undefined;
                 mrjsUtils.xr.referenceSpace = undefined;
-                this.classList.remove('inXR')
+                this.classList.remove('inXR');
 
                 this.onWindowResize();
                 this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
