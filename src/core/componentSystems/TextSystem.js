@@ -20,7 +20,7 @@ export class TextSystem extends MRSystem {
      * @description TextSystem's default constructor
      */
     constructor() {
-        super(false, 1 / 30);
+        super(false);
 
         this.preloadedFonts = {};
 
@@ -155,7 +155,7 @@ export class TextSystem extends MRSystem {
         this.setColor(textObj, entity.compStyle.color);
 
         textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
-        textObj.maxWidth = entity.width;
+        textObj.maxWidth = entity.width * 1.001;
 
         textObj.position.z = 0.0001;
     };

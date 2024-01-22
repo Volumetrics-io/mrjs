@@ -33,6 +33,20 @@ window.mobileCheck = function () {
  */
 export class MRApp extends MRElement {
     /**
+     *
+     */
+    get appWidth() {
+        return parseFloat(this.compStyle.width.split('px')[0]);
+    }
+
+    /**
+     *
+     */
+    get appHeight() {
+        return parseFloat(this.compStyle.height.split('px')[0]);
+    }
+
+    /**
      * @class
      * @description Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
      */
@@ -73,6 +87,7 @@ export class MRApp extends MRElement {
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
+        this.compStyle = window.getComputedStyle(this);
         this.init();
 
         this.observer = new MutationObserver(this.mutationCallback);
@@ -150,7 +165,7 @@ export class MRApp extends MRElement {
     init() {
         this.debug = this.getAttribute('debug') ?? false;
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(this.appWidth, this.appHeight);
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
         this.renderer.xr.enabled = true;
@@ -204,6 +219,16 @@ export class MRApp extends MRElement {
 
         this.appendChild(this.renderer.domElement);
 
+        // allows embedded mr-app to be independently scrollable
+        if(this.compStyle.overflow == 'scroll') {
+            this.renderer.domElement.addEventListener('wheel', (event) => {
+                // Assuming vertical scrolling
+                this.scrollTop += event.deltaY;
+                // Prevent the default scroll behavior of the front element
+                event.preventDefault();
+            });
+        }
+
         navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
             this.xrsupport = supported;
 
@@ -214,6 +239,7 @@ export class MRApp extends MRElement {
                 });
 
                 this.ARButton.addEventListener('click', () => {
+                    this.classList.add('inXR');
                     this.ARButton.blur();
                 });
                 document.body.appendChild(this.ARButton);
@@ -241,10 +267,12 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initUser = () => {
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
         switch (this.cameraOptions.camera) {
             case 'orthographic':
-                global.viewPortWidth = window.innerWidth / 1000;
-                global.viewPortHeight = window.innerHeight / 1000;
+                global.viewPortWidth = this.appWidth / 1000;
+                global.viewPortHeight = this.appHeight / 1000;
 
                 // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
                 // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
@@ -253,7 +281,7 @@ export class MRApp extends MRElement {
                 break;
             case 'perspective':
             default:
-                this.user = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+                this.user = new THREE.PerspectiveCamera(70, this.appWidth / this.appHeight, 0.01, 20);
                 this.vFOV = THREE.MathUtils.degToRad(this.user.fov);
                 global.viewPortHeight = 2 * Math.tan(this.vFOV / 2);
                 global.viewPortWidth = global.viewPortHeight * this.user.aspect;
@@ -357,10 +385,12 @@ export class MRApp extends MRElement {
      * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
         switch (this.cameraOptions.camera) {
             case 'orthographic':
-                global.viewPortWidth = window.innerWidth / 1000;
-                global.viewPortHeight = window.innerHeight / 1000;
+                global.viewPortWidth = this.appWidth / 1000;
+                global.viewPortHeight = this.appHeight / 1000;
 
                 this.user.left = global.viewPortWidth / -2;
                 this.user.right = global.viewPortWidth / 2;
@@ -369,12 +399,12 @@ export class MRApp extends MRElement {
                 break;
             case 'perspective':
             default:
-                this.user.aspect = window.innerWidth / window.innerHeight;
+                this.user.aspect = this.appWidth / this.appHeight;
                 global.viewPortWidth = global.viewPortHeight * this.user.aspect;
                 break;
         }
         this.user.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(this.appWidth, this.appHeight);
     }
 
     /**
@@ -401,6 +431,7 @@ export class MRApp extends MRElement {
                 this.user.quaternion.set(0, 0, 0, 1);
                 mrjsUtils.xr.session = undefined;
                 mrjsUtils.xr.referenceSpace = undefined;
+                this.classList.remove('inXR');
 
                 this.onWindowResize();
                 this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));

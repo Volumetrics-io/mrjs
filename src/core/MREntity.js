@@ -73,7 +73,7 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved width
      */
     get width() {
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        return (this.compStyle.width.split('px')[0] / global.appWidth) * global.viewPortWidth;
     }
 
     /**
@@ -92,8 +92,8 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
-        return (styleHeight / window.innerHeight) * global.viewPortHeight;
+        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
+        return (styleHeight / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -241,6 +241,10 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('child-updated', (event) => {
+            this.needsStyleUpdate = true;
+        });
+
+        this.addEventListener('enterXR', (event) => {
             this.needsStyleUpdate = true;
         });
 
