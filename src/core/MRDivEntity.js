@@ -163,13 +163,24 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements.
+     *
      */
     updateStyle() {
+        super.updateStyle();
+
+        // all div entities needs these steps
         this.setBorder();
         this.setBackground();
+    }
+
+    /**
+     * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     }
 
     /**
@@ -177,8 +188,7 @@ export class MRDivEntity extends MREntity {
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
     /**

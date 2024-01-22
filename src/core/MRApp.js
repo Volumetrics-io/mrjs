@@ -413,7 +413,7 @@ export class MRApp extends MRElement {
             this.stats.begin();
         }
         for (const system of this.systems) {
-            system.__update(deltaTime, frame);
+            system._update(deltaTime, frame);
         }
         if (this.debug) {
             this.stats.end();
