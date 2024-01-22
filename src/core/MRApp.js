@@ -222,7 +222,7 @@ export class MRApp extends MRElement {
         this.appendChild(this.renderer.domElement);
 
         // allows embedded mr-app to be independently scrollable
-        if(this.compStyle.overflow == 'scroll') {
+        if (this.compStyle.overflow == 'scroll') {
             this.renderer.domElement.addEventListener('wheel', (event) => {
                 // Assuming vertical scrolling
                 this.scrollTop += event.deltaY;
