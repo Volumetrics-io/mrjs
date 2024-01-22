@@ -94,12 +94,9 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     _update(deltaTime, frame) {
-        console.log('inside MRSystem update function');
         if (!this.needsSystemUpdate) {
-            console.log('not updating');
             return;
         }
-        console.log('updating');
 
         if (this.frameRate) {
             this.delta += deltaTime;
@@ -112,7 +109,6 @@ export class MRSystem {
 
         // reset update var if needed.
         if (!this.alwaysNeedsSystemUpdate) {
-            console.log('choosing to toggle off this update');
             this.needsSystemUpdate = false;
         }
     }
