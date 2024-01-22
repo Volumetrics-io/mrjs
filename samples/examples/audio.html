@@ -12,7 +12,7 @@
 
 
 <mr-app >
-    <mr-panel class="layout">
+    <mr-panel class="layout" data-comp-anchor="type: fixed;">
 
         <mr-div id="navbar">
             <mr-a href="https://mrjs.io" class="mrjs">
@@ -119,6 +119,7 @@
     <mr-entity 
         id="rain-entity" 
         data-position="0 5 0"
+        data-comp-anchor="type: plane; label: ceiling;"
         data-comp-audio="src: /assets/audio/rain-loop.wav; loop: true;"></mr-entity>
     <mr-entity 
         id="thunder-entity" 
@@ -148,9 +149,23 @@
 
         function thunder() {
             // set thunder entity to random position within 5m
-            thunderEntity.setAttribute('data-position', `${Math.floor(Math.random() * 50) + 10} 1 ${Math.floor(Math.random() * 50) + 10}`)
+            thunderEntity.setAttribute('data-position', `${getRandomWholeNumber(-20, 20)} 1 ${getRandomWholeNumber(-20, 20)}`)
             thunderEntity.components.set('audio', {state: 'play'})
-            console.log(thunderEntity.object3D.position);
+        }
+
+        function getRandomWholeNumber(min, max) {
+            // Ensure that min is less than max
+            if (min > max) {
+                [min, max] = [max, min];
+            }
+
+            // Calculate the range
+            let range = max - min + 1; // +1 to make max inclusive
+
+            // Generate a random whole number within the range
+            let randomWholeNumber = Math.floor(Math.random() * range) + min;
+
+            return randomWholeNumber;
         }
 
       

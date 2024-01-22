@@ -307,9 +307,6 @@ export class MRApp extends MRElement {
         this.anchor.position.setZ(-0.5);
 
         // Audio listner needed for spatial audio
-
-        this.listener = new THREE.AudioListener();
-        this.user.add( this.listener );
     };
 
     /**

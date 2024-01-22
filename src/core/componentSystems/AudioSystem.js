@@ -4,8 +4,17 @@ export class AudioSystem extends MRSystem {
     constructor(){
         super()
 
+        this.listener = new THREE.AudioListener();
+        // this.listener.matrixAutoUpdate = false;
+        this.app.scene.add( this.listener );
+
         this.audioLoader = new THREE.AudioLoader()
 
+    }
+
+    update(dt, frame) {
+        this.listener.position.setFromMatrixPosition(this.app.userOrigin.matrixWorld)
+        this.listener.setRotationFromMatrix(this.app.userOrigin.matrixWorld)
     }
 
 
@@ -14,7 +23,9 @@ export class AudioSystem extends MRSystem {
      * @param entity
      */
     attachedComponent(entity) {
-        entity.sound = new THREE.PositionalAudio( this.app.listener );
+        entity.sound = new THREE.PositionalAudio( this.listener );
+
+        entity.object3D.add(entity.sound)
 
         let comp = entity.components.get('audio')
 
@@ -53,6 +64,9 @@ export class AudioSystem extends MRSystem {
     setAudioState(entity, state){
         switch (state) {
             case 'play':
+                if(entity.sound.isPlaying) {
+                    entity.sound.stop()
+                }
                 entity.sound.play()
                 break;
             case 'pause':
