@@ -2,105 +2,411 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>mr.js</title>
-    <meta name="description" content="mr.js">
-    <script src="./mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <title>mr.js - anchors</title>
+    <meta name="description" content="mr.js example - anchors">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="anchor.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
    <mr-app>
-      <mr-panel class="layout">
+    <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
-          <mr-a href="https://volumetrics.io" class="company">
-            volumetrics
-          </mr-a>
-          <mr-div class="logo">
+        <mr-a href="https://mrjs.io" class="mrjs">
+            mrjs
+        </mr-a>
+        <mr-div class="logo">
             <mr-model
-              id="logo-model"  
-              src="./assets/models/logo.stl" 
-              data-comp-instancing="type: animate;"
-              data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
-              data-rotation="-22.91 17.1887 45.8366">
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
             </mr-model>
-          </mr-div>
-          <mr-button onclick="spin()" class="spin-button">
-            spin
-          </mr-button>
+        </mr-div>
+        <mr-a href="https://volumetrics.io" class="company">
+            volumetrics
+        </mr-a>
         </mr-div>
 
-        <mr-text class="title" >
-          mr.js
+        <mr-text class="col-2 title" >
+        Anchors
+        </mr-text>
+        
+        <mr-text class="col-2">
+        Anchors enhance your spatial app by taking advantage of the real world environment.
+        </mr-text>
+        <mr-text class="col-2">
+        They can be used for table top games, turning any room into a virtual gallery, or ripping open the ceiling to get a view of another world
         </mr-text>
 
-        
-        <mr-div class="headset">
-          <mr-img src="./assets/textures/headset-keyboard.jpeg"></mr-img>
-          <mr-text class="sub-title">
-            Building for Mixed Reality, in Mixed Reality.
-          </mr-text>
-          <mr-text class="example-link">
-            <mr-a href="https://mrjs.io/examples/anchors.html">
-              Example 0: Anchoring
-            </mr-a>
-          </mr-text>
+        <mr-text class="subtitle col-2">
+            Examples
+        </mr-text>
+
+        <mr-div class="col-2">
+
+            <mr-button onclick="floating()" class=" label button" >
+                floating
+            </mr-button>
+
+            <mr-button onclick="fixed()" class=" label button" >
+                fixed
+            </mr-button>
+
+            <mr-button onclick="floor()" class=" label button" >
+                floor
+            </mr-button>
+
+            <mr-button onclick="table()" class=" label button" >
+                table
+            </mr-button>
+
+            <mr-button onclick="ceiling()" class=" label button" >
+                ceiling
+            </mr-button>
+
+            <mr-button onclick="wall()" class=" label button" >
+                wall
+            </mr-button>
+
+            <mr-button onclick="reset()" class=" label button" >
+                reset
+            </mr-button>
+            
         </mr-div>
-      <mr-text class="paragraph">
-        Ex veniam sunt laboris magna commodo minim eiusmod consequat dolore velit ipsum dolore. Sit nisi id tempor occaecat aute commodo nulla fugiat eu ex sit anim duis. Non eiusmod dolore exercitation adipisicing laboris elit commodo enim proident et.
-
-        Eiusmod tempor veniam et nulla eiusmod ex aute excepteur enim. Velit voluptate proident fugiat aute ea. Qui proident ad consequat enim anim nulla. Est aliquip sint nostrud elit pariatur ipsum dolor magna est eiusmod Lorem pariatur labore. Adipisicing commodo occaecat ea ut nulla magna irure officia nostrud aliqua officia culpa ex pariatur. Aliquip consequat ad proident elit laboris et aliqua nisi est amet tempor. Dolor esse labore laboris reprehenderit id sit.
-
-        Anim ipsum sit dolore id excepteur ex aliqua aute culpa duis adipisicing. Anim magna minim do nisi anim amet pariatur. Nulla ad ullamco labore culpa quis. Incididunt pariatur laboris do duis irure.
-
-        Pariatur excepteur et proident nisi. Id exercitation qui pariatur aliquip eiusmod. Nulla pariatur ad excepteur aliqua dolore sint laboris sit laborum adipisicing voluptate.
-
-        Sit aliqua eu ullamco culpa labore nostrud sit. Ullamco sit cillum excepteur officia irure laboris occaecat. Esse anim ut voluptate excepteur excepteur nostrud laboris.
-
-        Voluptate amet exercitation in consequat adipisicing eu in ea nulla eu occaecat excepteur ea irure. Nisi enim mollit do proident ex. In exercitation nostrud anim ad nulla dolor aute Lorem ipsum nostrud adipisicing pariatur. Deserunt deserunt amet anim cillum. Ex nostrud eu aute eu amet dolor. Ex aute in quis qui irure ut pariatur nisi in. Proident id fugiat anim excepteur cupidatat duis cupidatat adipisicing reprehenderit.
-
-                        Sint eiusmod laboris eu voluptate ullamco ea fugiat exercitation id ad magna commodo. Irure proident et qui ullamco aliquip aute dolor nostrud laborum excepteur sint aute ea. Sit consectetur qui Lorem esse magna voluptate irure aliqua nostrud adipisicing eu irure cupidatat sunt. Officia dolore sint laboris Lorem enim labore mollit reprehenderit laboris amet. Aute eiusmod fugiat labore veniam cupidatat dolor ipsum.
-
-        Sit aliquip excepteur laboris ullamco minim sint sit dolor cupidatat culpa consequat quis sit tempor. Culpa voluptate eiusmod et eiusmod. Lorem deserunt ullamco laborum ut. Cillum aute dolore mollit sint amet. Qui ea deserunt consectetur eiusmod. Ullamco qui irure nostrud ea est do. Pariatur laboris labore in irure ea voluptate quis.
-
-        Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
+        <mr-text class="col-2 subtitle" >
+        data-comp-anchor
         </mr-text>
-        
-      </mr-panel>
 
-    <mr-entity data-comp-anchor="type: plane; label: ceiling; occlusion: false;">
-      <mr-skybox src="./assets/textures/skybox_starmap_4k.jpg"
-      data-position="0 -200 0"
-      data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-      </mr-skybox>
+        <mr-text class="col-2">
+        Anchoring is achieved using the anchoring component, data-comp-anchor, it has 4 attributes:
+        </mr-text>
 
+        <mr-text class="label col-2">
+        type
+        </mr-text>
+
+        <mr-text class="col-2">
+        There are currently three types of anchors:
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        fixed
+        </mr-text>
+
+        <mr-text class="col-2">
+         positions the anchored element directly in front of the user whenever an XR sessions is started.
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        floating
+        </mr-text>
+
+        <mr-text class="col-2">
+            allows the user to place the anchored element where they choose using a look/pinch gesture. The user can place it floating in their space or on the scene mesh
+        </mr-text>
+
+        <mr-text class="label-2 col-2">
+        plane
+        </mr-text>
+
+        <mr-text class="col-2">
+            anchors the element to the nearest plane that matches the specified label or orientation.
+        </mr-text>
+        <mr-text class="col-2">
+            if no label or orientation is specified, the element will be anchored to the nearest plane.
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Plane anchor attributes
+        </mr-text>
+
+        <mr-text class="col-2">
+            These attributes are only relevant to plane anchors
+        </mr-text>
+
+        <mr-text class="label col-2">
+        orientation
+        </mr-text>
+
+        <mr-text class="col-2">
+        This attribute is useful when you wish to anchor to a plane of any given orientation, regardless of label.
+        </mr-text>
+
+        <mr-text class="col-2">
+        supported values: horizontal, vertical
+        </mr-text>
+
+        <mr-text class="label col-2">
+        label (optional)
+        </mr-text>
+
+        <mr-text class="col-2">
+        Use this to target a specific type of plane, such as a table or wall.
+        </mr-text>
+
+        <mr-text class="col-2">
+        supported values: wall, floor, ceiling, table
+        </mr-text>
+
+        <mr-text class="label col-2">
+        occlusion
+        </mr-text>
+
+        <mr-text class="col-2">
+        by default, planes occlude virtual content behind them, use this flag disable occlusion.
+        </mr-text>
+
+        <mr-text class="col-2">
+        values: true (default), false
+        </mr-text>
+      
+    </mr-panel>
+
+    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
+        data-position="0 -200 0"
+        data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
+        </mr-skybox>
+
+    <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
+        <mr-model
+            data-rotation="0 180 0"  
+            data-position="0 0.3 0"                        
+            src="/assets/models/island3.glb" 
+            style="scale: 0.1">
+            </mr-model>
     </mr-entity>
-    
-      <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
-                 data-position="0 0 2">
-        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
-        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
-        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
+
+    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
+       <mr-water 
+        data-rotation="-90 0 0"             
+        data-position="0 0.5 0"            
+        id="water"></mr-water> 
+        <mr-entity
+        data-rotation="-90 00 0"                        
+        data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
+            <mr-model
+            data-rotation="90 180 0"                        
+            data-position="0 0.5 0.3"             
+            src="/assets/models/animation_koifish.glb" 
+            style="scale: 0.05">
+            </mr-model>
+        </mr-entity>
+    </mr-entity>
+
+    <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
+    </mr-entity>
+
+    <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
+        <mr-entity
+        data-rotation="-110 0 0"                        
+        data-position="0 -100 -800"  
+        data-comp-animation="type: rotate; maxspeed: -0.001; acceleration: 0.000008;">
+            <mr-model
+            data-rotation="90 0 0"             
+            src="/assets/models/Mars.glb" 
+            style="scale: 1">
+            </mr-model>
+        </mr-entity>
       </mr-entity>
         
     </mr-app>
   </body>
 
   <footer>
-    <script src="./assets/js/AnimationSystem.js"></script>
+    <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
-      let model = document.querySelector('#logo-model')
+        class Water extends MREntity {
+            
+            vertexShader = `
+            varying vec2 vUv;
+            varying float vWave;
+            uniform float u_time;
 
-      console.log(mrjsUtils.xr.isPresenting);
+            void main() {
+                vUv = uv;
+                vec3 pos = position;
+                float waveHeight = 0.01;
+                float waveSpeed = 2.0;
+                float waveSpeed2 = 3.0;
+                float waveFrequency = 0.2;
+                float waveFrequency2 = 1.0;
+                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
+                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
+                pos.z += wave;
+                vWave = wave;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+            }
+            `;
+
+            fragmentShader = `
+            varying vec2 vUv;
+            varying float vWave;
+            uniform float u_time;
+
+            void main() {
+                // vec3 waterColor = vec3(0.0, 0.55, 0.5);
+                // float alpha = 0.5;
+
+                // // Froth effect at the crest of waves
+                // float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
+                // vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
+
+                // // Blend water color with froth color based on wave height
+                // vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
+
+                // gl_FragColor = vec4(finalColor, alpha);
+
+                //------
+
+                // Found this on GLSL sandbox. I really liked it, changed a few things and made it tileable.
+                // :)
+                // by David Hoskins.
+                // Original water turbulence effect by joltz0r
 
 
-      // increases the maxspeed and acceleration of the animation component on the logo
-      function spin() {
-        console.log(document.querySelector('.spin-button').textObj);
-        let animationComp = model.components.get('animation')
-        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-      }
+                // Redefine below to see the tiling...
+                //#define SHOW_TILING
 
+                #define TAU 6.28318530718
+                #define MAX_ITER 5
+
+                void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
+                {
+                    float time = u_Time * .5+23.0;
+                    // uv should be the 0-1 uv of texture...
+                    vec2 uv = fragCoord.xy / iResolution.xy;
+                    
+                #ifdef SHOW_TILING
+                    vec2 p = mod(uv*TAU*2.0, TAU)-250.0;
+                #else
+                    vec2 p = mod(uv*TAU, TAU)-250.0;
+                #endif
+                    vec2 i = vec2(p);
+                    float c = 1.0;
+                    float inten = .005;
+
+                    for (int n = 0; n < MAX_ITER; n++) 
+                    {
+                        float t = time * (1.0 - (3.5 / float(n+1)));
+                        i = p + vec2(cos(t - i.x) + sin(t + i.y), sin(t - i.y) + cos(t + i.x));
+                        c += 1.0/length(vec2(p.x / (sin(i.x+t)/inten),p.y / (cos(i.y+t)/inten)));
+                    }
+                    c /= float(MAX_ITER);
+                    c = 1.17-pow(c, 1.4);
+                    vec3 colour = vec3(pow(abs(c), 8.0));
+                    colour = clamp(colour + vec3(0.0, 0.35, 0.5), 0.0, 1.0);
+
+                    #ifdef SHOW_TILING
+                    // Flash tile borders...
+                    vec2 pixel = 2.0 / iResolution.xy;
+                    uv *= 2.0;
+                    float f = floor(mod(u_Time*.5, 2.0));    // Flash value.
+                    vec2 first = step(pixel, uv) * f;           // Rule out first screen pixels and flash.
+                    uv  = step(fract(uv), pixel);               // Add one line of pixels per tile.
+                    colour = mix(colour, vec3(1.0, 1.0, 0.0), (uv.x + uv.y) * first.x * first.y); // Yellow line
+                    #endif
+                    
+                    fragColor = vec4(colour, 1.0);
+                }
+            }
+            `;
+
+            constructor() {
+                super()
+
+                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+
+                let material = new THREE.ShaderMaterial({
+                    uniforms: {
+                        u_time: { value: 0.0 }
+                    },
+                    vertexShader: this.vertexShader,
+                    fragmentShader: this.fragmentShader,
+                    transparent: true
+                });
+
+                this.water = new THREE.Mesh(geomertry, material)
+                this.object3D.add(this.water)
+
+            }
+        }
+
+        class WaterSystem extends MRSystem {
+            constructor(){
+                super(false)
+                this.water = document.getElementById('water')
+
+                if(this.water) {
+                    this.registry.add(this.water)
+                }
+
+            }
+
+            update(deltaTime, frame) {
+                this.water.water.material.uniforms.u_time.value += deltaTime
+            }
+        }
+
+        let ws = new WaterSystem()
+
+        customElements.get('mr-water') || customElements.define('mr-water', Water);
+
+
+        // let floatingAnchor = document.getElementById('floating')
+        let wallAnchor = document.getElementById('wall')
+        let tableAnchor = document.getElementById('table')
+        let floorAnchor = document.getElementById('floor')
+        let ceilingAnchor = document.getElementById('ceiling')
+
+        let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
+
+        for (const entity of allAnchors) {
+            entity.object3D.visible = false
+        }
+
+        let panel = document.getElementById('panel')
+
+        function floating() {
+            panel.components.set('anchor', {type: 'floating'})
+        }
+
+        function fixed() {
+            panel.components.set('anchor', {type: 'fixed'})
+        }
+
+        function wall() {
+            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
+            wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
+        }
+
+        function table() {
+            tableAnchor.object3D.visible = !tableAnchor.object3D.visible
+        }
+
+        function floor() {
+            floorAnchor.object3D.visible = !floorAnchor.object3D.visible
+
+        }
+
+        function ceiling() {
+            ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
+            ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
+
+        }
+
+        function reset() {
+            for (const entity of allAnchors) {
+                entity.components.set('anchor', {occlusion: true})
+                entity.object3D.visible = false
+            }
+        }
+
+        document.addEventListener('exitXR', () => {
+            reset()
+        })
       
     </script>
   </footer>
