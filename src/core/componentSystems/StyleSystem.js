@@ -42,8 +42,6 @@ export class StyleSystem extends MRSystem {
                 entity.needsStyleUpdate = false;
             }
         }
-
-        this.needsSystemUpdate = false;
     }
 
     /**
@@ -53,6 +51,5 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
-        this.needsSystemUpdate = true;
     }
 }
