@@ -20,17 +20,18 @@ export class TextSystem extends MRSystem {
      * @description TextSystem's default constructor
      */
     constructor() {
-        super(false, 1 / 30);
+        super(false);
 
         this.preloadedFonts = {};
 
-        this.textUpdateNeeded = true;
+        // want this system to run based on the true/false trigger
+        this.needsSystemUpdate = true;
 
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
 
         document.addEventListener('panel-mutated', (event) => {
-            this.textUpdateNeeded = true;
+            this.needsSystemUpdate = true;
         });
 
         styleSheets.forEach((styleSheet) => {
@@ -47,7 +48,7 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
-                        this.textUpdateNeeded = true;
+                        this.needsSystemUpdate = true;
                     }
                 );
             });
@@ -65,13 +66,32 @@ export class TextSystem extends MRSystem {
 
     /**
      * @function
+     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
+     * systems registry that need to be run AND the default systemUpdateCheck is true
+     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsSystemUpdate() {
+        return this.registry.size > 0 && super.needsSystemUpdate;
+    }
+
+    /**
+     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     */
+    set needsSystemUpdate(bool) {
+        super.needsSystemUpdate = bool;
+    }
+
+    /**
+     * @function
      * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.textUpdateNeeded) {
+            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
                 continue;
             }
             let text;
@@ -108,7 +128,7 @@ export class TextSystem extends MRSystem {
                 entity.textObj.position.setY(entity.height / 2);
             });
         }
-        this.textUpdateNeeded = false;
+        this.needsSystemUpdate = false;
     }
 
     /**
@@ -135,7 +155,7 @@ export class TextSystem extends MRSystem {
         this.setColor(textObj, entity.compStyle.color);
 
         textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
-        textObj.maxWidth = entity.width;
+        textObj.maxWidth = entity.width * 1.001;
 
         textObj.position.z = 0.0001;
     };

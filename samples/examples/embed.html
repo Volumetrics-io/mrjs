@@ -2,50 +2,29 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>mr.js</title>
-    <meta name="description" content="mr.js">
-    <script src="./mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <title>mrjs - embed</title>
+    <meta name="description" content="mr.js example - embed">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="embed.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
-      <mr-panel class="layout">
-        <mr-div id="navbar">
-          <mr-a href="https://volumetrics.io" class="company">
-            volumetrics
-          </mr-a>
-          <mr-div class="logo">
-            <mr-model
-              id="logo-model"  
-              src="./assets/models/logo.stl" 
-              data-comp-instancing="type: animate;"
-              data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
-              data-rotation="-22.91 17.1887 45.8366">
-            </mr-model>
-          </mr-div>
-          <mr-button onclick="spin()" class="spin-button">
-            spin
-          </mr-button>
-        </mr-div>
+    <div class="dev-container">
 
-        <mr-text class="title" >
-          mr.js
+      <div class="left-side"><div>Some plane old html</div></div>
+
+   <mr-app class="col-2" >
+      <mr-panel data-comp-anchor="type:fixed;" class="layout">
+
+        <mr-text class="col-2 title" >
+            hello world!
         </mr-text>
 
         
-        <mr-div class="headset">
-          <mr-img src="./assets/textures/headset-keyboard.jpeg"></mr-img>
-          <mr-text class="sub-title">
+          <mr-text class="col-2 subtitle">
             Building for Mixed Reality, in Mixed Reality.
           </mr-text>
-          <mr-text class="example-link">
-            <mr-a href="https://mrjs.io/examples/anchors.html">
-              Example 0: Anchoring
-            </mr-a>
-          </mr-text>
-        </mr-div>
-      <mr-text class="paragraph">
+        <mr-text class="col-2 paragraph">
         Ex veniam sunt laboris magna commodo minim eiusmod consequat dolore velit ipsum dolore. Sit nisi id tempor occaecat aute commodo nulla fugiat eu ex sit anim duis. Non eiusmod dolore exercitation adipisicing laboris elit commodo enim proident et.
 
         Eiusmod tempor veniam et nulla eiusmod ex aute excepteur enim. Velit voluptate proident fugiat aute ea. Qui proident ad consequat enim anim nulla. Est aliquip sint nostrud elit pariatur ipsum dolor magna est eiusmod Lorem pariatur labore. Adipisicing commodo occaecat ea ut nulla magna irure officia nostrud aliqua officia culpa ex pariatur. Aliquip consequat ad proident elit laboris et aliqua nisi est amet tempor. Dolor esse labore laboris reprehenderit id sit.
@@ -68,30 +47,18 @@
       </mr-panel>
 
     <mr-entity data-comp-anchor="type: plane; label: ceiling; occlusion: false;">
-      <mr-skybox src="./assets/textures/skybox_starmap_4k.jpg"
-      data-position="0 -200 0"
-      data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-      </mr-skybox>
 
     </mr-entity>
-    
-      <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
-                 data-position="0 0 2">
-        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
-        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
-        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
-      </mr-entity>
         
     </mr-app>
+</div>
+
   </body>
 
   <footer>
-    <script src="./assets/js/AnimationSystem.js"></script>
     <script>
 
       let model = document.querySelector('#logo-model')
-
-      console.log(mrjsUtils.xr.isPresenting);
 
 
       // increases the maxspeed and acceleration of the animation component on the logo

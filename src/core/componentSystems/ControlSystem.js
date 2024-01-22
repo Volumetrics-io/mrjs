@@ -22,6 +22,7 @@ export class ControlSystem extends MRSystem {
         this.activeHand = this.leftHand;
 
         document.addEventListener('selectstart', (event) => {
+            if(event.detail == null) { return }
             if (event.detail?.handedness == 'left') {
                 this.activeHand = this.leftHand;
             } else {
@@ -35,6 +36,7 @@ export class ControlSystem extends MRSystem {
         });
 
         document.addEventListener('selectend', (event) => {
+            if(event.detail.handedness == null) { return }
             this.removeCursor();
             this.down = false;
             this.cursor = this.cursorHover;
@@ -77,21 +79,9 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
 
-        this.app.renderer.domElement.addEventListener('touch-start', this.onMouseDown);
-        this.app.renderer.domElement.addEventListener('touch-end', this.onMouseUp);
-        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
-    }
-
-    /**
-     * @function
-     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
-     * any items in the system's registry. Allows subclasses to override with their own implementation.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
-     */
-    needsUpdate(deltaTime, frame) {
-        return true;
+        this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
+        this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
+        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
     }
 
     /**
@@ -162,12 +152,9 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.down = true;
         this.cursor = this.cursorClick;
-        this.hit = this.pixelRayCast(event);
 
-        if (this.hit != null) {
-            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
-        }
+        this.cursor.setTranslation({ ...this.hitPosition }, true);
+
     };
 
     /**
@@ -180,13 +167,8 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.down = false;
         this.cursor = this.cursorHover;
-
-        this.hit = this.pixelRayCast(event);
-
-        if (this.hit != null) {
-            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
-        }
+        
+        this.cursor.setTranslation({ ...this.hitPosition }, true);
     };
 
     /**
@@ -194,8 +176,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the removeCursor callback.
      */
     removeCursor = () => {
-        this.cursorHover.setTranslation({ ...this.restPosition }, true);
-        this.cursorClick.setTranslation({ ...this.restPosition }, true);
+        this.cursor.setTranslation({ ...this.restPosition }, true);
     };
 
     /************ Tools && Helpers ************/
@@ -210,6 +191,9 @@ export class ControlSystem extends MRSystem {
         let x = 0;
         let y = 0;
         if (event.type.includes('touch')) {
+
+            if (event.touches.length == 0) { return }
+
             x = event.touches[0].clientX;
             y = event.touches[0].clientY;
         } else {

@@ -65,8 +65,6 @@ export class MREntity extends MRElement {
         this.touch = false;
         this.grabbed = false;
         this.focus = false;
-
-        this.needsStyleUpdate = true;
     }
 
     /**
@@ -75,7 +73,7 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved width
      */
     get width() {
-        return (this.compStyle.width.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+        return (this.compStyle.width.split('px')[0] / global.appWidth) * global.viewPortWidth;
     }
 
     /**
@@ -94,8 +92,8 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : window.innerHeight;
-        return (styleHeight / window.innerHeight) * global.viewPortHeight;
+        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
+        return (styleHeight / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -107,6 +105,47 @@ export class MREntity extends MRElement {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
         return this.size.y;
     }
+
+    // undefined == always update, once set to true/false trigger, then updates based on that every frame
+    // setting back to undefined sets to always update.
+    _needsStyleUpdate = undefined;
+
+    /**
+     * @function
+     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
+     * Useful for readability and to not need to check against undefined often.
+     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
+     */
+    get alwaysNeedsStyleUpdate() {
+        return this._needsStyleUpdate === undefined;
+    }
+
+    /**
+     * @function
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
+     * Allows subclasses to override with their own implementation.
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsStyleUpdate() {
+        return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
+    }
+
+    /**
+     * @function
+     * @description Set the needsStyleUpdate parameter.
+     * undefined - means the StyleSystem will update this entity's style every time the application loops.
+     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
+     */
+    set needsStyleUpdate(bool) {
+        this._needsStyleUpdate = bool;
+    }
+
+    /**
+     * @function
+     * @description
+     */
+    updateStyle() {}
 
     /**
      * @function
@@ -202,6 +241,10 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('child-updated', (event) => {
+            this.needsStyleUpdate = true;
+        });
+
+        this.addEventListener('enterXR', (event) => {
             this.needsStyleUpdate = true;
         });
 

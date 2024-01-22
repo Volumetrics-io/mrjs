@@ -2,11 +2,11 @@
 
 [![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
 
-An extendable WebComponents library for the Spatial Web
+An extensible WebComponents library for the Spatial Web
  
 ## Overview
  
-mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatail web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
  
 ## Getting started
  
@@ -36,11 +36,11 @@ in headset testing:
 npm run server
 ```
 
-documentation:
+Documentation:
 
-check [docs.mrjs.io](https://docs.mrjs.io) for the full documentation or our [repo](https://github.com/Volumetrics-io/documentation).
+Check [docs.mrjs.io](https://docs.mrjs.io) for the full documentation or our [repo](https://github.com/Volumetrics-io/documentation).
 
-For local documentation or to check the local output when writing your own pr to see how it will update, run the below command. As a heads up, order of creation of docs depends on your operating system, so if when you run this the order looks different, no worries - in the repo itself our action will handle that for you and default to use the right version for these automatically generated docs.
+For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads up, order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repo itself our action will handle that for you and default to use the right version for these automatically generated docs.
 
 ```sh
 npm run docs
@@ -113,7 +113,7 @@ mr-img {
 
 ## Built-in Physics Engine
 
-Rapier.js is fully integrated out of the box. We use it to power collision based hand-interactions, but ot also support other common features such as:
+Rapier.js is fully integrated out of the box. We use it to power collision based hand-interactions, but also to support other common features such as:
 
 - Gravity
 - Rag doll physics
@@ -122,9 +122,9 @@ Rapier.js is fully integrated out of the box. We use it to power collision based
 - Complex collision shapes
 - Kinematics
 
-## Extendable
+## Extensible
 
-Designed to be extendable, mrjs provides a familiar interface via THREE.js & the Custom Elements API, and leveled up with a built in ECS.
+Designed to be extensible, mrjs provides a familiar interface via THREE.js and the Custom Elements API, and leveled up with a built in ECS.
 
 ### ECS
 
@@ -132,9 +132,9 @@ mrjs is designed from the ground up using the Entity-Component-System Architectu
 
 #### Entity
 
-an Entity is an object. It stores only the most fundamental data, such as a unique identifier, a THREE.js Object3D, a physics body, and dimension data such as width and scale.
+An Entity is an object. It stores only the most fundamental data, such as a unique identifier, a THREE.js Object3D, a physics body, and dimension data such as width and scale.
 
-Any `mr-*` tag within the `mr-app` is an Entity. `mr-entity` is the spatail equivalent of a `div`.
+Any `mr-*` tag within the `mr-app` is an Entity. `mr-entity` is the spatial equivalent of a `div`.
 
 Creating a custom Entity is as simple as creating a Custom Element via the WebComponents API.
 
@@ -157,9 +157,9 @@ customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Sp
 
 #### Systems
 
-A System contains logic that is applied all entities that have a corresponding Component, using the data stored by the component. unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JS.
+A System contains logic that is applied to all entities that have a corresponding Component, using the data stored by the component. Unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JS.
 
-When a component is attached or detatched from an entity, it is added or removed from it's System's registry of entities
+When a component is attached or detatched from an entity, it is added or removed from its System's registry of entities.
 
 Example:
 
@@ -176,30 +176,30 @@ class OrbitSystem extends System{
             let component = entity.components.get('orbit')
             component.radius
             component.target
-            ...
+            //...
             entity.component.set('orbit', { speed : 1 })
         }
     }
 
     // Called when an orbit component is attached
     attachedComponent(entity) {
-        ...
+        //...
     }
 
 
     // do something when an orbit component is updated
     updatedComponent(entity, oldData) {
-        ...
+        //...
     }
 
     // do something when an orbit component is detatched
     detachedComponent(entity) {
-        ...
+        //...
     }
 }
 ```
 
-When you define custom system, it listens for events triggered when the Systems corresponding component is attached, updated, or detatched. in the above case, `data-comp-orbit`.
+When you define a custom system, it listens for events triggered when the System's corresponding component is attached, updated, or detatched. in the above case, `data-comp-orbit`.
 
 #### Components
 

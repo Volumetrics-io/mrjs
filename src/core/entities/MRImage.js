@@ -24,8 +24,7 @@ export class MRImage extends MRDivEntity {
         let material = new THREE.MeshStandardMaterial({
             side: 0,
         });
-        let geometry = undefined;
-        this.object3D = new THREE.Mesh(undefined, this.material);
+        this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
@@ -53,15 +52,6 @@ export class MRImage extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the border radius of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-    }
-
-    /**
-     * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
@@ -78,24 +68,65 @@ export class MRImage extends MRDivEntity {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        this.texture = new THREE.TextureLoader().load(this.img.src);
-        this.object3D.material.map = this.texture;
+        mrjsUtils.Material.loadTextureAsync(this.img.src)
+            .then((texture) => {
+                this.texture = texture;
+                this.object3D.material.map = texture;
+            })
+            .catch((error) => {
+                console.error('Error loading texture:', error);
+            });
+    }
+
+    /******************* Begin: Style Check and Update *******************/
+
+    // items most likely to change
+    _oldWidth = 0;
+    _oldHeight = 0;
+    // item not as likely to change
+    _oldBorderRadii = 0;
+
+    /**
+     * @function
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * This returns true if the width/height/borderradii of the image has changed or if the default implementation for the style update check returns true.
+     * (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsStyleUpdate() {
+        return super.needsStyleUpdate || this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii;
+    }
+
+    /**
+     * Since this class overrides the default `get` for the `needsStyleUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
+     */
+    set needsStyleUpdate(bool) {
+        super.needsStyleUpdate = bool;
     }
 
     /**
      * @function
-     * @description Updates the style for the Image's border and background based on compStyle and inputted css elements.
+     * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
+     * based on compStyle and inputted css elements.
      */
     updateStyle() {
-        super.updateStyle();
         this.computeObjectFitDimensions();
 
-        // make sure to dispose before new geometry created
+        // geometry will only update if width, height, or borderRadii have changed
         if (this.object3D.geometry != undefined) {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+
+        // update for next iteration - already guaranteed one of these needs update
+        // given the needsUpdate function
+        this._oldWidth = this.width;
+        this._oldHeight = this.height;
+        this._oldBorderRadii = this.borderRadii;
     }
+
+    /******************* End: Style Check and Update *******************/
 
     /**
      * @function
@@ -107,7 +138,15 @@ export class MRImage extends MRDivEntity {
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
-            this.texture = new THREE.TextureLoader().load(this.img.src);
+
+            mrjsUtils.Material.loadTextureAsync(this.img.src)
+                .then((texture) => {
+                    this.texture = texture;
+                    this.object3D.material.map = texture;
+                })
+                .catch((error) => {
+                    console.error('Error loading texture:', error);
+                });
         }
     }
 

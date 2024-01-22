@@ -56,7 +56,7 @@ export class MRDivEntity extends MREntity {
             this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
             return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
         }
-        return (rect.height / window.innerHeight) * global.viewPortHeight;
+        return (rect.height / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -71,7 +71,7 @@ export class MRDivEntity extends MREntity {
             this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
             return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowHorizontalScale;
         }
-        return (rect.width / window.innerWidth) * global.viewPortWidth;
+        return (rect.width / global.appWidth) * global.viewPortWidth;
     }
 
     /**
@@ -146,9 +146,9 @@ export class MRDivEntity extends MREntity {
                 switch (valuepair[1]) {
                     case 'px':
                         if (mrjsUtils.xr.isPresenting) {
-                            return (val.split('px')[0] / window.innerWidth) * this.windowHorizontalScale;
+                            return (val.split('px')[0] / global.appWidth) * this.windowHorizontalScale;
                         }
-                        return (val.split('px')[0] / window.innerWidth) * global.viewPortWidth;
+                        return (val.split('px')[0] / global.appWidth) * global.viewPortWidth;
                     case '%':
                         if (mrjsUtils.xr.isPresenting) {
                             return (parseFloat(val) / 100) * this.windowHorizontalScale;
@@ -163,13 +163,24 @@ export class MRDivEntity extends MREntity {
     }
 
     /**
-     * @function
-     * @description Updates the style for the UIPlane's border and background based on compStyle and inputted css
-     * elements.
+     *
      */
     updateStyle() {
+        super.updateStyle();
+
+        // all div entities needs these steps
         this.setBorder();
         this.setBackground();
+    }
+
+    /**
+     * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
     }
 
     /**
@@ -177,8 +188,7 @@ export class MRDivEntity extends MREntity {
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder() {
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, borderRadii, 18);
+        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
     /**

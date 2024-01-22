@@ -31,7 +31,8 @@ export class AnchorSystem extends MRSystem {
         this.cameraForward = new THREE.Vector3();
         this.pinchDistance = 0;
 
-        this.anchorUpdateNeeded = false;
+        // want this system to run based on the true/false trigger
+        this.needsSystemUpdate = false;
 
         this.axisSwapQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -(3 * Math.PI) / 2);
 
@@ -60,11 +61,11 @@ export class AnchorSystem extends MRSystem {
                     this.sourceRequest = false;
                     this.source = null;
                     this.hand = null;
-                    this.anchorUpdateNeeded = true;
+                    this.needsSystemUpdate = true;
                 });
 
                 this.sourceRequest = true;
-                this.anchorUpdateNeeded = true;
+                this.needsSystemUpdate = true;
             }
         });
 
@@ -101,7 +102,7 @@ export class AnchorSystem extends MRSystem {
                         this.currentEntity.anchor = anchor;
                         this.anchoringQueue.delete(this.currentEntity);
                         this.currentEntity = null;
-                        this.anchorUpdateNeeded = true;
+                        this.needsSystemUpdate = true;
                     },
                     (error) => {
                         console.error('Could not create anchor: ' + error);
@@ -110,19 +111,6 @@ export class AnchorSystem extends MRSystem {
             });
             this.hand = null;
         });
-    }
-
-    /**
-     * @function
-     * @description Checks if we need to run the generic system update call. Default implementation returns true if there are
-     * any items in the system's registry. Allows subclasses to override with their own implementation.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     * @returns {boolean} true if the system is in a state where an update is needed to be run this render call, false otherwise
-     */
-    needsUpdate(deltaTime, frame) {
-        // for now leaving as always true instead of relying on the super.needsUpdate given the intial `if` in the `AnchorSystem`'s `update` function.
-        return this.anchorUpdateNeeded;
     }
 
     /**
@@ -146,22 +134,22 @@ export class AnchorSystem extends MRSystem {
                 if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
                     entity.object3D.matrixAutoUpdate = false;
                     this.createAnchor(entity, anchorComp);
-                    this.anchorUpdateNeeded = true;
+                    this.needsSystemUpdate = true;
                 } else if (entity.anchor) {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
                     entity.object3D.matrix.copy(this.adjustTransform(transform));
-                    this.anchorUpdateNeeded = false;
+                    this.needsSystemUpdate = false;
                 }
 
                 if (this.anchoringQueue.size > 0) {
-                    this.anchorUpdateNeeded = true;
+                    this.needsSystemUpdate = true;
                 }
             } else if (entity.anchor) {
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix);
                 this.deleteAnchor(entity);
-                this.anchorUpdateNeeded = false;
+                this.needsSystemUpdate = false;
             }
         }
     }
@@ -174,7 +162,7 @@ export class AnchorSystem extends MRSystem {
         entity.object3D.userData.originalMatrix = new THREE.Matrix4();
         entity.object3D.userData.originalMatrix.copy(entity.object3D.matrixWorld);
         entity.object3D.matrixAutoUpdate = false;
-        this.anchorUpdateNeeded = true;
+        this.needsSystemUpdate = true;
     }
 
     /**
@@ -186,7 +174,7 @@ export class AnchorSystem extends MRSystem {
         this.deleteAnchor(entity);
         // // These cases can be managed instantly
         // this.createAnchor(entity, comp);
-        this.anchorUpdateNeeded = true;
+        this.needsSystemUpdate = true;
     }
 
     /**
@@ -196,7 +184,7 @@ export class AnchorSystem extends MRSystem {
     detachedComponent(entity) {
         entity.object3D.matrixAutoUpdate = true;
         this.deleteAnchor(entity);
-        this.anchorUpdateNeeded = true;
+        this.needsSystemUpdate = true;
     }
 
     /**
@@ -250,7 +238,7 @@ export class AnchorSystem extends MRSystem {
                     entity.anchor = anchor;
                     entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                     this.anchoringQueue.delete(entity);
-                    this.anchorUpdateNeeded = true;
+                    this.needsSystemUpdate = true;
                 },
                 (error) => {
                     console.error('Could not create anchor: ' + error);
@@ -314,7 +302,7 @@ export class AnchorSystem extends MRSystem {
                         entity.anchor = anchor;
                         entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                         entity.plane = mrPlane;
-                        this.anchorUpdateNeeded = true;
+                        this.needsSystemUpdate = true;
 
                         if (comp.occlusion == false) {
                             mrPlane.mesh.visible = false;

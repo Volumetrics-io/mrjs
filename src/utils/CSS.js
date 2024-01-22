@@ -13,7 +13,7 @@ let CSS = {};
  * @returns {number} - the 2D pixel space representation of value.
  */
 CSS.threeToPx = function (val) {
-    return (val / global.viewPortHeight) * window.innerHeight;
+    return (val / global.viewPortHeight) * global.appHeight;
 };
 
 /**
@@ -28,9 +28,9 @@ CSS.pxToThree = function (val) {
     let px = val instanceof String ? val.split('px')[0] : val;
 
     if (mrjsUtils.xr.isPresenting) {
-        return (px / window.innerWidth) * this.windowHorizontalScale;
+        return (px / global.appWidth) * this.windowHorizontalScale;
     }
-    return (px / window.innerWidth) * global.viewPortWidth;
+    return (px / global.appWidth) * global.viewPortWidth;
 };
 
 export { CSS };

@@ -14,11 +14,6 @@ export class StyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
-        this.cssUpdateNeeded = true;
-
-        document.addEventListener('panel-mutated', () => {
-            this.cssUpdateNeeded = true;
-        });
     }
 
     /**
@@ -39,12 +34,14 @@ export class StyleSystem extends MRSystem {
                 entity.object3D.position.setZ((parseFloat(entity.compStyle.zIndex) + parentZ) / 1000);
             }
 
-            entity instanceof MRDivEntity ? entity.updateStyle() : null;
+            if (entity instanceof MRDivEntity) {
+                entity.updateStyle();
+            }
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            entity.needsStyleUpdate = false;
+            if (!entity.alwaysNeedsStyleUpdate) {
+                entity.needsStyleUpdate = false;
+            }
         }
-
-        this.cssUpdateNeeded = false;
     }
 
     /**
@@ -54,6 +51,5 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
-        this.cssUpdateNeeded = true;
     }
 }

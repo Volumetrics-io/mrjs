@@ -20,6 +20,8 @@ describe('loadModel Function', () => {
             }
         });
 
+        console.log(`Running LoadModel function tests`);
+
         // Define your HTML content
         const htmlContent = `
             <!DOCTYPE html>
@@ -56,7 +58,9 @@ describe('loadModel Function', () => {
     });
 
     test('Page should load with no console errors', async () => {
-        console.log('Console Errors:', errors); // Log errors
+        if (errors.length > 0) {
+            console.log(`Console Errors:`, errors);
+        }
         expect(errors).toHaveLength(0);
     });
 });

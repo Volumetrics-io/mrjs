@@ -64,7 +64,7 @@ export default {
             patterns: [
                 // make these items generate in dist as default for the runner: index.html, style.css, and assets folder
                 { from: 'samples/index.html', to: 'index.html' },
-                { from: 'samples/index-style.css', to: 'index-style.css' },
+                { from: 'samples/index.css', to: 'index.css' },
                 { from: 'samples/examples', to: 'examples' },
                 { from: 'samples/assets', to: 'assets' },
             ],
