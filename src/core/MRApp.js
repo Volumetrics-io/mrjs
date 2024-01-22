@@ -219,6 +219,16 @@ export class MRApp extends MRElement {
 
         this.appendChild(this.renderer.domElement);
 
+        // allows embedded mr-app to be independently scrollable
+        if(this.compStyle.overflow == 'scroll') {
+            this.renderer.domElement.addEventListener('wheel', (event) => {
+                // Assuming vertical scrolling
+                this.scrollTop += event.deltaY;
+                // Prevent the default scroll behavior of the front element
+                event.preventDefault();
+            });
+        }
+
         navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
             this.xrsupport = supported;
 

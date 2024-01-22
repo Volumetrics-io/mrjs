@@ -55,22 +55,20 @@ export class LayoutSystem extends MRSystem {
     setLayoutPosition(entity) {
         const rect = entity.getBoundingClientRect();
         const panel = entity.closest('mr-panel');
-        const panelRect = panel.getBoundingClientRect();
+        const appRect = this.app.getBoundingClientRect();
 
-        const innerWidth = mrjsUtils.xr.isPresenting ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : global.appWidth;
+        const innerWidth = mrjsUtils.xr.isPresenting ? window.innerWidth : global.appWidth;
         const innerHeight = mrjsUtils.xr.isPresenting ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : global.appHeight;
 
-        let offset = !mrjsUtils.xr.isPresenting ? (window.innerWidth - global.appWidth) / 2 : 0;
-
         // Calculate the center of the viewport
-        const centerX = window.innerWidth / 2;
+        const centerX = innerWidth / 2;
         const centerY = innerHeight / 2;
 
-        let windowWidth = mrjsUtils.xr.isPresenting ? panel.windowHorizontalScale : global.viewPortWidth;
-        let windowHeight = mrjsUtils.xr.isPresenting ? panel.windowVerticalScale : global.viewPortHeight;
+        let windowWidth = mrjsUtils.xr.isPresenting ? panel.width : global.viewPortWidth;
+        let windowHeight = mrjsUtils.xr.isPresenting ? panel.height : global.viewPortHeight;
 
         // Adjust the element's position to be relative to the center of the viewport
-        const centeredX = rect.left - offset - centerX;
+        const centeredX = rect.left - appRect.left - centerX;
         const centeredY = rect.top - centerY;
 
         let threeX = (centeredX / innerWidth) * windowWidth;

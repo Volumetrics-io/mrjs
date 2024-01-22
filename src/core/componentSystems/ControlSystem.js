@@ -22,6 +22,7 @@ export class ControlSystem extends MRSystem {
         this.activeHand = this.leftHand;
 
         document.addEventListener('selectstart', (event) => {
+            if(event.detail == null) { return }
             if (event.detail?.handedness == 'left') {
                 this.activeHand = this.leftHand;
             } else {
@@ -35,6 +36,7 @@ export class ControlSystem extends MRSystem {
         });
 
         document.addEventListener('selectend', (event) => {
+            if(event.detail.handedness == null) { return }
             this.removeCursor();
             this.down = false;
             this.cursor = this.cursorHover;
@@ -77,9 +79,9 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
 
-        this.app.renderer.domElement.addEventListener('touch-start', this.onMouseDown);
-        this.app.renderer.domElement.addEventListener('touch-end', this.onMouseUp);
-        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
+        this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
+        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
     }
 
     /**
@@ -162,12 +164,9 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.down = true;
         this.cursor = this.cursorClick;
-        this.hit = this.pixelRayCast(event);
 
-        if (this.hit != null) {
-            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
-        }
+        this.cursor.setTranslation({ ...this.hitPosition }, true);
+
     };
 
     /**
@@ -180,13 +179,8 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.down = false;
         this.cursor = this.cursorHover;
-
-        this.hit = this.pixelRayCast(event);
-
-        if (this.hit != null) {
-            this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
-        }
+        
+        this.cursor.setTranslation({ ...this.hitPosition }, true);
     };
 
     /**
@@ -194,8 +188,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the removeCursor callback.
      */
     removeCursor = () => {
-        this.cursorHover.setTranslation({ ...this.restPosition }, true);
-        this.cursorClick.setTranslation({ ...this.restPosition }, true);
+        this.cursor.setTranslation({ ...this.restPosition }, true);
     };
 
     /************ Tools && Helpers ************/
@@ -210,6 +203,9 @@ export class ControlSystem extends MRSystem {
         let x = 0;
         let y = 0;
         if (event.type.includes('touch')) {
+
+            if (event.touches.length == 0) { return }
+
             x = event.touches[0].clientX;
             y = event.touches[0].clientY;
         } else {
@@ -218,7 +214,7 @@ export class ControlSystem extends MRSystem {
         }
 
         if (this.app.user instanceof THREE.OrthographicCamera) {
-            this.direction.set((x / global.appWidth) * 2 - 1, -(y / global.appHeight) * 2 + 1, -1); // z = - 1 important!
+            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
             this.direction.unproject(this.app.user);
             const direction = new THREE.Vector3(0, 0, -1);
             direction.transformDirection(this.app.user.matrixWorld);
@@ -226,7 +222,7 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.direction };
             this.ray.dir = { ...direction };
         } else {
-            this.direction.set((x / global.appWidth) * 2 - 1, -(y / global.appHeight) * 2 + 1, 0.5);
+            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
             this.direction.unproject(this.app.user);
             this.direction.sub(this.app.user.position).normalize();
             this.ray.origin = { ...this.app.user.position };

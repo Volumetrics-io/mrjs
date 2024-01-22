@@ -129,13 +129,22 @@ export class MRPanel extends MRDivEntity {
         }
         this.prevPosition.copy(this.currentPosition);
 
-        this.delta = this.deltaVector.y * 7;
+        this.delta = this.deltaVector.y * 5;
 
         if (this.delta == 0) {
             return;
         }
 
-        this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
+        let app = this.closest('mr-app')
+
+        if(app.compStyle.overflow == 'scroll') {
+            app.scrollTop += mrjsUtils.CSS.threeToPx(this.delta);
+        } else {
+            window.scrollBy(0, mrjsUtils.CSS.threeToPx(this.delta));
+        }
+
+        // TODO: disabled for now, needs work.
+        // this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
     };
 
     /**
