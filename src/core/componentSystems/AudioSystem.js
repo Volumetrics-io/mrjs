@@ -1,17 +1,19 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 
 /**
- *
+ * @class AudioSystem
+* @classdesc This system manages spatial audio in the THREE.js scene.
+* @augments MRSystem
  */
 export class AudioSystem extends MRSystem {
     /**
-     *
+     * @class
+     * @description AudioSystem's Default constructor that sets up the audio listener and loader
      */
     constructor() {
         super();
 
         this.listener = new THREE.AudioListener();
-        // this.listener.matrixAutoUpdate = false;
         this.app.scene.add(this.listener);
 
         this.audioLoader = new THREE.AudioLoader();
