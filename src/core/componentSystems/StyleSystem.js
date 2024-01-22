@@ -16,11 +16,11 @@ export class StyleSystem extends MRSystem {
         super(false);
 
         // want this system to run based on the true/false trigger
-        this.needsSystemUpdate = true;
+        // this.needsSystemUpdate = true;
 
-        document.addEventListener('panel-mutated', () => {
-            this.needsSystemUpdate = true;
-        });
+        // document.addEventListener('panel-mutated', () => {
+        //     this.needsSystemUpdate = true;
+        // });
     }
 
     /**
