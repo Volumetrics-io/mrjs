@@ -20,6 +20,7 @@ import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
+import { AudioSystem } from './componentSystems/AudioSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -95,6 +96,7 @@ export class MRApp extends MRElement {
 
         this.layoutSystem = new LayoutSystem();
         this.styleSystem = new StyleSystem();
+        this.audioSystem = new AudioSystem();
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
@@ -220,7 +222,7 @@ export class MRApp extends MRElement {
         this.appendChild(this.renderer.domElement);
 
         // allows embedded mr-app to be independently scrollable
-        if(this.compStyle.overflow == 'scroll') {
+        if (this.compStyle.overflow == 'scroll') {
             this.renderer.domElement.addEventListener('wheel', (event) => {
                 // Assuming vertical scrolling
                 this.scrollTop += event.deltaY;
@@ -303,6 +305,8 @@ export class MRApp extends MRElement {
         this.userOrigin.position.setX(0.015);
         this.anchor.position.setX(0.015);
         this.anchor.position.setZ(-0.5);
+
+        // Audio listner needed for spatial audio
     };
 
     /**

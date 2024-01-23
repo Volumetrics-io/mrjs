@@ -22,7 +22,9 @@ export class ControlSystem extends MRSystem {
         this.activeHand = this.leftHand;
 
         document.addEventListener('selectstart', (event) => {
-            if(event.detail == null) { return }
+            if (event.detail == null) {
+                return;
+            }
             if (event.detail?.handedness == 'left') {
                 this.activeHand = this.leftHand;
             } else {
@@ -36,7 +38,9 @@ export class ControlSystem extends MRSystem {
         });
 
         document.addEventListener('selectend', (event) => {
-            if(event.detail.handedness == null) { return }
+            if (event.detail.handedness == null) {
+                return;
+            }
             this.removeCursor();
             this.down = false;
             this.cursor = this.cursorHover;
@@ -154,7 +158,6 @@ export class ControlSystem extends MRSystem {
         this.cursor = this.cursorClick;
 
         this.cursor.setTranslation({ ...this.hitPosition }, true);
-
     };
 
     /**
@@ -167,7 +170,7 @@ export class ControlSystem extends MRSystem {
         this.removeCursor();
         this.down = false;
         this.cursor = this.cursorHover;
-        
+
         this.cursor.setTranslation({ ...this.hitPosition }, true);
     };
 
@@ -191,8 +194,9 @@ export class ControlSystem extends MRSystem {
         let x = 0;
         let y = 0;
         if (event.type.includes('touch')) {
-
-            if (event.touches.length == 0) { return }
+            if (event.touches.length == 0) {
+                return;
+            }
 
             x = event.touches[0].clientX;
             y = event.touches[0].clientY;
