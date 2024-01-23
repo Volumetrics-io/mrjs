@@ -218,6 +218,8 @@
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
+        /********* begin: define mr-water ***********/
+
         class Water extends MREntity {
             
             vertexShader = `
@@ -317,43 +319,24 @@
             constructor() {
                 super()
 
-                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+                let geometry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
 
-                let material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        u_time: { value: 0.0 }
-                    },
-                    vertexShader: this.vertexShader,
-                    fragmentShader: this.fragmentShader,
-                    transparent: true
+                this.water = new THREE.Water(geometry, {
+                    color: new THREE.Vector3(0, 0.35, 0.5),//params.color,
+                    scale: 1.0,//params.scale,
+                    flowDirection: new THREE.Vector2(0.0, 0.0), //params.flowX, params.flowY ),
+                    textureWidth: 1024,
+                    textureHeight: 1024
                 });
 
-                this.water = new THREE.Mesh(geomertry, material)
-                this.object3D.add(this.water)
+                this.object3D.add(this.water);
 
             }
         }
-
-        class WaterSystem extends MRSystem {
-            constructor(){
-                super(false)
-                this.water = document.getElementById('water')
-
-                if(this.water) {
-                    this.registry.add(this.water)
-                }
-
-            }
-
-            update(deltaTime, frame) {
-                this.water.water.material.uniforms.u_time.value += deltaTime
-            }
-        }
-
-        let ws = new WaterSystem()
 
         customElements.get('mr-water') || customElements.define('mr-water', Water);
 
+        /********* end: define mr-water ***********/
 
         // let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
