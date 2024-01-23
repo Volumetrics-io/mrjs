@@ -208,7 +208,7 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = verticalAlign
+        let result = verticalAlign;
 
         if (typeof result === 'number') {
             result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
