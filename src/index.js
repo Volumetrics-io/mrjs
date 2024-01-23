@@ -52,6 +52,8 @@ export { mrjsUtils } from './utils/index.js';
 
 // EXPORTS
 export * as THREE from 'three';
+export { Water } from 'three/examples/jsm/objects/Water2.js';
+
 export * from './core/MRElement';
 export * from './core/MRSystem';
 export * from './core/MREntity';

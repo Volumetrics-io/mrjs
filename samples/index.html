@@ -5,10 +5,14 @@
     <title>mr.js - anchors</title>
     <meta name="description" content="mr.js example - anchors">
     <script src="/mr.js"></script>
-    <!-- Import Three.js -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"></script>
-    <!-- Import Water2.js -->
-    <!-- <script type="module" src="/path/to/Water2.js"></script> <!-- Adjust the path as per your setup --> -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+          "three/addons/": "./jsm/"
+        } 
+      }
+    </script>
     <link rel="stylesheet" type="text/css" href="index-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -233,9 +237,9 @@
 
                 let geometry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
 
-                this.water = new THREE.Water(geometry, {
-                    color: params.color,
-                    scale: params.scale,
+                this.water = new Water(geometry, {
+                    color: new THREE.Vector3(0, 0.35, 0.5),//params.color,
+                    scale: 1.0,//params.scale,
                     flowDirection: new THREE.Vector2( 0.0, 0.0), //params.flowX, params.flowY ),
                     textureWidth: 1024,
                     textureHeight: 1024
@@ -246,7 +250,7 @@
             }
         }
 
-        customElements.get('mr-water') || customElements.define('mr-water', Water);
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
 
         /*********** end: mr-water entity ***********/
 
