@@ -5,11 +5,15 @@
     <title>mr.js - anchors</title>
     <meta name="description" content="mr.js example - anchors">
     <script src="/mr.js"></script>
+    <!-- Import Three.js -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"></script>
+    <!-- Import Water2.js -->
+    <!-- <script type="module" src="/path/to/Water2.js"></script> <!-- Adjust the path as per your setup --> -->
     <link rel="stylesheet" type="text/css" href="index-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app debug="true">
+   <mr-app>
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -216,105 +220,13 @@
 
   <footer>
     <script src="/assets/js/AnimationSystem.js"></script>
-    <script>
+    <script type="module">
 
-        /********* begin: define mr-water ***********/
+        /*********** begin: mr-water entity ***********/
 
-        class Water extends MREntity {
-            
-            vertexShader = `
-            varying vec2 vUv;
-            varying float vWave;
-            uniform float u_time;
+        // import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/objects/Water2.js';
 
-            void main() {
-                vUv = uv;
-                vec3 pos = position;
-                float waveHeight = 0.01;
-                float waveSpeed = 2.0;
-                float waveSpeed2 = 3.0;
-                float waveFrequency = 0.2;
-                float waveFrequency2 = 1.0;
-                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
-                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
-                pos.z += wave;
-                vWave = wave;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-            }
-            `;
-
-            fragmentShader = `
-            varying vec2 vUv;
-            varying float vWave;
-            uniform float u_time;
-
-            void main() {
-                // vec3 waterColor = vec3(0.0, 0.55, 0.5);
-                // float alpha = 0.5;
-
-                // // Froth effect at the crest of waves
-                // float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
-                // vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
-
-                // // Blend water color with froth color based on wave height
-                // vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
-
-                // gl_FragColor = vec4(finalColor, alpha);
-
-                //------
-
-                // Found this on GLSL sandbox. I really liked it, changed a few things and made it tileable.
-                // :)
-                // by David Hoskins.
-                // Original water turbulence effect by joltz0r
-
-
-                // Redefine below to see the tiling...
-                //#define SHOW_TILING
-
-                #define TAU 6.28318530718
-                #define MAX_ITER 5
-
-                void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
-                {
-                    float time = u_Time * .5+23.0;
-                    // uv should be the 0-1 uv of texture...
-                    vec2 uv = fragCoord.xy / iResolution.xy;
-                    
-                #ifdef SHOW_TILING
-                    vec2 p = mod(uv*TAU*2.0, TAU)-250.0;
-                #else
-                    vec2 p = mod(uv*TAU, TAU)-250.0;
-                #endif
-                    vec2 i = vec2(p);
-                    float c = 1.0;
-                    float inten = .005;
-
-                    for (int n = 0; n < MAX_ITER; n++) 
-                    {
-                        float t = time * (1.0 - (3.5 / float(n+1)));
-                        i = p + vec2(cos(t - i.x) + sin(t + i.y), sin(t - i.y) + cos(t + i.x));
-                        c += 1.0/length(vec2(p.x / (sin(i.x+t)/inten),p.y / (cos(i.y+t)/inten)));
-                    }
-                    c /= float(MAX_ITER);
-                    c = 1.17-pow(c, 1.4);
-                    vec3 colour = vec3(pow(abs(c), 8.0));
-                    colour = clamp(colour + vec3(0.0, 0.35, 0.5), 0.0, 1.0);
-
-                    #ifdef SHOW_TILING
-                    // Flash tile borders...
-                    vec2 pixel = 2.0 / iResolution.xy;
-                    uv *= 2.0;
-                    float f = floor(mod(u_Time*.5, 2.0));    // Flash value.
-                    vec2 first = step(pixel, uv) * f;           // Rule out first screen pixels and flash.
-                    uv  = step(fract(uv), pixel);               // Add one line of pixels per tile.
-                    colour = mix(colour, vec3(1.0, 1.0, 0.0), (uv.x + uv.y) * first.x * first.y); // Yellow line
-                    #endif
-                    
-                    fragColor = vec4(colour, 1.0);
-                }
-            }
-            `;
+        class MRWater extends MREntity {
 
             constructor() {
                 super()
@@ -322,9 +234,9 @@
                 let geometry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
 
                 this.water = new THREE.Water(geometry, {
-                    color: new THREE.Vector3(0, 0.35, 0.5),//params.color,
-                    scale: 1.0,//params.scale,
-                    flowDirection: new THREE.Vector2(0.0, 0.0), //params.flowX, params.flowY ),
+                    color: params.color,
+                    scale: params.scale,
+                    flowDirection: new THREE.Vector2( 0.0, 0.0), //params.flowX, params.flowY ),
                     textureWidth: 1024,
                     textureHeight: 1024
                 });
@@ -336,7 +248,8 @@
 
         customElements.get('mr-water') || customElements.define('mr-water', Water);
 
-        /********* end: define mr-water ***********/
+        /*********** end: mr-water entity ***********/
+
 
         // let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
