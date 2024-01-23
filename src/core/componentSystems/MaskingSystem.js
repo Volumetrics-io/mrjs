@@ -90,7 +90,7 @@ export class MaskingSystem extends MRSystem {
             // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
             // passed through this function since that case is an edge case that will not be expected.
 
-            entity.traverse((child) => {
+            function runTheTraversal(child) {
                 if (child instanceof MRPanel && child.object3D.isGroup) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
@@ -122,10 +122,9 @@ export class MaskingSystem extends MRSystem {
                         child.object3D.material.needsUpdate = true;
                     }
 
-                    // @hanbollar This is a temporary fix,
-                    // I think there's a more general solution here using entity.object3D.traverse
-                    // rather than entity.traverse, but I think we'd also need to move
-                    // entity.ignoreStencil from entity, to entity.object3D.userData.ignoreStencil
+                    // XXX - This is a temporary fix, there's a more general solution here using entity.object3D.traverse
+                    // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
+                    // to entity.object3D.userData.ignoreStencil
                     if (child instanceof MRTextEntity) {
                         child.textObj.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
                         child.textObj.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
@@ -134,7 +133,19 @@ export class MaskingSystem extends MRSystem {
                         child.textObj.material.needsUpdate = true;
                     }
                 }
-            });
+            }
+
+            // this separation for MRTextEntity is a temporary fix associated with other XXX change above.
+            if (entity instanceof MRTextEntity) {
+                entity.object3D.traverse((child) => {
+                    runTheTraversal(child);
+                })
+            } else {
+                entity.traverse((child) => {
+                    runTheTraversal(child);
+                });
+            }
+            
         }
     }
 }
