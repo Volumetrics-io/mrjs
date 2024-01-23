@@ -1,6 +1,7 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
 /**
  * @class StyleSystem
@@ -28,10 +29,9 @@ export class StyleSystem extends MRSystem {
                 continue;
             }
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
-            if (entity.compStyle.zIndex != 'auto') {
-                let parentZ = entity.parentElement.compStyle.zIndex == 'auto' ? 1 : parseFloat(entity.parentElement.compStyle.zIndex);
+            if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
-                entity.object3D.position.setZ((parseFloat(entity.compStyle.zIndex) + parentZ) / 1000);
+                entity.object3D.position.setZ((parseFloat(entity.compStyle.zIndex / 1000)));
             }
 
             if (entity instanceof MRDivEntity) {

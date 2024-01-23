@@ -124,8 +124,8 @@ export class TextSystem extends MRSystem {
                     entity.textObj.anchorX = 'center';
                 } else {
                     entity.textObj.position.setX(-entity.width / 2);
+                    entity.textObj.position.setY(entity.height / 2);
                 }
-                entity.textObj.position.setY(entity.height / 2);
             });
         }
         this.needsSystemUpdate = false;
@@ -208,7 +208,7 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = mrjsUtils.CSS.pxToThree(verticalAlign);
+        let result = verticalAlign
 
         if (typeof result === 'number') {
             result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
@@ -220,9 +220,10 @@ export class TextSystem extends MRSystem {
             case 'super':
                 return 0;
             case 'text-top':
-                return 'top-cap';
+                return 'top-ex';
             case 'text-bottom':
                 return 'bottom';
+            case 'middle':
             default:
                 return result;
         }
