@@ -23,6 +23,8 @@ export class MRImage extends MRDivEntity {
         // until the connected call since this will get overwritten anyways.
         let material = new THREE.MeshStandardMaterial({
             side: 0,
+            transparent: true, 
+            // opacity: 0.5,
         });
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
