@@ -2,6 +2,8 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRButton } from 'mrjs/core/entities/MRButton';
+import { MRImage } from 'mrjs/core/entities/MRImage';
 
 /**
  * @class StyleSystem
@@ -32,6 +34,10 @@ export class StyleSystem extends MRSystem {
             if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
                 entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
+
+                if(entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex){
+                    entity.object3D.position.z += 0.0001
+                }
             }
 
             if (entity instanceof MRDivEntity) {
