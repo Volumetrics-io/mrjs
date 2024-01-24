@@ -72,7 +72,7 @@ export class MRApp extends MRElement {
             color: 0xffffff,
             intensity: 1,
             radius: 5,
-            shadows: true,
+            shadows: false,//true,
         };
 
         this.cameraOptions = {
@@ -467,7 +467,7 @@ export class MRApp extends MRElement {
             // and internally handled stenciling functions.
             this.renderer.state.buffers.stencil.setTest(true);
             this.renderer.state.buffers.stencil.setMask(0xff);
-            this.renderer.render(this.scene, this.user);
+            // this.renderer.render(this.scene, this.user);
 
             // Render the main scene without stencil operations
             this.renderer.state.buffers.stencil.setTest(false);
