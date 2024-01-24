@@ -13,7 +13,7 @@
         } 
       }
     </script>
-    <link rel="stylesheet" type="text/css" href="anchors-style.css" />
+    <link rel="stylesheet" type="text/css" href="/examples/anchors-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
@@ -172,10 +172,10 @@
       
     </mr-panel>
 
-    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
+    <!-- <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
         data-position="0 -200 0"
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-        </mr-skybox>
+        </mr-skybox> -->
 
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
         <mr-model
@@ -245,8 +245,8 @@
                     color: params.color,
                     scale: params.scale,
                     flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
-                    normalMap0: new THREE.TextureLoader().load('./assets/textures/water/Water_1_M_Normal.jpg'),
-                    normalMap1: new THREE.TextureLoader().load('./assets/textures/water/Water_2_M_Normal.jpg'),
+                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg'),
+                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg'),
                     textureWidth: 1024,
                     textureHeight: 1024
                 });
