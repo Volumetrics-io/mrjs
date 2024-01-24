@@ -172,10 +172,10 @@
       
     </mr-panel>
 
-<!--     <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
+    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
         data-position="0 -200 0"
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-        </mr-skybox> -->
+        </mr-skybox>
 
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
         <mr-model
@@ -186,22 +186,23 @@
             </mr-model>
     </mr-entity>
 
-    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
-       <mr-water 
-        data-rotation="-90 0 0"             
-        data-position="0 0.5 0"            
-        id="water"></mr-water>
+   <mr-entity id="floor" data-position="0 -1 0" data-comp-anchor="type: plane; label: floor;">
+        <mr-water 
+            data-position="0 1 0"            
+            id="water"></mr-water>
         <mr-entity
-        data-rotation="-90 00 0"                        
+        data-rotation="-90 00 0"    
+        data-position="0 0.5 0"                    
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
             <mr-model
-            data-rotation="90 180 0"                        
-            data-position="0 0.5 0.3"             
+            data-rotation="90 180 0"   
             src="/assets/models/animation_koifish.glb" 
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
     </mr-entity>
+
+           
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
     </mr-entity>
@@ -218,7 +219,7 @@
             </mr-model>
         </mr-entity>
       </mr-entity>
-        
+
     </mr-app>
   </body>
 
@@ -240,7 +241,7 @@
                     flowY: 0.5
                 };
 
-                const waterGeometry = new THREE.PlaneGeometry(3, 3, 1, 1);
+                const waterGeometry = new THREE.PlaneGeometry(3, 3, 100, 100);
                 this.water = new Water(waterGeometry, {
                     color: params.color,
                     scale: params.scale,
@@ -251,12 +252,17 @@
                     normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg', function ( texture ) {
                       texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     }),
-                    textureWidth: 512,
-                    textureHeight: 512
+                    textureWidth: 1024,
+                    textureHeight: 1024
                 });
-
+                this.water.material.renderOrder = 3;
+                this.water.rotation.x = -Math.PI / 2.0;
                 this.object3D.add(this.water);
 
+                // leaving for debug use later on
+                // this.plane = new THREE.Mesh(waterGeometry, new THREE.MeshStandardMaterial({color: "#00ffff"}));
+                // this.plane.rotation.x = -Math.PI / 2.0;
+                // this.object3D.add(this.plane);
             }
         }
 
@@ -265,7 +271,7 @@
         /*********** end: mr-water entity ***********/
 
 
-        // let floatingAnchor = document.getElementById('floating')
+        let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
         let tableAnchor = document.getElementById('table')
         let floorAnchor = document.getElementById('floor')
