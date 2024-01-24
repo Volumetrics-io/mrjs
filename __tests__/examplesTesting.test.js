@@ -38,8 +38,8 @@ describe('Test the Examples', () => {
                 `<script src="/mr.js"></script>`,
                 `<script src="../dist/mr.js"></script>`);
             htmlContent = htmlContent.replace(
-                `<link rel="stylesheet" type="text/css" href="${fileName}.css" />`,
-                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}.css" />`);
+                `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
+                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
 
             await page.setContent(htmlContent);
 
