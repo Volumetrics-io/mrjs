@@ -107,10 +107,12 @@ export class MRSystem {
         this.update(deltaTime, frame);
         this.delta = 0;
 
-        // reset update var if needed.
-        if (!this.alwaysNeedsSystemUpdate) {
-            this.needsSystemUpdate = false;
-        }
+        // this should be revisited, the update there are situations where this 
+        // needs to remain true until a task has been done, specifically the anchoring system
+        // // reset update var if needed.
+        // if (!this.alwaysNeedsSystemUpdate) {
+        //     this.needsSystemUpdate = false;
+        // }
     }
 
     /**
