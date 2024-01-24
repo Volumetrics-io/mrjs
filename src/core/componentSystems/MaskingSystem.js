@@ -90,6 +90,10 @@ export class MaskingSystem extends MRSystem {
             // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
             // passed through this function since that case is an edge case that will not be expected.
 
+            /**
+             *
+             * @param child
+             */
             function runTheTraversal(child) {
                 if (child instanceof MRPanel && child.object3D.isGroup) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
@@ -139,13 +143,12 @@ export class MaskingSystem extends MRSystem {
             if (entity instanceof MRTextEntity) {
                 entity.object3D.traverse((child) => {
                     runTheTraversal.call(this, child);
-                })
+                });
             } else {
                 entity.traverse((child) => {
                     runTheTraversal.call(this, child);
                 });
             }
-            
         }
     }
 }
