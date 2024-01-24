@@ -31,7 +31,8 @@ export class AnimationSystem extends MRSystem {
     }
 
     /**
-     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
      * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
      */
     set needsSystemUpdate(bool) {
