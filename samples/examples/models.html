@@ -47,48 +47,37 @@
         <mr-div class="col-2">
 
             <mr-button onclick="floating()" class=" label button" >
-                floating
+                gltf
             </mr-button>
 
             <mr-button onclick="fixed()" class=" label button" >
-                fixed
+                glb
             </mr-button>
 
             <mr-button onclick="floor()" class=" label button" >
-                floor
+                stl
             </mr-button>
 
-            <mr-button onclick="table()" class=" label button" >
-                table
-            </mr-button>
-
-            <mr-button onclick="ceiling()" class=" label button" >
-                ceiling
-            </mr-button>
-
-            <mr-button onclick="wall()" class=" label button" >
-                wall
-            </mr-button>
-
-            <mr-button onclick="reset()" class=" label button" >
-                reset
+            <mr-button onclick="fixed()" class=" label button" >
+                glb - with animation
             </mr-button>
             
         </mr-div>
         <mr-text class="col-2 subtitle" >
-        data-comp-anchor
+        model
         </mr-text>
 
         <mr-text class="col-2">
-        Anchoring is achieved using the anchoring component, data-comp-anchor, it has 4 attributes:
+        Model loading is achieved using the model component, `mr-model`, it has one attribute:
         </mr-text>
 
         <mr-text class="label col-2">
-        type
+        src
         </mr-text>
 
         <mr-text class="col-2">
-        There are currently three types of anchors:
+        You fill this out as you would any `src` attribute on an <img/> or <video/> html tag. 
+        That is, with the 
         </mr-text>
 
         <mr-text class="label-2 col-2">
