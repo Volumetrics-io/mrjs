@@ -237,10 +237,29 @@
 
                 let geometry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
 
-                this.water = new Water(geometry, {
-                    color: new THREE.Vector3(0, 0.35, 0.5),//params.color,
-                    scale: 1.0,//params.scale,
-                    flowDirection: new THREE.Vector2( 0.0, 0.0), //params.flowX, params.flowY ),
+                // this.water = new Water(geometry, {
+                //     color: new THREE.Vector3(0, 0.35, 0.5),//params.color,
+                //     scale: 1.0,//params.scale,
+                //     flowDirection: new THREE.Vector2( 0.0, 0.0), //params.flowX, params.flowY ),
+                //     textureWidth: 1024,
+                //     textureHeight: 1024
+                // });
+
+                const params = {
+                    color: '#ffffff',
+                    scale: 0.5,
+                    flowX: 3,
+                    flowY: 1
+                };
+
+                const waterGeometry = new THREE.PlaneGeometry(3, 3, 100, 100);
+                this.water = new Water(waterGeometry, {
+                    color: params.color,
+                    scale: params.scale,
+                    flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+                    waterNormals: new THREE.TextureLoader().load('./assets/Water_1_M_Normal.jpg', function ( texture ) {
+                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    }),
                     textureWidth: 1024,
                     textureHeight: 1024
                 });
