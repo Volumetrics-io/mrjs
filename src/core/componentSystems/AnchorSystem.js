@@ -120,7 +120,7 @@ export class AnchorSystem extends MRSystem {
      * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
      */
     get needsSystemUpdate() {
-        return this.anchoringQueue.size() > 0 || super.needsSystemUpdate;
+        return this.anchoringQueue.size > 0 || super.needsSystemUpdate;
     }
 
     /**
@@ -152,13 +152,13 @@ export class AnchorSystem extends MRSystem {
                 if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
                     entity.object3D.matrixAutoUpdate = false;
                     this.createAnchor(entity, anchorComp);
-                    this.needsSystemUpdate = true;
+                    // this.needsSystemUpdate = true;
                 } else if (entity.anchor) {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
                     entity.object3D.matrix.copy(this.adjustTransform(transform));
-                    this.needsSystemUpdate = false;
+                    // this.needsSystemUpdate = false;
                 }
 
                 if (this.anchoringQueue.size > 0) {
@@ -167,7 +167,7 @@ export class AnchorSystem extends MRSystem {
             } else if (entity.anchor) {
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix);
                 this.deleteAnchor(entity);
-                this.needsSystemUpdate = false;
+                // this.needsSystemUpdate = false;
             }
         }
     }
@@ -256,7 +256,7 @@ export class AnchorSystem extends MRSystem {
                     entity.anchor = anchor;
                     entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                     this.anchoringQueue.delete(entity);
-                    this.needsSystemUpdate = true;
+                    // this.needsSystemUpdate = true;
                 },
                 (error) => {
                     console.error('Could not create anchor: ' + error);
