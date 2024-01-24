@@ -75,38 +75,36 @@
     --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
   }
   
-  mr-text {
-    font-family: 'Roboto';
-    line-height: 100%;
-    font-size: 16px;
+  body {
+    background-color: var(--c-plate);
+    font-family: var(--font-body);
+    color: var(--c-text);
+    font-size: 1px;
   }
-
-  .mrjs {
-    font-family: var(--font-title);
-    font-size: 4vw;
-    line-height: 100%;
-    color: rgb(255, 255, 255);
-    grid-column: 1;
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 6rem;
+    background: var(--c-plate);
+    padding: 4vw;
+    overflow-y: auto;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
   }
-
-  .company {
-    font-family: var(--font-title);
-    font-size: 4vw;
-    line-height: 100%;
-    color: rgb(255, 255, 255);
-    align-self: center;
-    grid-column: 4;
+  
+  #mark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 999;
+    padding-top: 1rem;
   }
-
-  .logo {
-    grid-column: 3;
-    z-index: 25;
-  }
-
-  #logo-model{
-    scale: 0.0005;
-  }
-
 
   .layout {
     background-color: var(--color-paper);
@@ -114,23 +112,11 @@
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 1vw;
-    grid-auto-rows: auto;
-  }
-
-  .col-1{
-    grid-column: 1;
-  }
-
-  .col-2{
-    grid-column: 2;
-  }
-
-  .col-3{
-    grid-column: 3;
+    grid-auto-rows: minmax(100px, auto);
   }
 
   #navbar {
-    background-color: #141414;
+    background-color: rgb(51, 50, 50);
     border-radius: 1%;
     position:fixed;
     top: 0;
@@ -149,44 +135,88 @@
     font-size: 8vw;
     line-height: 100%;
     color: rgba(24, 24, 24, 0.75);
+    font-variation-settings: 'opsz' 80, 'wght' 550;
     font-weight: bold;
     align-self: center;
+    grid-column: 2;
 
   }
 
-  .title-2 {
+  .company {
     font-family: var(--font-title);
-    font-size: 5vw;
+    font-size: 4vw;
+    line-height: 100%;
+    color: rgb(55, 55, 55);
+    align-self: center;
+    grid-column: 1;
+  }
+
+  .spin-button {
+    margin: auto;
+    grid-column: 4;
+    align-self: end;
+    font-family: var(--font-title);
+    font-size: 4vw;
+    line-height: 100%;
+  }
+
+  .logo {
+    grid-column: 3;
+    z-index: 25;
+  }
+
+  #logo-model{
+    scale: 0.0005;
+  }
+
+  #table-model{
+    scale: 0.002;
+  }
+
+  .sub-title {
+    font-family: var(--font-title);
+    font-size: 6vw;
     margin-bottom: 1vh;
     line-height: 100%;
+    text-align: center;
     color: rgba(24, 24, 24, 0.75);
-    align-self: center;
-    margin: 0 auto;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+
   }
-  .subtitle {
+
+  .example-link {
     font-family: var(--font-title);
     font-size: 3vw;
     margin-bottom: 1vh;
     line-height: 100%;
+    text-align: center;
     color: rgba(24, 24, 24, 0.75);
+    grid-row: 5;
+    grid-colum: 2;
+    position: absolute;
+    bottom: -10vh;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
-  .label {
-    font-family: var(--font-title);
-    font-size: 2vw;
+  .headset {
+    grid-row: 2 / 5;
+    grid-column: 1 / -1;
+    object-fit: cover;
+  }
+
+  /* .headset > mr-img {
+    width: 100%;
+    object-fit: cover;
+  } */
+
+  .paragraph {
+    font-family: 'Roboto';
     line-height: 100%;
-    color: rgba(24, 24, 24, 0.75);
-  }
+    font-size: 16px;
 
-  .label-2 {
-    font-family: var(--font-title);
-    font-size: 1.5vw;
-    line-height: 100%;
-    color: rgba(24, 24, 24, 0.75);
-  }
-
-  .button {
-    padding: 10px;
-    margin: 0 10px;
-    width: fit-content;
+    grid-row:6;
+    grid-column: 2;
   }

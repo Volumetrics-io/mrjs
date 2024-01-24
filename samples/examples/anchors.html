@@ -5,7 +5,15 @@
     <title>mr.js - anchors</title>
     <meta name="description" content="mr.js example - anchors">
     <script src="/mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="anchor-style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+          "three/addons/": "./jsm/"
+        } 
+      }
+    </script>
+    <link rel="stylesheet" type="text/css" href="index-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
@@ -216,33 +224,39 @@
 
   <footer>
     <script src="/assets/js/AnimationSystem.js"></script>
-    <script>
+    <script type="module">
 
         /*********** begin: mr-water entity ***********/
-
-        import { Water } from 'three/addons/objects/Water2.js';
 
         class MRWater extends MREntity {
 
             constructor() {
                 super()
 
-                let geometry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+                const params = {
+                    color: '#0b668b',
+                    scale: 0.25,
+                    flowX: 3,
+                    flowY: 1
+                };
 
-                this.water = new Water(geometry, 
+                const waterGeometry = new THREE.PlaneGeometry(3, 3, 100, 100);
+                this.water = new Water(waterGeometry, {
                     color: params.color,
                     scale: params.scale,
-                    flowDirection: new THREE.Vector2( 0.0, 0.0), //params.flowX, params.flowY ),
+                    flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+                    normalMap0: new THREE.TextureLoader().load('./assets/textures/water/Water_1_M_Normal.jpg'),
+                    normalMap1: new THREE.TextureLoader().load('./assets/textures/water/Water_2_M_Normal.jpg'),
                     textureWidth: 1024,
                     textureHeight: 1024
-                );
+                });
 
                 this.object3D.add(this.water);
 
             }
         }
 
-        customElements.get('mr-water') || customElements.define('mr-water', Water);
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
 
         /*********** end: mr-water entity ***********/
 
