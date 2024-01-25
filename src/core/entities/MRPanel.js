@@ -56,7 +56,7 @@ export class MRPanel extends MRDivEntity {
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     connected() {
-        this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 0.3));
+        this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 1));
         window.addEventListener('load', (event) => {
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
@@ -82,7 +82,7 @@ export class MRPanel extends MRDivEntity {
         });
 
         this.addEventListener('panel-mutated', (event) => {
-            this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 0.3));
+            this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 1));
         });
 
         document.addEventListener('wheel', (event) => {
