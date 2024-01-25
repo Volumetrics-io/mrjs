@@ -72,7 +72,7 @@ export class MRApp extends MRElement {
             color: 0xffffff,
             intensity: 1,
             radius: 5,
-            shadows: false,//true,
+            shadows: true,
         };
 
         this.cameraOptions = {
