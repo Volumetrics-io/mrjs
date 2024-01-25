@@ -92,7 +92,8 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
+            let isTextContentChanged = (entity.textObj.text != text);
+            if (!isTextContentChanged || (!entity.needsStyleUpdate && !this.needsSystemUpdate)) {
                 continue;
             }
             let text;
