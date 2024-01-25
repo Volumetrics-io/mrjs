@@ -76,7 +76,8 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
      * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
      */
     set needsSystemUpdate(bool) {
@@ -91,9 +92,6 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
-                continue;
-            }
             let text;
             if (entity instanceof MRTextField || entity instanceof MRTextArea) {
                 text = entity.input.value;
@@ -112,6 +110,10 @@ export class TextSystem extends MRSystem {
                     .replace(/(\r\n|\n|\r)/gm, '')
                     .trim();
             }
+            let textContentChanged = (entity.textObj.ext != text);
+            if (!textContentChanged && !entity.needsStyleUpdate) {
+                continue;
+            }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
@@ -128,7 +130,6 @@ export class TextSystem extends MRSystem {
                 }
             });
         }
-        this.needsSystemUpdate = false;
     }
 
     /**

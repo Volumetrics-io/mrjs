@@ -105,7 +105,7 @@ class WaterSystem extends MRSystem {
 
 customElements.get('mr-water') || customElements.define('mr-water', Water);
     </script>
-    <link rel="stylesheet" type="text/css" href="anchor.css" />
+    <link rel="stylesheet" type="text/css" href="anchors-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
@@ -287,13 +287,14 @@ customElements.get('mr-water') || customElements.define('mr-water', Water);
         data-rotation="-90 0 0"                        
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
             <mr-model
-            data-rotation="90 180 0"                        
-            data-position="0 0.5 0.3"             
+            data-rotation="90 180 0"   
             src="/assets/models/animation_koifish.glb" 
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
     </mr-volume>
+
+           
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
     </mr-entity>
@@ -310,13 +311,59 @@ customElements.get('mr-water') || customElements.define('mr-water', Water);
             </mr-model>
         </mr-entity>
       </mr-entity>
-        
+
     </mr-app>
   </body>
 
   <footer>
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
+
+        /*********** begin: mr-water entity ***********/
+
+        class MRWater extends MREntity {
+
+            constructor() {
+                super()
+
+                const params = {
+                    color: '#00ccff',
+                    scale: 0.25,
+                    flowX: 0.5,
+                    flowY: 0.5
+                };
+
+                const waterGeometry = new THREE.PlaneGeometry(3, 3, 100, 100);
+                this.water = new Water(waterGeometry, {
+                    color: params.color,
+                    scale: params.scale,
+                    flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg', function ( texture ) {
+                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    }),
+                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg', function ( texture ) {
+                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    }),
+                    textureWidth: 1024,
+                    textureHeight: 1024
+                });
+                this.water.material.renderOrder = 3;
+                this.water.rotation.x = -Math.PI / 2.0;
+                this.water.position.y = 0.5;
+                this.object3D.add(this.water);
+
+                // leaving for debug use later on
+                this.plane = new THREE.Mesh(waterGeometry, new THREE.MeshStandardMaterial({color: "#00ffff", transparent: "true", opacity: "0.5"}));
+                // this.plane.material.renderOrder = 2;
+                this.plane.rotation.x = -Math.PI / 2.0;
+                this.plane.position.y = 0.01;
+                this.object3D.add(this.plane);
+            }
+        }
+
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
+
+        /*********** end: mr-water entity ***********/
 
 
         let floatingAnchor = document.getElementById('floating')
