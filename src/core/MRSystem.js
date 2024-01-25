@@ -67,6 +67,11 @@ export class MRSystem {
         return this._needsSystemUpdate === undefined;
     }
 
+    /**
+     * @function
+     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
+     * Useful for readability and to not need to check against undefined often.
+     */
     set alwaysNeedsSystemUpdate(bool) {
         this._needsSystemUpdate = (bool) ? undefined : false;
     }
