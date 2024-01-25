@@ -264,13 +264,12 @@
         let water = document.getElementById('water')
 
         document.addEventListener('anchored', (e) => {
-                console.log('parent', e.target == water.parentElement);
-                console.log('plane', e.target.plane);
 
                 if (e.target == water.parentElement && e.target.plane) {
                     let width = e.target.plane.dimensions.x - 0.01
                     let depth = e.target.plane.dimensions.z - 0.01
                     let height = width > depth ? width : depth
+                    height /= 2
                     water.water.geometry.copy(new THREE.BoxGeometry(width, depth, height))
                 }
             })
