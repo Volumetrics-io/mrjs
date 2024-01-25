@@ -304,8 +304,8 @@ export class AnchorSystem extends MRSystem {
                     (anchor) => {
                         this.anchoringQueue.delete(entity);
                         entity.anchor = anchor;
-                        entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                         entity.plane = mrPlane;
+                        entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
 
                         if (comp.occlusion == false) {
                             mrPlane.mesh.visible = false;

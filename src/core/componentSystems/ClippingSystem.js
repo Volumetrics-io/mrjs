@@ -4,6 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
+import { MRVolume } from '../entities/MRVolume';
 
 /**
  * @class ClippingSystem
@@ -79,9 +80,15 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            entity.object3D.localToWorld(this.coplanarPointA);
-            entity.object3D.localToWorld(this.coplanarPointB);
-            entity.object3D.localToWorld(this.coplanarPointC);
+            if(entity instanceof MRVolume) {
+                entity.volume.localToWorld(this.coplanarPointA);
+                entity.volume.localToWorld(this.coplanarPointB);
+                entity.volume.localToWorld(this.coplanarPointC);
+            } else {
+                entity.object3D.localToWorld(this.coplanarPointA);
+                entity.object3D.localToWorld(this.coplanarPointB);
+                entity.object3D.localToWorld(this.coplanarPointC);
+            }
 
             entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
             planeIndex += 1;
@@ -117,9 +124,15 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            entity.object3D.localToWorld(this.coplanarPointA);
-            entity.object3D.localToWorld(this.coplanarPointB);
-            entity.object3D.localToWorld(this.coplanarPointC);
+            if(entity instanceof MRVolume) {
+                entity.volume.localToWorld(this.coplanarPointA);
+                entity.volume.localToWorld(this.coplanarPointB);
+                entity.volume.localToWorld(this.coplanarPointC);
+            } else {
+                entity.object3D.localToWorld(this.coplanarPointA);
+                entity.object3D.localToWorld(this.coplanarPointB);
+                entity.object3D.localToWorld(this.coplanarPointC);
+            }
 
             const newPlane = new THREE.Plane();
             newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
