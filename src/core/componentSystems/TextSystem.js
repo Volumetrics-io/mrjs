@@ -24,15 +24,8 @@ export class TextSystem extends MRSystem {
 
         this.preloadedFonts = {};
 
-        // want this system to run based on the true/false trigger
-        this.needsSystemUpdate = true;
-
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
-
-        document.addEventListener('panel-mutated', (event) => {
-            this.needsSystemUpdate = true;
-        });
 
         styleSheets.forEach((styleSheet) => {
             const cssRules = Array.from(styleSheet.cssRules);
@@ -48,7 +41,6 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
-                        this.needsSystemUpdate = true;
                     }
                 );
             });
