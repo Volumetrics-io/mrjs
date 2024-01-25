@@ -129,7 +129,6 @@ export class TextSystem extends MRSystem {
                 }
             });
         }
-        this.needsSystemUpdate = false;
     }
 
     /**
