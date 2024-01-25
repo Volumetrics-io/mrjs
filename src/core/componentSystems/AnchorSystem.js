@@ -31,9 +31,6 @@ export class AnchorSystem extends MRSystem {
         this.cameraForward = new THREE.Vector3();
         this.pinchDistance = 0;
 
-        // want this system to run based on the true/false trigger
-        // this.needsSystemUpdate = false;
-
         this.axisSwapQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -(3 * Math.PI) / 2);
 
         this.hand = null;
@@ -61,11 +58,9 @@ export class AnchorSystem extends MRSystem {
                     this.sourceRequest = false;
                     this.source = null;
                     this.hand = null;
-                    // this.needsSystemUpdate = true;
                 });
 
                 this.sourceRequest = true;
-                // this.needsSystemUpdate = true;
             }
         });
 
@@ -102,7 +97,6 @@ export class AnchorSystem extends MRSystem {
                         this.currentEntity.anchor = anchor;
                         this.anchoringQueue.delete(this.currentEntity);
                         this.currentEntity = null;
-                        // this.needsSystemUpdate = true;
                     },
                     (error) => {
                         console.error('Could not create anchor: ' + error);
@@ -152,22 +146,15 @@ export class AnchorSystem extends MRSystem {
                 if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
                     entity.object3D.matrixAutoUpdate = false;
                     this.createAnchor(entity, anchorComp);
-                    // this.needsSystemUpdate = true;
                 } else if (entity.anchor) {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
                     entity.object3D.matrix.copy(this.adjustTransform(transform));
-                    // this.needsSystemUpdate = false;
-                }
-
-                if (this.anchoringQueue.size > 0) {
-                    // this.needsSystemUpdate = true;
                 }
             } else if (entity.anchor) {
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix);
                 this.deleteAnchor(entity);
-                // this.needsSystemUpdate = false;
             }
         }
     }
@@ -180,7 +167,6 @@ export class AnchorSystem extends MRSystem {
         entity.object3D.userData.originalMatrix = new THREE.Matrix4();
         entity.object3D.userData.originalMatrix.copy(entity.object3D.matrixWorld);
         entity.object3D.matrixAutoUpdate = false;
-        // this.needsSystemUpdate = true;
     }
 
     /**
@@ -192,7 +178,6 @@ export class AnchorSystem extends MRSystem {
         this.deleteAnchor(entity);
         // // These cases can be managed instantly
         // this.createAnchor(entity, comp);
-        // this.needsSystemUpdate = true;
     }
 
     /**
@@ -202,7 +187,6 @@ export class AnchorSystem extends MRSystem {
     detachedComponent(entity) {
         entity.object3D.matrixAutoUpdate = true;
         this.deleteAnchor(entity);
-        // this.needsSystemUpdate = true;
     }
 
     /**
@@ -256,7 +240,6 @@ export class AnchorSystem extends MRSystem {
                     entity.anchor = anchor;
                     entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                     this.anchoringQueue.delete(entity);
-                    // this.needsSystemUpdate = true;
                 },
                 (error) => {
                     console.error('Could not create anchor: ' + error);
@@ -320,7 +303,6 @@ export class AnchorSystem extends MRSystem {
                         entity.anchor = anchor;
                         entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                         entity.plane = mrPlane;
-                        // this.needsSystemUpdate = true;
 
                         if (comp.occlusion == false) {
                             mrPlane.mesh.visible = false;
