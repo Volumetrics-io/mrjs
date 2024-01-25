@@ -75,7 +75,7 @@ export class MRPlaneManager {
                         mrPlane.orientation = plane.orientation;
                         mrPlane.dimensions.setX(width);
                         mrPlane.dimensions.setY(0.001);
-                        mrPlane.dimensions.setX(height);
+                        mrPlane.dimensions.setZ(height);
 
                         const geometry = new THREE.BoxGeometry(width, 0.01, height);
                         const material = new THREE.MeshBasicMaterial({ color: 0xffffff });

@@ -65,6 +65,8 @@ export class MREntity extends MRElement {
         this.touch = false;
         this.grabbed = false;
         this.focus = false;
+
+        this.ignoreStencil = true
     }
 
     /**

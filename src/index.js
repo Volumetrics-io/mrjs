@@ -26,6 +26,7 @@ import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - ENTITIES
+import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
@@ -54,8 +55,9 @@ export { mrjsUtils } from './utils/index.js';
 export * as THREE from 'three';
 // TODO - the below is an additional addon that we're including for now. later on we will have this
 // in a separate 'addons' repo instead.
-export { Water } from 'three/examples/jsm/objects/Water2.js';
+export { Water } from 'mrjs/extras/Water.js';
 
 export * from './core/MRElement';
 export * from './core/MRSystem';
 export * from './core/MREntity';
+export * from 'mrjs/dataTypes/MRClippingGeometry';
