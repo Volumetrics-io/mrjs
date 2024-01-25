@@ -178,22 +178,22 @@
             </mr-model>
     </mr-entity>
 
-    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
-       <mr-water 
-        data-rotation="-90 0 0"             
-        data-position="0 0.5 0"            
-        id="water"></mr-water> 
+   <mr-entity id="floor" data-position="0 -1 0" data-comp-anchor="type: plane; label: floor;">
+        <mr-water   
+            id="water"></mr-water>
         <mr-entity
-        data-rotation="-90 00 0"                        
+        data-rotation="-90 00 0"    
+        data-position="0 0.25 0"                    
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
             <mr-model
-            data-rotation="90 180 0"                        
-            data-position="0 0.5 0.3"             
+            data-rotation="90 180 0"   
             src="/assets/models/animation_koifish.glb" 
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
     </mr-entity>
+
+           
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
     </mr-entity>
@@ -210,7 +210,7 @@
             </mr-model>
         </mr-entity>
       </mr-entity>
-        
+
     </mr-app>
   </body>
 
@@ -218,93 +218,54 @@
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
-        class Water extends MREntity {
-            
-            vertexShader = `
-            varying vec2 vUv;
-            varying float vWave;
-            uniform float u_time;
+        /*********** begin: mr-water entity ***********/
 
-            void main() {
-                vUv = uv;
-                vec3 pos = position;
-                float waveHeight = 0.01;
-                float waveSpeed = 2.0;
-                float waveSpeed2 = 3.0;
-                float waveFrequency = 0.2;
-                float waveFrequency2 = 1.0;
-                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
-                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
-                pos.z += wave;
-                vWave = wave;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-            }
-            `;
-
-            fragmentShader = `
-varying vec2 vUv;
-varying float vWave;
-
-void main() {
-    vec3 waterColor = vec3(0.0, 0.55, 0.5);
-    float alpha = 0.5;
-
-    // Froth effect at the crest of waves
-    float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
-    vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
-
-    // Blend water color with froth color based on wave height
-    vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
-
-    gl_FragColor = vec4(finalColor, alpha);
-}
-`;
-
-
-
+        class MRWater extends MREntity {
 
             constructor() {
                 super()
 
-                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+                const params = {
+                    color: '#00ccff',
+                    scale: 0.25,
+                    flowX: 0.5,
+                    flowY: 0.5
+                };
 
-                let material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        u_time: { value: 0.0 }
-                    },
-                    vertexShader: this.vertexShader,
-                    fragmentShader: this.fragmentShader,
-                    transparent: true
+                const waterGeometry = new THREE.PlaneGeometry(3, 3, 100, 100);
+                this.water = new Water(waterGeometry, {
+                    color: params.color,
+                    scale: params.scale,
+                    flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg', function ( texture ) {
+                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    }),
+                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg', function ( texture ) {
+                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    }),
+                    textureWidth: 1024,
+                    textureHeight: 1024
                 });
+                this.water.material.renderOrder = 3;
+                this.water.rotation.x = -Math.PI / 2.0;
+                this.water.position.y = 0.5;
+                this.object3D.add(this.water);
 
-                this.water = new THREE.Mesh(geomertry, material)
-                this.object3D.add(this.water)
-
+                // leaving for debug use later on
+                this.plane = new THREE.Mesh(waterGeometry, new THREE.MeshStandardMaterial({color: "#00ffff", transparent: "true", opacity: "0.5"}));
+                // this.plane.material.renderOrder = 2;
+                this.plane.rotation.x = -Math.PI / 2.0;
+                this.plane.position.y = 0.01;
+                this.object3D.add(this.plane);
             }
         }
 
-        class WaterSystem extends MRSystem {
-            constructor(){
-                super(false)
-                this.water = document.getElementById('water')
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
 
-                if(this.water) {
-                    this.registry.add(this.water)
-                }
-
-            }
-
-            update(deltaTime, frame) {
-                this.water.water.material.uniforms.u_time.value += deltaTime
-            }
-        }
-
-        let ws = new WaterSystem()
-
-        customElements.get('mr-water') || customElements.define('mr-water', Water);
+        /*********** end: mr-water entity ***********/
 
 
-        // let floatingAnchor = document.getElementById('floating')
+        let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
         let tableAnchor = document.getElementById('table')
         let floorAnchor = document.getElementById('floor')

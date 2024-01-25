@@ -320,7 +320,7 @@ export class MRApp extends MRElement {
         }
         this.globalLight = new THREE.AmbientLight(data.color);
         this.globalLight.intensity = data.intensity;
-        this.globalLight.position.set(0, 0, 0);
+        this.globalLight.position.set(0, 5, 0);
         this.scene.add(this.globalLight);
 
         if (!this.isMobile) {
