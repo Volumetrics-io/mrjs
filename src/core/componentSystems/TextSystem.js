@@ -92,9 +92,6 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
-                continue;
-            }
             let text;
             if (entity instanceof MRTextField || entity instanceof MRTextArea) {
                 text = entity.input.value;
@@ -113,6 +110,10 @@ export class TextSystem extends MRSystem {
                     .replace(/(\r\n|\n|\r)/gm, '')
                     .trim();
             }
+            let textContentChanged = (entity.textObj.ext != text);
+            if (!textContentChanged && !entity.needsStyleUpdate) {
+                continue;
+            }
             if (entity.textObj.text != text) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
@@ -129,7 +130,6 @@ export class TextSystem extends MRSystem {
                 }
             });
         }
-        this.needsSystemUpdate = false;
     }
 
     /**
