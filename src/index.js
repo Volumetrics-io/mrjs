@@ -26,6 +26,7 @@ import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - ENTITIES
+import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
@@ -55,3 +56,4 @@ export * as THREE from 'three';
 export * from './core/MRElement';
 export * from './core/MRSystem';
 export * from './core/MREntity';
+export * from 'mrjs/dataTypes/MRClippingGeometry';
