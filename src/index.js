@@ -55,7 +55,7 @@ export { mrjsUtils } from './utils/index.js';
 export * as THREE from 'three';
 // TODO - the below is an additional addon that we're including for now. later on we will have this
 // in a separate 'addons' repo instead.
-export { Water } from 'three/examples/jsm/objects/Water2.js';
+export { Water } from 'mrjs/extras/Water.js';
 
 export * from './core/MRElement';
 export * from './core/MRSystem';
