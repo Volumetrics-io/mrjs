@@ -169,7 +169,7 @@
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
         </mr-skybox>
 
-    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
+    <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
         <mr-model
             data-rotation="0 180 0"  
             data-position="0 0.3 0"                        
@@ -178,9 +178,9 @@
             </mr-model>
     </mr-entity>
 
-    <mr-volume id="table" data-comp-anchor="type: plane; label: table;">
-        <mr-water 
-        id="water"></mr-water> 
+    <mr-volume id="floor" data-comp-anchor="type: plane; label: floor;">
+        <mr-pond 
+        id="water"></mr-pond> 
         <mr-entity
         data-rotation="-90 0 0"
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
@@ -219,9 +219,9 @@
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
-        /*********** begin: mr-water entity ***********/
+        /*********** begin: mr-pond entity ***********/
 
-        class MRWater extends MREntity {
+        class MRPond extends MREntity {
 
             constructor() {
                 super()
@@ -233,7 +233,7 @@
                     flowY: 0.5
                 };
 
-                const waterGeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+                const waterGeometry = new THREE.PlaneGeometry(0.9, 0.9);
                 this.water = new Water(waterGeometry, {
                     color: params.color,
                     scale: params.scale,
@@ -256,9 +256,9 @@
             }
         }
 
-        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
+        customElements.get('mr-pond') || customElements.define('mr-pond', MRPond);
 
-        /*********** end: mr-water entity ***********/
+        /*********** end: mr-pond entity ***********/
 
 
         let water = document.getElementById('water')
@@ -270,7 +270,7 @@
                     let depth = e.target.plane.dimensions.z - 0.01
                     let height = width > depth ? width : depth
                     height /= 2
-                    water.water.geometry.copy(new THREE.BoxGeometry(width, depth, height))
+                    water.water.geometry.copy(new THREE.PlaneGeometry(width, depth))
                 }
             })
 
@@ -280,7 +280,7 @@
         let floorAnchor = document.getElementById('floor')
         let ceilingAnchor = document.getElementById('ceiling')
 
-        let allAnchors = [ wallAnchor, floorAnchor, ceilingAnchor]
+        let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
 
         for (const entity of allAnchors) {
             entity.object3D.visible = false
