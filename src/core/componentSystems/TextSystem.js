@@ -83,7 +83,7 @@ export class TextSystem extends MRSystem {
      * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
      */
     set needsSystemUpdate(bool) {
-        console.log('Updating a value that does not need updated. TextSystem`s `needsSystemUpdate` solely depends on registry size \
+        console.log('Updating a value that does not need updating. TextSystem`s `needsSystemUpdate` solely depends on registry size \
             instead of a boolean. This is required s.t. we can monitor and properly update the system when the text content has changed \
             and not just the style itself. Since that is a per-entity check, needsSystemUpdate must always run on every entity with \
             the needsStyleUpdate being the optimization determiner instead.');
