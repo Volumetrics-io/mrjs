@@ -89,43 +89,50 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            let text;
-            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
-                text = entity.input.value;
-                if (entity == document.activeElement) {
-                    entity.updateCursorPosition();
-                } else {
-                    entity.blur();
-                }
-            } else {
+            let isTextFieldOrArea = entity instanceof MRTextField || entity instanceof MRTextArea;
+
+            let text = isTextFieldOrArea
+                ? entity.input.value
                 // troika honors newlines/white space
                 // we want to mimic h1, p, etc which do not honor these values
                 // so we have to clean these from the text
                 // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
-                text = entity.textContent
+                : entity.textContent
                     .replace(/(\n)\s+/g, '$1')
                     .replace(/(\r\n|\n|\r)/gm, '')
                     .trim();
-            }
-            let textContentChanged = (entity.textObj.ext != text);
-            if (!textContentChanged && !entity.needsStyleUpdate) {
-                continue;
-            }
-            if (entity.textObj.text != text) {
+
+            let textContentChanged = (entity.textObj.text != text);
+
+            // Now that we know text is different or at least definitely needs an update
+            // we can go and do the larger calculations and changes.
+
+            if (textContentChanged) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
-
-            this.updateStyle(entity);
-
-            entity.textObj.sync(() => {
-                entity.needsStyleUpdate = true;
-                if (entity instanceof MRButton) {
-                    entity.textObj.anchorX = 'center';
-                } else {
-                    entity.textObj.position.setX(-entity.width / 2);
-                    entity.textObj.position.setY(entity.height / 2);
+            if (textContentChanged || entity.needsStyleUpdate) {
+                if (isTextFieldOrArea) {
+                    if (entity == document.activeElement) {
+                        entity.updateCursorPosition();
+                    } else {
+                        entity.blur();
+                    }
                 }
-            });
+
+                this.updateStyle(entity);
+
+                entity.textObj.sync(() => {
+                    if (!entity.alwaysNeedsStyleUpdate) {
+                        entity.needsStyleUpdate = true;
+                    }
+                    if (entity instanceof MRButton) {
+                        entity.textObj.anchorX = 'center';
+                    } else {
+                        entity.textObj.position.setX(-entity.width / 2);
+                        entity.textObj.position.setY(entity.height / 2);
+                    }
+                });
+            }
         }
     }
 
