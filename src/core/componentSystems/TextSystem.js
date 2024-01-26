@@ -65,7 +65,7 @@ export class TextSystem extends MRSystem {
     get needsSystemUpdate() {
         // want this to run based on registry since textChanged and style will be the determiner for if an update is needed per entity
         // instead of the system itself.
-        return this.registry.size > 0;
+        return true;
     }
 
     /**
@@ -103,35 +103,35 @@ export class TextSystem extends MRSystem {
                     .trim();
 
             let textContentChanged = (entity.textObj.text != text);
-            if (!textContentChanged && !entity.needsStyleUpdate) {
-                continue;
-            }
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.
 
-            if (isTextFieldOrArea) {
-                if (entity == document.activeElement) {
-                    entity.updateCursorPosition();
-                } else {
-                    entity.blur();
-                }
-            }
             if (textContentChanged) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
-
-            this.updateStyle(entity);
-
-            entity.textObj.sync(() => {
-                entity.needsStyleUpdate = true;
-                if (entity instanceof MRButton) {
-                    entity.textObj.anchorX = 'center';
-                } else {
-                    entity.textObj.position.setX(-entity.width / 2);
-                    entity.textObj.position.setY(entity.height / 2);
+            if (textContentChanged || entity.needsStyleUpdate) {
+                console.log('updated and textContentChanged is ' + textContentChanged + ' and entity.needsSystemUpdate is ' + entity.needsStyleUpdate);
+                if (isTextFieldOrArea) {
+                    if (entity == document.activeElement) {
+                        entity.updateCursorPosition();
+                    } else {
+                        entity.blur();
+                    }
                 }
-            });
+
+                this.updateStyle(entity);
+
+                entity.textObj.sync(() => {
+                    // entity.needsStyleUpdate = true;
+                    if (entity instanceof MRButton) {
+                        entity.textObj.anchorX = 'center';
+                    } else {
+                        entity.textObj.position.setX(-entity.width / 2);
+                        entity.textObj.position.setY(entity.height / 2);
+                    }
+                });
+            }
         }
     }
 

@@ -67,6 +67,8 @@ export class MREntity extends MRElement {
         this.focus = false;
 
         this.ignoreStencil = true
+
+        // this.needsStyleUpdate = true;
     }
 
     /**
@@ -130,7 +132,9 @@ export class MREntity extends MRElement {
      * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
      */
     get needsStyleUpdate() {
-        return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
+        console.log('this._needsStyleUpdate is: ' + this._needsStyleUpdate + ' and this.alwaysNeedsStyleUpdate is: ' + this.alwaysNeedsStyleUpdate);
+        let bool = this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
+        return bool;
     }
 
     /**
@@ -212,6 +216,7 @@ export class MREntity extends MRElement {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
+            // this.needsStyleUpdate = true;
         });
         this.loadAttributes();
 
@@ -219,35 +224,42 @@ export class MREntity extends MRElement {
 
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            // this.needsStyleUpdate = true;
         });
 
         this.addEventListener('touch-start', (event) => {
-            this.needsStyleUpdate = true;
+            // this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            this.needsStyleUpdate = true;
+            //this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            this.needsStyleUpdate = true;
+            // this.needsStyleUpdate = true;
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            this.needsStyleUpdate = true;
+            // this.needsStyleUpdate = true;
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            this.needsStyleUpdate = true;
+            // this.needsStyleUpdate = true;
             this.onHover(event);
         });
 
         this.addEventListener('child-updated', (event) => {
-            this.needsStyleUpdate = true;
+            // console.log('mr-entity: child-updated');
+            // this.needsStyleUpdate = true;
         });
 
         this.addEventListener('enterXR', (event) => {
-            this.needsStyleUpdate = true;
+            // console.log('mr-entity: enterXR');
+            // this.needsStyleUpdate = true;
+        });
+        this.addEventListener('exitXR', (event) => {
+            // console.log('mr-entity: exitXR');
+            // this.needsStyleUpdate = true;
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
@@ -325,7 +337,7 @@ export class MREntity extends MRElement {
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
-        this.needsStyleUpdate = true;
+        // this.needsStyleUpdate = true;
         for (const mutation of mutationList) {
             this.mutated(mutation);
 

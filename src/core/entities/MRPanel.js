@@ -62,6 +62,7 @@ export class MRPanel extends MRDivEntity {
         });
 
         window.addEventListener('resize', (event) => {
+            console.log('window-resized so now bubbling panel-mutated');
             this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
         });
 
