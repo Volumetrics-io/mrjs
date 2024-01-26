@@ -109,35 +109,25 @@
     <script src="./assets/js/AnimationSystem.js"></script>
     <script>
 
-        let stl = document.getElementById('stl')
-        let glb = document.getElementById('glb')
-        let glb_anim = document.getElementById('glb_anim')
-
-        let allModels = [ stl, glb, glb_anim ]
-
-        for (const entity of allModels) {
-            entity.object3D.visible = false
-        }
-
-        let panel = document.getElementById('panel')
+        let stl = document.getElementById('stl');
+        let glb = document.getElementById('glb');
+        let glb_anim = document.getElementById('glb_anim');
 
         function stl() {
-            panel.components.set('anchor', {type: 'floating'})
+            spin(stl);
         }
 
         function glb() {
-            panel.components.set('anchor', {type: 'fixed'})
+            spin(glb);
         }
 
         function glb_anim() {
-            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
-            wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
+            spin(glb_anim);
         }
 
         function reset() {
             for (const entity of allModels) {
-                entity.components.set('anchor', {occlusion: true})
-                entity.object3D.visible = false
+                stopSin(entity);
             }
         }
 
@@ -145,17 +135,17 @@
             reset()
         })
 
-      let model = document.querySelector('#logo-model')
 
-      console.log(mrjsUtils.xr.isPresenting);
+        // increases the maxspeed and acceleration of the animation component on the logo
+        function spin(modelEntity) {
+            let animationComp = modelEntity.components.get('animation')
+            modelEntity.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        }
 
-
-      // increases the maxspeed and acceleration of the animation component on the logo
-      function spin() {
-        console.log(document.querySelector('.spin-button').textObj);
-        let animationComp = model.components.get('animation')
-        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-      }
+        function stopSpin(modelEntity) {
+            let animationComp = modelEntity.components.get('animation')
+            modelEntity.components.set('animation', {})
+        }
       
     </script>
   </footer>
