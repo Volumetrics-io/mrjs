@@ -65,7 +65,7 @@ export class TextSystem extends MRSystem {
     get needsSystemUpdate() {
         // want this to run based on registry since textChanged and style will be the determiner for if an update is needed per entity
         // instead of the system itself.
-        return true;
+        return this.registry.size > 0;
     }
 
     /**

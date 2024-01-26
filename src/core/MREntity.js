@@ -67,8 +67,6 @@ export class MREntity extends MRElement {
         this.focus = false;
 
         this.ignoreStencil = true
-
-        // this.needsStyleUpdate = true;
     }
 
     /**
@@ -352,7 +350,9 @@ export class MREntity extends MRElement {
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
-        // this.needsStyleUpdate = true;
+        if (!this.alwaysNeedsStyleUpdate) {
+            this.needsStyleUpdate = true;
+        }
         for (const mutation of mutationList) {
             this.mutated(mutation);
 
