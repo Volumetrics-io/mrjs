@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -40,17 +40,21 @@
         They can be used to set the scene, bridge virtual and non-virtual situations, and set an ambiance for an area.
         </mr-text>
 
+        <mr-text class="col-2">
+        NOTE: This effect is better viewed directly in an MR headset.
+        </mr-text>
+
         <mr-text class="subtitle col-2">
             Examples
         </mr-text>
 
         <mr-div class="col-2">
 
-            <mr-button onclick="floating()" class=" label button" >
+            <mr-button onclick="night_sky()" class=" label button" >
                 Night Sky - a singular image
             </mr-button>
 
-            <mr-button onclick="fixed()" class=" label button" >
+            <mr-button onclick="daytime()" class=" label button" >
                 Daytime - multiple images
             </mr-button>
             
@@ -90,17 +94,17 @@
   <footer>
     <script>
 
-        let night_sky = document.getElementById('night_sky');
-        let daytime = document.getElementById('daytime');
+        let night_sky_entity = document.getElementById('night_sky');
+        let daytime_entity = document.getElementById('daytime');
 
         function night_sky() {
-            night_sky.object3D.visible = true;
-            daytime.object3D.visible = false;
+            night_sky_entity.object3D.visible = true;
+            daytime_entity.object3D.visible = false;
         }
 
         function daytime() {
-            night_sky.object3D.visible = false;
-            daytime.object3D.visible = true;
+            night_sky_entity.object3D.visible = false;
+            daytime_entity.object3D.visible = true;
         }
 
         function reset() {

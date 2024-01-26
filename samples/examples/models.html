@@ -46,35 +46,43 @@
         </mr-text>
 
         <mr-div class="col-2">
-
             <mr-button onclick="stl()" class=" label button" >
                 stl
             </mr-button>
+        </mr-div>
+        <mr-div class="col-2">
+            <mr-model 
+                id="stl"
+                src="/assets/models/logo.stl">
+            </mr-model>
+        </mr-div>
 
-        <mr-model 
-        id="stl"
-        src="/assets/models/logo.stl">
-        </mr-model>
-
+        <mr-div class="col-2">
             <mr-button onclick="glb()" class=" label button" >
                 glb
             </mr-button>
-
+        </mr-div>
+        <mr-div class="col-2">
             <mr-model 
-        id="glb"
-        src="../assets/models/island3.glb">
-    </mr-model>
+                id="glb"
+                style="scale: 0.00815"
+                src="../assets/models/island3.glb">
+            </mr-model>
+        </mr-div>
 
+        <mr-div class="col-2">
             <mr-button onclick="glb_anim()" class=" label button" >
                 glb - with animation
             </mr-button>
-
-            <mr-model 
-        id="glb_anim"
-        src="../assets/models/animation_koifish.glb">
-    </mr-model>
-            
         </mr-div>
+        <mr-div class="col-2">
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025"
+                src="../assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
         <mr-text class="col-2 subtitle" >
         model
         </mr-text>
@@ -93,17 +101,6 @@
         </mr-text>
       
     </mr-panel>
-
-    <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
-        <mr-model
-            data-rotation="0 180 0"  
-            data-position="0 0.3 0"                        
-            src="../assets/models/island3.glb" 
-            style="scale: 0.1">
-            </mr-model>
-    </mr-entity>
-
-
 
     </mr-app>
   </body>
