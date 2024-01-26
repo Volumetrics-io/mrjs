@@ -111,7 +111,6 @@ export class TextSystem extends MRSystem {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
             if (textContentChanged || entity.needsStyleUpdate) {
-                console.log('updated and textContentChanged is ' + textContentChanged + ' and entity.needsSystemUpdate is ' + entity.needsStyleUpdate);
                 if (isTextFieldOrArea) {
                     if (entity == document.activeElement) {
                         entity.updateCursorPosition();
@@ -123,7 +122,9 @@ export class TextSystem extends MRSystem {
                 this.updateStyle(entity);
 
                 entity.textObj.sync(() => {
-                    // entity.needsStyleUpdate = true;
+                    if (!entity.alwaysNeedsStyleUpdate) {
+                        entity.needsStyleUpdate = true;
+                    }
                     if (entity instanceof MRButton) {
                         entity.textObj.anchorX = 'center';
                     } else {
