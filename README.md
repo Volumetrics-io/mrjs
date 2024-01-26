@@ -1,44 +1,52 @@
 # mrjs
 
-[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
+![The mrjs logo](https://docs.mrjs.io/static/mrjs_nopadding.svg)
 
 An extensible WebComponents library for the Spatial Web
+
+[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
  
 ## Overview
  
-mrjs is a Mixed Reality first, webXR UI library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+mrjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
  
 ## Getting started
  
-CDN:
+### Via a script tag in the `<head>` of your HTML file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>
+<head>
+    …
+    <script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>
+    …
+</head>
 ```
 
-NPM:
+### Via NPM:
 
 ```sh
 npm i mrjs
 ```
 
-from source:
+### From source:
 
-clone this repo and run:
+> You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
+
+First, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) and then run:
 
 ```sh
 npm install && npm run build
 ```
 
-in headset testing:
+To test in headset:
 
 ```sh
 npm run server
 ```
 
-Documentation:
+### Documentation:
 
-Check [docs.mrjs.io](https://docs.mrjs.io) for the full documentation or our [repo](https://github.com/Volumetrics-io/documentation).
+Check [docs.mrjs.io](https://docs.mrjs.io) for the full documentation or our [repository](https://github.com/Volumetrics-io/documentation).
 
 For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads up, order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repo itself our action will handle that for you and default to use the right version for these automatically generated docs.
 
