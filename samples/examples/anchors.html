@@ -178,7 +178,7 @@
             </mr-model>
     </mr-entity>
 
-    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor; occlusion: false">
+    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
         <mr-water 
         id="water"></mr-water> 
         <mr-entity
@@ -245,6 +245,7 @@
                 });
 
                 this.water.material.clipping = true;
+                this.water.rotation.x = -Math.PI / 2
                 this.water.position.y = 0.3;
                 this.object3D.add(this.water);
 
