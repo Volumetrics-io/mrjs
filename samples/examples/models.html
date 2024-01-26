@@ -51,13 +51,28 @@
                 stl
             </mr-button>
 
+        <mr-model 
+        id="stl"
+        src="/assets/models/logo.stl">
+        </mr-model>
+
             <mr-button onclick="glb()" class=" label button" >
                 glb
             </mr-button>
 
+            <mr-model 
+        id="glb"
+        src="../assets/models/island3.glb">
+    </mr-model>
+
             <mr-button onclick="glb_anim()" class=" label button" >
                 glb - with animation
             </mr-button>
+
+            <mr-model 
+        id="glb_anim"
+        src="../assets/models/animation_koifish.glb">
+    </mr-model>
             
         </mr-div>
         <mr-text class="col-2 subtitle" >
@@ -83,46 +98,34 @@
         <mr-model
             data-rotation="0 180 0"  
             data-position="0 0.3 0"                        
-            src="/assets/models/island3.glb" 
+            src="../assets/models/island3.glb" 
             style="scale: 0.1">
             </mr-model>
     </mr-entity>
 
-    <mr-model 
-        id="stl"
-        src="/assets/models/logo.stl">
-    </mr-model>
-    <mr-model 
-        id="glb"
-        src="/assets/models/island3.glb">
-    </mr-model>
-    <mr-model 
-        id="glb_anim"
-        src="/assets/models/island3.animation_koifish.glb">
-    </mr-model>
 
-        
+
     </mr-app>
   </body>
 
   <footer>
-    <script src="./assets/js/AnimationSystem.js"></script>
+    <script src="../assets/js/AnimationSystem.js"></script>
     <script>
 
-        let stl = document.getElementById('stl');
-        let glb = document.getElementById('glb');
-        let glb_anim = document.getElementById('glb_anim');
+        let stl_entity = document.getElementById('stl');
+        let glb_entity = document.getElementById('glb');
+        let glb_anim_entity = document.getElementById('glb_anim');
 
         function stl() {
-            spin(stl);
+            spin(stl_entity);
         }
 
         function glb() {
-            spin(glb);
+            spin(glb_entity);
         }
 
         function glb_anim() {
-            spin(glb_anim);
+            spin(glb_anim_entity);
         }
 
         function reset() {
