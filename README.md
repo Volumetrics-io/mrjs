@@ -1,5 +1,3 @@
-# mrjs
-
 ![The mrjs logo](https://docs.mrjs.io/static/mrjs_nopadding.svg)
 
 An extensible WebComponents library for the Spatial Web
