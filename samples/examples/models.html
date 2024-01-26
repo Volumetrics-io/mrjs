@@ -45,6 +45,21 @@
         Click on any of the below buttons to make it spin and see which model was loaded for that file type.
         </mr-text>
 
+ <!-- <mr-div class="diptych">
+        <mr-div class="gapped padded section">
+            <mr-text class="h2">Open-source and extendable</mr-text>
+            <mr-text class="narrow">Built on top of web standards, you can implement custom elements and
+                contribute to the
+                ecosystem.</mr-text>
+        </mr-div>
+        <mr-div class="section">
+            <mr-div class="illustration">
+                <mr-model style="scale: 0.03; z-index: 10" src="./assets/koifish.glb"></mr-model>
+            </mr-div>
+        </mr-div>
+    </mr-div> -->
+
+
         <mr-div class="col-2">
             <mr-button onclick="stl()" class=" label button" >
                 stl
@@ -53,6 +68,7 @@
         <mr-div class="col-2">
             <mr-model 
                 id="stl"
+                style="scale: 0.0005;"
                 src="/assets/models/logo.stl">
             </mr-model>
         </mr-div>
@@ -65,7 +81,7 @@
         <mr-div class="col-2">
             <mr-model 
                 id="glb"
-                style="scale: 0.00815"
+                style="scale: 0.00815; z-index: 10"
                 src="../assets/models/island3.glb">
             </mr-model>
         </mr-div>
@@ -78,7 +94,7 @@
         <mr-div class="col-2">
             <mr-model 
                 id="glb_anim"
-                style="scale: 0.025"
+                style="scale: 0.025; z-index: 12"
                 src="../assets/models/animation_koifish.glb">
             </mr-model>
         </mr-div>
