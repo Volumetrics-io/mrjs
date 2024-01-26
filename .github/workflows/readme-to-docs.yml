@@ -60,7 +60,7 @@ jobs:
           commit_message=$'👷 MR.js - Auto Generated README to Index Update 👷\n\nChanges at '"${GITHUB_SHA}"
           git add .
           git commit -m "$commit_message"
-          git push --quiet --set-upstream origin HEAD
+          git push --quiet --set-upstream origin HEAD --force
         else
           echo "No changes detected. Exiting without committing."
         fi
