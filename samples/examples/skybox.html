@@ -57,6 +57,10 @@
             <mr-button onclick="daytime()" class=" label button" >
                 Daytime - multiple images
             </mr-button>
+
+            <mr-button onclick="cycle()" class=" label button" >
+                Cycle / Fade between them and reality
+            </mr-button>
             
         </mr-div>
         <mr-text class="col-2 subtitle" >
@@ -94,6 +98,24 @@
   <footer>
     <script>
 
+        /**** fade system ****/
+
+        class FadeSystem extends System {
+            constructor() {
+                super();
+                this.skyboxes = document.querySelectorAll("mr-skybox");
+
+            }
+            update(deltaTime, frame) {
+                this.skyboxes.forEach(skybox => {
+                    skybox.opacityLoop()
+                });
+            }
+        }
+        var fade = new FadeSystem();
+
+        /**** skyboxes ****/
+
         let night_sky_entity = document.getElementById('night_sky');
         let daytime_entity = document.getElementById('daytime');
 
@@ -109,6 +131,42 @@
 
         function reset() {
             night_sky();
+        }
+
+        function cycle() {
+            let count = time / 30;
+            night_sky_entity.setOpacity(count....lerp);
+            daytime_entity.setOpacity(0);
+                skybox0.setOpacity(0);
+                skybox1.setOpacity(0);
+                skybox2.setOpacity(0);
+                skybox3.setOpacity(0);
+                island.object3D.visible = false;
+            } else if (container.shuttle.position.y < 0.05) {
+                skybox0.setOpacity(0.5);
+                skybox1.setOpacity(0);
+                skybox2.setOpacity(0);
+                skybox3.setOpacity(0);
+                island.object3D.visible = true;
+            } else if (container.shuttle.position.y < 0.6) {
+                skybox0.setOpacity(0.5);
+                skybox1.setOpacity(1);
+                skybox2.setOpacity(0);
+                skybox3.setOpacity(0);
+                island.object3D.visible = true;
+            } else if (container.shuttle.position.y < 1.4) {
+                skybox0.setOpacity(0.5);
+                skybox1.setOpacity(1);
+                skybox2.setOpacity(1);
+                skybox3.setOpacity(0);
+                island.object3D.visible = true;
+            } else if (container.shuttle.position.y < 10) {
+                skybox0.setOpacity(0);
+                skybox1.setOpacity(0);
+                skybox2.setOpacity(0);
+                skybox3.setOpacity(0);
+                island.object3D.visible = false;
+            }
         }
 
         document.addEventListener('exitXR', () => {
