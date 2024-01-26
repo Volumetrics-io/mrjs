@@ -199,6 +199,7 @@
     bottom: -10vh;
     left: 50%;
     transform: translateX(-50%);
+    style: block;
   }
 
   .headset {

@@ -34,31 +34,28 @@
         </mr-text>
         
         <mr-text class="col-2">
-        Anchors enhance your spatial app by taking advantage of the real world environment.
-        </mr-text>
-        <mr-text class="col-2">
-        They can be used for table top games, turning any room into a virtual gallery, or ripping open the ceiling to get a view of another world
+        Models can enhance the 3D interactive experience of mixed reality making you feel the blend of virtual and real environment more realistically.
         </mr-text>
 
         <mr-text class="subtitle col-2">
             Examples
         </mr-text>
 
+        <mr-text class="col-2">
+        Click on any of the below buttons to make it spin and see which model was loaded for that file type.
+        </mr-text>
+
         <mr-div class="col-2">
 
-            <mr-button onclick="floating()" class=" label button" >
-                gltf
-            </mr-button>
-
-            <mr-button onclick="fixed()" class=" label button" >
-                glb
-            </mr-button>
-
-            <mr-button onclick="floor()" class=" label button" >
+            <mr-button onclick="stl()" class=" label button" >
                 stl
             </mr-button>
 
-            <mr-button onclick="fixed()" class=" label button" >
+            <mr-button onclick="glb()" class=" label button" >
+                glb
+            </mr-button>
+
+            <mr-button onclick="glb_anim()" class=" label button" >
                 glb - with animation
             </mr-button>
             
@@ -77,86 +74,10 @@
 
         <mr-text class="col-2">
         You fill this out as you would any `src` attribute on an <img/> or <video/> html tag. 
-        That is, with the 
-        </mr-text>
-
-        <mr-text class="label-2 col-2">
-        fixed
-        </mr-text>
-
-        <mr-text class="col-2">
-         positions the anchored element directly in front of the user whenever an XR sessions is started.
-        </mr-text>
-
-        <mr-text class="label-2 col-2">
-        floating
-        </mr-text>
-
-        <mr-text class="col-2">
-            allows the user to place the anchored element where they choose using a look/pinch gesture. The user can place it floating in their space or on the scene mesh
-        </mr-text>
-
-        <mr-text class="label-2 col-2">
-        plane
-        </mr-text>
-
-        <mr-text class="col-2">
-            anchors the element to the nearest plane that matches the specified label or orientation.
-        </mr-text>
-        <mr-text class="col-2">
-            if no label or orientation is specified, the element will be anchored to the nearest plane.
-        </mr-text>
-
-        <mr-text class="subtitle col-2">
-            Plane anchor attributes
-        </mr-text>
-
-        <mr-text class="col-2">
-            These attributes are only relevant to plane anchors
-        </mr-text>
-
-        <mr-text class="label col-2">
-        orientation
-        </mr-text>
-
-        <mr-text class="col-2">
-        This attribute is useful when you wish to anchor to a plane of any given orientation, regardless of label.
-        </mr-text>
-
-        <mr-text class="col-2">
-        supported values: horizontal, vertical
-        </mr-text>
-
-        <mr-text class="label col-2">
-        label (optional)
-        </mr-text>
-
-        <mr-text class="col-2">
-        Use this to target a specific type of plane, such as a table or wall.
-        </mr-text>
-
-        <mr-text class="col-2">
-        supported values: wall, floor, ceiling, table
-        </mr-text>
-
-        <mr-text class="label col-2">
-        occlusion
-        </mr-text>
-
-        <mr-text class="col-2">
-        by default, planes occlude virtual content behind them, use this flag disable occlusion.
-        </mr-text>
-
-        <mr-text class="col-2">
-        values: true (default), false
+        That is, with the path to the file to be loaded (for example `/assets/foo.glb`)
         </mr-text>
       
     </mr-panel>
-
-    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
-        data-position="0 -200 0"
-        data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-        </mr-skybox>
 
     <mr-entity id="table" data-comp-anchor="type: plane; label: table;">
         <mr-model
@@ -167,176 +88,54 @@
             </mr-model>
     </mr-entity>
 
-    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
-       <mr-water 
-        data-rotation="-90 0 0"             
-        data-position="0 0.5 0"            
-        id="water"></mr-water> 
-        <mr-entity
-        data-rotation="-90 00 0"                        
-        data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
-            <mr-model
-            data-rotation="90 180 0"                        
-            data-position="0 0.5 0.3"             
-            src="/assets/models/animation_koifish.glb" 
-            style="scale: 0.05">
-            </mr-model>
-        </mr-entity>
-    </mr-entity>
+    <mr-model 
+        id="stl"
+        src="/assets/models/logo.stl">
+    </mr-model>
+    <mr-model 
+        id="glb"
+        src="/assets/models/island3.glb">
+    </mr-model>
+    <mr-model 
+        id="glb_anim"
+        src="/assets/models/island3.animation_koifish.glb">
+    </mr-model>
 
-    <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
-    </mr-entity>
-
-    <mr-entity id="wall" data-comp-anchor="type: plane; label: wall;">
-        <mr-entity
-        data-rotation="-110 0 0"                        
-        data-position="0 -100 -800"  
-        data-comp-animation="type: rotate; maxspeed: -0.001; acceleration: 0.000008;">
-            <mr-model
-            data-rotation="90 0 0"             
-            src="/assets/models/Mars.glb" 
-            style="scale: 1">
-            </mr-model>
-        </mr-entity>
-      </mr-entity>
         
     </mr-app>
   </body>
 
   <footer>
-    <script src="/assets/js/AnimationSystem.js"></script>
+    <script src="./assets/js/AnimationSystem.js"></script>
     <script>
 
-        class Water extends MREntity {
-            
-            vertexShader = `
-            varying vec2 vUv;
-            varying float vWave;
-            uniform float u_time;
+        let stl = document.getElementById('stl')
+        let glb = document.getElementById('glb')
+        let glb_anim = document.getElementById('glb_anim')
 
-            void main() {
-                vUv = uv;
-                vec3 pos = position;
-                float waveHeight = 0.01;
-                float waveSpeed = 2.0;
-                float waveSpeed2 = 3.0;
-                float waveFrequency = 0.2;
-                float waveFrequency2 = 1.0;
-                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
-                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
-                pos.z += wave;
-                vWave = wave;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-            }
-            `;
+        let allModels = [ stl, glb, glb_anim ]
 
-            fragmentShader = `
-varying vec2 vUv;
-varying float vWave;
-
-void main() {
-    vec3 waterColor = vec3(0.0, 0.55, 0.5);
-    float alpha = 0.5;
-
-    // Froth effect at the crest of waves
-    float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
-    vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
-
-    // Blend water color with froth color based on wave height
-    vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
-
-    gl_FragColor = vec4(finalColor, alpha);
-}
-`;
-
-
-
-
-            constructor() {
-                super()
-
-                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
-
-                let material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        u_time: { value: 0.0 }
-                    },
-                    vertexShader: this.vertexShader,
-                    fragmentShader: this.fragmentShader,
-                    transparent: true
-                });
-
-                this.water = new THREE.Mesh(geomertry, material)
-                this.object3D.add(this.water)
-
-            }
-        }
-
-        class WaterSystem extends MRSystem {
-            constructor(){
-                super(false)
-                this.water = document.getElementById('water')
-
-                if(this.water) {
-                    this.registry.add(this.water)
-                }
-
-            }
-
-            update(deltaTime, frame) {
-                this.water.water.material.uniforms.u_time.value += deltaTime
-            }
-        }
-
-        let ws = new WaterSystem()
-
-        customElements.get('mr-water') || customElements.define('mr-water', Water);
-
-
-        // let floatingAnchor = document.getElementById('floating')
-        let wallAnchor = document.getElementById('wall')
-        let tableAnchor = document.getElementById('table')
-        let floorAnchor = document.getElementById('floor')
-        let ceilingAnchor = document.getElementById('ceiling')
-
-        let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
-
-        for (const entity of allAnchors) {
+        for (const entity of allModels) {
             entity.object3D.visible = false
         }
 
         let panel = document.getElementById('panel')
 
-        function floating() {
+        function stl() {
             panel.components.set('anchor', {type: 'floating'})
         }
 
-        function fixed() {
+        function glb() {
             panel.components.set('anchor', {type: 'fixed'})
         }
 
-        function wall() {
+        function glb_anim() {
             wallAnchor.object3D.visible = !wallAnchor.object3D.visible
             wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
         }
 
-        function table() {
-            tableAnchor.object3D.visible = !tableAnchor.object3D.visible
-        }
-
-        function floor() {
-            floorAnchor.object3D.visible = !floorAnchor.object3D.visible
-
-        }
-
-        function ceiling() {
-            ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
-            ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
-
-        }
-
         function reset() {
-            for (const entity of allAnchors) {
+            for (const entity of allModels) {
                 entity.components.set('anchor', {occlusion: true})
                 entity.object3D.visible = false
             }
@@ -345,6 +144,18 @@ void main() {
         document.addEventListener('exitXR', () => {
             reset()
         })
+
+      let model = document.querySelector('#logo-model')
+
+      console.log(mrjsUtils.xr.isPresenting);
+
+
+      // increases the maxspeed and acceleration of the animation component on the logo
+      function spin() {
+        console.log(document.querySelector('.spin-button').textObj);
+        let animationComp = model.components.get('animation')
+        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+      }
       
     </script>
   </footer>
