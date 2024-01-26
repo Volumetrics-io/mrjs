@@ -41,10 +41,6 @@
             Examples
         </mr-text>
 
-        <mr-text class="col-2">
-        Click on any of the below buttons to make it spin and see which model was loaded for that file type.
-        </mr-text>
-
  <!-- <mr-div class="diptych">
         <mr-div class="gapped padded section">
             <mr-text class="h2">Open-source and extendable</mr-text>
@@ -59,39 +55,30 @@
         </mr-div>
     </mr-div> -->
 
-
-        <mr-div class="col-2">
-            <mr-button onclick="stl()" class=" label button" >
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
                 stl
-            </mr-button>
-        </mr-div>
-        <mr-div class="col-2">
+            </mr-text>
             <mr-model 
                 id="stl"
                 style="scale: 0.0005;"
                 src="/assets/models/logo.stl">
             </mr-model>
         </mr-div>
-
-        <mr-div class="col-2">
-            <mr-button onclick="glb()" class=" label button" >
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
                 glb
-            </mr-button>
-        </mr-div>
-        <mr-div class="col-2">
+            </mr-text>
             <mr-model 
                 id="glb"
                 style="scale: 0.00815; z-index: 10"
                 src="../assets/models/island3.glb">
             </mr-model>
         </mr-div>
-
-        <mr-div class="col-2">
-            <mr-button onclick="glb_anim()" class=" label button" >
-                glb - with animation
-            </mr-button>
-        </mr-div>
-        <mr-div class="col-2">
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                glb - anim
+            </mr-text>
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12"
@@ -123,46 +110,5 @@
 
   <footer>
     <script src="../assets/js/AnimationSystem.js"></script>
-    <script>
-
-        let stl_entity = document.getElementById('stl');
-        let glb_entity = document.getElementById('glb');
-        let glb_anim_entity = document.getElementById('glb_anim');
-
-        function stl() {
-            spin(stl_entity);
-        }
-
-        function glb() {
-            spin(glb_entity);
-        }
-
-        function glb_anim() {
-            spin(glb_anim_entity);
-        }
-
-        function reset() {
-            for (const entity of allModels) {
-                stopSin(entity);
-            }
-        }
-
-        document.addEventListener('exitXR', () => {
-            reset()
-        })
-
-
-        // increases the maxspeed and acceleration of the animation component on the logo
-        function spin(modelEntity) {
-            let animationComp = modelEntity.components.get('animation')
-            modelEntity.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-        }
-
-        function stopSpin(modelEntity) {
-            let animationComp = modelEntity.components.get('animation')
-            modelEntity.components.set('animation', {})
-        }
-      
-    </script>
   </footer>
 </html>

@@ -112,6 +112,13 @@
     z-index: 25;
   }
 
+  .links {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vw;
+    margin-bottom: 10px;
+  }
+
   #logo-model{
     scale: 0.0005;
   }
