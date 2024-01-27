@@ -123,6 +123,7 @@
             constructor() {
                 super();
                 this.skyboxes = document.querySelectorAll("mr-skybox");
+                console.log(this.skyboxes);
                 this.cycling = false;
 
             }
@@ -166,28 +167,36 @@
         let starmap_entity = document.getElementById('starmap');
 
         function night_sky() {
+            console.log('night_sky');
+            console.log('before:');
+            console.log(fade.skyboxes);
             reset();
-            night_sky_entity.object3D.visible = true;
-            starmap_entity.object3D.visible = false;
+            night_sky_entity.setOpacity(1);
+            console.log('after');
+            console.log(fade.skyboxes);
         }
 
         function starmap() {
+            console.log('starmap');
             reset();
-            night_sky_entity.object3D.visible = false;
-            starmap_entity.object3D.visible = true;
+            starmap_entity.setOpacity(1);
         }
 
         function cycle() {
+            console.log('cycle');
             reset();
             fade.cycling = true;
         }
 
         function reset() {
+            console.log('reset');
             fade.cycling = false;
+            console.log('skyboxes:');
             for (let i = 0; i < fade.skyboxes.length; ++i) {
                 // Ensure all skyboxes are not visible
                 fade.skyboxes[i].setOpacity(0);
             }
+            console.log(fade.skyboxes);
         }
 
         document.addEventListener('enterXR', () => {

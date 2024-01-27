@@ -64,8 +64,6 @@ export class MRSkyBox extends MREntity {
         const geometry = new THREE.SphereGeometry(900, 32, 16);
 
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
-        console.log('this.skybox:');
-        console.log(this.skybox);
         this.object3D.add(this.skybox);
         this.skybox.rotateX(90);
     }
@@ -73,6 +71,7 @@ export class MRSkyBox extends MREntity {
     setOpacity(opacity) {
         if (this.skybox) {
             this.skybox.material.opacity = opacity;
+            this.skybox.needsUpdate = true;
         }
     }
 
