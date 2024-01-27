@@ -169,13 +169,11 @@
 
         function night_sky() {
             reset();
-            // night_sky_entity.object3D.visible = true;
             night_sky_entity.setOpacity = 1;
         }
 
         function starmap() {
             reset();
-            // starmap_entity.object3D.visible = true;
             starmap_entity.setOpacity = 1;
         }
 
@@ -188,7 +186,6 @@
             fade.cycling = false;
             for (let i = 0; i < fade.skyboxes.length; ++i) {
                 // Ensure all skyboxes are not visible
-                // fade.skyboxes[i].object3D.visible = false;
                 fade.skyboxes[i].setOpacity = 0;
             }
         }
