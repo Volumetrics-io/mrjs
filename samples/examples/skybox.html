@@ -177,29 +177,29 @@
             starmap_entity.object3D.visible = true;
         }
 
+        function cycle() {
+            reset();
+            fade.cycling = true;
+        }
+
         function reset() {
             fade.cycling = false;
             for (let i = 0; i < fade.skyboxes.length; ++i) {
                 // Ensure all skyboxes are not visible
                 fade.skyboxes[i].setOpacity(0);
             }
-            starmap();
-        }
-
-        function cycle() {
-            fade.cycling = true;
         }
 
         document.addEventListener('enterXR', () => {
-            reset()
+            reset();
         });
 
         document.addEventListener("DOMContentLoaded", (event) => {
-            reset()
+            reset();
         });
 
         document.addEventListener('exitXR', () => {
-            reset()
+            reset();
         });
       
     </script>

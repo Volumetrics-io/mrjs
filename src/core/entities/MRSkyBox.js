@@ -70,6 +70,12 @@ export class MRSkyBox extends MREntity {
         this.skybox.rotateX(90);
     }
 
+    setOpacity(opacity) {
+        if (this.skybox) {
+            this.skybox.material.opacity = opacity;
+        }
+    }
+
     /**
      * @function
      * @description On load event function - right now defaults to do nothing.
