@@ -132,7 +132,7 @@
         }
 
         function reset() {
-            night_sky();
+            daytime();
         }
 
         function cycle() {
@@ -173,11 +173,15 @@
 
         document.addEventListener('enterXR', () => {
             reset()
-        })
+        });
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+            reset()
+        });
 
         document.addEventListener('exitXR', () => {
             reset()
-        })
+        });
       
     </script>
   </footer>

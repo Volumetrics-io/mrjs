@@ -75,8 +75,6 @@ export class MRModel extends MREntity {
                 // For loaders that return the object directly
                 // For ex: STL
                 loadedMeshModel = result;
-                console.log('stl: ');
-                console.log(loadedMeshModel);
             }
 
             this.object3D.add(loadedMeshModel);
