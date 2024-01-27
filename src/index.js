@@ -56,6 +56,8 @@ export * as THREE from 'three';
 // TODO - the below is an additional addon that we're including for now. later on we will have this
 // in a separate 'addons' repo instead.
 export { Water } from 'mrjs/extras/Water.js';
+export { Refractor } from 'mrjs/extras/Refractor.js';
+export { WaterRefractionShader } from 'three/examples/jsm/shaders/WaterRefractionShader.js';
 
 export * from './core/MRElement';
 export * from './core/MRSystem';

@@ -178,9 +178,9 @@
             </mr-model>
     </mr-entity>
 
-    <mr-volume id="floor" data-comp-anchor="type: plane; label: floor;">
-        <mr-pond 
-        id="water"></mr-pond> 
+    <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
+        <mr-water 
+        id="water"></mr-water> 
         <mr-entity
         data-rotation="-90 0 0"
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
@@ -192,7 +192,7 @@
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
-    </mr-volume>
+    </mr-entity>
 
            
 
@@ -219,9 +219,9 @@
     <script src="/assets/js/AnimationSystem.js"></script>
     <script>
 
-        /*********** begin: mr-pond entity ***********/
+        /*********** begin: mr-water entity ***********/
 
-        class MRPond extends MREntity {
+        class MRWater extends MREntity {
 
             constructor() {
                 super()
@@ -238,27 +238,24 @@
                     color: params.color,
                     scale: params.scale,
                     flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
-                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg', function ( texture ) {
-                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    }),
-                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg', function ( texture ) {
-                      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    }),
+                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg'),
+                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg'),
                     textureWidth: 1024,
                     textureHeight: 1024
                 });
-                this.water.material.renderOrder = 1;
+
                 this.water.material.clipping = true;
-                this.water.rotation.x = -Math.PI / 2.0;
+                this.water.rotation.x = -Math.PI / 2
                 this.water.position.y = 0.3;
                 this.object3D.add(this.water);
 
             }
         }
 
-        customElements.get('mr-pond') || customElements.define('mr-pond', MRPond);
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
 
-        /*********** end: mr-pond entity ***********/
+
+        /*********** end: mr-water entity ***********/
 
 
         let water = document.getElementById('water')
