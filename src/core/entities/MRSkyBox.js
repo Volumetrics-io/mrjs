@@ -65,7 +65,20 @@ export class MRSkyBox extends MREntity {
 
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
-        this.skybox.rotateX(90);
+    }
+
+    setOpacity(val) {
+        // if (this.skybox) {
+        //     this.skybox.material.opacity = val;
+        //     this.skybox.material.needsUpdate = true;
+        // }
+        this.object3D.traverse(child => {
+            if (child.isMesh) {
+                child.material.transparent = true;
+                child.material.opacity = val;
+                child.material.needsUpdate = true;
+            }
+        });
     }
 
     /**

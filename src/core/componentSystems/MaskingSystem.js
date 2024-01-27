@@ -140,16 +140,9 @@ export class MaskingSystem extends MRSystem {
                 }
             }
 
-            // this separation for MRTextEntity is a temporary fix associated with other XXX change above.
-            if (entity instanceof MRTextEntity) {
-                entity.object3D.traverse((child) => {
-                    runTheTraversal.call(this, child);
-                });
-            } else {
-                entity.traverse((child) => {
-                    runTheTraversal.call(this, child);
-                });
-            }
+            entity.traverse((child) => {
+                runTheTraversal.call(this, child);
+            });
         }
     }
 }
