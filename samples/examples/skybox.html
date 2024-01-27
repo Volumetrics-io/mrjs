@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app debug="true">
+   <mr-app>
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -60,6 +60,10 @@
 
             <mr-button onclick="cycle()" class=" label button" >
                 Cycle
+            </mr-button>
+
+            <mr-button onclick="reset()" class=" label button" >
+                Reset
             </mr-button>
             
         </mr-div>
@@ -191,34 +195,26 @@
         let starmap_entity = document.getElementById('starmap');
 
         function night_sky() {
-            console.log('night_sky');
             reset();
             night_sky_entity.object3D.visible = true;
-            console.log(night_sky_entity.object3D);
         }
 
         function starmap() {
-            console.log('starmap');
             reset();
             starmap_entity.object3D.visible = true;
-            console.log(starmap_entity);
         }
 
         function cycle() {
-            console.log('cycle');
             reset();
             fade.cycling = true;
         }
 
         function reset() {
-            console.log('reset');
             fade.cycling = false;
-            console.log('skyboxes:');
             for (let i = 0; i < fade.skyboxes.length; ++i) {
                 // Ensure all skyboxes are not visible
                 fade.skyboxes[i].object3D.visible = false;
             }
-            console.log(fade.skyboxes);
         }
 
         document.addEventListener('enterXR', () => {
