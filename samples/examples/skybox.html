@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app debug="false">
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -97,8 +97,8 @@
         </mr-skybox> -->
 
     <mr-skybox id="surreal"
-        src="/assets/textures/skybox_surreal.jpg"
-        data-position="0 -200 0">
+        src="/assets/textures/skybox_surreal.jpg">
+        <!-- data-position="0 -200 0"> -->
         </mr-skybox>
 
     <mr-skybox id="watercolor"
@@ -168,18 +168,16 @@
 
         function night_sky() {
             console.log('night_sky');
-            console.log('before:');
-            console.log(fade.skyboxes);
             reset();
             night_sky_entity.setOpacity(1);
-            console.log('after');
-            console.log(fade.skyboxes);
+            console.log(night_sky_entity.object3D);
         }
 
         function starmap() {
             console.log('starmap');
             reset();
             starmap_entity.setOpacity(1);
+            console.log(starmap_entity);
         }
 
         function cycle() {
