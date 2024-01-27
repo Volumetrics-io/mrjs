@@ -166,18 +166,23 @@
         let starmap_entity = document.getElementById('starmap');
 
         function night_sky() {
-            fade.cycling = false;
+            reset();
             night_sky_entity.object3D.visible = true;
             starmap_entity.object3D.visible = false;
         }
 
         function starmap() {
-            fade.cycling = false;
+            reset();
             night_sky_entity.object3D.visible = false;
             starmap_entity.object3D.visible = true;
         }
 
         function reset() {
+            fade.cycling = false;
+            for (let i = 0; i < fade.skyboxes.length; ++i) {
+                // Ensure all skyboxes are not visible
+                this.skyboxes[i].setOpacity(0);
+            }
             starmap();
         }
 
