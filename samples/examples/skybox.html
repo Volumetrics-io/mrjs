@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -135,56 +135,54 @@
             update(deltaTime, frame) {
                 if (!this.cycling) { return; }
 
-                let num_seconds = 5;
-
-                let totalCycleTime = this.skyboxes.length * num_seconds;
-
-                // Get current time in milliseconds and convert to seconds
-                let currentTime = new Date().getTime() / 1000;
-
-                // Use modulus to cycle time
-                let time = currentTime % totalCycleTime;
-
-                // Determine the current skybox index
-                let currentSkyboxIndex = Math.floor(time / num_seconds);
-
-                for (let i = 0; i < this.skyboxes.length; ++i) {
-                    if (i === currentSkyboxIndex) {
-                        // Make the current skybox visible
-                        this.skyboxes[i].object3D.visible = true;
-                    } else {
-                        // Ensure all other skyboxes are not visible
-                        this.skyboxes[i].object3D.visible = false;
-                    }
-                }
-
-                // TODO - switch to the below when opacity functionality works again
-                // let num_seconds = 10;
+                // // Get current time in milliseconds and convert to seconds
+                // // and use it to grab our actual skybox index.
+                // let num_seconds = 5;
                 // let totalCycleTime = this.skyboxes.length * num_seconds;
-                // let time = deltaTime % totalCycleTime;
-                
-                // // Determine the current and next skybox index
+                // let currentTime = new Date().getTime() / 1000;
+                // let time = currentTime % totalCycleTime;
                 // let currentSkyboxIndex = Math.floor(time / num_seconds);
-                // let nextSkyboxIndex = (currentSkyboxIndex + 1) % this.skyboxes.length;
-                
-                // // Calculate blend factor (0 to 1)
-                // let blendFactor = (time % num_seconds) / num_seconds;
 
                 // for (let i = 0; i < this.skyboxes.length; ++i) {
                 //     if (i === currentSkyboxIndex) {
-                //         // Set the opacity or visibility factor of the current skybox
-                //         // based on (1 - blendFactor) because it should be fully visible at the start
-                //         // and blend out towards the end
-                //         this.skyboxes[i].setOpacity(1 - blendFactor);
-                //     } else if (i === nextSkyboxIndex) {
-                //         // Set the opacity or visibility factor of the next skybox
-                //         // based on blendFactor because it should start invisible and blend in
-                //         this.skyboxes[i].setOpacity(blendFactor);
+                //         // Make the current skybox visible
+                //         this.skyboxes[i].object3D.visible = true;
                 //     } else {
                 //         // Ensure all other skyboxes are not visible
-                //         this.skyboxes[i].setOpacity(0);
+                //         this.skyboxes[i].object3D.visible = false;
                 //     }
                 // }
+
+                // TODO - switch to the below when opacity functionality works again
+
+                // Get current time in milliseconds and convert to seconds
+                // and use it to grab our actual skybox index.
+                let num_seconds = 5;
+                let totalCycleTime = this.skyboxes.length * num_seconds;
+                let currentTime = new Date().getTime() / 1000;
+                let time = currentTime % totalCycleTime;
+                
+                let currentSkyboxIndex = Math.floor(time / num_seconds);
+                let nextSkyboxIndex = (currentSkyboxIndex + 1) % this.skyboxes.length;
+                
+                // Calculate blend factor (0 to 1)
+                let blendFactor = (time % num_seconds) / num_seconds;
+
+                for (let i = 0; i < this.skyboxes.length; ++i) {
+                    if (i === currentSkyboxIndex) {
+                        // Set the opacity or visibility factor of the current skybox
+                        // based on (1 - blendFactor) because it should be fully visible at the start
+                        // and blend out towards the end
+                        this.skyboxes[i].setOpacity = (1 - blendFactor);
+                    } else if (i === nextSkyboxIndex) {
+                        // Set the opacity or visibility factor of the next skybox
+                        // based on blendFactor because it should start invisible and blend in
+                        this.skyboxes[i].setOpacity = blendFactor;
+                    } else {
+                        // Ensure all other skyboxes are not visible
+                        this.skyboxes[i].setOpacity = 0;
+                    }
+                }
             }
         }
         var fade = new FadeSystem();
@@ -196,12 +194,14 @@
 
         function night_sky() {
             reset();
-            night_sky_entity.object3D.visible = true;
+            // night_sky_entity.object3D.visible = true;
+            night_sky_entity.setOpacity = 1;
         }
 
         function starmap() {
             reset();
-            starmap_entity.object3D.visible = true;
+            // starmap_entity.object3D.visible = true;
+            starmap_entity.setOpacity = 1;
         }
 
         function cycle() {
@@ -213,7 +213,8 @@
             fade.cycling = false;
             for (let i = 0; i < fade.skyboxes.length; ++i) {
                 // Ensure all skyboxes are not visible
-                fade.skyboxes[i].object3D.visible = false;
+                // fade.skyboxes[i].object3D.visible = false;
+                fade.skyboxes[i].setOpacity = 0;
             }
         }
 
