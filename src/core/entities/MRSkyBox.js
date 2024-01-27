@@ -69,10 +69,17 @@ export class MRSkyBox extends MREntity {
     }
 
     setOpacity(val) {
-        if (this.skybox) {
-            this.skybox.material.opacity = val;
-            this.skybox.material.needsUpdate = true;
-        }
+        // if (this.skybox) {
+        //     this.skybox.material.opacity = val;
+        //     this.skybox.material.needsUpdate = true;
+        // }
+        this.object3D.traverse(child => {
+            if (child.isMesh) {
+                child.material.transparent = true;
+                child.material.opacity = val;
+                child.material.needsUpdate = true;
+            }
+        });
     }
 
     /**
