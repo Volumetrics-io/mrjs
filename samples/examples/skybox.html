@@ -51,15 +51,15 @@
         <mr-div class="col-2">
 
             <mr-button onclick="night_sky()" class=" label button" >
-                Night Sky - a singular image
+                Night Sky
             </mr-button>
 
-            <mr-button onclick="daytime()" class=" label button" >
-                Daytime - multiple images
+            <mr-button onclick="starmap()" class=" label button" >
+                Starmap
             </mr-button>
 
             <mr-button onclick="cycle()" class=" label button" >
-                Cycle / Fade between them and reality
+                Cycle
             </mr-button>
             
         </mr-div>
@@ -76,20 +76,39 @@
         </mr-text>
 
         <mr-text class="col-2">
-        This src tag can be to singular skybox image file or to a folder with a list of textures image files within it. 
-        Internally the system handles how they are loaded so the scene looks right.
+        This src tag is a singular skybox image file.
         </mr-text>
       
     </mr-panel>
 
     <mr-skybox id="night_sky" 
-        src="/assets/textures/skybox_starmap_4k.jpg"
+        src="/assets/textures/skybox_milkyway.jpg">
+        <!-- data-position="0 -200 0"> -->
+        </mr-skybox>
+
+    <mr-skybox id="starmap" 
+        src="/assets/textures/skybox_starmap_4k.jpg">
+        <!-- data-position="0 -200 0"> -->
+        </mr-skybox>
+
+<!--     <mr-skybox id="daytime" 
+        src="/assets/textures/skybox_daytime/nx.jpg, /assets/textures/skybox_daytime/ny.jpg, /assets/textures/skybox_daytime/nz.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/py.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/pz.jpg"
+        data-position="0 -200 0">
+        </mr-skybox> -->
+
+    <mr-skybox id="surreal"
+        src="/assets/textures/skybox_surreal.jpg"
         data-position="0 -200 0">
         </mr-skybox>
 
-    <mr-skybox id="daytime" 
-        src="/assets/textures/skybox_daytime"
-        data-position="0 -200 0">
+    <mr-skybox id="watercolor"
+        src="/assets/textures/skybox_watercolor01.jpg">
+        <!-- data-position="0 -200 0"> -->
+        </mr-skybox>
+
+    <mr-skybox id="room" 
+        src="/assets/textures/skybox_hdri.jpg">
+        <!-- data-position="0 -200 0"> -->
         </mr-skybox>
         
     </mr-app>
@@ -98,77 +117,72 @@
   <footer>
     <script>
 
-        // /**** fade system ****/
+        /**** fade system ****/
 
-        // class FadeSystem extends System {
-        //     constructor() {
-        //         super();
-        //         this.skyboxes = document.querySelectorAll("mr-skybox");
+        class FadeSystem extends MRSystem {
+            constructor() {
+                super();
+                this.skyboxes = document.querySelectorAll("mr-skybox");
+                this.cycling = false;
 
-        //     }
-        //     update(deltaTime, frame) {
-        //         this.skyboxes.forEach(skybox => {
-        //             skybox.opacityLoop()
-        //         });
-        //     }
-        // }
-        // var fade = new FadeSystem();
+            }
+
+            update(deltaTime, frame) {
+                if (!this.cycling) { return; }
+
+                let num_seconds = 10;
+                let totalCycleTime = this.skyboxes.length * num_seconds;
+                let time = deltaTime % totalCycleTime;
+                
+                // Determine the current and next skybox index
+                let currentSkyboxIndex = Math.floor(time / num_seconds);
+                let nextSkyboxIndex = (currentSkyboxIndex + 1) % this.skyboxes.length;
+                
+                // Calculate blend factor (0 to 1)
+                let blendFactor = (time % num_seconds) / num_seconds;
+
+                for (let i = 0; i < this.skyboxes.length; ++i) {
+                    if (i === currentSkyboxIndex) {
+                        // Set the opacity or visibility factor of the current skybox
+                        // based on (1 - blendFactor) because it should be fully visible at the start
+                        // and blend out towards the end
+                        this.skyboxes[i].setOpacity(1 - blendFactor);
+                    } else if (i === nextSkyboxIndex) {
+                        // Set the opacity or visibility factor of the next skybox
+                        // based on blendFactor because it should start invisible and blend in
+                        this.skyboxes[i].setOpacity(blendFactor);
+                    } else {
+                        // Ensure all other skyboxes are not visible
+                        this.skyboxes[i].setOpacity(0);
+                    }
+                }
+            }
+        }
+        var fade = new FadeSystem();
 
         /**** skyboxes ****/
 
         let night_sky_entity = document.getElementById('night_sky');
-        console.log(night_sky_entity);
-        let daytime_entity = document.getElementById('daytime');
-        console.log(daytime_entity);
+        let starmap_entity = document.getElementById('starmap');
 
         function night_sky() {
+            fade.cycling = false;
             night_sky_entity.object3D.visible = true;
-            daytime_entity.object3D.visible = false;
+            starmap_entity.object3D.visible = false;
         }
 
-        function daytime() {
+        function starmap() {
+            fade.cycling = false;
             night_sky_entity.object3D.visible = false;
-            daytime_entity.object3D.visible = true;
+            starmap_entity.object3D.visible = true;
         }
 
         function reset() {
-            daytime();
+            starmap();
         }
 
         function cycle() {
-            // let count = time / 30;
-            // night_sky_entity.setOpacity(count....lerp);
-            // daytime_entity.setOpacity(0);
-            //     skybox0.setOpacity(0);
-            //     skybox1.setOpacity(0);
-            //     skybox2.setOpacity(0);
-            //     skybox3.setOpacity(0);
-            //     island.object3D.visible = false;
-            // } else if (container.shuttle.position.y < 0.05) {
-            //     skybox0.setOpacity(0.5);
-            //     skybox1.setOpacity(0);
-            //     skybox2.setOpacity(0);
-            //     skybox3.setOpacity(0);
-            //     island.object3D.visible = true;
-            // } else if (container.shuttle.position.y < 0.6) {
-            //     skybox0.setOpacity(0.5);
-            //     skybox1.setOpacity(1);
-            //     skybox2.setOpacity(0);
-            //     skybox3.setOpacity(0);
-            //     island.object3D.visible = true;
-            // } else if (container.shuttle.position.y < 1.4) {
-            //     skybox0.setOpacity(0.5);
-            //     skybox1.setOpacity(1);
-            //     skybox2.setOpacity(1);
-            //     skybox3.setOpacity(0);
-            //     island.object3D.visible = true;
-            // } else if (container.shuttle.position.y < 10) {
-            //     skybox0.setOpacity(0);
-            //     skybox1.setOpacity(0);
-            //     skybox2.setOpacity(0);
-            //     skybox3.setOpacity(0);
-            //     island.object3D.visible = false;
-            // }
+            fade.cycling = true;
         }
 
         document.addEventListener('enterXR', () => {
