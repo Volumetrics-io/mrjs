@@ -65,7 +65,6 @@ export class MRSkyBox extends MREntity {
 
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
-        // this.skybox.rotateX(90);
     }
 
     setOpacity(val) {
