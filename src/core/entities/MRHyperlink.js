@@ -15,6 +15,14 @@ export default class MRHyperlink extends MRTextEntity {
         this.object3D.name = 'hyperlink';
     }
 
+    get href() {
+        return this.getAttribute('href');
+    }
+
+    set href(src_str) {
+        this.link.setAttribute('href', src_str);
+    }
+
     /**
      *
      */
