@@ -429,6 +429,7 @@ export class MRApp extends MRElement {
             mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
             this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
+            console.log('enter xr');
 
             mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);

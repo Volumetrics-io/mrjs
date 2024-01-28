@@ -218,8 +218,6 @@ export class MREntity extends MRElement {
         });
         this.loadAttributes();
 
-        this.connected();
-
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             if (!this.alwaysNeedsStyleUpdate) {
@@ -270,18 +268,19 @@ export class MREntity extends MRElement {
             }
         });
 
-        this.addEventListener('enterXR', (event) => {
+        document.addEventListener('enterXR', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
-        this.addEventListener('exitXR', (event) => {
+        document.addEventListener('exitXR', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        this.connected();
     }
 
     /**
