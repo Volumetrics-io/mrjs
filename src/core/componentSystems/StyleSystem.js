@@ -32,15 +32,8 @@ export class StyleSystem extends MRSystem {
                 continue;
             }
 
-            if(entity instanceof MRModel) {
-                console.log(entity);
-            }
-
             let panel = entity.closest('mr-panel')
             if(panel) {
-                if(entity instanceof MRModel) {
-                    console.log('scale');
-                }
                 entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * panel.width : 1);
             } else {
                 entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
