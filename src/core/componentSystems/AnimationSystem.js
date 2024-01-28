@@ -16,7 +16,7 @@ export class AnimationSystem extends MRSystem {
      * @description AnimationSystem's default constructor.
      */
     constructor() {
-        super(false);
+        super();
     }
 
     /**
@@ -50,29 +50,57 @@ export class AnimationSystem extends MRSystem {
      * @param {object} frame - Additional frame information, not used in the current implementation but can be utilized for future enhancements.
      */
     update(deltaTime, frame) {
-        for (const mixer of this.registry) {
-            if (mixer) {
-                mixer.update(deltaTime);
+        for (const entity of this.registry) {
+            if (entity.mixer) {
+                entity.mixer.update(deltaTime);
             }
         }
     }
 
-    /**
-     * @function
-     * @description Called when a new entity is added to the scene. Handles masking elements to their panel.
-     * @param {MREntity} entity - the entity being added.
-     */
-    onNewEntity(entity) {
+    attachedComponent(entity) {
+        let comp = entity.components.get('animation')
         if (entity instanceof MRModel && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
-            const mixer = new THREE.AnimationMixer(entity.object3D);
-            entity.animations.forEach((clip) => {
-                mixer.clipAction(clip).play();
-            });
-            this.registry.add(mixer);
+            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            this.setAnimation(entity, comp)
+        }
+    }
 
-            // Optional: Store the mixer in the Model instance for easy access
-            entity.mixer = mixer;
+    updatedComponent(entity) {
+        let comp = entity.components.get('animation')
+        if (entity instanceof MRModel && entity.animations.length > 0) {
+            this.setAnimation(entity, comp)
+        }
+    }
+
+    detachedComponent(entity) {
+        entity.mixer.stopAllActions()
+    }
+
+    onNewEntity(entity) {
+        if (entity instanceof MRModel && entity.animations.length > 0) {
+            let comp = entity.components.get('animation')
+            if(!comp) { return }
+            this.registry.add(entity)
+            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            this.setAnimation(entity, comp)
+        }
+    }
+
+    setAnimation(entity, comp) {
+        let clip = entity.animations[comp.clip]
+        switch (comp.action) {
+            case 'play':
+                entity.mixer.clipAction(clip).play();
+                break;
+            case 'pause':
+                entity.mixer.clipAction(clip).pause();
+                break;
+            case 'stop':
+                entity.mixer.clipAction(clip).stop();
+                break;
+            default:
+                break;
         }
     }
 }

@@ -28,7 +28,7 @@ export class MREntity extends MRElement {
 
         set: (name, data) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]);
+            const component = mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]) ?? {};
             for (const key in data) {
                 component[key] = data[key];
             }

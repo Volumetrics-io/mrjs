@@ -91,6 +91,8 @@ export class MRModel extends MREntity {
 
             this.loaded = true
 
+            this.onLoad()
+
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
