@@ -110,7 +110,7 @@ export class MREntity extends MRElement {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
-    _needsStyleUpdate = undefined;
+    _needsStyleUpdate = false;
 
     /**
      * @function
@@ -218,8 +218,6 @@ export class MREntity extends MRElement {
         });
         this.loadAttributes();
 
-        this.connected();
-
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             if (!this.alwaysNeedsStyleUpdate) {
@@ -264,18 +262,25 @@ export class MREntity extends MRElement {
             }
         });
 
-        this.addEventListener('enterXR', (event) => {
+        window.addEventListener('resize', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
-        this.addEventListener('exitXR', (event) => {
+
+        document.addEventListener('enterXR', (event) => {
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
+        document.addEventListener('exitXR', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        this.connected();
     }
 
     /**
@@ -350,14 +355,14 @@ export class MREntity extends MRElement {
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
-        if (!this.alwaysNeedsStyleUpdate) {
-            this.needsStyleUpdate = true;
-        }
         for (const mutation of mutationList) {
             this.mutated(mutation);
 
             switch (mutation.type) {
                 case 'childList':
+                    if (!this.alwaysNeedsStyleUpdate) {
+                        this.needsStyleUpdate = true;
+                    }
                     break;
                 case 'attributes':
                     if (mutation.attributeName.includes('comp')) {

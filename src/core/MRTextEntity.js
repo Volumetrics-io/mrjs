@@ -32,6 +32,12 @@ export class MRTextEntity extends MRDivEntity {
                 this.needsStyleUpdate = true;
             }
         });
+
+        document.addEventListener('font-loaded', () => {
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
     }
 
     /**
