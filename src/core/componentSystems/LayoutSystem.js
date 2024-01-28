@@ -78,7 +78,7 @@ export class LayoutSystem extends MRSystem {
         const appRect = this.app.getBoundingClientRect();
 
         const innerWidth = mrjsUtils.xr.isPresenting ? window.innerWidth : global.appWidth;
-        const innerHeight = mrjsUtils.xr.isPresenting ? mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION : global.appHeight;
+        const innerHeight = mrjsUtils.xr.isPresenting ? window.innerHeight : global.appHeight;
 
         // Calculate the center of the viewport
         const centerX = innerWidth / 2;
