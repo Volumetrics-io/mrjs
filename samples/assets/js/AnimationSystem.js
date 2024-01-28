@@ -1,4 +1,4 @@
-class AnimationSystem extends MRSystem {
+class RotationSystem extends MRSystem {
     constructor() {
         super()
 
@@ -34,4 +34,4 @@ class AnimationSystem extends MRSystem {
     }
 }
 
-let animSystem = new AnimationSystem()
+// let animSystem = new RotationSystem()

@@ -95,6 +95,7 @@ export class MRApp extends MRElement {
         this.observer.observe(this, { attributes: true, childList: true });
 
         this.layoutSystem = new LayoutSystem();
+        this.textSystem = new TextSystem();
         this.styleSystem = new StyleSystem();
         this.audioSystem = new AudioSystem();
 
@@ -103,7 +104,6 @@ export class MRApp extends MRElement {
             this.physicsWorld = new mrjsUtils.Physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
-            this.textSystem = new TextSystem();
             this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
 

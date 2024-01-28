@@ -110,7 +110,7 @@ export class MREntity extends MRElement {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
-    _needsStyleUpdate = undefined;
+    _needsStyleUpdate = false;
 
     /**
      * @function
@@ -259,6 +259,12 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('child-updated', (event) => {
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
+
+        window.addEventListener('resize', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
