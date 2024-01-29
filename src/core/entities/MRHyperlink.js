@@ -15,11 +15,20 @@ export default class MRHyperlink extends MRTextEntity {
         this.object3D.name = 'hyperlink';
     }
 
+    _createLink() {
+        if (!this.link) {
+            this.link = document.createElement('a');
+            this.link.setAttribute('href', (this.getAttribute('href') ?? undefined));
+        }
+    }
+
     get href() {
-        return this.getAttribute('href');
+        this._createLink();
+        return this.link.getAttribute('href');
     }
 
     set href(src_str) {
+        this._createLink();
         this.link.setAttribute('href', src_str);
     }
 
@@ -28,8 +37,7 @@ export default class MRHyperlink extends MRTextEntity {
      */
     connected() {
         super.connected();
-        this.link = document.createElement('a');
-        this.link.setAttribute('href', this.getAttribute('href'));
+        this._createLink();
 
         this.addEventListener('touch-start', () => {
             this.classList.add('active');
