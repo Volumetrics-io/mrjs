@@ -62,10 +62,31 @@ export class MRTextEntity extends MRDivEntity {
         const children = Array.from(this.object3D.children);
         for (const child of children) {
             // if o is an object, traverse it again
-            if ((!child) instanceof MREntity) {
+            if ((!child instanceof MREntity)) {
                 continue;
             }
             child.traverse(callBack);
+        }
+    }
+
+    /**
+     * @function
+     * @description Runs the passed through function on this object and every child of this object.
+     * @param {Function} callBack - the function to run recursively.
+     */
+    traverse(mainCallback, handleRootSpecially=false, rootCallBack = () => { /* default behavior here */ }) {
+        if (handleRootSpecially) {
+            rootCallBack(this);
+        } else {
+            mainCallback(this);
+        }
+
+        const children = Array.from(this.object3D.children);
+        for (const child of children) {
+            if (!(child instanceof MREntity)) {
+                continue;
+            }
+            child.traverse(mainCallback);
         }
     }
 }

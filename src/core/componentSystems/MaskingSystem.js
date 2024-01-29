@@ -33,7 +33,7 @@ export class MaskingSystem extends MRSystem {
         this.childStencilMaterial.stencilRef = -1; // our default unset
 
         this.panels = [];
-        this.nonPanels = [];
+        this.overflow = [];
     }
 
     /**
@@ -86,15 +86,27 @@ export class MaskingSystem extends MRSystem {
             return false;
         }
 
+        function isOverflowHidden(entity) {
+            let borderRadius = entity.compStyle.overflow;
+            var radii = borderRadius.split(' ');
+            for (var i = 0; i < radii.length; i++) {
+                var radius = parseFloat(radii[i]);
+                if (radius > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         let masking = false;
 
-        if (mrjsUtils.JS.isInstanceOfBaseClassOnly(entity, MRDivEntity) && hasNonZeroBorderRadius(entity)) {
+        if (!(entity instanceof MRPanel) && entity.compStyle.overflow === 'hidden') {
             console.log('checking:');
             console.log(entity);
-            console.log('style - border radius: ');
-            console.log(entity.compStyle.borderRadius);
+            console.log('style - overflow: ');
+            console.log(entity.compStyle.overflow);
 
-            this.nonPanels.push(entity);
+            this.overflow.push(entity);
             masking = true;
         } else if (entity instanceof MRPanel) {
             // Using an array for the panels in case we need them for more manipulations down the line instead
@@ -118,28 +130,33 @@ export class MaskingSystem extends MRSystem {
             // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
             // passed through this function since that case is an edge case that will not be expected.
 
-            /**
-             *
-             * @param child
-             */
-            function runTheTraversal(child) {
-                // TODO - still need to update the below - remove stronger basis on MRPanel and make sure have way
-                // to set first child's material different than rest of children
-                
-                if (child instanceof MRPanel && child.object3D.isGroup) {
+
+            function funcForEntity(entity) {
+                let mesh;
+                if (entity instanceof MRPanel) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
-                    let mesh = child.background;
-                    if (this.app.debug) {
-                        mesh.material.color.set(0xff00ff); // pink
-                    }
-                    mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
-                    mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
-                    mesh.material.stencilRef = stencilRef;
-                    mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
+                    mesh = entity.background;
+                } else if (!entity.object3D.isGroup) {
+                    mesh = entity.object3D;
+                } else {
+                    // ignoring the group case.
+                    return; 
+                }
 
-                    mesh.material.needsUpdate = true;
-                } else if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
+                if (this.app.debug) {
+                    mesh.material.color.set(0xff00ff); // pink
+                }
+                mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
+                mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
+                mesh.material.stencilRef = stencilRef;
+                mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
+
+                mesh.material.needsUpdate = true;
+            }
+
+            function funcForEntityChildren(child) {
+                if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.
@@ -170,9 +187,7 @@ export class MaskingSystem extends MRSystem {
                 }
             }
 
-            entity.traverse((child) => {
-                runTheTraversal.call(this, child);
-            });
+            entity.traverse(funcForEntityChildren, true, funcForEntity);
         }
     }
 }

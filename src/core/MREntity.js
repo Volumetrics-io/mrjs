@@ -450,6 +450,23 @@ export class MREntity extends MRElement {
             child.traverse(callBack);
         }
     }
+
+    traverse(mainCallback, handleRootSpecially=false, rootCallBack = () => { /* default behavior here */ }) {
+        if (handleRootSpecially) {
+            rootCallBack(this);
+        } else {
+            mainCallback(this);
+        }
+
+        const children = Array.from(this.children);
+        for (const child of children) {
+            if (!(child instanceof MREntity)) {
+                continue;
+            }
+            child.traverse(mainCallback);
+        }
+    }
+
 }
 
 customElements.get('mr-entity') || customElements.define('mr-entity', MREntity);
