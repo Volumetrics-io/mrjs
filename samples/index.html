@@ -44,7 +44,7 @@
             Examples
           </mr-text>
         <mr-div class="links col-2">
-          <mr-a class="example-link" id=link>
+          <mr-a class="example-link" href="https://mrjs.io/examples/anchors.html">
             Anchoring
           </mr-a>
           <mr-a class="example-link" href="https://mrjs.io/examples/audio.html">
@@ -116,13 +116,6 @@
         let animationComp = model.components.get('animation')
         model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
       }
-
-      function changeHref() {
-        console.log(document.getElementById("link"));
-        // document.getElementById("link").href = "https://mrjs.io";
-        document.getElementById("link").setAttribute("href", "https://mrjs.io");
-      }
-      changeHref();
 
       
     </script>
