@@ -9,6 +9,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
+    <style>
+      mr-app {
+    line-height: 100%;
+    font-family: system-ui;
+    font-size: 16px;
+}
+
+mr-panel {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+.nav {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    width: calc(100% - 40px);
+    height: 72px;
+    background-color: black;
+    padding: 0px 20px 0px 0px;
+    border-radius: 16px;
+    top: 100px;
+    left: 20px;
+    align-items: center;
+}
+
+.logo-image {
+    display: block;
+    width: 144px;
+    height: 72px;
+}
+
+</style>
    <mr-app debug="true">
       <mr-panel class="layout">
         <mr-div id="navbar">

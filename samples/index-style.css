@@ -223,6 +223,7 @@
   }
 
   .headset {
+    border-radius: 16px;
     grid-row: 2 / 5;
     grid-column: 1 / -1;
     object-fit: cover;

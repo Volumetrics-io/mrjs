@@ -33,6 +33,7 @@ export class MaskingSystem extends MRSystem {
         this.childStencilMaterial.stencilRef = -1; // our default unset
 
         this.panels = [];
+        this.nonPanels = [];
     }
 
     /**
@@ -72,14 +73,37 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity.maskChildren) {
-            ...
+
+        function hasNonZeroBorderRadius(entity) {
+            let borderRadius = entity.compStyle.borderRadius;
+            var radii = borderRadius.split(' ');
+            for (var i = 0; i < radii.length; i++) {
+                var radius = parseFloat(radii[i]);
+                if (radius > 0) {
+                    return true;
+                }
+            }
+            return false;
         }
-        if (entity instanceof MRPanel) {
+
+        let masking = false;
+
+        if (mrjsUtils.JS.isInstanceOfBaseClassOnly(entity, MRDivEntity) && hasNonZeroBorderRadius(entity)) {
+            console.log('checking:');
+            console.log(entity);
+            console.log('style - border radius: ');
+            console.log(entity.compStyle.borderRadius);
+
+            this.nonPanels.push(entity);
+            masking = true;
+        } else if (entity instanceof MRPanel) {
             // Using an array for the panels in case we need them for more manipulations down the line instead
             // of using the system's registry.
             this.panels.push(entity);
+            masking = true;
+        }
 
+        if (masking) {
             // Need to set stencilRef for the children of this panel to match that of this panel so
             // that when rendering the children they only mask based on the panel's geometry location instead
             // of all panel geometry locations.
@@ -88,7 +112,7 @@ export class MaskingSystem extends MRSystem {
             // We're basing our stencilRef on the 1+index location (ie length of array at adding) of the panel entity.
             // Even though we're not manually using this stencilRef in the render loop, threejs handles its use
             // internally.
-            const stencilRef = this.panels.length;
+            const stencilRef = this.panels.length + this.nonPanels.length;
 
             // Currently this setup will not be able to handle properly if there is a panel within another
             // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
@@ -99,6 +123,9 @@ export class MaskingSystem extends MRSystem {
              * @param child
              */
             function runTheTraversal(child) {
+                // TODO - still need to update the below - remove stronger basis on MRPanel and make sure have way
+                // to set first child's material different than rest of children
+                
                 if (child instanceof MRPanel && child.object3D.isGroup) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
