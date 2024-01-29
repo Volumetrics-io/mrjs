@@ -99,30 +99,35 @@ export class MaskingSystem extends MRSystem {
             // We're basing our stencilRef on the 1+index location (ie length of array at adding) of the panel entity.
             // Even though we're not manually using this stencilRef in the render loop, threejs handles its use
             // internally.
-            const stencilRef = this.panels.length + this.nonPanels.length;
+            const stencilRef = this.panels.length + this.overflow.length;
 
             function funcForEntity(entity) {
-                let mesh;
+
+                console.log('on entity root');
+                console.log(entity);
+
                 if (entity instanceof MRPanel) {
+                    console.log('mr-panel');
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
-                    mesh = entity.background;
-                } else if (!entity.object3D.isGroup) {
-                    mesh = entity.object3D;
+                    let mesh = entity.background;
+
+                    if (this.app.debug) {
+                        mesh.material.color.set(0xff00ff); // pink
+                    }
+                    mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
+                    mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
+                    mesh.material.stencilRef = stencilRef;
+                    mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
+
+                    mesh.material.needsUpdate = true;
                 } else {
-                    // ignoring the group case.
-                    return; 
-                }
+                    console.log('on overflow=hidden');
+                    // Is non-panel item that has overflow set to 'hidden'.
 
-                if (this.app.debug) {
-                    mesh.material.color.set(0xff00ff); // pink
-                }
-                mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
-                mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
-                mesh.material.stencilRef = stencilRef;
-                mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
 
-                mesh.material.needsUpdate = true;
+                }
+                
             }
 
             function funcForEntityChildren(child) {
@@ -130,6 +135,9 @@ export class MaskingSystem extends MRSystem {
                 // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
                 // passed through the onNewEntity function originally since that case is an edge case that will
                 // not be expected. Hence in this 'funcForEntityChildren', we ignore all MRPanel children.
+
+                console.log('on entity child');
+                console.log(child);
 
                 if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
@@ -162,7 +170,7 @@ export class MaskingSystem extends MRSystem {
                 }
             }
 
-            entity.traverse(funcForEntityChildren, true, funcForEntity);
+            entity.traverse(funcForEntityChildren.bind(this), true, funcForEntity.bind(this));
         }
     }
 }

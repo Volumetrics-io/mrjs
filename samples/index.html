@@ -31,6 +31,7 @@ mr-panel {
     background-color: black;
     padding: 0px 20px 0px 0px;
     border-radius: 16px;
+    overflow: hidden;
     top: 100px;
     left: 20px;
     align-items: center;
@@ -143,7 +144,6 @@ mr-panel {
 
       console.log(mrjsUtils.xr.isPresenting);
 
-
       // increases the maxspeed and acceleration of the animation component on the logo
       function spin() {
         console.log(document.querySelector('.spin-button').textObj);
@@ -151,7 +151,6 @@ mr-panel {
         model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
       }
 
-      
     </script>
   </footer>
 </html>
