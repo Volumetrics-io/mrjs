@@ -21,16 +21,16 @@ export class MaskingSystem extends MRSystem {
 
         // Configure materials
 
-        this.panelStencilMaterial = new THREE.MeshBasicMaterial();
-        this.panelStencilMaterial.stencilWrite = true;
-        this.panelStencilMaterial.stencilFunc = THREE.AlwaysStencilFunc;
-        this.panelStencilMaterial.stencilRef = -1; // our default unset
-        this.panelStencilMaterial.stencilZPass = THREE.ReplaceStencilOp;
+        this.maskingStencilMaterial = new THREE.MeshBasicMaterial();
+        this.maskingStencilMaterial.stencilWrite = true;
+        this.maskingStencilMaterial.stencilFunc = THREE.AlwaysStencilFunc;
+        this.maskingStencilMaterial.stencilRef = -1; // our default unset
+        this.maskingStencilMaterial.stencilZPass = THREE.ReplaceStencilOp;
 
-        this.objectStencilMaterial = new THREE.MeshBasicMaterial();
-        this.objectStencilMaterial.stencilWrite = true;
-        this.objectStencilMaterial.stencilFunc = THREE.EqualStencilFunc;
-        this.objectStencilMaterial.stencilRef = -1; // our default unset
+        this.childStencilMaterial = new THREE.MeshBasicMaterial();
+        this.childStencilMaterial.stencilWrite = true;
+        this.childStencilMaterial.stencilFunc = THREE.EqualStencilFunc;
+        this.childStencilMaterial.stencilRef = -1; // our default unset
 
         this.panels = [];
     }
@@ -72,6 +72,9 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
+        if (entity.maskChildren) {
+            ...
+        }
         if (entity instanceof MRPanel) {
             // Using an array for the panels in case we need them for more manipulations down the line instead
             // of using the system's registry.
@@ -103,10 +106,10 @@ export class MaskingSystem extends MRSystem {
                     if (this.app.debug) {
                         mesh.material.color.set(0xff00ff); // pink
                     }
-                    mesh.material.stencilWrite = this.panelStencilMaterial.stencilWrite;
-                    mesh.material.stencilFunc = this.panelStencilMaterial.stencilFunc;
+                    mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
+                    mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
                     mesh.material.stencilRef = stencilRef;
-                    mesh.material.stencilZPass = this.panelStencilMaterial.stencilZPass;
+                    mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
 
                     mesh.material.needsUpdate = true;
                 } else if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
@@ -120,8 +123,8 @@ export class MaskingSystem extends MRSystem {
                         if (this.app.debug) {
                             child.object3D.material.color.set(0xffff00); // yellow
                         }
-                        child.object3D.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
-                        child.object3D.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                        child.object3D.material.stencilWrite = this.childStencilMaterial.stencilWrite;
+                        child.object3D.material.stencilFunc = this.childStencilMaterial.stencilFunc;
                         child.object3D.material.stencilRef = stencilRef;
 
                         child.object3D.material.needsUpdate = true;
@@ -131,8 +134,8 @@ export class MaskingSystem extends MRSystem {
                     // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
                     // to entity.object3D.userData.ignoreStencil
                     if (child instanceof MRTextEntity) {
-                        child.textObj.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
-                        child.textObj.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
+                        child.textObj.material.stencilWrite = this.childStencilMaterial.stencilWrite;
+                        child.textObj.material.stencilFunc = this.childStencilMaterial.stencilFunc;
                         child.textObj.material.stencilRef = stencilRef;
 
                         child.textObj.material.needsUpdate = true;

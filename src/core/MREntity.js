@@ -66,7 +66,8 @@ export class MREntity extends MRElement {
         this.grabbed = false;
         this.focus = false;
 
-        this.ignoreStencil = true
+        this.ignoreStencil = true;
+        this.maskChildren = false;
     }
 
     /**
