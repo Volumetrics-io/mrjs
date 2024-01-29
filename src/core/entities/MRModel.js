@@ -17,6 +17,7 @@ export class MRModel extends MREntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+        this.loaded = false
 
         // Store animations for the AnimationSystem to use
         // Need to store this separately from the model, because with
@@ -51,6 +52,8 @@ export class MRModel extends MREntity {
      */
     set src(value) {
         this.setAttribute('src', value);
+        this.loaded = false
+        this.loadModel()
     }
 
     /**
@@ -86,6 +89,10 @@ export class MRModel extends MREntity {
                 this.animations = animations;
             }
 
+            this.loaded = true
+
+            this.onLoad()
+
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
@@ -98,7 +105,7 @@ export class MRModel extends MREntity {
      * Includes loading up the model and associated data.
      */
     connected() {
-        if (!this.src) {
+        if (!this.src || this.loaded) {
             return;
         }
 

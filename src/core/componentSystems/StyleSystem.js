@@ -4,6 +4,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MRImage } from 'mrjs/core/entities/MRImage';
+import { MRModel } from '../entities/MRModel';
 
 /**
  * @class StyleSystem
@@ -30,7 +31,13 @@ export class StyleSystem extends MRSystem {
             if (!entity.needsStyleUpdate) {
                 continue;
             }
-            entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
+
+            let panel = entity.closest('mr-panel')
+            if(panel) {
+                entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * panel.width : 1);
+            } else {
+                entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
+            }
             if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
                 entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));

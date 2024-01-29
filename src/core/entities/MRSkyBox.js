@@ -65,7 +65,21 @@ export class MRSkyBox extends MREntity {
 
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
-        this.skybox.rotateX(90);
+    }
+
+    /**
+     * @function
+     * @description Set the opacity of the skybox itself. Useful for blending between the outside and MR. Also
+     * useful for cases where you want to blend between different skybox versions.
+     */
+    set setOpacity(val) {
+        this.object3D.traverse(child => {
+            if (child.isMesh) {
+                child.material.transparent = true;
+                child.material.opacity = val;
+                child.material.needsUpdate = true;
+            }
+        });
     }
 
     /**

@@ -40,7 +40,8 @@ export class TextSystem extends MRSystem {
                         font: fontData.src,
                     },
                     () => {
-                        this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
+                        this.preloadedFonts[fontFace.style.getPropertyValue('font-family')] = fontData.src;
+                        document.dispatchEvent(new CustomEvent('font-loaded'))
                     }
                 );
             });
@@ -122,9 +123,6 @@ export class TextSystem extends MRSystem {
                 this.updateStyle(entity);
 
                 entity.textObj.sync(() => {
-                    if (!entity.alwaysNeedsStyleUpdate) {
-                        entity.needsStyleUpdate = true;
-                    }
                     if (entity instanceof MRButton) {
                         entity.textObj.anchorX = 'center';
                     } else {

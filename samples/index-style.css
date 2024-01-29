@@ -188,17 +188,38 @@
 
   .example-link {
     font-family: var(--font-title);
-    font-size: 3vw;
-    margin-bottom: 1vh;
+    font-size: 2.5vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+    margin: 0 auto;
+  }
+
+  .example-header {
+    font-family: var(--font-title);
+    font-size: 3.5vw;
     line-height: 100%;
     text-align: center;
+    margin: 0 auto;
     color: rgba(24, 24, 24, 0.75);
-    grid-row: 5;
-    grid-colum: 2;
-    position: absolute;
-    bottom: -10vh;
-    left: 50%;
-    transform: translateX(-50%);
+  }
+
+  .links {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vw;
+    margin-bottom: 10px;
+  }
+
+  .col-1{
+    grid-column: 1;
+  }
+
+  .col-2{
+    grid-column: 2;
+  }
+
+  .col-3{
+    grid-column: 3;
   }
 
   .headset {
@@ -217,6 +238,5 @@
     line-height: 100%;
     font-size: 16px;
 
-    grid-row:6;
     grid-column: 2;
   }

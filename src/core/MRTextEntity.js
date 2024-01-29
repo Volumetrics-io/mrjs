@@ -32,6 +32,12 @@ export class MRTextEntity extends MRDivEntity {
                 this.needsStyleUpdate = true;
             }
         });
+
+        document.addEventListener('font-loaded', () => {
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
     }
 
     /**
@@ -43,6 +49,23 @@ export class MRTextEntity extends MRDivEntity {
         this.textObj.text = text.length > 0 ? text : ' ';
         if (!this.alwaysNeedsStyleUpdate) {
             this.needsStyleUpdate = true;
+        }
+    }
+
+    /**
+     * @function
+     * @description Runs the passed through function on this object and every child of this object.
+     * @param {Function} callBack - the function to run recursively.
+     */
+    traverse(callBack) {
+        callBack(this);
+        const children = Array.from(this.object3D.children);
+        for (const child of children) {
+            // if o is an object, traverse it again
+            if ((!child) instanceof MREntity) {
+                continue;
+            }
+            child.traverse(callBack);
         }
     }
 }

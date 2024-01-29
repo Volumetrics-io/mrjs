@@ -38,7 +38,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.width);
+        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions?.width);
         return width > 0 ? width : super.width;
     }
 
@@ -48,7 +48,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.height);
+        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions?.height);
         return height > 0 ? height : super.height;
     }
 
@@ -82,31 +82,6 @@ export class MRImage extends MRDivEntity {
 
     /******************* Begin: Style Check and Update *******************/
 
-    // items most likely to change
-    _oldWidth = 0;
-    _oldHeight = 0;
-    // item not as likely to change
-    _oldBorderRadii = 0;
-
-    /**
-     * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * This returns true if the width/height/borderradii of the image has changed or if the default implementation for the style update check returns true.
-     * (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsStyleUpdate() {
-        return super.needsStyleUpdate || this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii;
-    }
-
-    /**
-     * Since this class overrides the default `get` for the `needsStyleUpdate` call, the `set` pair is needed for javascript to be happy.
-     * Relies on the parent's implementation. (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
-     */
-    set needsStyleUpdate(bool) {
-        super.needsStyleUpdate = bool;
-    }
-
     /**
      * @function
      * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
@@ -120,12 +95,6 @@ export class MRImage extends MRDivEntity {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-
-        // update for next iteration - already guaranteed one of these needs update
-        // given the needsUpdate function
-        this._oldWidth = this.width;
-        this._oldHeight = this.height;
-        this._oldBorderRadii = this.borderRadii;
     }
 
     /******************* End: Style Check and Update *******************/
