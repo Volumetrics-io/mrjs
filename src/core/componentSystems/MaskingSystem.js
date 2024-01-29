@@ -73,31 +73,6 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-
-        function hasNonZeroBorderRadius(entity) {
-            let borderRadius = entity.compStyle.borderRadius;
-            var radii = borderRadius.split(' ');
-            for (var i = 0; i < radii.length; i++) {
-                var radius = parseFloat(radii[i]);
-                if (radius > 0) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function isOverflowHidden(entity) {
-            let borderRadius = entity.compStyle.overflow;
-            var radii = borderRadius.split(' ');
-            for (var i = 0; i < radii.length; i++) {
-                var radius = parseFloat(radii[i]);
-                if (radius > 0) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         let masking = false;
 
         if (!(entity instanceof MRPanel) && entity.compStyle.overflow === 'hidden') {
@@ -126,11 +101,6 @@ export class MaskingSystem extends MRSystem {
             // internally.
             const stencilRef = this.panels.length + this.nonPanels.length;
 
-            // Currently this setup will not be able to handle properly if there is a panel within another
-            // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
-            // passed through this function since that case is an edge case that will not be expected.
-
-
             function funcForEntity(entity) {
                 let mesh;
                 if (entity instanceof MRPanel) {
@@ -156,6 +126,11 @@ export class MaskingSystem extends MRSystem {
             }
 
             function funcForEntityChildren(child) {
+                // Currently this setup will not be able to handle properly if there is a panel within another
+                // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
+                // passed through the onNewEntity function originally since that case is an edge case that will
+                // not be expected. Hence in this 'funcForEntityChildren', we ignore all MRPanel children.
+
                 if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
