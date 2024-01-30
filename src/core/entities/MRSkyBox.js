@@ -51,7 +51,6 @@ export class MRSkyBox extends MREntity {
         if (!this.texturesList) {
             return;
         }
-        this.geometry = new THREE.SphereGeometry(1000, 32, 16);
 
         const textureNames = this.texturesList.split(',');
         const path = this.getAttribute('pathToTextures');
