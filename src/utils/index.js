@@ -9,6 +9,7 @@
 import { CSS } from './CSS.js';
 import { Display } from './Display.js';
 import { Geometry } from './Geometry.js';
+import { HTML } from './HTML.js';
 import { Material } from './Material.js';
 import { Model } from './Model.js';
 import { MathUtils } from './MathUtils.js';
@@ -21,6 +22,7 @@ const mrjsUtils = {
     CSS,
     Display,
     Geometry,
+    HTML,
     Material,
     Model,
     MathUtils,

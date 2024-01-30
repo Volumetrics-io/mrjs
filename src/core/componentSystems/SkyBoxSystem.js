@@ -52,33 +52,34 @@ export class SkyBoxSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        if (this.registry.size() == 0) {
-            console.log('did not find skybox image to use');
-        }
+        console.log('skybox update called');
+        // if (this.registry.size == 0) {
+        //     console.log('did not find skybox image to use');
+        // }
 
-        if (this.inXR) {
-            this.app.scene.background = undefined;
-            this.swappingSkybox.object3D.visible = true;
-        } else if (!this.inXR && this.app.scene.background === undefined) {
-            let currentSkyboxImage = null;
-            let grabbed = Set();
-            for (let skybox of this.registry) {
-                if (skybox.object3D.opacity > 0 && skybox.object3D.visible) {
-                    grabbed.add(skybox);
-                }
-            }
+        // if (this.inXR) {
+        //     this.app.scene.background = undefined;
+        //     this.swappingSkybox.object3D.visible = true;
+        // } else if (!this.inXR && this.app.scene.background === undefined) {
+        //     let currentSkyboxImage = null;
+        //     let grabbed = Set();
+        //     for (let skybox of this.registry) {
+        //         if (skybox.object3D.opacity > 0 && skybox.object3D.visible) {
+        //             grabbed.add(skybox);
+        //         }
+        //     }
 
-            // Optimization: set the scene background to the current skybox image if only one found
-            // otherwise default to the XR version of skyboxing to allow for blending / opacity
-            // since threejs skybox default only allows for one at a time.
-            if (grabbed.length == 0) {
-                console.log('did not find skybox image to use, sticking to MR version');
-            } else if (grabbed.length == 1) {
-                this.app.scene.background = grabbed[0].material;
-                this.swappingSkybox = grabbed[0];
-                grabbed.object3D.visible = false;
-            }
-        }
+        //     // Optimization: set the scene background to the current skybox image if only one found
+        //     // otherwise default to the XR version of skyboxing to allow for blending / opacity
+        //     // since threejs skybox default only allows for one at a time.
+        //     if (grabbed.length == 0) {
+        //         console.log('did not find skybox image to use, sticking to MR version');
+        //     } else if (grabbed.length == 1) {
+        //         this.app.scene.background = grabbed[0].material;
+        //         this.swappingSkybox = grabbed[0];
+        //         grabbed.object3D.visible = false;
+        //     }
+        // }
     }
 
     /**
