@@ -126,20 +126,21 @@ export class MaskingSystem extends MRSystem {
                     mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
 
                     mesh.material.needsUpdate = true;
-                } /*else {
-                    this.onPanel = false;
-                    console.log('on overflow=hidden');
-                    // Is non-panel item that has overflow set to 'hidden'.
+                }
+                // } else {
+                //     this.onPanel = false;
+                //     console.log('on overflow=hidden');
+                //     // Is non-panel item that has overflow set to 'hidden'.
 
-                    let attribObject = {
-                        stencilWrite    : this.maskingStencilMaterial.stencilWrite,
-                        stencilFunc     : this.maskingStencilMaterial.stencilFunc,
-                        stencilRef      : stencilRef,
-                        stencilZPass    : this.maskingStencilMaterial.stencilZPass,
-                    }
+                //     let attribObject = {
+                //         stencilWrite    : this.maskingStencilMaterial.stencilWrite,
+                //         stencilFunc     : this.maskingStencilMaterial.stencilFunc,
+                //         stencilRef      : stencilRef,
+                //         stencilZPass    : this.maskingStencilMaterial.stencilZPass,
+                //     }
 
-                    mrjsUtils.Material.adjustObjectMaterialProperties(entity, attribObject);
-                }*/
+                //     mrjsUtils.Material.adjustObjectMaterialProperties(entity, attribObject);
+                // }
                 
             }
 
@@ -161,13 +162,13 @@ export class MaskingSystem extends MRSystem {
                     // updating group objects as a whole.
 
                     let attribObject = {
-                        stencilWrite    : this.childStencilMaterial.stencilWrite,
-                        stencilFunc     : this.childStencilMaterial.stencilFunc,
-                        stencilRef      : stencilRef,
-                        stencilZPass    : this.childStencilMaterial.stencilZPass,
+                        'stencilWrite'    : this.childStencilMaterial.stencilWrite,
+                        'stencilFunc'     : this.childStencilMaterial.stencilFunc,
+                        'stencilRef'      : stencilRef,
+                        'stencilZPass'    : this.childStencilMaterial.stencilZPass,
                     };
                     if (this.app.debug) {
-                        attribObject.color.set(0xffff00); // yellow
+                        attribObject['color'] = 0xffff00; // yellow
                     }
 
                     mrjsUtils.Material.adjustObjectMaterialProperties(child, attribObject);
