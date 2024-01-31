@@ -34,6 +34,8 @@ export class MaskingSystem extends MRSystem {
 
         this.panels = [];
         this.overflow = [];
+
+        this.onPanel = false;
     }
 
     /**
@@ -107,6 +109,7 @@ export class MaskingSystem extends MRSystem {
                 console.log(entity);
 
                 if (entity instanceof MRPanel) {
+                    this.onPanel = true;
                     console.log('mr-panel');
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
@@ -122,10 +125,18 @@ export class MaskingSystem extends MRSystem {
 
                     mesh.material.needsUpdate = true;
                 } else {
+                    this.onPanel = false;
                     console.log('on overflow=hidden');
                     // Is non-panel item that has overflow set to 'hidden'.
 
+                    attribObject = {
+                        stencilWrite    : this.maskingStencilMaterial.stencilWrite,
+                        stencilFunc     : this.maskingStencilMaterial.stencilFunc,
+                        stencilRef      : stencilRef,
+                        stencilZPass    : this.maskingStencilMaterial.stencilZPass,
+                    }
 
+                    mrjsUtils.Material.adjustObjectMaterialProperties(entity, attribObject);
                 }
                 
             }
@@ -139,34 +150,55 @@ export class MaskingSystem extends MRSystem {
                 console.log('on entity child');
                 console.log(child);
 
-                if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
+                function runTheFunction() {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.
                     //
                     // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
-                    if (!child.object3D.isGroup) {
-                        if (this.app.debug) {
-                            child.object3D.material.color.set(0xffff00); // yellow
-                        }
-                        child.object3D.material.stencilWrite = this.childStencilMaterial.stencilWrite;
-                        child.object3D.material.stencilFunc = this.childStencilMaterial.stencilFunc;
-                        child.object3D.material.stencilRef = stencilRef;
 
-                        child.object3D.material.needsUpdate = true;
+                    attribObject = {
+                        stencilWrite    : this.childStencilMaterial.stencilWrite,
+                        stencilFunc     : this.childStencilMaterial.stencilFunc,
+                        stencilRef      : stencilRef,
+                        stencilZPass    : this.childStencilMaterial.stencilZPass,
+                    };
+                    if (this.app.debug) {
+                        attribObject.color.set(0xffff00); // yellow
                     }
 
-                    // XXX - This is a temporary fix, there's a more general solution here using entity.object3D.traverse
-                    // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
-                    // to entity.object3D.userData.ignoreStencil
-                    if (child instanceof MRTextEntity) {
-                        child.textObj.material.stencilWrite = this.childStencilMaterial.stencilWrite;
-                        child.textObj.material.stencilFunc = this.childStencilMaterial.stencilFunc;
-                        child.textObj.material.stencilRef = stencilRef;
+                    mrjsUtils.Material.adjustObjectMaterialProperties(child, attribObject);
 
-                        child.textObj.material.needsUpdate = true;
+                    // if (!child.object3D.isGroup) {
+                    //     if (this.app.debug) {
+                    //         child.object3D.material.color.set(0xffff00); // yellow
+                    //     }
+                    //     child.object3D.material.stencilWrite = this.childStencilMaterial.stencilWrite;
+                    //     child.object3D.material.stencilFunc = this.childStencilMaterial.stencilFunc;
+                    //     child.object3D.material.stencilRef = stencilRef;
+
+                    //     child.object3D.material.needsUpdate = true;
+                    // }
+
+                    // // XXX - This is a temporary fix, there's a more general solution here using entity.object3D.traverse
+                    // // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
+                    // // to entity.object3D.userData.ignoreStencil
+                    // if (child instanceof MRTextEntity) {
+                    //     child.textObj.material.stencilWrite = this.childStencilMaterial.stencilWrite;
+                    //     child.textObj.material.stencilFunc = this.childStencilMaterial.stencilFunc;
+                    //     child.textObj.material.stencilRef = stencilRef;
+
+                    //     child.textObj.material.needsUpdate = true;
+                    // }
+                }
+
+                if (this.onPanel) {
+                    if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
+                        runTheFunction.bind(this);
                     }
+                } else {
+                    runTheFunction.bind(this);
                 }
             }
 

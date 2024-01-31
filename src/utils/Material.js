@@ -39,8 +39,8 @@ Material.getObjectMaterial = function (parent) {
  * @param {object} parent - either a THREE.Group or a THREE.mesh/object
  * @param {object} material - a threejs material to be set for either the parent's direct material or
  * (in the case of a group) the material of all children within the parent group.
- * @description Given the parent, grabs either the parents direct material or (in the case of a group) the
- * material of the first child hit.
+ * @description Given the parent, sets either the parents direct material or (in the case of a group) sets
+ * the material of the parent and all its children
  * @returns {object} parent - the updated parent object
  */
 Material.setObjectMaterial = function (parent, material) {
@@ -53,6 +53,34 @@ Material.setObjectMaterial = function (parent, material) {
         });
     } else {
         parent.material = material;
+        parent.material.needsUpdate = true;
+    }
+    return parent;
+};
+
+/**
+ * @function
+ * @memberof Material
+ * @param {object} parent - either a THREE.Group or a THREE.mesh/object
+ * @param {object} attributeMap - an object map { attribute: value } that represents what material properties
+ * that need to be changed of this object.
+ * @description Given the parent, updates either the parents direct material or (in the case of a group) updates
+ * the material of the parent and all its children based on the inputted attribute map
+ * @returns {object} parent - the updated parent object
+ */
+Material.adjustObjectMaterialProperties = function (parent, attributeMap) {
+    if (parent instanceof THREE.Group) {
+        parent.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+
+                child.material = material;
+
+                child.material.needsUpdate = true;
+            }
+        });
+    } else {
+        parent.material = material;
+
         parent.material.needsUpdate = true;
     }
     return parent;
