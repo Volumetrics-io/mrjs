@@ -58,7 +58,7 @@ export class MRImage extends MRDivEntity {
      */
     connected() {
         this.img = document.createElement('img');
-        this.img.setAttribute('src', this.getAttribute('src'));
+        this.img.setAttribute('src', mrjsUtils.HTML.resolvePath(this.getAttribute('src')));
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 

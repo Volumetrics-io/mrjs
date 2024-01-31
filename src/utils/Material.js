@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { HTML } from 'mrjsUtils/HTML';
 
 /**
  * @namespace Material
@@ -62,9 +63,11 @@ Material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
 
+        let resolvedSrc = HTML.resolvePath(src);
+
         // Use the img's src to load the texture
         textureLoader.load(
-            src,
+            resolvedSrc,
             (texture) => {
                 // Resolve the promise when the texture is loaded
                 resolve(texture);
