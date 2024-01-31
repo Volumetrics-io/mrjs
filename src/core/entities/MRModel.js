@@ -51,9 +51,9 @@ export class MRModel extends MREntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        this.setAttribute('src', value);
-        this.loaded = false
-        this.loadModel()
+        this.setAttribute('src', mrjsUtils.HTML.resolvePath(value));
+        this.loaded = false;
+        this.loadModel();
     }
 
     /**
