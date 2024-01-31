@@ -62,8 +62,8 @@ Material.setObjectMaterial = function (parent, material) {
  * @function
  * @memberof Material
  * @param {object} parent - either a THREE.Group or a THREE.mesh/object
- * @param {object} attributeMap - an object map { attribute: value } that represents what material properties
- * that need to be changed of this object.
+ * @param {object} attributeMap - an object map { key: value } that represents what material properties
+ * that need to be changed of this object. Make sure that the key values are of the form `'key'` including the quotes.
  * @description Given the parent, updates either the parents direct material or (in the case of a group) updates
  * the material of the parent and all its children based on the inputted attribute map
  * @returns {object} parent - the updated parent object
@@ -71,16 +71,13 @@ Material.setObjectMaterial = function (parent, material) {
 Material.adjustObjectMaterialProperties = function (parent, attributeMap) {
     if (parent instanceof THREE.Group) {
         parent.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-
-                child.material = material;
-
+            if (child instanceof THREE.Mesh && child.material) {
+                mrjsUtils.JS.applyAttributes(child.material, attributeMap);
                 child.material.needsUpdate = true;
             }
         });
-    } else {
-        parent.material = material;
-
+    } else if (parent.material) {
+        mrjsUtils.JS.applyAttributes(parent.material, attributeMap);
         parent.material.needsUpdate = true;
     }
     return parent;
@@ -90,19 +87,15 @@ Material.adjustObjectMaterialProperties = function (parent, attributeMap) {
 Material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
-
         let resolvedSrc = HTML.resolvePath(src);
 
-        // Use the img's src to load the texture
         textureLoader.load(
             resolvedSrc,
             (texture) => {
-                // Resolve the promise when the texture is loaded
                 resolve(texture);
             },
             undefined,
             (error) => {
-                // Reject the promise if there's an error
                 reject(error);
             }
         );

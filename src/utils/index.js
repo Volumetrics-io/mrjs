@@ -8,7 +8,6 @@
 
 import { CSS } from './CSS.js';
 import { Display } from './Display.js';
-import { JS } from './JS.js';
 import { Geometry } from './Geometry.js';
 import { HTML } from './HTML.js';
 import { JS } from './JS.js';

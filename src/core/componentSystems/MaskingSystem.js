@@ -6,6 +6,8 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRTextEntity } from 'mrjs/core/MRTextEntity';
 
+import { mrjsUtils } from 'mrjs';
+
 /**
  * @class MaskingSystem
  * @classdesc Handles specific needs for setting up the masking for all necessary items.
@@ -124,12 +126,12 @@ export class MaskingSystem extends MRSystem {
                     mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
 
                     mesh.material.needsUpdate = true;
-                } else {
+                } /*else {
                     this.onPanel = false;
                     console.log('on overflow=hidden');
                     // Is non-panel item that has overflow set to 'hidden'.
 
-                    attribObject = {
+                    let attribObject = {
                         stencilWrite    : this.maskingStencilMaterial.stencilWrite,
                         stencilFunc     : this.maskingStencilMaterial.stencilFunc,
                         stencilRef      : stencilRef,
@@ -137,7 +139,7 @@ export class MaskingSystem extends MRSystem {
                     }
 
                     mrjsUtils.Material.adjustObjectMaterialProperties(entity, attribObject);
-                }
+                }*/
                 
             }
 
@@ -158,7 +160,7 @@ export class MaskingSystem extends MRSystem {
                     // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
 
-                    attribObject = {
+                    let attribObject = {
                         stencilWrite    : this.childStencilMaterial.stencilWrite,
                         stencilFunc     : this.childStencilMaterial.stencilFunc,
                         stencilRef      : stencilRef,

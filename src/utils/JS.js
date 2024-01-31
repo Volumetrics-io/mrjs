@@ -20,4 +20,14 @@ JS.isInstanceOfBaseClassOnly = function(instance, BaseClass) {
     return instance.constructor === BaseClass;
 }
 
+JS.applyAttributes = function(object, attribMap) {
+    Object.entries(attributeMap).forEach(([key, value]) => {
+        if (key in object) {
+            object[key] = value;
+        }
+    });
+}
+
 export { JS };
+
+
