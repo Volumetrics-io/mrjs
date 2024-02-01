@@ -20,6 +20,7 @@ import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from './componentSystems/AudioSystem';
@@ -108,6 +109,7 @@ export class MRApp extends MRElement {
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
+            this.skyBoxSystem = new SkyBoxSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen

@@ -1,10 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { MREntity } from 'mrjs/core/MREntity';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRImage } from 'mrjs/core/entities/MRImage';
-import { MRModel } from '../entities/MRModel';
+import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
 
 /**
  * @class SkyBoxSystem

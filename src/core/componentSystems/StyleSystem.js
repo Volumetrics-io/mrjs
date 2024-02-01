@@ -4,7 +4,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MRImage } from 'mrjs/core/entities/MRImage';
-import { MRModel } from '../entities/MRModel';
+import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
  * @class StyleSystem
