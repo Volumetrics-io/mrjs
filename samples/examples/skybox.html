@@ -85,13 +85,29 @@
       
     </mr-panel>
 
-    <mr-skybox id="night_sky" 
+    <mr-entity data-comp-anchor="type: plane; label: wall; occlusion: false"></mr-entity>
+
+    <mr-entity data-comp-anchor="type: plane; label: ceiling; occlusion: false">
+        <mr-skybox id="night_sky" 
         src="/assets/textures/skybox_milkyway.jpg">
         </mr-skybox>
 
-    <mr-skybox id="starmap" 
+        <mr-skybox id="starmap" 
         src="/assets/textures/skybox_starmap_4k.jpg">
         </mr-skybox>
+
+        <mr-skybox id="surreal"
+        src="/assets/textures/skybox_surreal.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="watercolor"
+        src="/assets/textures/skybox_watercolor01.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="room" 
+        src="/assets/textures/skybox_hdri.jpg">
+        </mr-skybox>
+    </mr-entity>
 
 
 <!--     uncomment this when we have multi file skybox allowed again
@@ -99,18 +115,6 @@
         src="/assets/textures/skybox_daytime/nx.jpg, /assets/textures/skybox_daytime/ny.jpg, /assets/textures/skybox_daytime/nz.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/py.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/pz.jpg"
         data-position="0 -200 0">
         </mr-skybox> -->
-
-    <mr-skybox id="surreal"
-        src="/assets/textures/skybox_surreal.jpg">
-        </mr-skybox>
-
-    <mr-skybox id="watercolor"
-        src="/assets/textures/skybox_watercolor01.jpg">
-        </mr-skybox>
-
-    <mr-skybox id="room" 
-        src="/assets/textures/skybox_hdri.jpg">
-        </mr-skybox>
         
     </mr-app>
   </body>
