@@ -36,7 +36,13 @@ export class SkyBoxSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (mrjsUtils.JS.is)
-        this.registry.add(entity);
+        if (entity instanceof MRSkyBox) {
+            if (entity.compStyle.scale == 'none') {
+                // has no css scale attribute then use as default
+                const SCALING_OFFSET = 0.01;
+                entity.skybox.style.scale = (this.registry.size == 0) ? 1 : this.registry[this.registry.size-1].skybox.style.scale + SCALING_OFFSET;
+            }
+            this.registry.add(entity);
+        }
     }
 }
