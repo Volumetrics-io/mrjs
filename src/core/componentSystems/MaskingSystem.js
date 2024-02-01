@@ -80,14 +80,11 @@ export class MaskingSystem extends MRSystem {
         let masking = false;
 
         if (!(entity instanceof MRPanel) && entity.compStyle.overflow === 'hidden') {
-            console.log('checking:');
-            console.log(entity);
-            console.log('style - overflow: ');
-            console.log(entity.compStyle.overflow);
-
+            console.log('overflow to add');
             this.overflow.push(entity);
             masking = true;
         } else if (entity instanceof MRPanel) {
+            console.log('panel to add');
             // Using an array for the panels in case we need them for more manipulations down the line instead
             // of using the system's registry.
             this.panels.push(entity);
@@ -115,33 +112,22 @@ export class MaskingSystem extends MRSystem {
                     console.log('mr-panel');
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
-                    let mesh = entity.background;
-
-                    if (this.app.debug) {
-                        mesh.material.color.set(0xff00ff); // pink
-                    }
-                    mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
-                    mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
-                    mesh.material.stencilRef = stencilRef;
-                    mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
-
-                    mesh.material.needsUpdate = true;
+                } else {
+                    this.onPanel = false;
+                    console.log('on overflow=hidden');
+                    // Is non-panel item that has overflow set to 'hidden'.
                 }
-                // } else {
-                //     this.onPanel = false;
-                //     console.log('on overflow=hidden');
-                //     // Is non-panel item that has overflow set to 'hidden'.
+                let mesh = entity.background;
 
-                //     let attribObject = {
-                //         stencilWrite    : this.maskingStencilMaterial.stencilWrite,
-                //         stencilFunc     : this.maskingStencilMaterial.stencilFunc,
-                //         stencilRef      : stencilRef,
-                //         stencilZPass    : this.maskingStencilMaterial.stencilZPass,
-                //     }
+                if (this.app.debug) {
+                    mesh.material.color.set(0xff00ff); // pink
+                }
+                mesh.material.stencilWrite = this.maskingStencilMaterial.stencilWrite;
+                mesh.material.stencilFunc = this.maskingStencilMaterial.stencilFunc;
+                mesh.material.stencilRef = stencilRef;
+                mesh.material.stencilZPass = this.maskingStencilMaterial.stencilZPass;
 
-                //     mrjsUtils.Material.adjustObjectMaterialProperties(entity, attribObject);
-                // }
-                
+                mesh.material.needsUpdate = true;
             }
 
             function funcForEntityChildren(child) {
@@ -154,49 +140,31 @@ export class MaskingSystem extends MRSystem {
                 console.log(child);
 
                 function runTheFunction() {
-                    // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
-                    // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
-                    // to be manually excluded from this masking by default or manual addition.
-                    //
-                    // Since we're stepping through every child, we only need to touch each mesh's material instead of
-                    // updating group objects as a whole.
-
                     let attribObject = {
                         'stencilWrite'    : this.childStencilMaterial.stencilWrite,
                         'stencilFunc'     : this.childStencilMaterial.stencilFunc,
                         'stencilRef'      : stencilRef,
-                        'stencilZPass'    : this.childStencilMaterial.stencilZPass,
                     };
                     if (this.app.debug) {
                         attribObject['color'] = 0xffff00; // yellow
                     }
 
-                    mrjsUtils.Material.adjustObjectMaterialProperties(child, attribObject);
-
-                    // if (!child.object3D.isGroup) {
-                    //     if (this.app.debug) {
-                    //         child.object3D.material.color.set(0xffff00); // yellow
-                    //     }
-                    //     child.object3D.material.stencilWrite = this.childStencilMaterial.stencilWrite;
-                    //     child.object3D.material.stencilFunc = this.childStencilMaterial.stencilFunc;
-                    //     child.object3D.material.stencilRef = stencilRef;
-
-                    //     child.object3D.material.needsUpdate = true;
-                    // }
-
-                    // // XXX - This is a temporary fix, there's a more general solution here using entity.object3D.traverse
-                    // // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
-                    // // to entity.object3D.userData.ignoreStencil
-                    // if (child instanceof MRTextEntity) {
-                    //     child.textObj.material.stencilWrite = this.childStencilMaterial.stencilWrite;
-                    //     child.textObj.material.stencilFunc = this.childStencilMaterial.stencilFunc;
-                    //     child.textObj.material.stencilRef = stencilRef;
-
-                    //     child.textObj.material.needsUpdate = true;
-                    // }
+                    // Since we're stepping through every child, we only need to touch each mesh's material instead of
+                    // updating group objects as a whole. Hence us being able to skip group objects.
+                    //
+                    // Need to handle text specially since text's mesh is directly in textObj though it is
+                    // grouped into the object3D for the entity.
+                    if (!child.object3D.isGroup) {
+                        mrjsUtils.Material.adjustObjectMaterialProperties(child.object3D, attribObject);
+                    } else if (child instanceof MRTextEntity) {
+                        mrjsUtils.Material.adjustObjectMaterialProperties(child.textObj, attribObject);
+                    }
                 }
 
                 if (this.onPanel) {
+                    // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
+                    // will be clipped by the panel instead. Addiitonally, we want to allow for items (such as 3D elements)
+                    // to be manually excluded from this masking by default or manual addition.
                     if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
                         runTheFunction.bind(this);
                     }
