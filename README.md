@@ -7,6 +7,12 @@ An extensible WebComponents library for the Spatial Web
 ## Overview
  
 mrjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+
+## Main Links
+
+- [landing-page](https://mrjs.io) - includes about, info, and high def and community-created samples
+- [docs](https://docs.mrjs.io) - includes onboarding information, engine setup (ECS, Contributing, etc), html tag helpers, and js-api documentation
+- [dev-examples](https://examples.mrjs.io) - the examples from the main mrjs repo used as dev explainers and for testing purposes
  
 ## Getting started
  
