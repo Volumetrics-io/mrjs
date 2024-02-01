@@ -48,7 +48,6 @@ export class MRPanel extends MRDivEntity {
         this.delta = 0;
 
         this.momentumTimeout;
-        this.maskChildren = true;
     }
 
     /**
