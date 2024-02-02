@@ -23,6 +23,10 @@ mr-panel {
     border-radius: 2%;
 }
 
+mr-div, mr-entity {
+    visibility:visible;
+}
+
 mr-div, mr-button, mr-img, mr-a, mr-text{
     display: inline-block;
     position: relative;
