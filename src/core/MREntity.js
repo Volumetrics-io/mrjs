@@ -331,7 +331,10 @@ export class MREntity extends MRElement {
      * @function
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
-    connected() {}
+    connected() {
+        console.log('here in connected');
+        this.setVisibility();
+    }
 
     /**
      * @function
