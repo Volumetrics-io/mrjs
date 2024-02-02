@@ -19,6 +19,7 @@ export default class MRHyperlink extends MRTextEntity {
         if (!this.link) {
             this.link = document.createElement('a');
             this.link.setAttribute('href', (this.getAttribute('href') ?? undefined));
+            this.link.setAttribute('target', (this.getAttribute('target') ?? undefined));
         }
     }
 
