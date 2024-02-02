@@ -43,7 +43,7 @@ export class MRPlaneManager {
         });
 
         mrjsUtils.xr.addEventListener('planesdetected', (event) => {
-            const planes = event.data;
+            const planes = event.data.detectedPlanes;
 
             mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
                 for (const plane of planes) {

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { ARButton } from 'three/addons/webxr/ARButton.js';
+import { XRButton } from 'three/addons/webxr/XRButton.js';
 
 import Stats from 'stats.js';
 
@@ -235,19 +235,19 @@ export class MRApp extends MRElement {
             this.xrsupport = supported;
 
             if (this.xrsupport) {
-                this.ARButton = ARButton.createButton(this.renderer, {
+                this.XRButton = XRButton.createButton(this.renderer, {
                     requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 
-                this.ARButton.addEventListener('click', () => {
+                this.XRButton.addEventListener('click', () => {
                     this.classList.add('inXR');
-                    this.ARButton.blur();
+                    this.XRButton.blur();
                 });
-                document.body.appendChild(this.ARButton);
+                document.body.appendChild(this.XRButton);
 
-                this.ARButton.style.position = 'fixed';
-                this.ARButton.style.zIndex = 10000;
+                this.XRButton.style.position = 'fixed';
+                this.XRButton.style.zIndex = 10000;
             }
         });
 
@@ -344,7 +344,7 @@ export class MRApp extends MRElement {
      */
     denit() {
         document.body.removeChild(this.renderer.domElement);
-        this.removeChild(this.ARButton);
+        this.removeChild(this.XRButton);
         window.removeEventListener('resize', this.onWindowResize);
     }
 
