@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mrjs - audio</title>
+    <meta name="description" content="mr.js audio">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="audio-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+
+
+<mr-app >
+    <mr-panel class="layout" data-comp-anchor="type: fixed;">
+
+        <mr-div id="navbar">
+            <mr-a href="https://mrjs.io" class="mrjs">
+                mrjs
+            </mr-a>
+            <mr-div class="logo">
+                <mr-model
+                id="logo-model"  
+                src="/assets/models/logo.stl" 
+                data-comp-instancing="type: animate;"
+                data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+                data-rotation="-22.91 17.1887 45.8366">
+                </mr-model>
+            </mr-div>
+            <mr-a href="https://volumetrics.io" class="company">
+                volumetrics
+            </mr-a>
+            </mr-div>
+    
+            <mr-text class="col-2 title" >
+            Audio
+            </mr-text>
+            
+            <mr-text class="col-2">
+                Audio adds more depth to a spatial experience. Giving virtual content a greater sense of presence, and immersing users into your experience
+            </mr-text>
+    
+            <mr-text class="subtitle col-2">
+                Examples
+            </mr-text>
+    
+            <mr-div class="col-2">
+    
+                <mr-button onclick="rain()" class=" label button" >
+                    rain loop
+                </mr-button>
+
+                <mr-button onclick="thunder()" class=" label button" >
+                    thunder clap
+                </mr-button>
+                
+            </mr-div>
+            <mr-text class="col-2 subtitle" >
+            data-comp-audio
+            </mr-text>
+
+            <mr-text class="col-2">
+                you can add audio to your experience by attaching the audio component, data-comp-audio, to an entity.
+            </mr-text>
+
+            <mr-text class="label col-2">
+                attributes
+            </mr-text>
+        
+            <mr-text class="label col-2">
+                src
+            </mr-text>
+
+            <mr-text class="col-2">
+                the path to the audio file.
+            </mr-text>
+
+            <mr-text class="label col-2">
+                state
+            </mr-text>
+
+            <mr-text class="col-2">
+                the playback state
+            </mr-text>
+
+            <mr-text class="col-2">
+                values: play, pause, stop
+            </mr-text>
+
+            <mr-text class="label col-2">
+                loop
+            </mr-text>
+
+            <mr-text class="col-2">
+                whether the audio should be looped
+            </mr-text>
+
+            <mr-text class="col-2">
+                values: true, false (default)
+            </mr-text>
+
+            <mr-text class="label col-2">
+                distance
+            </mr-text>
+
+            <mr-text class="col-2">
+                the reach of the audio
+            </mr-text>
+
+            <mr-text class="col-2">
+                values: number, default 1m
+            </mr-text>
+    
+    </mr-panel>
+
+    <mr-entity 
+        id="rain-entity" 
+        data-position="0 5 0"
+        data-comp-anchor="type: plane; label: ceiling;"
+        data-comp-audio="src: /assets/audio/rain-loop.wav; loop: true;"></mr-entity>
+    <mr-entity 
+        id="thunder-entity" 
+        data-position="10 1 20"
+        data-comp-audio="src: /assets/audio/thunder-clap1.mp3;"></mr-entity>
+    
+</mr-app>
+
+  </body>
+
+  <footer>
+    <script src="/assets/js/SpinSystem.js"></script>
+    <script>
+
+        let rainEntity = document.getElementById('rain-entity')
+        let thunderEntity = document.getElementById('thunder-entity')
+
+        let rainLoopPlay = false
+
+        function rain() {
+            rainLoopPlay = !rainLoopPlay
+            if (rainLoopPlay) {
+                rainEntity.components.set('audio', {state: 'play'})
+            } else {
+                rainEntity.components.set('audio', {state: 'stop'})
+            }
+        }
+
+        function thunder() {
+            // set thunder entity to random position within 5m
+            thunderEntity.setAttribute('data-position', `${getRandomWholeNumber(-20, 20)} 1 ${getRandomWholeNumber(-20, 20)}`)
+            thunderEntity.components.set('audio', {state: 'play'})
+        }
+
+        function getRandomWholeNumber(min, max) {
+            // Ensure that min is less than max
+            if (min > max) {
+                [min, max] = [max, min];
+            }
+
+            // Calculate the range
+            let range = max - min + 1; // +1 to make max inclusive
+
+            // Generate a random whole number within the range
+            let randomWholeNumber = Math.floor(Math.random() * range) + min;
+
+            return randomWholeNumber;
+        }
+
+      
+    </script>
+  </footer>
+</html>

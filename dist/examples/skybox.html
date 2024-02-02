@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mr.js - skybox</title>
+    <meta name="description" content="mr.js example - skybox">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="skybox-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+   <mr-app debug="true">
+    <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
+        <mr-div id="navbar">
+        <mr-a href="https://mrjs.io" class="mrjs">
+            mrjs
+        </mr-a>
+        <mr-div class="logo">
+            <mr-model
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
+        </mr-div>
+        <mr-a href="https://volumetrics.io" class="company">
+            volumetrics
+        </mr-a>
+        </mr-div>
+
+        <mr-text class="col-2 title" >
+        Skybox
+        </mr-text>
+        
+        <mr-text class="col-2">
+        Skyboxes can enhance your spatial app by making it feel more like a unique virtual environment.
+        </mr-text>
+        <mr-text class="col-2">
+        They can be used to set the scene, bridge virtual and non-virtual situations, and set an ambiance for an area.
+        </mr-text>
+
+        <mr-text class="col-2">
+        NOTE: This effect is better viewed directly in an MR headset.
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Examples
+        </mr-text>
+
+        <mr-div class="col-2">
+
+            <mr-button onclick="night_sky()" class=" label button" >
+                Night Sky
+            </mr-button>
+
+            <mr-button onclick="starmap()" class=" label button" >
+                Starmap
+            </mr-button>
+
+            <mr-button onclick="cycle()" class=" label button" >
+                Cycle
+            </mr-button>
+
+            <mr-button onclick="reset()" class=" label button" >
+                Reset
+            </mr-button>
+            
+        </mr-div>
+        <mr-text class="col-2 subtitle" >
+        mr-skybox
+        </mr-text>
+
+        <mr-text class="col-2">
+        Skybox setup is achieved using the skybox component, `mr-skybox`, it has one attribute:
+        </mr-text>
+
+        <mr-text class="label col-2">
+        src
+        </mr-text>
+
+        <mr-text class="col-2">
+        This src tag is a singular skybox image file.
+        </mr-text>
+      
+    </mr-panel>
+
+    <mr-entity data-comp-anchor="type: plane; label: wall; occlusion: false"></mr-entity>
+
+    <mr-entity data-comp-anchor="type: plane; label: ceiling; occlusion: false">
+        <mr-skybox id="night_sky" 
+        src="/assets/textures/skybox_milkyway.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="starmap" 
+        src="/assets/textures/skybox_starmap_4k.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="surreal"
+        src="/assets/textures/skybox_surreal.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="watercolor"
+        src="/assets/textures/skybox_watercolor01.jpg">
+        </mr-skybox>
+
+        <mr-skybox id="room" 
+        src="/assets/textures/skybox_hdri.jpg">
+        </mr-skybox>
+    </mr-entity>
+
+
+<!--     uncomment this when we have multi file skybox allowed again
+    <mr-skybox id="daytime" 
+        src="/assets/textures/skybox_daytime/nx.jpg, /assets/textures/skybox_daytime/ny.jpg, /assets/textures/skybox_daytime/nz.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/py.jpg, /assets/textures/skybox_daytime/px.jpg, /assets/textures/skybox_daytime/pz.jpg"
+        data-position="0 -200 0">
+        </mr-skybox> -->
+        
+    </mr-app>
+  </body>
+
+  <footer>
+    <script src="/assets/js/SpinSystem.js"></script>
+    <script>
+
+        /**** fade system ****/
+
+        class FadeSystem extends MRSystem {
+            constructor() {
+                super();
+                this.skyboxes = document.querySelectorAll("mr-skybox");
+                this.cycling = false;
+            }
+
+            update(deltaTime, frame) {
+                if (!this.cycling) { return; }
+
+                // Get current time in milliseconds and convert to seconds
+                // and use it to grab our actual skybox index.
+                let num_seconds = 5;
+                let totalCycleTime = this.skyboxes.length * num_seconds;
+                let currentTime = new Date().getTime() / 1000;
+                let time = currentTime % totalCycleTime;
+                
+                let currentSkyboxIndex = Math.floor(time / num_seconds);
+                let nextSkyboxIndex = (currentSkyboxIndex + 1) % this.skyboxes.length;
+                
+                // Calculate blend factor (0 to 1)
+                let blendFactor = (time % num_seconds) / num_seconds;
+
+                for (let i = 0; i < this.skyboxes.length; ++i) {
+                    if (i === currentSkyboxIndex) {
+                        // Set the opacity or visibility factor of the current skybox
+                        // based on (1 - blendFactor) because it should be fully visible at the start
+                        // and blend out towards the end
+                        this.skyboxes[i].setOpacity = (1 - blendFactor);
+                    } else if (i === nextSkyboxIndex) {
+                        // Set the opacity or visibility factor of the next skybox
+                        // based on blendFactor because it should start invisible and blend in
+                        this.skyboxes[i].setOpacity = blendFactor;
+                    } else {
+                        // Ensure all other skyboxes are not visible
+                        this.skyboxes[i].setOpacity = 0;
+                    }
+                }
+            }
+        }
+        var fade = new FadeSystem();
+
+        /**** skyboxes ****/
+
+        let night_sky_entity = document.getElementById('night_sky');
+        let starmap_entity = document.getElementById('starmap');
+
+        function night_sky() {
+            reset();
+            night_sky_entity.setOpacity = 1;
+        }
+
+        function starmap() {
+            reset();
+            starmap_entity.setOpacity = 1;
+        }
+
+        function cycle() {
+            reset();
+            fade.cycling = true;
+        }
+
+        function reset() {
+            fade.cycling = false;
+            for (let i = 0; i < fade.skyboxes.length; ++i) {
+                // Ensure all skyboxes are not visible
+                fade.skyboxes[i].setOpacity = 0;
+            }
+        }
+
+        document.addEventListener('enterXR', () => {
+            reset();
+        });
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+            reset();
+        });
+
+        document.addEventListener('exitXR', () => {
+            reset();
+        });
+      
+    </script>
+  </footer>
+</html>
