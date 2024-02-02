@@ -13,6 +13,8 @@ export class SkyBoxSystem extends MRSystem {
      */
     constructor() {
         super(false);
+
+        this._lastItem = null;
     }
 
     /**
@@ -35,7 +37,9 @@ export class SkyBoxSystem extends MRSystem {
             if (entity.compStyle.scale == 'none') {
                 // has no css scale attribute then use as default
                 const SCALING_OFFSET = 0.01;
-                entity.skybox.style.scale = (this.registry.size == 0) ? 1 : this.registry[this.registry.size-1].skybox.style.scale + SCALING_OFFSET;
+                console.log(this.registry);
+                entity.style.scale = (this.registry.size == 0) ? 1 : this._lastItem.style.scale + SCALING_OFFSET;
+                this._lastItem = entity;
             }
             this.registry.add(entity);
         }
