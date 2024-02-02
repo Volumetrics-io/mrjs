@@ -32,12 +32,7 @@ export class StyleSystem extends MRSystem {
                 continue;
             }
 
-            let panel = entity.closest('mr-panel')
-            if(panel) {
-                entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * panel.width : 1);
-            } else {
-                entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? entity.compStyle.scale : 1);
-            }
+            entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
             if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
                 entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
