@@ -76,7 +76,7 @@ export class PhysicsSystem extends MRSystem {
             }
             this.updateBody(entity);
 
-            this.app.physicsWorld.contactsWith(entity.physics.collider, (collider2) => {
+            this.app.physicsWorld.contactPairsWith(entity.physics.collider, (collider2) => {
                 const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
 
                 if (joint) {
