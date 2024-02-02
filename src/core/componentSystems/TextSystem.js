@@ -198,7 +198,7 @@ export class TextSystem extends MRSystem {
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
         if (mrjsUtils.xr.isPresenting) {
-            return result * mrjsUtils.appScale;
+            return result * mrjsUtils.app.scale;
         }
         return result;
     }

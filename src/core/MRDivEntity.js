@@ -50,7 +50,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.appScale;
+            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
         return (rect.height / global.appHeight) * global.viewPortHeight;
     }
@@ -64,7 +64,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.appScale;
+            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
         return (rect.width / global.appWidth) * global.viewPortWidth;
     }
@@ -141,12 +141,12 @@ export class MRDivEntity extends MREntity {
                 switch (valuepair[1]) {
                     case 'px':
                         if (mrjsUtils.xr.isPresenting) {
-                            return (val.split('px')[0] / global.appWidth) * mrjsUtils.appScale;
+                            return (val.split('px')[0] / global.appWidth) * mrjsUtils.app.scale;
                         }
                         return (val.split('px')[0] / global.appWidth) * global.viewPortWidth;
                     case '%':
                         if (mrjsUtils.xr.isPresenting) {
-                            return (parseFloat(val) / 100) * mrjsUtils.appScale;
+                            return (parseFloat(val) / 100) * mrjsUtils.app.scale;
                         }
                         return (parseFloat(val) / 100) * global.viewPortWidth;
                     default:

@@ -6,6 +6,7 @@
 
 // // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
+import { app } from './app.js';
 import { CSS } from './CSS.js';
 import { Display } from './Display.js';
 import { Geometry } from './Geometry.js';
@@ -19,6 +20,7 @@ import { StringUtils } from './StringUtils.js';
 import { xr } from './XR.js';
 
 const mrjsUtils = {
+    app,
     CSS,
     Display,
     Geometry,
@@ -29,14 +31,7 @@ const mrjsUtils = {
     Math3D,
     Physics,
     StringUtils,
-    xr,
-
-    get appScale() {
-        if (mrjsUtils.xr.isPresenting) {
-            return 0.5
-        }
-        return 1
-    }
+    xr
 };
 
 export { mrjsUtils }; // Export as named export

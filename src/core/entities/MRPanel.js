@@ -20,7 +20,7 @@ export class MRPanel extends MRDivEntity {
      */
     get height() {
         if (mrjsUtils.xr.isPresenting) {
-            return mrjsUtils.appScale;
+            return mrjsUtils.app.scale;
         }
         return global.viewPortHeight;
     }
