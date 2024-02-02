@@ -1,6 +1,6 @@
 {
   "name": "mrjs",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "type": "module",
   "description": "an MR first webXR framework",
   "main": "dist/mr.js",
