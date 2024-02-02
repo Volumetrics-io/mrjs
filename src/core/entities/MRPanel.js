@@ -20,8 +20,7 @@ export class MRPanel extends MRDivEntity {
      */
     get height() {
         if (mrjsUtils.xr.isPresenting) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? global.XRScale;
-            return this.windowVerticalScale;
+            return mrjsUtils.app.scale;
         }
         return global.viewPortHeight;
     }
@@ -38,9 +37,6 @@ export class MRPanel extends MRDivEntity {
         this.object3D.add(this.shuttle);
         this.object3D.name = 'panel';
         this.ignoreStencil = true;
-
-        this.windowVerticalScale = 1;
-        this.windowHorizontalScale = 1;
 
         this.currentPosition = new THREE.Vector3();
         this.prevPosition = new THREE.Vector3();

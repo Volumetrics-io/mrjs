@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { ARButton } from 'three/addons/webxr/ARButton.js';
+import { XRButton } from 'three/addons/webxr/XRButton.js';
 
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
+import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
+
 
 import { mrjsUtils } from 'mrjs';
 
@@ -18,6 +20,7 @@ import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from './componentSystems/AudioSystem';
@@ -106,6 +109,7 @@ export class MRApp extends MRElement {
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
+            this.skyBoxSystem = new SkyBoxSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
@@ -231,23 +235,42 @@ export class MRApp extends MRElement {
             });
         }
 
+        // allows for mr-app style to have background:value to set the skybox
+        if (this.compStyle.backgroundImage !== 'none') {
+            let skybox = new MRSkyBox();
+            let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
+            skybox.setAttribute('src', imageUrl);
+            skybox.connected();
+            this.add(skybox);
+
+            // Need to zero out the background-image property otherwise
+            // we'll end up with a canvas background as well as the skybox
+            // when the canvas background is not needed in this 3d setup.
+            //
+            // We can do this because panel backgrounds are actual webpage
+            // backgrounds and the app itself's background is separate from
+            // that, being understood as the skybox of the entire app itself.
+            this.style.setProperty('background-image', 'none', 'important');
+            this.compStyle = window.getComputedStyle(this);
+        }
+
         navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
             this.xrsupport = supported;
 
             if (this.xrsupport) {
-                this.ARButton = ARButton.createButton(this.renderer, {
+                this.XRButton = XRButton.createButton(this.renderer, {
                     requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 
-                this.ARButton.addEventListener('click', () => {
+                this.XRButton.addEventListener('click', () => {
                     this.classList.add('inXR');
-                    this.ARButton.blur();
+                    this.XRButton.blur();
                 });
-                document.body.appendChild(this.ARButton);
+                document.body.appendChild(this.XRButton);
 
-                this.ARButton.style.position = 'fixed';
-                this.ARButton.style.zIndex = 10000;
+                this.XRButton.style.position = 'fixed';
+                this.XRButton.style.zIndex = 10000;
             }
         });
 
@@ -344,7 +367,7 @@ export class MRApp extends MRElement {
      */
     denit() {
         document.body.removeChild(this.renderer.domElement);
-        this.removeChild(this.ARButton);
+        this.removeChild(this.XRButton);
         window.removeEventListener('resize', this.onWindowResize);
     }
 

@@ -9,6 +9,10 @@
     src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype');
     font-weight: 100 900;
   }
+
+  mr-app {
+    background-image: url('/assets/textures/skybox_starmap_4k.jpg');
+  }
   
   
   :root {

@@ -45,6 +45,7 @@ import './core/componentSystems/InstancingSystem';
 import './core/componentSystems/LayoutSystem';
 import './core/componentSystems/MaskingSystem';
 import './core/componentSystems/PhysicsSystem';
+import './core/componentSystems/SkyBoxSystem';
 import './core/componentSystems/StyleSystem';
 import './core/componentSystems/TextSystem';
 

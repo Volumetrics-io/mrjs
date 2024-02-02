@@ -29,5 +29,3 @@ JS.applyAttributes = function(object, attribMap) {
 }
 
 export { JS };
-
-
