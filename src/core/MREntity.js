@@ -147,7 +147,21 @@ export class MREntity extends MRElement {
      * @function
      * @description
      */
-    updateStyle() {}
+    updateStyle() {
+        this.setVisibility();
+    }
+
+    setVisibility() {
+        if (this.compStyle.visible && this.compStyle.visible != 'none') {
+            let visibility = this.compStyle.visible === 'true';
+            this.object3D.visible = visibility;
+            if (this.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                this.background.visible = visibility;
+            }
+        }
+    }
 
     /**
      * @function
