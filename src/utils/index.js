@@ -30,6 +30,13 @@ const mrjsUtils = {
     Physics,
     StringUtils,
     xr,
+
+    get appScale() {
+        if (mrjsUtils.xr.isPresenting) {
+            return 0.5
+        }
+        return 1
+    }
 };
 
 export { mrjsUtils }; // Export as named export

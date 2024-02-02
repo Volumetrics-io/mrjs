@@ -36,9 +36,6 @@ export class MRDivEntity extends MREntity {
         this.object3D.add(this.background);
         this.object3D.name = 'mrDivEntity';
 
-        this.windowVerticalScale = 1;
-        this.windowHorizontalScale = 1;
-
         // allow stenciling when needed by default for UI elements, but also allows
         // overriding when needed.
         this.ignoreStencil = false;
@@ -53,8 +50,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            this.windowVerticalScale = this.parentElement.windowVerticalScale ?? 1 / 2;
-            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowVerticalScale;
+            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.appScale;
         }
         return (rect.height / global.appHeight) * global.viewPortHeight;
     }
@@ -68,8 +64,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            this.windowHorizontalScale = this.parentElement.windowHorizontalScale ?? 1 / 2;
-            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * this.windowHorizontalScale;
+            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.appScale;
         }
         return (rect.width / global.appWidth) * global.viewPortWidth;
     }
@@ -146,12 +141,12 @@ export class MRDivEntity extends MREntity {
                 switch (valuepair[1]) {
                     case 'px':
                         if (mrjsUtils.xr.isPresenting) {
-                            return (val.split('px')[0] / global.appWidth) * this.windowHorizontalScale;
+                            return (val.split('px')[0] / global.appWidth) * mrjsUtils.appScale;
                         }
                         return (val.split('px')[0] / global.appWidth) * global.viewPortWidth;
                     case '%':
                         if (mrjsUtils.xr.isPresenting) {
-                            return (parseFloat(val) / 100) * this.windowHorizontalScale;
+                            return (parseFloat(val) / 100) * mrjsUtils.appScale;
                         }
                         return (parseFloat(val) / 100) * global.viewPortWidth;
                     default:
