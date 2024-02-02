@@ -14,17 +14,19 @@ export class SkyBoxSystem extends MRSystem {
     constructor() {
         super(false);
 
+        // used as a helper because we cant grab the most recently added
+        // item from registry since it's a set.
         this._lastItem = null;
     }
 
     /**
      * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.
+     * @description The generic system update call.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        //
+        // leave for when needed.
     }
 
     /**
@@ -35,7 +37,7 @@ export class SkyBoxSystem extends MRSystem {
     onNewEntity(entity) {
         if (entity instanceof MRSkyBox) {
             if (entity.compStyle.scale == 'none') {
-                // has no css scale attribute then use as default
+                // has no css scale attribute then use as default otherwise use as the user-defined version.
                 const SCALING_OFFSET = 0.01;
                 console.log(this.registry);
                 entity.style.scale = (this.registry.size == 0) ? 1 : this._lastItem.style.scale + SCALING_OFFSET;
