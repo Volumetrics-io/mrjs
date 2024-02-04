@@ -4,6 +4,9 @@ import { MRElement } from 'mrjs/core/MRElement';
 
 import { mrjsUtils } from 'mrjs';
 
+const MOUSE_EVENTS = ['click', 'mouseenter', 'mouseleave', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'mousemove'];
+
+
 /**
  * @class MREntity
  * @classdesc The default representation of an MRElement to be expanded upon by actual details ECS Entity items. `mr-entity`
@@ -223,6 +226,14 @@ export class MREntity extends MRElement {
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
+        });
+
+        MOUSE_EVENTS.forEach(eventType => {
+            this.addEventListener(eventType, (event) => {
+                if (!this.alwaysNeedsStyleUpdate) {
+                    this.needsStyleUpdate = true;
+                }
+            });
         });
 
         this.addEventListener('touch-start', (event) => {

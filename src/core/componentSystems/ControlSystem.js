@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRHand, HAND_GROUP } from 'mrjs/dataTypes/MRHand';
+import { MRHand } from 'mrjs/dataTypes/MRHand';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -31,20 +31,20 @@ export class ControlSystem extends MRSystem {
                 this.activeHand = this.rightHand;
             }
 
-            this.removeCursor();
             this.down = true;
-            this.cursor = this.cursorClick;
             this.cursorViz.material.color.setStyle('blue');
+            this.onMouseDown(event)
+
         });
 
         document.addEventListener('selectend', (event) => {
             if (event.detail.handedness == null) {
                 return;
             }
-            this.removeCursor();
             this.down = false;
-            this.cursor = this.cursorHover;
             this.cursorViz.material.color.setStyle('black');
+
+            this.onMouseUp(event)
         });
 
         this.origin = new THREE.Vector3();
@@ -60,28 +60,19 @@ export class ControlSystem extends MRSystem {
         const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
         const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.01);
 
-        this.cursorClick = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
-        this.cursorHover = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+        this.currentEntity = null
+
         this.cursorViz = new THREE.Mesh(new THREE.RingGeometry(0.005, 0.007, 32), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.7, transparent: true }));
 
         this.app.scene.add(this.cursorViz);
         this.cursorViz.visible = false;
 
-        this.cursorHover.collider = this.app.physicsWorld.createCollider(colDesc, this.cursorHover);
-        this.cursorClick.collider = this.app.physicsWorld.createCollider(colDesc, this.cursorClick);
-
-        this.cursorClick.setTranslation({ ...this.restPosition }, true);
-        this.cursorHover.setTranslation({ ...this.restPosition }, true);
-
-        mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.cursorClick.collider.handle] = 'cursor';
-        mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.cursorHover.collider.handle] = 'cursor-hover';
-
-        this.cursor = this.cursorHover;
         this.down = false;
 
         this.app.renderer.domElement.addEventListener('mousedown', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('mouseup', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('mousemove', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('mouseover', this.mouseOver);
 
         this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
@@ -108,17 +99,40 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.origin };
             this.ray.dir = { ...this.direction };
 
-            this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
+            this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, null);
             if (this.hit != null) {
                 this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
                 this.hitNormal.copy(this.hit.normal);
-                this.cursor.setTranslation({ ...this.hitPosition }, true);
                 this.cursorViz.visible = true;
                 this.cursorViz.position.copy(this.hitPosition);
 
                 this.cursorViz.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.hit.normal);
+
+
+                if(!mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]) { return }
+
+                if(!this.down && this.currentEntity != mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]) {
+                    this.currentEntity?.classList.remove('hover')
+                    this.currentEntity?.dispatchEvent(new MouseEvent('mouseleave'));
+
+                    this.currentEntity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]
+                    this.currentEntity?.classList.add('hover')
+                    this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+                }
+
+                if(this.down) {
+                    this.currentEntity?.dispatchEvent(
+                        new CustomEvent('touch', {
+                            bubbles: true,
+                            detail: {
+                                worldPosition: this.hitPosition,
+                            },
+                        })
+                    );
+                }
+
+
             } else {
-                this.removeCursor();
                 this.cursorViz.visible = false;
             }
         }
@@ -132,17 +146,29 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse over event
      */
     mouseOver = (event) => {
-        if (this.down) {
-            this.cursor = this.cursorClick;
-        } else {
-            this.cursor = this.cursorHover;
-        }
 
         this.hit = this.pixelRayCast(event);
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.cursor.setTranslation({ ...this.hitPosition }, true);
+            if(!this.down && this.currentEntity != mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]) {
+                this.currentEntity?.classList.remove('hover')
+                this.currentEntity?.dispatchEvent(new MouseEvent('mouseleave'));
+                this.currentEntity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]
+                this.currentEntity.classList.add('hover')
+                this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+            }
+
+            if(this.down) {
+                this.currentEntity?.dispatchEvent(
+                    new CustomEvent('touch', {
+                        bubbles: true,
+                        detail: {
+                            worldPosition: this.hitPosition,
+                        },
+                    })
+                );
+            }
         }
     };
 
@@ -152,12 +178,19 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse down event
      */
     onMouseDown = (event) => {
-        event.stopPropagation();
-        this.removeCursor();
         this.down = true;
-        this.cursor = this.cursorClick;
+        this.currentEntity.classList.remove('hover')
+        this.currentEntity.classList.add('active')
 
-        this.cursor.setTranslation({ ...this.hitPosition }, true);
+        this.currentEntity?.dispatchEvent(
+            new CustomEvent('touch-start', {
+                bubbles: true,
+                detail: {
+                    worldPosition: this.hitPosition,
+                },
+            })
+        );
+
     };
 
     /**
@@ -166,20 +199,16 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse up event
      */
     onMouseUp = (event) => {
-        event.stopPropagation();
-        this.removeCursor();
         this.down = false;
-        this.cursor = this.cursorHover;
+        this.currentEntity.classList.remove('active')
+        this.currentEntity.dispatchEvent(new Event('click'));
 
-        this.cursor.setTranslation({ ...this.hitPosition }, true);
-    };
+        this.currentEntity?.dispatchEvent(
+            new CustomEvent('touch-end', {
+                bubbles: true
+            })
+        );
 
-    /**
-     * @function
-     * @description Handles the removeCursor callback.
-     */
-    removeCursor = () => {
-        this.cursor.setTranslation({ ...this.restPosition }, true);
     };
 
     /************ Tools && Helpers ************/
@@ -221,6 +250,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, this.cursor);
+        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, null);
     }
 }
