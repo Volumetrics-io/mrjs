@@ -231,7 +231,6 @@
     grid-row: 2 / 5;
     grid-column: 1 / -1;
     object-fit: cover;
-    visibility: hidden;
   }
 
   /* .headset > mr-img {
