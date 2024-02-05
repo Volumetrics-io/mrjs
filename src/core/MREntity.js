@@ -153,9 +153,6 @@ export class MREntity extends MRElement {
 
     setVisibility() {
         if (this.compStyle.visibility && this.compStyle.visibility !== 'none' && this.compStyle.visibility !== 'collapse') {
-            console.log('here');
-            console.log(this.compStyle);
-            console.log(this.compStyle.visibility);
             let isVisible = this.compStyle.visibility !== 'hidden'; // hidden or visible are the options
             this.object3D.visible = isVisible;
             if (this.background) {
@@ -332,7 +329,6 @@ export class MREntity extends MRElement {
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
     connected() {
-        console.log('here in connected');
         this.setVisibility();
     }
 
