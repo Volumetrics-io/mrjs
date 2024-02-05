@@ -150,7 +150,8 @@ export class MREntity extends MRElement {
      * @function
      * @description
      */
-    updateStyle() {}
+    updateStyle() {
+    }
 
     /**
      * @function
@@ -325,7 +326,8 @@ export class MREntity extends MRElement {
      * @function
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
-    connected() {}
+    connected() {
+    }
 
     /**
      * @function
