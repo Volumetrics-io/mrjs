@@ -21,6 +21,9 @@ mr-app > canvas {
 mr-panel {
     background-color: #fff;
     border-radius: 2%;
+    position: fixed;
+    overflow: auto;
+    height: 100vh;
 }
 
 mr-div, mr-button, mr-img, mr-a, mr-text{

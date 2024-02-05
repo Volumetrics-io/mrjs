@@ -227,12 +227,12 @@ export class MRApp extends MRElement {
 
         // allows embedded mr-app to be independently scrollable
         if (this.compStyle.overflow == 'scroll') {
-            this.renderer.domElement.addEventListener('wheel', (event) => {
-                // Assuming vertical scrolling
-                this.scrollTop += event.deltaY;
-                // Prevent the default scroll behavior of the front element
-                event.preventDefault();
-            });
+            // this.renderer.domElement.addEventListener('wheel', (event) => {
+            //     // Assuming vertical scrolling
+            //     this.scrollTop += event.deltaY;
+            //     // Prevent the default scroll behavior of the front element
+            //     event.preventDefault();
+            // });
         }
 
         // allows for mr-app style to have background:value to set the skybox

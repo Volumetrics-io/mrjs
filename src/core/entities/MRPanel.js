@@ -111,9 +111,6 @@ export class MRPanel extends MRDivEntity {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {
-        if (!mrjsUtils.xr.isPresenting) {
-            return;
-        }
         if (event.type == 'touch-end') {
             this.prevPosition.set(0, 0, 0);
             return;
@@ -136,48 +133,8 @@ export class MRPanel extends MRDivEntity {
         if (app.compStyle.overflow == 'scroll') {
             app.scrollTop += mrjsUtils.CSS.threeToPx(this.delta);
         } else {
-            window.scrollBy(0, mrjsUtils.CSS.threeToPx(this.delta));
+            this.scrollBy(0, mrjsUtils.CSS.threeToPx(this.delta));
         }
-
-        // TODO: disabled for now, needs work.
-        // this.momentumScroll(mrjsUtils.CSS.threeToPx(this.delta), 3000);
-    };
-
-    /**
-     * @function
-     * @description Helper function for the onTouch event function. Handles properly adjusting scroll for some momentum for a more natural feel.
-     * @param {number} distance - the distance left to scroll
-     * @param {number} duration - the amount of time to do the scroll distance allowing for some movement instead of instant displacement.
-     */
-    momentumScroll = (distance, duration) => {
-        let start = null;
-        let remainingDistance = distance;
-        clearTimeout(this.momentumTimeout);
-
-        /**
-         * Internal function - used to step through the remaining scroll distance iteratively.
-         */
-        function step() {
-            if (start === null) {
-                start = new Date().getTime();
-            }
-
-            const currentTime = new Date().getTime();
-            const timeElapsed = currentTime - start;
-            const progress = Math.min(timeElapsed / duration, 1);
-            const easing = 1 - Math.pow(1 - progress, 3); // cubic easing out
-
-            const scrollDistance = remainingDistance * easing;
-            window.scrollBy(0, scrollDistance);
-
-            remainingDistance -= scrollDistance;
-
-            if (timeElapsed < duration) {
-                this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
-            }
-        }
-
-        this.momentumTimeout = setTimeout(step, 10); // 10ms for the next step
     };
 
     /**
@@ -185,7 +142,9 @@ export class MRPanel extends MRDivEntity {
      * @description Handles what should happen when a scroll event is called. Updates items appropriately for scrolling on the panel.
      * @param {object} event - the scroll event
      */
-    onScroll = (event) => {};
+    onScroll = (event) => {
+        this.scrollTop += event.deltaY;
+    };
 }
 
 customElements.get('mr-panel') || customElements.define('mr-panel', MRPanel);
