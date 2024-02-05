@@ -10,12 +10,14 @@ mr-app {
 
 mr-app * {
     box-sizing: border-box;
-    visibility:hidden;
+    opacity: 0%;
+/*    visibility:hidden;*/
 }
 
 mr-app > canvas {
     position:fixed;
     visibility:visible;
+    opacity: 100%;
 }
 
 mr-panel {
@@ -23,14 +25,11 @@ mr-panel {
     border-radius: 2%;
 }
 
-mr-div, mr-entity {
-    visibility:visible;
-}
-
 mr-div, mr-button, mr-img, mr-a, mr-text{
     display: inline-block;
     position: relative;
     z-index: inherit;
+    opacity: 100%;
 }
 
 mr-img {
