@@ -107,7 +107,6 @@ export class AnchorSystem extends MRSystem {
         });
     }
 
-    
     /**
      * @function
      * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this

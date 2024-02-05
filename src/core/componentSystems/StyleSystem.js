@@ -39,8 +39,8 @@ export class StyleSystem extends MRSystem {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
                 entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
 
-                if(entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex){
-                    entity.object3D.position.z += 0.0001
+                if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
+                    entity.object3D.position.z += 0.0001;
                 }
             }
 
@@ -52,7 +52,7 @@ export class StyleSystem extends MRSystem {
                     // for all, so using this checker to confirm the existence first.
                     this.background.visible = true;
                 }
-            } 
+            }
             function makeHidden() {
                 this.object3D.visible = false;
                 if (this.background) {
@@ -63,7 +63,7 @@ export class StyleSystem extends MRSystem {
             }
             // hidden or visible are the options we care about
             if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
-                const isVisible = (entity.compStyle.visibility !== 'hidden');
+                const isVisible = entity.compStyle.visibility !== 'hidden';
                 entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
             }
 

@@ -73,7 +73,7 @@ export class MRSystem {
      * Useful for readability and to not need to check against undefined often.
      */
     set alwaysNeedsSystemUpdate(bool) {
-        this._needsSystemUpdate = (bool) ? undefined : false;
+        this._needsSystemUpdate = bool ? undefined : false;
     }
 
     /**

@@ -33,7 +33,7 @@ const mrjsUtils = {
     Math3D,
     Physics,
     StringUtils,
-    xr
+    xr,
 };
 
 export { mrjsUtils }; // Export as named export
