@@ -122,7 +122,7 @@ export class MRPanel extends MRDivEntity {
         }
         this.prevPosition.copy(this.currentPosition);
 
-        this.delta = this.deltaVector.y * 5;
+        this.delta = this.deltaVector.y;
 
         if (this.delta == 0) {
             return;
