@@ -16,17 +16,16 @@ let JS = {};
  * material of the first child hit.
  * @returns {object} material - the grabbed material
  */
-JS.isInstanceOfBaseClassOnly = function(instance, BaseClass) {
+JS.isInstanceOfBaseClassOnly = function (instance, BaseClass) {
     return instance.constructor === BaseClass;
-}
+};
 
-JS.applyAttributes = function(object, attribMap) {
+JS.applyAttributes = function (object, attribMap) {
     Object.entries(attributeMap).forEach(([key, value]) => {
         if (key in object) {
             object[key] = value;
         }
     });
-}
+};
 
 export { JS };
-

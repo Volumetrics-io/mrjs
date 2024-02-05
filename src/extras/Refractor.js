@@ -1,286 +1,237 @@
-import {
-	Color,
-	Matrix4,
-	Mesh,
-	PerspectiveCamera,
-	Plane,
-	Quaternion,
-	ShaderMaterial,
-	UniformsUtils,
-	Vector3,
-	Vector4,
-	WebGLRenderTarget,
-	HalfFloatType
-} from 'three';
+import { Color, Matrix4, Mesh, PerspectiveCamera, Plane, Quaternion, ShaderMaterial, UniformsUtils, Vector3, Vector4, WebGLRenderTarget, HalfFloatType } from 'three';
 
 class Refractor extends Mesh {
+    constructor(geometry, options = {}) {
+        super(geometry);
 
-	constructor( geometry, options = {} ) {
+        this.isRefractor = true;
 
-		super( geometry );
+        this.type = 'Refractor';
+        this.camera = new PerspectiveCamera();
 
-		this.isRefractor = true;
+        const scope = this;
 
-		this.type = 'Refractor';
-		this.camera = new PerspectiveCamera();
+        const color = options.color !== undefined ? new Color(options.color) : new Color(0x7f7f7f);
+        const textureWidth = options.textureWidth || 512;
+        const textureHeight = options.textureHeight || 512;
+        const clipBias = options.clipBias || 0;
+        const shader = options.shader || Refractor.RefractorShader;
+        const multisample = options.multisample !== undefined ? options.multisample : 4;
 
-		const scope = this;
+        //
 
-		const color = ( options.color !== undefined ) ? new Color( options.color ) : new Color( 0x7F7F7F );
-		const textureWidth = options.textureWidth || 512;
-		const textureHeight = options.textureHeight || 512;
-		const clipBias = options.clipBias || 0;
-		const shader = options.shader || Refractor.RefractorShader;
-		const multisample = ( options.multisample !== undefined ) ? options.multisample : 4;
+        const virtualCamera = this.camera;
+        virtualCamera.matrixAutoUpdate = false;
+        virtualCamera.userData.refractor = true;
 
-		//
+        //
 
-		const virtualCamera = this.camera;
-		virtualCamera.matrixAutoUpdate = false;
-		virtualCamera.userData.refractor = true;
+        const refractorPlane = new Plane();
+        const textureMatrix = new Matrix4();
 
-		//
+        // render target
 
-		const refractorPlane = new Plane();
-		const textureMatrix = new Matrix4();
+        const renderTarget = new WebGLRenderTarget(textureWidth, textureHeight, { samples: multisample, type: HalfFloatType });
 
-		// render target
+        // material
 
-		const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, { samples: multisample, type: HalfFloatType } );
+        this.material = new ShaderMaterial({
+            name: shader.name !== undefined ? shader.name : 'unspecified',
+            uniforms: UniformsUtils.clone(shader.uniforms),
+            vertexShader: shader.vertexShader,
+            fragmentShader: shader.fragmentShader,
+            transparent: true, // ensures, refractors are drawn from farthest to closest
+        });
 
-		// material
+        this.material.uniforms['color'].value = color;
+        this.material.uniforms['tDiffuse'].value = renderTarget.texture;
+        this.material.uniforms['textureMatrix'].value = textureMatrix;
 
-		this.material = new ShaderMaterial( {
-			name: ( shader.name !== undefined ) ? shader.name : 'unspecified',
-			uniforms: UniformsUtils.clone( shader.uniforms ),
-			vertexShader: shader.vertexShader,
-			fragmentShader: shader.fragmentShader,
-			transparent: true // ensures, refractors are drawn from farthest to closest
-		} );
+        // functions
 
-		this.material.uniforms[ 'color' ].value = color;
-		this.material.uniforms[ 'tDiffuse' ].value = renderTarget.texture;
-		this.material.uniforms[ 'textureMatrix' ].value = textureMatrix;
+        const visible = (function () {
+            const refractorWorldPosition = new Vector3();
+            const cameraWorldPosition = new Vector3();
+            const rotationMatrix = new Matrix4();
 
-		// functions
+            const view = new Vector3();
+            const normal = new Vector3();
 
-		const visible = ( function () {
+            return function visible(camera) {
+                refractorWorldPosition.setFromMatrixPosition(scope.matrixWorld);
+                cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
 
-			const refractorWorldPosition = new Vector3();
-			const cameraWorldPosition = new Vector3();
-			const rotationMatrix = new Matrix4();
+                view.subVectors(refractorWorldPosition, cameraWorldPosition);
 
-			const view = new Vector3();
-			const normal = new Vector3();
+                rotationMatrix.extractRotation(scope.matrixWorld);
 
-			return function visible( camera ) {
+                normal.set(0, 0, 1);
+                normal.applyMatrix4(rotationMatrix);
 
-				refractorWorldPosition.setFromMatrixPosition( scope.matrixWorld );
-				cameraWorldPosition.setFromMatrixPosition( camera.matrixWorld );
+                return view.dot(normal) < 0;
+            };
+        })();
 
-				view.subVectors( refractorWorldPosition, cameraWorldPosition );
+        const updateRefractorPlane = (function () {
+            const normal = new Vector3();
+            const position = new Vector3();
+            const quaternion = new Quaternion();
+            const scale = new Vector3();
 
-				rotationMatrix.extractRotation( scope.matrixWorld );
+            return function updateRefractorPlane() {
+                scope.matrixWorld.decompose(position, quaternion, scale);
+                normal.set(0, 0, 1).applyQuaternion(quaternion).normalize();
 
-				normal.set( 0, 0, 1 );
-				normal.applyMatrix4( rotationMatrix );
+                // flip the normal because we want to cull everything above the plane
 
-				return view.dot( normal ) < 0;
+                normal.negate();
 
-			};
+                refractorPlane.setFromNormalAndCoplanarPoint(normal, position);
+            };
+        })();
 
-		} )();
+        const updateVirtualCamera = (function () {
+            const clipPlane = new Plane();
+            const clipVector = new Vector4();
+            const q = new Vector4();
 
-		const updateRefractorPlane = ( function () {
+            return function updateVirtualCamera(camera) {
+                virtualCamera.matrixWorld.copy(camera.matrixWorld);
+                virtualCamera.matrixWorldInverse.copy(virtualCamera.matrixWorld).invert();
+                virtualCamera.projectionMatrix.copy(camera.projectionMatrix);
+                virtualCamera.far = camera.far; // used in WebGLBackground
 
-			const normal = new Vector3();
-			const position = new Vector3();
-			const quaternion = new Quaternion();
-			const scale = new Vector3();
+                // The following code creates an oblique view frustum for clipping.
+                // see: Lengyel, Eric. “Oblique View Frustum Depth Projection and Clipping”.
+                // Journal of Game Development, Vol. 1, No. 2 (2005), Charles River Media, pp. 5–16
 
-			return function updateRefractorPlane() {
+                clipPlane.copy(refractorPlane);
+                clipPlane.applyMatrix4(virtualCamera.matrixWorldInverse);
 
-				scope.matrixWorld.decompose( position, quaternion, scale );
-				normal.set( 0, 0, 1 ).applyQuaternion( quaternion ).normalize();
+                clipVector.set(clipPlane.normal.x, clipPlane.normal.y, clipPlane.normal.z, clipPlane.constant);
 
-				// flip the normal because we want to cull everything above the plane
+                // calculate the clip-space corner point opposite the clipping plane and
+                // transform it into camera space by multiplying it by the inverse of the projection matrix
 
-				normal.negate();
+                const projectionMatrix = virtualCamera.projectionMatrix;
 
-				refractorPlane.setFromNormalAndCoplanarPoint( normal, position );
+                q.x = (Math.sign(clipVector.x) + projectionMatrix.elements[8]) / projectionMatrix.elements[0];
+                q.y = (Math.sign(clipVector.y) + projectionMatrix.elements[9]) / projectionMatrix.elements[5];
+                q.z = -1.0;
+                q.w = (1.0 + projectionMatrix.elements[10]) / projectionMatrix.elements[14];
 
-			};
+                // calculate the scaled plane vector
 
-		} )();
+                clipVector.multiplyScalar(2.0 / clipVector.dot(q));
 
-		const updateVirtualCamera = ( function () {
+                // replacing the third row of the projection matrix
 
-			const clipPlane = new Plane();
-			const clipVector = new Vector4();
-			const q = new Vector4();
+                projectionMatrix.elements[2] = clipVector.x;
+                projectionMatrix.elements[6] = clipVector.y;
+                projectionMatrix.elements[10] = clipVector.z + 1.0 - clipBias;
+                projectionMatrix.elements[14] = clipVector.w;
+            };
+        })();
 
-			return function updateVirtualCamera( camera ) {
+        // This will update the texture matrix that is used for projective texture mapping in the shader.
+        // see: http://developer.download.nvidia.com/assets/gamedev/docs/projective_texture_mapping.pdf
 
-				virtualCamera.matrixWorld.copy( camera.matrixWorld );
-				virtualCamera.matrixWorldInverse.copy( virtualCamera.matrixWorld ).invert();
-				virtualCamera.projectionMatrix.copy( camera.projectionMatrix );
-				virtualCamera.far = camera.far; // used in WebGLBackground
+        function updateTextureMatrix(camera) {
+            // this matrix does range mapping to [ 0, 1 ]
 
-				// The following code creates an oblique view frustum for clipping.
-				// see: Lengyel, Eric. “Oblique View Frustum Depth Projection and Clipping”.
-				// Journal of Game Development, Vol. 1, No. 2 (2005), Charles River Media, pp. 5–16
+            textureMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0);
 
-				clipPlane.copy( refractorPlane );
-				clipPlane.applyMatrix4( virtualCamera.matrixWorldInverse );
+            // we use "Object Linear Texgen", so we need to multiply the texture matrix T
+            // (matrix above) with the projection and view matrix of the virtual camera
+            // and the model matrix of the refractor
 
-				clipVector.set( clipPlane.normal.x, clipPlane.normal.y, clipPlane.normal.z, clipPlane.constant );
+            textureMatrix.multiply(camera.projectionMatrix);
+            textureMatrix.multiply(camera.matrixWorldInverse);
+            textureMatrix.multiply(scope.matrixWorld);
+        }
 
-				// calculate the clip-space corner point opposite the clipping plane and
-				// transform it into camera space by multiplying it by the inverse of the projection matrix
+        //
 
-				const projectionMatrix = virtualCamera.projectionMatrix;
+        function render(renderer, scene, camera) {
+            scope.visible = false;
 
-				q.x = ( Math.sign( clipVector.x ) + projectionMatrix.elements[ 8 ] ) / projectionMatrix.elements[ 0 ];
-				q.y = ( Math.sign( clipVector.y ) + projectionMatrix.elements[ 9 ] ) / projectionMatrix.elements[ 5 ];
-				q.z = - 1.0;
-				q.w = ( 1.0 + projectionMatrix.elements[ 10 ] ) / projectionMatrix.elements[ 14 ];
+            const currentRenderTarget = renderer.getRenderTarget();
+            const currentXrEnabled = renderer.xr.enabled;
+            const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
 
-				// calculate the scaled plane vector
+            renderer.xr.enabled = false; // avoid camera modification
+            renderer.shadowMap.autoUpdate = false; // avoid re-computing shadows
 
-				clipVector.multiplyScalar( 2.0 / clipVector.dot( q ) );
+            renderer.setRenderTarget(renderTarget);
+            if (renderer.autoClear === false) renderer.clear();
+            renderer.render(scene, virtualCamera);
 
-				// replacing the third row of the projection matrix
+            renderer.xr.enabled = currentXrEnabled;
+            renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
+            renderer.setRenderTarget(currentRenderTarget);
 
-				projectionMatrix.elements[ 2 ] = clipVector.x;
-				projectionMatrix.elements[ 6 ] = clipVector.y;
-				projectionMatrix.elements[ 10 ] = clipVector.z + 1.0 - clipBias;
-				projectionMatrix.elements[ 14 ] = clipVector.w;
+            // restore viewport
 
-			};
+            const viewport = camera.viewport;
 
-		} )();
+            if (viewport !== undefined) {
+                renderer.state.viewport(viewport);
+            }
 
-		// This will update the texture matrix that is used for projective texture mapping in the shader.
-		// see: http://developer.download.nvidia.com/assets/gamedev/docs/projective_texture_mapping.pdf
+            scope.visible = true;
+        }
 
-		function updateTextureMatrix( camera ) {
+        //
 
-			// this matrix does range mapping to [ 0, 1 ]
+        this.onBeforeRender = function (renderer, scene, camera) {
+            // ensure refractors are rendered only once per frame
 
-			textureMatrix.set(
-				0.5, 0.0, 0.0, 0.5,
-				0.0, 0.5, 0.0, 0.5,
-				0.0, 0.0, 0.5, 0.5,
-				0.0, 0.0, 0.0, 1.0
-			);
+            if (camera.userData.refractor === true) return;
 
-			// we use "Object Linear Texgen", so we need to multiply the texture matrix T
-			// (matrix above) with the projection and view matrix of the virtual camera
-			// and the model matrix of the refractor
+            // avoid rendering when the refractor is viewed from behind
 
-			textureMatrix.multiply( camera.projectionMatrix );
-			textureMatrix.multiply( camera.matrixWorldInverse );
-			textureMatrix.multiply( scope.matrixWorld );
+            if (!visible(camera) === true) return;
 
-		}
+            // update
 
-		//
+            updateRefractorPlane();
 
-		function render( renderer, scene, camera ) {
+            updateTextureMatrix(camera);
 
-			scope.visible = false;
+            updateVirtualCamera(camera);
 
-			const currentRenderTarget = renderer.getRenderTarget();
-			const currentXrEnabled = renderer.xr.enabled;
-			const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
+            render(renderer, scene, camera);
+        };
 
-			renderer.xr.enabled = false; // avoid camera modification
-			renderer.shadowMap.autoUpdate = false; // avoid re-computing shadows
+        this.getRenderTarget = function () {
+            return renderTarget;
+        };
 
-			renderer.setRenderTarget( renderTarget );
-			if ( renderer.autoClear === false ) renderer.clear();
-			renderer.render( scene, virtualCamera );
-
-			renderer.xr.enabled = currentXrEnabled;
-			renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
-			renderer.setRenderTarget( currentRenderTarget );
-
-			// restore viewport
-
-			const viewport = camera.viewport;
-
-			if ( viewport !== undefined ) {
-
-				renderer.state.viewport( viewport );
-
-			}
-
-			scope.visible = true;
-
-		}
-
-		//
-
-		this.onBeforeRender = function ( renderer, scene, camera ) {
-
-			// ensure refractors are rendered only once per frame
-
-			if ( camera.userData.refractor === true ) return;
-
-			// avoid rendering when the refractor is viewed from behind
-
-			if ( ! visible( camera ) === true ) return;
-
-			// update
-
-			updateRefractorPlane();
-
-			updateTextureMatrix( camera );
-
-			updateVirtualCamera( camera );
-
-			render( renderer, scene, camera );
-
-		};
-
-		this.getRenderTarget = function () {
-
-			return renderTarget;
-
-		};
-
-		this.dispose = function () {
-
-			renderTarget.dispose();
-			scope.material.dispose();
-
-		};
-
-	}
-
+        this.dispose = function () {
+            renderTarget.dispose();
+            scope.material.dispose();
+        };
+    }
 }
 
 Refractor.RefractorShader = {
+    name: 'RefractorShader',
 
-	name: 'RefractorShader',
+    uniforms: {
+        color: {
+            value: null,
+        },
 
-	uniforms: {
+        tDiffuse: {
+            value: null,
+        },
 
-		'color': {
-			value: null
-		},
+        textureMatrix: {
+            value: null,
+        },
+    },
 
-		'tDiffuse': {
-			value: null
-		},
-
-		'textureMatrix': {
-			value: null
-		},
-
-	},
-
-	vertexShader: /* glsl */`
+    vertexShader: /* glsl */ `
 
 		uniform mat4 textureMatrix;
 
@@ -293,7 +244,7 @@ Refractor.RefractorShader = {
 
 		}`,
 
-	fragmentShader: /* glsl */`
+    fragmentShader: /* glsl */ `
 
 		uniform vec3 color;
 		uniform sampler2D tDiffuse;
@@ -320,8 +271,7 @@ Refractor.RefractorShader = {
 			#include <tonemapping_fragment>
 			#include <colorspace_fragment>
 
-		}`
-
+		}`,
 };
 
 export { Refractor };

@@ -41,7 +41,7 @@ export class TextSystem extends MRSystem {
                     },
                     () => {
                         this.preloadedFonts[fontFace.style.getPropertyValue('font-family')] = fontData.src;
-                        document.dispatchEvent(new CustomEvent('font-loaded'))
+                        document.dispatchEvent(new CustomEvent('font-loaded'));
                     }
                 );
             });
@@ -78,7 +78,9 @@ export class TextSystem extends MRSystem {
      * the needsStyleUpdate being the optimization determiner instead.
      */
     set needsSystemUpdate(bool) {
-        console.log('`TextSystem.needSystemUpdate = bool` does nothing. See comment in docs for more explanation. https://docs.mrjs.io/javascript-api/#textsystem.needssystemupdate');
+        console.log(
+            '`TextSystem.needSystemUpdate = bool` does nothing. See comment in docs for more explanation. https://docs.mrjs.io/javascript-api/#textsystem.needssystemupdate'
+        );
         this.alwaysNeedsSystemUpdate = true;
     }
 
@@ -94,16 +96,16 @@ export class TextSystem extends MRSystem {
 
             let text = isTextFieldOrArea
                 ? entity.input.value
-                // troika honors newlines/white space
-                // we want to mimic h1, p, etc which do not honor these values
-                // so we have to clean these from the text
-                // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
-                : entity.textContent
-                    .replace(/(\n)\s+/g, '$1')
-                    .replace(/(\r\n|\n|\r)/gm, '')
-                    .trim();
+                : // troika honors newlines/white space
+                  // we want to mimic h1, p, etc which do not honor these values
+                  // so we have to clean these from the text
+                  // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                  entity.textContent
+                      .replace(/(\n)\s+/g, '$1')
+                      .replace(/(\r\n|\n|\r)/gm, '')
+                      .trim();
 
-            let textContentChanged = (entity.textObj.text != text);
+            let textContentChanged = entity.textObj.text != text;
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.
