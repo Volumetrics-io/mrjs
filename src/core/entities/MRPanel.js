@@ -115,7 +115,6 @@ export class MRPanel extends MRDivEntity {
             this.prevPosition.set(0, 0, 0);
             return;
         }
-        event.stopPropagation();
         this.currentPosition.copy(event.detail.worldPosition);
         if (this.prevPosition.y != 0) {
             this.deltaVector.subVectors(this.currentPosition, this.prevPosition);
@@ -143,6 +142,7 @@ export class MRPanel extends MRDivEntity {
      * @param {object} event - the scroll event
      */
     onScroll = (event) => {
+        if(!this.focus) { return }
         this.scrollTop += event.deltaY;
     };
 }
