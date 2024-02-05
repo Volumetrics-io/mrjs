@@ -148,7 +148,6 @@ export class MREntity extends MRElement {
      * @description
      */
     updateStyle() {
-        this.setVisibility();
     }
 
     /**
@@ -317,7 +316,6 @@ export class MREntity extends MRElement {
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
     connected() {
-        this.setVisibilityFromStyle();
     }
 
     /**

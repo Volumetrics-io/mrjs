@@ -46,21 +46,26 @@ export class StyleSystem extends MRSystem {
 
             // VISIBILITY
             function makeVisible() {
-                this.setVisibility(true, true);
+                this.object3D.visible = true;
+                if (this.background) {
+                    // The background for MRDivEntities, but we want this css property allowed
+                    // for all, so using this checker to confirm the existence first.
+                    this.background.visible = true;
+                }
             } 
             function makeHidden() {
-                this.setVisibility(false, true);
+                this.object3D.visible = false;
+                if (this.background) {
+                    // The background for MRDivEntities, but we want this css property allowed
+                    // for all, so using this checker to confirm the existence first.
+                    this.background.visible = false;
+                }
             }
-            const hasValidParam = (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse');
             // hidden or visible are the options we care about
-            const isVisible = hasValidParam ? (this.compStyle.visibility !== 'hidden') : bool;
-            entity.object3D.visible = isVisible;
-            if (entity.background) {
-                // The background for MRDivEntities, but we want this css property allowed
-                // for all, so using this checker to confirm the existence first.
-                entity.background.visible = isVisible;
+            if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+                const isVisible = (entity.compStyle.visibility !== 'hidden');
+                entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
             }
-            entity.traverse(isVisible ? entity.makeVisibile() : entity.makeHidden());
 
             // MAIN ENTITY STYLE CHANGE
             if (entity instanceof MRDivEntity) {
