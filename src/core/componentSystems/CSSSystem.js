@@ -25,7 +25,55 @@ export class CSSSystem extends MRSystem {
     }
 
     _handleStyleUpdate(deltaTime, frame) {
+        // DETERMINE IF STYLE CHANGE IS NEEDED
+        if (!entity.needsStyleUpdate) {
+            continue;
+        }
 
+        // SCALE
+        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
+        if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
+            // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
+            entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
+
+            if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
+                entity.object3D.position.z += 0.0001;
+            }
+        }
+
+        // VISIBILITY
+        function makeVisible() {
+            this.object3D.visible = true;
+            if (this.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                this.background.visible = true;
+            }
+        }
+        function makeHidden() {
+            this.object3D.visible = false;
+            if (this.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                this.background.visible = false;
+            }
+        }
+        // hidden or visible are the options we care about
+        if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+            const isVisible = entity.compStyle.visibility !== 'hidden';
+            entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
+        }
+
+        // MAIN ENTITY STYLE CHANGE
+        if (entity instanceof MRDivEntity) {
+            entity.updateStyle();
+        }
+
+        // CLEANUP AFTER STYLE CHANGES
+        entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+        if (!entity.alwaysNeedsStyleUpdate) {
+            entity.needsStyleUpdate = false;
+        }
     }
 
     /**
@@ -38,55 +86,6 @@ export class CSSSystem extends MRSystem {
         for (const entity of this.registry) {
             this._handleGeometryUpdate(deltaTime, frame);
             this._handleStyleUpdate(deltaTime, frame);
-            // DETERMINE IF STYLE CHANGE IS NEEDED
-            if (!entity.needsStyleUpdate) {
-                continue;
-            }
-
-            // SCALE
-            entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
-            if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
-                // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
-                entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
-
-                if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
-                    entity.object3D.position.z += 0.0001;
-                }
-            }
-
-            // VISIBILITY
-            function makeVisible() {
-                this.object3D.visible = true;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = true;
-                }
-            }
-            function makeHidden() {
-                this.object3D.visible = false;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = false;
-                }
-            }
-            // hidden or visible are the options we care about
-            if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
-                const isVisible = entity.compStyle.visibility !== 'hidden';
-                entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
-            }
-
-            // MAIN ENTITY STYLE CHANGE
-            if (entity instanceof MRDivEntity) {
-                entity.updateStyle();
-            }
-
-            // CLEANUP AFTER STYLE CHANGES
-            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            if (!entity.alwaysNeedsStyleUpdate) {
-                entity.needsStyleUpdate = false;
-            }
         }
     }
 
