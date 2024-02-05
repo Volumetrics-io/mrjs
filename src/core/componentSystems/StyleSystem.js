@@ -28,10 +28,12 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
+            // DETERMINE IF STYLE CHANGE IS NEEDED
             if (!entity.needsStyleUpdate) {
                 continue;
             }
 
+            // SCALE
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
             if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
                 // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
@@ -42,9 +44,30 @@ export class StyleSystem extends MRSystem {
                 }
             }
 
+            // VISIBILITY
+            function makeVisible() {
+                this.setVisibility(true, true);
+            } 
+            function makeHidden() {
+                this.setVisibility(false, true);
+            }
+            const hasValidParam = (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse');
+            // hidden or visible are the options we care about
+            const isVisible = hasValidParam ? (this.compStyle.visibility !== 'hidden') : bool;
+            entity.object3D.visible = isVisible;
+            if (entity.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                entity.background.visible = isVisible;
+            }
+            entity.traverse(isVisible ? entity.makeVisibile() : entity.makeHidden());
+
+            // MAIN ENTITY STYLE CHANGE
             if (entity instanceof MRDivEntity) {
                 entity.updateStyle();
             }
+
+            // CLEANUP AFTER STYLE CHANGES
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsStyleUpdate) {
                 entity.needsStyleUpdate = false;
