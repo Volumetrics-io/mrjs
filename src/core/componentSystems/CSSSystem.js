@@ -7,17 +7,25 @@ import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
- * @class StyleSystem
+ * @class CSSSystem
  * @classdesc Handles style updates for all items.
  * @augments MRSystem
  */
-export class StyleSystem extends MRSystem {
+export class CSSSystem extends MRSystem {
     /**
      * @class
      * @description StyleSystem's default constructor with a starting framerate of 1/30.
      */
     constructor() {
         super(false);
+    }
+
+    _handleGeometryUpdate(deltaTime, frame) {
+
+    }
+
+    _handleStyleUpdate(deltaTime, frame) {
+
     }
 
     /**
@@ -28,6 +36,8 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
+            this._handleGeometryUpdate(deltaTime, frame);
+            this._handleStyleUpdate(deltaTime, frame);
             // DETERMINE IF STYLE CHANGE IS NEEDED
             if (!entity.needsStyleUpdate) {
                 continue;

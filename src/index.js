@@ -46,7 +46,7 @@ import './core/componentSystems/LayoutSystem';
 import './core/componentSystems/MaskingSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
-import './core/componentSystems/StyleSystem';
+import './core/componentSystems/CSSSystem';
 import './core/componentSystems/TextSystem';
 
 // UTILS
