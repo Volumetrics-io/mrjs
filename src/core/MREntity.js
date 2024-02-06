@@ -273,8 +273,10 @@ export class MREntity extends MRElement {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
@@ -282,80 +284,102 @@ export class MREntity extends MRElement {
 
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
-                if (!this.alwaysNeedsStyleUpdate) {
+                if (!this.alwaysNeedsGeometryUpdate) {
                     this.needsGeometryUpdate = true;
+                }
+                if (!this.alwaysNeedsStyleUpdate) {
                     this.needsStyleUpdate = true;
                 }
             });
         });
 
         this.addEventListener('touch-start', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
 
         this.addEventListener('child-updated', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         window.addEventListener('resize', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         document.addEventListener('enterXR', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
         document.addEventListener('exitXR', (event) => {
-            if (!this.alwaysNeedsStyleUpdate) {
+            if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
@@ -441,8 +465,10 @@ export class MREntity extends MRElement {
 
             switch (mutation.type) {
                 case 'childList':
-                    if (!this.alwaysNeedsStyleUpdate) {
+                    if (!this.alwaysNeedsGeometryUpdate) {
                         this.needsGeometryUpdate = true;
+                    }
+                    if (!this.alwaysNeedsStyleUpdate) {
                         this.needsStyleUpdate = true;
                     }
                     break;
