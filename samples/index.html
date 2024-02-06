@@ -104,9 +104,10 @@
 
       // increases the maxspeed and acceleration of the animation component on the logo
       function spin() {
-        console.log(document.querySelector('.spin-button').textObj);
         let animationComp = model.components.get('animation')
-        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        if (animationComp !== undefined && animationComp !== null) {
+          model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        }
       }
 
       
