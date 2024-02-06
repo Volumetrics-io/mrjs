@@ -61,6 +61,9 @@ export class AnimationSystem extends MRSystem {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModel && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
+            if (entity.mixer) {
+                entity.mixer.dispose();
+            }
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
             this.setAnimation(entity, comp);
         }

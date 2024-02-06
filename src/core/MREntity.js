@@ -236,30 +236,35 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('touch-start', (event) => {
+            // no geometry update needed?
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
+            // no geometry update needed?
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
+            // no geometry update needed?
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
+            // no geometry update needed?
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
+            // no geometry update needed?
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }

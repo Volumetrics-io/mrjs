@@ -30,12 +30,18 @@ export class MRSkyBox extends MREntity {
         if (this.skybox) {
             if (Array.isArray(texture.images) && texture.images.length === 6) {
                 // Handle cube texture case
+                if (this.skybox.material) {
+                    this.skybox.material.dispose();
+                }
                 this.skybox.material = new THREE.MeshStandardMaterial({
                     envMap: texture,
                     side: THREE.BackSide, // Render only on the inside
                 });
             } else {
                 // Handle single texture case
+                if (this.skybox.material) {
+                    this.skybox.material.dispose();
+                }
                 this.skybox.material = new THREE.MeshBasicMaterial({
                     map: texture,
                     side: THREE.BackSide, // Render only on the inside

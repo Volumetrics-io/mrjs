@@ -70,6 +70,9 @@ export class MRTextField extends MRTextEntity {
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
+        if (this.cursor.geometry) {
+            this.cursor.geometry.dispose();
+        }
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
         this.updateCursorPosition();
     };
