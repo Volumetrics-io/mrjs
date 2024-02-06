@@ -5,17 +5,13 @@
     <title>mr.js - anchors</title>
     <meta name="description" content="mr.js example - anchors">
     <script src="/mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="anchors-style.css" />
+    <link rel="stylesheet" type="text/css" href="panels-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
    <mr-app debug="false">
-    <mr-entity data-comp-anchor="type: fixed;">
-        <mr-panel 
-        id="panel1"
-        class="layout"
-        data-position="0.25 0 0">
-            <mr-div id="navbar">
+    <mr-entity id="rig" data-comp-anchor="type: fixed;">
+        <mr-panel id="navbar" data-position="0 0 0.001">
             <mr-a href="https://mrjs.io" class="mrjs">
                 mrjs
             </mr-a>
@@ -31,8 +27,18 @@
             <mr-a href="https://volumetrics.io" class="company">
                 volumetrics
             </mr-a>
-            </mr-div>
+        </mr-panel>
+
+        <mr-panel id="tabbar" data-position="0 0 0.001">
+            <mr-button onclick="switchTab(0)" class="col-1">panel 1</mr-button>
+            <mr-button onclick="switchTab(1)" class="col-2">panel 2</mr-button>
+            <mr-button onclick="switchTab(2)" class="col-3">panel 3</mr-button>
+            <mr-button onclick="spread()" class="col-4">spread</mr-button>
+        </mr-panel>
     
+        <mr-panel 
+        id="panel1"
+        class="layout front">
             <mr-text class="col-2 title" >
             Panel 1
             </mr-text>
@@ -63,11 +69,36 @@
     
         <mr-panel 
             id="panel2" 
-            class="layout"
-            data-position="-0.25 0 0">
+            class="layout">
     
             <mr-text class="col-2 title" >
             Panel 2
+            </mr-text>
+
+            <mr-text class="col-2">
+                Laboris do est reprehenderit aliquip ut non veniam tempor cupidatat dolore. Lorem aliquip eiusmod id culpa adipisicing laborum. Aliqua sint tempor ex mollit occaecat non quis aliquip nisi fugiat eiusmod duis aute. Dolor velit veniam nostrud do labore consectetur aliquip.
+            </mr-text>
+
+            <mr-text class="col-2">
+                Veniam duis fugiat est amet ad enim commodo veniam consectetur. Ullamco minim laboris fugiat do fugiat laborum cupidatat aliqua aliquip velit et pariatur consectetur. Mollit incididunt ex esse anim nostrud nostrud nisi tempor et cillum incididunt laboris aliquip adipisicing. Commodo culpa quis aliquip velit commodo commodo aute esse adipisicing in sunt et. Dolore consectetur excepteur laboris cupidatat aute incididunt.
+            </mr-text>
+
+            <mr-text class="col-2">
+                Deserunt pariatur pariatur nulla Lorem pariatur voluptate aliquip. Ex occaecat reprehenderit ipsum magna ipsum incididunt eu id consequat consequat duis aute. Qui cupidatat ea ullamco pariatur est in excepteur excepteur minim ullamco aute. Voluptate officia Lorem adipisicing non amet ea cillum est pariatur. Voluptate qui laborum fugiat aliqua anim incididunt in in excepteur.
+            </mr-text>
+            
+            <mr-text class="col-2">
+                Dolore laborum deserunt culpa veniam nulla incididunt sunt ad nisi ullamco. Culpa cupidatat in eiusmod id proident nostrud nisi adipisicing cillum veniam. Voluptate ea consectetur est laboris aliquip cillum dolor excepteur officia deserunt officia laborum. Laboris nostrud esse quis fugiat dolore sit deserunt. Voluptate esse ullamco sunt occaecat sit elit magna officia. Amet dolor eiusmod quis excepteur ea.
+            </mr-text>
+          
+        </mr-panel>
+
+        <mr-panel 
+            id="panel3" 
+            class="layout">
+    
+            <mr-text class="col-2 title" >
+            Panel 3
             </mr-text>
 
             <mr-text class="col-2">
@@ -96,7 +127,62 @@
   <footer>
     <script>
 
-       
+        let rig = document.querySelector('#rig')
+        let panels = document.querySelectorAll('.layout')
+
+        let frontIndex = 0
+
+        function switchTab(index) {
+            panels[frontIndex].classList.remove('front')
+            panels[index].classList.add('front')
+            frontIndex = index
+
+        }
+
+        let unfolded = false
+
+        function spread() {
+            let index = 0
+            let totalWidth = 0
+
+            let forwardVec = getForward(rig)
+            
+            for(let panel of panels) {
+                totalWidth += panel.width
+            }
+            for(let panel of panels) {
+                if(unfolded) {
+                    panel.object3D.position.set(0, 0, 0)
+                } else {
+                    panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3)
+                    index += 1
+                }
+
+                panel.object3D.lookAt(forwardVec)
+
+
+            }
+
+            unfolded = !unfolded
+
+        }
+
+        function getForward(entity) {
+
+            // The local forward vector - THREE.js uses a right-handed coordinate system, so forward is negative on the z-axis
+            let localForward = new THREE.Vector3(0, 0, 0.5);
+
+            let worldForward = entity.object3D.localToWorld(localForward)
+
+            // Use the object's quaternion to transform the local forward vector to a global direction
+            return worldForward.applyQuaternion(entity.object3D.quaternion);
+
+        }
+
+        document.addEventListener('exitXR', () => {
+            unfolded = false 
+            spread()
+        })
       
     </script>
   </footer>

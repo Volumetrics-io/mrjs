@@ -97,8 +97,8 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
-        return (styleHeight / global.appHeight) * global.viewPortHeight;
+        return (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
+
     }
 
     /**

@@ -1,0 +1,216 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('/assets/fonts/Roboto-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+}
+
+@font-face {
+    font-family: 'Bricolage';
+    src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+  
+  
+  :root {
+    --font-title: "Bricolage";
+    /* --font-body: "Onest", system-ui, sans-serif; */
+    /* PADDINGS & MARGINS */
+    --space: 4rem;
+    --outer: 1.5rem;
+    --inter: 1rem;
+    --inner: 0.5rem;
+    --inlet: 0.25rem;
+    /* CONSTRAINTS */
+    --hwdth: 56rem;
+    --mwdth: 68rem;
+    /* RADIUS */
+    --border-radius-large: 2rem;
+    /* SCROLL */
+    --scroll: 0;
+    --position: 0;
+    /* NEUTRAL COLORS */
+    --neutral-hue: 40;
+    --color-title: hsl(var(--neutral-hue), 20%, 20%);
+    --color-text: hsl(var(--neutral-hue), 15%, 10%);
+    --color-text-light: hsl(var(--neutral-hue), 20%, 42%);
+    --color-paper: hsl(var(--neutral-hue), 80%, 94%);
+    --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
+    --color-paper-card: white;
+    /* BUTTONS */
+    /* --rythm-hue: 310; */
+    --rythm-hue: 300;
+    /* --rythm-hue: 40; */
+    --color-button: hsl(var(--rythm-hue), 15%, 96%);
+    --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
+    --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
+    --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
+    --color-button-ring: hsl(var(--rythm-hue), 100%, 70%);
+    /* CTA */
+    /* --hue: 210; */
+    --hue: 210;
+    --color-cta: hsl(var(--hue), 70%, 40%);
+    --color-cta-hover: hsl(var(--hue), 70%, 55%);
+    --color-cta-active: hsl(var(--hue), 70%, 60%);
+    --color-cta-text: hsl(var(--hue), 10%, 100%);
+    --color-cta-focus-ring: hsl(var(--hue), 100%, 100%);
+    /* OPTIONS */
+    --option-hue: 40;
+    --color-option: hsl(var(--option-hue), 50%, 83%);
+    --color-option-hover: hsl(var(--option-hue), 50%, 86%);
+    --color-option-active: hsl(var(--option-hue), 50%, 88%);
+    --color-option-text: var(--color-text);
+    --color-option-focus-ring: hsl(var(--option-hue), 50%, 50%);
+    /* OPTIONS SELECTED */
+    --color-option-selected: hsl(var(--option-hue), 100%, 100%);
+    --color-option-selected-text: hsl(var(--hue), 80%, 30%);
+    /* FOCUS */
+    --color-focus-outline: hsl(var(--hue), 100%, 50%);
+    /* BORDERS */
+    --color-border-light: hsl(var(--rythm-hue), 15%, 92%);
+    --color-border-static: hsla(var(--rythm-hue), 100%, 15%, 15%);
+    --color-border-field-hover: hsl(var(--rythm-hue), 80%, 80%);
+    --color-border-field-active: hsl(var(--rythm-hue), 100%, 70%);
+    /* SHADOWS */
+    --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
+    --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
+  }
+  
+  mr-text {
+    font-family: 'Roboto';
+    line-height: 100%;
+    font-size: 16px;
+  }
+
+  .mrjs {
+    font-family: var(--font-title);
+    font-size: 4vw;
+    line-height: 100%;
+    color: rgb(255, 255, 255);
+    grid-column: 1;
+  }
+
+  .company {
+    font-family: var(--font-title);
+    font-size: 4vw;
+    line-height: 100%;
+    color: rgb(255, 255, 255);
+    align-self: center;
+    grid-column: 4;
+  }
+
+  .logo {
+    grid-column: 3;
+    z-index: 25;
+  }
+
+  #logo-model{
+    scale: 0.0005;
+  }
+
+
+  .layout {
+    background-color: var(--color-paper);
+    padding-top: 6vw;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 1vw;
+    grid-auto-rows: auto;
+  }
+
+  .col-1{
+    grid-column: 1;
+  }
+
+  .col-2{
+    grid-column: 2;
+  }
+
+  .col-3{
+    grid-column: 3;
+  }
+
+  .col-4{
+    grid-column: 4;
+  }
+
+  #navbar {
+    background-color: #141414;
+    border-radius: 1%;
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr 0.5fr 0.5fr;
+    padding: 10px;
+    height: fit-content;
+    z-index: 4;
+  }
+
+  #tabbar {
+    background-color: #141414;
+    border-radius: 1%;
+    position:fixed;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 1vh;
+    height: fit-content;
+    z-index: 4;
+  }
+
+  #tabbar * {
+    margin: 0 10px;
+  }
+
+  .front {
+    z-index: 2;
+  }
+  
+  .title {
+    font-family: var(--font-title);
+    font-size: 6vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+    align-self: center;
+
+  }
+
+  .title-2 {
+    font-family: var(--font-title);
+    font-size: 5vw;
+    margin-bottom: 1vh;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+    align-self: center;
+    margin: 0 auto;
+  }
+  .subtitle {
+    font-family: var(--font-title);
+    font-size: 3vw;
+    margin-bottom: 1vh;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+  }
+
+  .label {
+    font-family: var(--font-title);
+    font-size: 2vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+  }
+
+  .label-2 {
+    font-family: var(--font-title);
+    font-size: 1.5vw;
+    line-height: 100%;
+    color: rgba(24, 24, 24, 0.75);
+  }
+
+  .button {
+    padding: 10px;
+    margin: 10px;
+    width: fit-content;
+  }

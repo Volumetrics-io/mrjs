@@ -13,17 +13,17 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanel extends MRDivEntity {
-    /**
-     * @function
-     * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
-     * @returns {number} - the resolved height
-     */
-    get height() {
-        if (mrjsUtils.xr.isPresenting) {
-            return mrjsUtils.app.scale;
-        }
-        return global.viewPortHeight;
-    }
+    // /**
+    //  * @function
+    //  * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
+    //  * @returns {number} - the resolved height
+    //  */
+    // get height() {
+    //     if (mrjsUtils.xr.isPresenting) {
+    //         return mrjsUtils.app.scale;
+    //     }
+    //     return global.viewPortHeight;
+    // }
 
     /**
      * @class
@@ -31,10 +31,11 @@ export class MRPanel extends MRDivEntity {
      */
     constructor() {
         super();
-        this.shuttle = new THREE.Group(); // will shift based on bounding box width
+        this.panel = new THREE.Group(); // will shift based on bounding box width
         this.object3D.userData.bbox = new THREE.Box3();
         this.object3D.userData.size = new THREE.Vector3();
-        this.object3D.add(this.shuttle);
+        this.object3D.add(this.panel);
+        this.panel.add(this.background)
         this.object3D.name = 'panel';
         this.ignoreStencil = true;
 
@@ -92,7 +93,7 @@ export class MRPanel extends MRDivEntity {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.shuttle.add(entity.object3D);
+        this.panel.add(entity.object3D);
     }
 
     /**
@@ -101,7 +102,7 @@ export class MRPanel extends MRDivEntity {
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
-        this.shuttle.remove(entity.object3D);
+        this.panel.remove(entity.object3D);
     }
 
     /**

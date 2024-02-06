@@ -24,6 +24,7 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from './componentSystems/AudioSystem';
+import { PanelManagementSystem } from './componentSystems/PanelManagementSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -97,6 +98,7 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        this.panelManagementSystem = new PanelManagementSystem()
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
         this.styleSystem = new StyleSystem();

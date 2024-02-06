@@ -85,9 +85,9 @@ export class ClippingSystem extends MRSystem {
                 entity.volume.localToWorld(this.coplanarPointB);
                 entity.volume.localToWorld(this.coplanarPointC);
             } else {
-                entity.object3D.localToWorld(this.coplanarPointA);
-                entity.object3D.localToWorld(this.coplanarPointB);
-                entity.object3D.localToWorld(this.coplanarPointC);
+                entity.panel.localToWorld(this.coplanarPointA);
+                entity.panel.localToWorld(this.coplanarPointB);
+                entity.panel.localToWorld(this.coplanarPointC);
             }
 
             entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
@@ -129,9 +129,9 @@ export class ClippingSystem extends MRSystem {
                 entity.volume.localToWorld(this.coplanarPointB);
                 entity.volume.localToWorld(this.coplanarPointC);
             } else {
-                entity.object3D.localToWorld(this.coplanarPointA);
-                entity.object3D.localToWorld(this.coplanarPointB);
-                entity.object3D.localToWorld(this.coplanarPointC);
+                entity.panel.localToWorld(this.coplanarPointA);
+                entity.panel.localToWorld(this.coplanarPointB);
+                entity.panel.localToWorld(this.coplanarPointC);
             }
 
             const newPlane = new THREE.Plane();

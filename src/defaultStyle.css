@@ -24,6 +24,7 @@ mr-panel {
     position: fixed;
     overflow: auto;
     height: 100vh;
+    width: 100vw;
 }
 
 mr-div, mr-button, mr-img, mr-a, mr-text{
