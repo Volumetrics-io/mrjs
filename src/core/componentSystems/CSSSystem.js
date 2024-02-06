@@ -20,14 +20,10 @@ export class CSSSystem extends MRSystem {
         super(false);
     }
 
-    _handleGeometryUpdate(deltaTime, frame) {
-
-    }
-
-    _handleStyleUpdate(deltaTime, frame) {
-        // DETERMINE IF STYLE CHANGE IS NEEDED
-        if (!entity.needsStyleUpdate) {
-            continue;
+    _handleGeometryUpdate(deltaTime, frame, entity) {
+        // DETERMINE IF GEOMETRY CHANGE IS NEEDED
+        if (!entity.needsGeometryUpdate) {
+            return;
         }
 
         // SCALE
@@ -39,6 +35,24 @@ export class CSSSystem extends MRSystem {
             if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
                 entity.object3D.position.z += 0.0001;
             }
+        }
+
+        // MAIN ENTITY GEOMETRY CHANGE
+        if (entity instanceof MREntity) {
+            entity.updateGeometry();
+        }
+
+        // CLEANUP AFTER GEOMETRY CHANGES
+        entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+        if (!entity.alwaysNeedsGeometryUpdate) {
+            entity.needsGeometryUpdate = false;
+        }
+    }
+
+    _handleStyleUpdate(deltaTime, frame, entity) {
+        // DETERMINE IF STYLE CHANGE IS NEEDED
+        if (!entity.needsStyleUpdate) {
+            return;
         }
 
         // VISIBILITY
@@ -78,14 +92,14 @@ export class CSSSystem extends MRSystem {
 
     /**
      * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever style is expected whether that be a 2D setup or a 3D change.
+     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            this._handleGeometryUpdate(deltaTime, frame);
-            this._handleStyleUpdate(deltaTime, frame);
+            this._handleGeometryUpdate(deltaTime, frame, entity);
+            this._handleStyleUpdate(deltaTime, frame, entity);
         }
     }
 

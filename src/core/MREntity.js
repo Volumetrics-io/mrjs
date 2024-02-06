@@ -112,6 +112,47 @@ export class MREntity extends MRElement {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
+    _needsGeometryUpdate = false;
+
+    /**
+     * @function
+     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
+     * Useful for readability and to not need to check against undefined often.
+     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
+     */
+    get alwaysNeedsGeometryUpdate() {
+        return this._needsGeometryUpdate === undefined;
+    }
+
+    /**
+     * @function
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
+     * Allows subclasses to override with their own implementation.
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsGeometryUpdate() {
+        return this.alwaysNeedsGeometryUpdate || this._needsGeometryUpdate;
+    }
+
+    /**
+     * @function
+     * @description Set the needsStyleUpdate parameter.
+     * undefined - means the StyleSystem will update this entity's style every time the application loops.
+     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
+     */
+    set needsGeometryUpdate(bool) {
+        this._needsGeometryUpdate = bool;
+    }
+
+    /**
+     * @function
+     * @description
+     */
+    updateGeometry() {}
+
+    // undefined == always update, once set to true/false trigger, then updates based on that every frame
+    // setting back to undefined sets to always update.
     _needsStyleUpdate = false;
 
     /**
