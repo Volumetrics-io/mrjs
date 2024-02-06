@@ -175,13 +175,20 @@ export class ControlSystem extends MRSystem {
             return;
         }
 
-        if ((!this.down && this.currentEntity != entity) || !this.currentEntity) {
-            this.currentEntity?.classList.remove('hover');
-            this.currentEntity?.dispatchEvent(new MouseEvent('mouseleave'));
+        if(!this.currentEntity) {
+            this.currentEntity = entity
+            this.currentEntity?.classList.add('hover')
+            this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+            this.currentEntity.focus = true
+        } else if((!this.down && this.currentEntity != entity)) {
+            this.currentEntity.classList.remove('hover')
+            this.currentEntity.dispatchEvent(new MouseEvent('mouseleave'));
+            this.currentEntity.focus = false
 
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+            this.currentEntity.focus = true
         }
 
         if (this.down) {

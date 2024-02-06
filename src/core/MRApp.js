@@ -22,7 +22,8 @@ import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from './componentSystems/AudioSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -96,6 +97,7 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        this.panelSystem = new PanelSystem()
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
         this.styleSystem = new StyleSystem();
@@ -223,16 +225,6 @@ export class MRApp extends MRElement {
         }
 
         this.appendChild(this.renderer.domElement);
-
-        // allows embedded mr-app to be independently scrollable
-        if (this.compStyle.overflow == 'scroll') {
-            this.renderer.domElement.addEventListener('wheel', (event) => {
-                // Assuming vertical scrolling
-                this.scrollTop += event.deltaY;
-                // Prevent the default scroll behavior of the front element
-                event.preventDefault();
-            });
-        }
 
         // allows for mr-app style to have background:value to set the skybox
         if (this.compStyle.backgroundImage !== 'none') {
