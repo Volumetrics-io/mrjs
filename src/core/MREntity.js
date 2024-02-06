@@ -126,6 +126,15 @@ export class MREntity extends MRElement {
 
     /**
      * @function
+     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
+     * Useful for readability and to not need to check against undefined often.
+     */
+    set alwaysNeedsGeometryUpdate(bool) {
+        this._needsGeometryUpdate = bool ? undefined : false;
+    }
+
+    /**
+     * @function
      * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
      * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
      * Allows subclasses to override with their own implementation.
@@ -163,6 +172,15 @@ export class MREntity extends MRElement {
      */
     get alwaysNeedsStyleUpdate() {
         return this._needsStyleUpdate === undefined;
+    }
+
+    /**
+     * @function
+     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
+     * Useful for readability and to not need to check against undefined often.
+     */
+    set alwaysNeedsStyleUpdate(bool) {
+        this._needsStyleUpdate = bool ? undefined : false;
     }
 
     /**
@@ -256,6 +274,7 @@ export class MREntity extends MRElement {
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
@@ -264,6 +283,7 @@ export class MREntity extends MRElement {
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
@@ -271,6 +291,7 @@ export class MREntity extends MRElement {
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
                 if (!this.alwaysNeedsStyleUpdate) {
+                    this.needsGeometryUpdate = true;
                     this.needsStyleUpdate = true;
                 }
             });
@@ -278,30 +299,35 @@ export class MREntity extends MRElement {
 
         this.addEventListener('touch-start', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
@@ -309,23 +335,27 @@ export class MREntity extends MRElement {
 
         this.addEventListener('child-updated', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
 
         window.addEventListener('resize', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
 
         document.addEventListener('enterXR', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
         document.addEventListener('exitXR', (event) => {
             if (!this.alwaysNeedsStyleUpdate) {
+                this.needsGeometryUpdate = true;
                 this.needsStyleUpdate = true;
             }
         });
@@ -412,6 +442,7 @@ export class MREntity extends MRElement {
             switch (mutation.type) {
                 case 'childList':
                     if (!this.alwaysNeedsStyleUpdate) {
+                        this.needsGeometryUpdate = true;
                         this.needsStyleUpdate = true;
                     }
                     break;

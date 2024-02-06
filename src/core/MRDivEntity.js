@@ -160,11 +160,20 @@ export class MRDivEntity extends MREntity {
     /**
      *
      */
-    updateStyle() {
-        super.updateStyle();
+    updateGeometry() {
+        super.updateGeometry();
 
         // all div entities needs these steps
         this.setBorder();
+    }
+
+    /**
+     *
+     */
+    updateStyle() {
+        super.updateStyle();
+
+        // all div entities need these steps
         this.setBackground();
     }
 

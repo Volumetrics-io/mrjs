@@ -26,7 +26,7 @@ export class CSSSystem extends MRSystem {
             return;
         }
 
-        // SCALE
+        // SCALE && ZINDEX POSITIONING
         entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
         if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.

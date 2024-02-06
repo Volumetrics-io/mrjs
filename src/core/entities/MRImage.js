@@ -82,12 +82,27 @@ export class MRImage extends MRDivEntity {
 
     /******************* Begin: Style Check and Update *******************/
 
+    // /**
+    //  * @function
+    //  * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
+    //  * based on compStyle and inputted css elements.
+    //  */
+    // updateStyle() {
+    //     this.computeObjectFitDimensions();
+
+    //     // geometry will only update if width, height, or borderRadii have changed
+    //     if (this.object3D.geometry != undefined) {
+    //         this.object3D.geometry.dispose();
+    //     }
+    //     this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+    // }
+
     /**
      * @function
      * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
      * based on compStyle and inputted css elements.
      */
-    updateStyle() {
+    updateGeometry() {
         this.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
