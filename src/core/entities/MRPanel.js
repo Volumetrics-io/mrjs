@@ -78,9 +78,6 @@ export class MRPanel extends MRDivEntity {
         });
 
         this.addEventListener('panel-mutated', (event) => {
-            if (this.clipping.geometry) {
-                this.clipping.geometry.destroy();
-            }
             this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 1));
         });
 
