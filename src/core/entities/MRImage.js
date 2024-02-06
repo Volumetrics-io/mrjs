@@ -103,6 +103,8 @@ export class MRImage extends MRDivEntity {
      * based on compStyle and inputted css elements.
      */
     updateGeometry() {
+        super.updateGeometry();
+        
         this.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
