@@ -27,6 +27,16 @@ export class CSSSystem extends MRSystem {
         }
 
         // ANYTHING NEEDED FOR ALL ENTITIES
+        // SCALE (LEAVING THIS IN UNTIL THE PANEL CHANGE GOES IN)
+        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
+        if (entity.compStyle.zIndex != 'auto' && !(entity instanceof MRPanel)) {
+            // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
+            entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
+
+            if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
+                entity.object3D.position.z += 0.0001;
+            }
+        }
 
         // MAIN ENTITY GEOMETRY CHANGE
         if (entity instanceof MREntity) {

@@ -110,6 +110,7 @@ export class MRModel extends MREntity {
         }
 
         this.loadModel();
+        console.log('loaded the mr-model');
     }
 
     /**

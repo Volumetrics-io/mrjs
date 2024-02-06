@@ -294,9 +294,7 @@ export class MREntity extends MRElement {
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
-                if (!this.alwaysNeedsGeometryUpdate) {
-                    this.needsGeometryUpdate = true;
-                }
+                // geometry update not needed
                 if (!this.alwaysNeedsStyleUpdate) {
                     this.needsStyleUpdate = true;
                 }
@@ -304,45 +302,35 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('touch-start', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
@@ -350,9 +338,7 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('child-updated', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
+            // geometry update not needed
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
