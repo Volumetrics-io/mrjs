@@ -30,7 +30,7 @@ export class MRSkyBox extends MREntity {
         if (this.skybox) {
             if (Array.isArray(texture.images) && texture.images.length === 6) {
                 // Handle cube texture case
-                if (this.skybox.material) {
+                if (this.skybox.material !== undefined) {
                     this.skybox.material.dispose();
                 }
                 this.skybox.material = new THREE.MeshStandardMaterial({
@@ -39,7 +39,7 @@ export class MRSkyBox extends MREntity {
                 });
             } else {
                 // Handle single texture case
-                if (this.skybox.material) {
+                if (this.skybox.material !== undefined) {
                     this.skybox.material.dispose();
                 }
                 this.skybox.material = new THREE.MeshBasicMaterial({
@@ -90,6 +90,7 @@ export class MRSkyBox extends MREntity {
         if (this.skybox) {
             // Remove existing skybox if present
             this.object3D.remove(this.skybox);
+            this.skybox.dispose();
         }
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
