@@ -30,12 +30,18 @@ export class MRSkyBox extends MREntity {
         if (this.skybox) {
             if (Array.isArray(texture.images) && texture.images.length === 6) {
                 // Handle cube texture case
+                if (this.skybox.material !== undefined) {
+                    this.skybox.material.dispose();
+                }
                 this.skybox.material = new THREE.MeshStandardMaterial({
                     envMap: texture,
                     side: THREE.BackSide, // Render only on the inside
                 });
             } else {
                 // Handle single texture case
+                if (this.skybox.material !== undefined) {
+                    this.skybox.material.dispose();
+                }
                 this.skybox.material = new THREE.MeshBasicMaterial({
                     map: texture,
                     side: THREE.BackSide, // Render only on the inside
@@ -84,6 +90,7 @@ export class MRSkyBox extends MREntity {
         if (this.skybox) {
             // Remove existing skybox if present
             this.object3D.remove(this.skybox);
+            this.skybox.dispose();
         }
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
@@ -95,7 +102,7 @@ export class MRSkyBox extends MREntity {
      * useful for cases where you want to blend between different skybox versions.
      */
     set setOpacity(val) {
-        this.object3D.traverse(child => {
+        this.object3D.traverse((child) => {
             if (child.isMesh) {
                 child.material.transparent = true;
                 child.material.opacity = val;

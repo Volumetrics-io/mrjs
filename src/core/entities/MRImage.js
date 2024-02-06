@@ -23,7 +23,7 @@ export class MRImage extends MRDivEntity {
         // until the connected call since this will get overwritten anyways.
         let material = new THREE.MeshStandardMaterial({
             side: 0,
-            transparent: true, 
+            transparent: true,
             // opacity: 0.5,
         });
         this.object3D = new THREE.Mesh(undefined, material);
@@ -66,7 +66,7 @@ export class MRImage extends MRDivEntity {
         this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.object3D.geometry != undefined) {
+        if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
@@ -91,7 +91,7 @@ export class MRImage extends MRDivEntity {
         this.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
-        if (this.object3D.geometry != undefined) {
+        if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);

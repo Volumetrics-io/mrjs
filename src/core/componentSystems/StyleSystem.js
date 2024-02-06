@@ -28,14 +28,43 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
+            // DETERMINE IF STYLE CHANGE IS NEEDED
             if (!entity.needsStyleUpdate) {
                 continue;
             }
 
+            // SCALE
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
+
+            // VISIBILITY
+            function makeVisible() {
+                this.object3D.visible = true;
+                if (this.background) {
+                    // The background for MRDivEntities, but we want this css property allowed
+                    // for all, so using this checker to confirm the existence first.
+                    this.background.visible = true;
+                }
+            }
+            function makeHidden() {
+                this.object3D.visible = false;
+                if (this.background) {
+                    // The background for MRDivEntities, but we want this css property allowed
+                    // for all, so using this checker to confirm the existence first.
+                    this.background.visible = false;
+                }
+            }
+            // hidden or visible are the options we care about
+            if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+                const isVisible = entity.compStyle.visibility !== 'hidden';
+                entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
+            }
+
+            // MAIN ENTITY STYLE CHANGE
             if (entity instanceof MRDivEntity) {
                 entity.updateStyle();
             }
+
+            // CLEANUP AFTER STYLE CHANGES
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsStyleUpdate) {
                 entity.needsStyleUpdate = false;

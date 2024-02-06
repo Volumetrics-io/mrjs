@@ -33,8 +33,7 @@ export class ControlSystem extends MRSystem {
 
             this.down = true;
             this.cursorViz.material.color.setStyle('blue');
-            this.onMouseDown(event)
-
+            this.onMouseDown(event);
         });
 
         document.addEventListener('selectend', (event) => {
@@ -44,7 +43,7 @@ export class ControlSystem extends MRSystem {
             this.down = false;
             this.cursorViz.material.color.setStyle('black');
 
-            this.onMouseUp(event)
+            this.onMouseUp(event);
         });
 
         this.origin = new THREE.Vector3();
@@ -60,7 +59,7 @@ export class ControlSystem extends MRSystem {
         const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
         const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.01);
 
-        this.currentEntity = null
+        this.currentEntity = null;
 
         this.cursorViz = new THREE.Mesh(new THREE.RingGeometry(0.005, 0.007, 32), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.7, transparent: true }));
 
@@ -109,10 +108,7 @@ export class ControlSystem extends MRSystem {
 
                 this.cursorViz.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.hit.normal);
 
-
-                this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle])
-
-
+                this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
             } else {
                 this.cursorViz.visible = false;
             }
@@ -131,7 +127,7 @@ export class ControlSystem extends MRSystem {
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle])
+            this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
         }
     };
 
@@ -142,8 +138,8 @@ export class ControlSystem extends MRSystem {
      */
     onMouseDown = (event) => {
         this.down = true;
-        this.currentEntity?.classList.remove('hover')
-        this.currentEntity?.classList.add('active')
+        this.currentEntity?.classList.remove('hover');
+        this.currentEntity?.classList.add('active');
 
         this.currentEntity?.dispatchEvent(
             new CustomEvent('touch-start', {
@@ -153,7 +149,6 @@ export class ControlSystem extends MRSystem {
                 },
             })
         );
-
     };
 
     /**
@@ -163,21 +158,22 @@ export class ControlSystem extends MRSystem {
      */
     onMouseUp = (event) => {
         this.down = false;
-        this.currentEntity?.classList.remove('active')
+        this.currentEntity?.classList.remove('active');
         this.currentEntity?.dispatchEvent(new Event('click'));
 
         this.currentEntity?.dispatchEvent(
             new CustomEvent('touch-end', {
-                bubbles: true
+                bubbles: true,
             })
         );
 
-        this.currentEntity = null
-
+        this.currentEntity = null;
     };
 
     interact(entity) {
-        if(!entity) { return }
+        if (!entity) {
+            return;
+        }
 
         if(!this.currentEntity) {
             this.currentEntity = entity
@@ -189,13 +185,13 @@ export class ControlSystem extends MRSystem {
             this.currentEntity.dispatchEvent(new MouseEvent('mouseleave'));
             this.currentEntity.focus = false
 
-            this.currentEntity = entity
-            this.currentEntity?.classList.add('hover')
+            this.currentEntity = entity;
+            this.currentEntity?.classList.add('hover');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
             this.currentEntity.focus = true
         }
 
-        if(this.down) {
+        if (this.down) {
             this.currentEntity?.dispatchEvent(
                 new CustomEvent('touch', {
                     bubbles: true,

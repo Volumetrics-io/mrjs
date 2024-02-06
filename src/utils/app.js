@@ -5,10 +5,10 @@
 let app = {
     get scale() {
         if (mrjsUtils.xr.isPresenting) {
-            return 0.5
+            return 0.5;
         }
-        return 1
-    }
+        return 1;
+    },
 };
 
 export { app };

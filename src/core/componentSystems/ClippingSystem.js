@@ -80,7 +80,7 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            if(entity instanceof MRVolume) {
+            if (entity instanceof MRVolume) {
                 entity.volume.localToWorld(this.coplanarPointA);
                 entity.volume.localToWorld(this.coplanarPointB);
                 entity.volume.localToWorld(this.coplanarPointC);
@@ -124,7 +124,7 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            if(entity instanceof MRVolume) {
+            if (entity instanceof MRVolume) {
                 entity.volume.localToWorld(this.coplanarPointA);
                 entity.volume.localToWorld(this.coplanarPointB);
                 entity.volume.localToWorld(this.coplanarPointC);

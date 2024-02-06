@@ -8,7 +8,6 @@ import Stats from 'stats.js';
 import { MRElement } from 'mrjs/core/MRElement';
 import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
 
-
 import { mrjsUtils } from 'mrjs';
 
 import { MREntity } from 'mrjs/core/MREntity';
