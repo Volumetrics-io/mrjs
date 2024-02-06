@@ -13,17 +13,6 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanel extends MRDivEntity {
-    // /**
-    //  * @function
-    //  * @description Calculates the height of the Entity. If in Mixed Reality, adjusts the value appropriately.
-    //  * @returns {number} - the resolved height
-    //  */
-    // get height() {
-    //     if (mrjsUtils.xr.isPresenting) {
-    //         return mrjsUtils.app.scale;
-    //     }
-    //     return global.viewPortHeight;
-    // }
 
     /**
      * @class

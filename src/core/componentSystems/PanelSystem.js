@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRPanel } from '../entities/MRPanel';
+import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
 
 /**
@@ -7,7 +7,7 @@ import { MRPanel } from '../entities/MRPanel';
  * @classdesc A system that manages the screen relative position of UI panels
  * @augments MRSystem
  */
-export class PanelManagementSystem extends MRSystem {
+export class PanelSystem extends MRSystem {
 
     /**
      * @class
