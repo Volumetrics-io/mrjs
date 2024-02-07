@@ -20,6 +20,12 @@ export class GeometrySystem extends MRSystem {
         super(false);
     }
 
+    // This and style system rely on varying registry items whereas all other systems rely on their main system
+    // and those update functions, these rely on the entity specific update functions (ie instead of this.updateBlah(entity))
+    // we're doing entity.updateBlah
+
+    // which is not the same as an ecs system.
+
     /**
      * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
@@ -28,21 +34,20 @@ export class GeometrySystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            // DETERMINE IF GEOMETRY CHANGE IS NEEDED
             if (!entity.needsGeometryUpdate) {
                 return;
             }
 
-            // ANYTHING NEEDED FOR ALL ENTITIES
-            // SCALE
+            // Anything needed for all entities
+            // - scale
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
 
-            // MAIN ENTITY GEOMETRY CHANGE
+            // Main Entity Geometry Change
             if (entity instanceof MREntity) {
                 entity.updateGeometry();
             }
 
-            // CLEANUP AFTER GEOMETRY CHANGES
+            // Cleanup
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsGeometryUpdate) {
                 entity.needsGeometryUpdate = false;

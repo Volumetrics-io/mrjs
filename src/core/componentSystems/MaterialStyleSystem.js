@@ -28,12 +28,12 @@ export class StyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            // DETERMINE IF STYLE CHANGE IS NEEDED
             if (!entity.needsStyleUpdate) {
                 return;
             }
 
-            // VISIBILITY
+            // Anything needed for all entities
+            // - visbility: hidden or visible are the options we care about
             function makeVisible() {
                 this.object3D.visible = true;
                 if (this.background) {
@@ -50,18 +50,17 @@ export class StyleSystem extends MRSystem {
                     this.background.visible = false;
                 }
             }
-            // hidden or visible are the options we care about
             if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
                 const isVisible = entity.compStyle.visibility !== 'hidden';
                 entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
             }
 
-            // MAIN ENTITY STYLE CHANGE
+            // Main Entity Style Change
             if (entity instanceof MRDivEntity) {
                 entity.updateStyle();
             }
 
-            // CLEANUP AFTER STYLE CHANGES
+            // Cleanup
             entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsStyleUpdate) {
                 entity.needsStyleUpdate = false;
