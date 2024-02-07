@@ -1,6 +1,7 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
+import { mrjsUtils } from 'mrjs';
 
 /**
  * @class PanelManagementSystem
@@ -37,7 +38,6 @@ export class PanelSystem extends MRSystem {
     onNewEntity(entity) {
         if (entity instanceof MRPanel) {
             this.registry.add(entity)
-            return;
         }
     }
 
@@ -54,8 +54,8 @@ export class PanelSystem extends MRSystem {
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
 
-        let windowWidth = global.viewPortWidth * mrjsUtils.app.scale
-        let windowHeight = global.viewPortHeight * mrjsUtils.app.scale
+        let windowWidth = global.viewPortWidth * mrjsUtils.App.scale
+        let windowHeight = global.viewPortHeight * mrjsUtils.App.scale
         let centeredX = rect.left - appRect.left - centerX;
         let centeredY = rect.top - appRect.top - centerY;
 

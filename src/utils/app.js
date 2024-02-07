@@ -2,7 +2,7 @@
  * @namespace app
  * @description Useful namespace for helping with app utility functions.
  */
-let app = {
+let App = {
     get scale() {
         if (mrjsUtils.xr.isPresenting) {
             return 0.5;
@@ -11,4 +11,4 @@ let app = {
     },
 };
 
-export { app };
+export { App };

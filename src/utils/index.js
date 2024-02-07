@@ -6,7 +6,7 @@
 
 // // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
-import { app } from './app.js';
+import { App } from './App.js';
 import { CSS } from './CSS.js';
 import { Display } from './Display.js';
 import { Geometry } from './Geometry.js';
@@ -21,7 +21,7 @@ import { StringUtils } from './StringUtils.js';
 import { xr } from './XR.js';
 
 const mrjsUtils = {
-    app,
+    App,
     CSS,
     Display,
     Geometry,

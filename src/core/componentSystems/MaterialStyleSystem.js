@@ -36,7 +36,7 @@ export class MaterialStyleSystem extends MRSystem {
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
             }
-            this.setVisibility(entity);
+            // this.setVisibility(entity);
             
 
             // User additional - Main Entity Style Change
@@ -91,7 +91,7 @@ export class MaterialStyleSystem extends MRSystem {
         entity.background.material.needsUpdate = true;
     }
 
-    setVisbility(entity) {
+    setVisibility(entity) {
         function makeVisible() {
             this.object3D.visible = true;
             if (this.background) {
@@ -111,7 +111,12 @@ export class MaterialStyleSystem extends MRSystem {
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
             // visbility: hidden or visible are the options we care about
             const isVisible = entity.compStyle.visibility !== 'hidden';
-            entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
+            if (isVisible) {
+                makeVisible.bind(entity);
+            } else {
+                makeHidden.bind(entity);
+            }
+            // entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
         }
     }
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
+import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
@@ -316,13 +317,13 @@ export class PhysicsSystem extends MRSystem {
      */
     updatePhysicsData(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
-        entity.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002));
+        entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
-        entity.worldScale.setFromMatrixScale(this.object3D.matrixWorld);
-        entity.object3D.userData.bbox.getSize(this.object3D.userData.size);
-        entity.object3D.userData.size.multiply(this.worldScale);
+        entity.worldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        entity.object3D.userData.bbox.getSize(entity.object3D.userData.size);
+        entity.object3D.userData.size.multiply(entity.worldScale);
 
-        entity.physics.halfExtents.copy(this.object3D.userData.size);
+        entity.physics.halfExtents.copy(entity.object3D.userData.size);
         entity.physics.halfExtents.divideScalar(2);
     }
 

@@ -98,6 +98,7 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        // order matters for all the below system creation items
         this.panelSystem = new PanelSystem()
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
@@ -175,6 +176,7 @@ export class MRApp extends MRElement {
         this.debug = this.getAttribute('debug') ?? false;
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.appWidth, this.appHeight);
+        this.renderer.setClearColor(0x000000, 0); // the second parameter is the alpha value, 0 for transparent
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
         this.renderer.xr.enabled = true;

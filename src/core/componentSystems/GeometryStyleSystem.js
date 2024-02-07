@@ -70,7 +70,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     setScale(entity) {
-        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
+        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.App.scale : 1);
     }
 
     /**

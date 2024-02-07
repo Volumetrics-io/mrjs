@@ -199,20 +199,20 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
-     * @description
+     * @function 
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateMaterialStyle() {}
 
     /**
-     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
-     * @description
+     * @function 
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateGeometryStyle() {}
 
     /**
-     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
-     * @description Default base for updating the physics data for the current iteration.
+     * @function 
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updatePhysicsData() {}
 
@@ -294,7 +294,9 @@ export class MREntity extends MRElement {
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
-                // geometry update not needed
+                if (!this.alwaysNeedsGeometryUpdate) {
+                    this.needsGeometryUpdate = true;
+                }
                 if (!this.alwaysNeedsStyleUpdate) {
                     this.needsStyleUpdate = true;
                 }
@@ -302,35 +304,45 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('touch-start', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
@@ -338,7 +350,9 @@ export class MREntity extends MRElement {
         });
 
         this.addEventListener('child-updated', (event) => {
-            // geometry update not needed
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
