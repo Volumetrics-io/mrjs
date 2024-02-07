@@ -15,10 +15,10 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
-import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometrySystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
-import { MaterialStyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
@@ -101,8 +101,8 @@ export class MRApp extends MRElement {
         this.panelSystem = new PanelSystem()
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
-        this.geometrySystem = new GeometrySystem();
-        this.styleSystem = new StyleSystem();
+        this.geometryStyleSystem = new GeometryStyleSystem();
+        this.materialStyleSystem = new MaterialStyleSystem();
         this.audioSystem = new AudioSystem();
 
         // initialize built in Systems

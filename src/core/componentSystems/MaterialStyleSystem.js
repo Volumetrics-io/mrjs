@@ -7,11 +7,11 @@ import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
- * @class StyleSystem
+ * @class MaterialStyleSystem
  * @classdesc Handles style updates for all items.
  * @augments MRSystem
  */
-export class StyleSystem extends MRSystem {
+export class MaterialStyleSystem extends MRSystem {
     /**
      * @class
      * @description StyleSystem's default constructor with a starting framerate of 1/30.

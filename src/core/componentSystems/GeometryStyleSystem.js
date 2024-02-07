@@ -7,11 +7,11 @@ import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
- * @class GeometrySystem
+ * @class GeometryStyleSystem
  * @classdesc Handles geometry updates for all items.
  * @augments MRSystem
  */
-export class GeometrySystem extends MRSystem {
+export class GeometryStyleSystem extends MRSystem {
     /**
      * @class
      * @description StyleSystem's default constructor with a starting framerate of 1/30.
