@@ -38,17 +38,16 @@ export class GeometrySystem extends MRSystem {
                 return;
             }
 
-            // Anything needed for all entities
+            // Anything needed for all entities - the order of the below matters
             // - border geometry
             if (entity instanceof MRDivEntity) {
                 this.setBorder(entity);
             }
             // - scale
-            entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
-
-            // Main Entity Geometry Change
-            if (entity instanceof MREntity) {
-                entity.updateGeometry();
+            this.setScale(entity);
+            // - ...
+            if (entity instanceof MRImage) {
+                this.setUpdatedImagePlane(entity);
             }
 
             // Cleanup
@@ -68,6 +67,10 @@ export class GeometrySystem extends MRSystem {
         this.registry.add(entity);
     }
 
+    setScale(entity) {
+        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
+    }
+
     /**
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
@@ -75,4 +78,14 @@ export class GeometrySystem extends MRSystem {
     setBorder(entity) {
         entity.background.geometry = mrjsUtils.Geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
     }
+
+    setUpdatedImagePlane(entity) {
+        entity.computeObjectFitDimensions();
+
+        // geometry will only update if width, height, or borderRadii have changed
+        if (entity.object3D.geometry !== undefined) {
+            entity.object3D.geometry.dispose();
+        }
+        entity.object3D.geometry = mrjsUtils.Geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
+    }  
 }
