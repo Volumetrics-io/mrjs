@@ -5,6 +5,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
 import { MRDivEntity } from '../MRDivEntity';
+import { MRPanel } from '../entities/MRPanel';
 
 /**
  * @class PhysicsSystem
@@ -32,15 +33,10 @@ export class PhysicsSystem extends MRSystem {
 
         this.currentEntity = null;
 
-        this.tempLocalPosition = new THREE.Vector3();
-        this.tempPreviousPosition = new THREE.Vector3();
-        this.touchDelta = new THREE.Vector3();
-
         this.tempWorldScale = new THREE.Vector3();
         this.tempBBox = new THREE.Box3();
         this.tempSize = new THREE.Vector3();
 
-        this.eventQueue = new mrjsUtils.Physics.RAPIER.EventQueue(true);
 
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
@@ -60,17 +56,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.app.physicsWorld.step(this.eventQueue);
-
-        this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-            /* Handle the collision event. */
-
-            if (started) {
-                this.onContactStart(handle1, handle2);
-            } else {
-                this.onContactEnd(handle1, handle2);
-            }
-        });
+        this.app.physicsWorld.step(mrjsUtils.Physics.eventQueue);
 
         for (const entity of this.registry) {
             if (entity.physics?.body == null) {
@@ -78,175 +64,11 @@ export class PhysicsSystem extends MRSystem {
             }
             this.updateBody(entity);
 
-            this.app.physicsWorld.contactPairsWith(entity.physics.collider, (collider2) => {
-                const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
-
-                if (joint) {
-                    if (!joint.includes('hover') && entity.touch) {
-                        this.tempPreviousPosition.copy(this.tempLocalPosition);
-
-                        this.tempLocalPosition.copy(collider2.translation());
-                        entity.object3D.worldToLocal(this.tempLocalPosition);
-
-                        this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
-
-                        entity.dispatchEvent(
-                            new CustomEvent('touch', {
-                                bubbles: true,
-                                detail: {
-                                    joint,
-                                    worldPosition: collider2.translation(),
-                                    position: this.tempLocalPosition,
-                                    delta: this.touchDelta,
-                                },
-                            })
-                        );
-                    }
-                }
-            });
         }
 
         this.updateDebugRenderer();
     }
 
-    /**
-     * @function
-     * @description Handles the start of collisions between two different colliders.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     */
-    onContactStart = (handle1, handle2) => {
-        const collider1 = this.app.physicsWorld.colliders.get(handle1);
-        const collider2 = this.app.physicsWorld.colliders.get(handle2);
-
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
-
-        if (joint && entity && !joint.includes('hover')) {
-            // if(this.currentEntity) {
-            //   return
-            // }
-            // TODO - can the above commented code be deleted? - TBD
-            this.touchStart(collider1, collider2, entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
-            this.hoverStart(collider1, collider2, entity);
-        }
-    };
-
-    /**
-     * @function
-     * @description Handles the end of collisions between two different colliders.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     */
-    onContactEnd = (handle1, handle2) => {
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
-
-        if (joint && entity && !joint.includes('hover')) {
-            this.touchEnd(entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
-            this.hoverEnd(entity);
-        }
-    };
-
-    /**
-     * @function
-     * @description Handles the start of touch between two different colliders and the current entity.
-     * @param {number} collider1 - the first collider
-     * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
-     */
-    touchStart = (collider1, collider2, entity) => {
-        this.currentEntity = entity;
-        entity.touch = true;
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.tempLocalPosition.copy(manifold.localContactPoint2(0));
-            this.tempWorldPosition.copy(manifold.localContactPoint2(0));
-            entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.classList.remove('hover');
-
-            entity.dispatchEvent(
-                new CustomEvent('touch-start', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
-        });
-    };
-
-    /**
-     * @function
-     * @description Handles the end of touch for the current entity
-     * @param {MREntity} entity - the current entity
-     */
-    touchEnd = (entity) => {
-        this.currentEntity = null;
-        // Contact information can be read from `manifold`.
-        this.tempPreviousPosition.set(0, 0, 0);
-        this.tempLocalPosition.set(0, 0, 0);
-        this.tempWorldPosition.set(0, 0, 0);
-        entity.touch = false;
-        entity.click();
-
-        entity.dispatchEvent(
-            new CustomEvent('touch-end', {
-                bubbles: true,
-            })
-        );
-    };
-
-    /**
-     * @function
-     * @description Handles the start of hovering over/around a specific entity.
-     * @param {number} collider1 - the first collider
-     * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
-     */
-    hoverStart = (collider1, collider2, entity) => {
-        entity.classList.add('hover');
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.tempLocalPosition.copy(manifold.localContactPoint2(0));
-            this.tempWorldPosition.copy(manifold.localContactPoint2(0));
-            entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.dispatchEvent(
-                new CustomEvent('hover-start', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
-
-            entity.dispatchEvent(new MouseEvent('mouseover'));
-        });
-    };
-
-    /**
-     * @function
-     * @description Handles the end of hovering over/around a specific entity.
-     * @param {MREntity} entity - the current entity
-     */
-    hoverEnd = (entity) => {
-        entity.classList.remove('hover');
-        entity.dispatchEvent(
-            new CustomEvent('hover-end', {
-                bubbles: true,
-            })
-        );
-
-        entity.dispatchEvent(new MouseEvent('mouseleave'));
-    };
 
     /**
      * @function
@@ -299,7 +121,7 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
         let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        // colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
     }
@@ -313,11 +135,24 @@ export class PhysicsSystem extends MRSystem {
         if (entity.physics.type == 'none') {
             return;
         }
-        entity.object3D.getWorldPosition(this.tempWorldPosition);
+        if (entity instanceof MRPanel) {
+            entity.panel.getWorldPosition(this.tempWorldPosition);
+        } else {
+            entity.object3D.getWorldPosition(this.tempWorldPosition);
+        }
         entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true);
 
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
+
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
+
+        this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        this.tempBBox.getSize(this.tempSize);
+        this.tempSize.multiply(this.tempWorldScale);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
 
         this.updateCollider(entity);
     }
