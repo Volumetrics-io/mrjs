@@ -153,12 +153,6 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Default base for updating the physics data for the current iteration.
-     */
-    updatePhysicsData() {}
-
-    /**
-     * @function
      * @description Handles the hover event
      * @param {object} event - the hover event
      */

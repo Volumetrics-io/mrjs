@@ -4,6 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
+import { MRDivEntity } from '../MRDivEntity';
 
 /**
  * @class PhysicsSystem
@@ -27,6 +28,7 @@ export class PhysicsSystem extends MRSystem {
         super(false);
         this.debug = this.app.debug;
         this.tempWorldPosition = new THREE.Vector3();
+        this.tempWorldQuaternion = new THREE.Quaternion();
 
         this.currentEntity = null;
 
@@ -35,8 +37,8 @@ export class PhysicsSystem extends MRSystem {
         this.touchDelta = new THREE.Vector3();
 
         this.tempWorldScale = new THREE.Vector3();
-        this.tempWorldQuaternion = new THREE.Quaternion();
-        this.tempHalfExtents = new THREE.Vector3();
+        this.tempBBox = new THREE.Box3();
+        this.tempSize = new THREE.Vector3();
 
         this.eventQueue = new mrjsUtils.Physics.RAPIER.EventQueue(true);
 
@@ -252,8 +254,10 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
-        this.initPhysicsBody(entity);
-        this.registry.add(entity);
+        if(entity instanceof MRDivEntity) {
+            this.initPhysicsBody(entity);
+            this.registry.add(entity);
+        }
     }
 
     /**
@@ -265,23 +269,39 @@ export class PhysicsSystem extends MRSystem {
         if (entity.physics.type == 'none') {
             return;
         }
-        entity.updatePhysicsData();
+
+        this.initUIEntityBody(entity)
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
-        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
-        entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-        // Create a cuboid collider attached to the dynamic rigidBody.
-        let colliderDesc = this.initColliderDesc(entity.physics);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
-        entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
+        entity.physics.body.setTranslation(...this.tempWorldPosition, true);
+        entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
         mrjsUtils.Physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
 
         entity.physics.collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         entity.physics.collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    initUIEntityBody(entity) {
+        entity.physics.halfExtents = new THREE.Vector3()
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
+
+        this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        this.tempBBox.getSize(this.tempSize);
+        this.tempSize.multiply(this.tempWorldScale);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
+
+        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed()
+        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+
+        let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
+        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
+
     }
 
     /**
@@ -299,7 +319,6 @@ export class PhysicsSystem extends MRSystem {
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-        entity.updatePhysicsData();
         this.updateCollider(entity);
     }
 
