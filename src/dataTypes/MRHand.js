@@ -123,7 +123,7 @@ export class MRHand {
                 colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
 
-            // colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.USER);
+            colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.USER);
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
             this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);

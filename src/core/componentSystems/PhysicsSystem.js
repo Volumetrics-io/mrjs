@@ -76,6 +76,10 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
+        if (entity.physics.type == 'none') {
+            return;
+        }
+
         if(entity instanceof MRDivEntity) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
@@ -88,9 +92,6 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     initPhysicsBody(entity) {
-        if (entity.physics.type == 'none') {
-            return;
-        }
 
         this.initUIEntityBody(entity)
 
@@ -121,7 +122,7 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
         let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
-        // colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
     }
