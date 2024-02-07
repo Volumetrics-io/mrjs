@@ -36,7 +36,7 @@ export class MaterialStyleSystem extends MRSystem {
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
             }
-            // this.setVisibility(entity);
+            this.setVisibility(entity);
             
 
             // User additional - Main Entity Style Change
@@ -92,31 +92,23 @@ export class MaterialStyleSystem extends MRSystem {
     }
 
     setVisibility(entity) {
-        function makeVisible() {
-            this.object3D.visible = true;
-            if (this.background) {
+        function makeVisible(entity, bool) {
+            entity.object3D.visible = bool;
+            if (entity.background) {
                 // The background for MRDivEntities, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
-                this.background.visible = true;
-            }
-        }
-        function makeHidden() {
-            this.object3D.visible = false;
-            if (this.background) {
-                // The background for MRDivEntities, but we want this css property allowed
-                // for all, so using this checker to confirm the existence first.
-                this.background.visible = false;
+                // entity.background.visible = bool;
+                //
+                // XXX - right now all backgrounds are set as visible=false by default in their
+                // MRDivEntity constructors, so toggling them here isnt useful, but in future
+                // if this is requested for use or we want to add a feature for more use of the
+                // background - adding in toggling for this with the object will be useful.
             }
         }
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
             // visbility: hidden or visible are the options we care about
             const isVisible = entity.compStyle.visibility !== 'hidden';
-            if (isVisible) {
-                makeVisible.bind(entity);
-            } else {
-                makeHidden.bind(entity);
-            }
-            // entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
+            makeVisible(entity, isVisible);
         }
     }
 }
