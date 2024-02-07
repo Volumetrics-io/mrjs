@@ -15,15 +15,16 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
-import { GeometrySystem } from 'mrjs/core/componentSystems/GeometrySystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometrySystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
-import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from './componentSystems/AudioSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -97,6 +98,7 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        this.panelSystem = new PanelSystem()
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
         this.geometrySystem = new GeometrySystem();
@@ -225,16 +227,6 @@ export class MRApp extends MRElement {
         }
 
         this.appendChild(this.renderer.domElement);
-
-        // allows embedded mr-app to be independently scrollable
-        if (this.compStyle.overflow == 'scroll') {
-            this.renderer.domElement.addEventListener('wheel', (event) => {
-                // Assuming vertical scrolling
-                this.scrollTop += event.deltaY;
-                // Prevent the default scroll behavior of the front element
-                event.preventDefault();
-            });
-        }
 
         // allows for mr-app style to have background:value to set the skybox
         if (this.compStyle.backgroundImage !== 'none') {
