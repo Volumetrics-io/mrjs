@@ -126,103 +126,14 @@ export class MRDivEntity extends MREntity {
         this.physics.halfExtents.divideScalar(2);
     }
 
-    // TODO - can we move this to utils/Css.js ? ---- for border radius (which returns percentages instead of pixel values)
-    // leave here for now - to be moved after michael change
-    /**
-     * @function
-     * @description Converts the dom string to a 3D numerical value
-     * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
-     * @returns {number} - the 3D numerical represenation of the dom css value
-     */
-    domToThree(val) {
-        if (typeof val === 'string') {
-            const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
-            if (valuepair.length > 1) {
-                switch (valuepair[1]) {
-                    case 'px':
-                        if (mrjsUtils.xr.isPresenting) {
-                            return (val.split('px')[0] / global.appWidth) * mrjsUtils.app.scale;
-                        }
-                        return (val.split('px')[0] / global.appWidth) * global.viewPortWidth;
-                    case '%':
-                        if (mrjsUtils.xr.isPresenting) {
-                            return (parseFloat(val) / 100) * mrjsUtils.app.scale;
-                        }
-                        return (parseFloat(val) / 100) * global.viewPortWidth;
-                    default:
-                        return val;
-                }
-            }
-        }
-        return val;
-    }
-
-    /**
-     *
-     */
-    updateGeometry() {
-        super.updateGeometry();
-
-        // all div entities needs these steps
-        this.setBorder();
-    }
-
-    /**
-     *
-     */
-    updateStyle() {
-        super.updateStyle();
-
-        // all div entities need these steps
-        this.setBackground();
-    }
-
     /**
      * @function
      * @description Calculates the border radius of the img based on the img tag in the shadow root
      * @returns {number} - the resolved height
      */
     get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => this.domToThree(r));
-    }
-
-    /**
-     * @function
-     * @description Sets the border of the UI based on compStyle and inputted css elements.
-     */
-    setBorder() {
-        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-    }
-
-    /**
-     * @function
-     * @description Sets the background based on compStyle and inputted css elements.
-     */
-    setBackground() {
-        const color = this.compStyle.backgroundColor;
-        if (color.includes('rgba')) {
-            const rgba = color
-                .substring(5, color.length - 1)
-                .split(',')
-                .map((part) => parseFloat(part.trim()));
-            this.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            if (rgba[3] == 0) {
-                this.background.visible = false;
-            } else {
-                this.background.material.transparent = true;
-                this.background.material.opacity = rgba[3];
-                this.background.visible = true;
-            }
-        } else {
-            this.background.material.color.setStyle(color);
-            this.background.visible = true;
-        }
-
-        if (this.compStyle.opacity < 1) {
-            this.background.material.opacity = this.compStyle.opacity;
-        }
-        this.background.material.needsUpdate = true;
+        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.CSS.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.CSS.domToThree(r));
     }
 }
 

@@ -154,12 +154,6 @@ export class MREntity extends MRElement {
         this._needsGeometryUpdate = bool;
     }
 
-    /**
-     * @function
-     * @description
-     */
-    updateGeometry() {}
-
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
     _needsStyleUpdate = false;
@@ -203,12 +197,6 @@ export class MREntity extends MRElement {
     set needsStyleUpdate(bool) {
         this._needsStyleUpdate = bool;
     }
-
-    /**
-     * @function
-     * @description
-     */
-    updateStyle() {}
 
     /**
      * @function

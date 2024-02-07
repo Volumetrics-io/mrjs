@@ -39,6 +39,10 @@ export class GeometrySystem extends MRSystem {
             }
 
             // Anything needed for all entities
+            // - border geometry
+            if (entity instanceof MRDivEntity) {
+                this.setBorder(entity);
+            }
             // - scale
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
 
@@ -62,5 +66,13 @@ export class GeometrySystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
+    }
+
+    /**
+     * @function
+     * @description Sets the border of the UI based on compStyle and inputted css elements.
+     */
+    setBorder(entity) {
+        entity.background.geometry = mrjsUtils.Geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
     }
 }

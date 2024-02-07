@@ -33,27 +33,13 @@ export class StyleSystem extends MRSystem {
             }
 
             // Anything needed for all entities
+            // - background
+            if (entity instanceof MRDivEntity) {
+                this.setBackground(entity);
+            }
             // - visbility: hidden or visible are the options we care about
-            function makeVisible() {
-                this.object3D.visible = true;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = true;
-                }
-            }
-            function makeHidden() {
-                this.object3D.visible = false;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = false;
-                }
-            }
-            if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
-                const isVisible = entity.compStyle.visibility !== 'hidden';
-                entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
-            }
+            this.setVisibility(entity);
+            
 
             // Main Entity Style Change
             if (entity instanceof MRDivEntity) {
@@ -75,5 +61,58 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
+    }
+
+    /**
+     * @function
+     * @description Sets the background based on compStyle and inputted css elements.
+     */
+    setBackground(entity) {
+        const color = entity.compStyle.backgroundColor;
+        if (color.includes('rgba')) {
+            const rgba = color
+                .substring(5, color.length - 1)
+                .split(',')
+                .map((part) => parseFloat(part.trim()));
+            entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
+            if (rgba[3] == 0) {
+                entity.background.visible = false;
+            } else {
+                entity.background.material.transparent = true;
+                entity.background.material.opacity = rgba[3];
+                entity.background.visible = true;
+            }
+        } else {
+            entity.background.material.color.setStyle(color);
+            entity.background.visible = true;
+        }
+
+        if (entity.compStyle.opacity < 1) {
+            entity.background.material.opacity = entity.compStyle.opacity;
+        }
+        entity.background.material.needsUpdate = true;
+    }
+
+    setVisbility(entity) {
+        function makeVisible() {
+            this.object3D.visible = true;
+            if (this.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                this.background.visible = true;
+            }
+        }
+        function makeHidden() {
+            this.object3D.visible = false;
+            if (this.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                this.background.visible = false;
+            }
+        }
+        if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+            const isVisible = entity.compStyle.visibility !== 'hidden';
+            entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
+        }
     }
 }
