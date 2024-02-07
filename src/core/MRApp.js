@@ -176,7 +176,6 @@ export class MRApp extends MRElement {
         this.debug = this.getAttribute('debug') ?? false;
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.appWidth, this.appHeight);
-        this.renderer.setClearColor(0x000000, 0); // the second parameter is the alpha value, 0 for transparent
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
         this.renderer.xr.enabled = true;
