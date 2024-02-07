@@ -199,7 +199,19 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @function
+     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description
+     */
+    updateMaterialStyle() {}
+
+    /**
+     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description
+     */
+    updateGeometryStyle() {}
+
+    /**
+     * @function Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      * @description Default base for updating the physics data for the current iteration.
      */
     updatePhysicsData() {}

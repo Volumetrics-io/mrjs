@@ -112,22 +112,6 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
-     * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
-     */
-    updatePhysicsData() {
-        this.physics.halfExtents = new THREE.Vector3();
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002));
-
-        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld);
-        this.object3D.userData.bbox.getSize(this.object3D.userData.size);
-        this.object3D.userData.size.multiply(this.worldScale);
-
-        this.physics.halfExtents.copy(this.object3D.userData.size);
-        this.physics.halfExtents.divideScalar(2);
-    }
-
-    /**
-     * @function
      * @description Calculates the border radius of the img based on the img tag in the shadow root
      * @returns {number} - the resolved height
      */

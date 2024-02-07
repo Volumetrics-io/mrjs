@@ -38,16 +38,18 @@ export class GeometrySystem extends MRSystem {
                 return;
             }
 
-            // Anything needed for all entities - the order of the below matters
-            // - border geometry
+            // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
                 this.setBorder(entity);
             }
-            // - scale
             this.setScale(entity);
-            // - ...
             if (entity instanceof MRImage) {
                 this.setUpdatedImagePlane(entity);
+            }
+
+            // User additional - Main Entity Style Change
+            if (entity instanceof MREntity) {
+                entity.updateGeometryStyle();
             }
 
             // Cleanup

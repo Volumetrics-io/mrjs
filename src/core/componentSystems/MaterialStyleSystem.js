@@ -32,18 +32,16 @@ export class StyleSystem extends MRSystem {
                 return;
             }
 
-            // Anything needed for all entities
-            // - background
+            // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
             }
-            // - visbility: hidden or visible are the options we care about
             this.setVisibility(entity);
             
 
-            // Main Entity Style Change
-            if (entity instanceof MRDivEntity) {
-                entity.updateStyle();
+            // User additional - Main Entity Style Change
+            if (entity instanceof MREntity) {
+                entity.updateMaterialStyle();
             }
 
             // Cleanup
@@ -111,6 +109,7 @@ export class StyleSystem extends MRSystem {
             }
         }
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+            // visbility: hidden or visible are the options we care about
             const isVisible = entity.compStyle.visibility !== 'hidden';
             entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
         }

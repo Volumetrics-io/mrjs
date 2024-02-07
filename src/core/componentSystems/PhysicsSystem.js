@@ -265,7 +265,11 @@ export class PhysicsSystem extends MRSystem {
         if (entity.physics.type == 'none') {
             return;
         }
-        entity.updatePhysicsData();
+        //-------------CHECK ON THIS AFTER MICHAEL'S PR IS IN
+        if (entity instanceof MRDivEntity) {
+            this.updatePhysicsData(entity);
+        }
+        //-------------CHECK ON THIS AFTER MICHAEL'S PR IS IN
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
@@ -299,8 +303,27 @@ export class PhysicsSystem extends MRSystem {
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-        entity.updatePhysicsData();
+        if (entity instanceof MRDivEntity) {
+            this.updatePhysicsData(entity);
+        }
+
         this.updateCollider(entity);
+    }
+
+    /**
+     * @function
+     * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
+     */
+    updatePhysicsData(entity) {
+        entity.physics.halfExtents = new THREE.Vector3();
+        entity.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002));
+
+        entity.worldScale.setFromMatrixScale(this.object3D.matrixWorld);
+        entity.object3D.userData.bbox.getSize(this.object3D.userData.size);
+        entity.object3D.userData.size.multiply(this.worldScale);
+
+        entity.physics.halfExtents.copy(this.object3D.userData.size);
+        entity.physics.halfExtents.divideScalar(2);
     }
 
     /**
