@@ -20,12 +20,6 @@ export class GeometryStyleSystem extends MRSystem {
         super(false);
     }
 
-    // This and style system rely on varying registry items whereas all other systems rely on their main system
-    // and those update functions, these rely on the entity specific update functions (ie instead of this.updateBlah(entity))
-    // we're doing entity.updateBlah
-
-    // which is not the same as an ecs system.
-
     /**
      * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
