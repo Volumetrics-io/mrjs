@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { HTML } from 'mrjsUtils/HTML';
+import { html } from 'mrjsUtils/HTML';
 
 /**
  * @namespace material
