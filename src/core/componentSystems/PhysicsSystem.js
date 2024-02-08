@@ -197,9 +197,16 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     updateBody(entity) {
-        if (entity.physics.type == 'none') {
+        if (!entity.physics.body) {
             return;
         }
+
+        if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+           entity.physics.body.setEnabled(false)
+        } else if (!entity.physics.body.isEnabled()) {
+           entity.physics.body.setEnabled(false)
+        }
+
         if (entity instanceof MRPanel) {
             entity.panel.getWorldPosition(this.tempWorldPosition);
         } else {
