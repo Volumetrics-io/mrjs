@@ -135,7 +135,8 @@ export class PhysicsSystem extends MRSystem {
 
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3()
-        this.tempBBox.setFromObject(entity.object3D);
+        this.tempBBox.setFromObject(entity.object3D, true);
+        console.log(entity);
 
         this.tempBBox.getSize(this.tempSize);
 
@@ -201,11 +202,11 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
-           entity.physics.body.setEnabled(false)
-        } else if (!entity.physics.body.isEnabled()) {
-           entity.physics.body.setEnabled(false)
-        }
+        // if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+        //    entity.physics.body.setEnabled(false)
+        // } else if (!entity.physics.body.isEnabled()) {
+        //    entity.physics.body.setEnabled(false)
+        // }
 
         if (entity instanceof MRPanel) {
             entity.panel.getWorldPosition(this.tempWorldPosition);
