@@ -63,7 +63,7 @@ material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
 
-        let resolvedSrc = HTML.resolvePath(src);
+        let resolvedSrc = html.resolvePath(src);
 
         // Use the img's src to load the texture
         textureLoader.load(
