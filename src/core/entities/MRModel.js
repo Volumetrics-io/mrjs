@@ -1,13 +1,14 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
+import { MRDivEntity } from '../MRDivEntity';
 
 /**
  * @class MRModel
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
  * @augments MREntity
  */
-export class MRModel extends MREntity {
+export class MRModel extends MRDivEntity {
     /**
      * @class
      * @description Constructor for the Model entity, does the default.

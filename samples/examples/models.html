@@ -9,21 +9,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
             mrjs
         </mr-a>
-        <mr-div class="logo">
             <mr-model
+            class="logo"
             id="logo-model"  
             src="/assets/models/logo.stl" 
             data-comp-instancing="type: animate;"
             data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
             data-rotation="-22.91 17.1887 45.8366">
             </mr-model>
-        </mr-div>
         <mr-a href="https://volumetrics.io" class="company">
             volumetrics
         </mr-a>
@@ -40,20 +39,6 @@
         <mr-text class="subtitle col-2">
             Examples
         </mr-text>
-
- <!-- <mr-div class="diptych">
-        <mr-div class="gapped padded section">
-            <mr-text class="h2">Open-source and extendable</mr-text>
-            <mr-text class="narrow">Built on top of web standards, you can implement custom elements and
-                contribute to the
-                ecosystem.</mr-text>
-        </mr-div>
-        <mr-div class="section">
-            <mr-div class="illustration">
-                <mr-model style="scale: 0.03; z-index: 10" src="./assets/koifish.glb"></mr-model>
-            </mr-div>
-        </mr-div>
-    </mr-div> -->
 
         <mr-div class="links col-2">
             <mr-text class="label" style="margin-bottom: 30px;" >
@@ -82,6 +67,7 @@
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12"
+                data-comp-animation="clip: 1; action: play;"
                 src="../assets/models/animation_koifish.glb">
             </mr-model>
         </mr-div>

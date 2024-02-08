@@ -76,6 +76,7 @@ export class LayoutSystem extends MRSystem {
         const rect = entity.getBoundingClientRect();
         
         const panel = entity.closest('mr-panel');
+        if(!panel) { return }
         const panelRect = panel.getBoundingClientRect();
 
         let innerWidth =  parseFloat(panel.compStyle.width.split('px')[0]);
