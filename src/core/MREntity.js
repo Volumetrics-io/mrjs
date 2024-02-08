@@ -97,7 +97,6 @@ export class MREntity extends MRElement {
      */
     get height() {
         return (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
-
     }
 
     /**
@@ -150,12 +149,6 @@ export class MREntity extends MRElement {
      * @description
      */
     updateStyle() {}
-
-    /**
-     * @function
-     * @description Default base for updating the physics data for the current iteration.
-     */
-    updatePhysicsData() {}
 
     /**
      * @function

@@ -83,5 +83,5 @@ export class GeometryStyleSystem extends MRSystem {
             entity.object3D.geometry.dispose();
         }
         entity.object3D.geometry = mrjsUtils.geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
-    }  
+    }
 }

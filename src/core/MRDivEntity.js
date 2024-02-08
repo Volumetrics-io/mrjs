@@ -110,22 +110,6 @@ export class MRDivEntity extends MREntity {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
     }
 
-    /**
-     * @function
-     * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
-     */
-    updatePhysicsData() {
-        this.physics.halfExtents = new THREE.Vector3();
-        this.object3D.userData.bbox.setFromCenterAndSize(this.object3D.position, new THREE.Vector3(this.width, this.height, 0.002));
-
-        this.worldScale.setFromMatrixScale(this.object3D.matrixWorld);
-        this.object3D.userData.bbox.getSize(this.object3D.userData.size);
-        this.object3D.userData.size.multiply(this.worldScale);
-
-        this.physics.halfExtents.copy(this.object3D.userData.size);
-        this.physics.halfExtents.divideScalar(2);
-    }
-
     // TODO - can we move this to utils/Css.js ? ---- for border radius (which returns percentages instead of pixel values)
     // leave here for now - to be moved after michael change
     /**

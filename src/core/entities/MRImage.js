@@ -70,7 +70,8 @@ export class MRImage extends MRDivEntity {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        mrjsUtils.material.loadTextureAsync(this.img.src)
+        mrjsUtils.material
+            .loadTextureAsync(this.img.src)
             .then((texture) => {
                 this.texture = texture;
                 this.object3D.material.map = texture;
@@ -110,7 +111,8 @@ export class MRImage extends MRDivEntity {
             this.img.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
 
-            mrjsUtils.material.loadTextureAsync(this.img.src)
+            mrjsUtils.material
+                .loadTextureAsync(this.img.src)
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;

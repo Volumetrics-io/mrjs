@@ -2,34 +2,33 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>mr.js - anchors</title>
-    <meta name="description" content="mr.js example - anchors">
+    <title>mr.js - panels</title>
+    <meta name="description" content="mr.js example - panels">
     <script src="/mr.js"></script>
     <link rel="stylesheet" type="text/css" href="panels-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app debug="false">
+   <mr-app>
     <mr-entity id="rig" data-comp-anchor="type: fixed;">
-        <mr-panel id="navbar" data-position="0 0 0.001">
+        <mr-panel id="navbar" data-position="0 0 0.001">  <!--TODO: move Z offset to css z-index-->
             <mr-a href="https://mrjs.io" class="mrjs">
                 mrjs
             </mr-a>
-            <mr-div class="logo">
-                <mr-model
-                id="logo-model"  
-                src="/assets/models/logo.stl" 
-                data-comp-instancing="type: animate;"
-                data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
-                data-rotation="-22.91 17.1887 45.8366">
-                </mr-model>
-            </mr-div>
+            <mr-model
+            class="logo"
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
             <mr-a href="https://volumetrics.io" class="company">
                 volumetrics
             </mr-a>
         </mr-panel>
 
-        <mr-panel id="tabbar" data-position="0 0 0.001">
+        <mr-panel id="tabbar" data-position="0 0 0.001"> <!--TODO: move Z offset to css z-index-->
             <mr-button onclick="switchTab(0)" class="col-1">panel 1</mr-button>
             <mr-button onclick="switchTab(1)" class="col-2">panel 2</mr-button>
             <mr-button onclick="switchTab(2)" class="col-3">panel 3</mr-button>
