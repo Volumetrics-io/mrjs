@@ -1,11 +1,8 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
-<<<<<<< HEAD
 import { mrjsUtils } from 'mrjs';
 
-=======
->>>>>>> main
 /**
  * @class PanelManagementSystem
  * @classdesc A system that manages the screen relative position of UI panels
