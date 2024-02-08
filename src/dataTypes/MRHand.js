@@ -57,8 +57,7 @@ const HAND_MAPPING = {
  * @property {THREE.Object3D} model - The model of the hand.
  */
 export class MRHand {
-
-    jointCursors = []
+    jointCursors = [];
     /**
      * @class
      * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model
@@ -148,8 +147,8 @@ export class MRHand {
                 mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
                 mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
 
-                this.jointCursors.push({name: joint, collider: this.jointPhysicsBodies[joint].collider})
-                this.jointCursors.push({name: `${joint}-hover`, collider: this.jointPhysicsBodies[`${joint}-hover`].collider})
+                this.jointCursors.push({ name: joint, collider: this.jointPhysicsBodies[joint].collider });
+                this.jointCursors.push({ name: `${joint}-hover`, collider: this.jointPhysicsBodies[`${joint}-hover`].collider });
             }
         }
     }

@@ -103,28 +103,28 @@ export class ControlSystem extends MRSystem {
         this.leftHand.update();
         this.rightHand.update();
 
-        this.checkCollisions(this.leftHand)
-        this.checkCollisions(this.rightHand)
+        this.checkCollisions(this.leftHand);
+        this.checkCollisions(this.rightHand);
 
         if (mrjsUtils.xr.isPresenting) {
-            this.pointerRay()
+            this.pointerRay();
         }
     }
 
     checkCollisions(hand) {
-        for( let jointCursor of hand.jointCursors) {
+        for (let jointCursor of hand.jointCursors) {
             this.app.physicsWorld.contactPairsWith(jointCursor.collider, (collider2) => {
                 const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider2.handle];
-    
+
                 if (entity) {
                     if (!jointCursor.name.includes('hover') && entity.touch) {
                         this.tempPreviousPosition.copy(this.tempLocalPosition);
-    
+
                         this.tempLocalPosition.copy(jointCursor.collider.translation());
                         entity.object3D.worldToLocal(this.tempLocalPosition);
-    
+
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
-    
+
                         entity.dispatchEvent(
                             new CustomEvent('touch', {
                                 bubbles: true,
@@ -155,7 +155,9 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if(joint && entity) { return }
+        if (joint && entity) {
+            return;
+        }
         if (!joint.includes('hover')) {
             this.touchStart(collider1, collider2, entity);
         } else {
@@ -173,7 +175,9 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if(joint && entity) { return }
+        if (joint && entity) {
+            return;
+        }
         if (!joint.includes('hover')) {
             this.touchEnd(entity);
         } else {
@@ -352,20 +356,20 @@ export class ControlSystem extends MRSystem {
             return;
         }
 
-        if(!this.currentEntity) {
-            this.currentEntity = entity
-            this.currentEntity?.classList.add('hover')
+        if (!this.currentEntity) {
+            this.currentEntity = entity;
+            this.currentEntity?.classList.add('hover');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
-            this.currentEntity.focus = true
-        } else if((!this.down && this.currentEntity != entity)) {
-            this.currentEntity.classList.remove('hover')
+            this.currentEntity.focus = true;
+        } else if (!this.down && this.currentEntity != entity) {
+            this.currentEntity.classList.remove('hover');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseleave'));
-            this.currentEntity.focus = false
+            this.currentEntity.focus = false;
 
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
-            this.currentEntity.focus = true
+            this.currentEntity.focus = true;
         }
 
         if (this.down) {

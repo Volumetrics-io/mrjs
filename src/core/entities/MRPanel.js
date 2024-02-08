@@ -13,7 +13,6 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanel extends MRDivEntity {
-
     /**
      * @class
      * @description Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
@@ -24,7 +23,7 @@ export class MRPanel extends MRDivEntity {
         this.object3D.userData.bbox = new THREE.Box3();
         this.object3D.userData.size = new THREE.Vector3();
         this.object3D.add(this.panel);
-        this.panel.add(this.background)
+        this.panel.add(this.background);
         this.object3D.name = 'panel';
         this.ignoreStencil = true;
 
@@ -132,7 +131,9 @@ export class MRPanel extends MRDivEntity {
      * @param {object} event - the scroll event
      */
     onScroll = (event) => {
-        if(!this.focus) { return }
+        if (!this.focus) {
+            return;
+        }
         this.scrollTop += event.deltaY;
     };
 }

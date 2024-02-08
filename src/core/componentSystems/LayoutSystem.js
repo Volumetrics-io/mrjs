@@ -74,18 +74,20 @@ export class LayoutSystem extends MRSystem {
      */
     setLayoutPosition(entity) {
         const rect = entity.getBoundingClientRect();
-        
+
         const panel = entity.closest('mr-panel');
-        if(!panel) { return }
+        if (!panel) {
+            return;
+        }
         const panelRect = panel.getBoundingClientRect();
 
-        let innerWidth =  parseFloat(panel.compStyle.width.split('px')[0]);
+        let innerWidth = parseFloat(panel.compStyle.width.split('px')[0]);
         let innerHeight = parseFloat(panel.compStyle.height.split('px')[0]);
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
 
-        let windowWidth = panel.width
-        let windowHeight = panel.height
+        let windowWidth = panel.width;
+        let windowHeight = panel.height;
         let centeredX = rect.left - panelRect.left - centerX;
         let centeredY = rect.top - panelRect.top - centerY;
 
@@ -102,12 +104,11 @@ export class LayoutSystem extends MRSystem {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
             entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
 
-            if(entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex){
-                entity.object3D.position.z += 0.0001
+            if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
+                entity.object3D.position.z += 0.0001;
             }
         } else {
-            entity.object3D.position.z = 0
+            entity.object3D.position.z = 0;
         }
-
     }
 }

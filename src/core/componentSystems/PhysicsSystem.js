@@ -38,7 +38,6 @@ export class PhysicsSystem extends MRSystem {
         this.tempBBox = new THREE.Box3();
         this.tempSize = new THREE.Vector3();
 
-
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
                 color: 0xffffff,
@@ -64,12 +63,10 @@ export class PhysicsSystem extends MRSystem {
                 continue;
             }
             this.updateBody(entity);
-
         }
 
         this.updateDebugRenderer();
     }
-
 
     /**
      * @function
@@ -81,7 +78,7 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if(entity instanceof MRDivEntity) {
+        if (entity instanceof MRDivEntity) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
         }
@@ -93,14 +90,12 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     initPhysicsBody(entity) {
-
         // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
         //       and model will get more complex as we add convexMesh support
-        if(entity instanceof MRModel){
-            this.initSimpleBody(entity)
-
-        } else if( entity instanceof MRDivEntity) {
-            this.initUIEntityBody(entity)
+        if (entity instanceof MRModel) {
+            this.initSimpleBody(entity);
+        } else if (entity instanceof MRDivEntity) {
+            this.initUIEntityBody(entity);
         }
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
@@ -108,7 +103,6 @@ export class PhysicsSystem extends MRSystem {
 
         entity.physics.body.setTranslation(...this.tempWorldPosition, true);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
-
     }
 
     /**
@@ -117,7 +111,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     initUIEntityBody(entity) {
-        entity.physics.halfExtents = new THREE.Vector3()
+        entity.physics.halfExtents = new THREE.Vector3();
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
         this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
@@ -127,7 +121,7 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);
 
-        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
         let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
@@ -136,8 +130,6 @@ export class PhysicsSystem extends MRSystem {
         mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
         entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
-
-
     }
 
     /**
@@ -146,7 +138,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     initSimpleBody(entity) {
-        entity.physics.halfExtents = new THREE.Vector3()
+        entity.physics.halfExtents = new THREE.Vector3();
         this.tempBBox.setFromObject(entity.object3D, true);
 
         this.tempBBox.getSize(this.tempSize);
@@ -154,7 +146,7 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);
 
-        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
         let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
@@ -163,38 +155,33 @@ export class PhysicsSystem extends MRSystem {
         mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
         entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
-
-
     }
 
     /**
      * @function
-     * @description Initializes a Rigid Body detailed convexMesh collider for the entity 
+     * @description Initializes a Rigid Body detailed convexMesh collider for the entity
      * NOTE: not currently in use until we can sync it with animations
      * @param {MREntity} entity - the entity being updated
      */
     initDetailedBody(entity) {
-    
-        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
-        entity.physics.colliders = []
+        entity.physics.colliders = [];
 
         entity.object3D.traverse((child) => {
-            if(child.isMesh) {
-                let collider = this.app.physicsWorld.createCollider(this.initConvexMeshCollider(child, entity.compStyle.scale), entity.physics.body)
+            if (child.isMesh) {
+                let collider = this.app.physicsWorld.createCollider(this.initConvexMeshCollider(child, entity.compStyle.scale), entity.physics.body);
                 collider.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
-                entity.physics.colliders.push(collider)
+                entity.physics.colliders.push(collider);
                 mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider.handle] = entity;
                 collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
                 collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
-
             }
-        })
-
+        });
     }
 
-     /**
+    /**
      * @function
      * @description Initializes a convexMesh collider from a THREE.js geometry
      * NOTE: not currently in use until we can sync it with animations
@@ -211,8 +198,7 @@ export class PhysicsSystem extends MRSystem {
         // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
         const verticesFlat = new Float32Array(vertices.flat());
 
-        return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat)
-
+        return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat);
     }
 
     /**
@@ -225,10 +211,10 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
-           entity.physics.body.setEnabled(false)
+        if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+            entity.physics.body.setEnabled(false);
         } else if (!entity.physics.body.isEnabled()) {
-           entity.physics.body.setEnabled(false)
+            entity.physics.body.setEnabled(false);
         }
 
         if (entity instanceof MRPanel) {
@@ -243,7 +229,7 @@ export class PhysicsSystem extends MRSystem {
 
         // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
         //       and model will get more complex as we add convexMesh support
-        if(entity instanceof MRModel) {
+        if (entity instanceof MRModel) {
             this.updateSimpleBody(entity);
         } else if (entity instanceof MRDivEntity) {
             this.updateUIBody(entity);
