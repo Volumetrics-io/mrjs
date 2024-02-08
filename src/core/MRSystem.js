@@ -38,7 +38,9 @@ export class MRSystem {
         }
 
         this.app.addEventListener('new-entity', (event) => {
-
+            if (this.registry.has(event.target)) {
+                return;
+            }
             this.onNewEntity(event.target);
         });
 
