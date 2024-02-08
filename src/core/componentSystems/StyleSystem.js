@@ -37,27 +37,7 @@ export class StyleSystem extends MRSystem {
             entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1);
 
             // VISIBILITY
-            function makeVisible() {
-                this.object3D.visible = true;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = true;
-                }
-            }
-            function makeHidden() {
-                this.object3D.visible = false;
-                if (this.background) {
-                    // The background for MRDivEntities, but we want this css property allowed
-                    // for all, so using this checker to confirm the existence first.
-                    this.background.visible = false;
-                }
-            }
-            // hidden or visible are the options we care about
-            if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
-                const isVisible = entity.compStyle.visibility !== 'hidden';
-                entity.traverse(isVisible ? makeVisible.bind(entity) : makeHidden.bind(entity));
-            }
+            this.setVisibility(entity);
 
             // MAIN ENTITY STYLE CHANGE
             if (entity instanceof MRDivEntity) {
@@ -79,5 +59,26 @@ export class StyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
+    }
+
+    setVisibility(entity) {
+        function makeVisible(entity, bool) {
+            entity.object3D.visible = bool;
+            if (entity.background) {
+                // The background for MRDivEntities, but we want this css property allowed
+                // for all, so using this checker to confirm the existence first.
+                // entity.background.visible = bool;
+                //
+                // XXX - right now all backgrounds are set as visible=false by default in their
+                // MRDivEntity constructors, so toggling them here isnt useful, but in future
+                // if this is requested for use or we want to add a feature for more use of the
+                // background - adding in toggling for this with the object will be useful.
+            }
+        }
+        if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+            // visbility: hidden or visible are the options we care about
+            const isVisible = entity.compStyle.visibility !== 'hidden';
+            makeVisible(entity, isVisible);
+        }
     }
 }
