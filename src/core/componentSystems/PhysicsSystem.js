@@ -38,7 +38,7 @@ export class PhysicsSystem extends MRSystem {
         this.tempWorldQuaternion = new THREE.Quaternion();
         this.tempHalfExtents = new THREE.Vector3();
 
-        this.eventQueue = new mrjsUtils.Physics.RAPIER.EventQueue(true);
+        this.eventQueue = new mrjsUtils.physics.RAPIER.EventQueue(true);
 
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
@@ -77,7 +77,7 @@ export class PhysicsSystem extends MRSystem {
             this.updateBody(entity);
 
             this.app.physicsWorld.contactPairsWith(entity.physics.collider, (collider2) => {
-                const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
+                const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
 
                 if (joint) {
                     if (!joint.includes('hover') && entity.touch) {
@@ -117,8 +117,8 @@ export class PhysicsSystem extends MRSystem {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             // if(this.currentEntity) {
@@ -141,8 +141,8 @@ export class PhysicsSystem extends MRSystem {
      * @param {number} handle2 - the second collider
      */
     onContactEnd = (handle1, handle2) => {
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             this.touchEnd(entity);
@@ -269,19 +269,19 @@ export class PhysicsSystem extends MRSystem {
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
         // Create a cuboid collider attached to the dynamic rigidBody.
         let colliderDesc = this.initColliderDesc(entity.physics);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
 
-        mrjsUtils.Physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
+        mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
 
-        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-        entity.physics.collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
     }
 
     /**
@@ -313,7 +313,7 @@ export class PhysicsSystem extends MRSystem {
         switch (physicsData.type) {
             case 'box':
             case 'ui':
-                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
+                return mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
             default:
                 return null;
         }

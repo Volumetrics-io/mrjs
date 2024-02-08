@@ -27,7 +27,7 @@ import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 
 ('use strict');
 window.mobileCheck = function () {
-    return mrjsUtils.Display.mobileCheckFunction();
+    return mrjsUtils.display.mobileCheckFunction();
 };
 
 /**
@@ -105,7 +105,7 @@ export class MRApp extends MRElement {
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.physicsWorld = new mrjsUtils.Physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+            this.physicsWorld = new mrjsUtils.physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
@@ -183,18 +183,18 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.StringUtils.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
-        mrjsUtils.Physics.initializePhysics();
+        mrjsUtils.physics.initializePhysics();
 
         this.user.position.set(0, 0, 1);
 
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.StringUtils.stringToVector(layersString);
+            this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -272,7 +272,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.StringUtils.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.stringUtils.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);

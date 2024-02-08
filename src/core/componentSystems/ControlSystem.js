@@ -48,7 +48,7 @@ export class ControlSystem extends MRSystem {
 
         this.origin = new THREE.Vector3();
         this.direction = new THREE.Vector3();
-        this.ray = new mrjsUtils.Physics.RAPIER.Ray({ x: 0.0, y: 0.0, z: 0.0 }, { x: 0.0, y: 1.0, z: 0.0 });
+        this.ray = new mrjsUtils.physics.RAPIER.Ray({ x: 0.0, y: 0.0, z: 0.0 }, { x: 0.0, y: 1.0, z: 0.0 });
         this.hit;
 
         this.restPosition = new THREE.Vector3(1000, 1000, 1000);
@@ -56,8 +56,8 @@ export class ControlSystem extends MRSystem {
         this.hitNormal = new THREE.Vector3();
         this.timer;
 
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
-        const colDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.01);
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased();
+        const colDesc = mrjsUtils.physics.RAPIER.ColliderDesc.ball(0.01);
 
         this.currentEntity = null;
 
@@ -99,7 +99,7 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.origin };
             this.ray.dir = { ...this.direction };
 
-            this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, null);
+            this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.UI, null, null);
             if (this.hit != null) {
                 this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
                 this.hitNormal.copy(this.hit.normal);
@@ -108,7 +108,7 @@ export class ControlSystem extends MRSystem {
 
                 this.cursorViz.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.hit.normal);
 
-                this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
+                this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
             } else {
                 this.cursorViz.visible = false;
             }
@@ -127,7 +127,7 @@ export class ControlSystem extends MRSystem {
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
+            this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
         }
     };
 
@@ -242,6 +242,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.UI, null, null);
+        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.UI, null, null);
     }
 }

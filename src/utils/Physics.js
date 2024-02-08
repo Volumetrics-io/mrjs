@@ -1,47 +1,47 @@
 /**
- * @namespace Physics
- * @description Useful namespace for helping with Physics utility functions
+ * @namespace physics
+ * @description Useful namespace for helping with physics utility functions
  */
-let Physics = {};
+let physics = {};
 
 /**
- * @memberof Physics
+ * @memberof physics
  * @description the Rapier collision groups used throughout mr.js
  */
-Physics.CollisionGroups = {
+physics.CollisionGroups = {
     USER: 0x000d0001,
     PLANES: 0x000d0002,
     UI: 0x00010001,
 };
 
 /**
- * @memberof Physics
+ * @memberof physics
  * @description the RAPIER physics controller object
  */
-Physics.RAPIER = null;
+physics.RAPIER = null;
 
 let rapierLoaded = false;
-Physics.initializePhysics = async function () {
+physics.initializePhysics = async function () {
     if (!rapierLoaded) {
-        Physics.RAPIER = await import('@dimforge/rapier3d');
+        physics.RAPIER = await import('@dimforge/rapier3d');
         rapierLoaded = true;
         document.dispatchEvent(new CustomEvent('engine-started', { bubbles: true }));
     }
-    return Physics;
+    return physics;
 };
 
 // const _INPUT_COLLIDER_HANDLE_NAMES = {};
 /**
- * @memberof Physics
+ * @memberof physics
  * @description the Rapier INPUT_COLLIDER_HANDLE_NAMES
  */
-Physics.INPUT_COLLIDER_HANDLE_NAMES = {}; //alert(_INPUT_COLLIDER_HANDLE_NAMES);
+physics.INPUT_COLLIDER_HANDLE_NAMES = {}; //alert(_INPUT_COLLIDER_HANDLE_NAMES);
 
 // const _COLLIDER_ENTITY_MAP = {};
 /**
- * @memberof Physics
+ * @memberof physics
  * @description the Rapier COLLIDER_ENTITY_MAP
  */
-Physics.COLLIDER_ENTITY_MAP = {};
+physics.COLLIDER_ENTITY_MAP = {};
 
-export { Physics };
+export { physics };
