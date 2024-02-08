@@ -62,14 +62,14 @@ export class MRSkyBox extends MREntity {
         // or you can store them in a specified path and just
         // load them up solely by filename in that path.
 
-        this.texturesList = mrjsUtils.HTML.resolvePath(this.getAttribute('src'));
+        this.texturesList = mrjsUtils.html.resolvePath(this.getAttribute('src'));
         if (!this.texturesList) {
             return;
         }
 
         const textureNames = this.texturesList.split(',');
         const path = this.getAttribute('pathToTextures');
-        const textureUrls = textureNames.map((name) => mrjsUtils.HTML.resolvePath(path ? path + name : name));
+        const textureUrls = textureNames.map((name) => mrjsUtils.html.resolvePath(path ? path + name : name));
 
         this.textureLoadedCallbacks.push((texture) => {
             console.log('Texture loaded within connected():', texture);

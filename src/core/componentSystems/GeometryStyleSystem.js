@@ -64,7 +64,11 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     setScale(entity) {
-        entity.object3D.scale.setScalar(entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.App.scale : 1);
+        entity.object3D.scale.setScalar(
+            entity.compStyle.scale != 'none'
+            ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale
+            : 1
+        );
     }
 
     /**
@@ -72,7 +76,7 @@ export class GeometryStyleSystem extends MRSystem {
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
     setBorder(entity) {
-        entity.background.geometry = mrjsUtils.Geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
+        entity.background.geometry = mrjsUtils.geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
     }
 
     setUpdatedImagePlane(entity) {
@@ -82,6 +86,6 @@ export class GeometryStyleSystem extends MRSystem {
         if (entity.object3D.geometry !== undefined) {
             entity.object3D.geometry.dispose();
         }
-        entity.object3D.geometry = mrjsUtils.Geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
+        entity.object3D.geometry = mrjsUtils.geometry.UIPlane(entity.width, entity.height, entity.borderRadii, 18);
     }  
 }

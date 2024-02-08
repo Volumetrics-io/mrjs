@@ -6,33 +6,33 @@
 
 // // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
-import { App } from './App.js';
-import { CSS } from './CSS.js';
-import { Display } from './Display.js';
-import { Geometry } from './Geometry.js';
-import { HTML } from './HTML.js';
-import { JS } from './JS.js';
-import { Material } from './Material.js';
-import { Model } from './Model.js';
-import { MathUtils } from './MathUtils.js';
-import { Math3D } from './Math3D.js';
-import { Physics } from './Physics.js';
-import { StringUtils } from './StringUtils.js';
+import { app } from './App.js';
+import { css } from './CSS.js';
+import { display } from './Display.js';
+import { geometry } from './Geometry.js';
+import { html } from './HTML.js';
+import { js } from './JS.js';
+import { material } from './Material.js';
+import { model } from './Model.js';
+import { mathUtils } from './MathUtils.js';
+import { math3D } from './Math3D.js';
+import { physics } from './Physics.js';
+import { stringUtils } from './StringUtils.js';
 import { xr } from './XR.js';
 
 const mrjsUtils = {
-    App,
-    CSS,
-    Display,
-    Geometry,
-    HTML,
-    JS,
-    Material,
-    Model,
-    MathUtils,
-    Math3D,
-    Physics,
-    StringUtils,
+    app,
+    css,
+    display,
+    geometry,
+    html,
+    js,
+    material,
+    model,
+    mathUtils,
+    math3D,
+    physics,
+    stringUtils,
     xr,
 };
 

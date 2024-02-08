@@ -198,7 +198,7 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the font size adjusted for the display as expected
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
+        const result = parseFloat(val.split('px')[0]) / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
         if (mrjsUtils.xr.isPresenting) {
             return result * mrjsUtils.app.scale;
         }
@@ -216,7 +216,7 @@ export class TextSystem extends MRSystem {
         let result = verticalAlign;
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.css.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -242,10 +242,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
-        let result = mrjsUtils.CSS.pxToThree(lineHeight);
+        let result = mrjsUtils.css.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.css.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

@@ -20,7 +20,7 @@ export class MRDivEntity extends MREntity {
         this.halfExtents = new THREE.Vector3();
         this.physics.type = 'ui';
 
-        const geometry = mrjsUtils.Geometry.UIPlane(1, 1, [0], 18);
+        const geometry = mrjsUtils.geometry.UIPlane(1, 1, [0], 18);
         const material = new THREE.MeshStandardMaterial({
             color: 0xfff,
             roughness: 0.7,
@@ -50,7 +50,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            return (rect.height / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
+            return (rect.height / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
         return (rect.height / global.appHeight) * global.viewPortHeight;
     }
@@ -64,7 +64,7 @@ export class MRDivEntity extends MREntity {
         const rect = this.getBoundingClientRect();
 
         if (mrjsUtils.xr.isPresenting) {
-            return (rect.width / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
+            return (rect.width / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
         return (rect.width / global.appWidth) * global.viewPortWidth;
     }
@@ -107,7 +107,7 @@ export class MRDivEntity extends MREntity {
      * @description Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
      */
     connected() {
-        this.background.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, [0], 18);
+        this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
     }
 
     /**
@@ -116,8 +116,8 @@ export class MRDivEntity extends MREntity {
      * @returns {number} - the resolved height
      */
     get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.CSS.domToThree(r));
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.CSS.domToThree(r));
+        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
     }
 }
 

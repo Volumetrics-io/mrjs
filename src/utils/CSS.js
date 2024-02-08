@@ -1,8 +1,8 @@
 /**
- * @namespace CSS
+ * @namespace css
  * @description Useful namespace for helping with CSS utility functions
  */
-let CSS = {};
+let css = {};
 
 /**
  * @function
@@ -10,7 +10,7 @@ let CSS = {};
  * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
  * @returns {number} - the 3D numerical represenation of the dom css value
  */
-CSS.domToThree = function(val) {
+css.domToThree = function(val) {
     if (typeof val === 'string') {
         const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
         if (valuepair.length > 1) {
@@ -35,25 +35,25 @@ CSS.domToThree = function(val) {
 
 /**
  * @function
- * @memberof CSS
+ * @memberof css
  * @description Converts 3D world positions to display positions based on global viewPort information.
  *              Useful as part of the layout system and css value handling (px<-->threejs).
  * @param {number} val - the 3D value to be converted to 2D pixel space
  * @returns {number} - the 2D pixel space representation of value.
  */
-CSS.threeToPx = function (val) {
+css.threeToPx = function (val) {
     return (val / global.viewPortHeight) * global.appHeight;
 };
 
 /**
  * @function
- * @memberof CSS
+ * @memberof css
  * @description Converts display positions to 3D world positions to based on global viewPort information.
  * Useful as part of the layout system and css value handling (px<-->threejs).
  * @param {number} val - the 2D pixel space value to be converted to 3D space.
  * @returns {number} - the 3D representation of value.
  */
-CSS.pxToThree = function (val) {
+css.pxToThree = function (val) {
     let px = val instanceof String ? val.split('px')[0] : val;
 
     if (mrjsUtils.xr.isPresenting) {
@@ -62,4 +62,4 @@ CSS.pxToThree = function (val) {
     return (px / global.appWidth) * global.viewPortWidth;
 };
 
-export { CSS };
+export { css };
