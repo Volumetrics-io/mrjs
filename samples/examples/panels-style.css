@@ -148,7 +148,6 @@
   }
 
   #tabbar {
-    visibility: hidden;
     background-color: #141414;
     border-radius: 1%;
     position:fixed;
