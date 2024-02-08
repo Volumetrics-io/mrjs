@@ -1,12 +1,12 @@
 ![The mrjs logo](https://docs.mrjs.io/static/mrjs_nopadding.svg)
  
-An extensible Web Components library for the Spatial Web
+An extensible library of Web Components for the spatial web.
 
 [![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
 
 ## Overview
  
-MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web app development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
+MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
 ## Main Links
 
@@ -50,7 +50,7 @@ npm run server
 
 ### Documentation:
 
-Check [docs.mrjs.io](https://docs.mrjs.io) for the full documentation, or our [repository](https://github.com/Volumetrics-io/documentation).
+Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
 
 For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
 
@@ -170,7 +170,7 @@ customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Sp
 
 A System contains logic that is applied to all entities that have a corresponding Component, using the data stored by the component. Unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JavaScript.
 
-When a component is attached or detached from an entity, it is added or removed from its System's registry of entities.
+When a component is attached to or detached from an entity, it is added or removed from its System's registry of entities.
 
 Example:
 
