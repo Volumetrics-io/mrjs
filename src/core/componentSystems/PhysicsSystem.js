@@ -109,6 +109,11 @@ export class PhysicsSystem extends MRSystem {
 
     }
 
+    /**
+     * @function
+     * @description Initializes the rigid body used by the physics for div or Model entity
+     * @param {MREntity} entity - the entity being updated
+     */
     initUIEntityBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3()
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
@@ -133,6 +138,11 @@ export class PhysicsSystem extends MRSystem {
 
     }
 
+    /**
+     * @function
+     * @description Initializes a simple bounding box collider based on the visual bounds of the entity
+     * @param {MREntity} entity - the entity being updated
+     */
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3()
         this.tempBBox.setFromObject(entity.object3D, true);
@@ -156,6 +166,12 @@ export class PhysicsSystem extends MRSystem {
 
     }
 
+    /**
+     * @function
+     * @description Initializes a Rigid Body detailed convexMesh collider for the entity 
+     * NOTE: not currently in use until we can sync it with animations
+     * @param {MREntity} entity - the entity being updated
+     */
     initDetailedBody(entity) {
     
         const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed()
@@ -177,6 +193,12 @@ export class PhysicsSystem extends MRSystem {
 
     }
 
+     /**
+     * @function
+     * @description Initializes a convexMesh collider from a THREE.js geometry
+     * NOTE: not currently in use until we can sync it with animations
+     * @param {MREntity} entity - the entity being updated
+     */
     initConvexMeshCollider(object3D, scale) {
         const positionAttribute = object3D.geometry.getAttribute('position');
         const vertices = [];
@@ -202,11 +224,11 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        // if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
-        //    entity.physics.body.setEnabled(false)
-        // } else if (!entity.physics.body.isEnabled()) {
-        //    entity.physics.body.setEnabled(false)
-        // }
+        if(entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+           entity.physics.body.setEnabled(false)
+        } else if (!entity.physics.body.isEnabled()) {
+           entity.physics.body.setEnabled(false)
+        }
 
         if (entity instanceof MRPanel) {
             entity.panel.getWorldPosition(this.tempWorldPosition);
@@ -225,6 +247,11 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Updates the rigid body used by the physics part of the div entity
+     * @param {MREntity} entity - the entity being updated
+     */
     updateUIBody(entity) {
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
@@ -236,22 +263,6 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents.divideScalar(2);
 
         entity.physics.collider.setHalfExtents(entity.physics.halfExtents);
-    }
-
-    /**
-     * @function
-     * @description Initializes a collider based on the physics data.
-     * @param {object} physicsData - data needed to be used to setup the collider interaction
-     * @returns {object} - the Rapier physics collider object
-     */
-    initColliderDesc(physicsData) {
-        switch (physicsData.type) {
-            case 'box':
-            case 'ui':
-                return mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
-            default:
-                return null;
-        }
     }
 
     /**
