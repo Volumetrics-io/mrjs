@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
 /**
- * @namespace Geometry
- * @description Useful namespace for helping with Geometry utility functions
+ * @namespace geometry
+ * @description Useful namespace for helping with geometry utility functions
  */
-let Geometry = {};
+let geometry = {};
 
 /**
  * @function
- * @memberof Geometry
+ * @memberof geometry
  * @description This construction function creates the UIPlane that is used as the backdrop for most mrjs Panel divs.
  * @param {number} width - the expected width of the plane.
  * @param {number} height - the expected height of the plane.
@@ -16,7 +16,7 @@ let Geometry = {};
  * @param {number} smoothness - the expected smoothness value.
  * @returns {THREE.BufferGeometry} - The completed threejs plane object.
  */
-Geometry.UIPlane = function (width, height, radius_corner, smoothness) {
+geometry.UIPlane = function (width, height, radius_corner, smoothness) {
     let w = width == 'auto' ? 1 : width;
     w = w != 0 ? w : 1;
     let h = height == 'auto' ? 1 : height;
@@ -76,16 +76,16 @@ Geometry.UIPlane = function (width, height, radius_corner, smoothness) {
         }
     }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
-    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
-    geometry.computeBoundingBox();
-    geometry.computeVertexNormals();
+    const geo = new THREE.BufferGeometry();
+    geo.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+    geo.computeBoundingBox();
+    geo.computeVertexNormals();
 
-    geometry.name = 'uiPlane';
+    geo.name = 'uiPlane';
 
-    return geometry;
+    return geo;
 };
 
-export { Geometry };
+export { geometry };

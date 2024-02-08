@@ -120,9 +120,9 @@ export class MRPanel extends MRDivEntity {
         let app = this.closest('mr-app');
 
         if (app.compStyle.overflow == 'scroll') {
-            app.scrollTop += mrjsUtils.CSS.threeToPx(this.delta);
+            app.scrollTop += mrjsUtils.css.threeToPx(this.delta);
         } else {
-            this.scrollBy(0, mrjsUtils.CSS.threeToPx(this.delta));
+            this.scrollBy(0, mrjsUtils.css.threeToPx(this.delta));
         }
     };
 
