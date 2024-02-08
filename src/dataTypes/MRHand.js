@@ -145,8 +145,8 @@ export class MRHand {
                 // This should be replaced with a cone or something
                 const hoverColDesc = mrjsUtils.physics.RAPIER.ColliderDesc.ball(0.03);
                 this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
-                mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
-                mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
+                mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
+                mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
 
                 this.jointCursors.push({name: joint, collider: this.jointPhysicsBodies[joint].collider})
                 this.jointCursors.push({name: `${joint}-hover`, collider: this.jointPhysicsBodies[`${joint}-hover`].collider})

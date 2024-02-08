@@ -90,7 +90,7 @@ export class ControlSystem extends MRSystem {
         this.leftHand.setMesh();
         this.rightHand.setMesh();
 
-        mrjsUtils.Physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+        mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
             /* Handle the collision event. */
 
             if (started) {
@@ -114,7 +114,7 @@ export class ControlSystem extends MRSystem {
     checkCollisions(hand) {
         for( let jointCursor of hand.jointCursors) {
             this.app.physicsWorld.contactPairsWith(jointCursor.collider, (collider2) => {
-                const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[collider2.handle];
+                const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider2.handle];
     
                 if (entity) {
                     if (!jointCursor.name.includes('hover') && entity.touch) {
@@ -152,8 +152,8 @@ export class ControlSystem extends MRSystem {
         const collider1 = this.app.physicsWorld.colliders.get(handle1);
         const collider2 = this.app.physicsWorld.colliders.get(handle2);
 
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             this.touchStart(collider1, collider2, entity);
@@ -172,8 +172,8 @@ export class ControlSystem extends MRSystem {
      * @param {number} handle2 - the second collider
      */
     onContactEnd = (handle1, handle2) => {
-        const joint = mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.Physics.COLLIDER_ENTITY_MAP[handle2];
+        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
+        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
         if (joint && entity && !joint.includes('hover')) {
             this.touchEnd(entity);
@@ -282,7 +282,7 @@ export class ControlSystem extends MRSystem {
         this.ray.origin = { ...this.origin };
         this.ray.dir = { ...this.direction };
 
-        this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.USER, null, null);
+        this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.hitNormal.copy(this.hit.normal);
@@ -291,7 +291,7 @@ export class ControlSystem extends MRSystem {
 
             this.cursorViz.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.hit.normal);
 
-            this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
+            this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
         } else {
             this.cursorViz.visible = false;
         }
@@ -424,6 +424,6 @@ export class ControlSystem extends MRSystem {
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.Physics.CollisionGroups.USER, null, null);
+        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
     }
 }

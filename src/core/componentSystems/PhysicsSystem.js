@@ -57,7 +57,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.app.physicsWorld.step(mrjsUtils.Physics.eventQueue);
+        this.app.physicsWorld.step(mrjsUtils.physics.eventQueue);
 
         for (const entity of this.registry) {
             if (entity.physics?.body == null) {
@@ -125,15 +125,15 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);
 
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
-        let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
+        colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
-        mrjsUtils.Physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
-        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-        entity.physics.collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+        mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
+        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
 
     }
@@ -152,15 +152,15 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);
 
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
-        let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+        let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
+        colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
-        mrjsUtils.Physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
-        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-        entity.physics.collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+        mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
+        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
 
     }
@@ -173,7 +173,7 @@ export class PhysicsSystem extends MRSystem {
      */
     initDetailedBody(entity) {
     
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.fixed()
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed()
         entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
 
         entity.physics.colliders = []
@@ -181,11 +181,11 @@ export class PhysicsSystem extends MRSystem {
         entity.object3D.traverse((child) => {
             if(child.isMesh) {
                 let collider = this.app.physicsWorld.createCollider(this.initConvexMeshCollider(child, entity.compStyle.scale), entity.physics.body)
-                collider.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.UI);
+                collider.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
                 entity.physics.colliders.push(collider)
-                mrjsUtils.Physics.COLLIDER_ENTITY_MAP[collider.handle] = entity;
-                collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-                collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+                mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider.handle] = entity;
+                collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+                collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
             }
         })
@@ -209,7 +209,7 @@ export class PhysicsSystem extends MRSystem {
         // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
         const verticesFlat = new Float32Array(vertices.flat());
 
-        return mrjsUtils.Physics.RAPIER.ColliderDesc.convexMesh(verticesFlat)
+        return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat)
 
     }
 
