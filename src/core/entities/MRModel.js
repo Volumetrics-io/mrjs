@@ -52,7 +52,7 @@ export class MRModel extends MRDivEntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        this.setAttribute('src', mrjsUtils.HTML.resolvePath(value));
+        this.setAttribute('src', mrjsUtils.html.resolvePath(value));
         this.loaded = false;
         this.loadModel();
     }
@@ -65,7 +65,7 @@ export class MRModel extends MRDivEntity {
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         try {
-            const result = await mrjsUtils.Model.loadModel(this.src, extension);
+            const result = await mrjsUtils.model.loadModel(this.src, extension);
 
             let loadedMeshModel, animations;
 

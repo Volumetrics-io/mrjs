@@ -113,17 +113,17 @@ export class MRHand {
         for (const joint of joints) {
             this.tempJointPosition = this.getJointPosition(joint);
             this.tempJointOrientation = this.getJointOrientation(joint);
-            const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempJointPosition);
+            const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempJointPosition);
 
             let colliderDesc;
 
             if (joint.includes('tip')) {
-                colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.015);
+                colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.ball(0.015);
             } else {
-                colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
+                colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.capsule(0.01, 0.01);
             }
 
-            colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.USER);
+            colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.USER);
 
             this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
             this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);
@@ -134,16 +134,16 @@ export class MRHand {
 
             // RAPIER.ActiveCollisionTypes.KINEMATIC_KINEMATIC for joint to joint collisions
             this.jointPhysicsBodies[joint].collider.setActiveCollisionTypes(
-                mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED
+                mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED
             );
-            this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+            this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
             if (joint.includes('index-finger-tip')) {
                 this.jointPhysicsBodies[`${joint}-hover`] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
                 this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation);
 
                 // This should be replaced with a cone or something
-                const hoverColDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.ball(0.03);
+                const hoverColDesc = mrjsUtils.physics.RAPIER.ColliderDesc.ball(0.03);
                 this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
                 mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
                 mrjsUtils.Physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;

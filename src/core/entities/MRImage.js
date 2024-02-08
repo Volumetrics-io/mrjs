@@ -38,7 +38,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions?.width);
+        let width = mrjsUtils.css.pxToThree(this.objectFitDimensions?.width);
         return width > 0 ? width : super.width;
     }
 
@@ -48,7 +48,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions?.height);
+        let height = mrjsUtils.css.pxToThree(this.objectFitDimensions?.height);
         return height > 0 ? height : super.height;
     }
 
@@ -58,7 +58,7 @@ export class MRImage extends MRDivEntity {
      */
     connected() {
         this.img = document.createElement('img');
-        this.img.setAttribute('src', mrjsUtils.HTML.resolvePath(this.getAttribute('src')));
+        this.img.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
@@ -69,8 +69,8 @@ export class MRImage extends MRDivEntity {
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        mrjsUtils.Material.loadTextureAsync(this.img.src)
+        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+        mrjsUtils.material.loadTextureAsync(this.img.src)
             .then((texture) => {
                 this.texture = texture;
                 this.object3D.material.map = texture;
@@ -94,7 +94,7 @@ export class MRImage extends MRDivEntity {
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
     /******************* End: Style Check and Update *******************/
@@ -110,7 +110,7 @@ export class MRImage extends MRDivEntity {
             this.img.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
 
-            mrjsUtils.Material.loadTextureAsync(this.img.src)
+            mrjsUtils.material.loadTextureAsync(this.img.src)
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;

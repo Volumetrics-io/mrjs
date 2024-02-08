@@ -48,7 +48,7 @@ export class ControlSystem extends MRSystem {
 
         this.origin = new THREE.Vector3();
         this.direction = new THREE.Vector3();
-        this.ray = new mrjsUtils.Physics.RAPIER.Ray({ x: 0.0, y: 0.0, z: 0.0 }, { x: 0.0, y: 1.0, z: 0.0 });
+        this.ray = new mrjsUtils.physics.RAPIER.Ray({ x: 0.0, y: 0.0, z: 0.0 }, { x: 0.0, y: 1.0, z: 0.0 });
         this.hit;
 
         this.restPosition = new THREE.Vector3(1000, 1000, 1000);
@@ -309,7 +309,7 @@ export class ControlSystem extends MRSystem {
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.interact(mrjsUtils.Physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
+            this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
         }
     };
 
