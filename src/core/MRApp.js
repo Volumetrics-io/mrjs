@@ -99,7 +99,7 @@ export class MRApp extends MRElement {
         this.observer.observe(this, { attributes: true, childList: true });
 
         // order matters for all the below system creation items
-        this.panelSystem = new PanelSystem()
+        this.panelSystem = new PanelSystem();
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
         this.geometryStyleSystem = new GeometryStyleSystem();

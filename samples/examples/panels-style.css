@@ -166,7 +166,8 @@
   }
 
   .front {
-    z-index: 2;
+    /* TODO: switch to visibility: hidden */
+    z-index: 2; 
   }
   
   .title {

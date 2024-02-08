@@ -97,7 +97,6 @@ export class MREntity extends MRElement {
      */
     get height() {
         return (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
-
     }
 
     /**
@@ -209,12 +208,6 @@ export class MREntity extends MRElement {
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateGeometryStyle() {}
-
-    /**
-     * @function 
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
-     */
-    updatePhysicsData() {}
 
     /**
      * @function

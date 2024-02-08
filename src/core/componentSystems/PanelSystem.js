@@ -1,21 +1,23 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
+<<<<<<< HEAD
 import { mrjsUtils } from 'mrjs';
 
+=======
+>>>>>>> main
 /**
  * @class PanelManagementSystem
  * @classdesc A system that manages the screen relative position of UI panels
  * @augments MRSystem
  */
 export class PanelSystem extends MRSystem {
-
     /**
      * @class
      * @description Constructor for the PanelManagementSystem system. Uses the default System setup.
      */
     constructor() {
-        super(false)
+        super(false);
     }
 
     /**
@@ -37,7 +39,7 @@ export class PanelSystem extends MRSystem {
      */
     onNewEntity(entity) {
         if (entity instanceof MRPanel) {
-            this.registry.add(entity)
+            this.registry.add(entity);
         }
     }
 
@@ -49,13 +51,13 @@ export class PanelSystem extends MRSystem {
     updatePanel(entity) {
         const rect = entity.getBoundingClientRect();
         const appRect = this.app.getBoundingClientRect();
-        let innerWidth =  global.appWidth;
+        let innerWidth = global.appWidth;
         let innerHeight = global.appHeight;
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
 
-        let windowWidth = global.viewPortWidth * mrjsUtils.App.scale
-        let windowHeight = global.viewPortHeight * mrjsUtils.App.scale
+        let windowWidth = global.viewPortWidth * mrjsUtils.app.scale;
+        let windowHeight = global.viewPortHeight * mrjsUtils.app.scale;
         let centeredX = rect.left - appRect.left - centerX;
         let centeredY = rect.top - appRect.top - centerY;
 
@@ -72,12 +74,11 @@ export class PanelSystem extends MRSystem {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
             entity.panel.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
 
-            if(entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex){
-                entity.panel.position.z += 0.0001
+            if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
+                entity.panel.position.z += 0.0001;
             }
         } else {
-            entity.panel.position.z = 0
+            entity.panel.position.z = 0;
         }
     }
-
 }

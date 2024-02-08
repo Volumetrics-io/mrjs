@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
+import { MRDivEntity } from '../MRDivEntity';
+import { MRPanel } from '../entities/MRPanel';
+import { MRModel } from '../entities/MRModel';
 
 /**
  * @class PhysicsSystem
@@ -28,18 +30,13 @@ export class PhysicsSystem extends MRSystem {
         super(false);
         this.debug = this.app.debug;
         this.tempWorldPosition = new THREE.Vector3();
+        this.tempWorldQuaternion = new THREE.Quaternion();
 
         this.currentEntity = null;
 
-        this.tempLocalPosition = new THREE.Vector3();
-        this.tempPreviousPosition = new THREE.Vector3();
-        this.touchDelta = new THREE.Vector3();
-
         this.tempWorldScale = new THREE.Vector3();
-        this.tempWorldQuaternion = new THREE.Quaternion();
-        this.tempHalfExtents = new THREE.Vector3();
-
-        this.eventQueue = new mrjsUtils.physics.RAPIER.EventQueue(true);
+        this.tempBBox = new THREE.Box3();
+        this.tempSize = new THREE.Vector3();
 
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
@@ -59,50 +56,13 @@ export class PhysicsSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.app.physicsWorld.step(this.eventQueue);
-
-        this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-            /* Handle the collision event. */
-
-            if (started) {
-                this.onContactStart(handle1, handle2);
-            } else {
-                this.onContactEnd(handle1, handle2);
-            }
-        });
+        this.app.physicsWorld.step(mrjsUtils.physics.eventQueue);
 
         for (const entity of this.registry) {
             if (entity.physics?.body == null) {
                 continue;
             }
             this.updateBody(entity);
-
-            this.app.physicsWorld.contactPairsWith(entity.physics.collider, (collider2) => {
-                const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[collider2.handle];
-
-                if (joint) {
-                    if (!joint.includes('hover') && entity.touch) {
-                        this.tempPreviousPosition.copy(this.tempLocalPosition);
-
-                        this.tempLocalPosition.copy(collider2.translation());
-                        entity.object3D.worldToLocal(this.tempLocalPosition);
-
-                        this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
-
-                        entity.dispatchEvent(
-                            new CustomEvent('touch', {
-                                bubbles: true,
-                                detail: {
-                                    joint,
-                                    worldPosition: collider2.translation(),
-                                    position: this.tempLocalPosition,
-                                    delta: this.touchDelta,
-                                },
-                            })
-                        );
-                    }
-                }
-            });
         }
 
         this.updateDebugRenderer();
@@ -110,151 +70,18 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
-     * @description Handles the start of collisions between two different colliders.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     */
-    onContactStart = (handle1, handle2) => {
-        const collider1 = this.app.physicsWorld.colliders.get(handle1);
-        const collider2 = this.app.physicsWorld.colliders.get(handle2);
-
-        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
-
-        if (joint && entity && !joint.includes('hover')) {
-            // if(this.currentEntity) {
-            //   return
-            // }
-            // TODO - can the above commented code be deleted? - TBD
-            this.touchStart(collider1, collider2, entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
-            this.hoverStart(collider1, collider2, entity);
-        }
-    };
-
-    /**
-     * @function
-     * @description Handles the end of collisions between two different colliders.
-     * @param {number} handle1 - the first collider
-     * @param {number} handle2 - the second collider
-     */
-    onContactEnd = (handle1, handle2) => {
-        const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
-        const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
-
-        if (joint && entity && !joint.includes('hover')) {
-            this.touchEnd(entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
-            this.hoverEnd(entity);
-        }
-    };
-
-    /**
-     * @function
-     * @description Handles the start of touch between two different colliders and the current entity.
-     * @param {number} collider1 - the first collider
-     * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
-     */
-    touchStart = (collider1, collider2, entity) => {
-        this.currentEntity = entity;
-        entity.touch = true;
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.tempLocalPosition.copy(manifold.localContactPoint2(0));
-            this.tempWorldPosition.copy(manifold.localContactPoint2(0));
-            entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.classList.remove('hover');
-
-            entity.dispatchEvent(
-                new CustomEvent('touch-start', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
-        });
-    };
-
-    /**
-     * @function
-     * @description Handles the end of touch for the current entity
-     * @param {MREntity} entity - the current entity
-     */
-    touchEnd = (entity) => {
-        this.currentEntity = null;
-        // Contact information can be read from `manifold`.
-        this.tempPreviousPosition.set(0, 0, 0);
-        this.tempLocalPosition.set(0, 0, 0);
-        this.tempWorldPosition.set(0, 0, 0);
-        entity.touch = false;
-        entity.click();
-
-        entity.dispatchEvent(
-            new CustomEvent('touch-end', {
-                bubbles: true,
-            })
-        );
-    };
-
-    /**
-     * @function
-     * @description Handles the start of hovering over/around a specific entity.
-     * @param {number} collider1 - the first collider
-     * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
-     */
-    hoverStart = (collider1, collider2, entity) => {
-        entity.classList.add('hover');
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
-            this.tempLocalPosition.copy(manifold.localContactPoint2(0));
-            this.tempWorldPosition.copy(manifold.localContactPoint2(0));
-            entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.dispatchEvent(
-                new CustomEvent('hover-start', {
-                    bubbles: true,
-                    detail: {
-                        worldPosition: this.tempWorldPosition,
-                        position: this.tempLocalPosition,
-                    },
-                })
-            );
-
-            entity.dispatchEvent(new MouseEvent('mouseover'));
-        });
-    };
-
-    /**
-     * @function
-     * @description Handles the end of hovering over/around a specific entity.
-     * @param {MREntity} entity - the current entity
-     */
-    hoverEnd = (entity) => {
-        entity.classList.remove('hover');
-        entity.dispatchEvent(
-            new CustomEvent('hover-end', {
-                bubbles: true,
-            })
-        );
-
-        entity.dispatchEvent(new MouseEvent('mouseleave'));
-    };
-
-    /**
-     * @function
      * @description When a new entity is created, adds it to the physics registry and initializes the physics aspects of the entity.
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
-        this.initPhysicsBody(entity);
-        this.registry.add(entity);
+        if (entity.physics.type == 'none') {
+            return;
+        }
+
+        if (entity instanceof MRDivEntity) {
+            this.initPhysicsBody(entity);
+            this.registry.add(entity);
+        }
     }
 
     /**
@@ -263,30 +90,115 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     initPhysicsBody(entity) {
-        if (entity.physics.type == 'none') {
-            return;
+        // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
+        //       and model will get more complex as we add convexMesh support
+        if (entity instanceof MRModel) {
+            this.initSimpleBody(entity);
+        } else if (entity instanceof MRDivEntity) {
+            this.initUIEntityBody(entity);
         }
-        //-------------CHECK ON THIS AFTER MICHAEL'S PR IS IN
-        if (entity instanceof MRDivEntity) {
-            this.updatePhysicsData(entity);
-        }
-        //-------------CHECK ON THIS AFTER MICHAEL'S PR IS IN
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed().setTranslation(...this.tempWorldPosition);
-        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
-        entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-        // Create a cuboid collider attached to the dynamic rigidBody.
-        let colliderDesc = this.initColliderDesc(entity.physics);
+        entity.physics.body.setTranslation(...this.tempWorldPosition, true);
+        entity.physics.body.setRotation(this.tempWorldQuaternion, true);
+    }
+
+    /**
+     * @function
+     * @description Initializes the rigid body used by the physics for div or Model entity
+     * @param {MREntity} entity - the entity being updated
+     */
+    initUIEntityBody(entity) {
+        entity.physics.halfExtents = new THREE.Vector3();
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
+
+        this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        this.tempBBox.getSize(this.tempSize);
+        this.tempSize.multiply(this.tempWorldScale);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
+
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
+        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+
+        let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
         colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
         entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
-
         mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
-
         entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    /**
+     * @function
+     * @description Initializes a simple bounding box collider based on the visual bounds of the entity
+     * @param {MREntity} entity - the entity being updated
+     */
+    initSimpleBody(entity) {
+        entity.physics.halfExtents = new THREE.Vector3();
+        this.tempBBox.setFromObject(entity.object3D, true);
+
+        this.tempBBox.getSize(this.tempSize);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
+
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
+        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+
+        let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...entity.physics.halfExtents);
+        colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
+        entity.physics.collider = this.app.physicsWorld.createCollider(colliderDesc, entity.physics.body);
+        mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
+        entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
+
+    /**
+     * @function
+     * @description Initializes a Rigid Body detailed convexMesh collider for the entity
+     * NOTE: not currently in use until we can sync it with animations
+     * @param {MREntity} entity - the entity being updated
+     */
+    initDetailedBody(entity) {
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
+        entity.physics.body = this.app.physicsWorld.createRigidBody(rigidBodyDesc);
+
+        entity.physics.colliders = [];
+
+        entity.object3D.traverse((child) => {
+            if (child.isMesh) {
+                let collider = this.app.physicsWorld.createCollider(this.initConvexMeshCollider(child, entity.compStyle.scale), entity.physics.body);
+                collider.setCollisionGroups(mrjsUtils.physics.CollisionGroups.UI);
+                entity.physics.colliders.push(collider);
+                mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider.handle] = entity;
+                collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+                collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+            }
+        });
+    }
+
+    /**
+     * @function
+     * @description Initializes a convexMesh collider from a THREE.js geometry
+     * NOTE: not currently in use until we can sync it with animations
+     * @param {MREntity} entity - the entity being updated
+     */
+    initConvexMeshCollider(object3D, scale) {
+        const positionAttribute = object3D.geometry.getAttribute('position');
+        const vertices = [];
+        for (let i = 0; i < positionAttribute.count; i++) {
+            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale * mrjsUtils.app.scale);
+            vertices.push(vertex.toArray());
+        }
+
+        // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
+        const verticesFlat = new Float32Array(vertices.flat());
+
+        return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat);
     }
 
     /**
@@ -295,68 +207,67 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     updateBody(entity) {
-        if (entity.physics.type == 'none') {
+        if (!entity.physics.body) {
             return;
         }
-        entity.object3D.getWorldPosition(this.tempWorldPosition);
+
+        if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+            entity.physics.body.setEnabled(false);
+        } else if (!entity.physics.body.isEnabled()) {
+            entity.physics.body.setEnabled(false);
+        }
+
+        if (entity instanceof MRPanel) {
+            entity.panel.getWorldPosition(this.tempWorldPosition);
+        } else {
+            entity.object3D.getWorldPosition(this.tempWorldPosition);
+        }
         entity.physics.body.setTranslation({ ...this.tempWorldPosition }, true);
 
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
-        if (entity instanceof MRDivEntity) {
-            this.updatePhysicsData(entity);
-        }
-
-        this.updateCollider(entity);
-    }
-
-    /**
-     * @function
-     * @description Updates the physics data for the current iteration. Calculates this.physics based on current stored object3D information.
-     */
-    updatePhysicsData(entity) {
-        entity.physics.halfExtents = new THREE.Vector3();
-        entity.object3D.userData.bbox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
-
-        entity.worldScale.setFromMatrixScale(entity.object3D.matrixWorld);
-        entity.object3D.userData.bbox.getSize(entity.object3D.userData.size);
-        entity.object3D.userData.size.multiply(entity.worldScale);
-
-        entity.physics.halfExtents.copy(entity.object3D.userData.size);
-        entity.physics.halfExtents.divideScalar(2);
-    }
-
-    /**
-     * @function
-     * @description Initializes a collider based on the physics data.
-     * @param {object} physicsData - data needed to be used to setup the collider interaction
-     * @returns {object} - the Rapier physics collider object
-     */
-    initColliderDesc(physicsData) {
-        switch (physicsData.type) {
-            case 'box':
-            case 'ui':
-                return mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...physicsData.halfExtents);
-            default:
-                return null;
+        // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
+        //       and model will get more complex as we add convexMesh support
+        if (entity instanceof MRModel) {
+            this.updateSimpleBody(entity);
+        } else if (entity instanceof MRDivEntity) {
+            this.updateUIBody(entity);
         }
     }
 
     /**
      * @function
-     * @description Updates the collider used by the entity based on whether it's being used as a UI element, the main box element, etc.
+     * @description Updates the rigid body used by the physics part of the div entity
      * @param {MREntity} entity - the entity being updated
      */
-    updateCollider(entity) {
-        switch (entity.physics.type) {
-            case 'box':
-            case 'ui':
-                entity.physics.collider.setHalfExtents(entity.physics.halfExtents);
-                break;
-            default:
-                break;
-        }
+    updateUIBody(entity) {
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
+
+        this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        this.tempBBox.getSize(this.tempSize);
+        this.tempSize.multiply(this.tempWorldScale);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
+
+        entity.physics.collider.setHalfExtents(entity.physics.halfExtents);
+    }
+
+    /**
+     * @function
+     * @description Updates the rigid body used by the physics part of the model entity
+     * @param {MREntity} entity - the entity being updated
+     */
+    updateSimpleBody(entity) {
+        this.tempBBox.setFromObject(entity.object3D, true);
+
+        this.tempBBox.getSize(this.tempSize);
+
+        entity.physics.halfExtents.copy(this.tempSize);
+        entity.physics.halfExtents.divideScalar(2);
+
+        entity.physics.collider.setHalfExtents(entity.physics.halfExtents);
     }
 
     /**

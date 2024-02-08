@@ -9,9 +9,9 @@ let physics = {};
  * @description the Rapier collision groups used throughout mr.js
  */
 physics.CollisionGroups = {
-    USER: 0x000d0001,
-    PLANES: 0x000d0002,
-    UI: 0x00010001,
+    USER: 0x00020001,
+    PLANES: 0x0004ffff,
+    UI: 0x00010002,
 };
 
 /**
@@ -25,6 +25,8 @@ physics.initializePhysics = async function () {
     if (!rapierLoaded) {
         physics.RAPIER = await import('@dimforge/rapier3d');
         rapierLoaded = true;
+        physics.eventQueue = new physics.RAPIER.EventQueue(true);
+
         document.dispatchEvent(new CustomEvent('engine-started', { bubbles: true }));
     }
     return physics;
