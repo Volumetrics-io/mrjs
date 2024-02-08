@@ -94,6 +94,8 @@ export class PhysicsSystem extends MRSystem {
      */
     initPhysicsBody(entity) {
 
+        // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
+        //       and model will get more complex as we add convexMesh support
         if(entity instanceof MRModel){
             this.initSimpleBody(entity)
 
@@ -202,8 +204,8 @@ export class PhysicsSystem extends MRSystem {
         const positionAttribute = object3D.geometry.getAttribute('position');
         const vertices = [];
         for (let i = 0; i < positionAttribute.count; i++) {
-            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale).multiplyScalar(mrjsUtils.app.scale);
-            vertices.push([vertex.x, vertex.y, vertex.z]);
+            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale * mrjsUtils.app.scale);
+            vertices.push(vertex.toArray());
         }
 
         // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
@@ -239,6 +241,8 @@ export class PhysicsSystem extends MRSystem {
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
 
+        // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
+        //       and model will get more complex as we add convexMesh support
         if(entity instanceof MRModel) {
             this.updateSimpleBody(entity);
         } else if (entity instanceof MRDivEntity) {

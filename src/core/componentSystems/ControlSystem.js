@@ -155,12 +155,10 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if (joint && entity && !joint.includes('hover')) {
+        if(joint && entity) { return }
+        if (!joint.includes('hover')) {
             this.touchStart(collider1, collider2, entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
+        } else {
             this.hoverStart(collider1, collider2, entity);
         }
     };
@@ -175,12 +173,10 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if (joint && entity && !joint.includes('hover')) {
+        if(joint && entity) { return }
+        if (!joint.includes('hover')) {
             this.touchEnd(entity);
-            return;
-        }
-
-        if (joint && entity && joint.includes('hover')) {
+        } else {
             this.hoverEnd(entity);
         }
     };
@@ -218,7 +214,6 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     touchEnd = (entity) => {
-        // Contact information can be read from `manifold`.
         this.tempPreviousPosition.set(0, 0, 0);
         this.tempLocalPosition.set(0, 0, 0);
         this.tempWorldPosition.set(0, 0, 0);
