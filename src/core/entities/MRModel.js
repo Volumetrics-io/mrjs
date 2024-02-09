@@ -111,7 +111,6 @@ export class MRModel extends MRDivEntity {
         }
 
         this.loadModel();
-        console.log('loaded the mr-model');
     }
 
     /**
