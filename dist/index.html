@@ -15,15 +15,14 @@
           <mr-a href="https://volumetrics.io" target="_blank" class="company">
             volumetrics
           </mr-a>
-          <mr-div class="logo">
             <mr-model
+              class="logo"
               id="logo-model"  
               src="/assets/models/logo.stl" 
               data-comp-instancing="type: animate;"
               data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
               data-rotation="-22.91 17.1887 45.8366">
             </mr-model>
-          </mr-div>
           <mr-button onclick="spin()" class="spin-button">
             spin
           </mr-button>
@@ -104,10 +103,11 @@
 
       // increases the maxspeed and acceleration of the animation component on the logo
       function spin() {
-        let animationComp = model.components.get('animation')
-        if (animationComp !== undefined && animationComp !== null) {
-          model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-        }
+        console.log('spin');
+        // let animationComp = model.components.get('animation')
+        // if (animationComp !== undefined && animationComp !== null) {
+        //   model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        // }
       }
 
       
