@@ -1,15 +1,15 @@
 /**
- * @namespace Display
+ * @namespace display
  * @description Useful namespace for helping with Display utility functions
  */
-let Display = {};
+let display = {};
 
 // const _VIRTUAL_DISPLAY_RESOLUTION = 1080;
 /**
- * @memberof Display
+ * @memberof display
  * @description Defaults to 1080;
  */
-Display.VIRTUAL_DISPLAY_RESOLUTION = 1080; //alert(_VIRTUAL_DISPLAY_RESOLUTION);
+display.VIRTUAL_DISPLAY_RESOLUTION = 1080; //alert(_VIRTUAL_DISPLAY_RESOLUTION);
 
 /**
  * @function
@@ -17,7 +17,7 @@ Display.VIRTUAL_DISPLAY_RESOLUTION = 1080; //alert(_VIRTUAL_DISPLAY_RESOLUTION);
  * @description Checks whether the user is on mobile or not based on a large list of potential options.
  * @returns {boolean} - returns true if on any mobile devices.
  */
-Display.mobileCheckFunction = function () {
+display.mobileCheckFunction = function () {
     let userAgent = navigator.userAgent || navigator.vendor || window.opera;
     const userAgentRegex0 = new RegExp(
         '(android|bbd+|meego).+mobile|avantgo|bada/|blackberry|blazer|\
@@ -56,4 +56,4 @@ Display.mobileCheckFunction = function () {
     return userAgentRegex0.test(userAgent) || userAgentRegex1.test(userAgent.substr(0, 4));
 };
 
-export { Display };
+export { display };

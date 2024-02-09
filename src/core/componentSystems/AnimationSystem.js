@@ -58,37 +58,42 @@ export class AnimationSystem extends MRSystem {
     }
 
     attachedComponent(entity) {
-        let comp = entity.components.get('animation')
+        let comp = entity.components.get('animation');
         if (entity instanceof MRModel && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
+            if (entity.mixer !== undefined) {
+                entity.mixer.dispose();
+            }
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
-            this.setAnimation(entity, comp)
+            this.setAnimation(entity, comp);
         }
     }
 
     updatedComponent(entity) {
-        let comp = entity.components.get('animation')
+        let comp = entity.components.get('animation');
         if (entity instanceof MRModel && entity.animations.length > 0) {
-            this.setAnimation(entity, comp)
+            this.setAnimation(entity, comp);
         }
     }
 
     detachedComponent(entity) {
-        entity.mixer.stopAllActions()
+        entity.mixer.stopAllActions();
     }
 
     onNewEntity(entity) {
         if (entity instanceof MRModel && entity.animations.length > 0) {
-            let comp = entity.components.get('animation')
-            if(!comp) { return }
-            this.registry.add(entity)
+            let comp = entity.components.get('animation');
+            if (!comp) {
+                return;
+            }
+            this.registry.add(entity);
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
-            this.setAnimation(entity, comp)
+            this.setAnimation(entity, comp);
         }
     }
 
     setAnimation(entity, comp) {
-        let clip = entity.animations[comp.clip]
+        let clip = entity.animations[comp.clip];
         switch (comp.action) {
             case 'play':
                 entity.mixer.clipAction(clip).play();

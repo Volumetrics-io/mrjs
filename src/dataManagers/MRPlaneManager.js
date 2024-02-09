@@ -3,7 +3,7 @@ import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
 /**
  * @class MRPlaneManager
- * @classdesc creates and manages the mr.js representation of XR planes.
+ * @classdesc creates and manages the MRjs representation of XR planes.
  * The resulting planes have RAPIER rigid bodies and THREE.js meshes that occlude virtual content by default
  */
 export class MRPlaneManager {
@@ -106,15 +106,15 @@ export class MRPlaneManager {
      * @param plane
      */
     initPhysicsBody(plane) {
-        const rigidBodyDesc = mrjsUtils.Physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
-        let colliderDesc = mrjsUtils.Physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
-        colliderDesc.setCollisionGroups(mrjsUtils.Physics.CollisionGroups.PLANES);
+        const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
+        let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
+        colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.PLANES);
         let body = this.physicsWorld.createRigidBody(rigidBodyDesc);
         body.setRotation(this.tempQuaternion, true);
         let collider = this.physicsWorld.createCollider(colliderDesc, body);
 
-        collider.setActiveCollisionTypes(mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.Physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
-        collider.setActiveEvents(mrjsUtils.Physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+        collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
+        collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
         return body;
     }

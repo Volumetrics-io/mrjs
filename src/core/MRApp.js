@@ -8,7 +8,6 @@ import Stats from 'stats.js';
 import { MRElement } from 'mrjs/core/MRElement';
 import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
 
-
 import { mrjsUtils } from 'mrjs';
 
 import { MREntity } from 'mrjs/core/MREntity';
@@ -16,18 +15,20 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
-import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from './componentSystems/AudioSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 
 ('use strict');
 window.mobileCheck = function () {
-    return mrjsUtils.Display.mobileCheckFunction();
+    return mrjsUtils.display.mobileCheckFunction();
 };
 
 /**
@@ -97,14 +98,17 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        // order matters for all the below system creation items
+        this.panelSystem = new PanelSystem();
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
-        this.styleSystem = new StyleSystem();
+        this.geometryStyleSystem = new GeometryStyleSystem();
+        this.materialStyleSystem = new MaterialStyleSystem();
         this.audioSystem = new AudioSystem();
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.physicsWorld = new mrjsUtils.Physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+            this.physicsWorld = new mrjsUtils.physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
@@ -182,18 +186,18 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.StringUtils.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
-        mrjsUtils.Physics.initializePhysics();
+        mrjsUtils.physics.initializePhysics();
 
         this.user.position.set(0, 0, 1);
 
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.StringUtils.stringToVector(layersString);
+            this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -224,16 +228,6 @@ export class MRApp extends MRElement {
         }
 
         this.appendChild(this.renderer.domElement);
-
-        // allows embedded mr-app to be independently scrollable
-        if (this.compStyle.overflow == 'scroll') {
-            this.renderer.domElement.addEventListener('wheel', (event) => {
-                // Assuming vertical scrolling
-                this.scrollTop += event.deltaY;
-                // Prevent the default scroll behavior of the front element
-                event.preventDefault();
-            });
-        }
 
         // allows for mr-app style to have background:value to set the skybox
         if (this.compStyle.backgroundImage !== 'none') {
@@ -281,7 +275,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.StringUtils.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.stringUtils.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);

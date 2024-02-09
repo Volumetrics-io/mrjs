@@ -69,8 +69,8 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm "./source/pages/02Javascript API.md"
-        mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
+        rm "./source/pages/03Javascript API.md"
+        mv -f "../doc/js-api.md" "./source/pages/03Javascript API.md"
 
     - name: Commit only if there are changes
       run: |
