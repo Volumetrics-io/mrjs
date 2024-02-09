@@ -3,7 +3,7 @@ import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
 /**
  * @class MRPlaneManager
- * @classdesc creates and manages the mr.js representation of XR planes.
+ * @classdesc creates and manages the MRjs representation of XR planes.
  * The resulting planes have RAPIER rigid bodies and THREE.js meshes that occlude virtual content by default
  */
 export class MRPlaneManager {

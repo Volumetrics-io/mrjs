@@ -1,6 +1,6 @@
 /**
  * @class MRElement
- * @classdesc The first step in MR.js extending an HTMLElement. Used as a base for both `mr-app` and `mr-entity`.
+ * @classdesc The first step in MRjs extending an HTMLElement. Used as a base for both `mr-app` and `mr-entity`.
  * @augments HTMLElement
  */
 export class MRElement extends HTMLElement {

@@ -6,7 +6,7 @@ let physics = {};
 
 /**
  * @memberof physics
- * @description the Rapier collision groups used throughout mr.js
+ * @description the Rapier collision groups used throughout MRjs
  */
 physics.CollisionGroups = {
     USER: 0x00020001,
