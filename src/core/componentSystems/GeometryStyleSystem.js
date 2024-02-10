@@ -40,6 +40,7 @@ export class GeometryStyleSystem extends MRSystem {
             changed = this.setScale(entity);
             if (entity instanceof MRImage) {
                 changed = this.setUpdatedImagePlane(entity);
+                changed = this.fixImagePlaneForZIndex(entity);
             }
 
             // User additional - Main Entity Style Change
@@ -123,7 +124,17 @@ export class GeometryStyleSystem extends MRSystem {
             entity.object3D.geometry.dispose();
         }
         entity.object3D.geometry = mrjsUtils.geometry.UIPlane(w, h, b, 18);
-        
+
         return true;
+    }
+
+    fixImagePlaneForZIndex(entity) {
+        // Since we potentially updated the background plane and the image plane itself,
+        // we need to make sure the image plane is bumped forward a little bit
+        if (entity.object3D.position.z == entity.background.position.z) {
+            entity.object3D.position.z += 0.0001;
+            return true;
+        }
+        return false;
     }
 }
