@@ -41,12 +41,13 @@ import './core/componentSystems/AnchorSystem';
 import './core/componentSystems/AnimationSystem';
 import './core/componentSystems/ClippingSystem';
 import './core/componentSystems/ControlSystem';
+import './core/componentSystems/GeometryStyleSystem';
 import './core/componentSystems/InstancingSystem';
 import './core/componentSystems/LayoutSystem';
 import './core/componentSystems/MaskingSystem';
+import './core/componentSystems/MaterialStyleSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
-import './core/componentSystems/StyleSystem';
 import './core/componentSystems/TextSystem';
 
 // UTILS

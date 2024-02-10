@@ -28,12 +28,18 @@ export class MRTextEntity extends MRDivEntity {
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
         // accordingly
         document.addEventListener('panel-mutated', () => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
         });
 
         document.addEventListener('font-loaded', () => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
             if (!this.alwaysNeedsStyleUpdate) {
                 this.needsStyleUpdate = true;
             }
@@ -47,6 +53,9 @@ export class MRTextEntity extends MRDivEntity {
     connected() {
         const text = this.textContent.trim();
         this.textObj.text = text.length > 0 ? text : ' ';
+        if (!this.alwaysNeedsGeometryUpdate) {
+            this.needsGeometryUpdate = true;
+        }
         if (!this.alwaysNeedsStyleUpdate) {
             this.needsStyleUpdate = true;
         }
