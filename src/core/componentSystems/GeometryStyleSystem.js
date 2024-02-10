@@ -32,7 +32,10 @@ export class GeometryStyleSystem extends MRSystem {
                 return;
             }
 
+            // Only want to dispatch if anything was actually updated
+            // in this iteration.
             let changed = false;
+
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
                 changed = this.setUpdatedBorder(entity);
@@ -131,6 +134,8 @@ export class GeometryStyleSystem extends MRSystem {
     fixImagePlaneForZIndex(entity) {
         // Since we potentially updated the background plane and the image plane itself,
         // we need to make sure the image plane is bumped forward a little bit
+        //
+        // entity.object3D is the image itself.
         if (entity.object3D.position.z == entity.background.position.z) {
             entity.object3D.position.z += 0.0001;
             return true;
