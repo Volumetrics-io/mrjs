@@ -45,9 +45,10 @@ export class GeometryStyleSystem extends MRSystem {
             if (entity instanceof MREntity) {
                 entity.updateGeometryStyle();
             }
-
+            
             // Cleanup
-            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+            // FIXME: this is necessary in some cases but it's causing a constant update as of now
+            // entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsGeometryUpdate) {
                 entity.needsGeometryUpdate = false;
             }
