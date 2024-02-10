@@ -63,7 +63,7 @@ export class MRImage extends MRDivEntity {
         this.shadowRoot.appendChild(this.img);
 
         this.objectFitDimensions = { height: 0, width: 0 };
-        this.computeObjectFitDimensions();
+        this.computeObject3DFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
         if (this.object3D.geometry !== undefined) {
@@ -90,7 +90,7 @@ export class MRImage extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.computeObjectFitDimensions();
+            this.computeObject3DFitDimensions();
 
             mrjsUtils.material
                 .loadTextureAsync(this.img.src)
@@ -108,7 +108,7 @@ export class MRImage extends MRDivEntity {
      * @function
      * @description computes the width and height values considering the value of object-fit
      */
-    computeObjectFitDimensions() {
+    computeObject3DFitDimensions() {
         switch (this.compStyle.objectFit) {
             case 'fill':
                 this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
