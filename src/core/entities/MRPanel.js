@@ -70,6 +70,14 @@ export class MRPanel extends MRDivEntity {
             this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 1));
         });
 
+        this.addEventListener('mouseover', () => {
+            this.focus = true
+        })
+
+        this.addEventListener('mouseleave', () => {
+            this.focus = false
+        })
+
         document.addEventListener('wheel', (event) => {
             this.onScroll(event);
         });

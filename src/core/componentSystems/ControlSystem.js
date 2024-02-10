@@ -359,16 +359,22 @@ export class ControlSystem extends MRSystem {
         if (!this.currentEntity) {
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
+                bubbles: true
+            }));
             this.currentEntity.focus = true;
         } else if (!this.down && this.currentEntity != entity) {
             this.currentEntity.classList.remove('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseleave'));
+            this.currentEntity.dispatchEvent(new MouseEvent('mouseleave', {
+                bubbles: true
+            }));
             this.currentEntity.focus = false;
 
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover'));
+            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
+                bubbles: true
+            }));
             this.currentEntity.focus = true;
         }
 
