@@ -28,9 +28,9 @@ export class MaterialStyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate) {
-                return;
-            }
+            // if (!entity.needsStyleUpdate) {
+            //     return;
+            // }
 
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
@@ -45,7 +45,7 @@ export class MaterialStyleSystem extends MRSystem {
             }
 
             // Cleanup
-            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+            // entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             if (!entity.alwaysNeedsStyleUpdate) {
                 entity.needsStyleUpdate = false;
             }
