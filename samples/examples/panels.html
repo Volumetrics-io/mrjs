@@ -157,7 +157,7 @@
                     index += 1
                 }
 
-                panel.object3D.lookAt(forwardVec)
+                // panel.object3D.lookAt(forwardVec)
 
 
             }
@@ -178,7 +178,13 @@
 
         }
 
+        document.addEventListener('enterXR', () => {
+            document.querySelector('mr-app').classList.add('inXR')
+            spread()
+        })
+
         document.addEventListener('exitXR', () => {
+            document.querySelector('mr-app').classList.remove('inXR')
             unfolded = false 
             spread()
         })

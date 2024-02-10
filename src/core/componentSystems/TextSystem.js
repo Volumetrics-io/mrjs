@@ -198,11 +198,8 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the font size adjusted for the display as expected
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        if (mrjsUtils.xr.isPresenting) {
-            return result * mrjsUtils.app.scale;
-        }
-        return result;
+        let result = parseFloat(val.split('px')[0]) / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        return result * mrjsUtils.app.scale;
     }
 
     /**

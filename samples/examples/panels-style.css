@@ -81,6 +81,11 @@
     font-size: 16px;
   }
 
+  /* mr-app.inXR {
+    width: 1080px;
+      height: 1080px;
+  } */
+
   .mrjs {
     font-family: var(--font-title);
     font-size: 4vw;

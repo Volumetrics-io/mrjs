@@ -41,14 +41,22 @@ export class MRApp extends MRElement {
      *
      */
     get appWidth() {
-        return parseFloat(this.compStyle.width.split('px')[0]);
+        let result = parseFloat(this.compStyle.width.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
+        }
+        return result
     }
 
     /**
      *
      */
     get appHeight() {
-        return parseFloat(this.compStyle.height.split('px')[0]);
+        let result = parseFloat(this.compStyle.height.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.innerHeight) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
+        }
+        return result
     }
 
     /**
@@ -322,6 +330,8 @@ export class MRApp extends MRElement {
         this.userOrigin.position.setX(0.015);
         this.anchor.position.setX(0.015);
         this.anchor.position.setZ(-0.5);
+
+        this.user.updateProjectionMatrix();
 
         // Audio listner needed for spatial audio
     };
