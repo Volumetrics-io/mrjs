@@ -1,8 +1,6 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 
-import { mrjsUtils } from 'mrjs';
-
 /**
  * @class PanelManagementSystem
  * @classdesc A system that manages the screen relative position of UI panels
@@ -37,6 +35,7 @@ export class PanelSystem extends MRSystem {
     onNewEntity(entity) {
         if (entity instanceof MRPanel) {
             this.registry.add(entity);
+            return;
         }
     }
 
