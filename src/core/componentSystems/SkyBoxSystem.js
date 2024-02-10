@@ -9,7 +9,7 @@ import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
 export class SkyBoxSystem extends MRSystem {
     /**
      * @class
-     * @description SkyBox's default constructor
+     * @description StyleSystem's default constructor with a starting framerate of 1/30.
      */
     constructor() {
         super(false);
