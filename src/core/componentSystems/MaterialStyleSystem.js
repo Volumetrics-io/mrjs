@@ -66,30 +66,60 @@ export class MaterialStyleSystem extends MRSystem {
      * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground(entity) {
+        // TODO - we need to determine a quick and easy way to see if the color does
+        // not need to update this iteration since we might not have a new background
+        // at all.
         const color = entity.compStyle.backgroundColor;
-        if (color.includes('rgba')) {
+        let opacity = 1; // Default opacity
+
+        if (color.startsWith('rgba')) {
+            // Check for RGBA
             const rgba = color
                 .substring(5, color.length - 1)
                 .split(',')
-                .map((part) => parseFloat(part.trim()));
+                .map(part => parseFloat(part.trim()));
             entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            if (rgba[3] == 0) {
-                entity.background.visible = false;
-            } else {
-                entity.background.material.transparent = true;
-                entity.background.material.opacity = rgba[3];
-                entity.background.visible = true;
-            }
-        } else {
+            opacity = rgba[3];
+        } else if (color.startsWith('rgb')) {
+            // Check for RGB
             entity.background.material.color.setStyle(color);
+        } else if (/^#([0-9a-f]{8})$/i.test(color)) {
+            // Check for Hexadecimal with Alpha
+            const hex = color.substring(1);
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            opacity = parseInt(hex.substring(6, 8), 16) / 255;
+            entity.background.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
+        } else if (/^#([0-9a-f]{6})$/i.test(color)) {
+            // Check for Hexadecimal without Alpha
+            entity.background.material.color.setStyle(color);
+        } else {
+            // General color name or other formats
+            entity.background.material.color.setStyle(color);
+        }
+
+        // Handle entity-wide opacity
+        if (entity.compStyle.opacity < 1) {
+            opacity *= entity.compStyle.opacity;
+        }
+
+        // Apply opacity
+        if (opacity < 1) {
+            entity.background.material.transparent = true;
+            entity.background.material.opacity = opacity;
+            entity.background.visible = true;
+        } else if (opacity === 0) {
+            entity.background.visible = false;
+        } else {
+            entity.background.material.transparent = false;
             entity.background.visible = true;
         }
 
-        if (entity.compStyle.opacity < 1) {
-            entity.background.material.opacity = entity.compStyle.opacity;
-        }
         entity.background.material.needsUpdate = true;
+        return true;
     }
+
 
     setVisibility(entity) {
         function makeVisible(entity, bool) {
@@ -108,7 +138,8 @@ export class MaterialStyleSystem extends MRSystem {
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
             // visbility: hidden or visible are the options we care about
             const isVisible = entity.compStyle.visibility !== 'hidden';
-            makeVisible(entity, isVisible);
+            return makeVisible(entity, isVisible);
         }
+        return false;
     }
 }
