@@ -32,16 +32,19 @@ export class MaterialStyleSystem extends MRSystem {
             //     return;
             // }
 
+            // Only want to dispatch if anything was actually updated
+            // in this iteration.
+            let changed = false;
+
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
-                this.setBackground(entity);
+                changed = this.setBackground(entity);
             }
-            this.setVisibility(entity);
+            changed = this.setVisibility(entity);
             
-
             // User additional - Main Entity Style Change
             if (entity instanceof MREntity) {
-                entity.updateMaterialStyle();
+                changed = entity.updateMaterialStyle();
             }
 
             // Cleanup
@@ -68,9 +71,24 @@ export class MaterialStyleSystem extends MRSystem {
     setBackground(entity) {
         // TODO - we need to determine a quick and easy way to see if the color does
         // not need to update this iteration since we might not have a new background
-        // at all.
+        // at all. Ie need a return false case.
+        //
+        // We also dont use this for a lot of functions at the moment.
+
         const color = entity.compStyle.backgroundColor;
         let opacity = 1; // Default opacity
+
+        // Adjusted check for if background is in css
+        if (!color || color.trim() === '' || color.trim() === 'transparent') {
+            // Since this is the background and not the object3D itself, we dont
+            // try to inherit from a parent - instead we'll just assume when it's
+            // not set that it's transparent.
+            if (entity.background.visible) {
+                entity.background.visible = false;
+                return true;
+            }
+            return false;
+        }
 
         if (color.startsWith('rgba')) {
             // Check for RGBA
@@ -120,20 +138,25 @@ export class MaterialStyleSystem extends MRSystem {
         return true;
     }
 
-
     setVisibility(entity) {
         function makeVisible(entity, bool) {
             entity.object3D.visible = bool;
             if (entity.background) {
                 // The background for MRDivEntities, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
-                // entity.background.visible = bool;
+               // if (entity.background.material.opacity !== 0) {
+                    // TODO - need a fix for this - need to be able to toggle the bacgkround back
+                    // on, but need to also be able 
+                    // entity.background.visible = bool;
+               // }
+                
                 //
                 // XXX - right now all backgrounds are set as visible=false by default in their
                 // MRDivEntity constructors, so toggling them here isnt useful, but in future
                 // if this is requested for use or we want to add a feature for more use of the
                 // background - adding in toggling for this with the object will be useful.
             }
+            return true;
         }
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
             // visbility: hidden or visible are the options we care about
