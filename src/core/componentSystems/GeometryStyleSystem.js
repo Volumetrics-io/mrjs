@@ -53,6 +53,8 @@ export class GeometryStyleSystem extends MRSystem {
             
             // Cleanup
             if (changed) {
+                // TBH i think this is only needed for scale, but just in case others use changed
+                // width/height for anything else, and update is required for children as well
                 entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             }
             if (!entity.alwaysNeedsGeometryUpdate) {
