@@ -44,12 +44,12 @@ process_js_files() {
     {
       echo '---'
       echo "title: ${title}"
+      echo "github-path: https://github.com/volumetrics-io/mrjs/edit/main/${file}"
       echo '---'
       echo "# ${title}"
       echo ''
       jsdoc2md "$file"
     } > "$md_file"
-    echo "<div class='centered'><a href='https://github.com/volumetrics-io/mrjs/edit/main/$file' target='_blank'>Suggest an edit on GitHub for ${original_file_name}.js</a></div>" >> "$md_file"
   
     # Increment the local counter
     ((counter++))
