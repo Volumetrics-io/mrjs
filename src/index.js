@@ -55,7 +55,7 @@ import './core/componentSystems/TextSystem';
 // UTILS
 export { mrjsUtils } from './utils/index.js';
 // EXTRAS
-export { * } from './extras/index.js';
+export * from './extras/index.js';
 // ADDITIONALS from mrjs
 export * as THREE from 'three';
 export * from 'mrjs/core/MRElement';
