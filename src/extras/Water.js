@@ -308,4 +308,4 @@ class WaterSystem extends MRSystem {
     }
 }
 
-export { Water };
+export { Water, WaterSystem };

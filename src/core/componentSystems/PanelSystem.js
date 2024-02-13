@@ -69,7 +69,7 @@ export class PanelSystem extends MRSystem {
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
-            entity.panel.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
+            entity.panel.position.setZ(parseFloat(entity.compStyle.zIndex) / 1000);
 
             if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
                 entity.panel.position.z += 0.0001;
