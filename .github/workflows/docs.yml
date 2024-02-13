@@ -66,7 +66,9 @@ jobs:
     - name: Update Docs
       run: |
         rm -rf "./source/js-api*"
-        mv -f "../doc/js-api*" "./source"
+        mv -f "../doc/js-api" "./source/js-api"
+        mv -f "../doc/js-api-utils" "./source/js-api-utils"
+        mv -f "../doc/js-api-extras" "./source/js-api-extras"
 
     - name: Commit only if there are changes
       run: |
