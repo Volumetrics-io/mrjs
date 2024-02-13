@@ -66,11 +66,14 @@ jobs:
     - name: Update Docs
       run: |
         rm -rf "./source/js-api*"
-        mv -f "../doc/js-api*" "./source"
+        cp -a "../doc/js-api" "./source/"
+        cp -a "../doc/js-api-utils" "./source/"
+        cp -a "../doc/js-api-extras" "./source/"
+        ls -al ./source
 
     - name: Commit only if there are changes
       run: |
-        if [[ -n $(git diff --exit-code) ]]; then
+        if [[ -n $(git status --porcelain) ]]; then
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
