@@ -50,18 +50,15 @@ import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
 import './core/componentSystems/TextSystem';
 
-// UTILS
-export { mrjsUtils } from './utils/index.js';
 
 // EXPORTS
+// UTILS
+export { mrjsUtils } from './utils/index.js';
+// EXTRAS
+export * from './extras/index.js';
+// ADDITIONALS from mrjs
 export * as THREE from 'three';
-// TODO - the below is an additional addon that we're including for now. later on we will have this
-// in a separate 'addons' repo instead.
-export { Water } from 'mrjs/extras/Water.js';
-export { Refractor } from 'mrjs/extras/Refractor.js';
-export { WaterRefractionShader } from 'three/examples/jsm/shaders/WaterRefractionShader.js';
-
-export * from './core/MRElement';
-export * from './core/MRSystem';
-export * from './core/MREntity';
+export * from 'mrjs/core/MRElement';
+export * from 'mrjs/core/MRSystem';
+export * from 'mrjs/core/MREntity';
 export * from 'mrjs/dataTypes/MRClippingGeometry';
