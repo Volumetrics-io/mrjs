@@ -68,7 +68,7 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
-        this.originAnchor = null
+        this.anchor = null
         this.origin = new THREE.Object3D()
 
         this.scene.add(this.origin)
@@ -319,13 +319,13 @@ export class MRApp extends MRElement {
 
         // for window placement
         this.userOrigin = new THREE.Object3D();
-        this.anchor = new THREE.Object3D();
+        this.anchorPoint = new THREE.Object3D();
         this.user.add(this.userOrigin);
-        this.user.add(this.anchor);
+        this.user.add(this.anchorPoint);
 
         this.userOrigin.position.setX(0.015);
-        this.anchor.position.setX(0.015);
-        this.anchor.position.setZ(-0.5);
+        this.anchorPoint.position.setX(0.015);
+        this.anchorPoint.position.setZ(-0.5);
 
         // Audio listner needed for spatial audio
     };

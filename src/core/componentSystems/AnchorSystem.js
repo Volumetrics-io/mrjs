@@ -145,7 +145,7 @@ export class AnchorSystem extends MRSystem {
                 this.floating(frame);
             }
 
-            if(!this.app.originAnchor) {
+            if(!this.app.anchor) {
                 this.setAppOrigin()
             } else {
                 this.updateOrigin(frame)
@@ -248,7 +248,7 @@ export class AnchorSystem extends MRSystem {
             frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
                 (anchor) => {
                     this.app.origin.matrixAutoUpdate = false;
-                    this.app.originAnchor = anchor;
+                    this.app.anchor = anchor;
                     this.app.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                 },
                 (error) => {
@@ -259,7 +259,7 @@ export class AnchorSystem extends MRSystem {
     }
 
     updateOrigin(frame) {
-        let pose = frame.getPose(this.app.originAnchor.anchorSpace, mrjsUtils.xr.referenceSpace);
+        let pose = frame.getPose(this.app.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
         let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
         this.app.origin.matrix.copy(this.adjustTransform(transform));
