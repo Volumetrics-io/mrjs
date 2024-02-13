@@ -42,10 +42,6 @@ jobs:
       run: |
         npm run docs
 
-    - name: read the doc file
-      run: |
-        head -n 12 "./docs/js-api.md"
-
     - name: Get Docs content
       id: get-docs
       run: |
@@ -69,8 +65,8 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm "./source/pages/03Javascript API.md"
-        mv -f "../doc/js-api.md" "./source/pages/03Javascript API.md"
+        rm -rf "./source/js-api*"
+        mv -rf "../doc/js-api*" "./source"
 
     - name: Commit only if there are changes
       run: |
