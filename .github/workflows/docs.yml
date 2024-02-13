@@ -77,7 +77,7 @@ jobs:
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          commit_message=$'👷 MR.js - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
+          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
           git add .
           git commit -m "$commit_message"
           git push --quiet --set-upstream origin HEAD
