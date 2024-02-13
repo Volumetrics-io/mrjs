@@ -68,6 +68,10 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
+        this.originAnchor = null
+        this.origin = new THREE.Object3D()
+
+        this.scene.add(this.origin)
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
@@ -389,7 +393,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.scene.add(entity.object3D);
+        this.origin.add(entity.object3D);
     }
 
     /**
@@ -398,7 +402,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
-        this.scene.remove(entity.object3D);
+        this.origin.remove(entity.object3D);
     }
 
     /**
