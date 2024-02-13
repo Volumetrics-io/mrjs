@@ -22,16 +22,13 @@ process_js_files() {
 
   # If ignoring subdirectories with index.js
   if [[ "$ignore_index_js_subdirs" == "true" ]]; then
-    # Find subdirectories containing index.js, excluding the source directory itself
     local ignore_dirs=$(find "$source_dir" -mindepth 2 -type f -name 'index.js' -exec dirname {} \; | sort | uniq)
     for dir in $ignore_dirs; do
-      # Escape paths for use in eval
       local escaped_dir=$(printf '%q' "$dir")
       find_cmd+=" ! -path \"$escaped_dir/*\""
     done
   fi
 
-  # Execute the find command and process files using eval for command expansion
   eval "$find_cmd" | while read file; do
     # Format the counter with leading zeros
     printf -v formatted_counter "%03d" $counter
@@ -39,9 +36,10 @@ process_js_files() {
     # Generate new Markdown file name by prepending the counter to the base name of the .js file
     md_file="${output_dir}/${formatted_counter}$(basename "${file%.js}.md")"
   
-    # Correctly extract the title from the Markdown file name
-    title=$(basename "${md_file%.md}" | cut -c5-)
-  
+    # Extract the title from the Markdown file name, accurately reflecting the original file name
+    local original_file_name=$(basename "$file" .js)
+    local title="${original_file_name}"
+
     # Generate Markdown content
     {
       echo '---'
@@ -51,7 +49,7 @@ process_js_files() {
       echo ''
       jsdoc2md "$file"
     } > "$md_file"
-    echo "<div class='centered'><a href='https://github.com/volumetrics-io/mrjs/edit/main/$file' target='_blank'>Suggest an edit on GitHub for $(basename "$file")</a></div>" >> "$md_file"
+    echo "<div class='centered'><a href='https://github.com/volumetrics-io/mrjs/edit/main/$file' target='_blank'>Suggest an edit on GitHub for ${original_file_name}.js</a></div>" >> "$md_file"
   
     # Increment the local counter
     ((counter++))
