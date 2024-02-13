@@ -26,6 +26,7 @@ export class MRImage extends MRDivEntity {
             transparent: true,
             // opacity: 0.5,
         });
+        // Object3D for mr-image is the actual image itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
@@ -38,7 +39,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.css.pxToThree(this.objectFitDimensions?.width);
+        let width = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.width);
         return width > 0 ? width : super.width;
     }
 
@@ -48,7 +49,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.css.pxToThree(this.objectFitDimensions?.height);
+        let height = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.height);
         return height > 0 ? height : super.height;
     }
 
@@ -62,8 +63,8 @@ export class MRImage extends MRDivEntity {
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
-        this.objectFitDimensions = { height: 0, width: 0 };
-        this.computeObject3DFitDimensions();
+        this.imageObject3DFitDimensions = { height: 0, width: 0 };
+        this.computeImageFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
         if (this.object3D.geometry !== undefined) {
@@ -90,7 +91,7 @@ export class MRImage extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.computeObject3DFitDimensions();
+            this.computeImageFitDimensions();
 
             mrjsUtils.material
                 .loadTextureAsync(this.img.src)
@@ -106,12 +107,12 @@ export class MRImage extends MRDivEntity {
 
     /**
      * @function
-     * @description computes the width and height values considering the value of object-fit
+     * @description computes the width and height values for the image considering the value of object-fit
      */
-    computeObject3DFitDimensions() {
+    computeImageObject3DFitDimensions() {
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
+                this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
 
             case 'contain':
             case 'scale-down': {
@@ -124,7 +125,7 @@ export class MRImage extends MRDivEntity {
                     scaledHeight = Math.min(scaledHeight, this.img.height);
                 }
 
-                this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
+                this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
                 break;
             }
 
@@ -133,15 +134,15 @@ export class MRImage extends MRDivEntity {
                 let containerRatio = this.offsetWidth / this.offsetHeight;
 
                 if (containerRatio > imageRatio) {
-                    this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
+                    this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
                 } else {
-                    this.objectFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
+                    this.imageObject3DFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
                 }
                 break;
             }
 
             case 'none':
-                this.objectFitDimensions = { width: this.img.width, height: this.img.height };
+                this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
                 break;
 
             default:
