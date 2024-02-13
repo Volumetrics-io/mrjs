@@ -30,15 +30,28 @@ export class MRPlaneManager {
 
         this.tempDimensions = new THREE.Vector3();
 
+        let floorPlane = {
+            semanticLabel: 'floor',
+            orientation: 'horizontal'
+        }
+
+        let floorMRPlane = this.initPlane(floorPlane, 10, 10)
+
+        floorMRPlane.mesh.geometry = new THREE.CircleGeometry(2, 32)
+        floorMRPlane.mesh.position.set(0,0,0)
+        floorMRPlane.mesh.rotation.x = - Math.PI / 2
+
+        floorMRPlane.mesh.visible = false
+        floorMRPlane.body.setEnabled(false);
+
+        document.addEventListener('enterXR', () => {
+            floorMRPlane.mesh.visible = true
+            floorMRPlane.body.setEnabled(true);
+        });
+
         document.addEventListener('exitXR', () => {
             for (const [plane, mrplane] of this.currentPlanes) {
-                mrplane.mesh.geometry.dispose();
-                mrplane.mesh.material.dispose();
-                this.scene.remove(mrplane.mesh);
-
-                this.physicsWorld.removeRigidBody(mrplane.body);
-
-                this.currentPlanes.delete(plane);
+                this.removePlane(plane, mrplane)
             }
         });
 
@@ -69,35 +82,55 @@ export class MRPlaneManager {
                         const width = maxX - minX;
                         const height = maxZ - minZ;
 
-                        let mrPlane = new MRPlane();
+                        if(plane.semanticLabel == 'floor') {
+                            console.log('replace');
+                            this.removePlane(floorPlane, floorMRPlane)
+                        }
 
-                        mrPlane.label = plane.semanticLabel;
-                        mrPlane.orientation = plane.orientation;
-                        mrPlane.dimensions.setX(width);
-                        mrPlane.dimensions.setY(0.001);
-                        mrPlane.dimensions.setZ(height);
-
-                        const geometry = new THREE.BoxGeometry(width, 0.01, height);
-                        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
-                        mrPlane.mesh = new THREE.Mesh(geometry, material);
-                        mrPlane.mesh.position.setFromMatrixPosition(this.matrix);
-                        mrPlane.mesh.quaternion.setFromRotationMatrix(this.matrix);
-                        mrPlane.mesh.material.colorWrite = false;
-                        mrPlane.mesh.renderOrder = 2;
-                        this.scene.add(mrPlane.mesh);
-
-                        this.tempDimensions.setX(width / 2);
-                        this.tempDimensions.setY(0.01);
-                        this.tempDimensions.setZ(height / 2);
-
-                        mrPlane.body = this.initPhysicsBody(plane);
-
-                        this.currentPlanes.set(plane, mrPlane);
+                        this.initPlane(plane, width, height)
                     }
                 }
             });
         });
+    }
+
+    initPlane(plane, width, height) {
+        let mrPlane = new MRPlane();
+
+        mrPlane.label = plane.semanticLabel;
+        mrPlane.orientation = plane.orientation;
+        mrPlane.dimensions.setX(width);
+        mrPlane.dimensions.setY(0.001);
+        mrPlane.dimensions.setZ(height);
+
+        const geometry = new THREE.BoxGeometry(width, 0.01, height);
+        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        mrPlane.mesh = new THREE.Mesh(geometry, material);
+        mrPlane.mesh.position.setFromMatrixPosition(this.matrix);
+        mrPlane.mesh.quaternion.setFromRotationMatrix(this.matrix);
+        mrPlane.mesh.material.colorWrite = false;
+        mrPlane.mesh.renderOrder = 2;
+        this.scene.add(mrPlane.mesh);
+
+        this.tempDimensions.setX(width / 2);
+        this.tempDimensions.setY(0.01);
+        this.tempDimensions.setZ(height / 2);
+
+        mrPlane.body = this.initPhysicsBody();
+
+        this.currentPlanes.set(plane, mrPlane);
+        return mrPlane
+    }
+
+    removePlane(plane, mrplane) {
+        mrplane.mesh.geometry.dispose();
+        mrplane.mesh.material.dispose();
+        this.scene.remove(mrplane.mesh);
+
+        this.physicsWorld.removeRigidBody(mrplane.body);
+
+        this.currentPlanes.delete(plane);
     }
 
     /**
@@ -105,7 +138,7 @@ export class MRPlaneManager {
      * @description initializes the physics body of an MR Plane
      * @param plane
      */
-    initPhysicsBody(plane) {
+    initPhysicsBody() {
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
         let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
         colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.PLANES);

@@ -64,6 +64,11 @@ export class AnchorSystem extends MRSystem {
             }
         });
 
+        this.app.addEventListener('exitXR', () => {
+            this.deleteAnchor(this.app)
+            this.app.origin.matrix.copy(new THREE.Matrix4())
+        });
+
         document.addEventListener('selectstart', (event) => {
             if (this.currentEntity == null || (this.hand && this.hand != event.detail.handedness)) {
                 return;
@@ -135,12 +140,18 @@ export class AnchorSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        if (this.currentEntity) {
-            if (!mrjsUtils.xr.isPresenting) {
-                return;
+        if (mrjsUtils.xr.isPresenting) {
+            if (this.currentEntity) {
+                this.floating(frame);
             }
-            this.floating(frame);
+
+            if(!this.app.anchor) {
+                this.setAppOrigin()
+            } else {
+                this.updateOrigin(frame)
+            }
         }
+        
 
         for (const entity of this.registry) {
             if (mrjsUtils.xr.isPresenting) {
@@ -152,7 +163,7 @@ export class AnchorSystem extends MRSystem {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
-                    entity.object3D.matrix.copy(this.adjustTransform(transform));
+                    entity.object3D.matrixWorld.copy(this.adjustTransform(transform));
                 }
             } else if (entity.anchor) {
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix);
@@ -227,6 +238,32 @@ export class AnchorSystem extends MRSystem {
             default:
                 break;
         }
+    }
+
+    setAppOrigin() {
+        if (!mrjsUtils.xr.isPresenting) {
+            return;
+        }
+        mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
+            frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
+                (anchor) => {
+                    this.app.origin.matrixAutoUpdate = false;
+                    this.app.anchor = anchor;
+                    this.app.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
+                },
+                (error) => {
+                    console.error('Could not create anchor: ' + error);
+                }
+            );
+        });
+    }
+
+    updateOrigin(frame) {
+        let pose = frame.getPose(this.app.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
+        let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
+
+        this.app.origin.matrix.copy(this.adjustTransform(transform));
+
     }
 
     /**

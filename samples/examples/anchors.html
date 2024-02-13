@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -279,7 +279,8 @@
         let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
 
         for (const entity of allAnchors) {
-            entity.object3D.visible = false
+            entity.style.visibility = 'hidden'
+            console.log('false');
         }
 
         let panel = document.getElementById('panel')
@@ -293,21 +294,21 @@
         }
 
         function wall() {
-            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
+            wallAnchor.style.visibility = wallAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
             wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
         }
 
         function table() {
-            tableAnchor.object3D.visible = !tableAnchor.object3D.visible
+            tableAnchor.style.visibility = tableAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
         }
 
         function floor() {
-            floorAnchor.object3D.visible = !floorAnchor.object3D.visible
+            floorAnchor.style.visibility = floorAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
 
         }
 
         function ceiling() {
-            ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
+            ceilingAnchor.style.visibility = ceilingAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
             ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
 
         }
@@ -315,7 +316,7 @@
         function reset() {
             for (const entity of allAnchors) {
                 entity.components.set('anchor', {occlusion: true})
-                entity.object3D.visible = false
+                entity.style.visibility = 'hidden'
             }
         }
 
