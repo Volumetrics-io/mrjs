@@ -48,7 +48,8 @@ export class MaskingSystem extends MRSystem {
     }
 
     /**
-     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
      * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
      */
     set needsSystemUpdate(bool) {
@@ -90,6 +91,10 @@ export class MaskingSystem extends MRSystem {
             // panel in the html setup. Defaulting that case to be based on whichever panel is the entity
             // passed through this function since that case is an edge case that will not be expected.
 
+            /**
+             *
+             * @param child
+             */
             function runTheTraversal(child) {
                 if (child instanceof MRPanel && child.object3D.isGroup) {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
@@ -135,17 +140,9 @@ export class MaskingSystem extends MRSystem {
                 }
             }
 
-            // this separation for MRTextEntity is a temporary fix associated with other XXX change above.
-            if (entity instanceof MRTextEntity) {
-                entity.object3D.traverse((child) => {
-                    runTheTraversal.call(this, child);
-                })
-            } else {
-                entity.traverse((child) => {
-                    runTheTraversal.call(this, child);
-                });
-            }
-            
+            entity.traverse((child) => {
+                runTheTraversal.call(this, child);
+            });
         }
     }
 }

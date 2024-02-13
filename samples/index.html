@@ -5,46 +5,61 @@
     <title>mr.js</title>
     <meta name="description" content="mr.js">
     <script src="./mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="./index-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
       <mr-panel class="layout">
         <mr-div id="navbar">
-          <mr-a href="https://volumetrics.io" class="company">
+          <mr-a href="https://volumetrics.io" target="_blank" class="company">
             volumetrics
           </mr-a>
-          <mr-div class="logo">
             <mr-model
+              class="logo"
               id="logo-model"  
-              src="./assets/models/logo.stl" 
+              src="/assets/models/logo.stl" 
               data-comp-instancing="type: animate;"
-              data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+              data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
               data-rotation="-22.91 17.1887 45.8366">
             </mr-model>
-          </mr-div>
           <mr-button onclick="spin()" class="spin-button">
             spin
           </mr-button>
         </mr-div>
 
-        <mr-text class="title" >
+        <mr-text class="title">
           mr.js
         </mr-text>
 
         
         <mr-div class="headset">
-          <mr-img src="./assets/textures/headset-keyboard.jpeg"></mr-img>
+          <mr-img src="/assets/textures/headset-keyboard.jpeg"></mr-img>
           <mr-text class="sub-title">
             Building for Mixed Reality, in Mixed Reality.
           </mr-text>
-          <mr-text class="example-link">
-            <mr-a href="https://mrjs.io/examples/anchors.html">
-              Example 0: Anchoring
-            </mr-a>
-          </mr-text>
         </mr-div>
+        <mr-text class="col-2 example-header">
+            Examples
+          </mr-text>
+        <mr-div class="links col-2">
+          <mr-a class="example-link" href="https://mrjs.io/examples/anchors.html">
+            Anchoring
+          </mr-a>
+          <mr-a class="example-link" href="https://mrjs.io/examples/audio.html">
+            Audio
+          </mr-a>
+          <mr-a class="example-link" href="https://mrjs.io/examples/embed.html">
+            Embed
+          </mr-a>
+          <mr-a class="example-link" href="https://mrjs.io/examples/models.html">
+            Models
+          </mr-a>
+          <mr-a class="example-link" href="https://mrjs.io/examples/skybox.html">
+            Skybox
+          </mr-a>
+        </mr-div>
+        
       <mr-text class="paragraph">
         Ex veniam sunt laboris magna commodo minim eiusmod consequat dolore velit ipsum dolore. Sit nisi id tempor occaecat aute commodo nulla fugiat eu ex sit anim duis. Non eiusmod dolore exercitation adipisicing laboris elit commodo enim proident et.
 
@@ -66,14 +81,6 @@
         </mr-text>
         
       </mr-panel>
-
-    <mr-entity data-comp-anchor="type: plane; label: ceiling; occlusion: false;">
-      <mr-skybox src="./assets/textures/skybox_starmap_4k.jpg"
-      data-position="0 -200 0"
-      data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
-      </mr-skybox>
-
-    </mr-entity>
     
       <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
                  data-position="0 0 2">
@@ -86,19 +93,20 @@
   </body>
 
   <footer>
-    <script src="./assets/js/AnimationSystem.js"></script>
+    <script src="./assets/js/SpinSystem.js"></script>
     <script>
 
       let model = document.querySelector('#logo-model')
 
       console.log(mrjsUtils.xr.isPresenting);
 
-
       // increases the maxspeed and acceleration of the animation component on the logo
       function spin() {
-        console.log(document.querySelector('.spin-button').textObj);
-        let animationComp = model.components.get('animation')
-        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        console.log('spin');
+        // let animationComp = model.components.get('animation')
+        // if (animationComp !== undefined && animationComp !== null) {
+        //   model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
+        // }
       }
 
       

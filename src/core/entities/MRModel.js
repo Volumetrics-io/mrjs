@@ -1,13 +1,14 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
+import { MRDivEntity } from '../MRDivEntity';
 
 /**
  * @class MRModel
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
  * @augments MREntity
  */
-export class MRModel extends MREntity {
+export class MRModel extends MRDivEntity {
     /**
      * @class
      * @description Constructor for the Model entity, does the default.
@@ -17,6 +18,7 @@ export class MRModel extends MREntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+        this.loaded = false;
 
         // Store animations for the AnimationSystem to use
         // Need to store this separately from the model, because with
@@ -50,7 +52,9 @@ export class MRModel extends MREntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        this.setAttribute('src', value);
+        this.setAttribute('src', mrjsUtils.html.resolvePath(value));
+        this.loaded = false;
+        this.loadModel();
     }
 
     /**
@@ -61,7 +65,7 @@ export class MRModel extends MREntity {
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         try {
-            const result = await mrjsUtils.Model.loadModel(this.src, extension);
+            const result = await mrjsUtils.model.loadModel(this.src, extension);
 
             let loadedMeshModel, animations;
 
@@ -86,6 +90,10 @@ export class MRModel extends MREntity {
                 this.animations = animations;
             }
 
+            this.loaded = true;
+
+            this.onLoad();
+
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
@@ -98,7 +106,7 @@ export class MRModel extends MREntity {
      * Includes loading up the model and associated data.
      */
     connected() {
-        if (!this.src) {
+        if (!this.src || this.loaded) {
             return;
         }
 

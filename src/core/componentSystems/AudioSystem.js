@@ -2,8 +2,8 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 
 /**
  * @class AudioSystem
-* @classdesc This system manages spatial audio in the THREE.js scene.
-* @augments MRSystem
+ * @classdesc This system manages spatial audio in the THREE.js scene.
+ * @augments MRSystem
  */
 export class AudioSystem extends MRSystem {
     /**

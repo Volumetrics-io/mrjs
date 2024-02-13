@@ -24,15 +24,8 @@ export class TextSystem extends MRSystem {
 
         this.preloadedFonts = {};
 
-        // want this system to run based on the true/false trigger
-        this.needsSystemUpdate = true;
-
         this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
-
-        document.addEventListener('panel-mutated', (event) => {
-            this.needsSystemUpdate = true;
-        });
 
         styleSheets.forEach((styleSheet) => {
             const cssRules = Array.from(styleSheet.cssRules);
@@ -47,8 +40,8 @@ export class TextSystem extends MRSystem {
                         font: fontData.src,
                     },
                     () => {
-                        this.preloadedFonts[fontFace.style.fontFamily] = fontData.src;
-                        this.needsSystemUpdate = true;
+                        this.preloadedFonts[fontFace.style.getPropertyValue('font-family')] = fontData.src;
+                        document.dispatchEvent(new CustomEvent('font-loaded'));
                     }
                 );
             });
@@ -67,20 +60,28 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
-     * systems registry that need to be run AND the default systemUpdateCheck is true
-     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * systems registry that need to be run.
      * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
      */
     get needsSystemUpdate() {
-        return this.registry.size > 0 && super.needsSystemUpdate;
+        // want this to run based on registry since textChanged and style will be the determiner for if an update is needed per entity
+        // instead of the system itself.
+        return this.registry.size > 0;
     }
 
     /**
-     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
-     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * This function does nothing, but is needed for the pairing. TextSystem`s `needsSystemUpdate` solely depends on registry size
+     * instead of a boolean. This is required s.t. we can monitor and properly update the system when the text content has changed
+     * and not just the style itself. Since that is a per-entity check, needsSystemUpdate must always run on every entity with
+     * the needsStyleUpdate being the optimization determiner instead.
      */
     set needsSystemUpdate(bool) {
-        super.needsSystemUpdate = bool;
+        console.log(
+            '`TextSystem.needSystemUpdate = bool` does nothing. See comment in docs for more explanation. https://docs.mrjs.io/javascript-api/#textsystem.needssystemupdate'
+        );
+        this.alwaysNeedsSystemUpdate = true;
     }
 
     /**
@@ -91,44 +92,48 @@ export class TextSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsStyleUpdate && !this.needsSystemUpdate) {
-                continue;
-            }
-            let text;
-            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
-                text = entity.input.value;
-                if (entity == document.activeElement) {
-                    entity.updateCursorPosition();
-                } else {
-                    entity.blur();
-                }
-            } else {
-                // troika honors newlines/white space
-                // we want to mimic h1, p, etc which do not honor these values
-                // so we have to clean these from the text
-                // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
-                text = entity.textContent
-                    .replace(/(\n)\s+/g, '$1')
-                    .replace(/(\r\n|\n|\r)/gm, '')
-                    .trim();
-            }
-            if (entity.textObj.text != text) {
+            let isTextFieldOrArea = entity instanceof MRTextField || entity instanceof MRTextArea;
+
+            let text = isTextFieldOrArea
+                ? entity.input.value
+                : // troika honors newlines/white space
+                  // we want to mimic h1, p, etc which do not honor these values
+                  // so we have to clean these from the text
+                  // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                  entity.textContent
+                      .replace(/(\n)\s+/g, '$1')
+                      .replace(/(\r\n|\n|\r)/gm, '')
+                      .trim();
+
+            let textContentChanged = entity.textObj.text != text;
+
+            // Now that we know text is different or at least definitely needs an update
+            // we can go and do the larger calculations and changes.
+
+            if (textContentChanged) {
                 entity.textObj.text = text.length > 0 ? text : ' ';
             }
-
-            this.updateStyle(entity);
-
-            entity.textObj.sync(() => {
-                entity.needsStyleUpdate = true;
-                if (entity instanceof MRButton) {
-                    entity.textObj.anchorX = 'center';
-                } else {
-                    entity.textObj.position.setX(-entity.width / 2);
+            if (textContentChanged || entity.needsStyleUpdate) {
+                if (isTextFieldOrArea) {
+                    if (entity == document.activeElement) {
+                        entity.updateCursorPosition();
+                    } else {
+                        entity.blur();
+                    }
                 }
-                entity.textObj.position.setY(entity.height / 2);
-            });
+
+                this.updateStyle(entity);
+
+                entity.textObj.sync(() => {
+                    if (entity instanceof MRButton) {
+                        entity.textObj.anchorX = 'center';
+                    } else {
+                        entity.textObj.position.setX(-entity.width / 2);
+                        entity.textObj.position.setY(entity.height / 2);
+                    }
+                });
+            }
         }
-        this.needsSystemUpdate = false;
     }
 
     /**
@@ -193,9 +198,9 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the font size adjusted for the display as expected
      */
     parseFontSize(val, el) {
-        const result = parseFloat(val.split('px')[0]) / mrjsUtils.Display.VIRTUAL_DISPLAY_RESOLUTION;
+        const result = parseFloat(val.split('px')[0]) / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
         if (mrjsUtils.xr.isPresenting) {
-            return result * el.windowHorizontalScale;
+            return result * mrjsUtils.app.scale;
         }
         return result;
     }
@@ -208,10 +213,10 @@ export class TextSystem extends MRSystem {
      * @returns {string} - the string representation of the the verticalAlign
      */
     getVerticalAlign(verticalAlign, entity) {
-        let result = mrjsUtils.CSS.pxToThree(verticalAlign);
+        let result = verticalAlign;
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.css.pxToThree(entity.compStyle.fontSize);
         }
 
         switch (result) {
@@ -220,9 +225,10 @@ export class TextSystem extends MRSystem {
             case 'super':
                 return 0;
             case 'text-top':
-                return 'top-cap';
+                return 'top-ex';
             case 'text-bottom':
                 return 'bottom';
+            case 'middle':
             default:
                 return result;
         }
@@ -236,10 +242,10 @@ export class TextSystem extends MRSystem {
      * @returns {number} - the numerical representation of the the lineHeight
      */
     getLineHeight(lineHeight, entity) {
-        let result = mrjsUtils.CSS.pxToThree(lineHeight);
+        let result = mrjsUtils.css.pxToThree(lineHeight);
 
         if (typeof result === 'number') {
-            result /= mrjsUtils.CSS.pxToThree(entity.compStyle.fontSize);
+            result /= mrjsUtils.css.pxToThree(entity.compStyle.fontSize);
         }
 
         return result;

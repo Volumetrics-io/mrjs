@@ -26,6 +26,7 @@ import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - ENTITIES
+import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
@@ -40,18 +41,24 @@ import './core/componentSystems/AnchorSystem';
 import './core/componentSystems/AnimationSystem';
 import './core/componentSystems/ClippingSystem';
 import './core/componentSystems/ControlSystem';
+import './core/componentSystems/GeometryStyleSystem';
 import './core/componentSystems/InstancingSystem';
 import './core/componentSystems/LayoutSystem';
 import './core/componentSystems/MaskingSystem';
+import './core/componentSystems/MaterialStyleSystem';
 import './core/componentSystems/PhysicsSystem';
-import './core/componentSystems/StyleSystem';
+import './core/componentSystems/SkyBoxSystem';
 import './core/componentSystems/TextSystem';
 
-// UTILS
-export { mrjsUtils } from './utils/index.js';
 
 // EXPORTS
+// UTILS
+export { mrjsUtils } from './utils/index.js';
+// EXTRAS
+export * from './extras/index.js';
+// ADDITIONALS from mrjs
 export * as THREE from 'three';
-export * from './core/MRElement';
-export * from './core/MRSystem';
-export * from './core/MREntity';
+export * from 'mrjs/core/MRElement';
+export * from 'mrjs/core/MRSystem';
+export * from 'mrjs/core/MREntity';
+export * from 'mrjs/dataTypes/MRClippingGeometry';

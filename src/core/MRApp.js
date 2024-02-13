@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { ARButton } from 'three/addons/webxr/ARButton.js';
+import { XRButton } from 'three/addons/webxr/XRButton.js';
 
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
+import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -14,17 +15,20 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
 import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
 import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
-import { StyleSystem } from 'mrjs/core/componentSystems/StyleSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from './componentSystems/AudioSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 
 ('use strict');
 window.mobileCheck = function () {
-    return mrjsUtils.Display.mobileCheckFunction();
+    return mrjsUtils.display.mobileCheckFunction();
 };
 
 /**
@@ -64,6 +68,10 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
+        this.anchor = null
+        this.origin = new THREE.Object3D()
+
+        this.scene.add(this.origin)
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
@@ -94,18 +102,22 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        // order matters for all the below system creation items
+        this.panelSystem = new PanelSystem();
         this.layoutSystem = new LayoutSystem();
-        this.styleSystem = new StyleSystem();
+        this.textSystem = new TextSystem();
+        this.geometryStyleSystem = new GeometryStyleSystem();
+        this.materialStyleSystem = new MaterialStyleSystem();
         this.audioSystem = new AudioSystem();
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.physicsWorld = new mrjsUtils.Physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+            this.physicsWorld = new mrjsUtils.physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
-            this.textSystem = new TextSystem();
             this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
+            this.skyBoxSystem = new SkyBoxSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
@@ -178,18 +190,18 @@ export class MRApp extends MRElement {
 
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.StringUtils.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
         }
 
         this.initUser();
-        mrjsUtils.Physics.initializePhysics();
+        mrjsUtils.physics.initializePhysics();
 
         this.user.position.set(0, 0, 1);
 
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.StringUtils.stringToVector(layersString);
+            this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.user.layers.enable(layer);
@@ -221,33 +233,42 @@ export class MRApp extends MRElement {
 
         this.appendChild(this.renderer.domElement);
 
-        // allows embedded mr-app to be independently scrollable
-        if (this.compStyle.overflow == 'scroll') {
-            this.renderer.domElement.addEventListener('wheel', (event) => {
-                // Assuming vertical scrolling
-                this.scrollTop += event.deltaY;
-                // Prevent the default scroll behavior of the front element
-                event.preventDefault();
-            });
+        // allows for mr-app style to have background:value to set the skybox
+        if (this.compStyle.backgroundImage !== 'none') {
+            let skybox = new MRSkyBox();
+            let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
+            skybox.setAttribute('src', imageUrl);
+            skybox.connected();
+            this.add(skybox);
+
+            // Need to zero out the background-image property otherwise
+            // we'll end up with a canvas background as well as the skybox
+            // when the canvas background is not needed in this 3d setup.
+            //
+            // We can do this because panel backgrounds are actual webpage
+            // backgrounds and the app itself's background is separate from
+            // that, being understood as the skybox of the entire app itself.
+            this.style.setProperty('background-image', 'none', 'important');
+            this.compStyle = window.getComputedStyle(this);
         }
 
         navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
             this.xrsupport = supported;
 
             if (this.xrsupport) {
-                this.ARButton = ARButton.createButton(this.renderer, {
+                this.XRButton = XRButton.createButton(this.renderer, {
                     requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 
-                this.ARButton.addEventListener('click', () => {
+                this.XRButton.addEventListener('click', () => {
                     this.classList.add('inXR');
-                    this.ARButton.blur();
+                    this.XRButton.blur();
                 });
-                document.body.appendChild(this.ARButton);
+                document.body.appendChild(this.XRButton);
 
-                this.ARButton.style.position = 'fixed';
-                this.ARButton.style.zIndex = 10000;
+                this.XRButton.style.position = 'fixed';
+                this.XRButton.style.zIndex = 10000;
             }
         });
 
@@ -258,7 +279,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.StringUtils.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.stringUtils.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);
@@ -298,13 +319,13 @@ export class MRApp extends MRElement {
 
         // for window placement
         this.userOrigin = new THREE.Object3D();
-        this.anchor = new THREE.Object3D();
+        this.anchorPoint = new THREE.Object3D();
         this.user.add(this.userOrigin);
-        this.user.add(this.anchor);
+        this.user.add(this.anchorPoint);
 
         this.userOrigin.position.setX(0.015);
-        this.anchor.position.setX(0.015);
-        this.anchor.position.setZ(-0.5);
+        this.anchorPoint.position.setX(0.015);
+        this.anchorPoint.position.setZ(-0.5);
 
         // Audio listner needed for spatial audio
     };
@@ -320,7 +341,7 @@ export class MRApp extends MRElement {
         }
         this.globalLight = new THREE.AmbientLight(data.color);
         this.globalLight.intensity = data.intensity;
-        this.globalLight.position.set(0, 0, 0);
+        this.globalLight.position.set(0, 5, 0);
         this.scene.add(this.globalLight);
 
         if (!this.isMobile) {
@@ -344,7 +365,7 @@ export class MRApp extends MRElement {
      */
     denit() {
         document.body.removeChild(this.renderer.domElement);
-        this.removeChild(this.ARButton);
+        this.removeChild(this.XRButton);
         window.removeEventListener('resize', this.onWindowResize);
     }
 
@@ -372,7 +393,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.scene.add(entity.object3D);
+        this.origin.add(entity.object3D);
     }
 
     /**
@@ -381,7 +402,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
-        this.scene.remove(entity.object3D);
+        this.origin.remove(entity.object3D);
     }
 
     /**
@@ -429,6 +450,7 @@ export class MRApp extends MRElement {
             mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
             this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
+            console.log('enter xr');
 
             mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);

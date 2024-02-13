@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mr.js - models</title>
+    <meta name="description" content="mr.js example - models">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="models-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+   <mr-app>
+    <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
+        <mr-div id="navbar">
+        <mr-a href="https://mrjs.io" class="mrjs">
+            mrjs
+        </mr-a>
+            <mr-model
+            class="logo"
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
+        <mr-a href="https://volumetrics.io" class="company">
+            volumetrics
+        </mr-a>
+        </mr-div>
+
+        <mr-text class="col-2 title" >
+        Models
+        </mr-text>
+        
+        <mr-text class="col-2">
+        Models can enhance the 3D interactive experience of mixed reality making you feel the blend of virtual and real environment more realistically.
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Examples
+        </mr-text>
+
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                stl
+            </mr-text>
+            <mr-model 
+                id="stl"
+                style="scale: 0.0005;"
+                src="/assets/models/logo.stl">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                glb
+            </mr-text>
+            <mr-model 
+                id="glb"
+                style="scale: 0.00815; z-index: 10;"
+                src="../assets/models/island3.glb">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                glb - anim
+            </mr-text>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-text class="col-2 subtitle" >
+        model
+        </mr-text>
+
+        <mr-text class="col-2">
+        Model loading is achieved using the model component, `mr-model`, it has one attribute:
+        </mr-text>
+
+        <mr-text class="label col-2">
+        src
+        </mr-text>
+
+        <mr-text class="col-2">
+        You fill this out as you would any `src` attribute on an <img/> or <video/> html tag. 
+        That is, with the path to the file to be loaded (for example `/assets/foo.glb`)
+        </mr-text>
+      
+    </mr-panel>
+
+    </mr-app>
+  </body>
+
+  <footer>
+    <script src="/assets/js/SpinSystem.js"></script>
+  </footer>
+</html>

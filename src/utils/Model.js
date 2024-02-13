@@ -24,20 +24,20 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 // import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
 
 /**
- * @namespace Model
+ * @namespace model
  * @description Useful namespace for helping with Model utility functions
  */
-let Model = {};
+let model = {};
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description Loads Collada file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadDAE = function (filePath) {
+model.loadDAE = function (filePath) {
     const loader = new ColladaLoader();
 
     return new Promise((resolve, reject) => {
@@ -57,13 +57,13 @@ Model.loadDAE = function (filePath) {
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description Loads FBX file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadFBX = function (filePath) {
+model.loadFBX = function (filePath) {
     const loader = new FBXLoader();
 
     return new Promise((resolve, reject) => {
@@ -83,13 +83,13 @@ Model.loadFBX = function (filePath) {
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description Loads GLTF/GLB file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadGLTF = function (filePath) {
+model.loadGLTF = function (filePath) {
     const loader = new GLTFLoader();
 
     return new Promise((resolve, reject) => {
@@ -113,13 +113,13 @@ Model.loadGLTF = function (filePath) {
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description Loads stl file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadSTL = function (filePath) {
+model.loadSTL = function (filePath) {
     const loader = new STLLoader();
 
     return new Promise((resolve, reject) => {
@@ -145,13 +145,13 @@ Model.loadSTL = function (filePath) {
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description Loads USD/USDZ file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadUSDZ = async function (filePath) {
+model.loadUSDZ = async function (filePath) {
     const usdzLoader = new USDZLoader();
 
     const [model] = await Promise.all([usdzLoader.loadAsync(filePath)], undefined, (error) => {
@@ -168,14 +168,14 @@ Model.loadUSDZ = async function (filePath) {
 
 /**
  * @function
- * @memberof Model
+ * @memberof model
  * @description The main loading function
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @param {string} extension - The extension of the file type. Current allowed extensions are `fbx`, `glb`, and `stl`.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-Model.loadModel = function (filePath, extension) {
+model.loadModel = function (filePath, extension) {
     // later on - this would be better//faster with enums<->string<-->num interop but
     // quick impl for now
 
@@ -186,20 +186,20 @@ Model.loadModel = function (filePath, extension) {
     //     return loadDAE(filePath);
     // } else
     if (extension == 'fbx') {
-        return Model.loadFBX(filePath);
+        return model.loadFBX(filePath);
     } else if (extension == 'glb') {
-        return Model.loadGLTF(filePath);
+        return model.loadGLTF(filePath);
     } else if (extension == 'stl') {
-        return Model.loadSTL(filePath);
+        return model.loadSTL(filePath);
     }
     const allowed = false;
     if (allowed && extension == 'dae') {
-        return Model.loadDAE(filePath);
+        return model.loadDAE(filePath);
     } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
-        return Model.loadUSDZ(filePath);
+        return model.loadUSDZ(filePath);
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
     return null;
 };
 
-export { Model };
+export { model };

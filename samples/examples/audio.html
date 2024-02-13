@@ -18,29 +18,25 @@
             <mr-a href="https://mrjs.io" class="mrjs">
                 mrjs
             </mr-a>
-            <mr-div class="logo">
-                <mr-model
-                id="logo-model"  
-                src="/assets/models/logo.stl" 
-                data-comp-instancing="type: animate;"
-                data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
-                data-rotation="-22.91 17.1887 45.8366">
-                </mr-model>
-            </mr-div>
+            <mr-model
+            class="logo"
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
             <mr-a href="https://volumetrics.io" class="company">
                 volumetrics
             </mr-a>
             </mr-div>
     
             <mr-text class="col-2 title" >
-            Anchors
+            Audio
             </mr-text>
             
             <mr-text class="col-2">
-            Anchors enhance your spatial app by taking advantage of the real world environment.
-            </mr-text>
-            <mr-text class="col-2">
-            They can be used for table top games, turning any room into a virtual gallery, or ripping open the ceiling to get a view of another world
+                Audio adds more depth to a spatial experience. Giving virtual content a greater sense of presence, and immersing users into your experience
             </mr-text>
     
             <mr-text class="subtitle col-2">
@@ -131,6 +127,7 @@
   </body>
 
   <footer>
+    <script src="/assets/js/SpinSystem.js"></script>
     <script>
 
         let rainEntity = document.getElementById('rain-entity')

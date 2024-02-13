@@ -4,6 +4,8 @@ import { MRElement } from 'mrjs/core/MRElement';
 
 import { mrjsUtils } from 'mrjs';
 
+const MOUSE_EVENTS = ['click', 'mouseenter', 'mouseleave', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'mousemove'];
+
 /**
  * @class MREntity
  * @classdesc The default representation of an MRElement to be expanded upon by actual details ECS Entity items. `mr-entity`
@@ -23,16 +25,16 @@ export class MREntity extends MRElement {
     components = {
         get: (name) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]);
+            return mrjsUtils.stringUtils.stringToJson(this.dataset[dataName]);
         },
 
         set: (name, data) => {
             const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = mrjsUtils.StringUtils.stringToJson(this.dataset[dataName]);
+            const component = mrjsUtils.stringUtils.stringToJson(this.dataset[dataName]) ?? {};
             for (const key in data) {
                 component[key] = data[key];
             }
-            this.dataset[dataName] = mrjsUtils.StringUtils.jsonToString(component);
+            this.dataset[dataName] = mrjsUtils.stringUtils.jsonToString(component);
         },
     };
 
@@ -65,6 +67,8 @@ export class MREntity extends MRElement {
         this.touch = false;
         this.grabbed = false;
         this.focus = false;
+
+        this.ignoreStencil = true;
     }
 
     /**
@@ -92,8 +96,7 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
-        return (styleHeight / global.appHeight) * global.viewPortHeight;
+        return (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -108,7 +111,51 @@ export class MREntity extends MRElement {
 
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
-    _needsStyleUpdate = undefined;
+    _needsGeometryUpdate = false;
+
+    /**
+     * @function
+     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
+     * Useful for readability and to not need to check against undefined often.
+     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
+     */
+    get alwaysNeedsGeometryUpdate() {
+        return this._needsGeometryUpdate === undefined;
+    }
+
+    /**
+     * @function
+     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
+     * Useful for readability and to not need to check against undefined often.
+     */
+    set alwaysNeedsGeometryUpdate(bool) {
+        this._needsGeometryUpdate = bool ? undefined : false;
+    }
+
+    /**
+     * @function
+     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
+     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
+     * Allows subclasses to override with their own implementation.
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsGeometryUpdate() {
+        return this.alwaysNeedsGeometryUpdate || this._needsGeometryUpdate;
+    }
+
+    /**
+     * @function
+     * @description Set the needsStyleUpdate parameter.
+     * undefined - means the StyleSystem will update this entity's style every time the application loops.
+     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
+     */
+    set needsGeometryUpdate(bool) {
+        this._needsGeometryUpdate = bool;
+    }
+
+    // undefined == always update, once set to true/false trigger, then updates based on that every frame
+    // setting back to undefined sets to always update.
+    _needsStyleUpdate = false;
 
     /**
      * @function
@@ -118,6 +165,15 @@ export class MREntity extends MRElement {
      */
     get alwaysNeedsStyleUpdate() {
         return this._needsStyleUpdate === undefined;
+    }
+
+    /**
+     * @function
+     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
+     * Useful for readability and to not need to check against undefined often.
+     */
+    set alwaysNeedsStyleUpdate(bool) {
+        this._needsStyleUpdate = bool ? undefined : false;
     }
 
     /**
@@ -142,16 +198,16 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @function
-     * @description
+     * @function 
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
-    updateStyle() {}
+    updateMaterialStyle() {}
 
     /**
-     * @function
-     * @description Default base for updating the physics data for the current iteration.
+     * @function 
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
-    updatePhysicsData() {}
+    updateGeometryStyle() {}
 
     /**
      * @function
@@ -210,45 +266,119 @@ export class MREntity extends MRElement {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
         });
         this.loadAttributes();
 
-        this.connected();
-
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
+
+        MOUSE_EVENTS.forEach((eventType) => {
+            this.addEventListener(eventType, (event) => {
+                if (!this.alwaysNeedsGeometryUpdate) {
+                    this.needsGeometryUpdate = true;
+                }
+                if (!this.alwaysNeedsStyleUpdate) {
+                    this.needsStyleUpdate = true;
+                }
+            });
         });
 
         this.addEventListener('touch-start', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
             this.onTouch(event);
         });
         this.addEventListener('touch', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
             this.onTouch(event);
         });
         this.addEventListener('touch-end', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
             this.onTouch(event);
         });
         this.addEventListener('hover-start', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
             this.onHover(event);
         });
         this.addEventListener('hover-end', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
             this.onHover(event);
         });
 
         this.addEventListener('child-updated', (event) => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
         });
 
-        this.addEventListener('enterXR', (event) => {
-            this.needsStyleUpdate = true;
+        window.addEventListener('resize', (event) => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
+
+        document.addEventListener('enterXR', (event) => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
+        document.addEventListener('exitXR', (event) => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        this.connected();
     }
 
     /**
@@ -268,10 +398,10 @@ export class MREntity extends MRElement {
             } else {
                 switch (attr) {
                     case 'rotation':
-                        this.object3D.rotation.fromArray(mrjsUtils.StringUtils.stringToDegVector(this.dataset.rotation));
+                        this.object3D.rotation.fromArray(mrjsUtils.stringUtils.stringToDegVector(this.dataset.rotation));
                         break;
                     case 'position':
-                        this.object3D.position.fromArray(mrjsUtils.StringUtils.stringToVector(this.dataset.position));
+                        this.object3D.position.fromArray(mrjsUtils.stringUtils.stringToVector(this.dataset.position));
                         break;
                 }
             }
@@ -323,12 +453,17 @@ export class MREntity extends MRElement {
      * @param {object} observer - w3 standard object that watches for changes on the HTMLElement
      */
     mutationCallback(mutationList, observer) {
-        this.needsStyleUpdate = true;
         for (const mutation of mutationList) {
             this.mutated(mutation);
 
             switch (mutation.type) {
                 case 'childList':
+                    if (!this.alwaysNeedsGeometryUpdate) {
+                        this.needsGeometryUpdate = true;
+                    }
+                    if (!this.alwaysNeedsStyleUpdate) {
+                        this.needsStyleUpdate = true;
+                    }
                     break;
                 case 'attributes':
                     if (mutation.attributeName.includes('comp')) {
@@ -336,10 +471,10 @@ export class MREntity extends MRElement {
                     }
                     switch (mutation.attributeName) {
                         case 'data-position':
-                            this.object3D.position.fromArray(mrjsUtils.StringUtils.stringToVector(this.dataset.position));
+                            this.object3D.position.fromArray(mrjsUtils.stringUtils.stringToVector(this.dataset.position));
                             break;
                         case 'data-rotation':
-                            this.object3D.rotation.fromArray(mrjsUtils.StringUtils.stringToDegVector(this.dataset.rotation));
+                            this.object3D.rotation.fromArray(mrjsUtils.stringUtils.stringToDegVector(this.dataset.rotation));
                             break;
 
                         default:
@@ -367,7 +502,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(
                 new CustomEvent(`${dataName}-updated`, {
                     bubbles: true,
-                    detail: { oldData: mrjsUtils.StringUtils.jsonToString(mutation.oldValue) },
+                    detail: { oldData: mrjsUtils.stringUtils.jsonToString(mutation.oldValue) },
                 })
             );
         } else {

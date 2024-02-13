@@ -23,7 +23,10 @@ export class MRImage extends MRDivEntity {
         // until the connected call since this will get overwritten anyways.
         let material = new THREE.MeshStandardMaterial({
             side: 0,
+            transparent: true,
+            // opacity: 0.5,
         });
+        // Object3D for mr-image is the actual image itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
@@ -36,7 +39,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.width);
+        let width = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.width);
         return width > 0 ? width : super.width;
     }
 
@@ -46,7 +49,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.CSS.pxToThree(this.objectFitDimensions.height);
+        let height = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.height);
         return height > 0 ? height : super.height;
     }
 
@@ -56,19 +59,20 @@ export class MRImage extends MRDivEntity {
      */
     connected() {
         this.img = document.createElement('img');
-        this.img.setAttribute('src', this.getAttribute('src'));
+        this.img.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
-        this.objectFitDimensions = { height: 0, width: 0 };
-        this.computeObjectFitDimensions();
+        this.imageObject3DFitDimensions = { height: 0, width: 0 };
+        this.computeImageObject3DFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.object3D.geometry != undefined) {
+        if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        mrjsUtils.Material.loadTextureAsync(this.img.src)
+        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+        mrjsUtils.material
+            .loadTextureAsync(this.img.src)
             .then((texture) => {
                 this.texture = texture;
                 this.object3D.material.map = texture;
@@ -77,56 +81,6 @@ export class MRImage extends MRDivEntity {
                 console.error('Error loading texture:', error);
             });
     }
-
-    /******************* Begin: Style Check and Update *******************/
-
-    // items most likely to change
-    _oldWidth = 0;
-    _oldHeight = 0;
-    // item not as likely to change
-    _oldBorderRadii = 0;
-
-    /**
-     * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * This returns true if the width/height/borderradii of the image has changed or if the default implementation for the style update check returns true.
-     * (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsStyleUpdate() {
-        return super.needsStyleUpdate || this._oldWidth != this.width || this._oldHeight != this.height || this._oldBorderRadii != this.borderRadii;
-    }
-
-    /**
-     * Since this class overrides the default `get` for the `needsStyleUpdate` call, the `set` pair is needed for javascript to be happy.
-     * Relies on the parent's implementation. (see [MREntity.needsStyleUpdate](https://docs.mrjs.io/javascript-api/#mrentity.needsstyleupdate) for default).
-     */
-    set needsStyleUpdate(bool) {
-        super.needsStyleUpdate = bool;
-    }
-
-    /**
-     * @function
-     * @description Calls MRDivEntity's updateStyle implemnetation first then uses this version. Updates the style for the Image's border and background
-     * based on compStyle and inputted css elements.
-     */
-    updateStyle() {
-        this.computeObjectFitDimensions();
-
-        // geometry will only update if width, height, or borderRadii have changed
-        if (this.object3D.geometry != undefined) {
-            this.object3D.geometry.dispose();
-        }
-        this.object3D.geometry = mrjsUtils.Geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-
-        // update for next iteration - already guaranteed one of these needs update
-        // given the needsUpdate function
-        this._oldWidth = this.width;
-        this._oldHeight = this.height;
-        this._oldBorderRadii = this.borderRadii;
-    }
-
-    /******************* End: Style Check and Update *******************/
 
     /**
      * @function
@@ -137,9 +91,10 @@ export class MRImage extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.computeObjectFitDimensions();
+            this.computeImageObject3DFitDimensions();
 
-            mrjsUtils.Material.loadTextureAsync(this.img.src)
+            mrjsUtils.material
+                .loadTextureAsync(this.img.src)
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;
@@ -152,12 +107,12 @@ export class MRImage extends MRDivEntity {
 
     /**
      * @function
-     * @description computes the width and height values considering the value of object-fit
+     * @description computes the width and height values for the image considering the value of object-fit
      */
-    computeObjectFitDimensions() {
+    computeImageObject3DFitDimensions() {
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
+                this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
 
             case 'contain':
             case 'scale-down': {
@@ -170,7 +125,7 @@ export class MRImage extends MRDivEntity {
                     scaledHeight = Math.min(scaledHeight, this.img.height);
                 }
 
-                this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
+                this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
                 break;
             }
 
@@ -179,15 +134,15 @@ export class MRImage extends MRDivEntity {
                 let containerRatio = this.offsetWidth / this.offsetHeight;
 
                 if (containerRatio > imageRatio) {
-                    this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
+                    this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
                 } else {
-                    this.objectFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
+                    this.imageObject3DFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
                 }
                 break;
             }
 
             case 'none':
-                this.objectFitDimensions = { width: this.img.width, height: this.img.height };
+                this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
                 break;
 
             default:

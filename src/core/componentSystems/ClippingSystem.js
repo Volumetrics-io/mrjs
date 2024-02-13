@@ -4,6 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
+import { MRVolume } from '../entities/MRVolume';
 
 /**
  * @class ClippingSystem
@@ -40,7 +41,8 @@ export class ClippingSystem extends MRSystem {
     }
 
     /**
-     * Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
      * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
      */
     set needsSystemUpdate(bool) {
@@ -78,9 +80,15 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            entity.object3D.localToWorld(this.coplanarPointA);
-            entity.object3D.localToWorld(this.coplanarPointB);
-            entity.object3D.localToWorld(this.coplanarPointC);
+            if (entity instanceof MRVolume) {
+                entity.volume.localToWorld(this.coplanarPointA);
+                entity.volume.localToWorld(this.coplanarPointB);
+                entity.volume.localToWorld(this.coplanarPointC);
+            } else {
+                entity.panel.localToWorld(this.coplanarPointA);
+                entity.panel.localToWorld(this.coplanarPointB);
+                entity.panel.localToWorld(this.coplanarPointC);
+            }
 
             entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
             planeIndex += 1;
@@ -116,9 +124,15 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
             this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
 
-            entity.object3D.localToWorld(this.coplanarPointA);
-            entity.object3D.localToWorld(this.coplanarPointB);
-            entity.object3D.localToWorld(this.coplanarPointC);
+            if (entity instanceof MRVolume) {
+                entity.volume.localToWorld(this.coplanarPointA);
+                entity.volume.localToWorld(this.coplanarPointB);
+                entity.volume.localToWorld(this.coplanarPointC);
+            } else {
+                entity.panel.localToWorld(this.coplanarPointA);
+                entity.panel.localToWorld(this.coplanarPointB);
+                entity.panel.localToWorld(this.coplanarPointC);
+            }
 
             const newPlane = new THREE.Plane();
             newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);

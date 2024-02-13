@@ -1,19 +1,19 @@
 /**
- * @namespace StringUtils
+ * @namespace stringUtils
  * @description Useful namespace for helping with String utility functions
  */
-let StringUtils = {};
+let stringUtils = {};
 
 /*********** JSON // String interactions *************/
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof stringUtils
  * @description Converts and formats the inputted string to a json object.
  * @param {string} attrString - the string to be formatted
  * @returns {object} - object in json form
  */
-StringUtils.stringToJson = function (attrString) {
+stringUtils.stringToJson = function (attrString) {
     if (attrString == null) {
         return null;
     }
@@ -49,7 +49,7 @@ StringUtils.stringToJson = function (attrString) {
  * @param {object} componentData - the json object to be formatted into a string
  * @returns {string} - the string representation of the json object
  */
-StringUtils.jsonToString = function (componentData) {
+stringUtils.jsonToString = function (componentData) {
     let compString = '';
 
     for (const [key, value] of Object.entries(componentData)) {
@@ -79,7 +79,7 @@ StringUtils.jsonToString = function (componentData) {
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-StringUtils.stringToVector = function (str) {
+stringUtils.stringToVector = function (str) {
     return str.split(' ').map(Number);
 };
 
@@ -90,7 +90,7 @@ StringUtils.stringToVector = function (str) {
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-StringUtils.stringToDegVector = function (str) {
+stringUtils.stringToDegVector = function (str) {
     return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
 };
 
@@ -101,7 +101,7 @@ StringUtils.stringToDegVector = function (str) {
  * @param {string} val - the string to be converted to a vector. Must be of format 'x%' or 'x/y'.
  * @returns {number} - the vector version of the inputted string.
  */
-StringUtils.stringToDimensionValue = function (val) {
+stringUtils.stringToDimensionValue = function (val) {
     if (val.includes('%')) {
         return parseFloat(val) / 100;
     }
@@ -111,4 +111,4 @@ StringUtils.stringToDimensionValue = function (val) {
     return val;
 };
 
-export { StringUtils };
+export { stringUtils };

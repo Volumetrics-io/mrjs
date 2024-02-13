@@ -42,10 +42,6 @@ jobs:
       run: |
         npm run docs
 
-    - name: read the doc file
-      run: |
-        head -n 12 "./docs/js-api.md"
-
     - name: Get Docs content
       id: get-docs
       run: |
@@ -69,12 +65,15 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm "./source/pages/02Javascript API.md"
-        mv -f "../doc/js-api.md" "./source/pages/02Javascript API.md"
+        rm -rf "./source/js-api*"
+        cp -a "../doc/js-api" "./source/"
+        cp -a "../doc/js-api-utils" "./source/"
+        cp -a "../doc/js-api-extras" "./source/"
+        ls -al ./source
 
     - name: Commit only if there are changes
       run: |
-        if [[ -n $(git diff --exit-code) ]]; then
+        if [[ -n $(git status --porcelain) ]]; then
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'

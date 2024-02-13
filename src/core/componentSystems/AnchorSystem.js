@@ -31,9 +31,6 @@ export class AnchorSystem extends MRSystem {
         this.cameraForward = new THREE.Vector3();
         this.pinchDistance = 0;
 
-        // want this system to run based on the true/false trigger
-        this.needsSystemUpdate = false;
-
         this.axisSwapQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -(3 * Math.PI) / 2);
 
         this.hand = null;
@@ -61,12 +58,15 @@ export class AnchorSystem extends MRSystem {
                     this.sourceRequest = false;
                     this.source = null;
                     this.hand = null;
-                    this.needsSystemUpdate = true;
                 });
 
                 this.sourceRequest = true;
-                this.needsSystemUpdate = true;
             }
+        });
+
+        this.app.addEventListener('exitXR', () => {
+            this.deleteAnchor(this.app)
+            this.app.origin.matrix.copy(new THREE.Matrix4())
         });
 
         document.addEventListener('selectstart', (event) => {
@@ -102,7 +102,6 @@ export class AnchorSystem extends MRSystem {
                         this.currentEntity.anchor = anchor;
                         this.anchoringQueue.delete(this.currentEntity);
                         this.currentEntity = null;
-                        this.needsSystemUpdate = true;
                     },
                     (error) => {
                         console.error('Could not create anchor: ' + error);
@@ -115,18 +114,44 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
+     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
+     * systems anchoringQueue that need to be run OR the default systemUpdateCheck is true
+     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     */
+    get needsSystemUpdate() {
+        return this.anchoringQueue.size > 0 || super.needsSystemUpdate;
+    }
+
+    /**
+     * @function
+     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
+     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
+     */
+    set needsSystemUpdate(bool) {
+        super.needsSystemUpdate = bool;
+    }
+
+    /**
+     * @function
      * @description This update function maintains the transforms of anchored entities.
      * This overrides any other transform values set on the element when in mixed reality.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        if (this.currentEntity) {
-            if (!mrjsUtils.xr.isPresenting) {
-                return;
+        if (mrjsUtils.xr.isPresenting) {
+            if (this.currentEntity) {
+                this.floating(frame);
             }
-            this.floating(frame);
+
+            if(!this.app.anchor) {
+                this.setAppOrigin()
+            } else {
+                this.updateOrigin(frame)
+            }
         }
+        
 
         for (const entity of this.registry) {
             if (mrjsUtils.xr.isPresenting) {
@@ -134,22 +159,15 @@ export class AnchorSystem extends MRSystem {
                 if (entity.anchor == null && !this.anchoringQueue.has(entity)) {
                     entity.object3D.matrixAutoUpdate = false;
                     this.createAnchor(entity, anchorComp);
-                    this.needsSystemUpdate = true;
                 } else if (entity.anchor) {
                     let pose = frame.getPose(entity.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
-                    entity.object3D.matrix.copy(this.adjustTransform(transform));
-                    this.needsSystemUpdate = false;
-                }
-
-                if (this.anchoringQueue.size > 0) {
-                    this.needsSystemUpdate = true;
+                    entity.object3D.matrixWorld.copy(this.adjustTransform(transform));
                 }
             } else if (entity.anchor) {
                 entity.object3D.matrix.copy(entity.object3D.userData.originalMatrix);
                 this.deleteAnchor(entity);
-                this.needsSystemUpdate = false;
             }
         }
     }
@@ -162,7 +180,6 @@ export class AnchorSystem extends MRSystem {
         entity.object3D.userData.originalMatrix = new THREE.Matrix4();
         entity.object3D.userData.originalMatrix.copy(entity.object3D.matrixWorld);
         entity.object3D.matrixAutoUpdate = false;
-        this.needsSystemUpdate = true;
     }
 
     /**
@@ -174,7 +191,6 @@ export class AnchorSystem extends MRSystem {
         this.deleteAnchor(entity);
         // // These cases can be managed instantly
         // this.createAnchor(entity, comp);
-        this.needsSystemUpdate = true;
     }
 
     /**
@@ -184,7 +200,6 @@ export class AnchorSystem extends MRSystem {
     detachedComponent(entity) {
         entity.object3D.matrixAutoUpdate = true;
         this.deleteAnchor(entity);
-        this.needsSystemUpdate = true;
     }
 
     /**
@@ -225,6 +240,32 @@ export class AnchorSystem extends MRSystem {
         }
     }
 
+    setAppOrigin() {
+        if (!mrjsUtils.xr.isPresenting) {
+            return;
+        }
+        mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
+            frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
+                (anchor) => {
+                    this.app.origin.matrixAutoUpdate = false;
+                    this.app.anchor = anchor;
+                    this.app.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
+                },
+                (error) => {
+                    console.error('Could not create anchor: ' + error);
+                }
+            );
+        });
+    }
+
+    updateOrigin(frame) {
+        let pose = frame.getPose(this.app.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
+        let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
+
+        this.app.origin.matrix.copy(this.adjustTransform(transform));
+
+    }
+
     /**
      * @function
      * @description anchors the given entity half a meter in front of the users position at launch.
@@ -238,7 +279,6 @@ export class AnchorSystem extends MRSystem {
                     entity.anchor = anchor;
                     entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                     this.anchoringQueue.delete(entity);
-                    this.needsSystemUpdate = true;
                 },
                 (error) => {
                     console.error('Could not create anchor: ' + error);
@@ -300,9 +340,8 @@ export class AnchorSystem extends MRSystem {
                     (anchor) => {
                         this.anchoringQueue.delete(entity);
                         entity.anchor = anchor;
-                        entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
                         entity.plane = mrPlane;
-                        this.needsSystemUpdate = true;
+                        entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
 
                         if (comp.occlusion == false) {
                             mrPlane.mesh.visible = false;

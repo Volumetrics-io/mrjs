@@ -5,7 +5,7 @@ import fs from 'fs/promises'; // Node.js file system module with promises
 // using a server to host them works best, so just grabbing from github is fine for now.
 const MODELS_URL = 'https://github.com/Volumetrics-io/mrjs/main/samples/assets/models/'
 
-const fileNames = ['../index', 'anchors', 'embed']; // Replace with your actual file names
+const fileNames = ['../index', 'anchors', 'audio', 'embed', 'models', 'skybox'];
 
 describe('Test the Examples', () => {
     let browser;
@@ -38,8 +38,8 @@ describe('Test the Examples', () => {
                 `<script src="/mr.js"></script>`,
                 `<script src="../dist/mr.js"></script>`);
             htmlContent = htmlContent.replace(
-                `<link rel="stylesheet" type="text/css" href="${fileName}.css" />`,
-                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}.css" />`);
+                `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
+                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
 
             await page.setContent(htmlContent);
 

@@ -28,11 +28,26 @@ export class MRSkyBox extends MREntity {
      */
     onTextureLoaded(texture) {
         if (this.skybox) {
-            this.skybox.material = new THREE.MeshBasicMaterial({
-                map: texture,
-                side: THREE.BackSide, // Render only on the inside
-                opacity: 1,
-            });
+            if (Array.isArray(texture.images) && texture.images.length === 6) {
+                // Handle cube texture case
+                if (this.skybox.material !== undefined) {
+                    this.skybox.material.dispose();
+                }
+                this.skybox.material = new THREE.MeshStandardMaterial({
+                    envMap: texture,
+                    side: THREE.BackSide, // Render only on the inside
+                });
+            } else {
+                // Handle single texture case
+                if (this.skybox.material !== undefined) {
+                    this.skybox.material.dispose();
+                }
+                this.skybox.material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    side: THREE.BackSide, // Render only on the inside
+                    opacity: 1,
+                });
+            }
         }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));
     }
@@ -47,25 +62,53 @@ export class MRSkyBox extends MREntity {
         // or you can store them in a specified path and just
         // load them up solely by filename in that path.
 
-        this.texturesList = this.getAttribute('src');
+        this.texturesList = mrjsUtils.html.resolvePath(this.getAttribute('src'));
         if (!this.texturesList) {
             return;
         }
-        this.geometry = new THREE.SphereGeometry(1000, 32, 16);
 
         const textureNames = this.texturesList.split(',');
         const path = this.getAttribute('pathToTextures');
+        const textureUrls = textureNames.map((name) => mrjsUtils.html.resolvePath(path ? path + name : name));
 
-        const textureLoader = textureNames.length > 1 ? new THREE.CubeTextureLoader() : new THREE.TextureLoader();
-        textureLoader.load(
-            textureNames.map((name) => (path ? path + name : name)),
-            this.onTextureLoaded.bind(this) // Ensuring the correct context
-        );
-        const geometry = new THREE.SphereGeometry(900, 32, 16);
+        this.textureLoadedCallbacks.push((texture) => {
+            console.log('Texture loaded within connected():', texture);
+        });
 
+        let geometry;
+        let textureLoader;
+        if (textureNames.length > 1) {
+            geometry = new THREE.BoxGeometry(900, 900, 900);
+            textureLoader = new THREE.CubeTextureLoader();
+            textureLoader.load(textureUrls, this.onTextureLoaded.bind(this));
+        } else if (textureUrls.length == 1) {
+            geometry = new THREE.SphereGeometry(900, 32, 16);
+            textureLoader = new THREE.TextureLoader();
+            textureLoader.load(textureUrls[0], this.onTextureLoaded.bind(this));
+        }
+
+        if (this.skybox) {
+            // Remove existing skybox if present
+            this.object3D.remove(this.skybox);
+            this.skybox.dispose();
+        }
         this.skybox = new THREE.Mesh(geometry); // going to passively load texture on async
         this.object3D.add(this.skybox);
-        this.skybox.rotateX(90);
+    }
+
+    /**
+     * @function
+     * @description Set the opacity of the skybox itself. Useful for blending between the outside and MR. Also
+     * useful for cases where you want to blend between different skybox versions.
+     */
+    set setOpacity(val) {
+        this.object3D.traverse((child) => {
+            if (child.isMesh) {
+                child.material.transparent = true;
+                child.material.opacity = val;
+                child.material.needsUpdate = true;
+            }
+        });
     }
 
     /**

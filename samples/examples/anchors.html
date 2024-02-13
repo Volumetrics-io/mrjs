@@ -5,25 +5,24 @@
     <title>mr.js - anchors</title>
     <meta name="description" content="mr.js example - anchors">
     <script src="/mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="anchor.css" />
+    <link rel="stylesheet" type="text/css" href="anchors-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
             mrjs
         </mr-a>
-        <mr-div class="logo">
-            <mr-model
+        <mr-model
+            class="logo"
             id="logo-model"  
             src="/assets/models/logo.stl" 
             data-comp-instancing="type: animate;"
-            data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: -0.000008;"  
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
             data-rotation="-22.91 17.1887 45.8366">
             </mr-model>
-        </mr-div>
         <mr-a href="https://volumetrics.io" class="company">
             volumetrics
         </mr-a>
@@ -179,21 +178,22 @@
     </mr-entity>
 
     <mr-entity id="floor" data-comp-anchor="type: plane; label: floor;">
-       <mr-water 
-        data-rotation="-90 0 0"             
-        data-position="0 0.5 0"            
+        <mr-water 
         id="water"></mr-water> 
         <mr-entity
-        data-rotation="-90 00 0"                        
+        data-rotation="-90 0 0"
         data-comp-animation="type: rotate; maxspeed: -0.002; acceleration: 0.000008;">
             <mr-model
-            data-rotation="90 180 0"                        
-            data-position="0 0.5 0.3"             
+            data-rotation="90 180 0"
+            data-position="0 0.2 0.15"                        
+   
             src="/assets/models/animation_koifish.glb" 
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
     </mr-entity>
+
+           
 
     <mr-entity id="ceiling" data-comp-anchor="type: plane; label: ceiling;">
     </mr-entity>
@@ -210,101 +210,67 @@
             </mr-model>
         </mr-entity>
       </mr-entity>
-        
+
     </mr-app>
   </body>
 
   <footer>
-    <script src="/assets/js/AnimationSystem.js"></script>
+    <script src="/assets/js/SpinSystem.js"></script>
     <script>
 
-        class Water extends MREntity {
-            
-            vertexShader = `
-            varying vec2 vUv;
-            varying float vWave;
-            uniform float u_time;
+        /*********** begin: mr-water entity ***********/
 
-            void main() {
-                vUv = uv;
-                vec3 pos = position;
-                float waveHeight = 0.01;
-                float waveSpeed = 2.0;
-                float waveSpeed2 = 3.0;
-                float waveFrequency = 0.2;
-                float waveFrequency2 = 1.0;
-                float wave = sin(pos.x * waveFrequency + u_time * waveSpeed) * waveHeight;
-                wave += cos(-pos.y * waveFrequency + u_time * waveSpeed) * waveHeight;
-                pos.z += wave;
-                vWave = wave;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-            }
-            `;
-
-            fragmentShader = `
-varying vec2 vUv;
-varying float vWave;
-
-void main() {
-    vec3 waterColor = vec3(0.0, 0.55, 0.5);
-    float alpha = 0.5;
-
-    // Froth effect at the crest of waves
-    float frothIntensity = clamp(vWave * 3.0, 0.0, 1.0); // Controls the intensity of the froth
-    vec3 frothColor = vec3(1.0, 1.0, 1.0); // White froth
-
-    // Blend water color with froth color based on wave height
-    vec3 finalColor = mix(waterColor, frothColor, frothIntensity);
-
-    gl_FragColor = vec4(finalColor, alpha);
-}
-`;
-
-
-
+        class MRWater extends MREntity {
 
             constructor() {
                 super()
 
-                let geomertry = new THREE.PlaneGeometry( 8, 8, 100, 100 );
+                const params = {
+                    color: '#00ccff',
+                    scale: 0.25,
+                    flowX: 0.5,
+                    flowY: 0.5
+                };
 
-                let material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        u_time: { value: 0.0 }
-                    },
-                    vertexShader: this.vertexShader,
-                    fragmentShader: this.fragmentShader,
-                    transparent: true
+                const waterGeometry = new THREE.PlaneGeometry(0.9, 0.9);
+                this.water = new Water(waterGeometry, {
+                    color: params.color,
+                    scale: params.scale,
+                    flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg'),
+                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg'),
+                    textureWidth: 1024,
+                    textureHeight: 1024
                 });
 
-                this.water = new THREE.Mesh(geomertry, material)
-                this.object3D.add(this.water)
+                this.water.material.clipping = true;
+                this.water.rotation.x = -Math.PI / 2
+                this.water.position.y = 0.3;
+                this.object3D.add(this.water);
 
             }
         }
 
-        class WaterSystem extends MRSystem {
-            constructor(){
-                super(false)
-                this.water = document.getElementById('water')
+        customElements.get('mr-water') || customElements.define('mr-water', MRWater);
 
-                if(this.water) {
-                    this.registry.add(this.water)
+
+        /*********** end: mr-water entity ***********/
+
+
+        let water = document.getElementById('water')
+
+        document.addEventListener('anchored', (e) => {
+
+                if (e.target == water.parentElement && e.target.plane) {
+                    let width = e.target.plane.dimensions.x - 0.01
+                    let depth = e.target.plane.dimensions.z - 0.01
+                    let height = width > depth ? width : depth
+                    height /= 2
+                    water.water.geometry.copy(new THREE.PlaneGeometry(width, depth))
                 }
+            })
 
-            }
-
-            update(deltaTime, frame) {
-                this.water.water.material.uniforms.u_time.value += deltaTime
-            }
-        }
-
-        let ws = new WaterSystem()
-
-        customElements.get('mr-water') || customElements.define('mr-water', Water);
-
-
-        // let floatingAnchor = document.getElementById('floating')
+        let floatingAnchor = document.getElementById('floating')
         let wallAnchor = document.getElementById('wall')
         let tableAnchor = document.getElementById('table')
         let floorAnchor = document.getElementById('floor')
@@ -313,7 +279,8 @@ void main() {
         let allAnchors = [ wallAnchor, tableAnchor, floorAnchor, ceilingAnchor]
 
         for (const entity of allAnchors) {
-            entity.object3D.visible = false
+            entity.style.visibility = 'hidden'
+            console.log('false');
         }
 
         let panel = document.getElementById('panel')
@@ -327,21 +294,21 @@ void main() {
         }
 
         function wall() {
-            wallAnchor.object3D.visible = !wallAnchor.object3D.visible
+            wallAnchor.style.visibility = wallAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
             wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
         }
 
         function table() {
-            tableAnchor.object3D.visible = !tableAnchor.object3D.visible
+            tableAnchor.style.visibility = tableAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
         }
 
         function floor() {
-            floorAnchor.object3D.visible = !floorAnchor.object3D.visible
+            floorAnchor.style.visibility = floorAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
 
         }
 
         function ceiling() {
-            ceilingAnchor.object3D.visible = !ceilingAnchor.object3D.visible
+            ceilingAnchor.style.visibility = ceilingAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
             ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
 
         }
@@ -349,7 +316,7 @@ void main() {
         function reset() {
             for (const entity of allAnchors) {
                 entity.components.set('anchor', {occlusion: true})
-                entity.object3D.visible = false
+                entity.style.visibility = 'hidden'
             }
         }
 

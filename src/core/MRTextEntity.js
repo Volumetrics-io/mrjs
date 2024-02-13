@@ -27,18 +27,23 @@ export class MRTextEntity extends MRDivEntity {
 
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
         // accordingly
-        this.needsStyleUpdate = true;
         document.addEventListener('panel-mutated', () => {
-            this.needsStyleUpdate = true;
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
         });
-    }
 
-    /**
-     * @description Represents the height of the rendering area for the text, counting as the CSS height in pixels.
-     * @returns {number} the resolved height
-     */
-    get height() {
-        return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
+        document.addEventListener('font-loaded', () => {
+            if (!this.alwaysNeedsGeometryUpdate) {
+                this.needsGeometryUpdate = true;
+            }
+            if (!this.alwaysNeedsStyleUpdate) {
+                this.needsStyleUpdate = true;
+            }
+        });
     }
 
     /**
@@ -48,6 +53,29 @@ export class MRTextEntity extends MRDivEntity {
     connected() {
         const text = this.textContent.trim();
         this.textObj.text = text.length > 0 ? text : ' ';
+        if (!this.alwaysNeedsGeometryUpdate) {
+            this.needsGeometryUpdate = true;
+        }
+        if (!this.alwaysNeedsStyleUpdate) {
+            this.needsStyleUpdate = true;
+        }
+    }
+
+    /**
+     * @function
+     * @description Runs the passed through function on this object and every child of this object.
+     * @param {Function} callBack - the function to run recursively.
+     */
+    traverse(callBack) {
+        callBack(this);
+        const children = Array.from(this.object3D.children);
+        for (const child of children) {
+            // if o is an object, traverse it again
+            if ((!child) instanceof MREntity) {
+                continue;
+            }
+            child.traverse(callBack);
+        }
     }
 }
 

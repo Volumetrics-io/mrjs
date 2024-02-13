@@ -5,7 +5,7 @@
     <title>mrjs - embed</title>
     <meta name="description" content="mr.js example - embed">
     <script src="/mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="embed.css" />
+    <link rel="stylesheet" type="text/css" href="embed-style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
@@ -56,19 +56,6 @@
   </body>
 
   <footer>
-    <script>
-
-      let model = document.querySelector('#logo-model')
-
-
-      // increases the maxspeed and acceleration of the animation component on the logo
-      function spin() {
-        console.log(document.querySelector('.spin-button').textObj);
-        let animationComp = model.components.get('animation')
-        model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-      }
-
-      
-    </script>
+    <script src="/assets/js/SpinSystem.js"></script>
   </footer>
 </html>
