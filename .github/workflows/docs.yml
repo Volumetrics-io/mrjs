@@ -73,7 +73,7 @@ jobs:
 
     - name: Commit only if there are changes
       run: |
-        if [[ -n $(git diff --exit-code) ]]; then
+        if [[ -n $(git status --porcelain) ]]; then
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
