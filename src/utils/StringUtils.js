@@ -1,5 +1,5 @@
 /**
- * @namespace StringUtils
+ * @namespace stringUtils
  * @description Useful namespace for helping with String utility functions
  */
 let stringUtils = {};
@@ -8,7 +8,7 @@ let stringUtils = {};
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof stringUtils
  * @description Converts and formats the inputted string to a json object.
  * @param {string} attrString - the string to be formatted
  * @returns {object} - object in json form
