@@ -88,6 +88,8 @@
         <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
         <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
       </mr-entity>
+
+      <mr-water id="water-hi"></mr-water>
         
     </mr-app>
   </body>
@@ -97,6 +99,8 @@
     <script>
 
       let model = document.querySelector('#logo-model')
+      let water = document.querySelector('#water-hi')
+      console.log(water);
 
       console.log(mrjsUtils.xr.isPresenting);
 
