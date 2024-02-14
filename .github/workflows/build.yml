@@ -61,10 +61,6 @@ jobs:
         name: build-artifacts
         path: ./dist
 
-    - name: check git status
-      run: |
-        git status --porcelain && ls -al
-
     - name: Check for changes
       id: check_changes
       run: |
@@ -79,3 +75,5 @@ jobs:
         else
           echo "No changes detected. Exiting without committing."
         fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
