@@ -4,6 +4,8 @@ name: npm run build
 on:
   workflow_dispatch:
   push:
+    branches:
+      - '**' # This allows the workflow to run on all branches for the build job
 
 permissions:
   contents: read
@@ -34,8 +36,9 @@ jobs:
         npm run build
 
   check-dist:
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: build
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
