@@ -35,6 +35,13 @@ jobs:
       run: |
         npm run build
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./dist
+
+
   check-dist:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: build
@@ -43,6 +50,11 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Fetch all history for all tags and branches
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
 
     - name: check git status
       run: |
