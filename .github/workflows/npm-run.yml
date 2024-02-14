@@ -71,6 +71,9 @@ jobs:
     - name: debug List extracted node_modules
       run: ls -al
 
+    - name: try rebuild
+      run: npm rebuild
+
     - name: remove potentially old dist
       run: |
         rm -rf ./dist
