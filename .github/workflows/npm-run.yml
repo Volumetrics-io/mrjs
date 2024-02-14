@@ -50,43 +50,6 @@ jobs:
         name: npm-artifacts
         path: ./npm-artifacts.zip
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 21
-    
-    - name: Download Npm Artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: npm-artifacts
- 
-    - name: extract node_modules
-      run: unzip npm-artifacts.zip -d ./
-
-    - name: debug List extracted node_modules
-      run: ls -al
-
-    - name: try rebuild
-      run: npm rebuild
-
-    - name: remove potentially old dist
-      run: |
-        rm -rf ./dist
-
-    - name: Download Build Artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: build-artifacts
-        path: ./dist
-    
-    - name: 👷 Test
-      run: npm run test
-
   check-dist:
     if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: build
@@ -120,4 +83,90 @@ jobs:
           git -c http.extraHeader="AUTHORIZATION: basic $(echo -n x-access-token:${{ secrets.MRJS_AND_DOCS_REPO_PAT }} | base64)" push origin HEAD:main
         else
           echo "No changes detected. Exiting without committing."
+        fi
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+    
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./dist
+    
+    - name: 👷 Test
+      run: npm run test
+
+  check-format:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+    
+    - name: 👷 Check if format is needed
+      run: |
+        # check if either need fixes
+
+        npm run prettier-check
+        exit_code_function_prettier=$?
+
+        npm run lint-check
+        exit_code_function_lint=$?
+
+        # check lint first, because it might have changed some prettier items
+        # if lint is successful, then check against prettier to see if there were 
+        # any remaining problem items
+        #
+        # doing this ordering because prettier runs first and then is followed by lint
+        #
+        # this is also necessary because part of prettier and lint are in conflict atm
+        # but it's based on a specific formatting setting, to be resolved.
+        if [ $exit_code_function_lint -ne 0 ]; then
+            echo "Function lint encountered an error"
+            echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+            exit 1
+        elif [ $exit_code_function_prettier -ne 0 ]; then
+            echo "Function prettier encountered an error"
+            echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+            exit 1
+        fi
+
+        if ! npm run check-format; then
+          echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+          exit 1
         fi
