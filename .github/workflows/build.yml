@@ -4,9 +4,11 @@ name: npm run build
 on:
   workflow_dispatch:
   push:
+    branches:
+      - '**' # This allows the workflow to run on all branches for the build job
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -32,3 +34,48 @@ jobs:
     - name: 👷 Build
       run: |
         npm run build
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./dist
+
+
+  check-dist:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all history for all tags and branches
+
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./dist
+
+    - name: check git status
+      run: |
+        git status --porcelain && ls -al
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs - Auto Generated Dist 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
