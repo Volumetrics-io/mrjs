@@ -214,7 +214,7 @@ export class PhysicsSystem extends MRSystem {
         if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
             entity.physics.body.setEnabled(false);
         } else if (!entity.physics.body.isEnabled()) {
-            entity.physics.body.setEnabled(false);
+            entity.physics.body.setEnabled(true);
         }
 
         if (entity instanceof MRPanel) {
