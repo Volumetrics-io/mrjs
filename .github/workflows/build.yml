@@ -50,6 +50,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Fetch all history for all tags and branches
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
     - name: remove potentially old dist
       run: |
@@ -71,9 +72,7 @@ jobs:
           commit_message=$'👷 MRjs - Auto Generated Dist 👷\n\nChanges at '"${GITHUB_SHA}"
           git add .
           git commit -m "$commit_message"
-          git push --quiet --set-upstream origin HEAD
+          git -c http.extraHeader="AUTHORIZATION: basic $(echo -n x-access-token:${{ secrets.MRJS_AND_DOCS_REPO_PAT }} | base64)" push origin HEAD:main
         else
           echo "No changes detected. Exiting without committing."
         fi
-      env:
-          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
