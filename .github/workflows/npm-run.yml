@@ -35,17 +35,20 @@ jobs:
       run: |
         npm run build
 
-    - name: Upload Artifacts
+    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: build-artifacts
         path: ./dist
 
-    - name: Upload Artifacts
+    - name: Archive node_modules
+      run: zip -r npm-artifacts.zip ./node_modules
+
+    - name: Upload Npm Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: npm-artifacts
-        path: ./node_modules
+        path: ./npm-artifacts.zip
 
   test:
     needs: build
@@ -64,7 +67,9 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: npm-artifacts
-        path: ./node_modules
+ 
+    - name: extract node_modules
+      run: unzip npm-artifacts.zip
 
     - name: remove potentially old dist
       run: |
