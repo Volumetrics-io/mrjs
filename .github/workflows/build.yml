@@ -51,10 +51,15 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history for all tags and branches
 
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
     - name: Download Artifacts
       uses: actions/download-artifact@v3
       with:
         name: build-artifacts
+        path: ./dist
 
     - name: check git status
       run: |
