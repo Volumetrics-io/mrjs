@@ -118,6 +118,87 @@ jobs:
     - name: 👷 Test
       run: npm run test
 
+  js-api-docs:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: build
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # NOTE - 
+    #
+    # For local documentation or to check the local output when writing your own pr to see how it will
+    # update, run `npm run docs`. As a heads up, order of creation of docs depends on your operating
+    # system, so if when you run this the order looks different, no worries - in the repo itself our
+    # action will handle that for you and default to use the right version for these automatically
+    # generated docs.
+    # 
+    # We're using mac as default for doc order generation (the order from that os makes the most sense
+    # from a readability perspective).
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+    
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+
+    - name: 👷 Write the markdown docs
+      run: |
+        npm run docs
+
+    - name: Get Docs content
+      id: get-docs
+      run: |
+        rm -rf ../doc
+        mkdir -p ../doc
+        cp -rf ./docs/* ../doc/
+
+    - name: see if info is there
+      run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout documentation Repository
+      uses: actions/checkout@v4
+      with:
+        repository: Volumetrics-io/documentation
+        ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: Update Docs
+      run: |
+        rm -rf "./source/js-api*"
+        cp -a "../doc/js-api" "./source/"
+        cp -a "../doc/js-api-utils" "./source/"
+        cp -a "../doc/js-api-extras" "./source/"
+        ls -al ./source
+
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
   check-format:
     needs: build
     runs-on: ubuntu-latest
