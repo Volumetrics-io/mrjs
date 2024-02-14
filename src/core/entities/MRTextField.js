@@ -41,7 +41,6 @@ export class MRTextField extends MRTextEntity {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.input.setAttribute('value', this.textContent.replace(/(\n)\s+/g, '$1').trim());
-            console.log('textfield', this.textContent.replace(/(\n)\s+/g, '$1').trim());
         });
 
         this.input.style.opacity = 0; // Make it invisible
