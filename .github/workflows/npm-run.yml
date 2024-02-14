@@ -1,5 +1,5 @@
 # Build MRjs and confirm everything passes
-name: npm run build
+name: npm run
 
 on:
   workflow_dispatch:
@@ -41,6 +41,43 @@ jobs:
         name: build-artifacts
         path: ./dist
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: npm-artifacts
+        path: ./node_modules
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+      # todo - run the npm install with a dockerfile setup instead of pure
+      # install but not important to do right now since install isnt too long
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: npm-artifacts
+        path: ./node_modules
+
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./dist
+    
+    - name: 👷 Test
+      run: npm run test
 
   check-dist:
     if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
