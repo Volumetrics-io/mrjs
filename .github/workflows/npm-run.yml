@@ -86,7 +86,7 @@ jobs:
         fi
 
   test:
-    needs: build
+    needs: [build, check-dist] # auto ignores check-dist if not on main
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
 
   js-api-docs:
     if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
-    needs: build
+    needs: [build, check-dist] # auto ignores check-dist if not on main
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -200,7 +200,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   check-format:
-    needs: build
+    needs: [build, check-dist] # auto ignores check-dist if not on main
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
