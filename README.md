@@ -1,4 +1,4 @@
-![The mrjs logo](https://docs.mrjs.io/static/mrjs_nopadding.svg)
+![The MRjs logo, an indigo and purple bowtie.](https://docs.mrjs.io/static/mrjs-logo.svg)
  
 An extensible library of Web Components for the spatial web.
 
