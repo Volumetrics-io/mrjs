@@ -44,7 +44,7 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history for all tags and branches
 
-    - uses: check git status
+    - name: check git status
       run: |
         git status --porcelain && ls -al
 
