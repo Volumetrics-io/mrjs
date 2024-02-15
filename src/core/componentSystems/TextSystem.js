@@ -115,25 +115,19 @@ export class TextSystem extends MRSystem {
             }
             if (textContentChanged || entity.needsStyleUpdate) {
 
-                if(text.length > 0) {
-                    this.updateStyle(entity);
-                    entity.textObj.sync(() => {
-                        if (entity instanceof MRButton) {
-                            entity.textObj.anchorX = 'center';
-                        } else {
-                            entity.textObj.position.setX(-entity.width / 2);
-                            entity.textObj.position.setY(entity.height / 2);
-                        }
+                this.updateStyle(entity);
+                entity.textObj.sync(() => {
+                    if (entity instanceof MRButton) {
+                        entity.textObj.anchorX = 'center';
+                    } else {
+                        entity.textObj.position.setX(-entity.width / 2);
+                        entity.textObj.position.setY(entity.height / 2);
+                    }
 
-                        if (isTextFieldOrArea) {
-                            this.updateTextInput(entity)
-                        }
-                    });
-                } else {
                     if (isTextFieldOrArea) {
                         this.updateTextInput(entity)
                     }
-                }
+                });
             }
         }
     }
@@ -153,8 +147,11 @@ export class TextSystem extends MRSystem {
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
-
-        textObj.font = this.preloadedFonts[entity.compStyle.fontFamily] ?? textObj.font;
+        if(textObj.text.trim().length != 0) { 
+            textObj.font = this.preloadedFonts[entity.compStyle.fontFamily]
+        } else {
+            textObj.font = null
+        }
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
         textObj.fontStyle = entity.compStyle.fontStyle;
