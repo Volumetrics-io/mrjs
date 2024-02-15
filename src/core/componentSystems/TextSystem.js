@@ -102,7 +102,7 @@ export class TextSystem extends MRSystem {
                   // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
                   entity.textContent
                       .replace(/(\n)\s+/g, '$1')
-                      .replace(/(\r\n|\n|\r)/gm, '')
+                      .replace(/(\r\n|\n|\r)/gm, ' ')
                       .trim();
 
             let textContentChanged = entity.textObj.text != text;
@@ -111,28 +111,38 @@ export class TextSystem extends MRSystem {
             // we can go and do the larger calculations and changes.
 
             if (textContentChanged) {
-                entity.textObj.text = text.length > 0 ? text : ' ';
+                entity.textObj.text = text
             }
             if (textContentChanged || entity.needsStyleUpdate) {
-                if (isTextFieldOrArea) {
-                    if (entity == document.activeElement) {
-                        entity.updateCursorPosition();
-                    } else {
-                        entity.blur();
+
+                if(text.length > 0) {
+                    this.updateStyle(entity);
+                    entity.textObj.sync(() => {
+                        if (entity instanceof MRButton) {
+                            entity.textObj.anchorX = 'center';
+                        } else {
+                            entity.textObj.position.setX(-entity.width / 2);
+                            entity.textObj.position.setY(entity.height / 2);
+                        }
+
+                        if (isTextFieldOrArea) {
+                            this.updateTextInput(entity)
+                        }
+                    });
+                } else {
+                    if (isTextFieldOrArea) {
+                        this.updateTextInput(entity)
                     }
                 }
-
-                this.updateStyle(entity);
-
-                entity.textObj.sync(() => {
-                    if (entity instanceof MRButton) {
-                        entity.textObj.anchorX = 'center';
-                    } else {
-                        entity.textObj.position.setX(-entity.width / 2);
-                        entity.textObj.position.setY(entity.height / 2);
-                    }
-                });
             }
+        }
+    }
+
+    updateTextInput(entity) {
+        if (entity == document.activeElement) {
+            entity.updateCursorPosition();
+        } else {
+            entity.blur();
         }
     }
 

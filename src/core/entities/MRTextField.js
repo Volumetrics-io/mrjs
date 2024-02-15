@@ -10,6 +10,21 @@ import { MRTextEntity } from 'mrjs/core/MRTextEntity';
  * @augments MRTextEntity
  */
 export class MRTextField extends MRTextEntity {
+
+    //  /**
+    //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
+    //  */
+    //  get height() {
+    //     return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
+    // }
+
+    // /**
+    //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
+    //  */
+    // get width() {
+    //     return Math.abs(this.textObj.textRenderInfo?.blockBounds[2] ?? 1);
+    // }
+
     /**
      * @class
      * @description Constructor for the textField entity component.
@@ -17,6 +32,8 @@ export class MRTextField extends MRTextEntity {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        this.wrapper = this.shadowRoot.appendChild(document.createElement('div'));
+        this.wrapper.innerHTML = "<slot></slot>";
     }
 
     /**
@@ -47,8 +64,13 @@ export class MRTextField extends MRTextEntity {
         this.input.style.position = 'absolute'; // Avoid affecting layout
         this.shadowRoot.appendChild(this.input);
 
+
         this.addEventListener('click', (event) => {
-            this.focus();
+            this.focusInput();
+        });
+
+        this.addEventListener('keydown', (event) => {
+            this.needsStyleUpdate = true
         });
     }
 
@@ -65,7 +87,7 @@ export class MRTextField extends MRTextEntity {
      * @function
      * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
      */
-    focus = () => {
+    focusInput = () => {
         this.input.focus();
         this.input.selectionStart = this.input.value.length;
         this.cursor.visible = true;
@@ -83,15 +105,17 @@ export class MRTextField extends MRTextEntity {
     updateCursorPosition = () => {
         const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
         const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
-        if (isNaN(selectBox.right)) {
+        if (!selectBox || isNaN(selectBox.left)) {
+            this.cursor.position.setX(0);
             return;
-        }
-        if (this.input.selectionStart == 0) {
-            this.cursor.position.setX(selectBox.left);
         } else {
-            this.cursor.position.setX(selectBox.right);
+            if (this.input.selectionStart == 0) {
+                this.cursor.position.setX(selectBox.left);
+            } else {
+                this.cursor.position.setX(selectBox.right);
+            }
+            this.cursor.position.setY(selectBox.bottom / 2) //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
         }
-        this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
     };
 }
 
