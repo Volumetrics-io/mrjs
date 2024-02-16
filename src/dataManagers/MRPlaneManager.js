@@ -54,12 +54,12 @@ export class MRPlaneManager {
         floorMRPlane.mesh.visible = false
         floorMRPlane.body.setEnabled(false);
 
-        document.addEventListener('enterXR', () => {
+        document.addEventListener('enterxr', () => {
             floorMRPlane.mesh.visible = true
             floorMRPlane.body.setEnabled(true);
         });
 
-        document.addEventListener('exitXR', () => {
+        document.addEventListener('exitxr', () => {
             for (const [plane, mrplane] of this.currentPlanes) {
                 this.removePlane(plane, mrplane)
             }

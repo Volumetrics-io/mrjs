@@ -48,7 +48,7 @@ export class AnchorSystem extends MRSystem {
             this.registry.add(entity);
         }
 
-        this.app.addEventListener('enterXR', () => {
+        this.app.addEventListener('enterxr', () => {
             if (this.sourceRequest == false) {
                 mrjsUtils.xr.session.requestReferenceSpace('viewer').then((viewerSpace) => {
                     mrjsUtils.xr.session.requestHitTestSource({ space: viewerSpace }).then((source) => {
@@ -66,7 +66,7 @@ export class AnchorSystem extends MRSystem {
             }
         });
 
-        this.app.addEventListener('exitXR', () => {
+        this.app.addEventListener('exitxr', () => {
             this.deleteAnchor(this.app)
             this.app.origin.matrix.copy(new THREE.Matrix4())
         });

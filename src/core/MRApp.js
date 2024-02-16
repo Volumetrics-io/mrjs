@@ -449,8 +449,7 @@ export class MRApp extends MRElement {
             mrjsUtils.xr.session = this.renderer.xr.getSession();
             mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
-            this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
-            console.log('enter xr');
+            this.dispatchEvent(new CustomEvent('enterxr', { bubbles: true }));
 
             mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);
@@ -460,7 +459,7 @@ export class MRApp extends MRElement {
                 this.classList.remove('inXR');
 
                 this.onWindowResize();
-                this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
+                this.dispatchEvent(new CustomEvent('exitxr', { bubbles: true }));
             });
         }
 

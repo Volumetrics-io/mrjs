@@ -77,7 +77,7 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
-        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
     }
 
     /**
@@ -117,7 +117,7 @@ export class ControlSystem extends MRSystem {
                 const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider2.handle];
 
                 if (entity) {
-                    if (!jointCursor.name.includes('hover') && entity.touch) {
+                    if (!jointCursor.name.includes('hovermove') && entity.touch) {
                         this.tempPreviousPosition.copy(this.tempLocalPosition);
 
                         this.tempLocalPosition.copy(jointCursor.collider.translation());
@@ -126,7 +126,7 @@ export class ControlSystem extends MRSystem {
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
 
                         entity.dispatchEvent(
-                            new CustomEvent('touch', {
+                            new CustomEvent('touchmove', {
                                 bubbles: true,
                                 detail: {
                                     joint: jointCursor.name,
@@ -158,7 +158,7 @@ export class ControlSystem extends MRSystem {
         if (joint && entity) {
             return;
         }
-        if (!joint.includes('hover')) {
+        if (!joint.includes('hovermove')) {
             this.touchStart(collider1, collider2, entity);
         } else {
             this.hoverStart(collider1, collider2, entity);
@@ -178,7 +178,7 @@ export class ControlSystem extends MRSystem {
         if (joint && entity) {
             return;
         }
-        if (!joint.includes('hover')) {
+        if (!joint.includes('hovermove')) {
             this.touchEnd(entity);
         } else {
             this.hoverEnd(entity);
@@ -198,10 +198,10 @@ export class ControlSystem extends MRSystem {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
-            entity.classList.remove('hover');
+            entity.classList.remove('hovermove');
 
             entity.dispatchEvent(
-                new CustomEvent('touch-start', {
+                new CustomEvent('touchstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -225,7 +225,7 @@ export class ControlSystem extends MRSystem {
         entity.click();
 
         entity.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -239,13 +239,13 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverStart = (collider1, collider2, entity) => {
-        entity.classList.add('hover');
+        entity.classList.add('hovermove');
         this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
             entity.dispatchEvent(
-                new CustomEvent('hover-start', {
+                new CustomEvent('hoverstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -264,9 +264,9 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverEnd = (entity) => {
-        entity.classList.remove('hover');
+        entity.classList.remove('hovermove');
         entity.dispatchEvent(
-            new CustomEvent('hover-end', {
+            new CustomEvent('hoverend', {
                 bubbles: true,
             })
         );
@@ -319,11 +319,11 @@ export class ControlSystem extends MRSystem {
      */
     onMouseDown = (event) => {
         this.down = true;
-        this.currentEntity?.classList.remove('hover');
+        this.currentEntity?.classList.remove('hovermove');
         this.currentEntity?.classList.add('active');
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-start', {
+            new CustomEvent('touchstart', {
                 bubbles: true,
                 detail: {
                     worldPosition: this.hitPosition,
@@ -343,7 +343,7 @@ export class ControlSystem extends MRSystem {
         this.currentEntity?.dispatchEvent(new Event('click'));
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -358,20 +358,20 @@ export class ControlSystem extends MRSystem {
 
         if (!this.currentEntity) {
             this.currentEntity = entity;
-            this.currentEntity?.classList.add('hover');
+            this.currentEntity?.classList.add('hovermove');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
                 bubbles: true
             }));
             this.currentEntity.focus = true;
         } else if (!this.down && this.currentEntity != entity) {
-            this.currentEntity.classList.remove('hover');
+            this.currentEntity.classList.remove('hovermove');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseleave', {
                 bubbles: true
             }));
             this.currentEntity.focus = false;
 
             this.currentEntity = entity;
-            this.currentEntity?.classList.add('hover');
+            this.currentEntity?.classList.add('hovermove');
             this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
                 bubbles: true
             }));
@@ -380,7 +380,7 @@ export class ControlSystem extends MRSystem {
 
         if (this.down) {
             this.currentEntity?.dispatchEvent(
-                new CustomEvent('touch', {
+                new CustomEvent('touchmove', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.hitPosition,
@@ -401,7 +401,7 @@ export class ControlSystem extends MRSystem {
     pixelRayCast(event) {
         let x = 0;
         let y = 0;
-        if (event.type.includes('touch')) {
+        if (event.type.includes('touchmove')) {
             if (event.touches.length == 0) {
                 return;
             }
