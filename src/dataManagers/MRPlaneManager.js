@@ -1,6 +1,8 @@
 import { mrjsUtils } from 'mrjs';
 import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
+const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'door', 'window', 'shelf', 'bed', 'screen', 'lamp', 'plant', 'wall art', 'other']
+
 /**
  * @class MRPlaneManager
  * @classdesc creates and manages the MRjs representation of XR planes.
@@ -12,10 +14,12 @@ export class MRPlaneManager {
      * @param scene
      * @param physicsWorld
      */
-    constructor(scene, physicsWorld) {
+    constructor(scene, physicsWorld, occlusion) {
         // TODO: add app level controls for:
         // - planes
         // - mesh
+
+        this.occlusion = !occlusion || occlusion == "true"
 
         this.scene = scene;
         this.physicsWorld = physicsWorld;
@@ -23,6 +27,12 @@ export class MRPlaneManager {
         this.matrix = new THREE.Matrix4();
 
         this.currentPlanes = new Map();
+
+        this.planeDictionary = {}
+
+        for(const label of PLANE_LABELS) {
+            this.planeDictionary[label] = new Set();
+        }
 
         this.tempPosition = new THREE.Vector3();
         this.tempQuaternion = new THREE.Quaternion();
@@ -83,7 +93,6 @@ export class MRPlaneManager {
                         const height = maxZ - minZ;
 
                         if(plane.semanticLabel == 'floor') {
-                            console.log('replace');
                             this.removePlane(floorPlane, floorMRPlane)
                         }
 
@@ -113,6 +122,8 @@ export class MRPlaneManager {
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 
+        mrPlane.mesh.visible = this.occlusion;
+
         this.tempDimensions.setX(width / 2);
         this.tempDimensions.setY(0.01);
         this.tempDimensions.setZ(height / 2);
@@ -120,6 +131,7 @@ export class MRPlaneManager {
         mrPlane.body = this.initPhysicsBody();
 
         this.currentPlanes.set(plane, mrPlane);
+        this.planeDictionary[mrPlane.label].add(mrPlane)
         return mrPlane
     }
 
@@ -131,6 +143,7 @@ export class MRPlaneManager {
         this.physicsWorld.removeRigidBody(mrplane.body);
 
         this.currentPlanes.delete(plane);
+        this.planeDictionary[mrplane.label].delete(mrplane)
     }
 
     /**
