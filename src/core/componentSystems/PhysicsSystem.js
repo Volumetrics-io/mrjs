@@ -235,7 +235,7 @@ export class PhysicsSystem extends MRSystem {
 
         if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
             entity.physics.body.setEnabled(false);
-        } else if (!entity.physics.body.isEnabled()) {
+        } else if (!entity.physics.body.isEnabled() && entity.compStyle.visibility == 'visible') {
             entity.physics.body.setEnabled(true);
             // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
         //       and model will get more complex as we add convexMesh support
