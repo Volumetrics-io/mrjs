@@ -8,8 +8,6 @@ import { MRDivEntity } from '../MRDivEntity';
 import { MRPanel } from '../entities/MRPanel';
 import { MRModel } from '../entities/MRModel';
 
-const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate']
-
 /**
  * @class PhysicsSystem
  * @classdesc The physics system functions differently from other systems,
@@ -49,15 +47,9 @@ export class PhysicsSystem extends MRSystem {
             this.lines = new THREE.LineSegments(geometry, material);
             this.app.scene.add(this.lines);
         }
-
-        for(const eventType of GLOBAL_UPDATE_EVENTS) {
-            document.addEventListener(eventType, (event) => {
-                this.globalColliderUpdate()
-            });
-        }
     }
 
-    globalColliderUpdate = () => {
+    eventUpdate = () => {
         for (const entity of this.registry) {
             if (entity.physics?.body == null) {
                 continue;
