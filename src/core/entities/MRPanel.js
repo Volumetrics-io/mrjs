@@ -54,7 +54,7 @@ export class MRPanel extends MRDivEntity {
             this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
-        this.parentElement.addEventListener('anchor-removed', (event) => {
+        this.parentElement.addEventListener('anchorremoved', (event) => {
             this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 

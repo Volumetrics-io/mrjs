@@ -218,7 +218,7 @@ export class AnchorSystem extends MRSystem {
             entity.plane = null;
         }
         entity.anchor = null;
-        entity.dispatchEvent(new CustomEvent('anchor-removed', { bubbles: true }));
+        entity.dispatchEvent(new CustomEvent('anchorremoved', { bubbles: true }));
     }
 
     /**
