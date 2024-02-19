@@ -77,7 +77,7 @@ export class ControlSystem extends MRSystem {
         this.app.renderer.domElement.addEventListener('touchstart', this.onMouseDown);
         this.app.renderer.domElement.addEventListener('touchend', this.onMouseUp);
         this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
-        this.app.renderer.domElement.addEventListener('touchmove', this.mouseOver);
+        this.app.renderer.domElement.addEventListener('touch', this.mouseOver);
     }
 
     /**
