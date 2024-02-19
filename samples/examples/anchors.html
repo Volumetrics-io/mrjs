@@ -45,10 +45,6 @@
 
         <mr-div class="col-2">
 
-            <mr-button onclick="floating()" class=" label button" >
-                floating
-            </mr-button>
-
             <mr-button onclick="fixed()" class=" label button" >
                 fixed
             </mr-button>
@@ -98,13 +94,13 @@
          positions the anchored element directly in front of the user whenever an XR sessions is started.
         </mr-text>
 
-        <mr-text class="label-2 col-2">
+        <!-- <mr-text class="label-2 col-2">
         floating
         </mr-text>
 
         <mr-text class="col-2">
             allows the user to place the anchored element where they choose using a look/pinch gesture. The user can place it floating in their space or on the scene mesh
-        </mr-text>
+        </mr-text> -->
 
         <mr-text class="label-2 col-2">
         plane
@@ -293,9 +289,11 @@
             panel.components.set('anchor', {type: 'fixed'})
         }
 
+        let wallVisible = false
         function wall() {
-            wallAnchor.style.visibility = wallAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
-            wallAnchor.components.set('anchor', {occlusion: !wallAnchor.object3D.visible})
+            wallVisible = !wallVisible
+            wallAnchor.style.visibility = wallVisible ? 'visible' : 'hidden'
+            wallAnchor.components.set('anchor', {occlusion: !wallVisible})
         }
 
         function table() {
@@ -307,9 +305,12 @@
 
         }
 
+        let ceilingVisible = false
+
         function ceiling() {
-            ceilingAnchor.style.visibility = ceilingAnchor.style.visibility == 'hidden' ? 'visible' : 'hidden'
-            ceilingAnchor.components.set('anchor', {occlusion: !ceilingAnchor.object3D.visible})
+            ceilingVisible = !ceilingVisible
+            ceilingAnchor.style.visibility = ceilingVisible ? 'visible' : 'hidden'
+            ceilingAnchor.components.set('anchor', {occlusion: !ceilingVisible})
 
         }
 
@@ -320,7 +321,7 @@
             }
         }
 
-        document.addEventListener('exitXR', () => {
+        document.addEventListener('exitxr', () => {
             reset()
         })
       
