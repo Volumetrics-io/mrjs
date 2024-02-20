@@ -39,7 +39,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.width);
+        let width = this.imageObject3DFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
 
@@ -49,7 +49,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.height);
+        let height = this.imageObject3DFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
 
@@ -110,13 +110,14 @@ export class MRImage extends MRDivEntity {
      * @description computes the width and height values for the image considering the value of object-fit
      */
     computeImageObject3DFitDimensions() {
+        console.log(this.compStyle.objectFit);
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
-
+                this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+                break
             case 'contain':
-            case 'scale-down': {
-                let ratio = Math.min(this.offsetWidth / this.img.width, this.offsetHeight / this.img.height);
+            case 'scale-down':
+                let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
                 let scaledWidth = this.img.width * ratio;
                 let scaledHeight = this.img.height * ratio;
 
@@ -127,19 +128,17 @@ export class MRImage extends MRDivEntity {
 
                 this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
                 break;
-            }
-
-            case 'cover': {
+            case 'cover':
                 let imageRatio = this.img.width / this.img.height;
-                let containerRatio = this.offsetWidth / this.offsetHeight;
-
+                let containerRatio = this.parentElement.width / this.parentElement.height;
                 if (containerRatio > imageRatio) {
-                    this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
+                    this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+                    this.cover(this.texture, containerRatio)
                 } else {
-                    this.imageObject3DFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
+                    this.imageObject3DFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
                 }
+                console.log(this.imageObject3DFitDimensions);
                 break;
-            }
 
             case 'none':
                 this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
