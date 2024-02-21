@@ -77,6 +77,8 @@ mr-app {
   /* SHADOWS */
   --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
   --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
+  /* SCROLL BAR WIDTH */
+  --scrollbar-width: 15px; /* An estimated average scrollbar width */
 }
 
 body {
@@ -99,15 +101,26 @@ main {
 }
 
 .layout {
-  max-width: 100%;
+  background-color: var(--color-paper);
+  padding-top: 6vw;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1vw;
+  grid-auto-rows: auto;
+}
+
+/*
+.layout {
   background-color: var(--color-paper);
   padding-top: 6vw;
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 1vw;
   grid-auto-rows: minmax(100px, auto);
+  max-width: var(--content-max-width);
+
   margin: auto;
-}
+}*/
 
 #navbar {
   background-color: rgb(51, 50, 50);

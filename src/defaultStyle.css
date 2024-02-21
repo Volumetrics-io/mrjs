@@ -31,8 +31,9 @@ mr-panel {
     background-color: #fff;
     border-radius: 2%;
     position: fixed;
-    overflow: scroll;
-/*    overflow: auto;*/
+/*    overflow: scroll;*/
+    overflow: auto;
+/*      padding-right: 15px; /* Adjust based on expected scrollbar width */
 /*padding: 0;*/
     height: 100vh;
     width: 100vw;

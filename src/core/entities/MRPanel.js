@@ -126,10 +126,16 @@ export class MRPanel extends MRDivEntity {
 
         let app = this.closest('mr-app');
 
-        if (app.compStyle.overflow == 'scroll') {
+        if (app.compStyle.overflow == 'scroll' || app.compStyle.overflow == 'auto') {
+            let before = app.scrollTop;
             app.scrollTop += mrjsUtils.css.threeToPx(this.delta);
+            console.log('scroll/auto: scrolling before', before, ' after', app.scrollTop);
         } else {
-            this.scrollBy(0, mrjsUtils.css.threeToPx(this.delta));
+                        let before = app.scrollTop;
+
+            app.scrollTop += mrjsUtils.css.threeToPx(this.delta);
+            // window.scrollBy(0, mrjsUtils.css.threeToPx(this.delta));
+            console.log('NOT scroll/auto: scrolling before', before, ' after', app.scrollTop);
         }
     };
 
