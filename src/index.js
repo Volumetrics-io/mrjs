@@ -30,6 +30,7 @@ import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
+import './core/entities/MRVideo';
 import './core/entities/MRLight';
 import './core/entities/MRModel';
 import './core/entities/MRPanel';
