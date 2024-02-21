@@ -252,25 +252,28 @@ export class MRApp extends MRElement {
             this.compStyle = window.getComputedStyle(this);
         }
 
-        navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
-            this.xrsupport = supported;
+        // We don't support mobile XR yet
+        if (!this.isMobile) {
+            navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
+                this.xrsupport = supported;
 
-            if (this.xrsupport) {
-                this.XRButton = XRButton.createButton(this.renderer, {
-                    requiredFeatures: ['local', 'hand-tracking'],
-                    optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
-                });
+                if (this.xrsupport) {
+                    this.XRButton = XRButton.createButton(this.renderer, {
+                        requiredFeatures: ['local', 'hand-tracking'],
+                        optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
+                    });
 
-                this.XRButton.addEventListener('click', () => {
-                    this.classList.add('inXR');
-                    this.XRButton.blur();
-                });
-                document.body.appendChild(this.XRButton);
+                    this.XRButton.addEventListener('click', () => {
+                        this.classList.add('inXR');
+                        this.XRButton.blur();
+                    });
+                    document.body.appendChild(this.XRButton);
 
-                this.XRButton.style.position = 'fixed';
-                this.XRButton.style.zIndex = 10000;
-            }
-        });
+                    this.XRButton.style.position = 'fixed';
+                    this.XRButton.style.zIndex = 10000;
+                }
+            });
+        }
 
         this.renderer.setAnimationLoop(this.render);
 
