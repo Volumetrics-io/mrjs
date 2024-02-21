@@ -126,7 +126,7 @@ export class ControlSystem extends MRSystem {
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
 
                         entity.dispatchEvent(
-                            new CustomEvent('touch', {
+                            new CustomEvent('touchmove', {
                                 bubbles: true,
                                 detail: {
                                     joint: jointCursor.name,
@@ -201,7 +201,7 @@ export class ControlSystem extends MRSystem {
             entity.classList.remove('hover');
 
             entity.dispatchEvent(
-                new CustomEvent('touch-start', {
+                new CustomEvent('touchstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -225,7 +225,7 @@ export class ControlSystem extends MRSystem {
         entity.click();
 
         entity.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -245,7 +245,7 @@ export class ControlSystem extends MRSystem {
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
             entity.dispatchEvent(
-                new CustomEvent('hover-start', {
+                new CustomEvent('hoverstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -266,7 +266,7 @@ export class ControlSystem extends MRSystem {
     hoverEnd = (entity) => {
         entity.classList.remove('hover');
         entity.dispatchEvent(
-            new CustomEvent('hover-end', {
+            new CustomEvent('hoverend', {
                 bubbles: true,
             })
         );
@@ -323,7 +323,7 @@ export class ControlSystem extends MRSystem {
         this.currentEntity?.classList.add('active');
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-start', {
+            new CustomEvent('touchstart', {
                 bubbles: true,
                 detail: {
                     worldPosition: this.hitPosition,
@@ -343,7 +343,7 @@ export class ControlSystem extends MRSystem {
         this.currentEntity?.dispatchEvent(new Event('click'));
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -380,7 +380,7 @@ export class ControlSystem extends MRSystem {
 
         if (this.down) {
             this.currentEntity?.dispatchEvent(
-                new CustomEvent('touch', {
+                new CustomEvent('touchmove', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.hitPosition,
@@ -401,7 +401,7 @@ export class ControlSystem extends MRSystem {
     pixelRayCast(event) {
         let x = 0;
         let y = 0;
-        if (event.type.includes('touch')) {
+        if (event.type.includes('touchmove')) {
             if (event.touches.length == 0) {
                 return;
             }
