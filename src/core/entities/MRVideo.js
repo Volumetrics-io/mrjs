@@ -60,18 +60,19 @@ export class MRVideo extends MRDivEntity {
      */
     connected() {
         this.video = document.createElement('video');
+
         this.video.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.video.setAttribute('style', 'object-fit:inherit; width:inherit');
-        this.shadowRoot.appendChild(this.video);
+        this.video.setAttribute('crossorigin', 'anonymous');
+        this.video.addEventListener('loadeddata', () => {
+            console.log(this.video.videoWidth);
+        });
+            
 
         this.videoObject3DFitDimensions = { height: 0, width: 0 };
-        this.computeVideoObject3DFitDimensions();
-
-        // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.object3D.geometry !== undefined) {
-            this.object3D.geometry.dispose();
-        }
-        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+        if(this.getAttribute('src') !== undefined) {
+            this.computeVideoObject3DFitDimensions();
+            this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
         mrjsUtils.material
             .loadVideoTextureAsync(this.video)
             .then((texture) => {
@@ -81,6 +82,14 @@ export class MRVideo extends MRDivEntity {
             .catch((error) => {
                 console.error('Error loading texture:', error);
             });
+        }
+        
+
+        // first creation of the object3D geometry. dispose is not needed but adding just in case.
+        if (this.object3D.geometry !== undefined) {
+            this.object3D.geometry.dispose();
+        }
+        
     }
 
     /**
@@ -89,6 +98,7 @@ export class MRVideo extends MRDivEntity {
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
+        console.log('got here')
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.video.setAttribute('src', this.getAttribute('src'));
@@ -120,13 +130,13 @@ export class MRVideo extends MRDivEntity {
 
             case 'contain':
             case 'scale-down': {
-                let ratio = Math.min(this.offsetWidth / this.video.width, this.offsetHeight / this.video.height);
-                let scaledWidth = this.video.width * ratio;
-                let scaledHeight = this.video.height * ratio;
+                let ratio = Math.min(this.offsetWidth / this.video.videoWidth, this.offsetHeight / this.video.videoHeight);
+                let scaledWidth = this.video.videoWidth * ratio;
+                let scaledHeight = this.video.videoHeight * ratio;
 
                 if (this.compStyle.objectFit === 'scale-down') {
-                    scaledWidth = Math.min(scaledWidth, this.video.width);
-                    scaledHeight = Math.min(scaledHeight, this.video.height);
+                    scaledWidth = Math.min(scaledWidth, this.video.videoWidth);
+                    scaledHeight = Math.min(scaledHeight, this.video.videoHeight);
                 }
 
                 this.videoObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
@@ -134,7 +144,7 @@ export class MRVideo extends MRDivEntity {
             }
 
             case 'cover': {
-                let videoRatio = this.video.width / this.video.height;
+                let videoRatio = this.video.videoWidth / this.video.videoHeight;
                 let containerRatio = this.offsetWidth / this.offsetHeight;
 
                 if (containerRatio > videoRatio) {
@@ -146,12 +156,28 @@ export class MRVideo extends MRDivEntity {
             }
 
             case 'none':
-                this.videoObject3DFitDimensions = { width: this.video.width, height: this.video.height };
+                this.videoObject3DFitDimensions = { width: this.video.videoWidth, height: this.video.videoHeight };
                 break;
 
             default:
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
         }
+        // set the video width and height to the video size
+        this.video.width = this.videoObject3DFitDimensions.width;
+        this.video.height = this.videoObject3DFitDimensions.height;
+        // set this width and height to video 
+        this.style.width = `${this.videoObject3DFitDimensions.width}px`;
+        this.style.height = `${this.videoObject3DFitDimensions.height}px`;
+        console.log(this.videoObject3DFitDimensions)
+    }
+
+    //setter for srcObject 
+    set srcObject(src) {
+        this.video.srcObject = src;
+        // on loadeddata event, update the videoObject3DFitDimensions
+        this.video.addEventListener('loadeddata', () => {
+            this.computeVideoObject3DFitDimensions();
+        });
     }
 
      /**
