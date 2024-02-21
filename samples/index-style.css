@@ -126,7 +126,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 2;
     display: grid;
     grid-template-columns: 1fr 2fr 0.5fr 0.5fr;
     padding: 10px;
@@ -206,7 +206,7 @@
     text-align: center;
     margin: 0 auto;
     color: rgba(24, 24, 24, 0.75);
-    z-index: 2;
+    z-index: 1;
   }
 
   .links {
@@ -214,7 +214,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 1vw;
     margin-bottom: 10px;
-    z-index: 2;
+    z-index: 1;
   }
 
   .col-1{
@@ -232,14 +232,14 @@
   .headset {
     grid-row: 2 / 5;
     grid-column: 1 / -1;
-    object-fit: contain;
+    object-fit: fit;
     z-index: 1;
   }
-
+/*
   .headset > mr-img {
     width: 100%;
     object-fit: cover;
-  }
+  }*/
 
   .paragraph {
     font-family: 'Roboto';
@@ -247,5 +247,4 @@
     font-size: 16px;
 
     grid-column: 2;
-    z-index: 2;
   }

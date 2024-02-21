@@ -56,7 +56,9 @@ export class MRDivEntity extends MREntity {
         if (mrjsUtils.xr.isPresenting) {
             return (rect.height / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
-        return (rect.height / global.appHeight) * global.viewPortHeight;
+        let val = (rect.height / global.appHeight) * global.viewPortHeight;
+        // console.log('mrdiventity height: ', val);
+        return val;
     }
 
     /**
@@ -70,7 +72,19 @@ export class MRDivEntity extends MREntity {
         if (mrjsUtils.xr.isPresenting) {
             return (rect.width / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
-        return (rect.width / global.appWidth) * global.viewPortWidth;
+        let val = (rect.width / global.appWidth) * global.viewPortWidth;
+        // console.log('mrdiventity width: ', val);
+        return val;
+    }
+
+    /**
+     * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
+        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
     }
 
     /**
@@ -112,16 +126,6 @@ export class MRDivEntity extends MREntity {
      */
     connected() {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
-    }
-
-    /**
-     * @function
-     * @description Calculates the border radius of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
     }
 }
 

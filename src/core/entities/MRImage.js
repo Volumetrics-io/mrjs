@@ -39,6 +39,10 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
+        return this.textureWidth; // return super.width;
+    }
+
+    get textureWidth() {
         let width = this.imageObject3DFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
@@ -49,6 +53,10 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
+        return this.textureHeight; //super.height;
+    }
+
+    get textureHeight() {
         let height = this.imageObject3DFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
@@ -110,13 +118,18 @@ export class MRImage extends MRDivEntity {
      * @description computes the width and height values for the image considering the value of object-fit
      */
     computeImageObject3DFitDimensions() {
+        console.log('in computeImageObject3DFitDimensions');
+        console.log('this.')
         console.log(this.compStyle.objectFit);
         switch (this.compStyle.objectFit) {
             case 'fill':
+                console.log('fill', 'content width', this.contentWidth, 'actual width', this.width);
                 this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
                 break
             case 'contain':
+                console.log('contain');
             case 'scale-down':
+                console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
                 let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
                 let scaledWidth = this.img.width * ratio;
                 let scaledHeight = this.img.height * ratio;
@@ -129,6 +142,7 @@ export class MRImage extends MRDivEntity {
                 this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
                 break;
             case 'cover':
+                console.log('cover', 'content width', this.contentWidth, 'actual width', this.width);
                 let imageRatio = this.img.width / this.img.height;
                 let containerRatio = this.parentElement.width / this.parentElement.height;
                 if (containerRatio > imageRatio) {
@@ -141,6 +155,7 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'none':
+                console.log('none', 'content width', this.contentWidth, 'actual width', this.width);
                 this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
                 break;
 
