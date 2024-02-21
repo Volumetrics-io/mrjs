@@ -74,22 +74,22 @@ export class LayoutSystem extends MRSystem {
      */
     setLayoutPosition(entity) {
         const rect = entity.getBoundingClientRect();
+
         const panel = entity.closest('mr-panel');
-        const appRect = this.app.getBoundingClientRect();
+        if (!panel) {
+            return;
+        }
+        const panelRect = panel.getBoundingClientRect();
 
-        const innerWidth = mrjsUtils.xr.isPresenting ? window.innerWidth : global.appWidth;
-        const innerHeight = mrjsUtils.xr.isPresenting ? window.innerHeight : global.appHeight;
+        let innerWidth = parseFloat(panel.compStyle.width.split('px')[0]);
+        let innerHeight = parseFloat(panel.compStyle.height.split('px')[0]);
+        let centerX = innerWidth / 2;
+        let centerY = innerHeight / 2;
 
-        // Calculate the center of the viewport
-        const centerX = innerWidth / 2;
-        const centerY = innerHeight / 2;
-
-        let windowWidth = mrjsUtils.xr.isPresenting ? panel.width : global.viewPortWidth;
-        let windowHeight = mrjsUtils.xr.isPresenting ? panel.height : global.viewPortHeight;
-
-        // Adjust the element's position to be relative to the center of the viewport
-        const centeredX = rect.left - appRect.left - centerX;
-        const centeredY = rect.top - centerY;
+        let windowWidth = panel.width;
+        let windowHeight = panel.height;
+        let centeredX = rect.left - panelRect.left - centerX;
+        let centeredY = rect.top - panelRect.top - centerY;
 
         let threeX = (centeredX / innerWidth) * windowWidth;
         let threeY = (centeredY / innerHeight) * windowHeight;
@@ -97,11 +97,8 @@ export class LayoutSystem extends MRSystem {
         threeX += entity.width / 2;
         threeY += entity.height / 2;
 
-        this.tempPosition.setX(threeX);
-        this.tempPosition.setY(-threeY);
-
-        entity.object3D.position.setX(this.tempPosition.x);
-        entity.object3D.position.setY(this.tempPosition.y);
+        entity.object3D.position.setX(threeX);
+        entity.object3D.position.setY(-threeY);
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
