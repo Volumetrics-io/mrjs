@@ -118,28 +118,49 @@ export class MRImage extends MRDivEntity {
         this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
     }
     _cover() {
-        function updateTextureForCover(aspect) {
-            if (!this.texture) { return; }
+        const updateTextureForCover = (containerWidth, containerHeight, imageWidth, imageHeight) => {
+            if (!this.texture) return;
 
             this.texture.matrixAutoUpdate = false;
 
-            const imageAspect = this.texture.image.width / this.texture.image.height;
-            let scale = (aspect < imageAspect) 
-                ? { x : aspect / imageAspect,   y : 1.0                     }
-                : { x : 1.0,                    y : imageAspect / aspect    };
-            this.texture.matrix.setUvTransform(0, 0, scale.x, scale.y, 0, 0.5, 0.5);
-        }
+            // Calculate aspect ratios
+            const imageAspect = imageWidth / imageHeight;
+            const containerAspect = containerWidth / containerHeight;
 
-        // HAPPY
-        let imageRatio = this.img.width / this.img.height;
-        let containerRatio = this.parentElement.width / this.parentElement.height;
-        if (containerRatio > imageRatio) {
+            let scaledWidth, scaledHeight, offsetX = 0, offsetY = 0;
+
+            if (imageAspect > containerAspect) {
+                // Image is wider than container, scale based on height
+                scaledHeight = containerHeight;
+                scaledWidth = scaledHeight * imageAspect;
+                offsetX = -(scaledWidth - containerWidth) / 2; // Center the image
+            } else {
+                // Image is taller than container, scale based on width
+                scaledWidth = containerWidth;
+                scaledHeight = scaledWidth / imageAspect;
+                offsetY = -(scaledHeight - containerHeight) / 2; // Center the image
+            }
+
+            // Apply UV transformation with the corrected scale
+            // Since we're scaling the same in both directions, we ensure the aspect ratio is maintained
+            this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
+        };
+
+
+        const imageAspectRatio = this.img.width / this.img.height;
+        const containerAspectRatio = this.parentElement.width / this.parentElement.height;
+
+
+        // Set dimensions to fill the container while maintaining the aspect ratio
+        if (containerAspectRatio > imageAspectRatio) {
             this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-            updateTextureForCover(containerRatio);
         } else {
-            this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
+            this.imageObjectFitDimensions = { width: this.parentElement.height * imageAspectRatio, height: this.parentElement.height };
         }
+        updateTextureForCover(this.parentElement.width, this.parentElement.height, this.img.width, this.img.height);//
+
     }
+
     _none() {
         // HAPPY
         this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
