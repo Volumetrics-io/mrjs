@@ -113,52 +113,60 @@ export class MRImage extends MRDivEntity {
         }
     }
 
+    _fill() {
+        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+    }
+    _contain_scaleDown() {
+        console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
+        let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
+        let scaledWidth = this.img.width * ratio;
+        let scaledHeight = this.img.height * ratio;
+
+        if (this.compStyle.objectFit === 'scale-down') {
+            scaledWidth = Math.min(scaledWidth, this.img.width);
+            scaledHeight = Math.min(scaledHeight, this.img.height);
+        }
+
+        this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
+    }
+    _cover() {
+        let imageRatio = this.img.width / this.img.height;
+        let containerRatio = this.parentElement.width / this.parentElement.height;
+        if (containerRatio > imageRatio) {
+            this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+            if (this.texture) {
+                this.cover(this.texture, containerRatio);
+            }
+        } else {
+            this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
+        }
+    }
+    _none() {
+        console.log('none', 'content width', this.contentWidth, 'actual width', this.width);
+        this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+    }
+
     /**
      * @function
      * @description computes the width and height values for the image considering the value of object-fit
      */
     computeObjectFitDimensions() {
         console.log('in image computeObjectFitDimensions');
-        console.log('this.')
         console.log(this.compStyle.objectFit);
         switch (this.compStyle.objectFit) {
             case 'fill':
-                console.log('fill', 'content width', this.contentWidth, 'actual width', this.width);
-                this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+                this._fill();
                 break
             case 'contain':
                 console.log('contain');
             case 'scale-down':
-                console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
-                let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
-                let scaledWidth = this.img.width * ratio;
-                let scaledHeight = this.img.height * ratio;
-
-                if (this.compStyle.objectFit === 'scale-down') {
-                    scaledWidth = Math.min(scaledWidth, this.img.width);
-                    scaledHeight = Math.min(scaledHeight, this.img.height);
-                }
-
-                this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
+                this._contain_scaleDown();
                 break;
             case 'cover':
-                console.log('cover', 'content width', this.contentWidth, 'actual width', this.width);
-                let imageRatio = this.img.width / this.img.height;
-                let containerRatio = this.parentElement.width / this.parentElement.height;
-                if (containerRatio > imageRatio) {
-                    this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-                    if (this.texture) {
-                        this.cover(this.texture, containerRatio);
-                    }
-                } else {
-                    this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
-                }
-                console.log(this.imageObjectFitDimensions);
+                this._cover();
                 break;
-
             case 'none':
-                console.log('none', 'content width', this.contentWidth, 'actual width', this.width);
-                this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+                this._none();
                 break;
 
             default:
