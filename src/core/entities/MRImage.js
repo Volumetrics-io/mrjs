@@ -147,7 +147,9 @@ export class MRImage extends MRDivEntity {
                 let containerRatio = this.parentElement.width / this.parentElement.height;
                 if (containerRatio > imageRatio) {
                     this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-                    this.cover(this.texture, containerRatio)
+                    if (this.texture) {
+                        this.cover(this.texture, containerRatio);
+                    }
                 } else {
                     this.imageObject3DFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
                 }

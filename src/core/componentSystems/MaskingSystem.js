@@ -72,6 +72,7 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
+        return;
         if (entity instanceof MRPanel) {
             // Using an array for the panels in case we need them for more manipulations down the line instead
             // of using the system's registry.

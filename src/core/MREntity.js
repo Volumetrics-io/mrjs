@@ -103,7 +103,12 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        let val = (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
+        // let val = (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
+
+        // old impl
+        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
+        let val = (styleHeight / global.appHeight) * global.viewPortHeight;
+        
         console.log('entity height:', val);
         return val;
     }

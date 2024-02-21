@@ -152,6 +152,8 @@ export class ClippingSystem extends MRSystem {
      * @param {MREntity} entity - given entity that will be clipped by the planes.
      */
     onNewEntity(entity) {
+        return;
+        
         if (!entity.ignoreStencil) {
             // only apply clipping planes to entities that arent masked through the stencil
             // since doubling up on that is redundant and not helpful for runtime
