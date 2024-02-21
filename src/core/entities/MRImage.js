@@ -114,9 +114,44 @@ export class MRImage extends MRDivEntity {
     }
 
     _fill() {
+        // HAPPY
         this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
     }
-    _contain_scaleDown() {
+    _cover() {
+        function updateTextureForCover(aspect) {
+            if (!this.texture) { return; }
+
+            this.texture.matrixAutoUpdate = false;
+
+            const imageAspect = this.texture.image.width / this.texture.image.height;
+            let scale = (aspect < imageAspect) 
+                ? { x : aspect / imageAspect,   y : 1.0                     }
+                : { x : 1.0,                    y : imageAspect / aspect    };
+            this.texture.matrix.setUvTransform(0, 0, scale.x, scale.y, 0, 0.5, 0.5);
+        }
+
+        // HAPPY
+        let imageRatio = this.img.width / this.img.height;
+        let containerRatio = this.parentElement.width / this.parentElement.height;
+        if (containerRatio > imageRatio) {
+            this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+            updateTextureForCover(containerRatio);
+        } else {
+            this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
+        }
+    }
+    _none() {
+        // HAPPY
+        this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+    }
+
+
+
+    _contain() {
+         // want contain to have the same object setup as fill, but texture setup is different
+        // object
+        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+        // the image texture
         console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
         let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
         let scaledWidth = this.img.width * ratio;
@@ -129,21 +164,22 @@ export class MRImage extends MRDivEntity {
 
         this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
     }
-    _cover() {
-        let imageRatio = this.img.width / this.img.height;
-        let containerRatio = this.parentElement.width / this.parentElement.height;
-        if (containerRatio > imageRatio) {
-            this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-            if (this.texture) {
-                this.cover(this.texture, containerRatio);
-            }
-        } else {
-            this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
+    _scaleDown() {
+        // want contain to have the same object setup as fill, but texture setup is different
+        // object
+        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+        // the image texture
+        console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
+        let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
+        let scaledWidth = this.img.width * ratio;
+        let scaledHeight = this.img.height * ratio;
+
+        if (this.compStyle.objectFit === 'scale-down') {
+            scaledWidth = Math.min(scaledWidth, this.img.width);
+            scaledHeight = Math.min(scaledHeight, this.img.height);
         }
-    }
-    _none() {
-        console.log('none', 'content width', this.contentWidth, 'actual width', this.width);
-        this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+
+        this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
     }
 
     /**
@@ -156,11 +192,12 @@ export class MRImage extends MRDivEntity {
         switch (this.compStyle.objectFit) {
             case 'fill':
                 this._fill();
-                break
+                break;
             case 'contain':
-                console.log('contain');
+                this._contain();
+                break;
             case 'scale-down':
-                this._contain_scaleDown();
+                this.scaleDown();
                 break;
             case 'cover':
                 this._cover();
@@ -171,24 +208,6 @@ export class MRImage extends MRDivEntity {
 
             default:
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
-        }
-    }
-
-    /**
-     * @function
-     * @description Calculates the texture UV transformation change based on the image's aspect ratio.
-     * @param {object} texture - the texture to augment
-     * @param {number} aspect - a given expected aspect ratio
-     */
-    cover(texture, aspect) {
-        texture.matrixAutoUpdate = false;
-
-        const imageAspect = texture.image.width / texture.image.height;
-
-        if (aspect < imageAspect) {
-            texture.matrix.setUvTransform(0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5);
-        } else {
-            texture.matrix.setUvTransform(0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5);
         }
     }
 }
