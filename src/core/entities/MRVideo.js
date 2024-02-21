@@ -64,11 +64,7 @@ export class MRVideo extends MRDivEntity {
         this.video.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.video.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.video.setAttribute('crossorigin', 'anonymous');
-        this.video.addEventListener('loadeddata', () => {
-            console.log(this.video.videoWidth);
-        });
             
-
         this.videoObject3DFitDimensions = { height: 0, width: 0 };
         if(this.getAttribute('src') !== undefined) {
             this.computeVideoObject3DFitDimensions();
@@ -98,7 +94,6 @@ export class MRVideo extends MRDivEntity {
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
-        console.log('got here')
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.video.setAttribute('src', this.getAttribute('src'));
@@ -121,8 +116,6 @@ export class MRVideo extends MRDivEntity {
      * @description computes the width and height values for the video considering the value of object-fit
      */
     computeVideoObject3DFitDimensions() {
-        console.log(this.compStyle.objectFit)
-        console.log(this.offsetWidth)
         
         switch (this.compStyle.objectFit) {
             case 'fill':
@@ -168,7 +161,6 @@ export class MRVideo extends MRDivEntity {
         // set this width and height to video 
         this.style.width = `${this.videoObject3DFitDimensions.width}px`;
         this.style.height = `${this.videoObject3DFitDimensions.height}px`;
-        console.log(this.videoObject3DFitDimensions)
     }
 
     //setter for srcObject 
