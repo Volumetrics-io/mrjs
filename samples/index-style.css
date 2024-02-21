@@ -92,31 +92,21 @@
     align-items: start;
     gap: 6rem;
     background: var(--c-plate);
-    padding: 4vw;
+/*    padding: 4vw;*/
     overflow-y: auto;
-    max-width: var(--content-max-width);
+/*    max-width: var(--content-max-width);*/
     margin: 0 auto;
-  }
-  
-  #mark {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-    z-index: 999;
-    padding-top: 1rem;
   }
 
   .layout {
+    max-width: 100%;
     background-color: var(--color-paper);
     padding-top: 6vw;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 1vw;
     grid-auto-rows: minmax(100px, auto);
+    margin: auto;
   }
 
   #navbar {
@@ -143,8 +133,6 @@
     font-weight: bold;
     align-self: center;
     grid-column: 2;
-
-
   }
 
   .company {
@@ -165,17 +153,10 @@
     line-height: 100%;
   }
 
-  .logo {
+  #logo-model{
     grid-column: 3;
     z-index: 25;
-  }
-
-  #logo-model{
     scale: 0.0005;
-  }
-
-  #table-model{
-    scale: 0.002;
   }
 
   .sub-title {
