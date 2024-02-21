@@ -77,11 +77,7 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved width
      */
     get width() {
-        let val = (this.compStyle.width.split('px')[0] / global.appWidth) * global.viewPortWidth;
-        // if (this instanceof MRPanel) {
-            console.log('entity width:', val);
-        // }
-        return val;
+        return (this.compStyle.width.split('px')[0] / global.appWidth) * global.viewPortWidth;
     }
 
     /**
@@ -91,9 +87,6 @@ export class MREntity extends MRElement {
      */
     get contentWidth() {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
-        // if (this instanceof MRPanel) {
-            console.log('entity contentWidth:', this.size.x);
-        // }
         return this.size.x;
     }
 
@@ -103,14 +96,7 @@ export class MREntity extends MRElement {
      * @returns {number} - the resolved height
      */
     get height() {
-        // let val = (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
-
-        // old impl
-        const styleHeight = this.compStyle.height.split('px')[0] > 0 ? this.compStyle.height.split('px')[0] : global.appHeight;
-        let val = (styleHeight / global.appHeight) * global.viewPortHeight;
-        
-        console.log('entity height:', val);
-        return val;
+        return (this.compStyle.height.split('px')[0] / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -120,7 +106,6 @@ export class MREntity extends MRElement {
      */
     get contentHeight() {
         this.aabb.setFromObject(this.object3D).getSize(this.size);
-        console.log('entity contentHeight:', this.size.y);
         return this.size.y;
     }
 

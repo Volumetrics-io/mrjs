@@ -56,9 +56,7 @@ export class MRDivEntity extends MREntity {
         if (mrjsUtils.xr.isPresenting) {
             return (rect.height / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
-        let val = (rect.height / global.appHeight) * global.viewPortHeight;
-        // console.log('mrdiventity height: ', val);
-        return val;
+        return (rect.height / global.appHeight) * global.viewPortHeight;
     }
 
     /**
@@ -72,9 +70,7 @@ export class MRDivEntity extends MREntity {
         if (mrjsUtils.xr.isPresenting) {
             return (rect.width / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION) * mrjsUtils.app.scale;
         }
-        let val = (rect.width / global.appWidth) * global.viewPortWidth;
-        // console.log('mrdiventity width: ', val);
-        return val;
+        return (rect.width / global.appWidth) * global.viewPortWidth;
     }
 
     /**
@@ -126,6 +122,7 @@ export class MRDivEntity extends MREntity {
     connected() {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
     }
+
 }
 
 customElements.get('mr-div') || customElements.define('mr-div', MRDivEntity);
