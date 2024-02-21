@@ -43,7 +43,7 @@ export class MRImage extends MRDivEntity {
     }
 
     get textureWidth() {
-        let width = this.imageObject3DFitDimensions?.width;
+        let width = this.imageObjectFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
 
@@ -57,7 +57,7 @@ export class MRImage extends MRDivEntity {
     }
 
     get textureHeight() {
-        let height = this.imageObject3DFitDimensions?.height;
+        let height = this.imageObjectFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
 
@@ -71,8 +71,8 @@ export class MRImage extends MRDivEntity {
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
-        this.imageObject3DFitDimensions = { height: 0, width: 0 };
-        this.computeImageObject3DFitDimensions();
+        this.imageObjectFitDimensions = { height: 0, width: 0 };
+        this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
         if (this.object3D.geometry !== undefined) {
@@ -99,7 +99,7 @@ export class MRImage extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.computeImageObject3DFitDimensions();
+            this.computeObjectFitDimensions();
 
             mrjsUtils.material
                 .loadTextureAsync(this.img.src)
@@ -124,7 +124,7 @@ export class MRImage extends MRDivEntity {
         switch (this.compStyle.objectFit) {
             case 'fill':
                 console.log('fill', 'content width', this.contentWidth, 'actual width', this.width);
-                this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+                this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
                 break
             case 'contain':
                 console.log('contain');
@@ -139,26 +139,26 @@ export class MRImage extends MRDivEntity {
                     scaledHeight = Math.min(scaledHeight, this.img.height);
                 }
 
-                this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
+                this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
                 break;
             case 'cover':
                 console.log('cover', 'content width', this.contentWidth, 'actual width', this.width);
                 let imageRatio = this.img.width / this.img.height;
                 let containerRatio = this.parentElement.width / this.parentElement.height;
                 if (containerRatio > imageRatio) {
-                    this.imageObject3DFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+                    this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
                     if (this.texture) {
                         this.cover(this.texture, containerRatio);
                     }
                 } else {
-                    this.imageObject3DFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
+                    this.imageObjectFitDimensions = { width: this.parentElement.height * imageRatio, height: this.parentElement.height };
                 }
-                console.log(this.imageObject3DFitDimensions);
+                console.log(this.imageObjectFitDimensions);
                 break;
 
             case 'none':
                 console.log('none', 'content width', this.contentWidth, 'actual width', this.width);
-                this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
+                this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
                 break;
 
             default:
