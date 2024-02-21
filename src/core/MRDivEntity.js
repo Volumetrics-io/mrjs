@@ -84,7 +84,6 @@ export class MRDivEntity extends MREntity {
      */
     get borderRadii() {
         return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
     }
 
     /**
