@@ -106,21 +106,8 @@ main {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 1vw;
-  grid-auto-rows: auto;
-}
-
-/*
-.layout {
-  background-color: var(--color-paper);
-  padding-top: 6vw;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 1vw;
   grid-auto-rows: minmax(100px, auto);
-  max-width: var(--content-max-width);
-
-  margin: auto;
-}*/
+}
 
 #navbar {
   background-color: rgb(51, 50, 50);
