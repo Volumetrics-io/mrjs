@@ -116,14 +116,14 @@ export class GeometryStyleSystem extends MRSystem {
         console.log('image width', w, 'contentwidth:', entity.contentWidth, 'textureWidth:', entity.textureWidth);
         let h = entity.height;
         let b = entity.borderRadii;
-        if (entity._storedWidth != w || entity._storedHeight != h || entity._storedBorderRadii != b) {
-            entity._storedWidth = w;
-            entity._storedHeight = h;
-            entity._storedBorderRadii = b;
-        } else {
-            // no update needed
-            return false;
-        }
+        // if (entity._storedWidth != w || entity._storedHeight != h || entity._storedBorderRadii != b) {
+        //     entity._storedWidth = w;
+        //     entity._storedHeight = h;
+        //     entity._storedBorderRadii = b;
+        // } else {
+        //     // no update needed
+        //     return false;
+        // }
 
         if (entity.object3D.geometry !== undefined) {
             entity.object3D.geometry.dispose();

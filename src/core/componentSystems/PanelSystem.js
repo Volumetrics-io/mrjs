@@ -47,16 +47,19 @@ export class PanelSystem extends MRSystem {
      */
     updatePanel(entity) {
         const rect = entity.getBoundingClientRect();
+        const panel = this;
         const appRect = this.app.getBoundingClientRect();
-        let innerWidth = global.appWidth;
-        let innerHeight = global.appHeight;
+
+        let innerWidth = mrjsUtils.xr.isPresenting ? window.innerWidth : global.appWidth;
+        let innerHeight = mrjsUtils.xr.isPresenting ? window.innerHeight : global.appHeight;
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
 
-        let windowWidth = global.viewPortWidth * mrjsUtils.app.scale;
-        let windowHeight = global.viewPortHeight * mrjsUtils.app.scale;
+        let windowWidth = mrjsUtils.xr.isPresenting ? panel.width : global.viewPortWidth * mrjsUtils.app.scale;
+        let windowHeight = mrjsUtils.xr.isPresenting ? panel.height : global.viewPortHeight * mrjsUtils.app.scale;
+        
         let centeredX = rect.left - appRect.left - centerX;
-        let centeredY = rect.top - appRect.top - centerY;
+        let centeredY = rect.top /*- appRect.top*/ - centerY;
 
         let threeX = (centeredX / innerWidth) * windowWidth;
         let threeY = (centeredY / innerHeight) * windowHeight;

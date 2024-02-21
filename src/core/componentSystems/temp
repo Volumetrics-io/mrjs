@@ -77,8 +77,8 @@ new --- panelUpdate
 
         const rect = entity.getBoundingClientRect();
         const appRect = this.app.getBoundingClientRect();
-        
-        let innerWidth =  global.appWidth;
+
+98        let innerWidth =  global.appWidth;
         let innerHeight = global.appHeight;
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
