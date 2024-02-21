@@ -110,15 +110,17 @@
 
   .layout {
     background-color: var(--color-paper);
-    padding-top: 6vw;
+    padding-top: 2vw;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
     gap: 1vw;
-    grid-auto-rows: auto;
   }
 
   .videoFit {
-    object-fit: none;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
     grid-column: 1;
   }
 
