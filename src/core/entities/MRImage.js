@@ -117,8 +117,8 @@ export class MRImage extends MRDivEntity {
      * @function
      * @description computes the width and height values for the image considering the value of object-fit
      */
-    computeImageObject3DFitDimensions() {
-        console.log('in computeImageObject3DFitDimensions');
+    computeObjectFitDimensions() {
+        console.log('in image computeObjectFitDimensions');
         console.log('this.')
         console.log(this.compStyle.objectFit);
         switch (this.compStyle.objectFit) {

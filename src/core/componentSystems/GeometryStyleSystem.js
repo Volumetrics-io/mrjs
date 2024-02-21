@@ -109,7 +109,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     setUpdatedImagePlane(entity) {
-        entity.computeImageObject3DFitDimensions();
+        entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
         let w = entity.width;
