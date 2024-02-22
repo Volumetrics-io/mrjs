@@ -234,7 +234,7 @@ main {
 }
 
 mr-img {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* .headset > mr-img {

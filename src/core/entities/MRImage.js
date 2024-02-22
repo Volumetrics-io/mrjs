@@ -118,17 +118,13 @@ export class MRImage extends MRDivEntity {
         this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
     }
     _cover() {
+        // HAPPY
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
         let imageWidth = this.img.width;
         let imageHeight = this.img.height;
 
-        if (!this.texture) {
-            // We assume every image has its attached texture.
-            // If texture doesnt exist, it's just not loaded in yet, meaning
-            // we can skip the below until it is.
-            return;
-        }
+        
         this.texture.matrixAutoUpdate = false;
 
         // Calculate aspect ratios
@@ -179,24 +175,50 @@ export class MRImage extends MRDivEntity {
     }
 
 
-
     _contain() {
          // want contain to have the same object setup as fill, but texture setup is different
         // object
         this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-        // the image texture
-        console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
-        let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
-        let scaledWidth = this.img.width * ratio;
-        let scaledHeight = this.img.height * ratio;
+        // // the image texture
+        // console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
+        // let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
+        // let scaledWidth = this.img.width * ratio;
+        // let scaledHeight = this.img.height * ratio;
 
-        if (this.compStyle.objectFit === 'scale-down') {
-            scaledWidth = Math.min(scaledWidth, this.img.width);
-            scaledHeight = Math.min(scaledHeight, this.img.height);
-        }
+        // this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
+// Calculate aspect ratios
 
-        this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
-    }
+        let objectWidth = this.parentElement.width;
+        let objectHeight = this.parentElement.height;
+        let imageWidth = this.img.width;
+        let imageHeight = this.img.height;
+
+
+  // Calculate the aspect ratios
+  const imageAspect = imageWidth / imageHeight;
+  const objectAspect = objectWidth / objectHeight;
+
+  let uvScaleX, uvScaleY, uvOffsetX, uvOffsetY;
+
+  if (imageAspect > objectAspect) {
+    // Image is wider than object: Fit to height and calculate width scaling
+    uvScaleY = 1; // Use full height of the image
+    uvScaleX = objectAspect / imageAspect; // Scale width to maintain aspect ratio
+    uvOffsetX = (1 - uvScaleX) / 2; // Center horizontally
+    uvOffsetY = 0; // No vertical offset
+  } else {
+    // Image is taller than object or they have the same aspect ratio: Fit to width and calculate height scaling
+    uvScaleX = 1; // Use full width of the image
+    uvScaleY = imageAspect / objectAspect; // Scale height to maintain aspect ratio
+    uvOffsetX = 0; // No horizontal offset
+    uvOffsetY = (1 - uvScaleY) / 2; // Center vertically
+  }
+
+  // Apply the UV transformation
+  // This pseudocode assumes you have a way to set UV transformations for your texture. Adjust as necessary.
+  this.texture.matrix.setUvTransform(uvOffsetX, uvOffsetY, uvScaleX, uvScaleY, 0, 0.5, 0.5);
+}
+    
     _scaleDown() {
         // want contain to have the same object setup as fill, but texture setup is different
         // object
@@ -207,10 +229,8 @@ export class MRImage extends MRDivEntity {
         let scaledWidth = this.img.width * ratio;
         let scaledHeight = this.img.height * ratio;
 
-        if (this.compStyle.objectFit === 'scale-down') {
-            scaledWidth = Math.min(scaledWidth, this.img.width);
-            scaledHeight = Math.min(scaledHeight, this.img.height);
-        }
+        scaledWidth = Math.min(scaledWidth, this.img.width);
+        scaledHeight = Math.min(scaledHeight, this.img.height);
 
         this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
     }
@@ -222,6 +242,12 @@ export class MRImage extends MRDivEntity {
     computeObjectFitDimensions() {
         console.log('in image computeObjectFitDimensions');
         console.log(this.compStyle.objectFit);
+        if (!this.texture) {
+            // We assume every image has its attached texture.
+            // If texture doesnt exist, it's just not loaded in yet, meaning
+            // we can skip the below until it is.
+            return;
+        }
         switch (this.compStyle.objectFit) {
             case 'fill':
                 this._fill();
