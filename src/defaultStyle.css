@@ -29,7 +29,7 @@ mr-panel {
     width: 100vw;
 }
 
-mr-div, mr-button, mr-img, mr-a, mr-text{
+mr-div, mr-button, mr-img, mr-a, mr-text, mr-textfield{
     display: inline-block;
     position: relative;
     z-index: inherit;

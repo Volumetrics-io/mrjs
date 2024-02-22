@@ -49,6 +49,19 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
+    eventUpdate = () => {
+        for (const entity of this.registry) {
+            if (entity.physics?.body == null) {
+                continue;
+            }
+            if (entity instanceof MRModel) {
+                this.updateSimpleBody(entity);
+            } else if (entity instanceof MRDivEntity) {
+                this.updateUIBody(entity);
+            }
+        }
+    }
+
     /**
      * @function
      * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.
@@ -130,6 +143,7 @@ export class PhysicsSystem extends MRSystem {
         mrjsUtils.physics.COLLIDER_ENTITY_MAP[entity.physics.collider.handle] = entity;
         entity.physics.collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         entity.physics.collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
+
     }
 
     /**
@@ -213,8 +227,15 @@ export class PhysicsSystem extends MRSystem {
 
         if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
             entity.physics.body.setEnabled(false);
-        } else if (!entity.physics.body.isEnabled()) {
-            entity.physics.body.setEnabled(false);
+        } else if (!entity.physics.body.isEnabled() && entity.compStyle.visibility == 'visible') {
+            entity.physics.body.setEnabled(true);
+            // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
+        //       and model will get more complex as we add convexMesh support
+            if (entity instanceof MRModel) {
+                this.updateSimpleBody(entity);
+            } else if (entity instanceof MRDivEntity) {
+                this.updateUIBody(entity);
+            }
         }
 
         if (entity instanceof MRPanel) {
@@ -226,14 +247,6 @@ export class PhysicsSystem extends MRSystem {
 
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
-
-        // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
-        //       and model will get more complex as we add convexMesh support
-        if (entity instanceof MRModel) {
-            this.updateSimpleBody(entity);
-        } else if (entity instanceof MRDivEntity) {
-            this.updateUIBody(entity);
-        }
     }
 
     /**

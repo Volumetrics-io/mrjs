@@ -178,13 +178,14 @@
 
         }
 
-        document.addEventListener('enterXR', () => {
+        document.addEventListener('enterxr', () => {
             document.querySelector('mr-app').classList.add('inXR')
             spread()
         })
 
         document.addEventListener('exitXR', () => {
             document.querySelector('mr-app').classList.remove('inXR')
+        document.addEventListener('exitxr', () => {
             unfolded = false 
             spread()
         })

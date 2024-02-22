@@ -1,4 +1,5 @@
 import { MREntity } from 'mrjs/core/MREntity';
+const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate']
 
 /**
  * @class MRSystem
@@ -43,6 +44,12 @@ export class MRSystem {
             }
             this.onNewEntity(event.target);
         });
+
+        for(const eventType of GLOBAL_UPDATE_EVENTS) {
+            document.addEventListener(eventType, (event) => {
+                this.eventUpdate()
+            });
+        }
 
         const entities = document.querySelectorAll(`[${this.componentName}]`);
         for (const entity of entities) {
@@ -129,6 +136,14 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {}
+
+    /**
+     * @function
+     * @description An event triggered update, called when any scene level events occur.
+     */
+    eventUpdate() {
+
+    }
 
     /**
      * @function

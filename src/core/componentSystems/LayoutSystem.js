@@ -102,13 +102,13 @@ export class LayoutSystem extends MRSystem {
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
-            entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex / 1000));
+            entity.object3D.position.setZ(parseFloat(entity.compStyle.zIndex) / 1000);
 
             if (entity.compStyle.zIndex == entity.parentElement.compStyle.zIndex) {
                 entity.object3D.position.z += 0.0001;
             }
         } else {
-            entity.object3D.position.z = 0;
+            entity.object3D.position.z = entity.parentElement.object3D.position.z + 0.001;
         }
     }
 }

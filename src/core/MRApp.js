@@ -76,6 +76,10 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
+        this.anchor = null
+        this.origin = new THREE.Object3D()
+
+        this.scene.add(this.origin)
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
@@ -256,25 +260,28 @@ export class MRApp extends MRElement {
             this.compStyle = window.getComputedStyle(this);
         }
 
-        navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
-            this.xrsupport = supported;
+        // We don't support mobile XR yet
+        if (!this.isMobile) {
+            navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
+                this.xrsupport = supported;
 
-            if (this.xrsupport) {
-                this.XRButton = XRButton.createButton(this.renderer, {
-                    requiredFeatures: ['local', 'hand-tracking'],
-                    optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
-                });
+                if (this.xrsupport) {
+                    this.XRButton = XRButton.createButton(this.renderer, {
+                        requiredFeatures: ['local', 'hand-tracking'],
+                        optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
+                    });
 
-                this.XRButton.addEventListener('click', () => {
-                    this.classList.add('inXR');
-                    this.XRButton.blur();
-                });
-                document.body.appendChild(this.XRButton);
+                    this.XRButton.addEventListener('click', () => {
+                        this.classList.add('inXR');
+                        this.XRButton.blur();
+                    });
+                    document.body.appendChild(this.XRButton);
 
-                this.XRButton.style.position = 'fixed';
-                this.XRButton.style.zIndex = 10000;
-            }
-        });
+                    this.XRButton.style.position = 'fixed';
+                    this.XRButton.style.zIndex = 10000;
+                }
+            });
+        }
 
         this.renderer.setAnimationLoop(this.render);
 
@@ -323,13 +330,13 @@ export class MRApp extends MRElement {
 
         // for window placement
         this.userOrigin = new THREE.Object3D();
-        this.anchor = new THREE.Object3D();
+        this.anchorPoint = new THREE.Object3D();
         this.user.add(this.userOrigin);
-        this.user.add(this.anchor);
+        this.user.add(this.anchorPoint);
 
         this.userOrigin.position.setX(0.015);
-        this.anchor.position.setX(0.015);
-        this.anchor.position.setZ(-0.5);
+        this.anchorPoint.position.setX(0.015);
+        this.anchorPoint.position.setZ(-0.5);
 
         this.user.updateProjectionMatrix();
 
@@ -399,7 +406,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.scene.add(entity.object3D);
+        this.origin.add(entity.object3D);
     }
 
     /**
@@ -408,7 +415,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be removed.
      */
     remove(entity) {
-        this.scene.remove(entity.object3D);
+        this.origin.remove(entity.object3D);
     }
 
     /**
@@ -455,8 +462,7 @@ export class MRApp extends MRElement {
             mrjsUtils.xr.session = this.renderer.xr.getSession();
             mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
 
-            this.dispatchEvent(new CustomEvent('enterXR', { bubbles: true }));
-            console.log('enter xr');
+            this.dispatchEvent(new CustomEvent('enterxr', { bubbles: true }));
 
             mrjsUtils.xr.session.addEventListener('end', () => {
                 this.user.position.set(0, 0, 1);
@@ -466,7 +472,7 @@ export class MRApp extends MRElement {
                 this.classList.remove('inXR');
 
                 this.onWindowResize();
-                this.dispatchEvent(new CustomEvent('exitXR', { bubbles: true }));
+                this.dispatchEvent(new CustomEvent('exitxr', { bubbles: true }));
             });
         }
 

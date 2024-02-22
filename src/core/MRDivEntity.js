@@ -41,6 +41,10 @@ export class MRDivEntity extends MREntity {
         this.ignoreStencil = false;
     }
 
+    _storedWidth = -1;
+    _storedHeight = -1;
+    _storedBorderRadii = -1;
+
     /**
      * @function
      * @description Calculates the height of the Entity based on the viewing-client's shape. If in Mixed Reality, adjusts the value appropriately.

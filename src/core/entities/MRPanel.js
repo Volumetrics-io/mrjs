@@ -43,32 +43,40 @@ export class MRPanel extends MRDivEntity {
     connected() {
         this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 1));
         window.addEventListener('load', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
         window.addEventListener('resize', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
         this.addEventListener('anchored', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
-        this.parentElement.addEventListener('anchor-removed', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+        this.parentElement.addEventListener('anchorremoved', (event) => {
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
-        document.addEventListener('enterXR', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+        document.addEventListener('enterxr', (event) => {
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
-        document.addEventListener('exitXR', (event) => {
-            this.dispatchEvent(new CustomEvent('panel-mutated', { bubbles: true }));
+        document.addEventListener('exitxr', (event) => {
+            this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));
         });
 
-        this.addEventListener('panel-mutated', (event) => {
+        this.addEventListener('panelupdate', (event) => {
             this.clipping.geometry.copy(new THREE.BoxGeometry(this.width, this.height, 1));
         });
+
+        this.addEventListener('mouseover', () => {
+            this.focus = true
+        })
+
+        this.addEventListener('mouseleave', () => {
+            this.focus = false
+        })
 
         document.addEventListener('wheel', (event) => {
             this.onScroll(event);
@@ -100,7 +108,7 @@ export class MRPanel extends MRDivEntity {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {
-        if (event.type == 'touch-end') {
+        if (event.type == 'touchend') {
             this.prevPosition.set(0, 0, 0);
             return;
         }
