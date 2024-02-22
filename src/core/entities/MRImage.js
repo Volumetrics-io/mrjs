@@ -31,6 +31,9 @@ export class MRImage extends MRDivEntity {
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
+
+        // the texture is filled-in in the connected function
+        this.texture = null;
     }
 
     /**
@@ -113,72 +116,11 @@ export class MRImage extends MRDivEntity {
         }
     }
 
-    _fill() {
-        // HAPPY
-        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-    }
-    _cover() {
-        // HAPPY
-        let containerWidth = this.parentElement.width;
-        let containerHeight = this.parentElement.height;
-        let imageWidth = this.img.width;
-        let imageHeight = this.img.height;
-
-        
-        this.texture.matrixAutoUpdate = false;
-
-        // Calculate aspect ratios
-        const imageAspect = imageWidth / imageHeight;
-        const containerAspect = containerWidth / containerHeight;
-
-        // Calculate scalings and offsets
-        let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
-        if (imageAspect > containerAspect) {
-            // Scale image texture to fit container height, calculate width to maintain aspect ratio
-            scaledHeight = containerHeight;
-            scaledWidth = scaledHeight * imageAspect;
-
-            // Center horizontally
-            offsetX = (containerWidth - scaledWidth) / 2;
-            offsetY = 0;
-
-            // the object model itself
-            // todo: this might need to be container width instead, but this works for now
-            //          see note when calculating the else statement's object Height.
-            objectWidth = scaledWidth;
-            objectHeight = scaledHeight;
-        } else {
-            // Scale image texture to fit container width, calculate height to maintain aspect ratio
-            scaledWidth = containerWidth;
-            scaledHeight = scaledWidth / imageAspect;
-
-            // Center vertically
-            offsetX = 0;
-            offsetY = (containerHeight - scaledHeight) / 2;
-
-            // the object model itself
-            objectWidth = scaledWidth;
-            objectHeight = containerHeight; // this doesnt match scaled Height to prevent overflow
-        }
-
-        // Apply UV transformation with the corrected scale and update the model to hold it
-        this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
-        this.imageObjectFitDimensions = {
-            width: objectWidth,
-            height: objectHeight,
-        };
-    }
-
-    _none() {
-        // HAPPY
-        this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
-    }
-
 
     _contain() {
+        console.log('in contain');
          // want contain to have the same object setup as fill, but texture setup is different
         // object
-        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
         // // the image texture
         // console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
         // let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
@@ -188,35 +130,59 @@ export class MRImage extends MRDivEntity {
         // this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
 // Calculate aspect ratios
 
-        let objectWidth = this.parentElement.width;
-        let objectHeight = this.parentElement.height;
+        let containerWidth = this.parentElement.width;
+        let containerHeight = this.parentElement.height;
+        let containerAspectRatio = containerWidth / containerHeight;
         let imageWidth = this.img.width;
         let imageHeight = this.img.height;
+        let imageAspectRatio = imageWidth / imageHeight;
+
+        // let scaleWidth = 1;
+          // let scaleHeight = 1;
+        let scale = 1;
 
 
-  // Calculate the aspect ratios
-  const imageAspect = imageWidth / imageHeight;
-  const objectAspect = objectWidth / objectHeight;
+        if (containerHeight > imageHeight && containerWidth < imageWidth) {
+            // image is wider than mesh
+            scale = containerAspectRatio / imageAspectRatio;
+        } else if (containerHeight < imageHeight && containerWidth > imageWidth) {
+            // image is taller than mesh
+            scale = imageAspectRatio / containerAspectRatio;
+        } else if (containerHeight > imageHeight && containerWidth > imageWidth) {
+            // do nothing
+        } else if (containerHeight < imageHeight && containerWidth < imageWidth) {
+            // scale in the biggest dimension down
+            if (imageWidth > imageHeight && containerWidth > containerHeight) {
+                // TODO
+            } else if (imageWidth < imageHeight && containerWidth > containerHeight) {
+                // want image height to match container height
+                // TODO - figure out the scale for that
+            } else if (imageWidth > imageHeight && containerWidth < containerHeight) {
+                // want image width to match container width
+                // TODO - figure out the scale for that
+            } else if (imageWidth < imageHeight && containerWidth < containerHeight) {
+                // TODO... not sure
+            }
+        }
 
-  let uvScaleX, uvScaleY, uvOffsetX, uvOffsetY;
+          // if (imageAspectRatio > containerAspectRatio) {
+          //   // Image is wider than the mesh
+          //   scale = containerAspectRatio / imageAspectRatio;
+          // } else {
+          //   // Image is taller than the mesh
+          //   scale = imageAspectRatio / containerAspectRatio;
+          // }
 
-  if (imageAspect > objectAspect) {
-    // Image is wider than object: Fit to height and calculate width scaling
-    uvScaleY = 1; // Use full height of the image
-    uvScaleX = objectAspect / imageAspect; // Scale width to maintain aspect ratio
-    uvOffsetX = (1 - uvScaleX) / 2; // Center horizontally
-    uvOffsetY = 0; // No vertical offset
-  } else {
-    // Image is taller than object or they have the same aspect ratio: Fit to width and calculate height scaling
-    uvScaleX = 1; // Use full width of the image
-    uvScaleY = imageAspect / objectAspect; // Scale height to maintain aspect ratio
-    uvOffsetX = 0; // No horizontal offset
-    uvOffsetY = (1 - uvScaleY) / 2; // Center vertically
-  }
+        // Calculate new dimensions
+        this.texture.repeat.set(scale, scale);//scaleWidth, scaleHeight);
+                this.texture.offset.set((1 - scale) / 2, (1 - scale) / 2); // Center the texture
 
-  // Apply the UV transformation
-  // This pseudocode assumes you have a way to set UV transformations for your texture. Adjust as necessary.
-  this.texture.matrix.setUvTransform(uvOffsetX, uvOffsetY, uvScaleX, uvScaleY, 0, 0.5, 0.5);
+        // this.texture.offset.set((1 - scaleWidth) / 2, (1 - scaleHeight) / 2); // Center the texture
+
+        this.texture.needsUpdate = true;
+
+                this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+
 }
     
     _scaleDown() {
@@ -240,29 +206,82 @@ export class MRImage extends MRDivEntity {
      * @description computes the width and height values for the image considering the value of object-fit
      */
     computeObjectFitDimensions() {
-        console.log('in image computeObjectFitDimensions');
-        console.log(this.compStyle.objectFit);
         if (!this.texture) {
             // We assume every image has its attached texture.
             // If texture doesnt exist, it's just not loaded in yet, meaning
             // we can skip the below until it is.
             return;
         }
+
+        let containerWidth = this.parentElement.width;
+        let containerHeight = this.parentElement.height;
+        let imageWidth = this.img.width;
+        let imageHeight = this.img.height;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this._fill();
+                this.imageObjectFitDimensions = { width: containerWidth, height: containerHeight };
+
                 break;
+
             case 'contain':
                 this._contain();
+
                 break;
+
             case 'scale-down':
-                this.scaleDown();
+                this._scaleDown();
+
                 break;
+
             case 'cover':
-                this._cover();
+                this.texture.matrixAutoUpdate = false;
+
+                // Calculate aspect ratios
+                const imageAspect = imageWidth / imageHeight;
+                const containerAspect = containerWidth / containerHeight;
+
+                // Calculate scalings and offsets
+                let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
+                if (imageAspect > containerAspect) {
+                    // Scale image texture to fit container height, calculate width to maintain aspect ratio
+                    scaledHeight = containerHeight;
+                    scaledWidth = scaledHeight * imageAspect;
+
+                    // Center horizontally
+                    offsetX = (containerWidth - scaledWidth) / 2;
+                    offsetY = 0;
+
+                    // the object model itself
+                    // todo: this might need to be container width instead, but this works for now
+                    //          see note when calculating the else statement's object Height.
+                    objectWidth = scaledWidth;
+                    objectHeight = scaledHeight;
+                } else {
+                    // Scale image texture to fit container width, calculate height to maintain aspect ratio
+                    scaledWidth = containerWidth;
+                    scaledHeight = scaledWidth / imageAspect;
+
+                    // Center vertically
+                    offsetX = 0;
+                    offsetY = (containerHeight - scaledHeight) / 2;
+
+                    // the object model itself
+                    objectWidth = scaledWidth;
+                    objectHeight = containerHeight; // this doesnt match scaled Height to prevent overflow
+                }
+
+                // Apply UV transformation with the corrected scale and update the model to hold it
+                this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
+                this.imageObjectFitDimensions = {
+                    width: objectWidth,
+                    height: objectHeight,
+                };
+
                 break;
+
             case 'none':
-                this._none();
+                this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+
                 break;
 
             default:
