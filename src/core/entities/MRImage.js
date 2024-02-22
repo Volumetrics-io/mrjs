@@ -142,48 +142,110 @@ export class MRImage extends MRDivEntity {
         let scale = 1;
 
 
-        if (containerHeight > imageHeight && containerWidth < imageWidth) {
-            // image is wider than mesh
-            scale = containerAspectRatio / imageAspectRatio;
-        } else if (containerHeight < imageHeight && containerWidth > imageWidth) {
-            // image is taller than mesh
-            scale = imageAspectRatio / containerAspectRatio;
-        } else if (containerHeight > imageHeight && containerWidth > imageWidth) {
-            // do nothing
-        } else if (containerHeight < imageHeight && containerWidth < imageWidth) {
-            // scale in the biggest dimension down
-            if (imageWidth > imageHeight && containerWidth > containerHeight) {
-                // TODO
-            } else if (imageWidth < imageHeight && containerWidth > containerHeight) {
-                // want image height to match container height
-                // TODO - figure out the scale for that
-            } else if (imageWidth > imageHeight && containerWidth < containerHeight) {
-                // want image width to match container width
-                // TODO - figure out the scale for that
-            } else if (imageWidth < imageHeight && containerWidth < containerHeight) {
-                // TODO... not sure
+        // if (containerHeight > imageHeight && containerWidth < imageWidth) {
+        //     // image is wider than mesh
+        //     scale = containerAspectRatio / imageAspectRatio;
+        // } else if (containerHeight < imageHeight && containerWidth > imageWidth) {
+        //     // image is taller than mesh
+        //     scale = imageAspectRatio / containerAspectRatio;
+        // } else if (containerHeight > imageHeight && containerWidth > imageWidth) {
+        //     // do nothing
+        // } else if (containerHeight < imageHeight && containerWidth < imageWidth) {
+        //     // scale in the biggest dimension down
+        //     if (imageWidth > imageHeight && containerWidth > containerHeight) {
+        //         // TODO
+        //     } else if (imageWidth < imageHeight && containerWidth > containerHeight) {
+        //         // want image height to match container height
+        //         // TODO - figure out the scale for that
+        //     } else if (imageWidth > imageHeight && containerWidth < containerHeight) {
+        //         // want image width to match container width
+        //         // TODO - figure out the scale for that
+        //     } else if (imageWidth < imageHeight && containerWidth < containerHeight) {
+        //         // TODO... not sure
+        //     }
+        // }
+
+        // Calculate aspect ratios
+        // const containerAspectRatio = containerWidth / containerHeight;
+        // const imageAspectRatio = imageWidth / imageHeight;
+        // let scale = 1; // Default scale
+
+        if (containerAspectRatio > imageAspectRatio) {
+            // Container is wider than the image in proportion
+            if (containerWidth > imageWidth && containerHeight < imageHeight) {
+                // Image needs to be scaled down/up to fit height-wise
+                scale = containerHeight / imageHeight;
+            } else {
+                // Scale image to fit width-wise
+                scale = containerWidth / imageWidth;
+            }
+        } else {
+            // Container is taller than the image in proportion or they are equal
+            if (containerHeight > imageHeight && containerWidth < imageWidth) {
+                // Image needs to be scaled down/up to fit width-wise
+                scale = containerWidth / imageWidth;
+            } else {
+                // Scale image to fit height-wise
+                scale = containerHeight / imageHeight;
             }
         }
 
-          // if (imageAspectRatio > containerAspectRatio) {
-          //   // Image is wider than the mesh
-          //   scale = containerAspectRatio / imageAspectRatio;
-          // } else {
-          //   // Image is taller than the mesh
-          //   scale = imageAspectRatio / containerAspectRatio;
-          // }
+        this.imageObjectFitDimensions = {
+            width: containerWidth,
+            height: containerHeight
+        };
 
-        // Calculate new dimensions
-        this.texture.repeat.set(scale, scale);//scaleWidth, scaleHeight);
-                this.texture.offset.set((1 - scale) / 2, (1 - scale) / 2); // Center the texture
+        const shaderMaterial = new THREE.ShaderMaterial({
+          uniforms: {
+            texture: { type: 't', value: this.texture },
+            planeSize: { type: 'v2', value: new THREE.Vector2(containerWidth, containerHeight) },
+            textureSize: { type: 'v2', value: new THREE.Vector2(imageWidth * scale, imageHeight * scale) },
+          },
+          vertexShader: `
+            varying vec2 vUv;
+            varying vec4 pos;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              pos = gl_Position;
+            }
+          `,
+          fragmentShader: `
+            uniform sampler2D texture;
+            uniform vec2 planeSize;
+            uniform vec2 textureSize;
+            varying vec2 vUv;
+            varying vec4 pos;
 
-        // this.texture.offset.set((1 - scaleWidth) / 2, (1 - scaleHeight) / 2); // Center the texture
+            void main() {
+              // Calculate center offset for texture
+              vec2 centerOffset = (planeSize - textureSize) / planeSize / 2.0;
+              
+              // Calculate bounds for texture rendering
+              vec2 minBounds = centerOffset;
+              vec2 maxBounds = vec2(1.0) - centerOffset;
 
-        this.texture.needsUpdate = true;
+              // Adjust UV coordinates based on the bounds
+              vec2 adjustedUv = vUv;
+              
+              // Discard fragments outside the texture bounds
+              if (adjustedUv.x < minBounds.x || adjustedUv.x > maxBounds.x ||
+                  adjustedUv.y < minBounds.y || adjustedUv.y > maxBounds.y) {
+                discard;
+              }
 
-                this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+              // Map the valid UVs to [0,1] range within the texture area
+              adjustedUv = (adjustedUv - minBounds) / (maxBounds - minBounds);
 
-}
+              // Correctly sample the texture with adjusted UVs
+              gl_FragColor = vec4(adjustedUv, 0, 1);//pos;//texture(texture, adjustedUv);
+            }
+          `,
+          transparent: true, // Enable transparency so that the discarded fragments are transparent
+        });
+        this.object3D.material = shaderMaterial;
+        this.object3D.material.needsUpdate = true;
+    }
     
     _scaleDown() {
         // want contain to have the same object setup as fill, but texture setup is different
