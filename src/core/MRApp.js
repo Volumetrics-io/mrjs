@@ -41,22 +41,14 @@ export class MRApp extends MRElement {
      *
      */
     get appWidth() {
-        let result = parseFloat(this.compStyle.width.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
-        }
-        return result
+        return parseFloat(this.compStyle.width.split('px')[0]);
     }
 
     /**
      *
      */
     get appHeight() {
-        let result = parseFloat(this.compStyle.height.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
-        }
-        return result
+        return parseFloat(this.compStyle.height.split('px')[0]);
     }
 
     /**
