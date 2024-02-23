@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Three.js Plane Geometry with Texture</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    let scene, camera, renderer;
+    let textureLoader, planeGeometry, planeMaterial, planeMesh;
+
+    function init() {
+        // Scene setup
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color('red');
+
+        // Camera setup
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // Renderer setup
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Texture loading
+        textureLoader = new THREE.TextureLoader();
+        textureLoader.load('https://dummyimage.com/200x300/fff/aaa', function(texture) {
+            const textureAspect = texture.image.width / texture.image.height;
+            planeGeometry = new THREE.PlaneGeometry(1, 1 / textureAspect); // Ensure the plane geometry matches the texture's aspect ratio
+            planeMaterial = new THREE.MeshBasicMaterial({ map: texture, color: 'purple' });
+            planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+            scene.add(planeMesh);
+            updatePlaneScale();
+        });
+
+        window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        updatePlaneScale();
+    }
+
+    function updatePlaneScale() {
+        const windowAspect = window.innerWidth / window.innerHeight;
+        let scale;
+        // Adjust plane scale to maintain its aspect ratio matching the window's aspect ratio
+        if (windowAspect > 1) {
+            scale = windowAspect;
+        } else {
+            scale = 1 / windowAspect;
+        }
+        planeMesh.scale.x = scale;
+        planeMesh.scale.y = scale; // This ensures the texture fits within the plane's width and height
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+    init();
+    animate();
+</script>
+</body>
+</html>
