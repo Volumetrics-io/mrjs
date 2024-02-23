@@ -120,15 +120,6 @@ export class MRImage extends MRDivEntity {
     _contain() {
         console.log('in contain');
          // want contain to have the same object setup as fill, but texture setup is different
-        // object
-        // // the image texture
-        // console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
-        // let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
-        // let scaledWidth = this.img.width * ratio;
-        // let scaledHeight = this.img.height * ratio;
-
-        // this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
-// Calculate aspect ratios
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
@@ -137,38 +128,7 @@ export class MRImage extends MRDivEntity {
         let imageHeight = this.img.height;
         let imageAspectRatio = imageWidth / imageHeight;
 
-        // let scaleWidth = 1;
-          // let scaleHeight = 1;
         let scale = 1;
-
-
-        // if (containerHeight > imageHeight && containerWidth < imageWidth) {
-        //     // image is wider than mesh
-        //     scale = containerAspectRatio / imageAspectRatio;
-        // } else if (containerHeight < imageHeight && containerWidth > imageWidth) {
-        //     // image is taller than mesh
-        //     scale = imageAspectRatio / containerAspectRatio;
-        // } else if (containerHeight > imageHeight && containerWidth > imageWidth) {
-        //     // do nothing
-        // } else if (containerHeight < imageHeight && containerWidth < imageWidth) {
-        //     // scale in the biggest dimension down
-        //     if (imageWidth > imageHeight && containerWidth > containerHeight) {
-        //         // TODO
-        //     } else if (imageWidth < imageHeight && containerWidth > containerHeight) {
-        //         // want image height to match container height
-        //         // TODO - figure out the scale for that
-        //     } else if (imageWidth > imageHeight && containerWidth < containerHeight) {
-        //         // want image width to match container width
-        //         // TODO - figure out the scale for that
-        //     } else if (imageWidth < imageHeight && containerWidth < containerHeight) {
-        //         // TODO... not sure
-        //     }
-        // }
-
-        // Calculate aspect ratios
-        // const containerAspectRatio = containerWidth / containerHeight;
-        // const imageAspectRatio = imageWidth / imageHeight;
-        // let scale = 1; // Default scale
 
         if (containerAspectRatio > imageAspectRatio) {
             // Container is wider than the image in proportion
@@ -238,7 +198,7 @@ export class MRImage extends MRDivEntity {
               adjustedUv = (adjustedUv - minBounds) / (maxBounds - minBounds);
 
               // Correctly sample the texture with adjusted UVs
-              gl_FragColor = vec4(adjustedUv, 0, 1);//pos;//texture(texture, adjustedUv);
+              gl_FragColor = vec4(adjustedUv, 0, 1);
             }
           `,
           transparent: true, // Enable transparency so that the discarded fragments are transparent
