@@ -34,6 +34,7 @@ export class MRImage extends MRDivEntity {
 
         // the texture is filled-in in the connected function
         this.texture = null;
+        this.subImageMesh = null; // only used for 'contain' and 'scaleDown' object-fit case
     }
 
     /**
@@ -46,7 +47,7 @@ export class MRImage extends MRDivEntity {
     }
 
     get textureWidth() {
-        let width = this.imageObjectFitDimensions?.width;
+        let width = this.objectFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
 
@@ -60,7 +61,7 @@ export class MRImage extends MRDivEntity {
     }
 
     get textureHeight() {
-        let height = this.imageObjectFitDimensions?.height;
+        let height = this.objectFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
 
@@ -74,7 +75,7 @@ export class MRImage extends MRDivEntity {
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
-        this.imageObjectFitDimensions = { height: 0, width: 0 };
+        this.objectFitDimensions = { height: 0, width: 0 };
         this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
@@ -121,96 +122,69 @@ export class MRImage extends MRDivEntity {
         console.log('in contain');
          // want contain to have the same object setup as fill, but texture setup is different
 
-        let containerWidth = this.parentElement.width;
-        let containerHeight = this.parentElement.height;
+        let containerWidth = mrjsUtils.css.pxToThree(this.parentElement.width);
+        let containerHeight = mrjsUtils.css.pxToThree(this.parentElement.height);
         let containerAspectRatio = containerWidth / containerHeight;
-        let imageWidth = this.img.width;
-        let imageHeight = this.img.height;
-        let imageAspectRatio = imageWidth / imageHeight;
+        let imageOriginalWidth = mrjsUtils.css.pxToThree(this.img.width);
+        let imageOriginalHeight = mrjsUtils.css.pxToThree(this.img.height);
+        let imageAspectRatio = imageOriginalWidth / imageOriginalHeight;
 
-        let scale = 1;
+        /* update mr-image object dimensions */
 
-        if (containerAspectRatio > imageAspectRatio) {
-            // Container is wider than the image in proportion
-            if (containerWidth > imageWidth && containerHeight < imageHeight) {
-                // Image needs to be scaled down/up to fit height-wise
-                scale = containerHeight / imageHeight;
-            } else {
-                // Scale image to fit width-wise
-                scale = containerWidth / imageWidth;
-            }
-        } else {
-            // Container is taller than the image in proportion or they are equal
-            if (containerHeight > imageHeight && containerWidth < imageWidth) {
-                // Image needs to be scaled down/up to fit width-wise
-                scale = containerWidth / imageWidth;
-            } else {
-                // Scale image to fit height-wise
-                scale = containerHeight / imageHeight;
-            }
-        }
+        // need these to stay updated even if not using them directly
+        // so that we have proper physics hierarchy
 
-        this.imageObjectFitDimensions = {
+        this.objectFitDimensions = {
             width: containerWidth,
             height: containerHeight
         };
 
-        const shaderMaterial = new THREE.ShaderMaterial({
-          uniforms: {
-            texture: { type: 't', value: this.texture },
-            planeSize: { type: 'v2', value: new THREE.Vector2(containerWidth, containerHeight) },
-            textureSize: { type: 'v2', value: new THREE.Vector2(imageWidth * scale, imageHeight * scale) },
-          },
-          vertexShader: `
-            varying vec2 vUv;
-            varying vec4 pos;
-            void main() {
-              vUv = uv;
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              pos = gl_Position;
-            }
-          `,
-          fragmentShader: `
-            uniform sampler2D texture;
-            uniform vec2 planeSize;
-            uniform vec2 textureSize;
-            varying vec2 vUv;
-            varying vec4 pos;
+        /* updatePlaneAndImageSize */
 
-            void main() {
-              // Calculate center offset for texture
-              vec2 centerOffset = (planeSize - textureSize) / planeSize / 2.0;
-              
-              // Calculate bounds for texture rendering
-              vec2 minBounds = centerOffset;
-              vec2 maxBounds = vec2(1.0) - centerOffset;
+        let planeMesh = this.object3D;
 
-              // Adjust UV coordinates based on the bounds
-              vec2 adjustedUv = vUv;
-              
-              // Discard fragments outside the texture bounds
-              if (adjustedUv.x < minBounds.x || adjustedUv.x > maxBounds.x ||
-                  adjustedUv.y < minBounds.y || adjustedUv.y > maxBounds.y) {
-                discard;
-              }
-
-              // Map the valid UVs to [0,1] range within the texture area
-              adjustedUv = (adjustedUv - minBounds) / (maxBounds - minBounds);
-
-              // Correctly sample the texture with adjusted UVs
-              gl_FragColor = vec4(adjustedUv, 0, 1);
-            }
-          `,
-          transparent: true, // Enable transparency so that the discarded fragments are transparent
+        const imageGeometry = new THREE.PlaneGeometry(imageOriginalWidth, imageOriginalHeight);
+        const imageMaterial = new THREE.MeshBasicMaterial({
+            map: this.texture,
+            transparent: true
         });
-        this.object3D.material = shaderMaterial;
-        this.object3D.material.needsUpdate = true;
+        if (this.subImageMesh !== undefined && this.subImageMesh != null) {
+            this.subImageMesh.geometry.dispose();
+        }
+        this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+
+        planeMesh.material.visible = false;
+        planeMesh.add(this.subImageMesh);
+
+        this.subImageMesh.material.visible = true;
+
+        // Update plane size to match parent container
+        let planeWidth = planeMesh.scale.x = containerWidth;
+        let planeHeight = planeMesh.scale.y = containerHeight;
+
+        // Check if the image's dimensions are larger than the plane's in 3D space
+        let imageWidth = imageOriginalWidth;
+        let imageHeight = imageOriginalHeight;
+
+        // Only resize if image's dimensions are larger than the plane's
+        if (imageWidth > planeWidth || imageHeight > planeHeight) {
+            const widthRatio = planeWidth / imageWidth;
+            const heightRatio = planeHeight / imageHeight;
+            const scaleRatio = Math.min(widthRatio, heightRatio);
+
+            this.subImageMesh.scale.x = scaleRatio * imageWidth;
+            this.subImageMesh.scale.y = scaleRatio * imageHeight;
+        } else {
+            // Reset to original size if within plane's bounds
+            this.subImageMesh.scale.x = imageWidth;
+            this.subImageMesh.scale.y = imageHeight;
+        }
     }
     
     _scaleDown() {
         // want contain to have the same object setup as fill, but texture setup is different
         // object
-        this.imageObjectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
+        this.objectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
         // the image texture
         console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
         let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
@@ -220,7 +194,7 @@ export class MRImage extends MRDivEntity {
         scaledWidth = Math.min(scaledWidth, this.img.width);
         scaledHeight = Math.min(scaledHeight, this.img.height);
 
-        this.imageObjectFitDimensions = { width: scaledWidth, height: scaledHeight };
+        this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
     }
 
     /**
@@ -241,7 +215,7 @@ export class MRImage extends MRDivEntity {
         let imageHeight = this.img.height;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this.imageObjectFitDimensions = { width: containerWidth, height: containerHeight };
+                this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
 
@@ -294,7 +268,7 @@ export class MRImage extends MRDivEntity {
 
                 // Apply UV transformation with the corrected scale and update the model to hold it
                 this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
-                this.imageObjectFitDimensions = {
+                this.objectFitDimensions = {
                     width: objectWidth,
                     height: objectHeight,
                 };
@@ -302,7 +276,7 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'none':
-                this.imageObjectFitDimensions = { width: this.img.width, height: this.img.height };
+                this.objectFitDimensions = { width: this.img.width, height: this.img.height };
 
                 break;
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Dynamic Plane and Image</title>
+    <title>Three.js Conditional Image Resizing</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; }
@@ -13,7 +13,7 @@
 <body>
 <script>
     let scene, camera, renderer, planeMesh, imageMesh;
-    const imageAspectRatio = 200 / 300; // Width / Height of the image
+    let imageOriginalWidth = 200, imageOriginalHeight = 300; // Original dimensions of the image
 
     function init() {
         // Scene setup
@@ -38,10 +38,10 @@
         // Image texture
         const loader = new THREE.TextureLoader();
         loader.load('https://dummyimage.com/200x300/fff/aaa', function(texture) {
-            const imageGeometry = new THREE.PlaneGeometry(1, 1);
+            const imageGeometry = new THREE.PlaneGeometry(imageOriginalWidth / 100, imageOriginalHeight / 100);
             const imageMaterial = new THREE.MeshBasicMaterial({
                 map: texture,
-                transparent: true // Ensures the texture's background is transparent
+                transparent: true
             });
             imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
             scene.add(imageMesh);
@@ -63,20 +63,27 @@
         planeMesh.scale.x = window.innerWidth / 100;
         planeMesh.scale.y = window.innerHeight / 100;
 
-        // Ensure the image's dimensions are always within the plane's minimum dimension
-        // and scale the image accordingly while maintaining its aspect ratio
-        const planeWidth = window.innerWidth;
-        const planeHeight = window.innerHeight;
-        let imageScale;
+        // Plane dimensions in 3D space
+        const planeWidth = planeMesh.scale.x;
+        const planeHeight = planeMesh.scale.y;
 
-        if (planeWidth > planeHeight) {
-            imageScale = planeHeight / 300; // Use the image's original height for scaling
+        // Check if the image's dimensions are larger than the plane's in 3D space
+        let imageWidth = imageOriginalWidth / 100;
+        let imageHeight = imageOriginalHeight / 100;
+
+        // Only resize if image's dimensions are larger than the plane's
+        if (imageWidth > planeWidth || imageHeight > planeHeight) {
+            const widthRatio = planeWidth / imageWidth;
+            const heightRatio = planeHeight / imageHeight;
+            const scaleRatio = Math.min(widthRatio, heightRatio);
+
+            imageMesh.scale.x = scaleRatio * imageWidth;
+            imageMesh.scale.y = scaleRatio * imageHeight;
         } else {
-            imageScale = planeWidth / 200; // Use the image's original width for scaling
+            // Reset to original size if within plane's bounds
+            imageMesh.scale.x = imageWidth;
+            imageMesh.scale.y = imageHeight;
         }
-
-        imageMesh.scale.x = imageScale * 200 / 100; // Adjusted for the plane's scale
-        imageMesh.scale.y = imageScale * 300 / 100; // Adjusted for the plane's scale
     }
 
     function animate() {
