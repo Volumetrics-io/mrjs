@@ -80,7 +80,7 @@ export class MRApp extends MRElement {
         this.origin = new THREE.Object3D()
 
         this.scene.add(this.origin)
-
+    
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
         this.lighting = {
@@ -203,6 +203,15 @@ export class MRApp extends MRElement {
 
         this.initUser();
         mrjsUtils.physics.initializePhysics();
+
+        if (this.getAttribute('occlusion') == 'spotlight') {
+            console.log('here');
+            this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.5, 64), new THREE.MeshBasicMaterial())
+            this.spotlight.material.colorWrite = false;
+            this.spotlight.renderOrder = 2;
+            this.spotlight.rotation.x = - Math.PI / 2
+            this.scene.add(this.spotlight)
+        }
 
         this.user.position.set(0, 0, 1);
 
@@ -474,6 +483,10 @@ export class MRApp extends MRElement {
             });
         }
 
+        if(this.spotlight) {
+            this.spotlight.position.setFromMatrixPosition(this.userOrigin.matrixWorld)
+            this.spotlight.position.y = 0
+        }
         // ----- System Updates ----- //
 
         if (this.debug) {

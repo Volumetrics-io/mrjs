@@ -122,7 +122,9 @@ export class MRPlaneManager {
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 
-        mrPlane.mesh.visible = this.occlusion;
+        if(this.occlusion != 'enabled') {
+            mrPlane.mesh.visible = false
+        }
 
         this.tempDimensions.setX(width / 2);
         this.tempDimensions.setY(0.01);
