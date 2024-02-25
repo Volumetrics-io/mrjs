@@ -12,9 +12,8 @@ export class MRPlaneManager {
     /**
      *
      * @param scene
-     * @param physicsWorld
      */
-    constructor(scene, physicsWorld, occlusion) {
+    constructor(scene, occlusion) {
         // TODO: add app level controls for:
         // - planes
         // - mesh
@@ -22,7 +21,6 @@ export class MRPlaneManager {
         this.occlusion = !occlusion || occlusion == "true"
 
         this.scene = scene;
-        this.physicsWorld = physicsWorld;
 
         this.matrix = new THREE.Matrix4();
 
@@ -142,7 +140,7 @@ export class MRPlaneManager {
         mrplane.mesh.material.dispose();
         this.scene.remove(mrplane.mesh);
 
-        this.physicsWorld.removeRigidBody(mrplane.body);
+        mrjsUtils.physics.world.removeRigidBody(mrplane.body);
 
         this.currentPlanes.delete(plane);
         this.planeDictionary[mrplane.label].delete(mrplane)
@@ -157,9 +155,9 @@ export class MRPlaneManager {
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
         let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
         colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.PLANES);
-        let body = this.physicsWorld.createRigidBody(rigidBodyDesc);
+        let body = mrjsUtils.physics.world.createRigidBody(rigidBodyDesc);
         body.setRotation(this.tempQuaternion, true);
-        let collider = this.physicsWorld.createCollider(colliderDesc, body);
+        let collider = mrjsUtils.physics.world.createCollider(colliderDesc, body);
 
         collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);

@@ -65,7 +65,7 @@ export class MRHand {
      * @param {object} handedness - enum for the `left`` or `right` hand.
      * @param {object} app - the current MRApp that contains the scene for the hand.
      */
-    constructor(handedness, app) {
+    constructor(handedness, scene) {
         this.handedness = handedness;
         this.pinch = false;
         this.active = false;
@@ -82,14 +82,14 @@ export class MRHand {
         this.handModelFactory = new XRHandModelFactory();
 
         this.mesh;
-        this.controller = app.renderer.xr.getController(HAND_MAPPING[handedness]);
+        this.controller = mrjsUtils.xr.getController(HAND_MAPPING[handedness]);
         this.controller.add(this.pointer);
         this.pointer.position.setZ(-0.5);
 
-        this.grip = app.renderer.xr.getControllerGrip(HAND_MAPPING[handedness]);
+        this.grip = mrjsUtils.xr.getControllerGrip(HAND_MAPPING[handedness]);
         this.grip.add(this.controllerModelFactory.createControllerModel(this.grip));
 
-        this.hand = app.renderer.xr.getHand(HAND_MAPPING[handedness]);
+        this.hand = mrjsUtils.xr.getHand(HAND_MAPPING[handedness]);
         this.model = this.handModelFactory.createHandModel(this.hand, 'mesh');
 
         this.hand.add(this.model);
@@ -97,18 +97,18 @@ export class MRHand {
         this.hand.addEventListener('selectstart', this.onSelect);
         this.hand.addEventListener('selectend', this.onSelect);
 
-        app.scene.add(this.controller);
-        app.scene.add(this.grip);
-        app.scene.add(this.hand);
-        this.initPhysicsBodies(app);
+        scene.add(this.controller);
+        scene.add(this.grip);
+        scene.add(this.hand);
+        this.initPhysicsBodies();
     }
 
     /**
      * @function
      * @description Initializes the physics bodies that the hand represents. Useful for collision detection and UX interactions in MR space.
-     * @param {object} app - the current MRApp that contains the scene for the hand.
+     * @param {object} scene - the current scene.
      */
-    initPhysicsBodies(app) {
+    initPhysicsBodies() {
         for (const joint of joints) {
             this.tempJointPosition = this.getJointPosition(joint);
             this.tempJointOrientation = this.getJointOrientation(joint);
@@ -124,10 +124,10 @@ export class MRHand {
 
             colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.USER);
 
-            this.jointPhysicsBodies[joint] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
+            this.jointPhysicsBodies[joint] = { body: mrjsUtils.physics.world.createRigidBody(rigidBodyDesc) };
             this.jointPhysicsBodies[joint].body.setRotation(...this.tempJointOrientation);
 
-            this.jointPhysicsBodies[joint].collider = app.physicsWorld.createCollider(colliderDesc, this.jointPhysicsBodies[joint].body);
+            this.jointPhysicsBodies[joint].collider = mrjsUtils.physics.world.createCollider(colliderDesc, this.jointPhysicsBodies[joint].body);
 
             this.jointPhysicsBodies[joint].body.enableCcd(true);
 
@@ -138,12 +138,12 @@ export class MRHand {
             this.jointPhysicsBodies[joint].collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);
 
             if (joint.includes('index-finger-tip')) {
-                this.jointPhysicsBodies[`${joint}-hover`] = { body: app.physicsWorld.createRigidBody(rigidBodyDesc) };
+                this.jointPhysicsBodies[`${joint}-hover`] = { body: mrjsUtils.physics.world.createRigidBody(rigidBodyDesc) };
                 this.jointPhysicsBodies[`${joint}-hover`].body.setRotation(...this.tempJointOrientation);
 
                 // This should be replaced with a cone or something
                 const hoverColDesc = mrjsUtils.physics.RAPIER.ColliderDesc.ball(0.03);
-                this.jointPhysicsBodies[`${joint}-hover`].collider = app.physicsWorld.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
+                this.jointPhysicsBodies[`${joint}-hover`].collider = mrjsUtils.physics.world.createCollider(hoverColDesc, this.jointPhysicsBodies[`${joint}-hover`].body);
                 mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[joint].collider.handle] = joint;
                 mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[this.jointPhysicsBodies[`${joint}-hover`].collider.handle] = `${joint}-hover`;
 
@@ -158,6 +158,7 @@ export class MRHand {
      * @description Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
      */
     update() {
+        this.setMesh()
         this.updatePhysicsBodies();
         this.pinchMoved();
     }

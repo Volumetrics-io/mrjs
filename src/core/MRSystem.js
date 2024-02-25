@@ -60,6 +60,20 @@ export class MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Called when a new entity is added to the scene
+     * @param {MRApp} app - the app the system is registered to.
+     */
+    onRegister(app) {}
+
+    /**
+     * @function
+     * @description Called when the system is registered to an app is added.
+     * @param {MRApp} app - the app the system is registered to.
+     */
+    onUnregister(app) {}
+
     // undefined == always update, once set to true/false trigger, then updates based on that every frame
     // setting back to undefined sets to always update.
     _needsSystemUpdate = undefined;

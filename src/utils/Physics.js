@@ -26,6 +26,8 @@ physics.initializePhysics = async function () {
         physics.RAPIER = await import('@dimforge/rapier3d');
         rapierLoaded = true;
         physics.eventQueue = new physics.RAPIER.EventQueue(true);
+        physics.world = new physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+
 
         document.dispatchEvent(new CustomEvent('engine-started', { bubbles: true }));
     }
