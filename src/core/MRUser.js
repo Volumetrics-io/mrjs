@@ -25,6 +25,17 @@ export default class MRUser {
         this.camera.add(this.origin);
         this.origin.position.setX(0.015);
 
+        this.leftWorldPosition = new THREE.Vector3()
+        this.rightWorldPosition = new THREE.Vector3()
+        this.worldPosition = new THREE.Vector3()
+
+        this.leftDistance = 0
+        this.rightDistance = 0
+
+        this.spotLightScale = 1
+
+        this.dif = 1
+
         
     }
 
@@ -42,6 +53,22 @@ export default class MRUser {
         this.hands.right.update()
 
         if(this.spotlight) {
+            this.hands.left.controller.getWorldPosition(this.leftWorldPosition)
+            this.hands.right.controller.getWorldPosition(this.rightWorldPosition)
+            this.worldPosition.setFromMatrixPosition(this.origin.matrixWorld)
+            
+            this.worldPosition.y = 0
+            this.leftWorldPosition.y = 0
+            this.rightWorldPosition.y = 0
+
+            this.leftDistance = this.worldPosition.distanceTo(this.leftWorldPosition)
+            this.rightDistance = this.worldPosition.distanceTo(this.rightWorldPosition)
+
+            this.spotLightScale = this.leftDistance > this.rightDistance ? this.leftDistance : this.rightDistance
+            this.spotLightScale += 1
+
+            this.spotlight.scale.setScalar(this.spotLightScale)
+
             this.spotlight.position.setFromMatrixPosition(this.origin.matrixWorld)
             this.spotlight.position.y = 0
         }
