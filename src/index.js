@@ -13,7 +13,6 @@ import './global';
 
 // DATATYPES
 import './dataTypes/MRClippingGeometry';
-import './dataTypes/MRHand';
 import './dataTypes/MRPlane';
 // DATAMANAGERS
 import './dataManagers/MRPlaneManager';

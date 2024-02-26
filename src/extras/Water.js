@@ -294,14 +294,14 @@ class WaterSystem extends MRSystem {
 
     update(dt, f) {
         if (this.water.visible) {
-            this.water.updateTextureMatrix(this.app.user);
+            this.water.updateTextureMatrix(this.app.camera);
             this.water.updateFlow(dt);
 
             this.water.visible = false;
 
             this.water.refractor.matrixWorld.copy(this.water.matrixWorld);
 
-            this.water.refractor.onBeforeRender(this.app.renderer, this.app.scene, this.app.user);
+            this.water.refractor.onBeforeRender(this.app.renderer, this.app.scene, this.app.camera);
 
             this.water.visible = true;
         }

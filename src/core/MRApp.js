@@ -25,6 +25,7 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
+import MRUser from 'mrjs/core/user/MRUser';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -80,7 +81,7 @@ export class MRApp extends MRElement {
         this.origin = new THREE.Object3D()
 
         this.scene.add(this.origin)
-
+    
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
         this.lighting = {
@@ -105,6 +106,7 @@ export class MRApp extends MRElement {
      */
     connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
+        mrjsUtils.physics.initializePhysics();
         this.init();
 
         this.observer = new MutationObserver(this.mutationCallback);
@@ -116,16 +118,20 @@ export class MRApp extends MRElement {
         this.textSystem = new TextSystem();
         this.geometryStyleSystem = new GeometryStyleSystem();
         this.materialStyleSystem = new MaterialStyleSystem();
-        this.audioSystem = new AudioSystem();
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.physicsWorld = new mrjsUtils.physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+            this.user = new MRUser(this.camera, this.scene)
+
+            if (this.getAttribute('occlusion') == 'spotlight') {
+                this.scene.add(this.user.initSpotlight())
+            }
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
             this.animationSystem = new AnimationSystem();
             this.skyBoxSystem = new SkyBoxSystem();
+            this.audioSystem = new AudioSystem();
 
             // these must be the last three systems since
             // they affect rendering. Clipping must happen
@@ -196,15 +202,7 @@ export class MRApp extends MRElement {
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
 
-        this.cameraOptionString = this.getAttribute('camera');
-        if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
-        }
-
-        this.initUser();
-        mrjsUtils.physics.initializePhysics();
-
-        this.user.position.set(0, 0, 1);
+        this.initCamera();
 
         const layersString = this.getAttribute('layers');
 
@@ -212,7 +210,7 @@ export class MRApp extends MRElement {
             this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
 
             for (const layer of this.layers) {
-                this.user.layers.enable(layer);
+                this.camera.layers.enable(layer);
             }
         }
 
@@ -221,7 +219,7 @@ export class MRApp extends MRElement {
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
 
-            const orbitControls = new OrbitControls(this.user, this.renderer.domElement);
+            const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
             orbitControls.enabled = false;
@@ -300,7 +298,13 @@ export class MRApp extends MRElement {
      * @function
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
-    initUser = () => {
+    initCamera = () => {
+
+        this.cameraOptionString = this.getAttribute('camera');
+        if (this.cameraOptionString) {
+            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
+        }
+
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
         switch (this.cameraOptions.camera) {
@@ -311,34 +315,18 @@ export class MRApp extends MRElement {
                 // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
                 // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
                 // terms of their distance from the camera, rather than affecting the size of the objects.
-                this.user = new THREE.OrthographicCamera(global.viewPortWidth / -2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / -2, 0.01, 1000);
+                this.camera = new THREE.OrthographicCamera(global.viewPortWidth / -2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / -2, 0.01, 1000);
                 break;
             case 'perspective':
             default:
-                this.user = new THREE.PerspectiveCamera(70, this.appWidth / this.appHeight, 0.01, 20);
-                this.vFOV = THREE.MathUtils.degToRad(this.user.fov);
+                this.camera = new THREE.PerspectiveCamera(70, this.appWidth / this.appHeight, 0.01, 20);
+                this.vFOV = THREE.MathUtils.degToRad(this.camera.fov);
                 global.viewPortHeight = 2 * Math.tan(this.vFOV / 2);
-                global.viewPortWidth = global.viewPortHeight * this.user.aspect;
+                global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
                 break;
         }
 
-        // weird bug fix in getting camera position in webXR
-        this.forward = new THREE.Object3D();
-        this.user.add(this.forward);
-
-        this.forward.position.setZ(-0.5);
-
-        // for window placement
-        this.userOrigin = new THREE.Object3D();
-        this.anchorPoint = new THREE.Object3D();
-        this.user.add(this.userOrigin);
-        this.user.add(this.anchorPoint);
-
-        this.userOrigin.position.setX(0.015);
-        this.anchorPoint.position.setX(0.015);
-        this.anchorPoint.position.setZ(-0.5);
-
-        // Audio listner needed for spatial audio
+        this.camera.position.set(0, 0, 1);
     };
 
     /**
@@ -428,18 +416,18 @@ export class MRApp extends MRElement {
                 global.viewPortWidth = this.appWidth / 1000;
                 global.viewPortHeight = this.appHeight / 1000;
 
-                this.user.left = global.viewPortWidth / -2;
-                this.user.right = global.viewPortWidth / 2;
-                this.user.top = global.viewPortHeight / 2;
-                this.user.bottom = global.viewPortHeight / -2;
+                this.camera.left = global.viewPortWidth / -2;
+                this.camera.right = global.viewPortWidth / 2;
+                this.camera.top = global.viewPortHeight / 2;
+                this.camera.bottom = global.viewPortHeight / -2;
                 break;
             case 'perspective':
             default:
-                this.user.aspect = this.appWidth / this.appHeight;
-                global.viewPortWidth = global.viewPortHeight * this.user.aspect;
+                this.camera.aspect = this.appWidth / this.appHeight;
+                global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
                 break;
         }
-        this.user.updateProjectionMatrix();
+        this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.appWidth, this.appHeight);
     }
 
@@ -463,8 +451,8 @@ export class MRApp extends MRElement {
             this.dispatchEvent(new CustomEvent('enterxr', { bubbles: true }));
 
             mrjsUtils.xr.session.addEventListener('end', () => {
-                this.user.position.set(0, 0, 1);
-                this.user.quaternion.set(0, 0, 0, 1);
+                this.camera.position.set(0, 0, 1);
+                this.camera.quaternion.set(0, 0, 0, 1);
                 mrjsUtils.xr.session = undefined;
                 mrjsUtils.xr.referenceSpace = undefined;
                 this.classList.remove('inXR');
@@ -473,6 +461,8 @@ export class MRApp extends MRElement {
                 this.dispatchEvent(new CustomEvent('exitxr', { bubbles: true }));
             });
         }
+
+        this.user?.update()
 
         // ----- System Updates ----- //
 
@@ -499,12 +489,12 @@ export class MRApp extends MRElement {
             // and internally handled stenciling functions.
             this.renderer.state.buffers.stencil.setTest(true);
             this.renderer.state.buffers.stencil.setMask(0xff);
-            this.renderer.render(this.scene, this.user);
+            this.renderer.render(this.scene, this.camera);
 
             // Render the main scene without stencil operations
             this.renderer.state.buffers.stencil.setTest(false);
         }
-        this.renderer.render(this.scene, this.user);
+        this.renderer.render(this.scene, this.camera);
     }
 }
 

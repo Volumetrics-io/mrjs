@@ -25,8 +25,8 @@ export class AudioSystem extends MRSystem {
      * @param frame
      */
     update(dt, frame) {
-        this.listener.position.setFromMatrixPosition(this.app.userOrigin.matrixWorld);
-        this.listener.setRotationFromMatrix(this.app.userOrigin.matrixWorld);
+        this.listener.position.setFromMatrixPosition(this.app.user.origin.matrixWorld);
+        this.listener.setRotationFromMatrix(this.app.user.origin.matrixWorld);
     }
 
     /**

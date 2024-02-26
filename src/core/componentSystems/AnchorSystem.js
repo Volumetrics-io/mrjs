@@ -22,7 +22,7 @@ export class AnchorSystem extends MRSystem {
         this.currentEntity = null;
         this.tempMatrix = new THREE.Matrix4();
 
-        this.planeManager = new MRPlaneManager(this.app.scene, this.app.physicsWorld, this.app.getAttribute('occlusion'));
+        this.planeManager = new MRPlaneManager(this.app.scene, this.app.getAttribute('occlusion'));
         this.anchoringQueue = new Set();
 
         this.hitResults;
@@ -83,12 +83,12 @@ export class AnchorSystem extends MRSystem {
 
         document.addEventListener('selectmoved', (event) => {
             if (this.currentEntity && this.hand == event.detail.handedness) {
-                this.userWorldPosition.setFromMatrixPosition(this.app.user.matrixWorld);
-                this.cameraForward.setFromMatrixPosition(this.app.forward.matrixWorld);
+                this.userWorldPosition.setFromMatrixPosition(this.app.camera.matrixWorld);
+                this.cameraForward.setFromMatrixPosition(this.app.user.forward.matrixWorld);
 
                 this.pinchDistance = this.cameraForward.distanceTo(event.detail.position);
                 this.scale = Math.exp(2 * this.pinchDistance);
-                this.app.anchor.position.z = this.app.forward.position.z * this.scale;
+                this.app.anchor.position.z = this.app.user.forward.position.z * this.scale;
                 this.app.anchor.lookAt(this.userWorldPosition);
             }
         });
@@ -250,7 +250,7 @@ export class AnchorSystem extends MRSystem {
         }
         let originMatrix = new THREE.Matrix4()
         mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
-            originMatrix.copyPosition(this.app.forward.matrixWorld)
+            originMatrix.copyPosition(this.app.user.forward.matrixWorld)
             frame.createAnchor(this.matrix4ToXRRigidTransform(originMatrix), mrjsUtils.xr.referenceSpace).then(
                 (anchor) => {
                     this.app.origin.matrixAutoUpdate = false;
@@ -281,7 +281,7 @@ export class AnchorSystem extends MRSystem {
     fixed(entity) {
         this.anchoringQueue.add(entity);
         mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
-            frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
+            frame.createAnchor(this.matrix4ToXRRigidTransform(this.app.user.forward.matrixWorld), mrjsUtils.xr.referenceSpace).then(
                 (anchor) => {
                     entity.anchor = anchor;
                     entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
@@ -322,7 +322,7 @@ export class AnchorSystem extends MRSystem {
      */
     plane(entity, comp) {
         this.anchoringQueue.add(entity);
-        this.userWorldPosition.setFromMatrixPosition(this.app.forward.matrixWorld);
+        this.userWorldPosition.setFromMatrixPosition(this.app.user.forward.matrixWorld);
         let sort = Array.from(this.planeManager.planeDictionary[comp.label].values());
         sort.sort((a, b) => {
             return a.mesh.position.distanceTo(this.userWorldPosition) - b.mesh.position.distanceTo(this.userWorldPosition);
