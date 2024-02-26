@@ -34,7 +34,10 @@ export class MRImage extends MRDivEntity {
 
         // the texture is filled-in in the connected function
         this.texture = null;
-        this.subImageMesh = null; // only used for 'contain' and 'scaleDown' object-fit case
+
+        // this is used to aid in the formatting for certain object-fit setups
+        // ex: contain, scale-down
+        this.subImageMesh = null; 
     }
 
     /**
@@ -117,36 +120,6 @@ export class MRImage extends MRDivEntity {
         }
     }
 
-    _oldSubImageNotNeeded() {
-        if (this.subImageMesh !== undefined && this.subImageMesh != null) {
-            mrjsUtils.model.disposeObject3D(this.subImageMesh);
-        }
-    }
-
-
-    _contain() {
-        console.log('in contain');
-         // want contain to have the same object setup as fill, but texture setup is different
-
-        
-    }
-    
-    _scaleDown() {
-        // want contain to have the same object setup as fill, but texture setup is different
-        // object
-        this.objectFitDimensions = { width: this.parentElement.width, height: this.parentElement.height };
-        // the image texture
-        console.log('--- scale-down', 'content width', this.contentWidth, 'actual width', this.width);
-        let ratio = Math.min(this.parentElement.width / this.img.width, this.parentElement.height / this.img.height);
-        let scaledWidth = this.img.width * ratio;
-        let scaledHeight = this.img.height * ratio;
-
-        scaledWidth = Math.min(scaledWidth, this.img.width);
-        scaledHeight = Math.min(scaledHeight, this.img.height);
-
-        this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
-    }
-
     /**
      * @function
      * @description computes the width and height values for the image considering the value of object-fit
@@ -159,6 +132,13 @@ export class MRImage extends MRDivEntity {
             return;
         }
 
+        const _oldSubImageNotNeeded = () => {
+            if (this.subImageMesh !== null) {
+                mrjsUtils.model.disposeObject3D(this.subImageMesh);
+                this.subImageMesh = null;
+            }
+        }
+
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
         let imageWidth = this.img.width;
@@ -167,13 +147,12 @@ export class MRImage extends MRDivEntity {
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this._oldSubImageNotNeeded();
+                _oldSubImageNotNeeded();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
 
             case 'contain':
-                let isContain = true;
             case 'scale-down':
                 // `contain` and `scale-down` are the same except for one factor:
                 // - `contain` will always scale the image to fit
@@ -188,10 +167,8 @@ export class MRImage extends MRDivEntity {
                 };
 
                 // Check if resize is required
-                if (isContain || imageWidth > planeWidth || imageHeight > planeHeight) {
-                    const widthRatio = planeWidth / imageWidth;
-                    const heightRatio = planeHeight / imageHeight;
-                    const scaleRatio = Math.min(widthRatio, heightRatio);
+                if ((this.compStyle.objectFit === 'contain') || imageWidth > planeWidth || imageHeight > planeHeight) {
+                    const scaleRatio = Math.min(planeWidth / imageWidth, planeHeight / imageHeight);
                     imageWidth *= scaleRatio;
                     imageHeight *= scaleRatio;
                 }
@@ -201,22 +178,23 @@ export class MRImage extends MRDivEntity {
                     map: this.texture,
                     transparent: true
                 });
-                this._oldSubImageNotNeeded();
+                _oldSubImageNotNeeded();
                 this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
 
                 // make them render properly
                 let planeMesh = this.object3D;
                 let imageMesh = this.subImageMesh;
                 planeMesh.material.visible = false;
+                planeMesh.material.needsUpdate = true;
                 planeMesh.add(imageMesh);
                 imageMesh.material.visible = true;
+                imageMesh.material.needsUpdate = true;
 
                 break;
 
             case 'cover':
-                this._oldSubImageNotNeeded();
+                _oldSubImageNotNeeded();
                 this.texture.matrixAutoUpdate = false;
-                this.subImageMesh
 
                 // Calculate scalings and offsets
                 let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
@@ -260,8 +238,8 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'none':
-                this._oldSubImageNotNeeded();
-                this.objectFitDimensions = { width: this.img.width, height: this.img.height };
+                _oldSubImageNotNeeded();
+                this.objectFitDimensions = { width: imageWidth, height: imageHeight };
 
                 break;
 
