@@ -161,10 +161,6 @@ export class MRImage extends MRDivEntity {
                 // Plane dimensions in 3D space
                 const planeWidth = containerWidth;
                 const planeHeight = containerHeight;
-                this.objectFitDimensions = {
-                    width: containerWidth,
-                    height: containerHeight
-                };
 
                 // Check if resize is required
                 if ((this.compStyle.objectFit === 'contain') || imageWidth > planeWidth || imageHeight > planeHeight) {
@@ -181,9 +177,14 @@ export class MRImage extends MRDivEntity {
                 _oldSubImageNotNeeded();
                 this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
 
-                // make them render properly
+                // cleanup for final rendering setup
                 let planeMesh = this.object3D;
                 let imageMesh = this.subImageMesh;
+
+                this.objectFitDimensions = {
+                    width: containerWidth,
+                    height: containerHeight
+                };
                 planeMesh.material.visible = false;
                 planeMesh.material.needsUpdate = true;
                 planeMesh.add(imageMesh);
