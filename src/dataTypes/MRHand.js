@@ -68,6 +68,8 @@ export class MRHand {
     constructor(handedness, scene) {
         this.handedness = handedness;
         this.pinch = false;
+
+        this.lastPosition = new THREE.Vector3()
         this.active = false;
 
         this.jointPhysicsBodies = {};
@@ -158,6 +160,9 @@ export class MRHand {
      * @description Update function for the Hand object. Updates the physics bodies and checks whether a pinch has happened or is in progress in any way.
      */
     update() {
+        this.active = !(this.lastPosition.equals(this.controller.position))
+        this.lastPosition.copy(this.controller.position)
+        
         this.setMesh()
         this.updatePhysicsBodies();
         this.pinchMoved();

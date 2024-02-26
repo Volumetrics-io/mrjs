@@ -33,9 +33,6 @@ export default class MRUser {
         this.rightDistance = 0
 
         this.spotLightScale = 1
-
-        this.dif = 1
-
         
     }
 
@@ -53,21 +50,33 @@ export default class MRUser {
         this.hands.right.update()
 
         if(this.spotlight) {
-            this.hands.left.controller.getWorldPosition(this.leftWorldPosition)
-            this.hands.right.controller.getWorldPosition(this.rightWorldPosition)
             this.worldPosition.setFromMatrixPosition(this.origin.matrixWorld)
-            
             this.worldPosition.y = 0
-            this.leftWorldPosition.y = 0
-            this.rightWorldPosition.y = 0
 
-            this.leftDistance = this.worldPosition.distanceTo(this.leftWorldPosition)
-            this.rightDistance = this.worldPosition.distanceTo(this.rightWorldPosition)
+            if(this.hands.left.active){
+                this.hands.left.controller.getWorldPosition(this.leftWorldPosition)
+                this.leftWorldPosition.y = 0
+                this.leftDistance = this.worldPosition.distanceTo(this.leftWorldPosition)
+            } else {
+                this.leftDistance = 0
+            }
+
+            if(this.hands.right.active) {
+                this.hands.right.controller.getWorldPosition(this.rightWorldPosition)
+                this.rightWorldPosition.y = 0
+                this.rightDistance = this.worldPosition.distanceTo(this.rightWorldPosition)
+            } else {
+                this.rightDistance = 0
+            }
+
 
             this.spotLightScale = this.leftDistance > this.rightDistance ? this.leftDistance : this.rightDistance
-            this.spotLightScale += 1
 
-            this.spotlight.scale.setScalar(this.spotLightScale)
+            if (this.spotLightScale > 0) {
+                this.spotLightScale += 1
+                this.spotlight.scale.setScalar(this.spotLightScale)
+
+            }
 
             this.spotlight.position.setFromMatrixPosition(this.origin.matrixWorld)
             this.spotlight.position.y = 0

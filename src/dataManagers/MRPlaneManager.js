@@ -18,7 +18,7 @@ export class MRPlaneManager {
         // - planes
         // - mesh
 
-        this.occlusion = !occlusion || occlusion == "true"
+        this.occlusion = occlusion ?? 'enable'
 
         this.scene = scene;
 
@@ -120,7 +120,7 @@ export class MRPlaneManager {
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 
-        if(this.occlusion != 'enabled') {
+        if(this.occlusion != 'enable') {
             mrPlane.mesh.visible = false
         }
 
