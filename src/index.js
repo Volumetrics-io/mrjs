@@ -52,7 +52,6 @@ import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
 import './core/componentSystems/TextSystem';
 
-
 // EXPORTS
 // UTILS
 export { mrjsUtils } from './utils/index.js';

@@ -111,10 +111,9 @@ export class TextSystem extends MRSystem {
             // we can go and do the larger calculations and changes.
 
             if (textContentChanged) {
-                entity.textObj.text = text
+                entity.textObj.text = text;
             }
             if (textContentChanged || entity.needsStyleUpdate) {
-
                 this.updateStyle(entity);
                 entity.textObj.sync(() => {
                     if (entity instanceof MRButton) {
@@ -125,7 +124,7 @@ export class TextSystem extends MRSystem {
                     }
 
                     if (isTextFieldOrArea) {
-                        this.updateTextInput(entity)
+                        this.updateTextInput(entity);
                     }
                 });
             }
@@ -147,10 +146,10 @@ export class TextSystem extends MRSystem {
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
-        if(textObj.text.trim().length != 0) { 
-            textObj.font = this.preloadedFonts[entity.compStyle.fontFamily]
+        if (textObj.text.trim().length != 0) {
+            textObj.font = this.preloadedFonts[entity.compStyle.fontFamily];
         } else {
-            textObj.font = null
+            textObj.font = null;
         }
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);

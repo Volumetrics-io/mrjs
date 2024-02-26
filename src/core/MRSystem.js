@@ -1,5 +1,5 @@
 import { MREntity } from 'mrjs/core/MREntity';
-const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate']
+const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate'];
 
 /**
  * @class MRSystem
@@ -45,9 +45,9 @@ export class MRSystem {
             this.onNewEntity(event.target);
         });
 
-        for(const eventType of GLOBAL_UPDATE_EVENTS) {
+        for (const eventType of GLOBAL_UPDATE_EVENTS) {
             document.addEventListener(eventType, (event) => {
-                this.eventUpdate()
+                this.eventUpdate();
             });
         }
 
@@ -155,9 +155,7 @@ export class MRSystem {
      * @function
      * @description An event triggered update, called when any scene level events occur.
      */
-    eventUpdate() {
-
-    }
+    eventUpdate() {}
 
     /**
      * @function
