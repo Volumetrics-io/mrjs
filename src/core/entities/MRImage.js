@@ -139,27 +139,30 @@ export class MRImage extends MRDivEntity {
         /* updatePlaneAndImageSize */
 
         // setup
-        const imageGeometry = new THREE.PlaneGeometry(containerWidth, containerHeight);
+        let planeMesh = this.object3D;
+        // Update plane size to match parent
+        planeMesh.scale.x = containerWidth / 100;
+        planeMesh.scale.y = containerHeight / 100;
+        imageMesh.scale.x = imageWidth / 100;
+        imageMesh.scale.y = imageHeight / 100;
+        const imageGeometry = new THREE.PlaneGeometry(containerWidth / 100, containerHeight / 100);
         const imageMaterial = new THREE.MeshBasicMaterial({
             map: this.texture,
             transparent: true
         });
         if (this.subImageMesh !== undefined && this.subImageMesh != null) {
-            this.subImageMesh.geometry.dispose();
+            console.log('disposing');
+            mrjsUtils.model.disposeObject3D(this.subImageMesh);
         }
         this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-
-        // update planeMesh
-        let planeMesh = this.object3D;
-        // Update plane size to match parent
-        planeMesh.scale.x = containerWidth;
-        planeMesh.scale.y = containerHeight;
 
         let imageMesh = this.subImageMesh;
         planeMesh.material.visible = false;
         planeMesh.add(imageMesh);
         imageMesh.material.visible = true;
 
+
+        // update planeMesh
         // Plane dimensions in 3D space
         const planeWidth = planeMesh.scale.x;
         const planeHeight = planeMesh.scale.y;
@@ -176,10 +179,13 @@ export class MRImage extends MRDivEntity {
             imageMesh.scale.y = scaleRatio * imageHeight;
             console.log('imageMeshScale', 'x', imageMesh.scale.x, 'y', imageMesh.scale.y);
         } else {
+            console.log('reset');
             // Reset to original size if within plane's bounds
             imageMesh.scale.x = imageWidth;
             imageMesh.scale.y = imageHeight;
         }
+        imageMesh.geometry.needsUpdate = true;
+        planeMesh.geometry.needsUpdate = true;
     }
     
     _scaleDown() {
@@ -262,7 +268,9 @@ export class MRImage extends MRDivEntity {
 
                     // the object model itself
                     objectWidth = scaledWidth;
-                    objectHeight = containerHeight; // this doesnt match scaled Height to prevent overflow
+                    objectHeight = containerHeight;
+                    // objectHeight - doesnt match scaled Height to prevent overflow
+                    // TODO - should it and we just clip it?
                 }
 
                 // Apply UV transformation with the corrected scale and update the model to hold it

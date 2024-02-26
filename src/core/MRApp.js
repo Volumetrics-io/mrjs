@@ -480,10 +480,9 @@ export class MRApp extends MRElement {
         // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
         // from the pure loop but it is okay as is here for now.
 
+        this.renderer.clear();
         // Need to wait until we have all needed rendering-associated systems loaded.
         if (this.maskingSystem != undefined) {
-            this.renderer.clear();
-
             // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
             // and internally handled stenciling functions.
             this.renderer.state.buffers.stencil.setTest(true);

@@ -9,7 +9,7 @@ let js = {};
 /**
  * @function
  * @memberof js
- * @param {object} instance - the object whole class is being checked
+ * @param {object} instance - the object whose class is being checked
  * @param {object} BaseClass - the given name of the BaseClass being checked against. Not in quotes.
  * @example JS.isInstanceOfBaseClassOnly(entity, MRDivEntity) would return true only on <mr-div> entities.
  * @description Given the parent, grabs either the parent's direct material or (in the case of a group) the
