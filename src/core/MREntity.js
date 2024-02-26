@@ -430,7 +430,7 @@ export class MREntity extends MRElement {
         }
 
         if (this.physics) {
-            this.env.physicsWorld.removeRigidBody(this.physics.body);
+            mrjsUtils.physics.world.removeRigidBody(this.physics.body);
         }
 
         this.environment = null;
