@@ -37,7 +37,7 @@ export default class MRUser {
     }
 
     initSpotlight() {
-        this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.5, 64), new THREE.MeshBasicMaterial())
+        this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 64), new THREE.MeshBasicMaterial())
         this.spotlight.material.colorWrite = false;
         this.spotlight.renderOrder = 2;
         this.spotlight.rotation.x = - Math.PI / 2
