@@ -117,75 +117,18 @@ export class MRImage extends MRDivEntity {
         }
     }
 
+    _subImageNotNeeded() {
+        if (this.subImageMesh !== undefined && this.subImageMesh != null) {
+            mrjsUtils.model.disposeObject3D(this.subImageMesh);
+        }
+    }
+
 
     _contain() {
         console.log('in contain');
          // want contain to have the same object setup as fill, but texture setup is different
 
-        let containerWidth = this.parentElement.width;
-        let containerHeight = this.parentElement.height;
-        let containerAspectRatio = containerWidth / containerHeight;
-        let imageWidth = this.img.width;
-        let imageHeight = this.img.height;
-        let imageAspectRatio = imageWidth / imageHeight;
-
-        /* update mr-image object dimensions */
-
-        this.objectFitDimensions = {
-            width: containerWidth,
-            height: containerHeight
-        };
-
-        /* updatePlaneAndImageSize */
-
-        // setup
-        let planeMesh = this.object3D;
-        // Update plane size to match parent
-        planeMesh.scale.x = containerWidth / 100;
-        planeMesh.scale.y = containerHeight / 100;
-        imageMesh.scale.x = imageWidth / 100;
-        imageMesh.scale.y = imageHeight / 100;
-        const imageGeometry = new THREE.PlaneGeometry(containerWidth / 100, containerHeight / 100);
-        const imageMaterial = new THREE.MeshBasicMaterial({
-            map: this.texture,
-            transparent: true
-        });
-        if (this.subImageMesh !== undefined && this.subImageMesh != null) {
-            console.log('disposing');
-            mrjsUtils.model.disposeObject3D(this.subImageMesh);
-        }
-        this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
-
-        let imageMesh = this.subImageMesh;
-        planeMesh.material.visible = false;
-        planeMesh.add(imageMesh);
-        imageMesh.material.visible = true;
-
-
-        // update planeMesh
-        // Plane dimensions in 3D space
-        const planeWidth = planeMesh.scale.x;
-        const planeHeight = planeMesh.scale.y;
-
-        // Check if the image's dimensions are larger than the plane's in 3D space
-        // Only resize if image's dimensions are larger than the plane's
-        if (imageWidth > planeWidth || imageHeight > planeHeight) {
-            console.log('imageWidth', imageWidth, 'planeWidth', planeWidth);
-            const widthRatio = planeWidth / imageWidth;
-            const heightRatio = planeHeight / imageHeight;
-            const scaleRatio = Math.min(widthRatio, heightRatio);
-
-            imageMesh.scale.x = scaleRatio * imageWidth;
-            imageMesh.scale.y = scaleRatio * imageHeight;
-            console.log('imageMeshScale', 'x', imageMesh.scale.x, 'y', imageMesh.scale.y);
-        } else {
-            console.log('reset');
-            // Reset to original size if within plane's bounds
-            imageMesh.scale.x = imageWidth;
-            imageMesh.scale.y = imageHeight;
-        }
-        imageMesh.geometry.needsUpdate = true;
-        planeMesh.geometry.needsUpdate = true;
+        
     }
     
     _scaleDown() {
@@ -224,12 +167,46 @@ export class MRImage extends MRDivEntity {
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
+                this._subImageNotNeeded();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
 
             case 'contain':
-                this._contain();
+                // Plane dimensions in 3D space
+                const planeWidth = containerWidth;
+                const planeHeight = containerHeight;
+                this.objectFitDimensions = {
+                    width: containerWidth,
+                    height: containerHeight
+                };
+
+                // Check if the image's dimensions are larger than the plane's in 3D space
+                // Only resize if image's dimensions are larger than the plane's; otherwise, 
+                // leave them at the image's original size.
+                if (imageWidth > planeWidth || imageHeight > planeHeight) {
+                    const widthRatio = planeWidth / imageWidth;
+                    const heightRatio = planeHeight / imageHeight;
+                    const scaleRatio = Math.min(widthRatio, heightRatio);
+
+                    imageWidth = scaleRatio * imageWidth;
+                    imageHeight = scaleRatio * imageHeight;
+                }
+
+                const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+                const imageMaterial = new THREE.MeshStandardMaterial({
+                    map: this.texture,
+                    transparent: true
+                });
+                this._subImageNotNeeded();
+                this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+
+                // make them render properly
+                let planeMesh = this.object3D;
+                let imageMesh = this.subImageMesh;
+                planeMesh.material.visible = false;
+                planeMesh.add(imageMesh);
+                imageMesh.material.visible = true;
 
                 break;
 
@@ -239,7 +216,9 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'cover':
+                this._subImageNotNeeded();
                 this.texture.matrixAutoUpdate = false;
+                this.subImageMesh
 
                 // Calculate scalings and offsets
                 let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
@@ -283,6 +262,7 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'none':
+                this._subImageNotNeeded();
                 this.objectFitDimensions = { width: this.img.width, height: this.img.height };
 
                 break;
