@@ -197,34 +197,57 @@ export class MRImage extends MRDivEntity {
                 _oldSubImageNotNeeded();
                 this.texture.matrixAutoUpdate = false;
 
-                // Calculate scalings and offsets
-                let objectWidth = containerWidth;
-                let objectHeight = containerHeight;
+                let containerAspect = containerWidth / containerHeight;
                 let scaledWidth, scaledHeight, offsetX, offsetY;
-                if (imageAspect > containerAspect) {
-                    // Scale image texture to fit container height, calculate width to maintain aspect ratio
-                    scaledHeight = objectHeight;
-                    scaledWidth = scaledHeight * imageAspect;
 
-                    // Center horizontally
-                    offsetX = (objectWidth - scaledWidth) / 2;
-                    offsetY = 0;
-                } else {
-                    // Scale image texture to fit container width, calculate height to maintain aspect ratio
-                    scaledWidth = objectWidth;
-                    scaledHeight = scaledWidth / imageAspect;
-
-                    // Center vertically
-                    offsetX = 0;
-                    offsetY = (objectHeight - scaledHeight) / 2;
+                // Determine whether to match the container's width or height based on the smaller dimension
+                if (containerWidth < containerHeight) { // Container is taller than it is wide
+                    if (imageAspect >= 1) { 
+                        // Image is wider than it is tall or square
+                        // Fit to container's width
+                        scaledWidth = containerWidth;
+                        scaledHeight = scaledWidth / imageAspect;
+                        offsetX = 0;
+                        offsetY = (containerHeight - scaledHeight) / 2;
+                    } else { 
+                        // Image is taller than it is wide
+                        // Fit to container's height to ensure the smallest dimension matches
+                        scaledHeight = containerHeight;
+                        scaledWidth = scaledHeight * imageAspect;
+                        offsetX = (containerWidth - scaledWidth) / 2;
+                        offsetY = 0;
+                    }
+                } else { // Container is wider than it is tall or square
+                    if (imageAspect <= 1) {
+                        // Image is taller than it is wide or square
+                        // Fit to container's height
+                        scaledHeight = containerHeight;
+                        scaledWidth = scaledHeight * imageAspect;
+                        offsetX = (containerWidth - scaledWidth) / 2;
+                        offsetY = 0;
+                    } else {
+                        // Image is wider than it is tall
+                        // Fit to container's width to ensure the smallest dimension matches
+                        scaledWidth = containerWidth;
+                        scaledHeight = scaledWidth / imageAspect;
+                        offsetX = 0;
+                        offsetY = (containerHeight - scaledHeight) / 2;
+                    }
                 }
 
                 // Apply UV transformation with the corrected scale and update the model to hold it
                 this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
                 this.objectFitDimensions = {
-                    width: objectWidth,
-                    height: objectHeight,
+                    width: containerWidth,
+                    height: containerHeight,
                 };
+
+                // // Apply UV transformation with the corrected scale and update the model to hold it
+                // this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
+                // this.objectFitDimensions = {
+                //     width: objectWidth,
+                //     height: objectHeight,
+                // };
 
                 break;
 
