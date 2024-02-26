@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRHand } from 'mrjs/dataTypes/MRHand';
+import { MRHand } from 'mrjs/core/user/MRHand';
 
 import { mrjsUtils } from 'mrjs';
 
