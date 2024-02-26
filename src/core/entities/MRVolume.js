@@ -1,4 +1,4 @@
-import { MREntity } from '../MREntity';
+import { MREntity } from 'mrjs/core/MREntity';
 
 export class MRVolume extends MREntity {
     constructor() {

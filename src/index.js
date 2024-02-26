@@ -24,6 +24,9 @@ import './core/MRElement';
 import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
+// CORE - USER
+import './core/user/MRHand';
+import './core/user/MRUser';
 // CORE - ENTITIES
 import './core/entities/MRVolume.js';
 import './core/entities/MRButton';

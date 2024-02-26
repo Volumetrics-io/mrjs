@@ -1,4 +1,4 @@
-import { MRHand } from "./MRHand"
+import { MRHand } from "mrjs/core/user/MRHand"
 
 export default class MRUser {
 
