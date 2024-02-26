@@ -117,7 +117,7 @@ export class MRImage extends MRDivEntity {
         }
     }
 
-    _subImageNotNeeded() {
+    _oldSubImageNotNeeded() {
         if (this.subImageMesh !== undefined && this.subImageMesh != null) {
             mrjsUtils.model.disposeObject3D(this.subImageMesh);
         }
@@ -167,12 +167,18 @@ export class MRImage extends MRDivEntity {
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this._subImageNotNeeded();
+                this._oldSubImageNotNeeded();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
 
             case 'contain':
+                let isContain = true;
+            case 'scale-down':
+                // `contain` and `scale-down` are the same except for one factor:
+                // - `contain` will always scale the image to fit
+                // - `scale-down` will only scale the image to fit if the image is larger than the container
+
                 // Plane dimensions in 3D space
                 const planeWidth = containerWidth;
                 const planeHeight = containerHeight;
@@ -181,16 +187,13 @@ export class MRImage extends MRDivEntity {
                     height: containerHeight
                 };
 
-                // Check if the image's dimensions are larger than the plane's in 3D space
-                // Only resize if image's dimensions are larger than the plane's; otherwise, 
-                // leave them at the image's original size.
-                if (imageWidth > planeWidth || imageHeight > planeHeight) {
+                // Check if resize is required
+                if (isContain || imageWidth > planeWidth || imageHeight > planeHeight) {
                     const widthRatio = planeWidth / imageWidth;
                     const heightRatio = planeHeight / imageHeight;
                     const scaleRatio = Math.min(widthRatio, heightRatio);
-
-                    imageWidth = scaleRatio * imageWidth;
-                    imageHeight = scaleRatio * imageHeight;
+                    imageWidth *= scaleRatio;
+                    imageHeight *= scaleRatio;
                 }
 
                 const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
@@ -198,7 +201,7 @@ export class MRImage extends MRDivEntity {
                     map: this.texture,
                     transparent: true
                 });
-                this._subImageNotNeeded();
+                this._oldSubImageNotNeeded();
                 this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
 
                 // make them render properly
@@ -210,13 +213,8 @@ export class MRImage extends MRDivEntity {
 
                 break;
 
-            case 'scale-down':
-                this._scaleDown();
-
-                break;
-
             case 'cover':
-                this._subImageNotNeeded();
+                this._oldSubImageNotNeeded();
                 this.texture.matrixAutoUpdate = false;
                 this.subImageMesh
 
@@ -262,7 +260,7 @@ export class MRImage extends MRDivEntity {
                 break;
 
             case 'none':
-                this._subImageNotNeeded();
+                this._oldSubImageNotNeeded();
                 this.objectFitDimensions = { width: this.img.width, height: this.img.height };
 
                 break;
