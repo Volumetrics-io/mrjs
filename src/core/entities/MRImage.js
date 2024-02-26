@@ -182,8 +182,8 @@ export class MRImage extends MRDivEntity {
                 let imageMesh = this.subImageMesh;
 
                 this.objectFitDimensions = {
-                    width: containerWidth,
-                    height: containerHeight
+                    width: planeWidth,
+                    height: planeHeight
                 };
                 planeMesh.material.visible = false;
                 planeMesh.material.needsUpdate = true;
@@ -198,35 +198,25 @@ export class MRImage extends MRDivEntity {
                 this.texture.matrixAutoUpdate = false;
 
                 // Calculate scalings and offsets
-                let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
+                let objectWidth = containerWidth;
+                let objectHeight = containerHeight;
+                let scaledWidth, scaledHeight, offsetX, offsetY;
                 if (imageAspect > containerAspect) {
                     // Scale image texture to fit container height, calculate width to maintain aspect ratio
-                    scaledHeight = containerHeight;
+                    scaledHeight = objectHeight;
                     scaledWidth = scaledHeight * imageAspect;
 
                     // Center horizontally
-                    offsetX = (containerWidth - scaledWidth) / 2;
+                    offsetX = (objectWidth - scaledWidth) / 2;
                     offsetY = 0;
-
-                    // the object model itself
-                    // todo: this might need to be container width instead, but this works for now
-                    //          see note when calculating the else statement's object Height.
-                    objectWidth = scaledWidth;
-                    objectHeight = scaledHeight;
                 } else {
                     // Scale image texture to fit container width, calculate height to maintain aspect ratio
-                    scaledWidth = containerWidth;
+                    scaledWidth = objectWidth;
                     scaledHeight = scaledWidth / imageAspect;
 
                     // Center vertically
                     offsetX = 0;
-                    offsetY = (containerHeight - scaledHeight) / 2;
-
-                    // the object model itself
-                    objectWidth = scaledWidth;
-                    objectHeight = containerHeight;
-                    // objectHeight - doesnt match scaled Height to prevent overflow
-                    // TODO - should it and we just clip it?
+                    offsetY = (objectHeight - scaledHeight) / 2;
                 }
 
                 // Apply UV transformation with the corrected scale and update the model to hold it
