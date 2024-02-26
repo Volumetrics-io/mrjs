@@ -85,7 +85,6 @@ export class ControlSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-
         mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
             /* Handle the collision event. */
 
@@ -352,22 +351,28 @@ export class ControlSystem extends MRSystem {
         if (!this.currentEntity) {
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseover', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = true;
         } else if (!this.down && this.currentEntity != entity) {
             this.currentEntity.classList.remove('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseleave', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseleave', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = false;
 
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseover', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = true;
         }
 

@@ -41,7 +41,7 @@ export class AnchorSystem extends MRSystem {
 
         let existing = document.querySelectorAll('[data-comp-anchor]');
 
-        this.originPosition = new THREE.Vector3()
+        this.originPosition = new THREE.Vector3();
 
         for (const entity of existing) {
             this.attachedComponent(entity);
@@ -67,8 +67,8 @@ export class AnchorSystem extends MRSystem {
         });
 
         this.app.addEventListener('exitxr', () => {
-            this.deleteAnchor(this.app)
-            this.app.origin.matrix.copy(new THREE.Matrix4())
+            this.deleteAnchor(this.app);
+            this.app.origin.matrix.copy(new THREE.Matrix4());
         });
 
         document.addEventListener('selectstart', (event) => {
@@ -146,13 +146,12 @@ export class AnchorSystem extends MRSystem {
                 this.floating(frame);
             }
 
-            if(!this.app.anchor) {
-                this.setAppOrigin()
+            if (!this.app.anchor) {
+                this.setAppOrigin();
             } else {
-                this.updateOrigin(frame)
+                this.updateOrigin(frame);
             }
         }
-        
 
         for (const entity of this.registry) {
             if (mrjsUtils.xr.isPresenting) {
@@ -165,7 +164,6 @@ export class AnchorSystem extends MRSystem {
                     let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
 
                     entity.object3D.matrix.copy(this.adjustTransform(transform));
-                    
                 } else {
                     this.createAnchor(entity, anchorComp);
                 }
@@ -248,9 +246,9 @@ export class AnchorSystem extends MRSystem {
         if (!mrjsUtils.xr.isPresenting) {
             return;
         }
-        let originMatrix = new THREE.Matrix4()
+        let originMatrix = new THREE.Matrix4();
         mrjsUtils.xr.session.requestAnimationFrame((t, frame) => {
-            originMatrix.copyPosition(this.app.user.forward.matrixWorld)
+            originMatrix.copyPosition(this.app.user.forward.matrixWorld);
             frame.createAnchor(this.matrix4ToXRRigidTransform(originMatrix), mrjsUtils.xr.referenceSpace).then(
                 (anchor) => {
                     this.app.origin.matrixAutoUpdate = false;
@@ -270,7 +268,7 @@ export class AnchorSystem extends MRSystem {
 
         this.app.origin.matrix.copy(this.adjustTransform(transform, true));
 
-        this.originPosition.setFromMatrixPosition(this.app.origin.matrixWorld)
+        this.originPosition.setFromMatrixPosition(this.app.origin.matrixWorld);
     }
 
     /**
@@ -343,10 +341,12 @@ export class AnchorSystem extends MRSystem {
                 frame.createAnchor(this.matrix4ToXRRigidTransform(mrPlane.mesh.matrixWorld), mrjsUtils.xr.referenceSpace).then(
                     (anchor) => {
                         this.anchoringQueue.delete(entity);
-                        if(!this.planeManager.planeDictionary[comp.label].has(mrPlane)) {
-                            return 
+                        if (!this.planeManager.planeDictionary[comp.label].has(mrPlane)) {
+                            return;
                         }
-                        if(entity.anchor) { return }
+                        if (entity.anchor) {
+                            return;
+                        }
                         entity.anchor = anchor;
                         entity.plane = mrPlane;
                         entity.dispatchEvent(new CustomEvent('anchored', { bubbles: true }));
@@ -359,7 +359,7 @@ export class AnchorSystem extends MRSystem {
                     }
                 );
             });
-            return
+            return;
         }
     }
 
@@ -394,8 +394,8 @@ export class AnchorSystem extends MRSystem {
         // Create a new Three.js Vector3 for the position
         let position = new THREE.Vector3(xrRigidTransform.position.x, xrRigidTransform.position.y, xrRigidTransform.position.z);
 
-        if(!origin) {
-            position.sub(this.originPosition)
+        if (!origin) {
+            position.sub(this.originPosition);
         }
 
         this.originalAnchorMatrix.compose(position, quaternion, new THREE.Vector3(1, 1, 1));

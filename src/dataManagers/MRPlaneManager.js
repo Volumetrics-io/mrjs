@@ -1,7 +1,7 @@
 import { mrjsUtils } from 'mrjs';
 import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
-const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'door', 'window', 'shelf', 'bed', 'screen', 'lamp', 'plant', 'wall art', 'other']
+const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'door', 'window', 'shelf', 'bed', 'screen', 'lamp', 'plant', 'wall art', 'other'];
 
 /**
  * @class MRPlaneManager
@@ -18,7 +18,7 @@ export class MRPlaneManager {
         // - planes
         // - mesh
 
-        this.occlusion = occlusion ?? 'enable'
+        this.occlusion = occlusion ?? 'enable';
 
         this.scene = scene;
 
@@ -26,9 +26,9 @@ export class MRPlaneManager {
 
         this.currentPlanes = new Map();
 
-        this.planeDictionary = {}
+        this.planeDictionary = {};
 
-        for(const label of PLANE_LABELS) {
+        for (const label of PLANE_LABELS) {
             this.planeDictionary[label] = new Set();
         }
 
@@ -40,26 +40,26 @@ export class MRPlaneManager {
 
         let floorPlane = {
             semanticLabel: 'floor',
-            orientation: 'horizontal'
-        }
+            orientation: 'horizontal',
+        };
 
-        let floorMRPlane = this.initPlane(floorPlane, 10, 10)
+        let floorMRPlane = this.initPlane(floorPlane, 10, 10);
 
-        floorMRPlane.mesh.geometry = new THREE.CircleGeometry(2, 32)
-        floorMRPlane.mesh.position.set(0,0,0)
-        floorMRPlane.mesh.rotation.x = - Math.PI / 2
+        floorMRPlane.mesh.geometry = new THREE.CircleGeometry(2, 32);
+        floorMRPlane.mesh.position.set(0, 0, 0);
+        floorMRPlane.mesh.rotation.x = -Math.PI / 2;
 
-        floorMRPlane.mesh.visible = false
+        floorMRPlane.mesh.visible = false;
         floorMRPlane.body.setEnabled(false);
 
         document.addEventListener('enterxr', () => {
-            floorMRPlane.mesh.visible = true
+            floorMRPlane.mesh.visible = true;
             floorMRPlane.body.setEnabled(true);
         });
 
         document.addEventListener('exitxr', () => {
             for (const [plane, mrplane] of this.currentPlanes) {
-                this.removePlane(plane, mrplane)
+                this.removePlane(plane, mrplane);
             }
         });
 
@@ -90,11 +90,11 @@ export class MRPlaneManager {
                         const width = maxX - minX;
                         const height = maxZ - minZ;
 
-                        if(plane.semanticLabel == 'floor') {
-                            this.removePlane(floorPlane, floorMRPlane)
+                        if (plane.semanticLabel == 'floor') {
+                            this.removePlane(floorPlane, floorMRPlane);
                         }
 
-                        this.initPlane(plane, width, height)
+                        this.initPlane(plane, width, height);
                     }
                 }
             });
@@ -120,8 +120,8 @@ export class MRPlaneManager {
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 
-        if(this.occlusion != 'enable') {
-            mrPlane.mesh.visible = false
+        if (this.occlusion != 'enable') {
+            mrPlane.mesh.visible = false;
         }
 
         this.tempDimensions.setX(width / 2);
@@ -131,8 +131,8 @@ export class MRPlaneManager {
         mrPlane.body = this.initPhysicsBody();
 
         this.currentPlanes.set(plane, mrPlane);
-        this.planeDictionary[mrPlane.label].add(mrPlane)
-        return mrPlane
+        this.planeDictionary[mrPlane.label].add(mrPlane);
+        return mrPlane;
     }
 
     removePlane(plane, mrplane) {
@@ -143,7 +143,7 @@ export class MRPlaneManager {
         mrjsUtils.physics.world.removeRigidBody(mrplane.body);
 
         this.currentPlanes.delete(plane);
-        this.planeDictionary[mrplane.label].delete(mrplane)
+        this.planeDictionary[mrplane.label].delete(mrplane);
     }
 
     /**

@@ -44,9 +44,9 @@ export class MRApp extends MRElement {
     get appWidth() {
         let result = parseFloat(this.compStyle.width.split('px')[0]);
         if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
+            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
         }
-        return result
+        return result;
     }
 
     /**
@@ -55,9 +55,9 @@ export class MRApp extends MRElement {
     get appHeight() {
         let result = parseFloat(this.compStyle.height.split('px')[0]);
         if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION
+            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
         }
-        return result
+        return result;
     }
 
     /**
@@ -77,11 +77,11 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
-        this.anchor = null
-        this.origin = new THREE.Object3D()
+        this.anchor = null;
+        this.origin = new THREE.Object3D();
 
-        this.scene.add(this.origin)
-    
+        this.scene.add(this.origin);
+
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
         this.lighting = {
@@ -121,10 +121,10 @@ export class MRApp extends MRElement {
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
-            this.user = new MRUser(this.camera, this.scene)
+            this.user = new MRUser(this.camera, this.scene);
 
             if (this.getAttribute('occlusion') == 'spotlight') {
-                this.scene.add(this.user.initSpotlight())
+                this.scene.add(this.user.initSpotlight());
             }
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
@@ -299,7 +299,6 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
             this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
@@ -462,7 +461,7 @@ export class MRApp extends MRElement {
             });
         }
 
-        this.user?.update()
+        this.user?.update();
 
         // ----- System Updates ----- //
 

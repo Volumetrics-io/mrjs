@@ -49,7 +49,7 @@ export class GeometryStyleSystem extends MRSystem {
             if (entity instanceof MREntity) {
                 changed = entity.updateGeometryStyle();
             }
-            
+
             // Cleanup
             if (changed) {
                 // TBH i think this is only needed for scale, but just in case others use changed
@@ -72,9 +72,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     setScale(entity) {
-        let new_scale = entity.compStyle.scale != 'none'
-            ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale
-            : 1;
+        let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1;
         if (new_scale != entity.object3D.scale) {
             entity.object3D.scale.setScalar(new_scale);
             return true;
