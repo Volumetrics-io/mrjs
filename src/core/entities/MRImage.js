@@ -122,17 +122,14 @@ export class MRImage extends MRDivEntity {
         console.log('in contain');
          // want contain to have the same object setup as fill, but texture setup is different
 
-        let containerWidth = mrjsUtils.css.pxToThree(this.parentElement.width);
-        let containerHeight = mrjsUtils.css.pxToThree(this.parentElement.height);
+        let containerWidth = this.parentElement.width;
+        let containerHeight = this.parentElement.height;
         let containerAspectRatio = containerWidth / containerHeight;
-        let imageOriginalWidth = mrjsUtils.css.pxToThree(this.img.width);
-        let imageOriginalHeight = mrjsUtils.css.pxToThree(this.img.height);
-        let imageAspectRatio = imageOriginalWidth / imageOriginalHeight;
+        let imageWidth = this.img.width;
+        let imageHeight = this.img.height;
+        let imageAspectRatio = imageWidth / imageHeight;
 
         /* update mr-image object dimensions */
-
-        // need these to stay updated even if not using them directly
-        // so that we have proper physics hierarchy
 
         this.objectFitDimensions = {
             width: containerWidth,
@@ -141,9 +138,8 @@ export class MRImage extends MRDivEntity {
 
         /* updatePlaneAndImageSize */
 
-        let planeMesh = this.object3D;
-
-        const imageGeometry = new THREE.PlaneGeometry(imageOriginalWidth, imageOriginalHeight);
+        // setup
+        const imageGeometry = new THREE.PlaneGeometry(containerWidth, containerHeight);
         const imageMaterial = new THREE.MeshBasicMaterial({
             map: this.texture,
             transparent: true
@@ -153,31 +149,36 @@ export class MRImage extends MRDivEntity {
         }
         this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
 
+        // update planeMesh
+        let planeMesh = this.object3D;
+        // Update plane size to match parent
+        planeMesh.scale.x = containerWidth;
+        planeMesh.scale.y = containerHeight;
+
+        let imageMesh = this.subImageMesh;
         planeMesh.material.visible = false;
-        planeMesh.add(this.subImageMesh);
+        planeMesh.add(imageMesh);
+        imageMesh.material.visible = true;
 
-        this.subImageMesh.material.visible = true;
-
-        // Update plane size to match parent container
-        let planeWidth = planeMesh.scale.x = containerWidth;
-        let planeHeight = planeMesh.scale.y = containerHeight;
+        // Plane dimensions in 3D space
+        const planeWidth = planeMesh.scale.x;
+        const planeHeight = planeMesh.scale.y;
 
         // Check if the image's dimensions are larger than the plane's in 3D space
-        let imageWidth = imageOriginalWidth;
-        let imageHeight = imageOriginalHeight;
-
         // Only resize if image's dimensions are larger than the plane's
         if (imageWidth > planeWidth || imageHeight > planeHeight) {
+            console.log('imageWidth', imageWidth, 'planeWidth', planeWidth);
             const widthRatio = planeWidth / imageWidth;
             const heightRatio = planeHeight / imageHeight;
             const scaleRatio = Math.min(widthRatio, heightRatio);
 
-            this.subImageMesh.scale.x = scaleRatio * imageWidth;
-            this.subImageMesh.scale.y = scaleRatio * imageHeight;
+            imageMesh.scale.x = scaleRatio * imageWidth;
+            imageMesh.scale.y = scaleRatio * imageHeight;
+            console.log('imageMeshScale', 'x', imageMesh.scale.x, 'y', imageMesh.scale.y);
         } else {
             // Reset to original size if within plane's bounds
-            this.subImageMesh.scale.x = imageWidth;
-            this.subImageMesh.scale.y = imageHeight;
+            imageMesh.scale.x = imageWidth;
+            imageMesh.scale.y = imageHeight;
         }
     }
     
@@ -213,6 +214,8 @@ export class MRImage extends MRDivEntity {
         let containerHeight = this.parentElement.height;
         let imageWidth = this.img.width;
         let imageHeight = this.img.height;
+        const imageAspect = imageWidth / imageHeight;
+        const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
@@ -231,10 +234,6 @@ export class MRImage extends MRDivEntity {
 
             case 'cover':
                 this.texture.matrixAutoUpdate = false;
-
-                // Calculate aspect ratios
-                const imageAspect = imageWidth / imageHeight;
-                const containerAspect = containerWidth / containerHeight;
 
                 // Calculate scalings and offsets
                 let scaledWidth, scaledHeight, offsetX, offsetY, objectWidth, objectHeight;
