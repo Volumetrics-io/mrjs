@@ -25,7 +25,7 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
-import MRUser from './MRUser';
+import MRUser from 'mrjs/core/user/MRUser';
 
 ('use strict');
 window.mobileCheck = function () {

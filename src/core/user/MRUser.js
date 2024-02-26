@@ -1,4 +1,4 @@
-import { MRHand } from "../dataTypes/MRHand"
+import { MRHand } from "./MRHand"
 
 export default class MRUser {
 
