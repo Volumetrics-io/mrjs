@@ -212,7 +212,7 @@ model.disposeObject3D = function (parentObject3D) {
             if (node.material) {
                 if (node.material instanceof Array) {
                     // An array of materials
-                    node.material.forEach(material => material.dispose());
+                    node.material.forEach((material) => material.dispose());
                 } else {
                     // A single material
                     node.material.dispose();
@@ -220,9 +220,9 @@ model.disposeObject3D = function (parentObject3D) {
             }
         }
     });
-}
+};
 
-model.removeObject3DFromScene = function(object3D, scene) {
+model.removeObject3DFromScene = function (object3D, scene) {
     // Recursively dispose of node (object3D) materials and geometries
     disposeNode(object3D);
 
@@ -230,6 +230,6 @@ model.removeObject3DFromScene = function(object3D, scene) {
     scene.remove(object3D);
 
     // Optional: Clean up references for GC if necessary
-}
+};
 
 export { model };

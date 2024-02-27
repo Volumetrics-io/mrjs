@@ -37,7 +37,7 @@ export class MRImage extends MRDivEntity {
 
         // this is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
-        this.subImageMesh = null; 
+        this.subImageMesh = null;
     }
 
     /**
@@ -137,7 +137,7 @@ export class MRImage extends MRDivEntity {
                 mrjsUtils.model.disposeObject3D(this.subImageMesh);
                 this.subImageMesh = null;
             }
-        }
+        };
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
@@ -163,7 +163,7 @@ export class MRImage extends MRDivEntity {
                 const planeHeight = containerHeight;
 
                 // Check if resize is required
-                if ((this.compStyle.objectFit === 'contain') || imageWidth > planeWidth || imageHeight > planeHeight) {
+                if (this.compStyle.objectFit === 'contain' || imageWidth > planeWidth || imageHeight > planeHeight) {
                     const scaleRatio = Math.min(planeWidth / imageWidth, planeHeight / imageHeight);
                     imageWidth *= scaleRatio;
                     imageHeight *= scaleRatio;
@@ -172,7 +172,7 @@ export class MRImage extends MRDivEntity {
                 const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
                 const imageMaterial = new THREE.MeshStandardMaterial({
                     map: this.texture,
-                    transparent: true
+                    transparent: true,
                 });
                 _oldSubImageNotNeeded();
                 this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
@@ -183,12 +183,12 @@ export class MRImage extends MRDivEntity {
 
                 this.objectFitDimensions = {
                     width: planeWidth,
-                    height: planeHeight
+                    height: planeHeight,
                 };
                 planeMesh.material.visible = false;
                 planeMesh.material.needsUpdate = true;
                 planeMesh.add(imageMesh);
-                
+
                 imageMesh.material.visible = true;
                 imageMesh.material.needsUpdate = true;
 
@@ -196,7 +196,7 @@ export class MRImage extends MRDivEntity {
 
             case 'cover':
                 _oldSubImageNotNeeded();
-    
+
                 this.texture.repeat.set(1, 1); // Reset scaling
 
                 if (containerAspect > imageAspect) {

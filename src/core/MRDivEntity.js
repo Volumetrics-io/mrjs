@@ -122,7 +122,6 @@ export class MRDivEntity extends MREntity {
     connected() {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
     }
-
 }
 
 customElements.get('mr-div') || customElements.define('mr-div', MRDivEntity);

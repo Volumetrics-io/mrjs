@@ -30,6 +30,6 @@ js.applyAttributes = function (object, attribMap) {
 
 js.isVariableDeclared = function (myVar) {
     return typeof myVar !== 'undefined';
-}
+};
 
 export { js };
