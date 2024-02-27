@@ -46,10 +46,6 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        return this.textureWidth; // return super.width;
-    }
-
-    get textureWidth() {
         let width = this.objectFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
@@ -60,10 +56,6 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        return this.textureHeight; //super.height;
-    }
-
-    get textureHeight() {
         let height = this.objectFitDimensions?.height;
         return height > 0 ? height : super.height;
     }

@@ -111,7 +111,6 @@ export class GeometryStyleSystem extends MRSystem {
 
         // geometry will only update if width, height, or borderRadii have changed
         let w = entity.width;
-        console.log('image width', w, 'contentwidth:', entity.contentWidth, 'textureWidth:', entity.textureWidth);
         let h = entity.height;
         let b = entity.borderRadii;
         if (entity._storedWidth != w || entity._storedHeight != h || entity._storedBorderRadii != b) {
