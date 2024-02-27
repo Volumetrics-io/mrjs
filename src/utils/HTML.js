@@ -1,5 +1,3 @@
-// import { URL } from 'url';
-
 /**
  * @namespace html
  * @description Useful namespace for helping with html utility functions
