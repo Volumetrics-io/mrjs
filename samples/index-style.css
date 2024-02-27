@@ -11,8 +11,7 @@
 }
 
 mr-app {
-/*  background-image: url('/assets/textures/skybox_starmap_4k.jpg');*/
-  background-image: url('https://images.blockadelabs.com/images/imagine/Fantasy_equirectangular-jpg_Snowy_mountains_at_night_911003170_10288923.jpg?ver=1');
+  background-image: url('/assets/textures/skybox_starmap_4k.jpg');
 }
 
 
