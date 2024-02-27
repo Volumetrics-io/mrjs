@@ -75,6 +75,15 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
+     * @description Calculates the border radius of the img based on the img tag in the shadow root
+     * @returns {number} - the resolved height
+     */
+    get borderRadii() {
+        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
+    }
+
+    /**
+     * @function
      * @description Adding an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be added.
      */
@@ -112,16 +121,6 @@ export class MRDivEntity extends MREntity {
      */
     connected() {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);
-    }
-
-    /**
-     * @function
-     * @description Calculates the border radius of the img based on the img tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get borderRadii() {
-        return this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
-        const borderRadii = this.compStyle.borderRadius.split(' ').map((r) => mrjsUtils.css.domToThree(r));
     }
 }
 

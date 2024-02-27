@@ -100,7 +100,7 @@ export class MaskingSystem extends MRSystem {
                     // The panel entity should contain a group object where the first panel child we hit is this panel itself.
                     // We need to mask based off the background mesh of this object.
                     let mesh = child.background;
-                    if (this.app.debug) {
+                    if (this.app.debug && mesh.material.color) {
                         mesh.material.color.set(0xff00ff); // pink
                     }
                     mesh.material.stencilWrite = this.panelStencilMaterial.stencilWrite;
@@ -117,7 +117,7 @@ export class MaskingSystem extends MRSystem {
                     // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
                     if (!child.object3D.isGroup) {
-                        if (this.app.debug) {
+                        if (this.app.debug && child.object3D.material.color) {
                             child.object3D.material.color.set(0xffff00); // yellow
                         }
                         child.object3D.material.stencilWrite = this.objectStencilMaterial.stencilWrite;

@@ -31,6 +31,15 @@ export class MRImage extends MRDivEntity {
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
+
+        // This is a reference to the texture that is used as part of the
+        // threejs material. Separating it out for easier use.
+        // The texture is filled-in in the connected function.
+        this.texture = null;
+
+        // This is used to aid in the formatting for certain object-fit setups
+        // ex: contain, scale-down
+        this.subImageMesh = null;
     }
 
     /**
@@ -39,7 +48,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.width);
+        let width = this.objectFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
 
@@ -49,7 +58,7 @@ export class MRImage extends MRDivEntity {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.css.pxToThree(this.imageObject3DFitDimensions?.height);
+        let height = this.objectFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
 
@@ -63,8 +72,8 @@ export class MRImage extends MRDivEntity {
         this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.img);
 
-        this.imageObject3DFitDimensions = { height: 0, width: 0 };
-        this.computeImageObject3DFitDimensions();
+        this.objectFitDimensions = { height: 0, width: 0 };
+        this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
         if (this.object3D.geometry !== undefined) {
@@ -91,7 +100,7 @@ export class MRImage extends MRDivEntity {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.img.setAttribute('src', this.getAttribute('src'));
-            this.computeImageObject3DFitDimensions();
+            this.computeObjectFitDimensions();
 
             mrjsUtils.material
                 .loadTextureAsync(this.img.src)
@@ -109,62 +118,109 @@ export class MRImage extends MRDivEntity {
      * @function
      * @description computes the width and height values for the image considering the value of object-fit
      */
-    computeImageObject3DFitDimensions() {
+    computeObjectFitDimensions() {
+        if (!this.texture) {
+            // We assume every image has its attached texture.
+            // If texture doesnt exist, it's just not loaded in yet, meaning
+            // we can skip the below until it is.
+            return;
+        }
+
+        const _oldSubImageNotNeeded = () => {
+            if (this.subImageMesh !== null) {
+                mrjsUtils.model.disposeObject3D(this.subImageMesh);
+                this.subImageMesh = null;
+            }
+        };
+
+        let containerWidth = this.parentElement.width;
+        let containerHeight = this.parentElement.height;
+        let imageWidth = this.img.width;
+        let imageHeight = this.img.height;
+        const imageAspect = imageWidth / imageHeight;
+        const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
+                _oldSubImageNotNeeded();
+                this.objectFitDimensions = { width: containerWidth, height: containerHeight };
+
+                break;
 
             case 'contain':
-            case 'scale-down': {
-                let ratio = Math.min(this.offsetWidth / this.img.width, this.offsetHeight / this.img.height);
-                let scaledWidth = this.img.width * ratio;
-                let scaledHeight = this.img.height * ratio;
+            case 'scale-down':
+                // `contain` and `scale-down` are the same except for one factor:
+                // - `contain` will always scale the image to fit
+                // - `scale-down` will only scale the image to fit if the image is larger than the container
 
-                if (this.compStyle.objectFit === 'scale-down') {
-                    scaledWidth = Math.min(scaledWidth, this.img.width);
-                    scaledHeight = Math.min(scaledHeight, this.img.height);
+                // Plane dimensions in 3D space
+                const planeWidth = containerWidth;
+                const planeHeight = containerHeight;
+
+                // Check if resize is required
+                if (this.compStyle.objectFit === 'contain' || imageWidth > planeWidth || imageHeight > planeHeight) {
+                    const scaleRatio = Math.min(planeWidth / imageWidth, planeHeight / imageHeight);
+                    imageWidth *= scaleRatio;
+                    imageHeight *= scaleRatio;
                 }
 
-                this.imageObject3DFitDimensions = { width: scaledWidth, height: scaledHeight };
+                const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+                const imageMaterial = new THREE.MeshStandardMaterial({
+                    map: this.texture,
+                    transparent: true,
+                });
+                _oldSubImageNotNeeded();
+                this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+
+                // cleanup for final rendering setup
+                let planeMesh = this.object3D;
+                let imageMesh = this.subImageMesh;
+
+                this.objectFitDimensions = {
+                    width: planeWidth,
+                    height: planeHeight,
+                };
+                planeMesh.material.visible = false;
+                planeMesh.material.needsUpdate = true;
+                planeMesh.add(imageMesh);
+
+                imageMesh.material.visible = true;
+                imageMesh.material.needsUpdate = true;
+
                 break;
-            }
 
-            case 'cover': {
-                let imageRatio = this.img.width / this.img.height;
-                let containerRatio = this.offsetWidth / this.offsetHeight;
+            case 'cover':
+                _oldSubImageNotNeeded();
 
-                if (containerRatio > imageRatio) {
-                    this.imageObject3DFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / imageRatio };
+                this.texture.repeat.set(1, 1); // Reset scaling
+
+                if (containerAspect > imageAspect) {
+                    // Plane is wider than the texture
+                    const scale = containerAspect / imageAspect;
+                    this.texture.repeat.y = 1 / scale;
+                    this.texture.offset.y = (1 - 1 / scale) / 2; // Center the texture vertically
                 } else {
-                    this.imageObject3DFitDimensions = { width: this.offsetHeight * imageRatio, height: this.offsetHeight };
+                    // Plane is taller than the texture
+                    const scale = imageAspect / containerAspect;
+                    this.texture.repeat.x = 1 / scale;
+                    this.texture.offset.x = (1 - 1 / scale) / 2; // Center the texture horizontally
                 }
+                this.texture.needsUpdate = true; // Important to update the texture
+
+                this.objectFitDimensions = {
+                    width: containerWidth,
+                    height: containerHeight,
+                };
+
                 break;
-            }
 
             case 'none':
-                this.imageObject3DFitDimensions = { width: this.img.width, height: this.img.height };
+                _oldSubImageNotNeeded();
+                this.objectFitDimensions = { width: imageWidth, height: imageHeight };
+
                 break;
 
             default:
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
-        }
-    }
-
-    /**
-     * @function
-     * @description Calculates the texture UV transformation change based on the image's aspect ratio.
-     * @param {object} texture - the texture to augment
-     * @param {number} aspect - a given expected aspect ratio
-     */
-    cover(texture, aspect) {
-        texture.matrixAutoUpdate = false;
-
-        const imageAspect = texture.image.width / texture.image.height;
-
-        if (aspect < imageAspect) {
-            texture.matrix.setUvTransform(0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5);
-        } else {
-            texture.matrix.setUvTransform(0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5);
         }
     }
 }
