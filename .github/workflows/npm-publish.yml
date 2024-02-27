@@ -22,28 +22,26 @@ jobs:
 
       - name: Get version from package.json
         id: package_version
-        run: echo ::set-output name=VERSION::$(jq -r .version package.json)
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Check if the tag exists
         id: tag_check
         run: |
-          if git rev-parse v${{ steps.package_version.outputs.VERSION }} >/dev/null 2>&1; then
-            echo "Tag for version ${{ steps.package_version.outputs.VERSION }} already exists."
-            echo ::set-output name=EXISTS::true
+          if git rev-parse v${{ env.VERSION }} >/dev/null 2>&1; then
+            echo "EXISTS=true" >> $GITHUB_ENV
           else
-            echo ::set-output name=EXISTS::false
-          fi
+            echo "EXISTS=false" >> $GITHUB_ENV
 
       - name: Create Git tag
-        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
+        if: env.EXISTS == 'false'
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-          git tag v${{ steps.get_version.outputs.VERSION }}
-          git push origin v${{ steps.get_version.outputs.VERSION }}
+          git tag v${{ env.VERSION }}
+          git push origin v${{ env.VERSION }}
 
       - name: Publish to npm
-        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
+        if: env.EXISTS == 'false'
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_MJRS_PUBLISH }}
