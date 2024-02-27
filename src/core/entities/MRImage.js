@@ -32,10 +32,12 @@ export class MRImage extends MRDivEntity {
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
 
-        // the texture is filled-in in the connected function
+        // This is a reference to the texture that is used as part of the
+        // threejs material. Separating it out for easier use.
+        // The texture is filled-in in the connected function.
         this.texture = null;
 
-        // this is used to aid in the formatting for certain object-fit setups
+        // This is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
         this.subImageMesh = null;
     }
