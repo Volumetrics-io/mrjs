@@ -3,6 +3,18 @@ on:
   push:
     branches:
       - main # Change this to your default branch
+
+
+###################################################################################################################
+# HOW TO USE THIS:
+#
+# for ex, publishing the new version 1.2.3:
+#     - change the version in package.json to 1.2.3
+#     - commit that change with the message Release 1.2.3
+#     - the npm-publish action will create a new tag v1.2.3 and publish the package to the npm registry.
+#
+###################################################################################################################
+
 jobs:
   npm-publish:
     name: npm-publish
@@ -22,4 +34,4 @@ jobs:
         publish_args: "--non-interactive"
       env: # More info about the environment variables in the README
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_MJRS_PUBLISH }} # You need to set this in your repo settings
