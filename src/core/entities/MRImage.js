@@ -188,6 +188,7 @@ export class MRImage extends MRDivEntity {
                 planeMesh.material.visible = false;
                 planeMesh.material.needsUpdate = true;
                 planeMesh.add(imageMesh);
+                
                 imageMesh.material.visible = true;
                 imageMesh.material.needsUpdate = true;
 
@@ -195,59 +196,26 @@ export class MRImage extends MRDivEntity {
 
             case 'cover':
                 _oldSubImageNotNeeded();
-                this.texture.matrixAutoUpdate = false;
+    
+                this.texture.repeat.set(1, 1); // Reset scaling
 
-                let containerAspect = containerWidth / containerHeight;
-                let scaledWidth, scaledHeight, offsetX, offsetY;
-
-                // Determine whether to match the container's width or height based on the smaller dimension
-                if (containerWidth < containerHeight) { // Container is taller than it is wide
-                    if (imageAspect >= 1) { 
-                        // Image is wider than it is tall or square
-                        // Fit to container's width
-                        scaledWidth = containerWidth;
-                        scaledHeight = scaledWidth / imageAspect;
-                        offsetX = 0;
-                        offsetY = (containerHeight - scaledHeight) / 2;
-                    } else { 
-                        // Image is taller than it is wide
-                        // Fit to container's height to ensure the smallest dimension matches
-                        scaledHeight = containerHeight;
-                        scaledWidth = scaledHeight * imageAspect;
-                        offsetX = (containerWidth - scaledWidth) / 2;
-                        offsetY = 0;
-                    }
-                } else { // Container is wider than it is tall or square
-                    if (imageAspect <= 1) {
-                        // Image is taller than it is wide or square
-                        // Fit to container's height
-                        scaledHeight = containerHeight;
-                        scaledWidth = scaledHeight * imageAspect;
-                        offsetX = (containerWidth - scaledWidth) / 2;
-                        offsetY = 0;
-                    } else {
-                        // Image is wider than it is tall
-                        // Fit to container's width to ensure the smallest dimension matches
-                        scaledWidth = containerWidth;
-                        scaledHeight = scaledWidth / imageAspect;
-                        offsetX = 0;
-                        offsetY = (containerHeight - scaledHeight) / 2;
-                    }
+                if (containerAspect > imageAspect) {
+                    // Plane is wider than the texture
+                    const scale = containerAspect / imageAspect;
+                    this.texture.repeat.y = 1 / scale;
+                    this.texture.offset.y = (1 - 1 / scale) / 2; // Center the texture vertically
+                } else {
+                    // Plane is taller than the texture
+                    const scale = imageAspect / containerAspect;
+                    this.texture.repeat.x = 1 / scale;
+                    this.texture.offset.x = (1 - 1 / scale) / 2; // Center the texture horizontally
                 }
+                this.texture.needsUpdate = true; // Important to update the texture
 
-                // Apply UV transformation with the corrected scale and update the model to hold it
-                this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
                 this.objectFitDimensions = {
                     width: containerWidth,
                     height: containerHeight,
                 };
-
-                // // Apply UV transformation with the corrected scale and update the model to hold it
-                // this.texture.matrix.setUvTransform(offsetX, offsetY, scaledWidth, scaledHeight, 0, 0.5, 0.5);
-                // this.objectFitDimensions = {
-                //     width: objectWidth,
-                //     height: objectHeight,
-                // };
 
                 break;
 
