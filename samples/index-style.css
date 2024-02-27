@@ -165,13 +165,10 @@ main {
   line-height: 100%;
 }
 
-.logo {
-  grid-column: 3;
-  z-index: 25;
-}
-
 #logo-model{
   scale: 0.0005;
+  grid-column: 3;
+  z-index: 25;
 }
 
 #table-model{
@@ -232,8 +229,12 @@ main {
 .headset {
   grid-row: 2 / 5;
   grid-column: 1 / -1;
-  object-fit: cover;
+/*  object-fit: fill;*/ /* this is being overwritten by mr-image from default style; overwriting it below instead */
   z-index: 1;
+}
+
+mr-img {
+  object-fit: cover;
 }
 
 /* .headset > mr-img {

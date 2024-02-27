@@ -202,4 +202,34 @@ model.loadModel = function (filePath, extension) {
     return null;
 };
 
+model.disposeObject3D = function (parentObject3D) {
+    parentObject3D.traverse(function (node) {
+        if (node.isMesh) {
+            if (node.geometry) {
+                node.geometry.dispose();
+            }
+
+            if (node.material) {
+                if (node.material instanceof Array) {
+                    // An array of materials
+                    node.material.forEach((material) => material.dispose());
+                } else {
+                    // A single material
+                    node.material.dispose();
+                }
+            }
+        }
+    });
+};
+
+model.removeObject3DFromScene = function (object3D, scene) {
+    // Recursively dispose of node (object3D) materials and geometries
+    disposeNode(object3D);
+
+    // Remove the object from the scene
+    scene.remove(object3D);
+
+    // Optional: Clean up references for GC if necessary
+};
+
 export { model };
