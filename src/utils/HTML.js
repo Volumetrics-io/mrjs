@@ -1,4 +1,4 @@
-import { URL } from 'url';
+// import { URL } from 'url';
 
 /**
  * @namespace html
@@ -15,16 +15,22 @@ let html = {};
  * @description Given the path returns an absolute path resolved so relative linking works as expected.
  * @returns {string} a.href - the absolute path
  */
-html.resolvePath = function (path) {
+html.resolvePath = function (path, baseUrl = window.location.href) {
     let a = document.createElement('a');
-    a.href = html.removeUrlQueries(path);
+    a.href = html.removeUrlQueries(path, baseUrl);
     return a.href;
 };
 
-html.removeUrlQueries = function (path) {
-    let urlObj = new URL(path);
-    let cleanUrl = urlObj.origin + urlObj.pathname;
-    return cleanUrl.toString();
+html.removeUrlQueries = function (path, baseUrl) {
+    try {
+        // Check if path is absolute. If not, use baseUrl as the second parameter
+        let urlObj = new URL(path, baseUrl);
+        let cleanUrl = urlObj.origin + urlObj.pathname;
+        return cleanUrl;
+    } catch (error) {
+        console.error("Error processing URL:", error.message);
+        return path; // Return the original path if there's an error
+    }
 }
 
 export { html };
