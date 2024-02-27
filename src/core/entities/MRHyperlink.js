@@ -40,7 +40,7 @@ export default class MRHyperlink extends MRTextEntity {
         super.connected();
         this._createLink();
 
-        this.addEventListener('touch-start', () => {
+        this.addEventListener('touchstart', () => {
             this.classList.add('active');
         });
 

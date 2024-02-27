@@ -198,13 +198,13 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @function 
+     * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateMaterialStyle() {}
 
     /**
-     * @function 
+     * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateGeometryStyle() {}
@@ -296,7 +296,7 @@ export class MREntity extends MRElement {
             });
         });
 
-        this.addEventListener('touch-start', (event) => {
+        this.addEventListener('touchstart', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -305,7 +305,7 @@ export class MREntity extends MRElement {
             }
             this.onTouch(event);
         });
-        this.addEventListener('touch', (event) => {
+        this.addEventListener('touchmove', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -314,7 +314,7 @@ export class MREntity extends MRElement {
             }
             this.onTouch(event);
         });
-        this.addEventListener('touch-end', (event) => {
+        this.addEventListener('touchend', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -323,7 +323,7 @@ export class MREntity extends MRElement {
             }
             this.onTouch(event);
         });
-        this.addEventListener('hover-start', (event) => {
+        this.addEventListener('hoverstart', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -332,7 +332,7 @@ export class MREntity extends MRElement {
             }
             this.onHover(event);
         });
-        this.addEventListener('hover-end', (event) => {
+        this.addEventListener('hoverend', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -360,7 +360,7 @@ export class MREntity extends MRElement {
             }
         });
 
-        document.addEventListener('enterXR', (event) => {
+        document.addEventListener('enterxr', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -368,7 +368,7 @@ export class MREntity extends MRElement {
                 this.needsStyleUpdate = true;
             }
         });
-        document.addEventListener('exitXR', (event) => {
+        document.addEventListener('exitxr', (event) => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -430,7 +430,7 @@ export class MREntity extends MRElement {
         }
 
         if (this.physics) {
-            this.env.physicsWorld.removeRigidBody(this.physics.body);
+            mrjsUtils.physics.world.removeRigidBody(this.physics.body);
         }
 
         this.environment = null;

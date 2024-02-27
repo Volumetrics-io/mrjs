@@ -13,7 +13,6 @@ import './global';
 
 // DATATYPES
 import './dataTypes/MRClippingGeometry';
-import './dataTypes/MRHand';
 import './dataTypes/MRPlane';
 // DATAMANAGERS
 import './dataManagers/MRPlaneManager';
@@ -25,6 +24,9 @@ import './core/MRElement';
 import './core/MREntity';
 import './core/MRSystem';
 import './core/MRTextEntity';
+// CORE - USER
+import './core/user/MRHand';
+import './core/user/MRUser';
 // CORE - ENTITIES
 import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
@@ -49,7 +51,6 @@ import './core/componentSystems/MaterialStyleSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
 import './core/componentSystems/TextSystem';
-
 
 // EXPORTS
 // UTILS
