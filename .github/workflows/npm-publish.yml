@@ -1,11 +1,6 @@
 name: npm-publish
 on:
   push:
-    # branches:
-    #   - main
-    # paths:
-    #   - 'package.json'
-    #
 
 jobs:
   npm-publish:
