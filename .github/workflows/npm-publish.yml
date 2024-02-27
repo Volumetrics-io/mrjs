@@ -6,33 +6,46 @@ on:
     paths:
       - 'package.json'
 
-###################################################################################################################
-# HOW TO USE THIS:
-#
-# for ex, publishing the new version 1.2.3:
-#     - change the version in package.json to 1.2.3
-#     - commit that change with the message Release 1.2.3
-#     - the npm-publish action will create a new tag v1.2.3 and publish the package to the npm registry.
-#
-###################################################################################################################
-
 jobs:
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Publish if version has been updated
-      uses: pascalgn/npm-publish-action@1.3.9
-      with: # All of theses inputs are optional
-        tag_name: "v%s"
-        tag_message: "v%s"
-        create_tag: "true"
-        commit_pattern: "^Release (\\S+)"
-        workspace: "."
-        publish_command: "yarn"
-        publish_args: "--non-interactive"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_MJRS_PUBLISH }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Extract version from commit message
+        id: get_version
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.before }})
+          if [[ "$COMMIT_MESSAGE" =~ Release\ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            echo ::set-output name=VERSION::${BASH_REMATCH[1]}
+          else
+            echo "Commit message does not specify a release version."
+            exit 1
+          fi
+
+      - name: Check version in package.json
+        run: |
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          if [[ "$PACKAGE_VERSION" != "${{ steps.get_version.outputs.VERSION }}" ]]; then
+            echo "Version in package.json ($PACKAGE_VERSION) does not match the commit message (${{ steps.get_version.outputs.VERSION }})."
+            exit 1
+          fi
+
+      - name: Create Git tag
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git tag v${{ steps.get_version.outputs.VERSION }}
+          git push origin v${{ steps.get_version.outputs.VERSION }}
+
+      - name: Publish if version has been updated
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_MJRS_PUBLISH }}
