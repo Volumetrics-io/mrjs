@@ -20,6 +20,20 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Get version from package.json
+        id: package_version
+        run: echo ::set-output name=VERSION::$(jq -r .version package.json)
+
+      - name: Check if the tag exists
+        id: tag_check
+        run: |
+          if git rev-parse v${{ steps.package_version.outputs.VERSION }} >/dev/null 2>&1; then
+            echo "Tag for version ${{ steps.package_version.outputs.VERSION }} already exists."
+            echo ::set-output name=EXISTS::true
+          else
+            echo ::set-output name=EXISTS::false
+          fi
+
       - name: Create Git tag
         if: steps.check_tag.outputs.TAG_EXISTS == 'false'
         run: |
