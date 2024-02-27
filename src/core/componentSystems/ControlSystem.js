@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRHand } from 'mrjs/dataTypes/MRHand';
+import { MRHand } from 'mrjs/core/user/MRHand';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -17,18 +17,16 @@ export class ControlSystem extends MRSystem {
      */
     constructor() {
         super(false);
-        this.leftHand = new MRHand('left', this.app);
-        this.rightHand = new MRHand('right', this.app);
-        this.activeHand = this.leftHand;
+        this.activeHand = this.app.user.hands.left;
 
         document.addEventListener('selectstart', (event) => {
             if (event.detail == null) {
                 return;
             }
             if (event.detail?.handedness == 'left') {
-                this.activeHand = this.leftHand;
+                this.activeHand = this.app.user.hands.left;
             } else {
-                this.activeHand = this.rightHand;
+                this.activeHand = this.app.user.hands.right;
             }
 
             this.down = true;
@@ -87,9 +85,6 @@ export class ControlSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.leftHand.setMesh();
-        this.rightHand.setMesh();
-
         mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
             /* Handle the collision event. */
 
@@ -100,11 +95,8 @@ export class ControlSystem extends MRSystem {
             }
         });
 
-        this.leftHand.update();
-        this.rightHand.update();
-
-        this.checkCollisions(this.leftHand);
-        this.checkCollisions(this.rightHand);
+        this.checkCollisions(this.app.user.hands.left);
+        this.checkCollisions(this.app.user.hands.right);
 
         if (mrjsUtils.xr.isPresenting) {
             this.pointerRay();
@@ -113,7 +105,7 @@ export class ControlSystem extends MRSystem {
 
     checkCollisions(hand) {
         for (let jointCursor of hand.jointCursors) {
-            this.app.physicsWorld.contactPairsWith(jointCursor.collider, (collider2) => {
+            mrjsUtils.physics.world.contactPairsWith(jointCursor.collider, (collider2) => {
                 const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider2.handle];
 
                 if (entity) {
@@ -126,7 +118,7 @@ export class ControlSystem extends MRSystem {
                         this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
 
                         entity.dispatchEvent(
-                            new CustomEvent('touch', {
+                            new CustomEvent('touchmove', {
                                 bubbles: true,
                                 detail: {
                                     joint: jointCursor.name,
@@ -149,8 +141,8 @@ export class ControlSystem extends MRSystem {
      * @param {number} handle2 - the second collider
      */
     onContactStart = (handle1, handle2) => {
-        const collider1 = this.app.physicsWorld.colliders.get(handle1);
-        const collider2 = this.app.physicsWorld.colliders.get(handle2);
+        const collider1 = mrjsUtils.physics.world.colliders.get(handle1);
+        const collider2 = mrjsUtils.physics.world.colliders.get(handle2);
 
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
@@ -194,14 +186,14 @@ export class ControlSystem extends MRSystem {
      */
     touchStart = (collider1, collider2, entity) => {
         entity.touch = true;
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+        mrjsUtils.physics.world.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
             entity.classList.remove('hover');
 
             entity.dispatchEvent(
-                new CustomEvent('touch-start', {
+                new CustomEvent('touchstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -225,7 +217,7 @@ export class ControlSystem extends MRSystem {
         entity.click();
 
         entity.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -240,12 +232,12 @@ export class ControlSystem extends MRSystem {
      */
     hoverStart = (collider1, collider2, entity) => {
         entity.classList.add('hover');
-        this.app.physicsWorld.contactPair(collider1, collider2, (manifold, flipped) => {
+        mrjsUtils.physics.world.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
             this.tempWorldPosition.copy(manifold.localContactPoint2(0));
             entity.object3D.localToWorld(this.tempWorldPosition);
             entity.dispatchEvent(
-                new CustomEvent('hover-start', {
+                new CustomEvent('hoverstart', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.tempWorldPosition,
@@ -266,7 +258,7 @@ export class ControlSystem extends MRSystem {
     hoverEnd = (entity) => {
         entity.classList.remove('hover');
         entity.dispatchEvent(
-            new CustomEvent('hover-end', {
+            new CustomEvent('hoverend', {
                 bubbles: true,
             })
         );
@@ -275,13 +267,13 @@ export class ControlSystem extends MRSystem {
     };
 
     pointerRay() {
-        this.origin.setFromMatrixPosition(this.app.userOrigin.matrixWorld);
+        this.origin.setFromMatrixPosition(this.app.user.origin.matrixWorld);
         this.direction.setFromMatrixPosition(this.activeHand.pointer.matrixWorld).sub(this.origin).normalize();
 
         this.ray.origin = { ...this.origin };
         this.ray.dir = { ...this.direction };
 
-        this.hit = this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
+        this.hit = mrjsUtils.physics.world.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
             this.hitNormal.copy(this.hit.normal);
@@ -323,7 +315,7 @@ export class ControlSystem extends MRSystem {
         this.currentEntity?.classList.add('active');
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-start', {
+            new CustomEvent('touchstart', {
                 bubbles: true,
                 detail: {
                     worldPosition: this.hitPosition,
@@ -343,7 +335,7 @@ export class ControlSystem extends MRSystem {
         this.currentEntity?.dispatchEvent(new Event('click'));
 
         this.currentEntity?.dispatchEvent(
-            new CustomEvent('touch-end', {
+            new CustomEvent('touchend', {
                 bubbles: true,
             })
         );
@@ -359,28 +351,34 @@ export class ControlSystem extends MRSystem {
         if (!this.currentEntity) {
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseover', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = true;
         } else if (!this.down && this.currentEntity != entity) {
             this.currentEntity.classList.remove('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseleave', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseleave', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = false;
 
             this.currentEntity = entity;
             this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(new MouseEvent('mouseover', {
-                bubbles: true
-            }));
+            this.currentEntity.dispatchEvent(
+                new MouseEvent('mouseover', {
+                    bubbles: true,
+                })
+            );
             this.currentEntity.focus = true;
         }
 
         if (this.down) {
             this.currentEntity?.dispatchEvent(
-                new CustomEvent('touch', {
+                new CustomEvent('touchmove', {
                     bubbles: true,
                     detail: {
                         worldPosition: this.hitPosition,
@@ -401,7 +399,7 @@ export class ControlSystem extends MRSystem {
     pixelRayCast(event) {
         let x = 0;
         let y = 0;
-        if (event.type.includes('touch')) {
+        if (event.type.includes('touchmove')) {
             if (event.touches.length == 0) {
                 return;
             }
@@ -413,22 +411,22 @@ export class ControlSystem extends MRSystem {
             y = event.clientY;
         }
 
-        if (this.app.user instanceof THREE.OrthographicCamera) {
+        if (this.app.camera instanceof THREE.OrthographicCamera) {
             this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
-            this.direction.unproject(this.app.user);
+            this.direction.unproject(this.app.camera);
             const direction = new THREE.Vector3(0, 0, -1);
-            direction.transformDirection(this.app.user.matrixWorld);
+            direction.transformDirection(this.app.camera.matrixWorld);
 
             this.ray.origin = { ...this.direction };
             this.ray.dir = { ...direction };
         } else {
             this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
-            this.direction.unproject(this.app.user);
-            this.direction.sub(this.app.user.position).normalize();
-            this.ray.origin = { ...this.app.user.position };
+            this.direction.unproject(this.app.camera);
+            this.direction.sub(this.app.camera.position).normalize();
+            this.ray.origin = { ...this.app.camera.position };
             this.ray.dir = { ...this.direction };
         }
 
-        return this.app.physicsWorld.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
+        return mrjsUtils.physics.world.castRayAndGetNormal(this.ray, 100, true, null, mrjsUtils.physics.CollisionGroups.USER, null, null);
     }
 }

@@ -29,7 +29,7 @@ mr-panel {
     width: 100vw;
 }
 
-mr-div, mr-button, mr-img, mr-a, mr-text{
+mr-div, mr-button, mr-img, mr-a, mr-text, mr-textfield{
     display: inline-block;
     position: relative;
     z-index: inherit;
@@ -48,7 +48,6 @@ mr-button {
     vertical-align: middle;
     background-color: #8a8a8a;
     border-radius: 0.5%;
-    z-index: 1;
     /* animation: back 0.25s ease-out forwards; */
 }
 

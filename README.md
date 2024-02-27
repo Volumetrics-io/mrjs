@@ -1,4 +1,4 @@
-![The mrjs logo](https://docs.mrjs.io/static/mrjs_nopadding.svg)
+![The MRjs logo, an indigo and purple bowtie.](https://docs.mrjs.io/static/mrjs-logo.svg)
  
 An extensible library of Web Components for the spatial web.
 
@@ -18,6 +18,8 @@ MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap s
  
 ### Via a script tag in the `<head>` of your HTML file:
 
+For the latest stable version:
+
 ```html
 <head>
     …
@@ -25,6 +27,17 @@ MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap s
     …
 </head>
 ```
+
+for the daily build. No guarantee of stability.
+
+```html
+<head>
+    …
+    <script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs/dist/mr.js"></script>
+    …
+</head>
+```
+
 
 ### Via NPM:
 

@@ -55,8 +55,15 @@ export class PanelSystem extends MRSystem {
 
         let windowWidth = global.viewPortWidth * mrjsUtils.app.scale;
         let windowHeight = global.viewPortHeight * mrjsUtils.app.scale;
-        let centeredX = rect.left - appRect.left - centerX;
-        let centeredY = rect.top - appRect.top - centerY;
+
+        let top = rect.top - appRect.top;
+        let left = rect.left - appRect.left;
+        if (mrjsUtils.xr.isPresenting) {
+            top = (top / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+            left = (left / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        let centeredX = left - centerX;
+        let centeredY = top - centerY;
 
         let threeX = (centeredX / innerWidth) * windowWidth;
         let threeY = (centeredY / innerHeight) * windowHeight;

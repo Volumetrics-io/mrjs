@@ -108,7 +108,7 @@ export class LayoutSystem extends MRSystem {
                 entity.object3D.position.z += 0.0001;
             }
         } else {
-            entity.object3D.position.z = 0;
+            entity.object3D.position.z = entity.parentElement.object3D.position.z + 0.001;
         }
     }
 }

@@ -27,7 +27,7 @@ export class MRTextEntity extends MRDivEntity {
 
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
         // accordingly
-        document.addEventListener('panel-mutated', () => {
+        document.addEventListener('panelupdate', () => {
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }

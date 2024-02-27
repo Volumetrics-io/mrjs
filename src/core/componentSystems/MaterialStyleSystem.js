@@ -37,7 +37,6 @@ export class MaterialStyleSystem extends MRSystem {
                 this.setBackground(entity);
             }
             this.setVisibility(entity);
-            
 
             // User additional - Main Entity Style Change
             if (entity instanceof MREntity) {

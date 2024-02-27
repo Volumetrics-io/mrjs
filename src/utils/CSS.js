@@ -10,7 +10,7 @@ let css = {};
  * @param {string} val - the dom css information includes items of the form `XXXpx`, `XXX%`, etc
  * @returns {number} - the 3D numerical represenation of the dom css value
  */
-css.domToThree = function(val) {
+css.domToThree = function (val) {
     if (typeof val === 'string') {
         const valuepair = val.split(/(\d+(?:\.\d+)?)/).filter(Boolean);
         if (valuepair.length > 1) {
@@ -31,7 +31,7 @@ css.domToThree = function(val) {
         }
     }
     return val;
-}
+};
 
 /**
  * @function

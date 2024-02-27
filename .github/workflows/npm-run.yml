@@ -1,0 +1,253 @@
+# Build MRjs and confirm everything passes
+name: npm run
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**' # This allows the workflow to run on all branches for the build job
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+      # todo - run the npm install with a dockerfile setup instead of pure
+      # install but not important to do right now since install isnt too long
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+   
+    - name: Install Dependencies
+      run: |
+        npm install
+
+    - name: 👷 Build
+      run: |
+        npm run build
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: ./dist
+
+    - name: Archive node_modules
+      run: zip -r npm-artifacts.zip ./node_modules
+
+    - name: Upload Npm Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-artifacts
+        path: ./npm-artifacts.zip
+
+  check-dist:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all history for all tags and branches
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: ./dist
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs - Auto Generated Dist 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+          git -c http.extraHeader="AUTHORIZATION: basic $(echo -n x-access-token:${{ secrets.MRJS_AND_DOCS_REPO_PAT }} | base64)" push origin HEAD:main
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+    
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+
+    - name: remove potentially old dist
+      run: |
+        rm -rf ./dist
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: ./dist
+    
+    - name: 👷 Test
+      run: npm run test
+
+  js-api-docs:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: [build]
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # NOTE - 
+    #
+    # For local documentation or to check the local output when writing your own pr to see how it will
+    # update, run `npm run docs`. As a heads up, order of creation of docs depends on your operating
+    # system, so if when you run this the order looks different, no worries - in the repo itself our
+    # action will handle that for you and default to use the right version for these automatically
+    # generated docs.
+    # 
+    # We're using mac as default for doc order generation (the order from that os makes the most sense
+    # from a readability perspective).
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+    
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+
+    - name: 👷 Write the markdown docs
+      run: |
+        npm run docs
+
+    - name: Get Docs content
+      id: get-docs
+      run: |
+        rm -rf ../doc
+        mkdir -p ../doc
+        cp -rf ./docs/* ../doc/
+
+    - name: see if info is there
+      run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout documentation Repository
+      uses: actions/checkout@v4
+      with:
+        repository: Volumetrics-io/documentation
+        ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: Update Docs
+      run: |
+        rm -rf "./source/js-api*"
+        cp -a "../doc/js-api" "./source/"
+        cp -a "../doc/js-api-utils" "./source/"
+        cp -a "../doc/js-api-extras" "./source/"
+        ls -al ./source
+
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+  check-format:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+
+    - name: Download Npm Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: npm-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip npm-artifacts.zip -d ./
+        npm rebuild
+    
+    - name: 👷 Check if format is needed
+      run: |
+        # check if either need fixes
+
+        npm run prettier-check
+        exit_code_function_prettier=$?
+
+        npm run lint-check
+        exit_code_function_lint=$?
+
+        # check lint first, because it might have changed some prettier items
+        # if lint is successful, then check against prettier to see if there were 
+        # any remaining problem items
+        #
+        # doing this ordering because prettier runs first and then is followed by lint
+        #
+        # this is also necessary because part of prettier and lint are in conflict atm
+        # but it's based on a specific formatting setting, to be resolved.
+        if [ $exit_code_function_lint -ne 0 ]; then
+            echo "Function lint encountered an error"
+            echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+            exit 1
+        elif [ $exit_code_function_prettier -ne 0 ]; then
+            echo "Function prettier encountered an error"
+            echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+            exit 1
+        fi
+
+        if ! npm run check-format; then
+          echo "Some files need formatting. Run 'npm run format' to format them or manually fix them as needed."
+          exit 1
+        fi
