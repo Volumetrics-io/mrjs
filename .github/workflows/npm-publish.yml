@@ -27,10 +27,11 @@ jobs:
       - name: Check if the tag exists
         id: tag_check
         run: |
-          if git rev-parse v${{ env.VERSION }} >/dev/null 2>&1; then
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
             echo "EXISTS=true" >> $GITHUB_ENV
           else
             echo "EXISTS=false" >> $GITHUB_ENV
+          fi
 
       - name: Create Git tag
         if: env.EXISTS == 'false'
