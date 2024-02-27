@@ -5,6 +5,7 @@ on:
     #   - main
     # paths:
     #   - 'package.json'
+    #
 
 jobs:
   npm-publish:
