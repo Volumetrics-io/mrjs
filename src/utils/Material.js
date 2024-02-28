@@ -82,14 +82,67 @@ material.loadTextureAsync = function (src) {
 };
 
 material.loadVideoTextureAsync = function (video) {
+    console.log(video);
+    video.src = html.resolvePath(video.src);
+    console.log(video.src);
+
+    video.muted = true; // Mute the video to allow autoplay
+    video.autoplay = true; // Attempt to autoplay
+
     return new Promise((resolve, reject) => {
-        try {
-            const textureLoader = new THREE.VideoTexture(video);
-            resolve(textureLoader);
-        } catch (err) {
-            reject(err);
-        }
+        // Event listener to ensure video is ready
+        video.onloadeddata = () => {
+            try {
+                const textureLoader = new THREE.VideoTexture(video);
+                textureLoader.needsUpdate = true; // Ensure the texture updates when the video plays
+                
+                video.play().then(() => {
+                    console.log('Video playback started');
+                }).catch((e) => {
+                    console.error('Error trying to play the video:', e);
+                    reject(e);
+                });
+                resolve(textureLoader);
+            } catch (err) {
+                reject(err);
+            }
+        };
+
+        video.onerror = (error) => {
+            reject(new Error("Error loading video: " + error.message));
+        };
+
+        // This can help with ensuring the video loads in some cases
+        video.load();
     });
+
+    // return new Promise((resolve, reject) => {
+    //     try {
+    //         const textureLoader = new THREE.VideoTexture(video);
+    //         resolve(textureLoader);
+    //     } catch (err) {
+    //         reject(err);
+    //     }
+    // });
+    // return new Promise((resolve, reject) => {
+    //     const textureLoader = new THREE.VideoTexture();
+
+    //     let resolvedSrc = html.resolvePath(video.src);
+
+    //     // Use the img's src to load the texture
+    //     textureLoader.load(
+    //         resolvedSrc,
+    //         (texture) => {
+    //             // Resolve the promise when the texture is loaded
+    //             resolve(texture);
+    //         },
+    //         undefined,
+    //         (error) => {
+    //             // Reject the promise if there's an error
+    //             reject(error);
+    //         }
+    //     );
+    // });
 };
 
 export { material };

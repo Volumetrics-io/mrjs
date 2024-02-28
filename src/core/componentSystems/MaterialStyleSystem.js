@@ -3,8 +3,8 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
+import { MRVideo } from 'mrjs/core/entities/MRVideo';
 
 /**
  * @class MaterialStyleSystem
@@ -35,6 +35,9 @@ export class MaterialStyleSystem extends MRSystem {
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
+            }
+            if (entity instanceof MRVideo && entity.playing) {
+                entity.texture.needsUpdate = true;
             }
             this.setVisibility(entity);
 

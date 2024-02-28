@@ -12,7 +12,7 @@ import { mrjsUtils } from 'mrjs';
 export class MRMedia extends MRDivEntity {
     /**
      * @class
-     * @description Constructs a base image entity using a UIPlane and other 3D elements as necessary.
+     * @description Constructs a base media entity using a UIPlane and other 3D elements as necessary.
      */
     constructor() {
         super();
@@ -24,7 +24,7 @@ export class MRMedia extends MRDivEntity {
             side: 0,
             transparent: true,
         });
-        // Object3D for mr-image is the actual image itself in 3D space
+        // Object3D for MRMedia (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
@@ -35,17 +35,13 @@ export class MRMedia extends MRDivEntity {
         this.media = null;
 
         // This is a reference to the texture that is used as part of the
-        // threejs material. Separating it out for easier use.
+        // threejs material. Separating it out for easier updating after it is loaded.
         // The texture is filled-in in the connected function.
         this.texture = null;
 
         // This is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
         this.subMediaMesh = null;
-    }
-
-    createElement() {
-        // to be overwritten by children
     }
 
     /**

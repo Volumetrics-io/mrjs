@@ -19,6 +19,7 @@ export class MRVideo extends MRMedia {
 
         // object3D and rest of mrvideo is pre-created in MRMedia
         this.object3D.name = 'video';
+        this.playing = false;
     }
 
     /**
@@ -55,7 +56,10 @@ export class MRVideo extends MRMedia {
      * @description Plays the video in the shadow root
      */
     play() {
+        console.log('before play: ', this.media);
         this.media.play();
+        this.playing = true;
+        console.log('after play: ', this.media);
     }
 
     /**
@@ -64,6 +68,7 @@ export class MRVideo extends MRMedia {
      */
     pause() {
         this.media.pause();
+        this.playing = false;
     }
 }
 

@@ -16,18 +16,9 @@
             <mr-button onclick="stopVideo()" class="col-2">Stop</mr-button>
             
         </mr-panel>
-    
-        <mr-panel 
-        id="panel1"
-        class="layout front">
-
+        <mr-panel id="panel1" class="layout front">
             <mr-video id="videoEl" class="videoFit col-1" src="/assets/textures/simple.webm"></mr-video>
-            
-          
         </mr-panel>
-    
-
-       
     
     </mr-entity>
 
@@ -37,61 +28,58 @@
   <footer>
     <script>
 
-        let rig = document.querySelector('#rig')
-        let panels = document.querySelectorAll('.layout')
+        let rig = document.querySelector('#rig');
+        let panels = document.querySelectorAll('.layout');
+        let videoEl = document.querySelector('#videoEl');
 
-        let frontIndex = 0
+        let frontIndex = 0;
 
         function playVideo() {
-            let videoEl = document.querySelector('#videoEl')
-            videoEl.play()
+            videoEl.play();;
         }
 
         function stopVideo() {
-            let videoEl = document.querySelector('#videoEl')
-            videoEl.pause()
+            videoEl.pause();
         }
 
         function screenShare() {
             // function to get a screenshare mediastream 
             navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
             .then(stream => {
-                let videoEl = document.querySelector('#videoEl')
-                videoEl.srcObject = stream
-                videoEl.play()
-            })
+                videoEl.srcObject = stream;
+                videoEl.play();
+            });
         }
 
         function switchTab(index) {
-            panels[frontIndex].classList.remove('front')
-            panels[index].classList.add('front')
-            frontIndex = index
-
+            panels[frontIndex].classList.remove('front');
+            panels[index].classList.add('front');
+            frontIndex = index;
         }
 
-        let unfolded = false
+        let unfolded = false;
 
         function spread() {
-            let index = 0
-            let totalWidth = 0
+            let index = 0;
+            let totalWidth = 0;
 
-            let forwardVec = getForward(rig)
+            let forwardVec = getForward(rig);
             
             for(let panel of panels) {
-                totalWidth += panel.width
+                totalWidth += panel.width;
             }
             for(let panel of panels) {
                 if(unfolded) {
-                    panel.object3D.position.set(0, 0, 0)
+                    panel.object3D.position.set(0, 0, 0);
                 } else {
-                    panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3)
-                    index += 1
+                    panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3);
+                    index += 1;
                 }
 
-                panel.object3D.lookAt(forwardVec)
+                panel.object3D.lookAt(forwardVec);
             }
 
-            unfolded = !unfolded
+            unfolded = !unfolded;
         }
 
         function getForward(entity) {
@@ -99,15 +87,15 @@
             // The local forward vector - THREE.js uses a right-handed coordinate system, so forward is negative on the z-axis
             let localForward = new THREE.Vector3(0, 0, 0.5);
 
-            let worldForward = entity.object3D.localToWorld(localForward)
+            let worldForward = entity.object3D.localToWorld(localForward);
 
             // Use the object's quaternion to transform the local forward vector to a global direction
             return worldForward.applyQuaternion(entity.object3D.quaternion);
         }
 
         document.addEventListener('exitxr', () => {
-            unfolded = false 
-            spread()
+            unfolded = false;
+            spread();
         })
       
     </script>
