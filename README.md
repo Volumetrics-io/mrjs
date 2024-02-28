@@ -55,7 +55,7 @@ First, [clone this repository](https://docs.github.com/en/get-started/getting-st
 npm install && npm run build
 ```
 
-To test in headset:
+To test in headset (see [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement) as well):
 
 ```sh
 npm run server
