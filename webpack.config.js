@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Determine the environment (e.g., testing or development)
-const isTesting = process.env.NODE_ENV === 'testing';
+const isTesting = process.env.NODE_ENV === 'development';
 
 export default {
     entry: {
