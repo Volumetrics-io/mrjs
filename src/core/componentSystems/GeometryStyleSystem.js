@@ -41,8 +41,8 @@ export class GeometryStyleSystem extends MRSystem {
                 changed = this.setUpdatedBorder(entity);
             }
             changed = this.setScale(entity);
-            if (entity instanceof MRImage) {
-                changed = this.setUpdatedImagePlane(entity);
+            if (entity instanceof MRMedia) {
+                changed = this.setUpdatedMediaPlane(entity);
             }
 
             // User additional - Main Entity Style Change
@@ -106,7 +106,7 @@ export class GeometryStyleSystem extends MRSystem {
         return true;
     }
 
-    setUpdatedImagePlane(entity) {
+    setUpdatedMediaPlane(entity) {
         entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
