@@ -18,12 +18,7 @@ export class MRVideo extends MRMedia {
         super();
 
         // object3D and rest of mrvideo is pre-created in MRMedia
-        this.media = document.createElement('video');
         this.object3D.name = 'video';
-    }
-
-    createElement() {
-        this.media = document.createElement('video');
     }
 
     /**
@@ -31,10 +26,12 @@ export class MRVideo extends MRMedia {
      * @description Callback function of MREntity - handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
+        this.media = document.createElement('video');
+        this.media.setAttribute('crossorigin', 'anonymous');
         super.connected();
+    }
 
-        // TODO - why do we need the specific
-        // loadVideoTextureAsync here but not in the mutated function?
+    loadMediaTexture() {
         mrjsUtils.material
             .loadVideoTextureAsync(this.media)
             .then((texture) => {
@@ -44,13 +41,11 @@ export class MRVideo extends MRMedia {
             .catch((error) => {
                 console.error('Error loading texture:', error);
             });
-
-        this.media.setAttribute('crossorigin', 'anonymous');
     }
 
     set srcObject(src) {
-        this.video.srcObject = src;
-        this.video.addEventListener('loadeddata', () => {
+        this.media.srcObject = src;
+        this.media.addEventListener('loadeddata', () => {
             this.computeObjectFitDimensions();
         });
     }
@@ -60,7 +55,7 @@ export class MRVideo extends MRMedia {
      * @description Plays the video in the shadow root
      */
     play() {
-        this.video.play();
+        this.media.play();
     }
 
     /**
@@ -68,7 +63,7 @@ export class MRVideo extends MRMedia {
      * @description Pauses the video in the shadow root
      */
     pause() {
-        this.video.pause();
+        this.media.pause();
     }
 }
 

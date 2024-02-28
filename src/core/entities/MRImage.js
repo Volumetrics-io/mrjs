@@ -18,12 +18,7 @@ export class MRImage extends MRMedia {
         super();
 
         // object3D and rest of mrvideo is pre-created in MRMedia
-        this.media = document.createElement('img');
         this.object3D.name = 'image';
-    }
-
-    createElement() {
-        this.media = document.createElement('img');
     }
 
     /**
@@ -31,8 +26,11 @@ export class MRImage extends MRMedia {
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
+        this.media = document.createElement('img');
         super.connected();
+    }
 
+    loadMediaTexture() {
         mrjsUtils.material
             .loadTextureAsync(this.media.src)
             .then((texture) => {

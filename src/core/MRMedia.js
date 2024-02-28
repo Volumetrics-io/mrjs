@@ -23,7 +23,6 @@ export class MRMedia extends MRDivEntity {
         let material = new THREE.MeshStandardMaterial({
             side: 0,
             transparent: true,
-            // opacity: 0.5,
         });
         // Object3D for mr-image is the actual image itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
@@ -42,7 +41,7 @@ export class MRMedia extends MRDivEntity {
 
         // This is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
-        this.subImageMesh = null;
+        this.subMediaMesh = null;
     }
 
     createElement() {
@@ -74,8 +73,6 @@ export class MRMedia extends MRDivEntity {
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
-        // TODO - the createElement line does exactly what the constructor this.media = ... line does
-        this.createElement();
         this.media.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.media.setAttribute('style', 'object-fit:inherit; width:inherit');
         this.shadowRoot.appendChild(this.media);
@@ -92,7 +89,13 @@ export class MRMedia extends MRDivEntity {
         }
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
 
+        this.loadMediaTexture();
+
         // the rest is filled out directly by MRImage/MRVideo's remaining connected functions
+    }
+
+    loadMediaTexture() {
+        // filled in by MRMedia children (MRImage,MRVideo,etc)
     }
 
     /**
@@ -105,16 +108,7 @@ export class MRMedia extends MRDivEntity {
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
-
-            mrjsUtils.material
-                .loadTextureAsync(this.media.src)
-                .then((texture) => {
-                    this.texture = texture;
-                    this.object3D.material.map = texture;
-                })
-                .catch((error) => {
-                    console.error('Error loading texture:', error);
-                });
+            this.loadMediaTexture();
         }
     }
 
@@ -131,17 +125,17 @@ export class MRMedia extends MRDivEntity {
         }
 
         const _oldSubImageNotNeeded = () => {
-            if (this.subImageMesh !== null) {
-                mrjsUtils.model.disposeObject3D(this.subImageMesh);
-                this.subImageMesh = null;
+            if (this.subMediaMesh !== null) {
+                mrjsUtils.model.disposeObject3D(this.subMediaMesh);
+                this.subMediaMesh = null;
             }
         };
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
-        let imageWidth = this.media.width;
-        let imageHeight = this.media.height;
-        const imageAspect = imageWidth / imageHeight;
+        let mediaWidth = this.media.width;
+        let mediaHeight = this.media.height;
+        const mediaAspect = mediaWidth / mediaHeight;
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
@@ -153,31 +147,31 @@ export class MRMedia extends MRDivEntity {
             case 'contain':
             case 'scale-down':
                 // `contain` and `scale-down` are the same except for one factor:
-                // - `contain` will always scale the image to fit
-                // - `scale-down` will only scale the image to fit if the image is larger than the container
+                // - `contain` will always scale the media to fit
+                // - `scale-down` will only scale the media to fit if the media is larger than the container
 
                 // Plane dimensions in 3D space
                 const planeWidth = containerWidth;
                 const planeHeight = containerHeight;
 
                 // Check if resize is required
-                if (this.compStyle.objectFit === 'contain' || imageWidth > planeWidth || imageHeight > planeHeight) {
-                    const scaleRatio = Math.min(planeWidth / imageWidth, planeHeight / imageHeight);
-                    imageWidth *= scaleRatio;
-                    imageHeight *= scaleRatio;
+                if (this.compStyle.objectFit === 'contain' || mediaWidth > planeWidth || mediaHeight > planeHeight) {
+                    const scaleRatio = Math.min(planeWidth / mediaWidth, planeHeight / mediaHeight);
+                    mediaWidth *= scaleRatio;
+                    mediaHeight *= scaleRatio;
                 }
 
-                const imageGeometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
-                const imageMaterial = new THREE.MeshStandardMaterial({
+                const mediaGeometry = new THREE.PlaneGeometry(mediaWidth, mediaHeight);
+                const mediaMaterial = new THREE.MeshStandardMaterial({
                     map: this.texture,
                     transparent: true,
                 });
                 _oldSubImageNotNeeded();
-                this.subImageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+                this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
 
                 // cleanup for final rendering setup
                 let planeMesh = this.object3D;
-                let imageMesh = this.subImageMesh;
+                let mediaMesh = this.subMediaMesh;
 
                 this.objectFitDimensions = {
                     width: planeWidth,
@@ -185,10 +179,10 @@ export class MRMedia extends MRDivEntity {
                 };
                 planeMesh.material.visible = false;
                 planeMesh.material.needsUpdate = true;
-                planeMesh.add(imageMesh);
+                planeMesh.add(mediaMesh);
 
-                imageMesh.material.visible = true;
-                imageMesh.material.needsUpdate = true;
+                mediaMesh.material.visible = true;
+                mediaMesh.material.needsUpdate = true;
 
                 break;
 
@@ -197,14 +191,14 @@ export class MRMedia extends MRDivEntity {
 
                 this.texture.repeat.set(1, 1); // Reset scaling
 
-                if (containerAspect > imageAspect) {
+                if (containerAspect > mediaAspect) {
                     // Plane is wider than the texture
-                    const scale = containerAspect / imageAspect;
+                    const scale = containerAspect / mediaAspect;
                     this.texture.repeat.y = 1 / scale;
                     this.texture.offset.y = (1 - 1 / scale) / 2; // Center the texture vertically
                 } else {
                     // Plane is taller than the texture
-                    const scale = imageAspect / containerAspect;
+                    const scale = mediaAspect / containerAspect;
                     this.texture.repeat.x = 1 / scale;
                     this.texture.offset.x = (1 - 1 / scale) / 2; // Center the texture horizontally
                 }
@@ -219,7 +213,7 @@ export class MRMedia extends MRDivEntity {
 
             case 'none':
                 _oldSubImageNotNeeded();
-                this.objectFitDimensions = { width: imageWidth, height: imageHeight };
+                this.objectFitDimensions = { width: mediaWidth, height: mediaHeight };
 
                 break;
 
