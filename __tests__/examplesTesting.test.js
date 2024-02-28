@@ -17,7 +17,7 @@ describe('Test the Examples', () => {
     });
 
     afterAll(async () => {
-        await browser.close();
+        if (browser) await browser.close();
     });
 
     fileNames.forEach(fileName => {
