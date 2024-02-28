@@ -17,7 +17,6 @@ export class MRMedia extends MRDivEntity {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.img = document.createElement('img');
 
         // Create the object3D. Dont need default value for geometry
         // until the connected call since this will get overwritten anyways.
@@ -32,6 +31,10 @@ export class MRMedia extends MRDivEntity {
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
 
+        // the media to be filled out. 
+        // for ex: document.createElement('video') or document.createElement('img');
+        this.media = null;
+
         // This is a reference to the texture that is used as part of the
         // threejs material. Separating it out for easier use.
         // The texture is filled-in in the connected function.
@@ -40,6 +43,10 @@ export class MRMedia extends MRDivEntity {
         // This is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
         this.subImageMesh = null;
+    }
+
+    createElement() {
+        // to be overwritten by children
     }
 
     /**
@@ -67,28 +74,25 @@ export class MRMedia extends MRDivEntity {
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
-        this.img = document.createElement('img');
-        this.img.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
-        this.img.setAttribute('style', 'object-fit:inherit; width:inherit');
-        this.shadowRoot.appendChild(this.img);
+        // TODO - the createElement line does exactly what the constructor this.media = ... line does
+        this.createElement();
+        this.media.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
+        this.media.setAttribute('style', 'object-fit:inherit; width:inherit');
+        this.shadowRoot.appendChild(this.media);
 
         this.objectFitDimensions = { height: 0, width: 0 };
         this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
+        if (this.getAttribute('src') == undefined) { 
+            return;
+        }
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        mrjsUtils.material
-            .loadTextureAsync(this.img.src)
-            .then((texture) => {
-                this.texture = texture;
-                this.object3D.material.map = texture;
-            })
-            .catch((error) => {
-                console.error('Error loading texture:', error);
-            });
+
+        // the rest is filled out directly by MRImage/MRVideo's remaining connected functions
     }
 
     /**
@@ -99,11 +103,11 @@ export class MRMedia extends MRDivEntity {
     mutated(mutation) {
         super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.img.setAttribute('src', this.getAttribute('src'));
+            this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
 
             mrjsUtils.material
-                .loadTextureAsync(this.img.src)
+                .loadTextureAsync(this.media.src)
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;
@@ -119,8 +123,8 @@ export class MRMedia extends MRDivEntity {
      * @description computes the width and height values for the image considering the value of object-fit
      */
     computeObjectFitDimensions() {
-        if (!this.texture) {
-            // We assume every image has its attached texture.
+        if (!this.texture || !this.media) {
+            // We assume every media item exists and has its attached texture.
             // If texture doesnt exist, it's just not loaded in yet, meaning
             // we can skip the below until it is.
             return;
@@ -135,8 +139,8 @@ export class MRMedia extends MRDivEntity {
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
-        let imageWidth = this.img.width;
-        let imageHeight = this.img.height;
+        let imageWidth = this.media.width;
+        let imageHeight = this.media.height;
         const imageAspect = imageWidth / imageHeight;
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
@@ -225,4 +229,6 @@ export class MRMedia extends MRDivEntity {
     }
 }
 
-customElements.get('mr-img') || customElements.define('mr-img', MRImage);
+// TODO - dont want to allow users to create this as a generic item, just as a base class for all future
+// media elements?
+// customElements.get('mr-media') || customElements.define('mr-media', MRMedia);
