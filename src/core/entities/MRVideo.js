@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRMedia } from 'mrjs/core/MRMedia';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -9,7 +9,7 @@ import { mrjsUtils } from 'mrjs';
  * @classdesc Base html video represented in 3D space. `mr-video`
  * @augments MRDivEntity
  */
-export class MRVideo extends MRDivEntity {
+export class MRVideo extends MRMedia {
     /**
      * @class
      * @description Constructs a base video entity using a UIPlane and other 3D elements as necessary.
@@ -19,7 +19,7 @@ export class MRVideo extends MRDivEntity {
 
         // object3D and rest of mrvideo is pre-created in MRMedia
         this.media = document.createElement('video');
-        this.object3D.name = 'video'; 
+        this.object3D.name = 'video';
     }
 
     createElement() {
@@ -32,7 +32,7 @@ export class MRVideo extends MRDivEntity {
      */
     connected() {
         super.connected();
-        
+
         // TODO - why do we need the specific
         // loadVideoTextureAsync here but not in the mutated function?
         mrjsUtils.material

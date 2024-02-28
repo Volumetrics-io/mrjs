@@ -31,7 +31,7 @@ export class MRMedia extends MRDivEntity {
         this.object3D.renderOrder = 3;
         this.object3D.name = 'image';
 
-        // the media to be filled out. 
+        // the media to be filled out.
         // for ex: document.createElement('video') or document.createElement('img');
         this.media = null;
 
@@ -84,7 +84,7 @@ export class MRMedia extends MRDivEntity {
         this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.getAttribute('src') == undefined) { 
+        if (this.getAttribute('src') == undefined) {
             return;
         }
         if (this.object3D.geometry !== undefined) {

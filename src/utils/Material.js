@@ -86,7 +86,7 @@ material.loadVideoTextureAsync = function (video) {
         try {
             const textureLoader = new THREE.VideoTexture(video);
             resolve(textureLoader);
-        } catch(err) {
+        } catch (err) {
             reject(err);
         }
     });
