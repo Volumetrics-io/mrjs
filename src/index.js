@@ -5,6 +5,10 @@
 
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
+// Log the version number
+import { version } from '../package.json';
+console.log("Current ᴍʀjs Version:", version);
+
 // STYLE
 import './defaultStyle.css';
 
