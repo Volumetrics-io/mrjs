@@ -1,0 +1,52 @@
+name: npm-publish
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+
+jobs:
+  npm-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Get version from package.json
+        id: package_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Check if the tag exists
+        id: tag_check
+        run: |
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            echo "EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Git tag
+        if: env.EXISTS == 'false'
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git tag v${{ env.VERSION }}
+          git push origin v${{ env.VERSION }}
+
+      - name: Debug token availability
+        run: |
+          echo "Token length: ${#NPM_MJRS_PUBLISH}"
+
+      - name: Publish to npm
+        if: env.EXISTS == 'false'
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_MJRS_PUBLISH }}

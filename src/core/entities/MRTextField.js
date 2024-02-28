@@ -10,7 +10,6 @@ import { MRTextEntity } from 'mrjs/core/MRTextEntity';
  * @augments MRTextEntity
  */
 export class MRTextField extends MRTextEntity {
-
     //  /**
     //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
     //  */
@@ -33,7 +32,15 @@ export class MRTextField extends MRTextEntity {
         super();
         this.attachShadow({ mode: 'open' });
         this.wrapper = this.shadowRoot.appendChild(document.createElement('div'));
-        this.wrapper.innerHTML = "<slot></slot>";
+        this.wrapper.innerHTML = '<slot></slot>';
+    }
+
+    get value() {
+        return this.input.value;
+    }
+
+    set value(val) {
+        this.input.value = val;
     }
 
     /**
@@ -64,13 +71,12 @@ export class MRTextField extends MRTextEntity {
         this.input.style.position = 'absolute'; // Avoid affecting layout
         this.shadowRoot.appendChild(this.input);
 
-
         this.addEventListener('click', (event) => {
             this.focusInput();
         });
 
         this.addEventListener('keydown', (event) => {
-            this.needsStyleUpdate = true
+            this.needsStyleUpdate = true;
         });
     }
 
@@ -114,7 +120,7 @@ export class MRTextField extends MRTextEntity {
             } else {
                 this.cursor.position.setX(selectBox.right);
             }
-            this.cursor.position.setY(selectBox.bottom / 2) //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
+            this.cursor.position.setY(selectBox.bottom / 2); //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
         }
     };
 }

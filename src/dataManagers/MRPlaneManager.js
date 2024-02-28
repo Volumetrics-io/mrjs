@@ -1,7 +1,7 @@
 import { mrjsUtils } from 'mrjs';
 import { MRPlane } from 'mrjs/dataTypes/MRPlane';
 
-const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'door', 'window', 'shelf', 'bed', 'screen', 'lamp', 'plant', 'wall art', 'other']
+const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'door', 'window', 'shelf', 'bed', 'screen', 'lamp', 'plant', 'wall art', 'other'];
 
 /**
  * @class MRPlaneManager
@@ -12,25 +12,23 @@ export class MRPlaneManager {
     /**
      *
      * @param scene
-     * @param physicsWorld
      */
-    constructor(scene, physicsWorld, occlusion) {
+    constructor(scene, occlusion) {
         // TODO: add app level controls for:
         // - planes
         // - mesh
 
-        this.occlusion = !occlusion || occlusion == "true"
+        this.occlusion = occlusion ?? 'enable';
 
         this.scene = scene;
-        this.physicsWorld = physicsWorld;
 
         this.matrix = new THREE.Matrix4();
 
         this.currentPlanes = new Map();
 
-        this.planeDictionary = {}
+        this.planeDictionary = {};
 
-        for(const label of PLANE_LABELS) {
+        for (const label of PLANE_LABELS) {
             this.planeDictionary[label] = new Set();
         }
 
@@ -42,26 +40,26 @@ export class MRPlaneManager {
 
         let floorPlane = {
             semanticLabel: 'floor',
-            orientation: 'horizontal'
-        }
+            orientation: 'horizontal',
+        };
 
-        let floorMRPlane = this.initPlane(floorPlane, 10, 10)
+        let floorMRPlane = this.initPlane(floorPlane, 10, 10);
 
-        floorMRPlane.mesh.geometry = new THREE.CircleGeometry(2, 32)
-        floorMRPlane.mesh.position.set(0,0,0)
-        floorMRPlane.mesh.rotation.x = - Math.PI / 2
+        floorMRPlane.mesh.geometry = new THREE.CircleGeometry(2, 32);
+        floorMRPlane.mesh.position.set(0, 0, 0);
+        floorMRPlane.mesh.rotation.x = -Math.PI / 2;
 
-        floorMRPlane.mesh.visible = false
+        floorMRPlane.mesh.visible = false;
         floorMRPlane.body.setEnabled(false);
 
         document.addEventListener('enterxr', () => {
-            floorMRPlane.mesh.visible = true
+            floorMRPlane.mesh.visible = true;
             floorMRPlane.body.setEnabled(true);
         });
 
         document.addEventListener('exitxr', () => {
             for (const [plane, mrplane] of this.currentPlanes) {
-                this.removePlane(plane, mrplane)
+                this.removePlane(plane, mrplane);
             }
         });
 
@@ -92,11 +90,11 @@ export class MRPlaneManager {
                         const width = maxX - minX;
                         const height = maxZ - minZ;
 
-                        if(plane.semanticLabel == 'floor') {
-                            this.removePlane(floorPlane, floorMRPlane)
+                        if (plane.semanticLabel == 'floor') {
+                            this.removePlane(floorPlane, floorMRPlane);
                         }
 
-                        this.initPlane(plane, width, height)
+                        this.initPlane(plane, width, height);
                     }
                 }
             });
@@ -122,7 +120,9 @@ export class MRPlaneManager {
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 
-        mrPlane.mesh.visible = this.occlusion;
+        if (this.occlusion != 'enable') {
+            mrPlane.mesh.visible = false;
+        }
 
         this.tempDimensions.setX(width / 2);
         this.tempDimensions.setY(0.01);
@@ -131,8 +131,8 @@ export class MRPlaneManager {
         mrPlane.body = this.initPhysicsBody();
 
         this.currentPlanes.set(plane, mrPlane);
-        this.planeDictionary[mrPlane.label].add(mrPlane)
-        return mrPlane
+        this.planeDictionary[mrPlane.label].add(mrPlane);
+        return mrPlane;
     }
 
     removePlane(plane, mrplane) {
@@ -140,10 +140,10 @@ export class MRPlaneManager {
         mrplane.mesh.material.dispose();
         this.scene.remove(mrplane.mesh);
 
-        this.physicsWorld.removeRigidBody(mrplane.body);
+        mrjsUtils.physics.world.removeRigidBody(mrplane.body);
 
         this.currentPlanes.delete(plane);
-        this.planeDictionary[mrplane.label].delete(mrplane)
+        this.planeDictionary[mrplane.label].delete(mrplane);
     }
 
     /**
@@ -155,9 +155,9 @@ export class MRPlaneManager {
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);
         let colliderDesc = mrjsUtils.physics.RAPIER.ColliderDesc.cuboid(...this.tempDimensions);
         colliderDesc.setCollisionGroups(mrjsUtils.physics.CollisionGroups.PLANES);
-        let body = this.physicsWorld.createRigidBody(rigidBodyDesc);
+        let body = mrjsUtils.physics.world.createRigidBody(rigidBodyDesc);
         body.setRotation(this.tempQuaternion, true);
-        let collider = this.physicsWorld.createCollider(colliderDesc, body);
+        let collider = mrjsUtils.physics.world.createCollider(colliderDesc, body);
 
         collider.setActiveCollisionTypes(mrjsUtils.physics.RAPIER.ActiveCollisionTypes.DEFAULT | mrjsUtils.physics.RAPIER.ActiveCollisionTypes.KINEMATIC_FIXED);
         collider.setActiveEvents(mrjsUtils.physics.RAPIER.ActiveEvents.COLLISION_EVENTS);

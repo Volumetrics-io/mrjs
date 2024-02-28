@@ -13,6 +13,14 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanel extends MRDivEntity {
+    get height() {
+        let result = this.getBoundingClientRect().height;
+
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return (result / global.appHeight) * global.viewPortHeight * mrjsUtils.app.scale;
+    }
     /**
      * @class
      * @description Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
@@ -71,12 +79,12 @@ export class MRPanel extends MRDivEntity {
         });
 
         this.addEventListener('mouseover', () => {
-            this.focus = true
-        })
+            this.focus = true;
+        });
 
         this.addEventListener('mouseleave', () => {
-            this.focus = false
-        })
+            this.focus = false;
+        });
 
         document.addEventListener('wheel', (event) => {
             this.onScroll(event);

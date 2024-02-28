@@ -198,13 +198,13 @@ export class MREntity extends MRElement {
     }
 
     /**
-     * @function 
+     * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateMaterialStyle() {}
 
     /**
-     * @function 
+     * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
      */
     updateGeometryStyle() {}
@@ -430,7 +430,7 @@ export class MREntity extends MRElement {
         }
 
         if (this.physics) {
-            this.env.physicsWorld.removeRigidBody(this.physics.body);
+            mrjsUtils.physics.world.removeRigidBody(this.physics.body);
         }
 
         this.environment = null;
