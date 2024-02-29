@@ -42,11 +42,11 @@ export class MRVideo extends MRMedia {
     }
 
     get mediaWidth() {
-        return this.media.videoWidth;
+        return this.video.videoWidth;
     }
 
     get mediaHeight() {
-        return this.media.videoHeight;
+        return this.video.videoHeight;
     }
 
     /**
@@ -156,8 +156,8 @@ export class MRVideo extends MRMedia {
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
         }
         // set the video width and height to the video size
-        this.video.width = this.objectFitDimensions.width;
-        this.video.height = this.objectFitDimensions.height;
+        // this.video.width = this.objectFitDimensions.width;
+        // this.video.height = this.objectFitDimensions.height;
         // set this width and height to video 
         this.style.width = `${this.objectFitDimensions.width}px`;
         this.style.height = `${this.objectFitDimensions.height}px`;
