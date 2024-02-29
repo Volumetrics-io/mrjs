@@ -59,11 +59,8 @@ export class MRVideo extends MRMedia {
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
-        super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.media.setAttribute('src', this.getAttribute('src'));
-            this.computeObjectFitDimensions();
-            this.loadMediaTexture();
+            super.mutated();
         }
     }
 

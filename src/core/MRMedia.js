@@ -99,6 +99,10 @@ export class MRMedia extends MRDivEntity {
         }
     }
 
+    _mutationCheck() {
+        // to be filled in by children
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
@@ -106,11 +110,17 @@ export class MRMedia extends MRDivEntity {
      */
     mutated(mutation) {
         super.mutated();
-        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.media.setAttribute('src', this.getAttribute('src'));
-            this.computeObjectFitDimensions();
-            this.loadMediaTexture();
-        }
+        
+        // moving the if 'mutation' handling check to the children, since
+        // mutations are only understood by their actual type. Any mutation
+        // passed through MRMedia directly is undefined since it is not
+        // a direct element for users.
+        //
+        // those functions can do the if (mutation.type ....) handling and
+        // their specific cases and then call back up to here to run the below functionality.
+        this.media.setAttribute('src', this.getAttribute('src'));
+        this.computeObjectFitDimensions();
+        this.loadMediaTexture();
     }
 
     /**

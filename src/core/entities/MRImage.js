@@ -49,6 +49,21 @@ export class MRImage extends MRMedia {
                 console.error('Error loading texture:', error);
             });
     }
+
+    /**
+     * @function
+     * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
+     * @param {object} mutation - the update/change/mutation to be handled.
+     */
+    mutated(mutation) {
+        // Mutations are only understood by their actual type. Any mutation
+        // passed through MRMedia directly is undefined since it is not
+        // a direct element for users. So we do the if-check here and then
+        // follow the same as the parent's functionality.
+        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
+            super.mutated();
+        }
+    }
 }
 
 customElements.get('mr-img') || customElements.define('mr-img', MRImage);
