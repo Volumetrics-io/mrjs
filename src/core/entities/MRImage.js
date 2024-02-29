@@ -21,6 +21,14 @@ export class MRImage extends MRMedia {
         this.object3D.name = 'image';
     }
 
+    get mediaWidth() {
+        return this.media.width;
+    }
+
+    get mediaHeight() {
+        return this.media.height;
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.

@@ -84,6 +84,9 @@ material.loadTextureAsync = function (src) {
 material.loadVideoTextureAsync = function (video) {
     video.src = html.resolvePath(video.src);
 
+    video.muted = true; // Mute the video to allow autoplay
+    video.autoplay = false;//true; // Attempt to autoplay
+
     return new Promise((resolve, reject) => {
         // Event listener to ensure video is ready
         video.onloadeddata = () => {

@@ -64,6 +64,14 @@ export class MRMedia extends MRDivEntity {
         return height > 0 ? height : super.height;
     }
 
+    get mediaWidth() {
+        // to be filled in in children
+    }
+
+    get mediaHeight() {
+        // to be filled in in children
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
@@ -98,7 +106,7 @@ export class MRMedia extends MRDivEntity {
      */
     mutated(mutation) {
         super.mutated();
-        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
+        if (mutation.type != 'attributes' && mutation.attributeName == 'src' && this.media !== undefined) {
             this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
             this.loadMediaTexture();
@@ -126,8 +134,8 @@ export class MRMedia extends MRDivEntity {
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
-        let mediaWidth = this.media.width;
-        let mediaHeight = this.media.height;
+        let mediaWidth = this.mediaWidth;
+        let mediaHeight = this.mediaHeight;
         const mediaAspect = mediaWidth / mediaHeight;
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
