@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mr.js - video</title>
+    <meta name="description" content="mr.js example - video">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="video-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+   <mr-app>
+    <mr-entity id="rig" data-comp-anchor="type: fixed;">
+        <mr-panel id="tabbar" data-position="0 0 0.001"> <!--TODO: move Z offset to css z-index-->
+            <mr-button onclick="playVideo()" class="col-1">Play</mr-button>
+            <mr-button onclick="stopVideo()" class="col-2">Stop</mr-button>
+            
+        </mr-panel>
+    
+        <mr-panel 
+        id="panel1"
+        class="layout front">
+
+            <mr-video id="videoEl" class="videoFit col-1" src="/assets/textures/simple.webm"></mr-video>
+            
+          
+        </mr-panel>
+    
+
+       
+    
+    </mr-entity>
+
+    </mr-app>
+  </body>
+
+  <footer>
+    <script>
+
+        let rig = document.querySelector('#rig')
+        let panels = document.querySelectorAll('.layout')
+
+        let frontIndex = 0
+
+        function playVideo() {
+            let videoEl = document.querySelector('#videoEl')
+            videoEl.play()
+        }
+
+        function stopVideo() {
+            let videoEl = document.querySelector('#videoEl')
+            videoEl.pause()
+        }
+
+        function screenShare() {
+            // function to get a screenshare mediastream 
+            navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+            .then(stream => {
+                let videoEl = document.querySelector('#videoEl')
+                videoEl.srcObject = stream
+                videoEl.play()
+            })
+        }
+
+        function switchTab(index) {
+            panels[frontIndex].classList.remove('front')
+            panels[index].classList.add('front')
+            frontIndex = index
+
+        }
+
+        let unfolded = false
+
+        function spread() {
+            let index = 0
+            let totalWidth = 0
+
+            let forwardVec = getForward(rig)
+            
+            for(let panel of panels) {
+                totalWidth += panel.width
+            }
+            for(let panel of panels) {
+                if(unfolded) {
+                    panel.object3D.position.set(0, 0, 0)
+                } else {
+                    panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3)
+                    index += 1
+                }
+
+                panel.object3D.lookAt(forwardVec)
+
+
+            }
+
+            unfolded = !unfolded
+
+        }
+
+        function getForward(entity) {
+
+            // The local forward vector - THREE.js uses a right-handed coordinate system, so forward is negative on the z-axis
+            let localForward = new THREE.Vector3(0, 0, 0.5);
+
+            let worldForward = entity.object3D.localToWorld(localForward)
+
+            // Use the object's quaternion to transform the local forward vector to a global direction
+            return worldForward.applyQuaternion(entity.object3D.quaternion);
+
+        }
+
+        document.addEventListener('exitxr', () => {
+            unfolded = false 
+            spread()
+        })
+      
+    </script>
+  </footer>
+</html>

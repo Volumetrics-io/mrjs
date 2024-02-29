@@ -81,4 +81,15 @@ material.loadTextureAsync = function (src) {
     });
 };
 
+material.loadVideoTextureAsync = function (video) {
+    return new Promise((resolve, reject) => {
+        try {
+            const textureLoader = new THREE.VideoTexture(video);
+            resolve(textureLoader);
+        } catch(err) {
+            reject(err);
+        }
+    });
+};
+
 export { material };
