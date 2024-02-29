@@ -18,6 +18,7 @@ export class MRVideo extends MRMedia {
     constructor() {
         super();
         this.object3D.name = 'video';
+        this.playing = false;
         
     }
 
@@ -27,7 +28,7 @@ export class MRVideo extends MRMedia {
      * @returns {number} - the resolved width
      */
     get width() {
-        let width = mrjsUtils.css.pxToThree(this.objectFitDimensions?.width);
+        let width = this.objectFitDimensions?.width;
         return width > 0 ? width : super.width;
     }
 
@@ -37,7 +38,7 @@ export class MRVideo extends MRMedia {
      * @returns {number} - the resolved height
      */
     get height() {
-        let height = mrjsUtils.css.pxToThree(this.objectFitDimensions?.height);
+        let height = this.objectFitDimensions?.height;
         return height > 0 ? height : super.height;
     }
 
@@ -56,6 +57,7 @@ export class MRVideo extends MRMedia {
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;
+                    this.playing = true; // since we have videos auto play on silent to start
                 })
                 .catch((error) => {
                     console.error('Error loading texture:', error);
@@ -87,59 +89,6 @@ export class MRVideo extends MRMedia {
         }
     }
 
-    /**
-     * @function
-     * @description computes the width and height values for the video considering the value of object-fit
-     */
-    computeObjectFitDimensions() {
-        
-        switch (this.compStyle.objectFit) {
-            case 'fill':
-                this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetHeight };
-
-            case 'contain':
-            case 'scale-down': {
-                let ratio = Math.min(this.offsetWidth / this.media.videoWidth, this.offsetHeight / this.media.videoHeight);
-                let scaledWidth = this.media.videoWidth * ratio;
-                let scaledHeight = this.media.videoHeight * ratio;
-
-                if (this.compStyle.objectFit === 'scale-down') {
-                    scaledWidth = Math.min(scaledWidth, this.media.videoWidth);
-                    scaledHeight = Math.min(scaledHeight, this.media.videoHeight);
-                }
-
-                this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
-                break;
-            }
-
-            case 'cover': {
-                let videoRatio = this.media.videoWidth / this.media.videoHeight;
-                let containerRatio = this.offsetWidth / this.offsetHeight;
-
-                if (containerRatio > videoRatio) {
-                    this.objectFitDimensions = { width: this.offsetWidth, height: this.offsetWidth / videoRatio };
-                } else {
-                    this.objectFitDimensions = { width: this.offsetHeight * videoRatio, height: this.offsetHeight };
-                }
-                break;
-            }
-
-            case 'none':
-                this.objectFitDimensions = { width: this.media.videoWidth, height: this.media.videoHeight };
-                break;
-
-            default:
-                throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
-        }
-        // set the video width and height to the video size
-        // this.media.width = this.objectFitDimensions.width;
-        // this.media.height = this.objectFitDimensions.height;
-        // set this width and height to video 
-        this.style.width = `${this.objectFitDimensions.width}px`;
-        this.style.height = `${this.objectFitDimensions.height}px`;
-    }
-
-    //setter for srcObject 
     set srcObject(src) {
         this.media.srcObject = src;
         // on loadeddata event, update the objectFitDimensions
@@ -154,6 +103,7 @@ export class MRVideo extends MRMedia {
      */
     play() {
         this.media.play();
+        this.playing = true;
     }
 
     //pause 
@@ -163,6 +113,7 @@ export class MRVideo extends MRMedia {
      */
     pause() {
         this.media.pause();
+        this.playing = false;
     }
 }
 

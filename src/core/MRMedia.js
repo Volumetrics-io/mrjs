@@ -106,7 +106,7 @@ export class MRMedia extends MRDivEntity {
      */
     mutated(mutation) {
         super.mutated();
-        if (mutation.type != 'attributes' && mutation.attributeName == 'src' && this.media !== undefined) {
+        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
             this.loadMediaTexture();
@@ -221,6 +221,9 @@ export class MRMedia extends MRDivEntity {
             default:
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
         }
+
+        this.style.width = `${this.objectFitDimensions.width}px`;
+        this.style.height = `${this.objectFitDimensions.height}px`;
     }
 }
 
