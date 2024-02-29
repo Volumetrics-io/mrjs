@@ -85,7 +85,7 @@ material.loadVideoTextureAsync = function (video) {
     video.src = html.resolvePath(video.src);
 
     video.muted = true; // Mute the video to allow autoplay
-    video.autoplay = false;//true; // Attempt to autoplay
+    video.autoplay = false; //true; // Attempt to autoplay
 
     return new Promise((resolve, reject) => {
         // Event listener to ensure video is ready
@@ -93,13 +93,16 @@ material.loadVideoTextureAsync = function (video) {
             try {
                 const textureLoader = new THREE.VideoTexture(video);
                 textureLoader.needsUpdate = true; // Ensure the texture updates when the video plays
-                
-                video.play().then(() => {
-                    console.log('Video playback started');
-                }).catch((e) => {
-                    console.error('Error trying to play the video:', e);
-                    reject(e);
-                });
+
+                video
+                    .play()
+                    .then(() => {
+                        console.log('Video playback started');
+                    })
+                    .catch((e) => {
+                        console.error('Error trying to play the video:', e);
+                        reject(e);
+                    });
                 resolve(textureLoader);
             } catch (err) {
                 reject(err);
@@ -107,7 +110,7 @@ material.loadVideoTextureAsync = function (video) {
         };
 
         video.onerror = (error) => {
-            reject(new Error("Error loading video: " + error.message));
+            reject(new Error('Error loading video: ' + error.message));
         };
 
         // This can help with ensuring the video loads in some cases

@@ -18,7 +18,7 @@ export class MRVideo extends MRMedia {
     constructor() {
         super();
         this.object3D.name = 'video';
-        this.playing = false;   
+        this.playing = false;
     }
 
     get mediaWidth() {
@@ -31,15 +31,15 @@ export class MRVideo extends MRMedia {
 
     loadMediaTexture() {
         mrjsUtils.material
-                .loadVideoTextureAsync(this.media)
-                .then((texture) => {
-                    this.texture = texture;
-                    this.object3D.material.map = texture;
-                    this.playing = true; // since we have videos auto play on silent to start
-                })
-                .catch((error) => {
-                    console.error('Error loading texture:', error);
-                });
+            .loadVideoTextureAsync(this.media)
+            .then((texture) => {
+                this.texture = texture;
+                this.object3D.material.map = texture;
+                this.playing = true; // since we have videos auto play on silent to start
+            })
+            .catch((error) => {
+                console.error('Error loading texture:', error);
+            });
     }
 
     /**
@@ -49,7 +49,7 @@ export class MRVideo extends MRMedia {
     connected() {
         this.media = document.createElement('video');
         this.media.setAttribute('crossorigin', 'anonymous');
-            
+
         super.connected();
     }
 
@@ -72,7 +72,7 @@ export class MRVideo extends MRMedia {
         });
     }
 
-     /**
+    /**
      * @function
      * @description Plays the video in the shadow root
      */
@@ -81,7 +81,7 @@ export class MRVideo extends MRMedia {
         this.playing = true;
     }
 
-    //pause 
+    //pause
     /**
      * @function
      * @description Pauses the video in the shadow root

@@ -110,7 +110,7 @@ export class MRMedia extends MRDivEntity {
      */
     mutated(mutation) {
         super.mutated();
-        
+
         // moving the if 'mutation' handling check to the children, since
         // mutations are only understood by their actual type. Any mutation
         // passed through MRMedia directly is undefined since it is not

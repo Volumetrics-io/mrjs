@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MRMedia } from 'mrjs/core/MRMedia';
 
-
 import { mrjsUtils } from 'mrjs';
 
 /**
@@ -52,14 +51,14 @@ export class MRVideo extends MRMedia {
     loadMediaTexture() {
         console.log('hello');
         mrjsUtils.material
-                .loadVideoTextureAsync(this.media)
-                .then((texture) => {
-                    this.texture = texture;
-                    this.object3D.material.map = texture;
-                })
-                .catch((error) => {
-                    console.error('Error loading texture:', error);
-                });
+            .loadVideoTextureAsync(this.media)
+            .then((texture) => {
+                this.texture = texture;
+                this.object3D.material.map = texture;
+            })
+            .catch((error) => {
+                console.error('Error loading texture:', error);
+            });
     }
 
     /**
@@ -69,7 +68,7 @@ export class MRVideo extends MRMedia {
     connected() {
         this.media = document.createElement('video');
         this.media.setAttribute('crossorigin', 'anonymous');
-        
+
         super.connected();
     }
 
@@ -79,11 +78,11 @@ export class MRVideo extends MRMedia {
      */
     computeObjectFitDimensions() {
         super.computeObjectFitDimensions();
-        
+
         // set the video width and height to the video size
         this.media.width = this.objectFitDimensions.width;
         this.media.height = this.objectFitDimensions.height;
-        // set this width and height to video 
+        // set this width and height to video
         this.style.width = `${this.objectFitDimensions.width}px`;
         this.style.height = `${this.objectFitDimensions.height}px`;
     }
@@ -96,7 +95,7 @@ export class MRVideo extends MRMedia {
         });
     }
 
-     /**
+    /**
      * @function
      * @description Plays the video in the shadow root
      */
@@ -104,7 +103,7 @@ export class MRVideo extends MRMedia {
         this.media.play();
     }
 
-    //pause 
+    //pause
     /**
      * @function
      * @description Pauses the video in the shadow root
