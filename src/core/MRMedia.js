@@ -74,19 +74,17 @@ export class MRMedia extends MRDivEntity {
         this.shadowRoot.appendChild(this.media);
 
         this.objectFitDimensions = { height: 0, width: 0 };
-        this.computeObjectFitDimensions();
 
         // first creation of the object3D geometry. dispose is not needed but adding just in case.
         if (this.getAttribute('src') == undefined) {
             return;
         }
+        this.computeObjectFitDimensions();
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
         }
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-
         this.loadMediaTexture();
-        this.computeObjectFitDimensions();
     }
 
     loadMediaTexture() {
