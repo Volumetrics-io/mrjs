@@ -35,6 +35,8 @@ export class MRImage extends MRMedia {
      */
     connected() {
         this.media = document.createElement('img');
+        this.shadowRoot.appendChild(this.media);
+
         super.connected();
     }
 

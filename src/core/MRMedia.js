@@ -28,7 +28,7 @@ export class MRMedia extends MRDivEntity {
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;
-        this.object3D.name = 'image';
+        this.object3D.name = 'media';
 
         // the media to be filled out.
         // for ex: document.createElement('video') or document.createElement('img');
@@ -72,6 +72,17 @@ export class MRMedia extends MRDivEntity {
         // to be filled in in children
     }
 
+    generateNewMediaPlaneGeometry() {
+        if (this.object3D.geometry !== undefined) {
+            this.object3D.geometry.dispose();
+        }
+        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
+    }
+
+    loadMediaTexture() {
+        // filled in by MRMedia children (MRImage,MRVideo,etc)
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
@@ -79,24 +90,13 @@ export class MRMedia extends MRDivEntity {
     connected() {
         this.media.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.media.setAttribute('style', 'object-fit:inherit; width:inherit');
-        this.shadowRoot.appendChild(this.media);
 
         this.objectFitDimensions = { height: 0, width: 0 };
-
-        // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.getAttribute('src') == undefined) {
-            return;
+        if (this.getAttribute('src') !== undefined) {
+            this.computeObjectFitDimensions();
+            this.generateNewMediaPlaneGeometry();
+            this.loadMediaTexture();
         }
-        this.computeObjectFitDimensions();
-        if (this.object3D.geometry !== undefined) {
-            this.object3D.geometry.dispose();
-        }
-        this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        this.loadMediaTexture();
-    }
-
-    loadMediaTexture() {
-        // filled in by MRMedia children (MRImage,MRVideo,etc)
     }
 
     /**

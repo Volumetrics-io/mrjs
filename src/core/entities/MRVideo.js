@@ -42,52 +42,17 @@ export class MRVideo extends MRMedia {
     }
 
     get mediaWidth() {
-        return this.video.videoWidth;
+        return this.media.videoWidth;
     }
 
     get mediaHeight() {
-        return this.video.videoHeight;
-    }
-
-    /**
-     * @function
-     * @description Callback function of MREntity - handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
-     */
-    connected() {
-        this.video = document.createElement('video');
-        // this.media = this.video;
-
-        this.video.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
-        this.video.setAttribute('style', 'object-fit:inherit; width:inherit');
-        this.video.setAttribute('crossorigin', 'anonymous');
-            
-        this.objectFitDimensions = { height: 0, width: 0 };
-        if(this.getAttribute('src') !== undefined) {
-            this.computeVideoObject3DFitDimensions();
-            this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
-        mrjsUtils.material
-            .loadVideoTextureAsync(this.video)
-            .then((texture) => {
-                this.texture = texture;
-                this.object3D.material.map = texture;
-            })
-            .catch((error) => {
-                console.error('Error loading texture:', error);
-            });
-        }
-        
-
-        // first creation of the object3D geometry. dispose is not needed but adding just in case.
-        if (this.object3D.geometry !== undefined) {
-            this.object3D.geometry.dispose();
-        }
-        
+        return this.media.videoHeight;
     }
 
     loadMediaTexture() {
         console.log('hello');
         mrjsUtils.material
-                .loadVideoTextureAsync(this.video.src)
+                .loadVideoTextureAsync(this.media)
                 .then((texture) => {
                     this.texture = texture;
                     this.object3D.material.map = texture;
@@ -99,14 +64,25 @@ export class MRVideo extends MRMedia {
 
     /**
      * @function
+     * @description Callback function of MREntity - handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
+     */
+    connected() {
+        this.media = document.createElement('video');
+        this.media.setAttribute('crossorigin', 'anonymous');
+            
+        super.connected();
+    }
+
+    /**
+     * @function
      * @description Callback function of MREntity - Updates the video's cover,fill,etc based on the mutation request.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
         // super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
-            this.video.setAttribute('src', this.getAttribute('src'));
-            this.computeVideoObject3DFitDimensions();
+            this.media.setAttribute('src', this.getAttribute('src'));
+            this.computeObjectFitDimensions();
             this.loadMediaTexture();
         }
     }
@@ -115,7 +91,7 @@ export class MRVideo extends MRMedia {
      * @function
      * @description computes the width and height values for the video considering the value of object-fit
      */
-    computeVideoObject3DFitDimensions() {
+    computeObjectFitDimensions() {
         
         switch (this.compStyle.objectFit) {
             case 'fill':
@@ -123,13 +99,13 @@ export class MRVideo extends MRMedia {
 
             case 'contain':
             case 'scale-down': {
-                let ratio = Math.min(this.offsetWidth / this.video.videoWidth, this.offsetHeight / this.video.videoHeight);
-                let scaledWidth = this.video.videoWidth * ratio;
-                let scaledHeight = this.video.videoHeight * ratio;
+                let ratio = Math.min(this.offsetWidth / this.media.videoWidth, this.offsetHeight / this.media.videoHeight);
+                let scaledWidth = this.media.videoWidth * ratio;
+                let scaledHeight = this.media.videoHeight * ratio;
 
                 if (this.compStyle.objectFit === 'scale-down') {
-                    scaledWidth = Math.min(scaledWidth, this.video.videoWidth);
-                    scaledHeight = Math.min(scaledHeight, this.video.videoHeight);
+                    scaledWidth = Math.min(scaledWidth, this.media.videoWidth);
+                    scaledHeight = Math.min(scaledHeight, this.media.videoHeight);
                 }
 
                 this.objectFitDimensions = { width: scaledWidth, height: scaledHeight };
@@ -137,7 +113,7 @@ export class MRVideo extends MRMedia {
             }
 
             case 'cover': {
-                let videoRatio = this.video.videoWidth / this.video.videoHeight;
+                let videoRatio = this.media.videoWidth / this.media.videoHeight;
                 let containerRatio = this.offsetWidth / this.offsetHeight;
 
                 if (containerRatio > videoRatio) {
@@ -149,15 +125,15 @@ export class MRVideo extends MRMedia {
             }
 
             case 'none':
-                this.objectFitDimensions = { width: this.video.videoWidth, height: this.video.videoHeight };
+                this.objectFitDimensions = { width: this.media.videoWidth, height: this.media.videoHeight };
                 break;
 
             default:
                 throw new Error(`Unsupported object-fit value ${this.compStyle.objectFit}`);
         }
         // set the video width and height to the video size
-        // this.video.width = this.objectFitDimensions.width;
-        // this.video.height = this.objectFitDimensions.height;
+        // this.media.width = this.objectFitDimensions.width;
+        // this.media.height = this.objectFitDimensions.height;
         // set this width and height to video 
         this.style.width = `${this.objectFitDimensions.width}px`;
         this.style.height = `${this.objectFitDimensions.height}px`;
@@ -165,10 +141,10 @@ export class MRVideo extends MRMedia {
 
     //setter for srcObject 
     set srcObject(src) {
-        this.video.srcObject = src;
+        this.media.srcObject = src;
         // on loadeddata event, update the objectFitDimensions
-        this.video.addEventListener('loadeddata', () => {
-            this.computeVideoObject3DFitDimensions();
+        this.media.addEventListener('loadeddata', () => {
+            this.computeObjectFitDimensions();
         });
     }
 
@@ -177,7 +153,7 @@ export class MRVideo extends MRMedia {
      * @description Plays the video in the shadow root
      */
     play() {
-        this.video.play();
+        this.media.play();
     }
 
     //pause 
@@ -186,25 +162,7 @@ export class MRVideo extends MRMedia {
      * @description Pauses the video in the shadow root
      */
     pause() {
-        this.video.pause();
-    }
-
-    /**
-     * @function
-     * @description Calculates the texture UV transformation change based on the video's aspect ratio.
-     * @param {object} texture - the texture to augment
-     * @param {number} aspect - a given expected aspect ratio
-     */
-    cover(texture, aspect) {
-        texture.matrixAutoUpdate = false;
-
-        const videoAspect = texture.video.width / texture.video.height;
-
-        if (aspect < videoAspect) {
-            texture.matrix.setUvTransform(0, 0, aspect / videoAspect, 1, 0, 0.5, 0.5);
-        } else {
-            texture.matrix.setUvTransform(0, 0, 1, videoAspect / aspect, 0, 0.5, 0.5);
-        }
+        this.media.pause();
     }
 }
 
