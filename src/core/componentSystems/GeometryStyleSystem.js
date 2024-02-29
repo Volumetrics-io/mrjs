@@ -110,22 +110,16 @@ export class GeometryStyleSystem extends MRSystem {
         entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
-        let w = entity.width;
-        let h = entity.height;
-        let b = entity.borderRadii;
-        if (entity._storedWidth != w || entity._storedHeight != h || entity._storedBorderRadii != b) {
-            entity._storedWidth = w;
-            entity._storedHeight = h;
-            entity._storedBorderRadii = b;
+        if (entity._storedWidth != entity.width
+            || entity._storedHeight != entity.height
+            || entity._storedBorderRadii != entity.borderRadii) {
+           entity.generateNewMediaPlaneGeometry();
         } else {
             // no update needed
             return false;
         }
 
-        if (entity.object3D.geometry !== undefined) {
-            entity.object3D.geometry.dispose();
-        }
-        entity.object3D.geometry = mrjsUtils.geometry.UIPlane(w, h, b, 18);
+        
 
         return true;
     }

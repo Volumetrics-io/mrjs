@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MRMedia } from 'mrjs/core/MRMedia';
 
 import { mrjsUtils } from 'mrjs';
@@ -59,6 +58,10 @@ export class MRVideo extends MRMedia {
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
+        // Mutations are only understood by their actual type. Any mutation
+        // passed through MRMedia directly is undefined since it is not
+        // a direct element for users. So we do the if-check here and then
+        // follow the same as the parent's functionality.
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             super.mutated();
         }
