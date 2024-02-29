@@ -23,7 +23,7 @@ export class MRTextEntity extends MRDivEntity {
         this.object3D.name = 'textObj';
         this.editable = false;
 
-        this.textObj.material.receiveShadow = true;
+        this.textObj.receiveShadow = true;
 
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
         // accordingly
