@@ -18,28 +18,7 @@ export class MRVideo extends MRMedia {
     constructor() {
         super();
         this.object3D.name = 'video';
-        this.playing = false;
-        
-    }
-
-    /**
-     * @function
-     * @description Calculates the width of the video based on the video tag in the shadow root
-     * @returns {number} - the resolved width
-     */
-    get width() {
-        let width = this.objectFitDimensions?.width;
-        return width > 0 ? width : super.width;
-    }
-
-    /**
-     * @function
-     * @description Calculates the height of the video based on the video tag in the shadow root
-     * @returns {number} - the resolved height
-     */
-    get height() {
-        let height = this.objectFitDimensions?.height;
-        return height > 0 ? height : super.height;
+        this.playing = false;   
     }
 
     get mediaWidth() {
@@ -51,7 +30,6 @@ export class MRVideo extends MRMedia {
     }
 
     loadMediaTexture() {
-        console.log('hello');
         mrjsUtils.material
                 .loadVideoTextureAsync(this.media)
                 .then((texture) => {
@@ -81,7 +59,7 @@ export class MRVideo extends MRMedia {
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
-        // super.mutated();
+        super.mutated();
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
             this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
