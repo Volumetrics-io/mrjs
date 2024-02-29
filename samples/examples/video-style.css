@@ -124,6 +124,10 @@
     grid-column: 1;
   }
 
+/*  mr-video {
+    object-fit: contain;
+  }*/
+
   .col-1{
     grid-column: 1;
   }

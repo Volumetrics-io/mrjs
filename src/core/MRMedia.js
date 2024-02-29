@@ -86,8 +86,7 @@ export class MRMedia extends MRDivEntity {
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
 
         this.loadMediaTexture();
-
-        // the rest is filled out directly by MRImage/MRVideo's remaining connected functions
+        this.computeObjectFitDimensions();
     }
 
     loadMediaTexture() {
@@ -120,7 +119,7 @@ export class MRMedia extends MRDivEntity {
             return;
         }
 
-        const _oldSubImageNotNeeded = () => {
+        const _oldSubMediaNotNeeded = () => {
             if (this.subMediaMesh !== null) {
                 mrjsUtils.model.disposeObject3D(this.subMediaMesh);
                 this.subMediaMesh = null;
@@ -135,7 +134,7 @@ export class MRMedia extends MRDivEntity {
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                _oldSubImageNotNeeded();
+                _oldSubMediaNotNeeded();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
@@ -162,7 +161,7 @@ export class MRMedia extends MRDivEntity {
                     map: this.texture,
                     transparent: true,
                 });
-                _oldSubImageNotNeeded();
+                _oldSubMediaNotNeeded();
                 this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
 
                 // cleanup for final rendering setup
@@ -183,7 +182,7 @@ export class MRMedia extends MRDivEntity {
                 break;
 
             case 'cover':
-                _oldSubImageNotNeeded();
+                _oldSubMediaNotNeeded();
 
                 this.texture.repeat.set(1, 1); // Reset scaling
 
@@ -208,7 +207,7 @@ export class MRMedia extends MRDivEntity {
                 break;
 
             case 'none':
-                _oldSubImageNotNeeded();
+                _oldSubMediaNotNeeded();
                 this.objectFitDimensions = { width: mediaWidth, height: mediaHeight };
 
                 break;
