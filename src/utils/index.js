@@ -14,10 +14,9 @@ import { html } from './HTML.js';
 import { js } from './JS.js';
 import { material } from './Material.js';
 import { model } from './Model.js';
-import { mathUtils } from './MathUtils.js';
-import { math3D } from './Math3D.js';
+import { math } from './Math.js';
 import { physics } from './Physics.js';
-import { stringUtils } from './StringUtils.js';
+import { string } from './String.js';
 import { xr } from './XR.js';
 
 const mrjsUtils = {
@@ -28,11 +27,10 @@ const mrjsUtils = {
     html,
     js,
     material,
+    math,
     model,
-    mathUtils,
-    math3D,
     physics,
-    stringUtils,
+    string,
     xr,
 };
 
