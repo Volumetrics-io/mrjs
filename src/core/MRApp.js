@@ -207,7 +207,7 @@ export class MRApp extends MRElement {
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
+            this.layers = mrjsUtils.string.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.camera.layers.enable(layer);
@@ -288,7 +288,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.stringUtils.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.string.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);
@@ -301,7 +301,7 @@ export class MRApp extends MRElement {
     initCamera = () => {
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.string.stringToJson(this.cameraOptionString);
         }
 
         global.appWidth = this.appWidth;
