@@ -22,7 +22,7 @@ export class MRMedia extends MRDivEntity {
         // until the connected call since this will get overwritten anyways.
         const material = new THREE.MeshStandardMaterial({
             side: THREE.FrontSide,
-            transparent: true,
+            // transparent: true,
         });
         // Object3D for MRMedia (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
@@ -46,7 +46,7 @@ export class MRMedia extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the width of the img based on the img tag in the shadow root
+     * @description Calculates the width of the media based on the media tag in the shadow root
      * @returns {number} - the resolved width
      */
     get width() {
@@ -56,7 +56,7 @@ export class MRMedia extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the height of the img based on the img tag in the shadow root
+     * @description Calculates the height of the media based on the media tag in the shadow root
      * @returns {number} - the resolved height
      */
     get height() {
@@ -85,7 +85,7 @@ export class MRMedia extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
+     * @description Callback function of MREntity - handles setting up this media and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     connected() {
         this.media.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
@@ -101,7 +101,7 @@ export class MRMedia extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
+     * @description Callback function of MREntity - Updates the media's cover,fill,etc based on the mutation request.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated(mutation) {
@@ -166,7 +166,7 @@ export class MRMedia extends MRDivEntity {
                 const mediaGeometry = new THREE.PlaneGeometry(mediaWidth, mediaHeight);
                 const mediaMaterial = new THREE.MeshStandardMaterial({
                     map: this.texture,
-                    transparent: true,
+                    // transparent: true,
                 });
                 _oldSubMediaNotNeeded();
                 this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
@@ -179,7 +179,8 @@ export class MRMedia extends MRDivEntity {
                     width: planeWidth,
                     height: planeHeight,
                 };
-                planeMesh.material.visible = false;
+                // planeMesh.material.visible = false;
+                planeMesh.material.map = null;
                 planeMesh.material.needsUpdate = true;
                 planeMesh.add(mediaMesh);
 
