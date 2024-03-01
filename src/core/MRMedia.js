@@ -137,14 +137,6 @@ export class MRMedia extends MRDivEntity {
             }
         };
 
-        const _removeMainMediaMeshTexture = () => {
-            // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
-            // and debugging later on.
-            
-            this.object3D.material.map = null;
-            this.object3D.material.needsUpdate = true;
-        }
-
         const _makeSureMainMediaMeshHasTexture = () => {
             // used if transitioning away from 'contain' or 'scale-down'
             // to make sure that texture is set properly
@@ -152,6 +144,14 @@ export class MRMedia extends MRDivEntity {
                 this.object3D.material.map = this.texture;
                 this.object3D.material.needsUpdate = true;
             }
+        }
+
+        const _removeMainMediaMeshTexture = () => {
+            // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
+            // and debugging later on.
+            
+            this.object3D.material.map = null;
+            this.object3D.material.needsUpdate = true;
         }
 
         let containerWidth = this.parentElement.width;
