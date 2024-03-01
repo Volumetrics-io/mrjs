@@ -227,7 +227,3 @@ export class MRMedia extends MRDivEntity {
         this.style.height = `${this.objectFitDimensions.height}px`;
     }
 }
-
-// TODO - dont want to allow users to create this as a generic item, just as a base class for all future
-// media elements?
-// customElements.get('mr-media') || customElements.define('mr-media', MRMedia);

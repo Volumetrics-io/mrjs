@@ -57,8 +57,14 @@ material.setObjectMaterial = function (parent, material) {
     }
     return parent;
 };
-
-// Function to load the texture asynchronously and return a promise
+ 
+/**
+ * @function
+ * @memberof material
+ * @param {object} src - the url path to the data to be loaded
+ * @description Function to load the texture asynchronously and return a promise
+ * @returns {object} texture - the fully loaded texture
+ */
 material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
@@ -69,18 +75,23 @@ material.loadTextureAsync = function (src) {
         textureLoader.load(
             resolvedSrc,
             (texture) => {
-                // Resolve the promise when the texture is loaded
                 resolve(texture);
             },
             undefined,
             (error) => {
-                // Reject the promise if there's an error
                 reject(error);
             }
         );
     });
 };
 
+/**
+ * @function
+ * @memberof material
+ * @param {object} src - the html video element whose src contains the path to the data to be loaded
+ * @description Function to load the texture asynchronously and return a promise
+ * @returns {object} texture - the fully loaded texture
+ */
 material.loadVideoTextureAsync = function (video) {
     video.src = html.resolvePath(video.src);
 
