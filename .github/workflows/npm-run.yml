@@ -119,7 +119,7 @@ jobs:
       run: npm run test
 
   js-api-docs:
-    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [build]
     runs-on: macos-latest
     steps:
@@ -177,33 +177,27 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm -rf "./source/js-api"
-        rm -rf "./source/js-api-utils"
-        rm -rf "./source/js-api-extras"
-        
-        ls -al ./source
-
+        rm -rf "./source/js-api*"
         cp -a "../doc/js-api" "./source/"
         cp -a "../doc/js-api-utils" "./source/"
         cp -a "../doc/js-api-extras" "./source/"
-
         ls -al ./source
 
-    # - name: Commit only if there are changes
-    #   run: |
-    #     if [[ -n $(git status --porcelain) ]]; then
-    #       echo "Changes detected. Committing and pushing."
-    #       git config user.name 'github-actions[bot]'
-    #       git config user.email 'github-actions[bot]@users.noreply.github.com'
-    #       commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
-    #       git add .
-    #       git commit -m "$commit_message"
-    #       git push --quiet --set-upstream origin HEAD
-    #     else
-    #       echo "No changes detected. Exiting without committing."
-    #     fi
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   check-format:
     needs: [build]
