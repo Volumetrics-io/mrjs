@@ -1,19 +1,21 @@
 /**
- * @namespace stringUtils
+ * @namespace string
  * @description Useful namespace for helping with String utility functions
  */
-let stringUtils = {};
+let string = {};
 
-/*********** JSON // String interactions *************/
+/*******************************************************/
+/************ JSON // String interactions **************/
+/*******************************************************/
 
 /**
  * @function
- * @memberof stringUtils
+ * @memberof string
  * @description Converts and formats the inputted string to a json object.
  * @param {string} attrString - the string to be formatted
  * @returns {object} - object in json form
  */
-stringUtils.stringToJson = function (attrString) {
+string.stringToJson = function (attrString) {
     if (attrString == null) {
         return null;
     }
@@ -44,12 +46,12 @@ stringUtils.stringToJson = function (attrString) {
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof string
  * @description Converts and formats the inputted json object into a string.
  * @param {object} componentData - the json object to be formatted into a string
  * @returns {string} - the string representation of the json object
  */
-stringUtils.jsonToString = function (componentData) {
+string.jsonToString = function (componentData) {
     let compString = '';
 
     for (const [key, value] of Object.entries(componentData)) {
@@ -70,38 +72,40 @@ stringUtils.jsonToString = function (componentData) {
     return compString.trim();
 };
 
+/****************************************/
 /*********** String to Math *************/
+/****************************************/
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof string
  * @description Converts a string to vector format.
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-stringUtils.stringToVector = function (str) {
+string.stringToVector = function (str) {
     return str.split(' ').map(Number);
 };
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof string
  * @description Converts a string to vector format where the numbers are pre-converted from radians to degrees.
  * @param {string} str - the string to be converted to a vector. Must be of format 'xx xxx xx...'.
  * @returns {object} - the vector version of the inputted string.
  */
-stringUtils.stringToDegVector = function (str) {
+string.stringToDegVector = function (str) {
     return str.split(' ').map((val) => (parseFloat(val) * Math.PI) / 180);
 };
 
 /**
  * @function
- * @memberof StringUtils
+ * @memberof string
  * @description Converts a string to vector format where the numbers are pre-converted from a number to an appropriate representation
  * @param {string} val - the string to be converted to a vector. Must be of format 'x%' or 'x/y'.
  * @returns {number} - the vector version of the inputted string.
  */
-stringUtils.stringToDimensionValue = function (val) {
+string.stringToDimensionValue = function (val) {
     if (val.includes('%')) {
         return parseFloat(val) / 100;
     }
@@ -111,4 +115,4 @@ stringUtils.stringToDimensionValue = function (val) {
     return val;
 };
 
-export { stringUtils };
+export { string };
