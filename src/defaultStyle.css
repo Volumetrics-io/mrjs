@@ -38,8 +38,12 @@ mr-panel {
 
 mr-img {
     /* z-index: inherit; */
-    width: 100%;
-    object-fit: cover;
+/*    width: 100%;*/
+    object-fit: contain;
+}
+
+mr-video {
+    object-fit: contain;
 }
 
 mr-button {

@@ -91,8 +91,8 @@ material.loadVideoTextureAsync = function (video) {
         // Event listener to ensure video is ready
         video.onloadeddata = () => {
             try {
-                const textureLoader = new THREE.VideoTexture(video);
-                textureLoader.needsUpdate = true; // Ensure the texture updates when the video plays
+                const videoTexture = new THREE.VideoTexture(video);
+                videoTexture.needsUpdate = true; // Ensure the texture updates when the video plays
 
                 video
                     .play()
@@ -103,7 +103,7 @@ material.loadVideoTextureAsync = function (video) {
                         console.error('Error trying to play the video:', e);
                         reject(e);
                     });
-                resolve(textureLoader);
+                resolve(videoTexture);
             } catch (err) {
                 reject(err);
             }

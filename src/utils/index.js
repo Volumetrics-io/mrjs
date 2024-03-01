@@ -9,6 +9,7 @@
 import { app } from './App.js';
 import { css } from './CSS.js';
 import { display } from './Display.js';
+import { error } from './Error.js'
 import { geometry } from './Geometry.js';
 import { html } from './HTML.js';
 import { js } from './JS.js';
@@ -24,6 +25,7 @@ const mrjsUtils = {
     app,
     css,
     display,
+    error,
     geometry,
     html,
     js,

@@ -36,9 +36,9 @@ export class MaterialStyleSystem extends MRSystem {
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
             }
-            if (entity instanceof MRVideo && entity.playing) {
-                entity.texture.needsUpdate = true;
-            }
+            // if (entity instanceof MRVideo && entity.playing) {
+            //     entity.texture.needsUpdate = true;
+            // }
             this.setVisibility(entity);
 
             // User additional - Main Entity Style Change

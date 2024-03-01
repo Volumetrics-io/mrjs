@@ -20,8 +20,8 @@ export class MRMedia extends MRDivEntity {
 
         // Create the object3D. Dont need default value for geometry
         // until the connected call since this will get overwritten anyways.
-        let material = new THREE.MeshStandardMaterial({
-            side: 0,
+        const material = new THREE.MeshStandardMaterial({
+            side: THREE.FrontSide,
             transparent: true,
         });
         // Object3D for MRMedia (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
@@ -65,11 +65,11 @@ export class MRMedia extends MRDivEntity {
     }
 
     get mediaWidth() {
-        // to be filled in in children
+        mrjsUtils.error.emptyParentFunction();
     }
 
     get mediaHeight() {
-        // to be filled in in children
+        mrjsUtils.error.emptyParentFunction();
     }
 
     generateNewMediaPlaneGeometry() {
@@ -80,7 +80,7 @@ export class MRMedia extends MRDivEntity {
     }
 
     loadMediaTexture() {
-        // filled in by MRMedia children (MRImage,MRVideo,etc)
+        mrjsUtils.error.emptyParentFunction();
     }
 
     /**
@@ -99,10 +99,6 @@ export class MRMedia extends MRDivEntity {
         }
     }
 
-    _mutationCheck() {
-        // to be filled in by children
-    }
-
     /**
      * @function
      * @description Callback function of MREntity - Updates the image's cover,fill,etc based on the mutation request.
@@ -111,16 +107,11 @@ export class MRMedia extends MRDivEntity {
     mutated(mutation) {
         super.mutated();
 
-        // moving the if 'mutation' handling check to the children, since
-        // mutations are only understood by their actual type. Any mutation
-        // passed through MRMedia directly is undefined since it is not
-        // a direct element for users.
-        //
-        // those functions can do the if (mutation.type ....) handling and
-        // their specific cases and then call back up to here to run the below functionality.
-        this.media.setAttribute('src', this.getAttribute('src'));
-        this.computeObjectFitDimensions();
-        this.loadMediaTexture();
+        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
+            this.media.setAttribute('src', this.getAttribute('src'));
+            this.computeObjectFitDimensions();
+            this.loadMediaTexture();
+        }
     }
 
     /**

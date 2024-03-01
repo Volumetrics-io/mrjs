@@ -140,7 +140,6 @@ export class MaskingSystem extends MRSystem {
                 }
             }
 
-            console.log('traversing: ', entity);
             entity.traverse((child) => {
                 runTheTraversal.call(this, child);
             });
