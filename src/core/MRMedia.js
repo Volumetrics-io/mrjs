@@ -173,14 +173,13 @@ export class MRMedia extends MRDivEntity {
                 // `contain` and `scale-down` are the same except for one factor:
                 // - `contain` will always scale the media to fit
                 // - `scale-down` will only scale the media to fit if the media is larger than the container
+                //
+                // Implemented by making the main mesh turn into the same dimensions as the container
+                // and making the submesh scale itself based on those values. This allows the original hit
+                // box of mr-media to stay as expected while the media itself still changes based on object-fit.
 
-                // Plane dimensions in 3D space
-                const planeWidth = containerWidth;
-                const planeHeight = containerHeight;
-
-                // Check if resize is required
-                if (this.compStyle.objectFit === 'contain' || mediaWidth > planeWidth || mediaHeight > planeHeight) {
-                    const scaleRatio = Math.min(planeWidth / mediaWidth, planeHeight / mediaHeight);
+                if (this.compStyle.objectFit === 'contain' || mediaWidth > containerWidth || mediaHeight > containerHeight) {
+                    const scaleRatio = Math.min(containerWidth / mediaWidth, containerHeight / mediaHeight);
                     mediaWidth *= scaleRatio;
                     mediaHeight *= scaleRatio;
                 }
@@ -199,8 +198,8 @@ export class MRMedia extends MRDivEntity {
                 _removeMainMediaMeshTexture();
 
                 this.objectFitDimensions = {
-                    width: planeWidth,
-                    height: planeHeight,
+                    width: containerWidth,
+                    height: containerHeight,
                 };
 
                 break;
