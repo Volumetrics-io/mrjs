@@ -126,12 +126,26 @@ export class MRMedia extends MRDivEntity {
             return;
         }
 
-        const _oldSubMediaNotNeeded = () => {
+        const _oldSubMediaMeshNotNeeded = () => {
+            // All switch options other than 'contain' and 'scale-down' start with this
+            // function.
+            //
+            // 'contain' and 'scale-down' are the only options that use this additional
+            // mesh for positioning.
             if (this.subMediaMesh !== null) {
                 mrjsUtils.model.disposeObject3D(this.subMediaMesh);
                 this.subMediaMesh = null;
             }
         };
+
+        const _makeSureMainMediaMeshHasTexture = () => {
+            // used if transitioning away from 'contain' or 'scale-down'
+            // to make sure that texture is set properly
+            if (!this.object3D.material.map) {
+                this.object3D.material.map = this.texture;
+                this.object3D.material.needsUpdate = true;
+            }
+        }
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;
@@ -141,7 +155,8 @@ export class MRMedia extends MRDivEntity {
         const containerAspect = containerWidth / containerHeight;
         switch (this.compStyle.objectFit) {
             case 'fill':
-                _oldSubMediaNotNeeded();
+                _oldSubMediaMeshNotNeeded();
+                _makeSureMainMediaMeshHasTexture();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
@@ -168,7 +183,7 @@ export class MRMedia extends MRDivEntity {
                     map: this.texture,
                     // transparent: true,
                 });
-                _oldSubMediaNotNeeded();
+                _oldSubMediaMeshNotNeeded();
                 this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
 
                 // cleanup for final rendering setup
@@ -190,7 +205,8 @@ export class MRMedia extends MRDivEntity {
                 break;
 
             case 'cover':
-                _oldSubMediaNotNeeded();
+                _oldSubMediaMeshNotNeeded();
+                _makeSureMainMediaMeshHasTexture();
 
                 this.texture.repeat.set(1, 1); // Reset scaling
 
@@ -215,7 +231,8 @@ export class MRMedia extends MRDivEntity {
                 break;
 
             case 'none':
-                _oldSubMediaNotNeeded();
+                _oldSubMediaMeshNotNeeded();
+                _makeSureMainMediaMeshHasTexture();
                 this.objectFitDimensions = { width: mediaWidth, height: mediaHeight };
 
                 break;
