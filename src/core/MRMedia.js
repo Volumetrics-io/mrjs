@@ -22,7 +22,6 @@ export class MRMedia extends MRDivEntity {
         // until the connected call since this will get overwritten anyways.
         const material = new THREE.MeshStandardMaterial({
             side: THREE.FrontSide,
-            // transparent: true,
         });
         // Object3D for MRMedia (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
@@ -138,6 +137,14 @@ export class MRMedia extends MRDivEntity {
             }
         };
 
+        const _removeMainMediaMeshTexture = () => {
+            // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
+            // and debugging later on.
+            
+            this.object3D.material.map = null;
+            this.object3D.material.needsUpdate = true;
+        }
+
         const _makeSureMainMediaMeshHasTexture = () => {
             // used if transitioning away from 'contain' or 'scale-down'
             // to make sure that texture is set properly
@@ -181,26 +188,20 @@ export class MRMedia extends MRDivEntity {
                 const mediaGeometry = new THREE.PlaneGeometry(mediaWidth, mediaHeight);
                 const mediaMaterial = new THREE.MeshStandardMaterial({
                     map: this.texture,
-                    // transparent: true,
                 });
                 _oldSubMediaMeshNotNeeded();
                 this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
 
                 // cleanup for final rendering setup
-                let planeMesh = this.object3D;
-                let mediaMesh = this.subMediaMesh;
+                // - setup the parent child relationship of mainMesh and subMediaMesh
+                // - make sure mainMesh no longer shows the media texture so it doesnt duplicate subMediaMesh
+                this.object3D.add(this.subMediaMesh);
+                _removeMainMediaMeshTexture();
 
                 this.objectFitDimensions = {
                     width: planeWidth,
                     height: planeHeight,
                 };
-                // planeMesh.material.visible = false;
-                planeMesh.material.map = null;
-                planeMesh.material.needsUpdate = true;
-                planeMesh.add(mediaMesh);
-
-                mediaMesh.material.visible = true;
-                mediaMesh.material.needsUpdate = true;
 
                 break;
 
