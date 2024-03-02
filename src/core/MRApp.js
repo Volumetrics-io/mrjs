@@ -441,6 +441,12 @@ export class MRApp extends MRElement {
 
         const deltaTime = this.clock.getDelta();
 
+        // ----- Update stats if enabled ----- //
+
+        if (this.stats) {
+            this.stats.update();
+        }
+
         // ----- Update needed items ----- //
 
         if (mrjsUtils.xr.isPresenting && !mrjsUtils.xr.session) {
@@ -465,14 +471,8 @@ export class MRApp extends MRElement {
 
         // ----- System Updates ----- //
 
-        if (this.debug) {
-            this.stats.begin();
-        }
         for (const system of this.systems) {
             system._update(deltaTime, frame);
-        }
-        if (this.debug) {
-            this.stats.end();
         }
 
         // ----- Actually Render ----- //
