@@ -214,11 +214,15 @@ export class MRApp extends MRElement {
             }
         }
 
-        if (this.debug) {
+        const statsEnabled = this.getAttribute('stats');
+
+        if (statsEnabled) {
             this.stats = new Stats();
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
+        }
 
+        if (this.debug) {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
