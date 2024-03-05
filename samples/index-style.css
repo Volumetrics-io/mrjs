@@ -1,24 +1,24 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
+/*@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
 @font-face {
   font-family: 'Roboto', sans-serif;
-}
-/*@font-face {
+}*/
+@font-face {
   font-family: 'Roboto';
   src: url('/assets/fonts/Roboto-Regular.woff') format('woff');
   src: url('/assets/fonts/Roboto-Regular.ttf') format('truetype');
   font-weight: 100 900;
-}*/
+}
 
-@import url(http://fonts.googleapis.com/css?family=Bricolage:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
+/*@import url(http://fonts.googleapis.com/css?family=Bricolage:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
 @font-face {
   font-family: 'Bricolage', sans-serif;
-}
-/*@font-face {
-  font-family: 'Bricolage';
-  src: url('/assets/fonts/BricolageGrotesque.woff') format('woff'); /* Modern Browsers *
-  src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype'); /* Safari, Android, iOS *
-  font-weight: 100 900;
 }*/
+@font-face {
+  font-family: 'Bricolage';
+  src: url('/assets/fonts/BricolageGrotesque.woff') format('woff'); /* Modern Browsers */
+  src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype'); /* Safari, Android, iOS */
+  font-weight: 100 900;
+}
 
 mr-app {
   background-image: url('/assets/textures/skybox_starmap_4k.jpg');
