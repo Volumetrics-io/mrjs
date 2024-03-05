@@ -131,6 +131,9 @@ model.loadSTL = function (filePath) {
 
                 resolve(mesh); // Resolve the promise with the loaded mesh
             },
+            (xhr) => {
+                // Progress callback
+            },
             (error) => {
                 console.error(error);
                 reject(error); // Reject the promise if there's an error
