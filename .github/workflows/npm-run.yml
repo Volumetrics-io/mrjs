@@ -177,10 +177,16 @@ jobs:
 
     - name: Update Docs
       run: |
-        rm -rf "./source/js-api*"
+        rm -rf "./source/js-api"
+        rm -rf "./source/js-api-utils"
+        rm -rf "./source/js-api-extras"
+        
+        ls -al ./source
+
         cp -a "../doc/js-api" "./source/"
         cp -a "../doc/js-api-utils" "./source/"
         cp -a "../doc/js-api-extras" "./source/"
+
         ls -al ./source
 
     - name: Commit only if there are changes
@@ -190,7 +196,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
-          git add .
+          git add -A
           git commit -m "$commit_message"
           git push --quiet --set-upstream origin HEAD
         else
