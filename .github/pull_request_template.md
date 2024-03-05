@@ -10,7 +10,7 @@ Options:
 
 *Description of the problem including potential code and/or screenshots as an example*
 
-## Change for solution
+## Solution
 
 *Quick explanation of change to be done*
 
@@ -30,5 +30,6 @@ Options:
 - [ ] **TITLE** - make sure the pr's title is updated appropriately as it will be used to name the commit on merge
 - [ ] **BREAKING CHANGE**
   - make a pr in the [documentation repo](https://github.com/Volumetrics-io/documentation) that updates the manual docs to match the breaking change
+  - note: the docs underneath the `Javascript API` section come automated from the jsdocs inline with the code itself
   - link the pr of the documentation repo here: *#pr*
-  - that documentation repo pr must be approved by '@lobau'
+  - that documentation repo pr must be approved by `@lobau`
