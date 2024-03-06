@@ -138,20 +138,17 @@ export class MRMedia extends MRDivEntity {
             mrjsUtils.model.disposeObject3D(this.subMediaMesh);
         };
 
-        const _makeSureMainMediaMeshHasTexture = () => {
+        const _showMainMediaMesh = () => {
             // used if transitioning away from 'contain' or 'scale-down'
             // to make sure that texture is set properly
-            if (!this.object3D.material.map) {
-                this.object3D.material.map = this.texture;
-                this.object3D.material.needsUpdate = true;
-            }
+            this.object3D.material.visible = true;
+            this.object3D.material.needsUpdate = true;
         }
 
-        const _removeMainMediaMeshTexture = () => {
+        const _hideMainMediaMesh = () => {
             // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
             // and debugging later on.
-            
-            this.object3D.material.map = null;
+            this.object3D.material.visible = false;
             this.object3D.material.needsUpdate = true;
         }
 
@@ -164,7 +161,7 @@ export class MRMedia extends MRDivEntity {
         switch (this.compStyle.objectFit) {
             case 'fill':
                 _oldSubMediaMeshNotNeeded();
-                _makeSureMainMediaMeshHasTexture();
+                _showMainMediaMesh();
                 this.objectFitDimensions = { width: containerWidth, height: containerHeight };
 
                 break;
@@ -193,10 +190,9 @@ export class MRMedia extends MRDivEntity {
                 this.subMediaMesh.geometry = mediaGeometry;
                 this.subMediaMesh.material = mediaMaterial;
                 this.subMediaMesh.geometry.needsUpdate = true;
+                this.subMediaMesh.material.visible = true;
                 this.subMediaMesh.material.needsUpdate = true;
-
-                // cleanup
-                _removeMainMediaMeshTexture();
+                _hideMainMediaMesh();
 
                 this.objectFitDimensions = {
                     width: containerWidth,
@@ -207,7 +203,7 @@ export class MRMedia extends MRDivEntity {
 
             case 'cover':
                 _oldSubMediaMeshNotNeeded();
-                _makeSureMainMediaMeshHasTexture();
+                _showMainMediaMesh();
 
                 this.texture.repeat.set(1, 1); // Reset scaling
 
@@ -233,7 +229,7 @@ export class MRMedia extends MRDivEntity {
 
             case 'none':
                 _oldSubMediaMeshNotNeeded();
-                _makeSureMainMediaMeshHasTexture();
+                _showMainMediaMesh();
                 this.objectFitDimensions = { width: mediaWidth, height: mediaHeight };
 
                 break;

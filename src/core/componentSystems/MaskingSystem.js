@@ -117,8 +117,11 @@ export class MaskingSystem extends MRSystem {
                     // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
                     if (!child.object3D.isGroup) {
-                        if (this.app.debug && child.object3D.material.color) {
-                            child.object3D.material.color.set(0xffff00); // yellow
+                        if (this.app.debug) {
+                            let background = child.background;
+                            if (background.material.color) {
+                                background.material.color.set(0xffff00); // yellow
+                            }
                         }
                         child.object3D.material.stencilWrite = this.objectStencilMaterial.stencilWrite;
                         child.object3D.material.stencilFunc = this.objectStencilMaterial.stencilFunc;
