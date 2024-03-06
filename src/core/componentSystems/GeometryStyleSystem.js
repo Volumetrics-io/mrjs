@@ -20,7 +20,7 @@ export class GeometryStyleSystem extends MRSystem {
         super(false);
 
         // Make Sure registry gets populated only by items that it needs to have
-        document.addEventListener("trigger-geometry-style-update", function(e) {
+        this.app.addEventListener('trigger-geometry-style-update', (e) => {
             // The event has the entity stored as its detail. Add to the registry
             // for the next update pass.
             this.registry.add(e.detail);
@@ -35,8 +35,7 @@ export class GeometryStyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            // Only want to dispatch if anything was actually updated
-            // in this iteration.
+            // Only want to dispatch if anything was actually updated in this iteration.
             let changed = false;
 
             // Anything needed for mrjs defined entities - the order of the below matters
@@ -53,7 +52,6 @@ export class GeometryStyleSystem extends MRSystem {
                 changed = entity.updateGeometryStyle();
             }
 
-            // Cleanup
             if (changed) {
                 // TODO - TBH i think this is only needed for scale, but just in case others use changed
                 // width/height for anything else, and update is required for children as well
@@ -61,11 +59,11 @@ export class GeometryStyleSystem extends MRSystem {
             }
         }
 
-        // this.registry fills up based on event notifications from the entitieys themself
+        // this.registry fills up based on event notifications from the entities themselves
         // clearing it out before the next update call
         // only want to update entities in this system if they actually need to update this iteration
         // TODO - check that this is safe todo
-        this.registry = {}; 
+        this.registry.clear();
     }
 
     /**

@@ -20,10 +20,12 @@ export class MaterialStyleSystem extends MRSystem {
         super(false);
 
         // Make Sure registry gets populated only by items that it needs to have
-        document.addEventListener("trigger-material-style-update", function(e) {
+        this.app.addEventListener('trigger-material-style-update', (e) => {
             // The event has the entity stored as its detail. Add to the registry
             // for the next update pass.
-            this.registry.add(e.detail);
+            if (e.detail !== undefined) {
+                this.registry.add(e.detail);
+            }
         });
     }
 
@@ -54,7 +56,7 @@ export class MaterialStyleSystem extends MRSystem {
         // clearing it out before the next update call
         // only want to update entities in this system if they actually need to update this iteration
         // TODO - check that this is safe todo
-        this.registry = {}; 
+        this.registry.clear();
     }
 
     /**
