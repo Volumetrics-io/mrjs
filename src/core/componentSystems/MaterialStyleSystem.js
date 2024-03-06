@@ -28,10 +28,6 @@ export class MaterialStyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            // if (!entity.needsStyleUpdate) {
-            //     return;
-            // }
-
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
                 this.setBackground(entity);
@@ -44,11 +40,14 @@ export class MaterialStyleSystem extends MRSystem {
             }
 
             // Cleanup
-            // entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            if (!entity.alwaysNeedsStyleUpdate) {
-                entity.needsStyleUpdate = false;
-            }
+            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
         }
+
+        // this.registry fills up based on event notifications from the entitieys themself
+        // clearing it out before the next update call
+        // only want to update entities in this system if they actually need to update this iteration
+        // TODO - check that this is safe todo
+        this.registry = {}; 
     }
 
     /**

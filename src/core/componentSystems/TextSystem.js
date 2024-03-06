@@ -59,33 +59,6 @@ export class TextSystem extends MRSystem {
 
     /**
      * @function
-     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
-     * systems registry that need to be run.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsSystemUpdate() {
-        // want this to run based on registry since textChanged and style will be the determiner for if an update is needed per entity
-        // instead of the system itself.
-        return this.registry.size > 0;
-    }
-
-    /**
-     * @function
-     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
-     * This function does nothing, but is needed for the pairing. TextSystem`s `needsSystemUpdate` solely depends on registry size
-     * instead of a boolean. This is required s.t. we can monitor and properly update the system when the text content has changed
-     * and not just the style itself. Since that is a per-entity check, needsSystemUpdate must always run on every entity with
-     * the needsStyleUpdate being the optimization determiner instead.
-     */
-    set needsSystemUpdate(bool) {
-        console.log(
-            '`TextSystem.needSystemUpdate = bool` does nothing. See comment in docs for more explanation. https://docs.mrjs.io/javascript-api/#textsystem.needssystemupdate'
-        );
-        this.alwaysNeedsSystemUpdate = true;
-    }
-
-    /**
-     * @function
      * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes

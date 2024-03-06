@@ -28,10 +28,6 @@ export class GeometryStyleSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            if (!entity.needsGeometryUpdate) {
-                return;
-            }
-
             // Only want to dispatch if anything was actually updated
             // in this iteration.
             let changed = false;
@@ -52,14 +48,17 @@ export class GeometryStyleSystem extends MRSystem {
 
             // Cleanup
             if (changed) {
-                // TBH i think this is only needed for scale, but just in case others use changed
+                // TODO - TBH i think this is only needed for scale, but just in case others use changed
                 // width/height for anything else, and update is required for children as well
                 entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
             }
-            if (!entity.alwaysNeedsGeometryUpdate) {
-                entity.needsGeometryUpdate = false;
-            }
         }
+
+        // this.registry fills up based on event notifications from the entitieys themself
+        // clearing it out before the next update call
+        // only want to update entities in this system if they actually need to update this iteration
+        // TODO - check that this is safe todo
+        this.registry = {}; 
     }
 
     /**
