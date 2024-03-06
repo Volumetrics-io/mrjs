@@ -239,13 +239,12 @@ main {
 .headset {
   grid-row: 2 / 5;
   grid-column: 1 / -1;
-/*  object-fit: fill;*/ /* this is being overwritten by mr-image from default style; overwriting it below instead */
   z-index: 1;
 }
 
-/*mr-img {
+mr-img {
   object-fit: cover;
-}*/
+}
 
 /* .headset > mr-img {
   width: 100%;
