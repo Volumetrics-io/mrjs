@@ -40,7 +40,11 @@ export class MRMedia extends MRDivEntity {
 
         // This is used to aid in the formatting for certain object-fit setups
         // ex: contain, scale-down
-        this.subMediaMesh = null;
+        this.subMediaMesh = new THREE.Mesh();
+        this.subMediaMesh.receiveShadow = true;
+        this.subMediaMesh.renderOrder = 3;
+        this.subMediaMesh.name = 'subMedia';
+        this.object3D.add(this.subMediaMesh);
     }
 
     /**
@@ -131,10 +135,7 @@ export class MRMedia extends MRDivEntity {
             //
             // 'contain' and 'scale-down' are the only options that use this additional
             // mesh for positioning.
-            if (this.subMediaMesh !== null) {
-                mrjsUtils.model.disposeObject3D(this.subMediaMesh);
-                this.subMediaMesh = null;
-            }
+            mrjsUtils.model.disposeObject3D(this.subMediaMesh);
         };
 
         const _makeSureMainMediaMeshHasTexture = () => {
@@ -189,12 +190,12 @@ export class MRMedia extends MRDivEntity {
                     map: this.texture,
                 });
                 _oldSubMediaMeshNotNeeded();
-                this.subMediaMesh = new THREE.Mesh(mediaGeometry, mediaMaterial);
+                this.subMediaMesh.geometry = mediaGeometry;
+                this.subMediaMesh.material = mediaMaterial;
+                this.subMediaMesh.geometry.needsUpdate = true;
+                this.subMediaMesh.material.needsUpdate = true;
 
-                // cleanup for final rendering setup
-                // - setup the parent child relationship of mainMesh and subMediaMesh
-                // - make sure mainMesh no longer shows the media texture so it doesnt duplicate subMediaMesh
-                this.object3D.add(this.subMediaMesh);
+                // cleanup
                 _removeMainMediaMeshTexture();
 
                 this.objectFitDimensions = {

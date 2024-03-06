@@ -243,9 +243,9 @@ main {
   z-index: 1;
 }
 
-mr-img {
+/*mr-img {
   object-fit: cover;
-}
+}*/
 
 /* .headset > mr-img {
   width: 100%;
