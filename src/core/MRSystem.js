@@ -74,49 +74,6 @@ export class MRSystem {
      */
     onUnregister(app) {}
 
-    // undefined == always update, once set to true/false trigger, then updates based on that every frame
-    // setting back to undefined sets to always update.
-    _needsSystemUpdate = undefined;
-
-    /**
-     * @function
-     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often.
-     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
-     */
-    get alwaysNeedsSystemUpdate() {
-        return this._needsSystemUpdate === undefined;
-    }
-
-    /**
-     * @function
-     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
-     * Useful for readability and to not need to check against undefined often.
-     */
-    set alwaysNeedsSystemUpdate(bool) {
-        this._needsSystemUpdate = bool ? undefined : false;
-    }
-
-    /**
-     * @function
-     * @description Getter to checks if we need to run the generic system update call. Default implementation returns true if the needsSystemUpdate flag
-     * has been set to true or is in the alwaysNeedsSystemUpdate state. Allows subclasses to override with their own implementation.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsSystemUpdate() {
-        return this.alwaysNeedsSystemUpdate || this._needsSystemUpdate;
-    }
-
-    /**
-     * @function
-     * @description Set the needsSystemUpdate parameter.
-     * undefined - means the system will always update every time the application loops.
-     * true/false - means the system will only run one iteration when set to true and then reset back to false waiting for the next trigger.
-     */
-    set needsSystemUpdate(bool) {
-        this._needsSystemUpdate = bool;
-    }
-
     /**
      * @function
      * @description The actual system update call.
@@ -124,10 +81,6 @@ export class MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     _update(deltaTime, frame) {
-        if (!this.needsSystemUpdate) {
-            return;
-        }
-
         if (this.frameRate) {
             this.delta += deltaTime;
             if (this.delta < this.frameRate) {
@@ -136,11 +89,6 @@ export class MRSystem {
         }
         this.update(deltaTime, frame);
         this.delta = 0;
-
-        // reset update var if needed.
-        if (!this.alwaysNeedsSystemUpdate) {
-            this.needsSystemUpdate = false;
-        }
     }
 
     /**
