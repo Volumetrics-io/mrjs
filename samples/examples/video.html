@@ -51,52 +51,52 @@
             });
         }
 
-        function switchTab(index) {
-            panels[frontIndex].classList.remove('front');
-            panels[index].classList.add('front');
-            frontIndex = index;
-        }
+        // function switchTab(index) {
+        //     panels[frontIndex].classList.remove('front');
+        //     panels[index].classList.add('front');
+        //     frontIndex = index;
+        // }
 
-        let unfolded = false;
+        // let unfolded = false;
 
-        function spread() {
-            let index = 0;
-            let totalWidth = 0;
+        // function spread() {
+        //     let index = 0;
+        //     let totalWidth = 0;
 
-            let forwardVec = getForward(rig);
+        //     let forwardVec = getForward(rig);
             
-            for(let panel of panels) {
-                totalWidth += panel.width;
-            }
-            for(let panel of panels) {
-                if(unfolded) {
-                    panel.object3D.position.set(0, 0, 0);
-                } else {
-                    panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3);
-                    index += 1;
-                }
+        //     for(let panel of panels) {
+        //         totalWidth += panel.width;
+        //     }
+        //     for(let panel of panels) {
+        //         if(unfolded) {
+        //             panel.object3D.position.set(0, 0, 0);
+        //         } else {
+        //             panel.object3D.position.set(((panel.width) * index) - (totalWidth / panels.length), 0, ((index + 1) % 2) * 0.3);
+        //             index += 1;
+        //         }
 
-                panel.object3D.lookAt(forwardVec);
-            }
+        //         panel.object3D.lookAt(forwardVec);
+        //     }
 
-            unfolded = !unfolded;
-        }
+        //     unfolded = !unfolded;
+        // }
 
-        function getForward(entity) {
+        // function getForward(entity) {
 
-            // The local forward vector - THREE.js uses a right-handed coordinate system, so forward is negative on the z-axis
-            let localForward = new THREE.Vector3(0, 0, 0.5);
+        //     // The local forward vector - THREE.js uses a right-handed coordinate system, so forward is negative on the z-axis
+        //     let localForward = new THREE.Vector3(0, 0, 0.5);
 
-            let worldForward = entity.object3D.localToWorld(localForward);
+        //     let worldForward = entity.object3D.localToWorld(localForward);
 
-            // Use the object's quaternion to transform the local forward vector to a global direction
-            return worldForward.applyQuaternion(entity.object3D.quaternion);
-        }
+        //     // Use the object's quaternion to transform the local forward vector to a global direction
+        //     return worldForward.applyQuaternion(entity.object3D.quaternion);
+        // }
 
-        document.addEventListener('exitxr', () => {
-            unfolded = false;
-            spread();
-        })
+        // document.addEventListener('exitxr', () => {
+        //     unfolded = false;
+        //     spread();
+        // })
       
     </script>
   </footer>
