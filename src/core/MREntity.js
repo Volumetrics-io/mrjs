@@ -109,103 +109,25 @@ export class MREntity extends MRElement {
         return this.size.y;
     }
 
-    // undefined == always update, once set to true/false trigger, then updates based on that every frame
-    // setting back to undefined sets to always update.
-    _needsGeometryUpdate = false;
+    triggerGeometryStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
+    }
 
-    /**
-     * @function
-     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often.
-     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
-     */
-    get alwaysNeedsGeometryUpdate() {
-        return this._needsGeometryUpdate === undefined;
+    triggerMaterialStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
     }
 
     /**
      * @function
-     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
-     * Useful for readability and to not need to check against undefined often.
-     */
-    set alwaysNeedsGeometryUpdate(bool) {
-        this._needsGeometryUpdate = bool ? undefined : false;
-    }
-
-    /**
-     * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
-     * Allows subclasses to override with their own implementation.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsGeometryUpdate() {
-        return this.alwaysNeedsGeometryUpdate || this._needsGeometryUpdate;
-    }
-
-    /**
-     * @function
-     * @description Set the needsStyleUpdate parameter.
-     * undefined - means the StyleSystem will update this entity's style every time the application loops.
-     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
-     */
-    set needsGeometryUpdate(bool) {
-        this._needsGeometryUpdate = bool;
-    }
-
-    // undefined == always update, once set to true/false trigger, then updates based on that every frame
-    // setting back to undefined sets to always update.
-    _needsStyleUpdate = false;
-
-    /**
-     * @function
-     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often.
-     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
-     */
-    get alwaysNeedsStyleUpdate() {
-        return this._needsStyleUpdate === undefined;
-    }
-
-    /**
-     * @function
-     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
-     * Useful for readability and to not need to check against undefined often.
-     */
-    set alwaysNeedsStyleUpdate(bool) {
-        this._needsStyleUpdate = bool ? undefined : false;
-    }
-
-    /**
-     * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
-     * Allows subclasses to override with their own implementation.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsStyleUpdate() {
-        return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
-    }
-
-    /**
-     * @function
-     * @description Set the needsStyleUpdate parameter.
-     * undefined - means the StyleSystem will update this entity's style every time the application loops.
-     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
-     */
-    set needsStyleUpdate(bool) {
-        this._needsStyleUpdate = bool;
-    }
-
-    /**
-     * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * These are run after the MaterialStyleSystem does its own update on the entity.
      */
     updateMaterialStyle() {}
 
     /**
      * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * These are run after the GeometryStyleSystem does its own update on the entity.
      */
     updateGeometryStyle() {}
 

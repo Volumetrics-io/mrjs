@@ -18,6 +18,13 @@ export class GeometryStyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
+
+        // Make Sure registry gets populated only by items that it needs to have
+        document.addEventListener("trigger-geometry-style-update", function(e) {
+            // The event has the entity stored as its detail. Add to the registry
+            // for the next update pass.
+            this.registry.add(e.detail);
+        });
     }
 
     /**
