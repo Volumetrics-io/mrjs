@@ -188,115 +188,67 @@ export class MREntity extends MRElement {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
         this.loadAttributes();
 
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
-                if (!this.alwaysNeedsGeometryUpdate) {
-                    this.needsGeometryUpdate = true;
-                }
-                if (!this.alwaysNeedsStyleUpdate) {
-                    this.needsStyleUpdate = true;
-                }
+                this.triggerGeometryStyleUpdate();
+                this.triggerMaterialStyleUpdate();
             });
         });
 
         this.addEventListener('touchstart', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('touchmove', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('touchend', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('hoverstart', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onHover(event);
         });
         this.addEventListener('hoverend', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onHover(event);
         });
 
         this.addEventListener('child-updated', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
 
         window.addEventListener('resize', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
 
         document.addEventListener('enterxr', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
         document.addEventListener('exitxr', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
@@ -380,12 +332,8 @@ export class MREntity extends MRElement {
 
             switch (mutation.type) {
                 case 'childList':
-                    if (!this.alwaysNeedsGeometryUpdate) {
-                        this.needsGeometryUpdate = true;
-                    }
-                    if (!this.alwaysNeedsStyleUpdate) {
-                        this.needsStyleUpdate = true;
-                    }
+                    this.triggerGeometryStyleUpdate();
+                    this.triggerMaterialStyleUpdate();
                     break;
                 case 'attributes':
                     if (mutation.attributeName.includes('comp')) {
