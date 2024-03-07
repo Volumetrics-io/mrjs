@@ -206,7 +206,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit --file=- <<EOF
-        👷 MRjs - Auto Generated `Docs` 👷
+        👷 MRjs - Auto Generated Docs 👷
 
         Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
 
@@ -281,7 +281,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit --file=- <<EOF
-        👷 MRjs - Auto Generated `Dist` 👷
+        👷 MRjs - Auto Generated Dist 👷
 
         Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
 
