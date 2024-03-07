@@ -9,13 +9,13 @@
 import { app } from './App.js';
 import { css } from './CSS.js';
 import { display } from './Display.js';
-import { err } from './Err.js'
 import { geometry } from './Geometry.js';
 import { html } from './HTML.js';
 import { js } from './JS.js';
 import { material } from './Material.js';
 import { math } from './Math.js';
 import { model } from './Model.js';
+import { error, warn } from './Notify.js'
 import { physics } from './Physics.js';
 import { string } from './String.js';
 import { xr } from './XR.js';
@@ -24,7 +24,7 @@ const mrjsUtils = {
     app,
     css,
     display,
-    err,
+    error,
     geometry,
     html,
     js,
@@ -33,6 +33,7 @@ const mrjsUtils = {
     model,
     physics,
     string,
+    warn,
     xr,
 };
 
