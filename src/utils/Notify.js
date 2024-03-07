@@ -1,12 +1,12 @@
 /**
- * @namespace err
+ * @namespace error
  * @description Useful namespace for helping with error utility functions
  */
 let error = {};
 
 /**
  * @function
- * @memberof err
+ * @memberof error
  * @description Function helper to error in console if a child class is expected to overwrite a parent
  * class's function but didnt.
  */
@@ -15,7 +15,7 @@ error.emptyParentFunction = function () {
 }
 
 /**
- * @namespace err
+ * @namespace warn
  * @description Useful namespace for helping with error utility functions
  */
 let warn = {};
