@@ -68,11 +68,11 @@ export class MRMedia extends MRDivEntity {
     }
 
     get mediaWidth() {
-        mrjsUtils.error.emptyParentFunction();
+        mrjsUtils.err.emptyParentFunction();
     }
 
     get mediaHeight() {
-        mrjsUtils.error.emptyParentFunction();
+        mrjsUtils.err.emptyParentFunction();
     }
 
     generateNewMediaPlaneGeometry() {
@@ -83,7 +83,7 @@ export class MRMedia extends MRDivEntity {
     }
 
     loadMediaTexture() {
-        mrjsUtils.error.emptyParentFunction();
+        mrjsUtils.err.emptyParentFunction();
     }
 
     /**
