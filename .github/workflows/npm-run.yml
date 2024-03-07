@@ -161,6 +161,15 @@ jobs:
         mkdir -p ../doc
         cp -rf ./docs/* ../doc/
 
+    - name: Archive Docs
+      run: zip -r docs-artifacts.zip ../doc
+
+    - name: Upload Docs Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: docs-artifacts
+        path: ./docs-artifacts.zip
+
     - name: Get Dist
       id: get-dist
       run: |
@@ -196,16 +205,6 @@ jobs:
 
         ls -al "./source"
 
-    - name: Update Dist
-      run: |
-        rm -rf "./source/static/dist"
-
-        ls -al "./source/static"
-
-        cp -a "../cp-dist" "./source/static/dist"
-
-        ls -al "./source/static"
-
     - name: Build the website
       run: |
         ./action-build.sh
@@ -225,6 +224,80 @@ jobs:
         fi
       env:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+  js-api-dist:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: [js-api-docs]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # separating this out from the js-api-docs command since it needs linux for action-build.sh
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 21
+
+    - name: Download Doc Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: docs-artifacts
+ 
+    - name: extract and rebuild node_modules
+      run: |
+        unzip docs-artifacts.zip -d ./
+        ls -al
+
+    # - name: Get Dist
+    #   id: get-dist
+    #   run: |
+    #     rm -rf ../cp-dist
+    #     mkdir -p ../cp-dist
+    #     cp -rf ./dist/* ../cp-dist/
+
+    # - name: see if info is there
+    #   run: |
+    #     echo "ll .."
+    #     ls -al ..
+    #     echo "ll ."
+    #     ls -al .
+
+    # - name: Checkout documentation Repository
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: Volumetrics-io/documentation
+    #     ref: main
+    #     token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    # - name: Update Dist
+    #   run: |
+    #     rm -rf "./source/static/dist"
+
+    #     ls -al "./source/static"
+
+    #     cp -a "../cp-dist" "./source/static/dist"
+
+    #     ls -al "./source/static"
+
+    # - name: Build the website
+    #   run: |
+    #     ./action-build.sh
+
+    # - name: Commit only if there are changes
+    #   run: |
+    #     if [[ -n $(git status --porcelain) ]]; then
+    #       echo "Changes detected. Committing and pushing."
+    #       git config user.name 'github-actions[bot]'
+    #       git config user.email 'github-actions[bot]@users.noreply.github.com'
+    #       commit_message=$'👷 MRjs - Auto Generated Dist 👷\n\nChanges from `github.com/Volumetrics-io/mrjs` at '"${GITHUB_SHA}"'\n\n-includes folder updates: `js-api`, `js-api-utils`, `js-api-extras`, `static/dist`\n-runs smoo.sh before committing'
+    #       git add -A
+    #       git commit -m "$commit_message"
+    #       git push --quiet --set-upstream origin HEAD
+    #     else
+    #       echo "No changes detected. Exiting without committing."
+    #     fi
+    #   env:
+    #       GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   check-format:
     needs: [build]
