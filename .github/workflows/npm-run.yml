@@ -161,15 +161,6 @@ jobs:
         mkdir -p ../doc
         cp -rf ./docs/* ../doc/
 
-    - name: Archive Docs
-      run: zip -r docs-artifacts.zip ./docs
-
-    - name: Upload Docs Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: docs-artifacts
-        path: ./docs-artifacts.zip
-
     - name: see if info is there
       run: |
         echo "ll .."
@@ -259,15 +250,8 @@ jobs:
 
         ls -al "./source/static"
 
-    - name: Download Docs Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: docs-artifacts
- 
-    - name: extract docs artifacts
-      run: |
-        unzip docs-artifacts.zip -d ./
-        ls -al
+    # dont need to download docs artifacts from this pr since this action only runs
+    # after docs are already pushed into the other repo
 
     - name: Build the website
       run: |
