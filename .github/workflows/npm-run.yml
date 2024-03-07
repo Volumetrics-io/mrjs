@@ -118,7 +118,7 @@ jobs:
     - name: 👷 Test
       run: npm run test
 
-  js-api-to-docs:
+  docs-to-doc-repo:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [check-dist]
     runs-on: macos-latest
@@ -162,7 +162,7 @@ jobs:
         cp -rf ./docs/* ../doc/
 
     - name: Archive Docs
-      run: zip -r docs-artifacts.zip ../doc
+      run: zip -r docs-artifacts.zip ./docs
 
     - name: Upload Docs Artifacts
       uses: actions/upload-artifact@v4
@@ -214,14 +214,14 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
-  js-api-dist-to-docs:
+  dist-to-doc-repo:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [js-api-to-docs]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
-    # separating this out from the js-api-docs command since it needs linux for action-build.sh
+    # separating this out from the docs-to-doc-repo command since it needs linux for action-build.sh
     
     - uses: actions/setup-node@v4
       with:
