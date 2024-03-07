@@ -226,7 +226,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   js-api-dist:
-    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [js-api-docs]
     runs-on: ubuntu-latest
     steps:
