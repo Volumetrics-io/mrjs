@@ -188,23 +188,23 @@ jobs:
         rm -rf "./source/js-api-utils"
         rm -rf "./source/js-api-extras"
         
-        ls -al ./source
+        ls -al "./source"
 
         cp -a "../doc/js-api" "./source/"
         cp -a "../doc/js-api-utils" "./source/"
         cp -a "../doc/js-api-extras" "./source/"
 
-        ls -al ./source
+        ls -al "./source"
 
     - name: Update Dist
       run: |
         rm -rf "./static/dist"
 
-        ls -al ./static
+        ls -al "./static"
 
         cp -a "../cp-dist" "./static/"
 
-        ls -al ./static
+        ls -al "./static"
 
     - name: Build the website
       run: |
