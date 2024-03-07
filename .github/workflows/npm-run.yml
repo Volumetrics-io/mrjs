@@ -208,7 +208,7 @@ jobs:
 
     - name: Build the website
       run: |
-        ./smoo.sh
+        ./action-build.sh
 
     - name: Commit only if there are changes
       run: |
