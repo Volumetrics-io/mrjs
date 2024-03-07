@@ -51,7 +51,7 @@ jobs:
         path: ./npm-artifacts.zip
 
   check-dist:
-    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -119,7 +119,7 @@ jobs:
       run: npm run test
 
   cp-docs-to-doc-repo:
-    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [check-dist]
     runs-on: macos-latest
     steps:
@@ -220,7 +220,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   cp-dist-to-doc-repo:
-    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [cp-docs-to-doc-repo]
     runs-on: ubuntu-latest
     steps:
