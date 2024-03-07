@@ -51,7 +51,7 @@ jobs:
         path: ./npm-artifacts.zip
 
   check-dist:
-    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: build
     runs-on: ubuntu-latest
     steps:
