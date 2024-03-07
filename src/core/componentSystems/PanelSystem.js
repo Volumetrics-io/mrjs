@@ -48,6 +48,9 @@ export class PanelSystem extends MRSystem {
     updatePanel(entity) {
         const rect = entity.getBoundingClientRect();
         const appRect = this.app.getBoundingClientRect();
+
+        /** setup xy positioning of the entity **/
+
         let innerWidth = global.appWidth;
         let innerHeight = global.appHeight;
         let centerX = innerWidth / 2;
@@ -73,6 +76,8 @@ export class PanelSystem extends MRSystem {
 
         entity.panel.position.setX(threeX);
         entity.panel.position.setY(-threeY);
+
+        /** setup z-index positioning of the entity **/
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.

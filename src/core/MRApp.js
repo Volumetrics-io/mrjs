@@ -214,11 +214,15 @@ export class MRApp extends MRElement {
             }
         }
 
-        if (this.debug) {
+        const statsEnabled = this.getAttribute('stats');
+
+        if (statsEnabled) {
             this.stats = new Stats();
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
+        }
 
+        if (this.debug) {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
@@ -441,6 +445,12 @@ export class MRApp extends MRElement {
 
         const deltaTime = this.clock.getDelta();
 
+        // ----- Update stats if enabled ----- //
+
+        if (this.stats) {
+            this.stats.update();
+        }
+
         // ----- Update needed items ----- //
 
         if (mrjsUtils.xr.isPresenting && !mrjsUtils.xr.session) {
@@ -465,14 +475,8 @@ export class MRApp extends MRElement {
 
         // ----- System Updates ----- //
 
-        if (this.debug) {
-            this.stats.begin();
-        }
         for (const system of this.systems) {
             system._update(deltaTime, frame);
-        }
-        if (this.debug) {
-            this.stats.end();
         }
 
         // ----- Actually Render ----- //

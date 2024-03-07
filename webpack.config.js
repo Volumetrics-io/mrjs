@@ -96,7 +96,7 @@ export default {
             },
             {
                 test: /\.json$/,
-                use: 'json-loader'
+                use: 'json-loader',
             },
         ],
     },

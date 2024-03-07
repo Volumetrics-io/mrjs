@@ -25,7 +25,7 @@ export class MRDivEntity extends MREntity {
             color: 0xfff,
             roughness: 0.7,
             metalness: 0.0,
-            side: 2,
+            side: THREE.DoubleSide,
         });
 
         this.background = new THREE.Mesh(geometry, material);

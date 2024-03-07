@@ -71,10 +71,6 @@ export class MRSkyBox extends MREntity {
         const path = this.getAttribute('pathToTextures');
         const textureUrls = textureNames.map((name) => mrjsUtils.html.resolvePath(path ? path + name : name));
 
-        this.textureLoadedCallbacks.push((texture) => {
-            console.log('Texture loaded within connected():', texture);
-        });
-
         let geometry;
         let textureLoader;
         if (textureNames.length > 1) {

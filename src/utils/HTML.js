@@ -26,9 +26,9 @@ html.removeUrlQueries = function (path, baseUrl) {
         let cleanUrl = urlObj.origin + urlObj.pathname;
         return cleanUrl;
     } catch (error) {
-        console.error("Error processing URL:", error.message);
+        console.error('Error processing URL:', error.message);
         return path; // Return the original path if there's an error
     }
-}
+};
 
 export { html };

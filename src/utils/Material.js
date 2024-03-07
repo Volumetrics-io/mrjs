@@ -57,8 +57,14 @@ material.setObjectMaterial = function (parent, material) {
     }
     return parent;
 };
-
-// Function to load the texture asynchronously and return a promise
+ 
+/**
+ * @function
+ * @memberof material
+ * @param {object} src - the url path to the data to be loaded
+ * @description Function to load the texture asynchronously and return a promise
+ * @returns {object} texture - the fully loaded texture
+ */
 material.loadTextureAsync = function (src) {
     return new Promise((resolve, reject) => {
         const textureLoader = new THREE.TextureLoader();
@@ -69,26 +75,53 @@ material.loadTextureAsync = function (src) {
         textureLoader.load(
             resolvedSrc,
             (texture) => {
-                // Resolve the promise when the texture is loaded
                 resolve(texture);
             },
             undefined,
             (error) => {
-                // Reject the promise if there's an error
                 reject(error);
             }
         );
     });
 };
 
+/**
+ * @function
+ * @memberof material
+ * @param {object} src - the html video element whose src contains the path to the data to be loaded
+ * @description Function to load the texture asynchronously and return a promise
+ * @returns {object} texture - the fully loaded texture
+ */
 material.loadVideoTextureAsync = function (video) {
+    video.src = html.resolvePath(video.src);
+
+    video.muted = true; // Mute the video to allow autoplay
+    video.autoplay = false; //true; // Attempt to autoplay
+
     return new Promise((resolve, reject) => {
-        try {
-            const textureLoader = new THREE.VideoTexture(video);
-            resolve(textureLoader);
-        } catch(err) {
-            reject(err);
-        }
+        // Event listener to ensure video is ready
+        video.onloadeddata = () => {
+            const videoTexture = new THREE.VideoTexture(video);
+            videoTexture.needsUpdate = true; // Ensure the texture updates when the video plays
+
+            video
+                .play()
+                .then(() => {
+                    console.log('Video playback started');
+                    resolve(videoTexture);
+                })
+                .catch((e) => {
+                    console.error('Error trying to play the video:', e);
+                    reject(e);
+                });
+        };
+
+        video.onerror = (error) => {
+            reject(new Error('Error loading video: ' + error.message));
+        };
+
+        // This can help with ensuring the video loads in some cases
+        video.load();
     });
 };
 

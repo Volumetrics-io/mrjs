@@ -133,7 +133,6 @@ model.loadSTL = function (filePath) {
             },
             (xhr) => {
                 // Progress callback
-                console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
             },
             (error) => {
                 console.error(error);
