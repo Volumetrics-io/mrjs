@@ -1,9 +1,9 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRMedia } from 'mrjs/core/MRMedia';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
@@ -43,8 +43,8 @@ export class GeometryStyleSystem extends MRSystem {
                 changed = this.setUpdatedBorder(entity);
             }
             changed = this.setScale(entity);
-            if (entity instanceof MRImage) {
-                changed = this.setUpdatedImagePlane(entity);
+            if (entity instanceof MRMedia) {
+                changed = this.setUpdatedMediaPlane(entity);
             }
 
             // User additional - Main Entity Style Change
@@ -110,26 +110,20 @@ export class GeometryStyleSystem extends MRSystem {
         return true;
     }
 
-    setUpdatedImagePlane(entity) {
+    setUpdatedMediaPlane(entity) {
         entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
-        let w = entity.width;
-        let h = entity.height;
-        let b = entity.borderRadii;
-        if (entity._storedWidth != w || entity._storedHeight != h || entity._storedBorderRadii != b) {
-            entity._storedWidth = w;
-            entity._storedHeight = h;
-            entity._storedBorderRadii = b;
+        if (entity._storedWidth != entity.width
+            || entity._storedHeight != entity.height
+            || entity._storedBorderRadii != entity.borderRadii) {
+           entity.generateNewMediaPlaneGeometry();
         } else {
             // no update needed
             return false;
         }
 
-        if (entity.object3D.geometry !== undefined) {
-            entity.object3D.geometry.dispose();
-        }
-        entity.object3D.geometry = mrjsUtils.geometry.UIPlane(w, h, b, 18);
+        
 
         return true;
     }

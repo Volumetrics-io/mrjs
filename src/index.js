@@ -7,7 +7,7 @@
 
 // Log the version number
 import { version } from '../package.json';
-console.log("Current ᴍʀjs Version:", version);
+console.log('Current ᴍʀjs Version:', version);
 
 // STYLE
 import './defaultStyle.css';
@@ -26,6 +26,7 @@ import './core/MRApp';
 import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
+import './core/MRMedia';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - USER
