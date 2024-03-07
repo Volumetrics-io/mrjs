@@ -120,7 +120,7 @@ jobs:
 
   js-api-docs:
     if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
-    needs: [build]
+    needs: [check-dist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -161,6 +161,13 @@ jobs:
         mkdir -p ../doc
         cp -rf ./docs/* ../doc/
 
+    - name: Get Dist
+      id: get-dist
+      run: |
+        rm -rf ../cp-dist
+        mkdir -p ../cp-dist
+        cp -rf ./dist/* ../cp-dist/
+
     - name: see if info is there
       run: |
         echo "ll .."
@@ -189,13 +196,27 @@ jobs:
 
         ls -al ./source
 
+    - name: Update Dist
+      run: |
+        rm -rf "./static/dist"
+
+        ls -al ./static
+
+        cp -a "../cp-dist" "./static/"
+
+        ls -al ./static
+
+    - name: Build the website
+      run: |
+        ./smoo.sh
+
     - name: Commit only if there are changes
       run: |
         if [[ -n $(git status --porcelain) ]]; then
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
+          commit_message=$'👷 MRjs - Auto Generated Docs and Dist 👷\n\nChanges from `github.com/Volumetrics-io/mrjs` at '"${GITHUB_SHA}"'\n\n-includes folder updates: `js-api`, `js-api-utils`, `js-api-extras`, `static/dist`\n-runs smoo.sh before committing'
           git add -A
           git commit -m "$commit_message"
           git push --quiet --set-upstream origin HEAD
