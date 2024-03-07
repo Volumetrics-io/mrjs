@@ -118,7 +118,7 @@ jobs:
     - name: 👷 Test
       run: npm run test
 
-  docs-to-doc-repo:
+  cp-docs-to-doc-repo:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [check-dist]
     runs-on: macos-latest
@@ -214,9 +214,9 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
-  dist-to-doc-repo:
+  cp-dist-to-doc-repo:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
-    needs: [js-api-to-docs]
+    needs: [cp-docs-to-doc-repo]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
