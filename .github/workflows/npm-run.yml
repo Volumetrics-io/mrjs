@@ -206,12 +206,11 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit --file=- <<EOF
-        👷 MRjs - Auto Generated Docs and Dist 👷
+        👷 MRjs - Auto Generated `Docs` 👷
 
         Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
 
-        -includes folder updates: \`js-api\`, \`js-api-utils\`, \`js-api-extras\`, \`static/dist\`
-        -runs smoo.sh before committing
+        -includes folder updates: \`js-api\`, \`js-api-utils\`, \`js-api-extras\`
         EOF
           git push --quiet --set-upstream origin HEAD
         else
@@ -274,21 +273,27 @@ jobs:
       run: |
         ./action-build.sh
 
-    # - name: Commit only if there are changes
-    #   run: |
-    #     if [[ -n $(git status --porcelain) ]]; then
-    #       echo "Changes detected. Committing and pushing."
-    #       git config user.name 'github-actions[bot]'
-    #       git config user.email 'github-actions[bot]@users.noreply.github.com'
-    #       commit_message=$'👷 MRjs - Auto Generated Dist 👷\n\nChanges from `github.com/Volumetrics-io/mrjs` at '"${GITHUB_SHA}"'\n\n-includes folder updates: `js-api`, `js-api-utils`, `js-api-extras`, `static/dist`\n-runs smoo.sh before committing'
-    #       git add -A
-    #       git commit -m "$commit_message"
-    #       git push --quiet --set-upstream origin HEAD
-    #     else
-    #       echo "No changes detected. Exiting without committing."
-    #     fi
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit --file=- <<EOF
+        👷 MRjs - Auto Generated `Dist` 👷
+
+        Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
+
+        -includes folder updates: \`static/dist\`
+        -runs smoo.sh before committing
+        EOF
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
   check-format:
     needs: [build]
