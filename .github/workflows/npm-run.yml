@@ -118,7 +118,7 @@ jobs:
     - name: 👷 Test
       run: npm run test
 
-  js-api-docs:
+  js-api-to-docs:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [check-dist]
     runs-on: macos-latest
@@ -170,13 +170,6 @@ jobs:
         name: docs-artifacts
         path: ./docs-artifacts.zip
 
-    - name: Get Dist
-      id: get-dist
-      run: |
-        rm -rf ../cp-dist
-        mkdir -p ../cp-dist
-        cp -rf ./dist/* ../cp-dist/
-
     - name: see if info is there
       run: |
         echo "ll .."
@@ -205,10 +198,6 @@ jobs:
 
         ls -al "./source"
 
-    - name: Build the website
-      run: |
-        ./action-build.sh
-
     - name: Commit only if there are changes
       run: |
         if [[ -n $(git status --porcelain) ]]; then
@@ -225,9 +214,9 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
-  js-api-dist:
+  js-api-dist-to-docs:
     # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
-    needs: [js-api-docs]
+    needs: [js-api-to-docs]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
