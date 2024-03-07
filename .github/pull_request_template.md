@@ -28,7 +28,7 @@ Options:
 
 - [ ] **PASS** - all necessary actions must pass (excluding the auto-skipped ones)
 - [ ] **TEST IN HEADSET** - [main dev-testing-example](https://github.com/Volumetrics-io/mrjs/tree/main/samples/index.html) and any of the other [examples](https://github.com/Volumetrics-io/mrjs/tree/main/samples/examples) still work as expected
-- [ ] **VIDEO** - if this pr changes something visually - post a video here of it in MR and/or on desktop (depending on what it affects) for the reviewer to reference.
+- [ ] **VIDEO** - if this pr changes something visually - post a video here of it in headset-MR and/or on desktop (depending on what it affects) for the reviewer to reference.
 - [ ] **TITLE** - make sure the pr's title is updated appropriately as it will be used to name the commit on merge
 - [ ] **BREAKING CHANGE**
   - make a pr in the [documentation repo](https://github.com/Volumetrics-io/documentation) that updates the manual docs to match the breaking change
