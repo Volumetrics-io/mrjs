@@ -204,9 +204,15 @@ jobs:
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          commit_message=$'👷 MRjs - Auto Generated Docs and Dist 👷\n\nChanges from `github.com/Volumetrics-io/mrjs` at '"${GITHUB_SHA}"'\n\n-includes folder updates: `js-api`, `js-api-utils`, `js-api-extras`, `static/dist`\n-runs smoo.sh before committing'
           git add -A
-          git commit -m "$commit_message"
+          git commit --file=- <<EOF
+        👷 MRjs - Auto Generated Docs and Dist 👷
+
+        Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
+
+        -includes folder updates: \`js-api\`, \`js-api-utils\`, \`js-api-extras\`, \`static/dist\`
+        -runs smoo.sh before committing
+        EOF
           git push --quiet --set-upstream origin HEAD
         else
           echo "No changes detected. Exiting without committing."
@@ -227,6 +233,37 @@ jobs:
       with:
         node-version: 21
 
+    - name: Get Dist
+      id: get-dist
+      run: |
+        rm -rf ../cp-dist
+        mkdir -p ../cp-dist
+        cp -rf ./dist/* ../cp-dist/
+
+    - name: see if info is there
+      run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout documentation Repository
+      uses: actions/checkout@v4
+      with:
+        repository: Volumetrics-io/documentation
+        ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: Update Dist
+      run: |
+        rm -rf "./source/static/dist"
+
+        ls -al "./source/static"
+
+        cp -a "../cp-dist" "./source/static/dist"
+
+        ls -al "./source/static"
+
     - name: Download Doc Artifacts
       uses: actions/download-artifact@v4
       with:
@@ -237,40 +274,9 @@ jobs:
         unzip docs-artifacts.zip -d ./
         ls -al
 
-    # - name: Get Dist
-    #   id: get-dist
-    #   run: |
-    #     rm -rf ../cp-dist
-    #     mkdir -p ../cp-dist
-    #     cp -rf ./dist/* ../cp-dist/
-
-    # - name: see if info is there
-    #   run: |
-    #     echo "ll .."
-    #     ls -al ..
-    #     echo "ll ."
-    #     ls -al .
-
-    # - name: Checkout documentation Repository
-    #   uses: actions/checkout@v4
-    #   with:
-    #     repository: Volumetrics-io/documentation
-    #     ref: main
-    #     token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
-
-    # - name: Update Dist
-    #   run: |
-    #     rm -rf "./source/static/dist"
-
-    #     ls -al "./source/static"
-
-    #     cp -a "../cp-dist" "./source/static/dist"
-
-    #     ls -al "./source/static"
-
-    # - name: Build the website
-    #   run: |
-    #     ./action-build.sh
+    - name: Build the website
+      run: |
+        ./action-build.sh
 
     # - name: Commit only if there are changes
     #   run: |
