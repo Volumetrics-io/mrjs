@@ -119,7 +119,7 @@ jobs:
       run: npm run test
 
   js-api-docs:
-    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    # if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
     needs: [check-dist]
     runs-on: macos-latest
     steps:
