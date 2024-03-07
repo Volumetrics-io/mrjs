@@ -198,13 +198,13 @@ jobs:
 
     - name: Update Dist
       run: |
-        rm -rf "./static/dist"
+        rm -rf "./source/static/dist"
 
-        ls -al "./static"
+        ls -al "./source/static"
 
-        cp -a "../cp-dist" "./static/"
+        cp -a "../cp-dist" "./source/static/dist"
 
-        ls -al "./static"
+        ls -al "./source/static"
 
     - name: Build the website
       run: |
