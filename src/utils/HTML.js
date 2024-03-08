@@ -19,7 +19,7 @@ html.resolvePath = function (path, baseUrl = window.location.href) {
     return a.href;
 };
 
-html.removeUrlQueries = function (path, baseUrl) {
+html.removeUrlQueries = function (path, baseUrl = window.location.href) {
     try {
         // Check if path is absolute. If not, use baseUrl as the second parameter
         let urlObj = new URL(path, baseUrl);
