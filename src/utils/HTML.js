@@ -19,14 +19,11 @@ html.resolvePath = function (path, baseUrl = window.location.href) {
     return a.href;
 };
 
-html.removeUrlQueries = function (path, baseUrl) {
+html.removeUrlQueries = function (path, baseUrl = window.location.href) {
     try {
         // Check if path is absolute. If not, use baseUrl as the second parameter
-        console.log('path', path, 'baseUrl', baseUrl);
         let urlObj = new URL(path, baseUrl);
-        console.log(urlObj);
         let cleanUrl = urlObj.origin + urlObj.pathname;
-        console.log('cleanUrl', cleanUrl);
         return cleanUrl;
     } catch (error) {
         console.error('Error processing URL:', error.message);
