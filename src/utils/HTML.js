@@ -14,7 +14,7 @@ let html = {};
  * @description Given the path returns an absolute path resolved so relative linking works as expected.
  * @returns {string} a.href - the absolute path
  */
-html.resolvePath = function (path, baseUrl = window.location.origin) {
+html.resolvePath = function (path, baseUrl) {
     let a = document.createElement('a');
     a.href = html.removeUrlQueries(path, baseUrl);
     return a.href;
@@ -29,14 +29,19 @@ html.resolvePath = function (path, baseUrl = window.location.origin) {
  * For ex: 'https://example.com/images/photo.png?version=2' becomes 'https://example.com/images/photo.png'
  * @returns {string} a.href - the absolute path
  */
-html.removeUrlQueries = function (path, baseUrl = window.location.origin) {
+html.removeUrlQueries = function (path, baseUrl) {
     try {
         // Check if path is absolute. If not, use baseUrl as the second parameter
-        let urlObj = new URL(path, baseUrl === 'about:srcdoc' ? window.location.origin : baseUrl);
+        let urlObj;
+        if (baseUrl) {
+            urlObj = new URL(path, baseUrl);
+        } else {
+            urlObj = new URL(path);
+        }
         let cleanUrl = urlObj.origin + urlObj.pathname;
         return cleanUrl;
     } catch (error) {
-        console.error('Error processing URL:', error.message);
+        console.warn('Error processing URL:', error.message);
         return path; // Return the original path if there's an error
     }
 };
