@@ -1,4 +1,9 @@
 import { MREntity } from 'mrjs/core/MREntity';
+
+/*
+ * @description Listing of events that are considered global scene updates.
+ * These trigger the `eventUpdate` function call.
+ */
 const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate'];
 
 /**
@@ -93,7 +98,7 @@ export class MRSystem {
 
     /**
      * @function
-     * @description The generic system update call.
+     * @description The generic system update call per render-frame.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -101,7 +106,8 @@ export class MRSystem {
 
     /**
      * @function
-     * @description An event triggered update, called when any scene level events occur.
+     * @description An event triggered update, called when any global scene level events occur.
+     * See GLOBAL_UPDATE_EVENTS of MRSystem.js 
      */
     eventUpdate() {}
 

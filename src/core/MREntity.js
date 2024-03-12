@@ -111,6 +111,26 @@ export class MREntity extends MRElement {
 
     /**
      * @function
+     * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * relying on an overall scene or all items to update isnt beneficial.
+     * @returns {number} - height of the 3D object.
+     */
+    triggerGeometryStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
+    }
+
+    /**
+     * @function
+     * @description Triggers a system run to update material specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * relying on an overall scene or all items to update isnt beneficial.
+     * @returns {number} - height of the 3D object.
+     */
+    triggerMaterialStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
+    }
+
+    /**
+     * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
      * These are run after the MaterialStyleSystem does its own update on the entity.
      */
@@ -180,15 +200,11 @@ export class MREntity extends MRElement {
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
-            this.triggerGeometryStyleUpdate();
-            this.triggerMaterialStyleUpdate();
         });
         this.loadAttributes();
 
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            this.triggerGeometryStyleUpdate();
-            this.triggerMaterialStyleUpdate();
         });
 
         MOUSE_EVENTS.forEach((eventType) => {
@@ -234,14 +250,14 @@ export class MREntity extends MRElement {
             this.triggerMaterialStyleUpdate();
         });
 
-        document.addEventListener('enterxr', (event) => {
-            this.triggerGeometryStyleUpdate();
-            this.triggerMaterialStyleUpdate();
-        });
-        document.addEventListener('exitxr', (event) => {
-            this.triggerGeometryStyleUpdate();
-            this.triggerMaterialStyleUpdate();
-        });
+        // document.addEventListener('enterxr', (event) => {
+        //     this.triggerGeometryStyleUpdate();
+        //     this.triggerMaterialStyleUpdate();
+        // });
+        // document.addEventListener('exitxr', (event) => {
+        //     this.triggerGeometryStyleUpdate();
+        //     this.triggerMaterialStyleUpdate();
+        // });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.connected();
