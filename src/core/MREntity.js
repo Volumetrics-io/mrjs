@@ -52,6 +52,7 @@ export class MREntity extends MRElement {
         });
 
         this.object3D = new THREE.Group();
+        this.object3D.userData.isEntityObject3DRoot = true;
         this.object3D.userData.bbox = new THREE.Box3();
         this.object3D.userData.size = new THREE.Vector3();
 
