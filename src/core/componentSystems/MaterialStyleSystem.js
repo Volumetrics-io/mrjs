@@ -39,9 +39,6 @@ export class MaterialStyleSystem extends MRSystem {
         if (entity instanceof MREntity) {
             entity.updateMaterialStyle();
         }
-
-        // Cleanup
-        entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
     }
 
     /**
@@ -61,7 +58,7 @@ export class MaterialStyleSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.eventUpdate();
+        // this.eventUpdate();
     }
 
     /**

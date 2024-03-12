@@ -4,7 +4,7 @@ import { MREntity } from 'mrjs/core/MREntity';
  * @description Listing of events that are considered global scene updates.
  * These trigger the `eventUpdate` function call.
  */
-const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate'];
+const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started'];
 
 /**
  * @class MRSystem

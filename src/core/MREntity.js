@@ -245,10 +245,10 @@ export class MREntity extends MRElement {
             this.triggerMaterialStyleUpdate();
         });
 
-        window.addEventListener('resize', (event) => {
-            this.triggerGeometryStyleUpdate();
-            this.triggerMaterialStyleUpdate();
-        });
+        // window.addEventListener('resize', (event) => {
+        //     // this.triggerGeometryStyleUpdate();
+        //     // this.triggerMaterialStyleUpdate();
+        // });
 
         // document.addEventListener('enterxr', (event) => {
         //     this.triggerGeometryStyleUpdate();

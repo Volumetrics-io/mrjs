@@ -70,7 +70,7 @@ export class GeometryStyleSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.eventUpdate();
+        // this.eventUpdate();
     }
 
     /**
