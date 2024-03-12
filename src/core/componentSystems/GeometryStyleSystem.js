@@ -27,13 +27,7 @@ export class GeometryStyleSystem extends MRSystem {
         });
     }
 
-    /**
-     * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
+    eventUpdate = () => {
         for (const entity of this.registry) {
             // Only want to dispatch if anything was actually updated in this iteration.
             let changed = false;
@@ -64,6 +58,47 @@ export class GeometryStyleSystem extends MRSystem {
         // only want to update entities in this system if they actually need to update this iteration
         // TODO - check that this is safe todo
         this.registry.clear();
+    };
+
+    /**
+     * @function
+     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        // TODO - check if we need anything at all in the update function then
+
+        // for (const entity of this.registry) {
+        //     // Only want to dispatch if anything was actually updated in this iteration.
+        //     let changed = false;
+
+        //     // Anything needed for mrjs defined entities - the order of the below matters
+        //     if (entity instanceof MRDivEntity) {
+        //         changed = this.setUpdatedBorder(entity);
+        //     }
+        //     changed = this.setScale(entity);
+        //     if (entity instanceof MRMedia) {
+        //         changed = this.setUpdatedMediaPlane(entity);
+        //     }
+
+        //     // User additional - Main Entity Style Change
+        //     if (entity instanceof MREntity) {
+        //         changed = entity.updateGeometryStyle();
+        //     }
+
+        //     if (changed) {
+        //         // TODO - TBH i think this is only needed for scale, but just in case others use changed
+        //         // width/height for anything else, and update is required for children as well
+        //         entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+        //     }
+        // }
+
+        // // this.registry fills up based on event notifications from the entities themselves
+        // // clearing it out before the next update call
+        // // only want to update entities in this system if they actually need to update this iteration
+        // // TODO - check that this is safe todo
+        // this.registry.clear();
     }
 
     /**

@@ -29,13 +29,7 @@ export class MaterialStyleSystem extends MRSystem {
         });
     }
 
-    /**
-     * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
+    eventUpdate = () => {
         for (const entity of this.registry) {
             // Anything needed for mrjs defined entities - the order of the below matters
             if (entity instanceof MRDivEntity) {
@@ -57,6 +51,38 @@ export class MaterialStyleSystem extends MRSystem {
         // only want to update entities in this system if they actually need to update this iteration
         // TODO - check that this is safe todo
         this.registry.clear();
+    };
+
+    /**
+     * @function
+     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        // TODO - check if we need anything at all in the update function then
+        
+        // for (const entity of this.registry) {
+        //     // Anything needed for mrjs defined entities - the order of the below matters
+        //     if (entity instanceof MRDivEntity) {
+        //         this.setBackground(entity);
+        //     }
+        //     this.setVisibility(entity);
+
+        //     // User additional - Main Entity Style Change
+        //     if (entity instanceof MREntity) {
+        //         entity.updateMaterialStyle();
+        //     }
+
+        //     // Cleanup
+        //     entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+        // }
+
+        // // this.registry fills up based on event notifications from the entitieys themself
+        // // clearing it out before the next update call
+        // // only want to update entities in this system if they actually need to update this iteration
+        // // TODO - check that this is safe todo
+        // this.registry.clear();
     }
 
     /**

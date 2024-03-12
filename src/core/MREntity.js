@@ -109,14 +109,6 @@ export class MREntity extends MRElement {
         return this.size.y;
     }
 
-    triggerGeometryStyleUpdate() {
-        this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
-    }
-
-    triggerMaterialStyleUpdate() {
-        this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
-    }
-
     /**
      * @function
      * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
