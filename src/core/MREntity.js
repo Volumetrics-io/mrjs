@@ -198,6 +198,8 @@ export class MREntity extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
+        /** Handle scene Global level events **/
+
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
         });
@@ -206,6 +208,9 @@ export class MREntity extends MRElement {
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         });
+
+        /** Handle events specific to this entity **/
+        // note: these will need the trigger for Material or Geometry if applicable
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
@@ -244,20 +249,6 @@ export class MREntity extends MRElement {
             this.triggerGeometryStyleUpdate();
             this.triggerMaterialStyleUpdate();
         });
-
-        // window.addEventListener('resize', (event) => {
-        //     // this.triggerGeometryStyleUpdate();
-        //     // this.triggerMaterialStyleUpdate();
-        // });
-
-        // document.addEventListener('enterxr', (event) => {
-        //     this.triggerGeometryStyleUpdate();
-        //     this.triggerMaterialStyleUpdate();
-        // });
-        // document.addEventListener('exitxr', (event) => {
-        //     this.triggerGeometryStyleUpdate();
-        //     this.triggerMaterialStyleUpdate();
-        // });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.connected();
