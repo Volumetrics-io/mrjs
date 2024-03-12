@@ -47,6 +47,7 @@ const MAX_PANEL_NUM = 8;
  * @function
  * @description Setting up a material for an object that maskes other elements
  * @param {THREE.Material} material
+ * @param debug
  * @param {number} shiftBit
  * @param {debug} boolean
  */

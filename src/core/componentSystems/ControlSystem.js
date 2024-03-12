@@ -103,6 +103,10 @@ export class ControlSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param hand
+     */
     checkCollisions(hand) {
         for (let jointCursor of hand.jointCursors) {
             mrjsUtils.physics.world.contactPairsWith(jointCursor.collider, (collider2) => {
@@ -266,6 +270,9 @@ export class ControlSystem extends MRSystem {
         entity.dispatchEvent(new MouseEvent('mouseleave'));
     };
 
+    /**
+     *
+     */
     pointerRay() {
         this.origin.setFromMatrixPosition(this.app.user.origin.matrixWorld);
         this.direction.setFromMatrixPosition(this.activeHand.pointer.matrixWorld).sub(this.origin).normalize();
@@ -343,6 +350,10 @@ export class ControlSystem extends MRSystem {
         this.currentEntity = null;
     };
 
+    /**
+     *
+     * @param entity
+     */
     interact(entity) {
         if (!entity) {
             return;

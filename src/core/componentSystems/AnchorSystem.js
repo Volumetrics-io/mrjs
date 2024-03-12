@@ -242,6 +242,9 @@ export class AnchorSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     */
     setAppOrigin() {
         if (!mrjsUtils.xr.isPresenting) {
             return;
@@ -262,6 +265,10 @@ export class AnchorSystem extends MRSystem {
         });
     }
 
+    /**
+     *
+     * @param frame
+     */
     updateOrigin(frame) {
         let pose = frame.getPose(this.app.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
         let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
@@ -370,6 +377,7 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
+     * @param origin
      * @description converts the provided XRRigidTransform to a Matrix4 and adjusts it to ensure
      * that it's y-axis is pointing directly up and it's z-axis is facing inward
      * @param xrRigidTransform

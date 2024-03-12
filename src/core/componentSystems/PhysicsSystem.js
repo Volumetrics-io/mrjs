@@ -196,6 +196,8 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
+     * @param object3D
+     * @param scale
      * @description Initializes a convexMesh collider from a THREE.js geometry
      * NOTE: not currently in use until we can sync it with animations
      * @param {MREntity} entity - the entity being updated

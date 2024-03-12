@@ -20,14 +20,23 @@ export class MRVideo extends MRMedia {
         this.playing = false;
     }
 
+    /**
+     *
+     */
     get mediaWidth() {
         return this.media.videoWidth;
     }
 
+    /**
+     *
+     */
     get mediaHeight() {
         return this.media.videoHeight;
     }
 
+    /**
+     *
+     */
     loadMediaTexture() {
         mrjsUtils.material
             .loadVideoTextureAsync(this.media)
@@ -52,6 +61,9 @@ export class MRVideo extends MRMedia {
         super.connected();
     }
 
+    /**
+     *
+     */
     set srcObject(src) {
         this.media.srcObject = src;
         // on loadeddata event, update the objectFitDimensions

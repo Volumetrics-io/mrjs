@@ -12,6 +12,7 @@ export class MRPlaneManager {
     /**
      *
      * @param scene
+     * @param occlusion
      */
     constructor(scene, occlusion) {
         // TODO: add app level controls for:
@@ -101,6 +102,12 @@ export class MRPlaneManager {
         });
     }
 
+    /**
+     *
+     * @param plane
+     * @param width
+     * @param height
+     */
     initPlane(plane, width, height) {
         let mrPlane = new MRPlane();
 
@@ -135,6 +142,11 @@ export class MRPlaneManager {
         return mrPlane;
     }
 
+    /**
+     *
+     * @param plane
+     * @param mrplane
+     */
     removePlane(plane, mrplane) {
         mrplane.mesh.geometry.dispose();
         mrplane.mesh.material.dispose();

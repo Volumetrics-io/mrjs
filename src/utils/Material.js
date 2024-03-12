@@ -57,7 +57,7 @@ material.setObjectMaterial = function (parent, material) {
     }
     return parent;
 };
- 
+
 /**
  * @function
  * @memberof material
@@ -87,6 +87,7 @@ material.loadTextureAsync = function (src) {
 
 /**
  * @function
+ * @param video
  * @memberof material
  * @param {object} src - the html video element whose src contains the path to the data to be loaded
  * @description Function to load the texture asynchronously and return a promise

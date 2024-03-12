@@ -61,6 +61,7 @@ export class MaterialStyleSystem extends MRSystem {
     }
 
     /**
+     * @param entity
      * @function
      * @description Sets the background based on compStyle and inputted css elements.
      */
@@ -90,7 +91,16 @@ export class MaterialStyleSystem extends MRSystem {
         entity.background.material.needsUpdate = true;
     }
 
+    /**
+     *
+     * @param entity
+     */
     setVisibility(entity) {
+        /**
+         *
+         * @param entity
+         * @param bool
+         */
         function makeVisible(entity, bool) {
             entity.object3D.visible = bool;
             if (entity.background) {

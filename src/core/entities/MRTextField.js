@@ -35,10 +35,16 @@ export class MRTextField extends MRTextEntity {
         this.wrapper.innerHTML = '<slot></slot>';
     }
 
+    /**
+     *
+     */
     get value() {
         return this.input.value;
     }
 
+    /**
+     *
+     */
     set value(val) {
         this.input.value = val;
     }

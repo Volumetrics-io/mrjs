@@ -71,6 +71,10 @@ export class GeometryStyleSystem extends MRSystem {
         this.registry.add(entity);
     }
 
+    /**
+     *
+     * @param entity
+     */
     setScale(entity) {
         let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1;
         if (new_scale != entity.object3D.scale) {
@@ -81,6 +85,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
+     * @param entity
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
@@ -106,20 +111,20 @@ export class GeometryStyleSystem extends MRSystem {
         return true;
     }
 
+    /**
+     *
+     * @param entity
+     */
     setUpdatedMediaPlane(entity) {
         entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
-        if (entity._storedWidth != entity.width
-            || entity._storedHeight != entity.height
-            || entity._storedBorderRadii != entity.borderRadii) {
-           entity.generateNewMediaPlaneGeometry();
+        if (entity._storedWidth != entity.width || entity._storedHeight != entity.height || entity._storedBorderRadii != entity.borderRadii) {
+            entity.generateNewMediaPlaneGeometry();
         } else {
             // no update needed
             return false;
         }
-
-        
 
         return true;
     }

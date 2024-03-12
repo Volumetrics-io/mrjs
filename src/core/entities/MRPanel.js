@@ -13,6 +13,9 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanel extends MRDivEntity {
+    /**
+     *
+     */
     get height() {
         let result = this.getBoundingClientRect().height;
 

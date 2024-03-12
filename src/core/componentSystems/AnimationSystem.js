@@ -57,6 +57,10 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     attachedComponent(entity) {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModel && entity.animations.length > 0) {
@@ -66,6 +70,10 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     updatedComponent(entity) {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModel && entity.animations.length > 0) {
@@ -73,10 +81,18 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     detachedComponent(entity) {
         entity.mixer.stopAllActions();
     }
 
+    /**
+     *
+     * @param entity
+     */
     onNewEntity(entity) {
         if (entity instanceof MRModel && entity.animations.length > 0) {
             let comp = entity.components.get('animation');
@@ -89,6 +105,11 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     * @param comp
+     */
     setAnimation(entity, comp) {
         let clip = entity.animations[comp.clip];
         switch (comp.action) {

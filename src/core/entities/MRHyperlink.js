@@ -15,6 +15,9 @@ export default class MRHyperlink extends MRTextEntity {
         this.object3D.name = 'hyperlink';
     }
 
+    /**
+     *
+     */
     _createLink() {
         if (!this.link) {
             this.link = document.createElement('a');
@@ -23,11 +26,17 @@ export default class MRHyperlink extends MRTextEntity {
         }
     }
 
+    /**
+     *
+     */
     get href() {
         this._createLink();
         return this.link.getAttribute('href');
     }
 
+    /**
+     *
+     */
     set href(src_str) {
         this._createLink();
         this.link.setAttribute('href', src_str);

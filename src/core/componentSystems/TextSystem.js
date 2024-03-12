@@ -131,6 +131,10 @@ export class TextSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     * @param entity
+     */
     updateTextInput(entity) {
         if (entity == document.activeElement) {
             entity.updateCursorPosition();

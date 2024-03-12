@@ -1,5 +1,8 @@
 import { MRHand } from 'mrjs/core/user/MRHand';
 
+/**
+ *
+ */
 export default class MRUser {
     forward = new THREE.Object3D();
 
@@ -11,6 +14,11 @@ export default class MRUser {
         left: null,
         right: null,
     };
+    /**
+     *
+     * @param camera
+     * @param scene
+     */
     constructor(camera, scene) {
         this.camera = camera;
 
@@ -34,6 +42,9 @@ export default class MRUser {
         this.spotLightScale = 1;
     }
 
+    /**
+     *
+     */
     initSpotlight() {
         this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 64), new THREE.MeshBasicMaterial());
         this.spotlight.material.colorWrite = false;
@@ -43,6 +54,9 @@ export default class MRUser {
         return this.spotlight;
     }
 
+    /**
+     *
+     */
     update() {
         this.hands.left.update();
         this.hands.right.update();

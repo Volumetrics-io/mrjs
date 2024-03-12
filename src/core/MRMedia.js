@@ -67,14 +67,23 @@ export class MRMedia extends MRDivEntity {
         return height > 0 ? height : super.height;
     }
 
+    /**
+     *
+     */
     get mediaWidth() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     get mediaHeight() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     generateNewMediaPlaneGeometry() {
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
@@ -82,6 +91,9 @@ export class MRMedia extends MRDivEntity {
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
+    /**
+     *
+     */
     loadMediaTexture() {
         mrjsUtils.error.emptyParentFunction();
     }
@@ -143,14 +155,14 @@ export class MRMedia extends MRDivEntity {
             // to make sure that texture is set properly
             this.object3D.material.visible = true;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         const _hideMainMediaMesh = () => {
             // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
             // and debugging later on.
             this.object3D.material.visible = false;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;

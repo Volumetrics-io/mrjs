@@ -21,10 +21,16 @@ export class MRImage extends MRMedia {
         this.object3D.name = 'image';
     }
 
+    /**
+     *
+     */
     get mediaWidth() {
         return this.media.width;
     }
 
+    /**
+     *
+     */
     get mediaHeight() {
         return this.media.height;
     }
@@ -38,6 +44,9 @@ export class MRImage extends MRMedia {
         super.connected();
     }
 
+    /**
+     *
+     */
     loadMediaTexture() {
         mrjsUtils.material
             .loadTextureAsync(this.media.src)

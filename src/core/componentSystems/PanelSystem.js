@@ -20,6 +20,8 @@ export class PanelSystem extends MRSystem {
     /**
      * @function
      * @description The generic system update call. keeps panel positions up to date.
+     * @param dt
+     * @param f
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -49,7 +51,7 @@ export class PanelSystem extends MRSystem {
         const rect = entity.getBoundingClientRect();
         const appRect = this.app.getBoundingClientRect();
 
-        /** setup xy positioning of the entity **/
+        /** setup xy positioning of the entity */
 
         let innerWidth = global.appWidth;
         let innerHeight = global.appHeight;
@@ -77,7 +79,7 @@ export class PanelSystem extends MRSystem {
         entity.panel.position.setX(threeX);
         entity.panel.position.setY(-threeY);
 
-        /** setup z-index positioning of the entity **/
+        /** setup z-index positioning of the entity */
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.

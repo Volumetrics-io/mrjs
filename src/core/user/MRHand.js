@@ -61,6 +61,7 @@ export class MRHand {
     /**
      * @class
      * @description Constructor for the MRHand class object. Setups up all attributes for MRHand including physics, mouse/cursor information, hand tracking and state, and model
+     * @param scene
      * information.
      * @param {object} handedness - enum for the `left`` or `right` hand.
      * @param {object} app - the current MRApp that contains the scene for the hand.
