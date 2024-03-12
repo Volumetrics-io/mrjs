@@ -118,9 +118,9 @@ jobs:
     - name: 👷 Test
       run: npm run test
 
-  js-api-docs:
+  cp-docs-to-doc-repo:
     if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
-    needs: [build]
+    needs: [check-dist]
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -181,13 +181,13 @@ jobs:
         rm -rf "./source/js-api-utils"
         rm -rf "./source/js-api-extras"
         
-        ls -al ./source
+        ls -al "./source"
 
         cp -a "../doc/js-api" "./source/"
         cp -a "../doc/js-api-utils" "./source/"
         cp -a "../doc/js-api-extras" "./source/"
 
-        ls -al ./source
+        ls -al "./source"
 
     - name: Commit only if there are changes
       run: |
@@ -195,9 +195,83 @@ jobs:
           echo "Changes detected. Committing and pushing."
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          commit_message=$'👷 MRjs - Auto Generated Docs 👷\n\nChanges at '"${GITHUB_SHA}"
           git add -A
-          git commit -m "$commit_message"
+          git commit --file=- <<EOF
+        👷 MRjs - Auto Generated Docs 👷
+
+        Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
+
+        -includes folder updates: \`js-api\`, \`js-api-utils\`, \`js-api-extras\`
+        EOF
+          git push --quiet --set-upstream origin HEAD
+        else
+          echo "No changes detected. Exiting without committing."
+        fi
+      env:
+          GITHUB_TOKEN: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+  cp-dist-to-doc-repo:
+    if: github.ref == 'refs/heads/main' # This job runs only if the current branch is main
+    needs: [cp-docs-to-doc-repo]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # separating this out from the docs-to-doc-repo command since it needs linux for action-build.sh
+
+    - name: Get Dist
+      id: get-dist
+      run: |
+        rm -rf ../cp-dist
+        mkdir -p ../cp-dist
+        cp -rf ./dist/* ../cp-dist/
+
+    - name: see if info is there
+      run: |
+        echo "ll .."
+        ls -al ..
+        echo "ll ."
+        ls -al .
+
+    - name: Checkout documentation Repository
+      uses: actions/checkout@v4
+      with:
+        repository: Volumetrics-io/documentation
+        ref: main
+        token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
+
+    - name: Update Dist
+      run: |
+        rm -rf "./source/static/dist"
+
+        ls -al "./source/static"
+
+        cp -a "../cp-dist" "./source/static/dist"
+
+        ls -al "./source/static"
+
+    # dont need to download docs artifacts from this pr since this action only runs
+    # after docs are already pushed into the other repo
+
+    - name: Build the website
+      run: |
+        ./action-build.sh
+
+    - name: Commit only if there are changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Changes detected. Committing and pushing."
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit --file=- <<EOF
+        👷 MRjs - Auto Generated Dist 👷
+
+        Changes from \`github.com/Volumetrics-io/mrjs\` at ${GITHUB_SHA}
+
+        -includes folder updates: \`static/dist\`
+        -runs smoo.sh before committing
+        EOF
           git push --quiet --set-upstream origin HEAD
         else
           echo "No changes detected. Exiting without committing."

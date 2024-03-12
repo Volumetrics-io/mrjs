@@ -15,12 +15,20 @@ error.emptyParentFunction = function () {
 }
 
 /**
+ * @namespace warn
+ * @description Useful namespace for helping with error utility functions
+ */
+let warn = {};
+
+/**
  * @function
- * @memberof error
+ * @memberof warn
  * @description Function helper to warn in console if a child class might want to overwrite a parent
  * class's function but didnt. Useful for base classes that are more abstract classes (if in Java or C++)
  * to remind the user of the child class that there is more to implement.
  */
-error.warnOfEmptyParentFunction = function () {
+warn.EmptyParentFunction = function () {
     console.warn('Empty parent function was reached, make sure this was overridden in children if more execution was expected.');
 }
+
+export { error, warn };

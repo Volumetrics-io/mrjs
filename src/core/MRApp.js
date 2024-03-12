@@ -77,6 +77,7 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
+        this.scene.matrixWorldAutoUpdate = false;
         this.anchor = null;
         this.origin = new THREE.Object3D();
 
@@ -329,6 +330,7 @@ export class MRApp extends MRElement {
                 break;
         }
 
+        this.camera.matrixWorldAutoUpdate = false;
         this.camera.position.set(0, 0, 1);
     };
 
@@ -484,18 +486,21 @@ export class MRApp extends MRElement {
         // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
         // from the pure loop but it is okay as is here for now.
 
-        this.renderer.clear();
-        // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem != undefined) {
-            // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
-            // and internally handled stenciling functions.
-            this.renderer.state.buffers.stencil.setTest(true);
-            this.renderer.state.buffers.stencil.setMask(0xff);
-            this.renderer.render(this.scene, this.camera);
-
-            // Render the main scene without stencil operations
-            this.renderer.state.buffers.stencil.setTest(false);
+        this.scene.updateMatrixWorld();
+        if (this.camera.parent === null) {
+            this.camera.updateMatrixWorld();
         }
+        this.renderer.clear();
+
+        // Need to wait until we have all needed rendering-associated systems loaded.
+        if (this.maskingSystem !== undefined) {
+            this.maskingSystem.sync();
+            const currentShadowEnabled = this.renderer.shadowMap.enabled;
+            this.renderer.shadowMap.enabled = false;
+            this.renderer.render(this.maskingSystem.scene, this.camera);
+            this.renderer.shadowMap.enabled = currentShadowEnabled;
+        }
+
         this.renderer.render(this.scene, this.camera);
     }
 }
