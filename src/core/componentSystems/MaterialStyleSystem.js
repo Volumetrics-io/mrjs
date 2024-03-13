@@ -27,6 +27,10 @@ export class MaterialStyleSystem extends MRSystem {
         });
     }
 
+    /**
+     * @function
+     * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
     _updateSpecificEntity(entity) {
         // Anything needed for mrjs defined entities - the order of the below matters
         if (entity instanceof MRDivEntity) {

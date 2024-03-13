@@ -27,6 +27,10 @@ export class GeometryStyleSystem extends MRSystem {
         });
     }
 
+    /**
+     * @function
+     * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
     _updateSpecificEntity(entity) {
         // Only want to dispatch if anything was actually updated in this iteration.
         let changed = false;

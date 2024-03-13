@@ -64,6 +64,10 @@ export class TextSystem extends MRSystem {
         entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
+    /**
+     * @function
+     * @description The per entity triggered update call.  Handles updating all text items including updates for style and cleaning of content for special characters.
+     */
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
 
@@ -81,6 +85,10 @@ export class TextSystem extends MRSystem {
         });
     }
 
+    /**
+     * @function
+     * @description The per global scene event update call. Handles updating all text items including updates for style and cleaning of content for special characters.
+     */
     eventUpdate = () => {
         for (const entity of this.registry) {
             let text = entity instanceof MRTextField || entity instanceof MRTextArea
@@ -113,7 +121,8 @@ export class TextSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        this.eventUpdate();
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
     }
 
     updateTextInput(entity) {
