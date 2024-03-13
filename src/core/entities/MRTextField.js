@@ -76,7 +76,7 @@ export class MRTextField extends MRTextEntity {
         });
 
         this.addEventListener('keydown', (event) => {
-            this.needsStyleUpdate = true;
+            this.triggerTextStyleUpdate(this);
         });
     }
 

@@ -46,6 +46,13 @@ export class TextSystem extends MRSystem {
                 );
             });
         });
+
+        this.app.addEventListener('trigger-text-style-update', (e) => {
+            // The event has the entity stored as its detail.
+            if (e.detail !== undefined) {
+                this._updateSpecificEntity(e.detail);
+            }
+        });
     }
 
     /**
@@ -57,9 +64,13 @@ export class TextSystem extends MRSystem {
         entity instanceof MRTextEntity ? this.registry.add(entity) : null;
     }
 
+    _updateSpecificEntity(entity) {
+        this.updateStyle(entity);
+    }
+
     /**
      * @function
-     * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
+     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -85,9 +96,7 @@ export class TextSystem extends MRSystem {
 
             if (textContentChanged) {
                 entity.textObj.text = text;
-            }
-            if (textContentChanged || entity.needsStyleUpdate) {
-                this.updateStyle(entity);
+
                 entity.textObj.sync(() => {
                     if (entity instanceof MRButton) {
                         entity.textObj.anchorX = 'center';
@@ -100,6 +109,7 @@ export class TextSystem extends MRSystem {
                         this.updateTextInput(entity);
                     }
                 });
+                this.updateStyle(entity);
             }
         }
     }
