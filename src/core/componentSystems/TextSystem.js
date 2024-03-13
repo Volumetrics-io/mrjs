@@ -66,19 +66,24 @@ export class TextSystem extends MRSystem {
 
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
+
+        entity.textObj.sync(() => {
+            if (entity instanceof MRButton) {
+                entity.textObj.anchorX = 'center';
+            } else {
+                entity.textObj.position.setX(-entity.width / 2);
+                entity.textObj.position.setY(entity.height / 2);
+            }
+
+            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
+                this.updateTextInput(entity);
+            }
+        });
     }
 
-    /**
-     * @function
-     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
+    eventUpdate = () => {
         for (const entity of this.registry) {
-            let isTextFieldOrArea = entity instanceof MRTextField || entity instanceof MRTextArea;
-
-            let text = isTextFieldOrArea
+            let text = entity instanceof MRTextField || entity instanceof MRTextArea
                 ? entity.input.value
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
@@ -96,22 +101,19 @@ export class TextSystem extends MRSystem {
 
             if (textContentChanged) {
                 entity.textObj.text = text;
-
-                entity.textObj.sync(() => {
-                    if (entity instanceof MRButton) {
-                        entity.textObj.anchorX = 'center';
-                    } else {
-                        entity.textObj.position.setX(-entity.width / 2);
-                        entity.textObj.position.setY(entity.height / 2);
-                    }
-
-                    if (isTextFieldOrArea) {
-                        this.updateTextInput(entity);
-                    }
-                });
-                this.updateStyle(entity);
+                this._updateSpecificEntity(entity);
             }
         }
+    }
+
+    /**
+     * @function
+     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        this.eventUpdate();
     }
 
     updateTextInput(entity) {
