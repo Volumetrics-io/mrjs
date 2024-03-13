@@ -120,13 +120,17 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
-     * @description Initializes the rigid body used by the physics for div or Model entity
+     * @description Initializes the rigid body used by the physics for div
      * @param {MREntity} entity - the entity being updated
      */
     initUIEntityBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
-        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
+        if (entity instanceof MRModel) {
+            console.error('should not be hitting this');
+        }
+
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
         this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
         this.tempBBox.getSize(this.tempSize);
         this.tempSize.multiply(this.tempWorldScale);
@@ -155,6 +159,11 @@ export class PhysicsSystem extends MRSystem {
         this.tempBBox.setFromObject(entity.object3D, true);
 
         this.tempBBox.getSize(this.tempSize);
+
+        if (entity instanceof MRModel) {
+            console.log('initSimpleBody');
+            console.log(entity, 'dimensions', this.tempBBox, this.tempSize);
+        }
 
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);

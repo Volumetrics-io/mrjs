@@ -357,6 +357,7 @@ export class ControlSystem extends MRSystem {
         if (!entity) {
             return;
         }
+        console.log(entity);
 
         if (!this.currentEntity) {
             this.currentEntity = entity;
