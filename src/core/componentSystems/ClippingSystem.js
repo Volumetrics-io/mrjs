@@ -6,6 +6,8 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 import { MRVolume } from '../entities/MRVolume';
 
+const PLANE_NUM = 6;
+
 /**
  * @class ClippingSystem
  * @classdesc   This system supports 3D clipping following threejs's clipping planes setup.
@@ -25,8 +27,6 @@ export class ClippingSystem extends MRSystem {
         this.coplanarPointA = new THREE.Vector3();
         this.coplanarPointB = new THREE.Vector3();
         this.coplanarPointC = new THREE.Vector3();
-        // The plane geometry.
-        this.geometry = new THREE.BufferGeometry();
     }
 
     /**
@@ -47,18 +47,21 @@ export class ClippingSystem extends MRSystem {
      * @param {MREntity} entity - given entity that will be used to create the clipping planes positioning.
      */
     updatePlanes(entity) {
-        this.geometry = entity.clipping.geometry.toNonIndexed();
-        let geoPositionArray = this.geometry.attributes.position.array;
+        // clipping.geometry is one segment BoxGeometry. See MRClippingGeometry.
 
-        let planeIndex = 0;
-        for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
-            if (!entity.clipping.planeIDs.includes(f)) {
-                continue;
-            }
+        const geometry = entity.clipping.geometry;
+        const positions = geometry.getAttribute('position').array;
+        const indices = geometry.getIndex().array;
 
-            this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
-            this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
-            this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
+        for (let i = 0; i < PLANE_NUM; i++) {
+            const indexOffset = i * 6;
+            const positionIndexA = indices[indexOffset] * 3;
+            const positionIndexB = indices[indexOffset + 1] * 3;
+            const positionIndexC = indices[indexOffset + 2] * 3;
+
+            this.coplanarPointA.set(-positions[positionIndexA], -positions[positionIndexA + 1], -positions[positionIndexA + 2]);
+            this.coplanarPointB.set(-positions[positionIndexB], -positions[positionIndexB + 1], -positions[positionIndexB + 2]);
+            this.coplanarPointC.set(-positions[positionIndexC], -positions[positionIndexC + 1], -positions[positionIndexC + 2]);
 
             if (entity instanceof MRVolume) {
                 entity.volume.localToWorld(this.coplanarPointA);
@@ -70,8 +73,7 @@ export class ClippingSystem extends MRSystem {
                 entity.panel.localToWorld(this.coplanarPointC);
             }
 
-            entity.clipping.planes[planeIndex].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
-            planeIndex += 1;
+            entity.clipping.planes[i].setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
         }
     }
 
@@ -109,34 +111,17 @@ export class ClippingSystem extends MRSystem {
      * @param {MREntity} entity - the entity to which we're adding the clipping planes information
      */
     addClippingPlanes(entity) {
-        this.geometry = entity.clipping.geometry.toNonIndexed();
-        let geoPositionArray = this.geometry.attributes.position.array;
-
-        for (let f = 0; f < this.geometry.attributes.position.count * 3; f += 9) {
-            this.coplanarPointA.set(-geoPositionArray[f], -geoPositionArray[f + 1], -geoPositionArray[f + 2]);
-            this.coplanarPointB.set(-geoPositionArray[f + 3], -geoPositionArray[f + 4], -geoPositionArray[f + 5]);
-            this.coplanarPointC.set(-geoPositionArray[f + 6], -geoPositionArray[f + 7], -geoPositionArray[f + 8]);
-
-            if (entity instanceof MRVolume) {
-                entity.volume.localToWorld(this.coplanarPointA);
-                entity.volume.localToWorld(this.coplanarPointB);
-                entity.volume.localToWorld(this.coplanarPointC);
-            } else {
-                entity.panel.localToWorld(this.coplanarPointA);
-                entity.panel.localToWorld(this.coplanarPointB);
-                entity.panel.localToWorld(this.coplanarPointC);
-            }
-
+        for (let i = 0; i < PLANE_NUM; i++) {
             const newPlane = new THREE.Plane();
-            newPlane.setFromCoplanarPoints(this.coplanarPointA, this.coplanarPointB, this.coplanarPointC);
+
             // if (this.app.debug) {
             //     const helper = new THREE.PlaneHelper( newPlane, 1, 0xff00ff );
             //     this.app.scene.add( helper );
             // }
 
             entity.clipping.planes.push(newPlane);
-            entity.clipping.planeIDs.push(f);
         }
+        this.updatePlanes(entity);
     }
 
     /**

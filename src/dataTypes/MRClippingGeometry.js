@@ -5,8 +5,6 @@
 export class MRClippingGeometry {
     planes = [];
 
-    planeIDs = [];
-
     intersection = false;
 
     global = false;
@@ -22,6 +20,17 @@ export class MRClippingGeometry {
      * @param {object} geometry - The geometry to be captured internally by `this.geometry`.
      */
     constructor(geometry) {
+        // Limits to one segment BoxGeometry instance like created with
+        // "new BoxGeometry(width, height, depth);" for simplicity for now.
+
+        // The geometry type limitation may not be immediately obvious to users of this module.
+        // If unsupported geometry is passed, no errors may be raised, but the behavior may
+        // become erratic, and such bugs can be difficult to investigate. This check is in
+        // place to avoid such unnecessary effort.
+        if (geometry.type !== 'BoxGeometry' || geometry.parameters?.widthSegments !== 1 || geometry.parameters?.heightSegments !== 1 || geometry.parameters?.depthSegments !== 1) {
+            throw new Error('Unsupported Clipping geometry type.');
+        }
+
         this.geometry = geometry;
     }
 }
