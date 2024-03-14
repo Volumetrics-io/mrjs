@@ -46,6 +46,13 @@ export class TextSystem extends MRSystem {
                 );
             });
         });
+
+        this.app.addEventListener('trigger-text-style-update', (e) => {
+            // The event has the entity stored as its detail.
+            if (e.detail !== undefined) {
+                this._updateSpecificEntity(e.detail);
+            }
+        });
     }
 
     /**
@@ -59,42 +66,32 @@ export class TextSystem extends MRSystem {
 
     /**
      * @function
-     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
-     * systems registry that need to be run.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
+     * @description The per entity triggered update call.  Handles updating all text items including updates for style and cleaning of content for special characters.
      */
-    get needsSystemUpdate() {
-        // want this to run based on registry since textChanged and style will be the determiner for if an update is needed per entity
-        // instead of the system itself.
-        return this.registry.size > 0;
+    _updateSpecificEntity(entity) {
+        this.updateStyle(entity);
+
+        entity.textObj.sync(() => {
+            if (entity instanceof MRButton) {
+                entity.textObj.anchorX = 'center';
+            } else {
+                entity.textObj.position.setX(-entity.width / 2);
+                entity.textObj.position.setY(entity.height / 2);
+            }
+
+            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
+                this.updateTextInput(entity);
+            }
+        });
     }
 
     /**
      * @function
-     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
-     * This function does nothing, but is needed for the pairing. TextSystem`s `needsSystemUpdate` solely depends on registry size
-     * instead of a boolean. This is required s.t. we can monitor and properly update the system when the text content has changed
-     * and not just the style itself. Since that is a per-entity check, needsSystemUpdate must always run on every entity with
-     * the needsStyleUpdate being the optimization determiner instead.
+     * @description The per global scene event update call. Handles updating all text items including updates for style and cleaning of content for special characters.
      */
-    set needsSystemUpdate(bool) {
-        console.log(
-            '`TextSystem.needSystemUpdate = bool` does nothing. See comment in docs for more explanation. https://docs.mrjs.io/javascript-api/#textsystem.needssystemupdate'
-        );
-        this.alwaysNeedsSystemUpdate = true;
-    }
-
-    /**
-     * @function
-     * @description The generic system update call for all text items including updates for style and cleaning of content for special characters.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
+    eventUpdate = () => {
         for (const entity of this.registry) {
-            let isTextFieldOrArea = entity instanceof MRTextField || entity instanceof MRTextArea;
-
-            let text = isTextFieldOrArea
+            let text = entity instanceof MRTextField || entity instanceof MRTextArea
                 ? entity.input.value
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
@@ -112,23 +109,20 @@ export class TextSystem extends MRSystem {
 
             if (textContentChanged) {
                 entity.textObj.text = text;
-            }
-            if (textContentChanged || entity.needsStyleUpdate) {
-                this.updateStyle(entity);
-                entity.textObj.sync(() => {
-                    if (entity instanceof MRButton) {
-                        entity.textObj.anchorX = 'center';
-                    } else {
-                        entity.textObj.position.setX(-entity.width / 2);
-                        entity.textObj.position.setY(entity.height / 2);
-                    }
-
-                    if (isTextFieldOrArea) {
-                        this.updateTextInput(entity);
-                    }
-                });
+                this._updateSpecificEntity(entity);
             }
         }
+    }
+
+    /**
+     * @function
+     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
     }
 
     updateTextInput(entity) {

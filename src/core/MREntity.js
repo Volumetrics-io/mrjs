@@ -109,103 +109,37 @@ export class MREntity extends MRElement {
         return this.size.y;
     }
 
-    // undefined == always update, once set to true/false trigger, then updates based on that every frame
-    // setting back to undefined sets to always update.
-    _needsGeometryUpdate = false;
-
     /**
      * @function
-     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often.
-     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
+     * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * relying on an overall scene or all items to update isnt beneficial.
+     * @returns {number} - height of the 3D object.
      */
-    get alwaysNeedsGeometryUpdate() {
-        return this._needsGeometryUpdate === undefined;
+    triggerGeometryStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
     }
 
     /**
      * @function
-     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
-     * Useful for readability and to not need to check against undefined often.
+     * @description Triggers a system run to update material specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * relying on an overall scene or all items to update isnt beneficial.
+     * @returns {number} - height of the 3D object.
      */
-    set alwaysNeedsGeometryUpdate(bool) {
-        this._needsGeometryUpdate = bool ? undefined : false;
+    triggerMaterialStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
     }
 
     /**
      * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
-     * Allows subclasses to override with their own implementation.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsGeometryUpdate() {
-        return this.alwaysNeedsGeometryUpdate || this._needsGeometryUpdate;
-    }
-
-    /**
-     * @function
-     * @description Set the needsStyleUpdate parameter.
-     * undefined - means the StyleSystem will update this entity's style every time the application loops.
-     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
-     */
-    set needsGeometryUpdate(bool) {
-        this._needsGeometryUpdate = bool;
-    }
-
-    // undefined == always update, once set to true/false trigger, then updates based on that every frame
-    // setting back to undefined sets to always update.
-    _needsStyleUpdate = false;
-
-    /**
-     * @function
-     * @description Checks if the system is setup to always run instead of being in a state that allows for toggling on and off.
-     * Useful for readability and to not need to check against undefined often.
-     * @returns {boolean} true if the internal _needsSystemUpdate is set to 'undefined', false otherwise.
-     */
-    get alwaysNeedsStyleUpdate() {
-        return this._needsStyleUpdate === undefined;
-    }
-
-    /**
-     * @function
-     * @description Sets the system ito always run (true) or to be in a state that allows for toggling on and off (false).
-     * Useful for readability and to not need to check against undefined often.
-     */
-    set alwaysNeedsStyleUpdate(bool) {
-        this._needsStyleUpdate = bool ? undefined : false;
-    }
-
-    /**
-     * @function
-     * @description Getter to checks if we need the StyleSystem to run on this entity during the current iteration.
-     * Default implementation returns true if the needsSystemUpdate flag has been set to true or is in the alwaysNeedsSystemUpdate state.
-     * Allows subclasses to override with their own implementation.
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsStyleUpdate() {
-        return this.alwaysNeedsStyleUpdate || this._needsStyleUpdate;
-    }
-
-    /**
-     * @function
-     * @description Set the needsStyleUpdate parameter.
-     * undefined - means the StyleSystem will update this entity's style every time the application loops.
-     * true/false - means the StyleSystem will update this entity's style only running one iteration when set to true and then reset back to false waiting for the next trigger.
-     */
-    set needsStyleUpdate(bool) {
-        this._needsStyleUpdate = bool;
-    }
-
-    /**
-     * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * These are run after the MaterialStyleSystem does its own update on the entity.
      */
     updateMaterialStyle() {}
 
     /**
      * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be overwritten by others when they create new entities
+     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * These are run after the GeometryStyleSystem does its own update on the entity.
      */
     updateGeometryStyle() {}
 
@@ -264,117 +198,56 @@ export class MREntity extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
+        /** Handle scene Global level events **/
+
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
         });
         this.loadAttributes();
 
         document.addEventListener('engine-started', (event) => {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
         });
+
+        /** Handle events specific to this entity **/
+        // note: these will need the trigger for Material or Geometry if applicable
 
         MOUSE_EVENTS.forEach((eventType) => {
             this.addEventListener(eventType, (event) => {
-                if (!this.alwaysNeedsGeometryUpdate) {
-                    this.needsGeometryUpdate = true;
-                }
-                if (!this.alwaysNeedsStyleUpdate) {
-                    this.needsStyleUpdate = true;
-                }
+                this.triggerGeometryStyleUpdate();
+                this.triggerMaterialStyleUpdate();
             });
         });
 
         this.addEventListener('touchstart', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('touchmove', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('touchend', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onTouch(event);
         });
         this.addEventListener('hoverstart', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onHover(event);
         });
         this.addEventListener('hoverend', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
             this.onHover(event);
         });
 
         this.addEventListener('child-updated', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
-        });
-
-        window.addEventListener('resize', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
-        });
-
-        document.addEventListener('enterxr', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
-        });
-        document.addEventListener('exitxr', (event) => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerMaterialStyleUpdate();
         });
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
@@ -458,12 +331,8 @@ export class MREntity extends MRElement {
 
             switch (mutation.type) {
                 case 'childList':
-                    if (!this.alwaysNeedsGeometryUpdate) {
-                        this.needsGeometryUpdate = true;
-                    }
-                    if (!this.alwaysNeedsStyleUpdate) {
-                        this.needsStyleUpdate = true;
-                    }
+                    this.triggerGeometryStyleUpdate();
+                    this.triggerMaterialStyleUpdate();
                     break;
                 case 'attributes':
                     if (mutation.attributeName.includes('comp')) {

@@ -18,48 +18,63 @@ export class GeometryStyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
+
+        this.app.addEventListener('trigger-geometry-style-update', (e) => {
+            // The event has the entity stored as its detail.
+            if (e.detail !== undefined) {
+                this._updateSpecificEntity(e.detail);
+            }
+        });
     }
 
     /**
      * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    _updateSpecificEntity(entity) {
+        // Only want to dispatch if anything was actually updated in this iteration.
+        let changed = false;
+
+        // Anything needed for mrjs defined entities - the order of the below matters
+        if (entity instanceof MRDivEntity) {
+            changed = this.setUpdatedBorder(entity);
+        }
+        changed = this.setScale(entity);
+        if (entity instanceof MRMedia) {
+            changed = this.setUpdatedMediaPlane(entity);
+        }
+
+        // User additional - Main Entity Style Change
+        if (entity instanceof MREntity) {
+            changed = entity.updateGeometryStyle();
+        }
+
+        if (changed) {
+            // TODO - TBH i think this is only needed for scale, but just in case others use changed
+            // width/height for anything else, and update is required for children as well
+            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+        }
+    }
+
+    /**
+     * @function
+     * @description The per global scene event update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    eventUpdate = () => {
+        for (const entity of this.registry) {
+            this._updateSpecificEntity(entity);
+        }
+    };
+
+    /**
+     * @function
+     * @description The per-frame system update call. 
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        for (const entity of this.registry) {
-            if (!entity.needsGeometryUpdate) {
-                return;
-            }
-
-            // Only want to dispatch if anything was actually updated
-            // in this iteration.
-            let changed = false;
-
-            // Anything needed for mrjs defined entities - the order of the below matters
-            if (entity instanceof MRDivEntity) {
-                changed = this.setUpdatedBorder(entity);
-            }
-            changed = this.setScale(entity);
-            if (entity instanceof MRMedia) {
-                changed = this.setUpdatedMediaPlane(entity);
-            }
-
-            // User additional - Main Entity Style Change
-            if (entity instanceof MREntity) {
-                changed = entity.updateGeometryStyle();
-            }
-
-            // Cleanup
-            if (changed) {
-                // TBH i think this is only needed for scale, but just in case others use changed
-                // width/height for anything else, and update is required for children as well
-                entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            }
-            if (!entity.alwaysNeedsGeometryUpdate) {
-                entity.needsGeometryUpdate = false;
-            }
-        }
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
     }
 
     /**

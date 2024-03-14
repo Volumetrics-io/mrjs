@@ -18,37 +18,51 @@ export class MaterialStyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
+
+        this.app.addEventListener('trigger-material-style-update', (e) => {
+            // The event has the entity stored as its detail.
+            if (e.detail !== undefined) {
+                this._updateSpecificEntity(e.detail);
+            }
+        });
     }
 
     /**
      * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    _updateSpecificEntity(entity) {
+        // Anything needed for mrjs defined entities - the order of the below matters
+        if (entity instanceof MRDivEntity) {
+            this.setBackground(entity);
+        }
+        this.setVisibility(entity);
+
+        // User additional - Main Entity Style Change
+        if (entity instanceof MREntity) {
+            entity.updateMaterialStyle();
+        }
+    }
+
+    /**
+     * @function
+     * @description The per global scene event update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    eventUpdate = () => {
+        for (const entity of this.registry) {
+            this._updateSpecificEntity(entity);
+        }
+    };
+
+    /**
+     * @function
+     * @description The per-frame system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        for (const entity of this.registry) {
-            // if (!entity.needsStyleUpdate) {
-            //     return;
-            // }
-
-            // Anything needed for mrjs defined entities - the order of the below matters
-            if (entity instanceof MRDivEntity) {
-                this.setBackground(entity);
-            }
-            this.setVisibility(entity);
-
-            // User additional - Main Entity Style Change
-            if (entity instanceof MREntity) {
-                entity.updateMaterialStyle();
-            }
-
-            // Cleanup
-            // entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            if (!entity.alwaysNeedsStyleUpdate) {
-                entity.needsStyleUpdate = false;
-            }
-        }
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
     }
 
     /**
