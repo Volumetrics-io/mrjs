@@ -28,14 +28,6 @@ export class MRModel extends MRDivEntity {
         this.animations = [];
     }
 
-    // get width() {
-    //     ...;
-    // }
-
-    // get height() {
-    //     ...;
-    // }
-
     /**
      * @function
      * @description Pair getter for the src property of <mr-model>. Important so that when a user tries
