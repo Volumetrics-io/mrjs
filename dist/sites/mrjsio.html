@@ -29,7 +29,7 @@
     <meta content="MRjs" property="og:site_name" class="next-head" />
 
     <!-- CSS Styles -->
-    <link rel="stylesheet" type="text/css" href="/sites/mrjsio-style.css" />
+    <link rel="stylesheet" type="text/css" href="mrjsio-style.css" />
 
     <!-- MRjs -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script> -->
@@ -38,7 +38,7 @@
 </head>
 
 <body>
-    <mr-app>
+    <mr-app debug="true" stats="true">
     <!-- <mr-app> -->
         <mr-light color="white" intensity="2" data-position="0 0.5 0.5"></mr-light>
         <mr-light id="mouselight" color="white" intensity="0.25" data-position="0 0 0.5"></mr-light>
@@ -59,7 +59,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="extendable" data-position="0.01 0.01 5"
                         style="height: 120px; width: 140px; scale: 2.7; z-index: 50 ;"
-                        src="/sites/mrjsio-assets/jigsaw.glb"></mr-model>
+                        src="/mrjsio-assets/jigsaw.glb"></mr-model>
                     <mr-text class="h2">Extendable</mr-text>
                     <mr-text class="narrow">Being open-source and built on top of web standards, you can easily
                         implement custom elements and contribute to the ecosystem.</mr-text>
@@ -67,7 +67,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="familiar" data-position="0 0 5"
                         style="height: 120px; width: 140px; scale: 1.7; z-index: 50 ;"
-                        src="/sites/mrjsio-assets/familiar.glb"></mr-model>
+                        src="/mrjsio-assets/models/familiar.glb"></mr-model>
                     <mr-text class="h2">Familiar</mr-text>
                     <mr-text class="narrow">Looks and feels like native HTML and CSS, but designed from the ground up
                         for mixed-reality. Start with 2D and ease your way into creating 3D content.</mr-text>
@@ -75,7 +75,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="all-in-one" data-position="0 0 0"
                         style="height: 120px; width: 140px; scale: 1.7; z-index: 30;"
-                        src="/sites/mrjsio-assets/all-in-one.glb"></mr-model>
+                        src="/mrjsio-assets/models/all-in-one.glb"></mr-model>
                     <mr-text class="h2">All-in-one</mr-text>
                     <mr-text class="narrow">Asset management, physics, and user interaction come built in, so you can
                         spend less time laying the foundation and more time building your app.</mr-text>
