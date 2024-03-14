@@ -152,16 +152,10 @@ export class PhysicsSystem extends MRSystem {
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
 
-        // TODO - we need a way for the rapier to handle the scale better given varying sizes of the object.
-        // Ignoring scale is a fix for now given the differing model sizes, but the bbox's created from this
-        // in mrjs.io are even still too big considering that.
-        //
-        // I wonder if it's partly due to the background object since mr-model has a background attached.
         if (entity instanceof MRModel) {
-            const orig_Scale = entity.object3D.scale;
-            entity.object3D.scale.set(1, 1, 1);
+            entity.object3D.remove(entity.background);
             this.tempBBox.setFromObject(entity.object3D, true);
-            entity.object3D.scale.set(orig_Scale.x, orig_Scale.y, orig_Scale.z);
+            entity.object3D.add(entity.background);
         } else {
             this.tempBBox.setFromObject(entity.object3D, true);
         }
