@@ -3,9 +3,7 @@ import fs from 'fs/promises'; // Node.js file system module with promises
 
 // todo: in future dont hard code this, but the relative links based on filepath dont work
 // using a server to host them works best, so just grabbing from github is fine for now.
-const MODELS_URL = 'https://github.com/Volumetrics-io/mrjs/main/samples/assets/models/'
-
-const fileNames = ['../index', 'anchors', 'audio', 'embed', 'models', 'skybox'];
+const fileNames = ['../index', 'anchors', 'audio', 'embed', 'images', 'models', 'mrjs', 'skybox', 'video'];
 
 describe('Test the Examples', () => {
     let browser;
