@@ -30,8 +30,6 @@ export class PhysicsSystem extends MRSystem {
         super(false);
         this.debug = this.app.debug;
 
-        // this.currentEntity = null; // - we're not using this variable at all
-
         // Temp objects to not have to create and destroy the system
         // items in init and update functions constantly.
         this.tempWorldPosition = new THREE.Vector3();
@@ -117,7 +115,7 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
-     * @description Initializes the rigid body used by the physics for div
+     * @description Initializes the rigid body used by the physics for non-nr-model div entities
      * @param {MREntity} entity - the entity being updated
      */
     initUIEntityBody(entity) {
@@ -133,7 +131,7 @@ export class PhysicsSystem extends MRSystem {
         this.tempSize.multiply(this.tempWorldScale);
 
         entity.physics.halfExtents.copy(this.tempSize);
-        // entity.physics.halfExtents.divideScalar(2);
+        entity.physics.halfExtents.divideScalar(2);
 
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
         entity.physics.body = mrjsUtils.physics.world.createRigidBody(rigidBodyDesc);
@@ -154,18 +152,21 @@ export class PhysicsSystem extends MRSystem {
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
 
-        const orig_Scale = entity.object3D.scale;
-        entity.object3D.scale.set(1, 1, 1);
-        this.tempBBox.setFromObject(entity.object3D, true);
-        entity.object3D.scale.set(orig_Scale.x, orig_Scale.y, orig_Scale.z);
+        // TODO - we need a way for the rapier to handle the scale better given varying sizes of the object.
+        // Ignoring scale is a fix for now given the differing model sizes, but the bbox's created from this
+        // in mrjs.io are even still too big considering that.
+        //
+        // I wonder if it's partly due to the background object since mr-model has a background attached.
+        if (entity instanceof MRModel) {
+            const orig_Scale = entity.object3D.scale;
+            entity.object3D.scale.set(1, 1, 1);
+            this.tempBBox.setFromObject(entity.object3D, true);
+            entity.object3D.scale.set(orig_Scale.x, orig_Scale.y, orig_Scale.z);
+        } else {
+            this.tempBBox.setFromObject(entity.object3D, true);
+        }
 
         this.tempBBox.getSize(this.tempSize);
-
-        if (entity instanceof MRModel) {
-            console.log('on initSimpleBody', entity);
-            console.log('object3D orig scale:', entity.object3D.scale);
-            console.log('calced tempsize: ', this.tempSize);
-        }
 
         entity.physics.halfExtents.copy(this.tempSize);
         entity.physics.halfExtents.divideScalar(2);

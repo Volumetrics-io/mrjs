@@ -324,7 +324,6 @@ export class MREntity extends MRElement {
             this.onTouch(event);
         });
         this.addEventListener('hoverstart', (event) => {
-            console.log(this);
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
@@ -334,7 +333,6 @@ export class MREntity extends MRElement {
             this.onHover(event);
         });
         this.addEventListener('hoverend', (event) => {
-             console.log(this);
             if (!this.alwaysNeedsGeometryUpdate) {
                 this.needsGeometryUpdate = true;
             }
