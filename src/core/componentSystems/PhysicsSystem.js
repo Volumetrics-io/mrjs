@@ -29,11 +29,13 @@ export class PhysicsSystem extends MRSystem {
     constructor() {
         super(false);
         this.debug = this.app.debug;
+
+        // this.currentEntity = null; // - we're not using this variable at all
+
+        // Temp objects to not have to create and destroy the system
+        // items in init and update functions constantly.
         this.tempWorldPosition = new THREE.Vector3();
         this.tempWorldQuaternion = new THREE.Quaternion();
-
-        this.currentEntity = null;
-
         this.tempWorldScale = new THREE.Vector3();
         this.tempBBox = new THREE.Box3();
         this.tempSize = new THREE.Vector3();
@@ -49,26 +51,11 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
-    eventUpdate = () => {
-        for (const entity of this.registry) {
-            if (entity.physics?.body == null) {
-                continue;
-            }
-            if (entity instanceof MRModel) {
-                this.updateSimpleBody(entity);
-            } else if (entity instanceof MRDivEntity) {
-                this.updateUIBody(entity);
-            }
-        }
-    };
-
     /**
      * @function
-     * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
+     * @description The per global scene event update call.  Based on the captured physics events for the frame, handles all items appropriately.
      */
-    update(deltaTime, frame) {
+    eventUpdate = () => {
         mrjsUtils.physics.world.step(mrjsUtils.physics.eventQueue);
 
         for (const entity of this.registry) {
@@ -79,6 +66,16 @@ export class PhysicsSystem extends MRSystem {
         }
 
         this.updateDebugRenderer();
+    };
+
+    /**
+     * @function
+     * @description The per-frame system update call. Based on the captured physics events for the frame, handles all items appropriately.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        this.eventUpdate();
     }
 
     /**
@@ -136,7 +133,7 @@ export class PhysicsSystem extends MRSystem {
         this.tempSize.multiply(this.tempWorldScale);
 
         entity.physics.halfExtents.copy(this.tempSize);
-        entity.physics.halfExtents.divideScalar(2);
+        // entity.physics.halfExtents.divideScalar(2);
 
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.fixed();
         entity.physics.body = mrjsUtils.physics.world.createRigidBody(rigidBodyDesc);
@@ -156,13 +153,18 @@ export class PhysicsSystem extends MRSystem {
      */
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
+
+        const orig_Scale = entity.object3D.scale;
+        entity.object3D.scale.set(1, 1, 1);
         this.tempBBox.setFromObject(entity.object3D, true);
+        entity.object3D.scale.set(orig_Scale.x, orig_Scale.y, orig_Scale.z);
 
         this.tempBBox.getSize(this.tempSize);
 
         if (entity instanceof MRModel) {
-            console.log('initSimpleBody');
-            console.log(entity, 'dimensions', this.tempBBox, this.tempSize);
+            console.log('on initSimpleBody', entity);
+            console.log('object3D orig scale:', entity.object3D.scale);
+            console.log('calced tempsize: ', this.tempSize);
         }
 
         entity.physics.halfExtents.copy(this.tempSize);

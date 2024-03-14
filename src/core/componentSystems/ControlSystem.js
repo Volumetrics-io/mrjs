@@ -185,7 +185,6 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     touchStart = (collider1, collider2, entity) => {
-        console.log('touchstart', collider1, collider2, entity);
         entity.touch = true;
         mrjsUtils.physics.world.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
@@ -211,7 +210,6 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     touchEnd = (entity) => {
-        console.log('touchend', entity);
         this.tempPreviousPosition.set(0, 0, 0);
         this.tempLocalPosition.set(0, 0, 0);
         this.tempWorldPosition.set(0, 0, 0);
@@ -233,8 +231,6 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverStart = (collider1, collider2, entity) => {
-        console.log('hoverstart', collider1, collider2, entity);
-
         entity.classList.add('hover');
         mrjsUtils.physics.world.contactPair(collider1, collider2, (manifold, flipped) => {
             this.tempLocalPosition.copy(manifold.localContactPoint2(0));
@@ -260,8 +256,6 @@ export class ControlSystem extends MRSystem {
      * @param {MREntity} entity - the current entity
      */
     hoverEnd = (entity) => {
-        console.log('hoverend', entity);
-
         entity.classList.remove('hover');
         entity.dispatchEvent(
             new CustomEvent('hoverend', {
@@ -302,9 +296,7 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse over event
      */
     mouseOver = (event) => {
-        console.log('mouseOver');
         this.hit = this.pixelRayCast(event);
-        console.log(this.hit);
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
@@ -318,7 +310,6 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse down event
      */
     onMouseDown = (event) => {
-        console.log('mouseDown');
         this.down = true;
         this.currentEntity?.classList.remove('hover');
         this.currentEntity?.classList.add('active');
@@ -339,7 +330,6 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse up event
      */
     onMouseUp = (event) => {
-        console.log('mouseUp');
         this.down = false;
         this.currentEntity?.classList.remove('active');
         this.currentEntity?.dispatchEvent(new Event('click'));
@@ -357,7 +347,6 @@ export class ControlSystem extends MRSystem {
         if (!entity) {
             return;
         }
-        console.log(entity);
 
         if (!this.currentEntity) {
             this.currentEntity = entity;
