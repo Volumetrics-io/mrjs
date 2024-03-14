@@ -152,13 +152,13 @@ export class PhysicsSystem extends MRSystem {
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
 
-        if (entity instanceof MRModel) {
-            entity.object3D.remove(entity.background);
+        // if (entity instanceof MRModel) {
+        //     entity.object3D.remove(entity.background);
+        //     this.tempBBox.setFromObject(entity.object3D, true);
+        //     entity.object3D.add(entity.background);
+        // } else {
             this.tempBBox.setFromObject(entity.object3D, true);
-            entity.object3D.add(entity.background);
-        } else {
-            this.tempBBox.setFromObject(entity.object3D, true);
-        }
+        // }
 
         this.tempBBox.getSize(this.tempSize);
 
