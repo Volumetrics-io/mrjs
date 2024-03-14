@@ -3,7 +3,7 @@ import fs from 'fs/promises'; // Node.js file system module with promises
 
 // todo: in future dont hard code this, but the relative links based on filepath dont work
 // using a server to host them works best, so just grabbing from github is fine for now.
-const fileNames = ['mrjsio',];
+const fileNames = ['mrjsio'];
 
 describe('Test the sites we build with mrjs', () => {
     let browser;
