@@ -29,11 +29,11 @@ export class PhysicsSystem extends MRSystem {
     constructor() {
         super(false);
         this.debug = this.app.debug;
+
+        // Temp objects to not have to create and destroy the system
+        // items in init and update functions constantly.
         this.tempWorldPosition = new THREE.Vector3();
         this.tempWorldQuaternion = new THREE.Quaternion();
-
-        this.currentEntity = null;
-
         this.tempWorldScale = new THREE.Vector3();
         this.tempBBox = new THREE.Box3();
         this.tempSize = new THREE.Vector3();
@@ -49,6 +49,10 @@ export class PhysicsSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description The per global scene event update call.  Based on the captured physics events for the frame, handles all items appropriately.
+     */
     eventUpdate = () => {
         for (const entity of this.registry) {
             if (entity.physics?.body == null) {
@@ -64,11 +68,12 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
-     * @description The generic system update call. Based on the captured physics events for the frame, handles all items appropriately.
+     * @description The per-frame system update call. Based on the captured physics events for the frame, handles all items appropriately.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
+        // per-frame time step
         mrjsUtils.physics.world.step(mrjsUtils.physics.eventQueue);
 
         for (const entity of this.registry) {
@@ -113,20 +118,19 @@ export class PhysicsSystem extends MRSystem {
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-
         entity.physics.body.setTranslation(...this.tempWorldPosition, true);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
     }
 
     /**
      * @function
-     * @description Initializes the rigid body used by the physics for div or Model entity
+     * @description Initializes the rigid body used by the physics for non-nr-model div entities
      * @param {MREntity} entity - the entity being updated
      */
     initUIEntityBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
-        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
+        this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
         this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
         this.tempBBox.getSize(this.tempSize);
         this.tempSize.multiply(this.tempWorldScale);
@@ -152,7 +156,14 @@ export class PhysicsSystem extends MRSystem {
      */
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
-        this.tempBBox.setFromObject(entity.object3D, true);
+
+        if (entity instanceof MRModel) {
+            entity.object3D.remove(entity.background);
+            this.tempBBox.setFromObject(entity.object3D, true);
+            entity.object3D.add(entity.background);
+        } else {
+            this.tempBBox.setFromObject(entity.object3D, true);
+        }
 
         this.tempBBox.getSize(this.tempSize);
 
@@ -272,7 +283,13 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     updateSimpleBody(entity) {
-        this.tempBBox.setFromObject(entity.object3D, true);
+        if (entity instanceof MRModel) {
+            entity.object3D.remove(entity.background);
+            this.tempBBox.setFromObject(entity.object3D, true);
+            entity.object3D.add(entity.background);
+        } else {
+            this.tempBBox.setFromObject(entity.object3D, true);
+        }
 
         this.tempBBox.getSize(this.tempSize);
 
