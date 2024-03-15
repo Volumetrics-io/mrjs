@@ -54,6 +54,26 @@ export class PhysicsSystem extends MRSystem {
      * @description The per global scene event update call.  Based on the captured physics events for the frame, handles all items appropriately.
      */
     eventUpdate = () => {
+        for (const entity of this.registry) {
+            if (entity.physics?.body == null) {
+                continue;
+            }
+            if (entity instanceof MRModel) {
+                this.updateSimpleBody(entity);
+            } else if (entity instanceof MRDivEntity) {
+                this.updateUIBody(entity);
+            }
+        }
+    };
+
+    /**
+     * @function
+     * @description The per-frame system update call. Based on the captured physics events for the frame, handles all items appropriately.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
+     */
+    update(deltaTime, frame) {
+        // per-frame time step
         mrjsUtils.physics.world.step(mrjsUtils.physics.eventQueue);
 
         for (const entity of this.registry) {
@@ -64,16 +84,6 @@ export class PhysicsSystem extends MRSystem {
         }
 
         this.updateDebugRenderer();
-    };
-
-    /**
-     * @function
-     * @description The per-frame system update call. Based on the captured physics events for the frame, handles all items appropriately.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
-        this.eventUpdate();
     }
 
     /**
@@ -108,7 +118,6 @@ export class PhysicsSystem extends MRSystem {
 
         entity.object3D.getWorldPosition(this.tempWorldPosition);
         entity.object3D.getWorldQuaternion(this.tempWorldQuaternion);
-
         entity.physics.body.setTranslation(...this.tempWorldPosition, true);
         entity.physics.body.setRotation(this.tempWorldQuaternion, true);
     }
@@ -120,10 +129,6 @@ export class PhysicsSystem extends MRSystem {
      */
     initUIEntityBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
-
-        if (entity instanceof MRModel) {
-            console.error('should not be hitting this');
-        }
 
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
         this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
@@ -278,7 +283,13 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     updateSimpleBody(entity) {
-        this.tempBBox.setFromObject(entity.object3D, true);
+        if (entity instanceof MRModel) {
+            entity.object3D.remove(entity.background);
+            this.tempBBox.setFromObject(entity.object3D, true);
+            entity.object3D.add(entity.background);
+        } else {
+            this.tempBBox.setFromObject(entity.object3D, true);
+        }
 
         this.tempBBox.getSize(this.tempSize);
 
