@@ -184,16 +184,11 @@ export class MaskingSystem extends MRSystem {
                     //
                     // Since we're stepping through every child, we only need to touch each mesh's material instead of
                     // updating group objects as a whole.
-                    if (!child.object3D.isGroup) {
-                        setupMaskedMaterial(child.object3D.material, stencilRefShift);
-                    }
-
-                    // XXX - This is a temporary fix, there's a more general solution here using entity.object3D.traverse
-                    // rather than entity.traverse, but we'd also need to move entity.ignoreStencil from entity,
-                    // to entity.object3D.userData.ignoreStencil
-                    if (child instanceof MRTextEntity) {
-                        setupMaskedMaterial(child.textObj.material, stencilRefShift);
-                    }
+                    child.traverseObjects((object) => {
+                        if (object.isMesh) {
+                            setupMaskedMaterial(object.material, stencilRefShift);
+                        }
+                    });
                 }
             });
         }

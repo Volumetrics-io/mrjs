@@ -91,18 +91,12 @@ export class ClippingSystem extends MRSystem {
             return;
         }
 
-        const traverse = (object) => {
+        entity.traverseObjects((object) => {
             if (object.isMesh) {
                 object.material.clippingPlanes = clipping.planes;
                 object.material.clipIntersection = clipping.intersection;
             }
-            for (const child of object.children) {
-                if (!child.userData.isEntityObject3DRoot) {
-                    traverse(child);
-                }
-            }
-        };
-        traverse(entity.object3D);
+        });
     }
 
     /**
