@@ -42,6 +42,7 @@ import './core/entities/MRLight';
 import './core/entities/MRModel';
 import './core/entities/MRPanel';
 import './core/entities/MRSkyBox';
+import './core/entities/MRStats';
 import './core/entities/MRTextArea';
 import './core/entities/MRTextField';
 // CORE - COMPONENT-SYSTEMS
@@ -56,6 +57,7 @@ import './core/componentSystems/MaskingSystem';
 import './core/componentSystems/MaterialStyleSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
+import './core/componentSystems/StatsSystem';
 import './core/componentSystems/TextSystem';
 
 // EXPORTS

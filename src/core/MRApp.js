@@ -25,6 +25,7 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
+import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
 import MRUser from 'mrjs/core/user/MRUser';
 
 ('use strict');
@@ -113,7 +114,15 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
+        if (this.getAttribute('stats')) {
+            const statsEl = document.createElement('mr-stats');
+            statsEl.setAttribute('data-comp-anchor', 'type: plane; label: wall;');
+            statsEl.setAttribute('data-position', '0 0.2 0.01');
+            this.appendChild(statsEl);
+        }
+
         // order matters for all the below system creation items
+        this.statsSystem = new StatsSystem();
         this.panelSystem = new PanelSystem();
         this.layoutSystem = new LayoutSystem();
         this.textSystem = new TextSystem();
@@ -213,14 +222,6 @@ export class MRApp extends MRElement {
             for (const layer of this.layers) {
                 this.camera.layers.enable(layer);
             }
-        }
-
-        const statsEnabled = this.getAttribute('stats');
-
-        if (statsEnabled) {
-            this.stats = new Stats();
-            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild(this.stats.dom);
         }
 
         if (this.debug) {
@@ -446,12 +447,6 @@ export class MRApp extends MRElement {
         // ----- grab important vars ----- //
 
         const deltaTime = this.clock.getDelta();
-
-        // ----- Update stats if enabled ----- //
-
-        if (this.stats) {
-            this.stats.update();
-        }
 
         // ----- Update needed items ----- //
 
