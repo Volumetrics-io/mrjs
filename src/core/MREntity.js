@@ -420,6 +420,23 @@ export class MREntity extends MRElement {
             child.traverse(callBack);
         }
     }
+
+    /**
+     * @function
+     * @description Runs the passed through function on the objects associated with this Entity
+     * @param {Function} callBack - the function to run recursively.
+     */
+    traverseObjects(callBack) {
+        const traverse = (object) => {
+            callBack(object);
+            for (const child of object.children) {
+                if (!child.userData.isEntityObject3DRoot) {
+                    traverse(child);
+                }
+            }
+        };
+        traverse(this.object3D);
+    }
 }
 
 customElements.get('mr-entity') || customElements.define('mr-entity', MREntity);
