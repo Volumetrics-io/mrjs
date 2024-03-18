@@ -74,9 +74,9 @@ const setupMaskingMaterial = (material, shiftBit, debug = false) => {
  */
 const setupMaskedMaterial = (material, shiftBit) => {
     material.stencilWrite = true;
-    material.stencilRef = 1 << shiftBit;
+    material.stencilRef |= 1 << shiftBit;
     material.stencilFunc = THREE.EqualStencilFunc;
-    material.stencilFuncMask = 1 << shiftBit;
+    material.stencilFuncMask |= 1 << shiftBit;
     material.stencilFail = THREE.KeepStencilOp;
     material.stencilZFail = THREE.KeepStencilOp;
     material.stencilZPass = THREE.KeepStencilOp;
@@ -100,7 +100,8 @@ export class MaskingSystem extends MRSystem {
         this.scene.matrixWorldAutoUpdate = false;
 
         this.sourceElementMap = new Map();
-        this.panelCount = 0;
+        this.maskingMeshMap = new Map();
+        this.panels = [];
     }
 
     /**
@@ -148,36 +149,41 @@ export class MaskingSystem extends MRSystem {
      */
     onNewEntity(entity) {
         if (entity instanceof MRPanel) {
-            if (this.panelCount >= MAX_PANEL_NUM) {
+            if (this.panels.length >= MAX_PANEL_NUM) {
                 console.warn('Masking system supports up to eight panels.');
                 return;
             }
 
             // Ignoring panel removal for now.
             // TODO: Handle panel removal
-            const stencilRefShift = this.panelCount;
-            this.panelCount++;
+            const stencilRefShift = this.panels.length;
+            this.panels.push(entity);
 
+            // We need to mask based off the background mesh of this object.
+            const sourceObj = entity.background;
+
+            // TODO: Optimize material.
+            // Since only needs to write to the stencil buffer, no need to write to the color buffer,
+            // therefore, we can use a simpler material than MeshBasicMaterial. Should we use
+            // ShaderMaterial?
+            const mesh = new THREE.Mesh(sourceObj.geometry, new THREE.MeshBasicMaterial());
+            setupMaskingMaterial(mesh.material, stencilRefShift, this.app.debug);
+
+            // No automatic matrices update because world matrices are updated in sync().
+            mesh.matrixAutoUpdate = false;
+            mesh.matrixWorldAutoUpdate = false;
+
+            this.scene.add(mesh);
+            this.sourceElementMap.set(mesh, entity);
+            this.maskingMeshMap.set(entity, mesh);
+
+            // Child elements are masked by this panel so traverse children and set up their materials for stencil
             entity.traverse((child) => {
-                if (child instanceof MRPanel && child.object3D.isGroup) {
-                    // The panel entity should contain a group object where the first panel child we hit is this panel itself.
-                    // We need to mask based off the background mesh of this object.
-                    const sourceObj = child.background;
+                if (entity === child) {
+                    return;
+                }
 
-                    // TODO: Optimize material.
-                    // Since only needs to write to the stencil buffer, no need to write to the color buffer,
-                    // therefore, we can use a simpler material than MeshBasicMaterial. Should we use
-                    // ShaderMaterial?
-                    const mesh = new THREE.Mesh(sourceObj.geometry, new THREE.MeshBasicMaterial());
-                    setupMaskingMaterial(mesh.material, stencilRefShift, this.app.debug);
-
-                    // No automatic matrices update because world matrices are updated in sync().
-                    mesh.matrixAutoUpdate = false;
-                    mesh.matrixWorldAutoUpdate = false;
-
-                    this.scene.add(mesh);
-                    this.sourceElementMap.set(mesh, child);
-                } else if (child instanceof MRDivEntity && !(child instanceof MRPanel) && !child.ignoreStencil) {
+                if (child instanceof MRDivEntity && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Additionally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.
@@ -191,6 +197,22 @@ export class MaskingSystem extends MRSystem {
                     });
                 }
             });
+        } else if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
+            // There is a chance that a child entity is added after parent panel addition.
+            // Check registered panels and set up the material if panels are found in parents.
+            for (const panel of this.panels) {
+                if (panel.contains(entity)) {
+                    const mesh = this.maskingMeshMap.get(panel);
+                    const stencilRefShift = this.panels.indexOf(panel);
+                    entity.traverseObjects((object) => {
+                        if (object.isMesh) {
+                            // setupMaskedMaterial is a very light function so
+                            // calling again for materials already set up should not be a big deal
+                            setupMaskedMaterial(object.material, stencilRefShift);
+                        }
+                    });
+                }
+            }
         }
     }
 }
