@@ -202,6 +202,16 @@ export class MRApp extends MRElement {
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
+        if (this.getAttribute('preserve-drawing-buffer') ?? false) {
+            // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
+            // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
+            // we're allowing it to be enabled by users when necessary.
+            //
+            // References:
+            // https://stackoverflow.com/questions/15558418/how-do-you-save-an-image-from-a-three-js-canvas
+            // https://stackoverflow.com/questions/30628064/how-to-toggle-preservedrawingbuffer-in-three-js
+            this.renderer.preserveDrawingBuffer = true;
+        }
 
         this.initCamera();
 
