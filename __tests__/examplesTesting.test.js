@@ -3,7 +3,7 @@ import fs from 'fs/promises'; // Node.js file system module with promises
 
 // todo: in future dont hard code this, but the relative links based on filepath dont work
 // using a server to host them works best, so just grabbing from github is fine for now.
-const fileNames = ['../index', 'anchors', 'audio', 'embed', 'images', 'models', 'skybox', 'video'];
+const fileNames = ['../index', 'anchors', 'audio', 'debug', 'embed', 'images', 'models', 'panels', 'skybox', 'video'];
 
 describe('Test the Examples', () => {
     let browser;
