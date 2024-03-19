@@ -83,7 +83,9 @@ export class MRApp extends MRElement {
 
         this.scene.add(this.origin);
 
-        this.renderer = null; // filled out in init since it relies on certain components attached to the <mr-app>
+        // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
+        // the renderer relies on certain component flags attached to the <mr-app> itself.
+        this.renderer = null; 
 
         this.lighting = {
             enabled: true,
