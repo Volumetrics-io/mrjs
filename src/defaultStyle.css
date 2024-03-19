@@ -20,7 +20,7 @@ mr-app > canvas {
     z-index: 999;
 }
 
-mr-div, mr-button, mr-img, mr-a, mr-text, mr-textfield{
+mr-div, mr-button, mr-img, mr-video, mr-a, mr-text, mr-textfield{
     display: inline-block;
     position: relative;
     z-index: inherit;
@@ -36,10 +36,8 @@ mr-panel {
     width: 100vw;
 }
 
-mr-img {
-    /* z-index: inherit; */
-    width: 100%;
-    object-fit: cover;
+mr-img, mr-video {
+    object-fit: contain;
 }
 
 mr-button {

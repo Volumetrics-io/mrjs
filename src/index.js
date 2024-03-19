@@ -1,13 +1,13 @@
 /**
  * @module mrjs
- * @description the overall one-stop-shop module for mrjs. Includes the ability to access threejs directly as well.
+ * @description The one-stop-shop module for mrjs (including an import for mrjsUtils). Includes the ability to access threejs directly as well.
  */
 
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
 // Log the version number
 import { version } from '../package.json';
-console.log("Current ᴍʀjs Version:", version);
+console.log('Current ᴍʀjs Version:', version);
 
 // STYLE
 import './defaultStyle.css';
@@ -26,6 +26,7 @@ import './core/MRApp';
 import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
+import './core/MRMedia';
 import './core/MRSystem';
 import './core/MRTextEntity';
 // CORE - USER

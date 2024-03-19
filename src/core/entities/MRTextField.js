@@ -54,7 +54,7 @@ export class MRTextField extends MRTextEntity {
         const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
-            side: 2,
+            side: THREE.DoubleSide,
         });
 
         this.cursor = new THREE.Mesh(geometry, material);
@@ -76,7 +76,7 @@ export class MRTextField extends MRTextEntity {
         });
 
         this.addEventListener('keydown', (event) => {
-            this.needsStyleUpdate = true;
+            this.triggerTextStyleUpdate(this);
         });
     }
 

@@ -3,9 +3,9 @@ import fs from 'fs/promises'; // Node.js file system module with promises
 
 // todo: in future dont hard code this, but the relative links based on filepath dont work
 // using a server to host them works best, so just grabbing from github is fine for now.
-const fileNames = ['../index', 'anchors', 'audio', 'embed', 'images', 'models', 'skybox', 'video'];
+const fileNames = ['mrjsio'];
 
-describe('Test the Examples', () => {
+describe('Test the sites we build with mrjs', () => {
     let browser;
     let page;
 
@@ -29,15 +29,15 @@ describe('Test the Examples', () => {
             });
 
             // Define your HTML content from the sample
-            let htmlContent = await fs.readFile(`./dist/examples/${fileName}.html`, 'utf8');
-            console.log(`Running test on: ./dist/examples/${fileName}.html`);
+            let htmlContent = await fs.readFile(`./dist/sites/${fileName}.html`, 'utf8');
+            console.log(`Running test on: ./dist/sites/${fileName}.html`);
             // Modify the src and style tag to be for this example.
             htmlContent = htmlContent.replace(
                 `<script src="/mr.js"></script>`,
                 `<script src="../dist/mr.js"></script>`);
             htmlContent = htmlContent.replace(
                 `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
-                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
+                `<link rel="stylesheet" type="text/css" href="./dist/sites/${fileName}-style.css" />`);
 
             await page.setContent(htmlContent);
 

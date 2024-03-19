@@ -3,8 +3,8 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRImage } from 'mrjs/core/entities/MRImage';
 import { MRModel } from 'mrjs/core/entities/MRModel';
+import { MRVideo } from 'mrjs/core/entities/MRVideo';
 
 /**
  * @class MaterialStyleSystem
@@ -18,41 +18,51 @@ export class MaterialStyleSystem extends MRSystem {
      */
     constructor() {
         super(false);
+
+        this.app.addEventListener('trigger-material-style-update', (e) => {
+            // The event has the entity stored as its detail.
+            if (e.detail !== undefined) {
+                this._updateSpecificEntity(e.detail);
+            }
+        });
     }
 
     /**
      * @function
-     * @description The generic system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    _updateSpecificEntity(entity) {
+        // Anything needed for mrjs defined entities - the order of the below matters
+        if (entity instanceof MRDivEntity) {
+            this.setBackground(entity);
+        }
+        this.setVisibility(entity);
+
+        // User additional - Main Entity Style Change
+        if (entity instanceof MREntity) {
+            entity.updateMaterialStyle();
+        }
+    }
+
+    /**
+     * @function
+     * @description The per global scene event update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
+     */
+    eventUpdate = () => {
+        for (const entity of this.registry) {
+            this._updateSpecificEntity(entity);
+        }
+    };
+
+    /**
+     * @function
+     * @description The per-frame system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        for (const entity of this.registry) {
-            // if (!entity.needsStyleUpdate) {
-            //     return;
-            // }
-
-            // Only want to dispatch if anything was actually updated
-            // in this iteration.
-            let changed = false;
-
-            // Anything needed for mrjs defined entities - the order of the below matters
-            if (entity instanceof MRDivEntity) {
-                changed = this.setBackground(entity);
-            }
-            changed = this.setVisibility(entity);
-            
-            // User additional - Main Entity Style Change
-            if (entity instanceof MREntity) {
-                changed = entity.updateMaterialStyle();
-            }
-
-            // Cleanup
-            // entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
-            if (!entity.alwaysNeedsStyleUpdate) {
-                entity.needsStyleUpdate = false;
-            }
-        }
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
     }
 
     /**
@@ -69,73 +79,29 @@ export class MaterialStyleSystem extends MRSystem {
      * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground(entity) {
-        // TODO - we need to determine a quick and easy way to see if the color does
-        // not need to update this iteration since we might not have a new background
-        // at all. Ie need a return false case.
-        //
-        // We also dont use this for a lot of functions at the moment.
-
         const color = entity.compStyle.backgroundColor;
-        let opacity = 1; // Default opacity
-
-        // Adjusted check for if background is in css
-        if (!color || color.trim() === '' || color.trim() === 'transparent') {
-            // Since this is the background and not the object3D itself, we dont
-            // try to inherit from a parent - instead we'll just assume when it's
-            // not set that it's transparent.
-            if (entity.background.visible) {
-                entity.background.visible = false;
-                return true;
-            }
-            return false;
-        }
-
-        if (color.startsWith('rgba')) {
-            // Check for RGBA
+        if (color.includes('rgba')) {
             const rgba = color
                 .substring(5, color.length - 1)
                 .split(',')
-                .map(part => parseFloat(part.trim()));
+                .map((part) => parseFloat(part.trim()));
             entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            opacity = rgba[3];
-        } else if (color.startsWith('rgb')) {
-            // Check for RGB
-            entity.background.material.color.setStyle(color);
-        } else if (/^#([0-9a-f]{8})$/i.test(color)) {
-            // Check for Hexadecimal with Alpha
-            const hex = color.substring(1);
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
-            opacity = parseInt(hex.substring(6, 8), 16) / 255;
-            entity.background.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
-        } else if (/^#([0-9a-f]{6})$/i.test(color)) {
-            // Check for Hexadecimal without Alpha
-            entity.background.material.color.setStyle(color);
+            if (rgba[3] == 0) {
+                entity.background.visible = false;
+            } else {
+                entity.background.material.transparent = true;
+                entity.background.material.opacity = rgba[3];
+                entity.background.visible = true;
+            }
         } else {
-            // General color name or other formats
             entity.background.material.color.setStyle(color);
+            entity.background.visible = true;
         }
 
-        // Handle entity-wide opacity
         if (entity.compStyle.opacity < 1) {
-            opacity *= entity.compStyle.opacity;
+            entity.background.material.opacity = entity.compStyle.opacity;
         }
-
-        // Apply opacity
-        if (opacity < 1) {
-            entity.background.material.transparent = true;
-            entity.background.material.opacity = opacity;
-            entity.background.visible = true;
-        } else if (opacity === 0) {
-            entity.background.visible = false;
-        } else {
-            entity.background.material.transparent = false;
-            entity.background.visible = true;
-        }
-
         entity.background.material.needsUpdate = true;
-        return true;
     }
 
     setVisibility(entity) {
@@ -144,25 +110,18 @@ export class MaterialStyleSystem extends MRSystem {
             if (entity.background) {
                 // The background for MRDivEntities, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
-               // if (entity.background.material.opacity !== 0) {
-                    // TODO - need a fix for this - need to be able to toggle the bacgkround back
-                    // on, but need to also be able 
-                    // entity.background.visible = bool;
-               // }
-                
+                // entity.background.visible = bool;
                 //
                 // XXX - right now all backgrounds are set as visible=false by default in their
                 // MRDivEntity constructors, so toggling them here isnt useful, but in future
                 // if this is requested for use or we want to add a feature for more use of the
                 // background - adding in toggling for this with the object will be useful.
             }
-            return true;
         }
         if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
             // visbility: hidden or visible are the options we care about
             const isVisible = entity.compStyle.visibility !== 'hidden';
-            return makeVisible(entity, isVisible);
+            makeVisible(entity, isVisible);
         }
-        return false;
     }
 }

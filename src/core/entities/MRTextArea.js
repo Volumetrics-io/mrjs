@@ -29,7 +29,7 @@ export class MRTextArea extends MRTextEntity {
         const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
-            side: 2,
+            side: THREE.DoubleSide,
         });
 
         this.cursor = new THREE.Mesh(geometry, material);
@@ -49,6 +49,14 @@ export class MRTextArea extends MRTextEntity {
         this.addEventListener('click', (event) => {
             this.focus();
         });
+    }
+
+    get value() {
+        return this.input.value;
+    }
+
+    set value(val) {
+        this.input.value = val;
     }
 
     /**

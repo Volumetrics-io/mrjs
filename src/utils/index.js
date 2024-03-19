@@ -13,26 +13,27 @@ import { geometry } from './Geometry.js';
 import { html } from './HTML.js';
 import { js } from './JS.js';
 import { material } from './Material.js';
+import { math } from './Math.js';
 import { model } from './Model.js';
-import { mathUtils } from './MathUtils.js';
-import { math3D } from './Math3D.js';
+import { error, warn } from './Notify.js'
 import { physics } from './Physics.js';
-import { stringUtils } from './StringUtils.js';
+import { string } from './String.js';
 import { xr } from './XR.js';
 
 const mrjsUtils = {
     app,
     css,
     display,
+    error,
     geometry,
     html,
     js,
     material,
+    math,
     model,
-    mathUtils,
-    math3D,
     physics,
-    stringUtils,
+    string,
+    warn,
     xr,
 };
 

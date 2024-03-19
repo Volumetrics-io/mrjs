@@ -28,21 +28,13 @@ export class MRTextEntity extends MRDivEntity {
         // This event listener is added so anytime a panel changes (resize, etc), the text changes
         // accordingly
         document.addEventListener('panelupdate', () => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerTextStyleUpdate();
         });
 
         document.addEventListener('font-loaded', () => {
-            if (!this.alwaysNeedsGeometryUpdate) {
-                this.needsGeometryUpdate = true;
-            }
-            if (!this.alwaysNeedsStyleUpdate) {
-                this.needsStyleUpdate = true;
-            }
+            this.triggerGeometryStyleUpdate();
+            this.triggerTextStyleUpdate();
         });
     }
 
@@ -53,12 +45,8 @@ export class MRTextEntity extends MRDivEntity {
     connected() {
         const text = this.textContent.trim();
         this.textObj.text = text.length > 0 ? text : ' ';
-        if (!this.alwaysNeedsGeometryUpdate) {
-            this.needsGeometryUpdate = true;
-        }
-        if (!this.alwaysNeedsStyleUpdate) {
-            this.needsStyleUpdate = true;
-        }
+        this.triggerGeometryStyleUpdate();
+        this.triggerTextStyleUpdate();
     }
 
     /**
@@ -76,6 +64,16 @@ export class MRTextEntity extends MRDivEntity {
             }
             child.traverse(callBack);
         }
+    }
+
+        /**
+     * @function
+     * @description Triggers a system run to update text specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * relying on an overall scene or all items to update isnt beneficial.
+     * @returns {number} - height of the 3D object.
+     */
+    triggerTextStyleUpdate() {
+        this.dispatchEvent(new CustomEvent('trigger-text-style-update', { detail: this, bubbles: true }));
     }
 }
 

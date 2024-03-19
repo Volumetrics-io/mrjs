@@ -77,6 +77,7 @@ export class MRApp extends MRElement {
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
+        this.scene.matrixWorldAutoUpdate = false;
         this.anchor = null;
         this.origin = new THREE.Object3D();
 
@@ -207,18 +208,22 @@ export class MRApp extends MRElement {
         const layersString = this.getAttribute('layers');
 
         if (layersString) {
-            this.layers = mrjsUtils.stringUtils.stringToVector(layersString);
+            this.layers = mrjsUtils.string.stringToVector(layersString);
 
             for (const layer of this.layers) {
                 this.camera.layers.enable(layer);
             }
         }
 
-        if (this.debug) {
+        const statsEnabled = this.getAttribute('stats');
+
+        if (statsEnabled) {
             this.stats = new Stats();
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
+        }
 
+        if (this.debug) {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
@@ -288,7 +293,7 @@ export class MRApp extends MRElement {
         const lightString = this.getAttribute('lighting');
 
         if (lightString) {
-            this.lighting = mrjsUtils.stringUtils.stringToJson(this.lighting);
+            this.lighting = mrjsUtils.string.stringToJson(this.lighting);
         }
 
         this.initLights(this.lighting);
@@ -301,7 +306,7 @@ export class MRApp extends MRElement {
     initCamera = () => {
         this.cameraOptionString = this.getAttribute('camera');
         if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.stringUtils.stringToJson(this.cameraOptionString);
+            this.cameraOptions = mrjsUtils.string.stringToJson(this.cameraOptionString);
         }
 
         global.appWidth = this.appWidth;
@@ -325,6 +330,7 @@ export class MRApp extends MRElement {
                 break;
         }
 
+        this.camera.matrixWorldAutoUpdate = false;
         this.camera.position.set(0, 0, 1);
     };
 
@@ -441,6 +447,12 @@ export class MRApp extends MRElement {
 
         const deltaTime = this.clock.getDelta();
 
+        // ----- Update stats if enabled ----- //
+
+        if (this.stats) {
+            this.stats.update();
+        }
+
         // ----- Update needed items ----- //
 
         if (mrjsUtils.xr.isPresenting && !mrjsUtils.xr.session) {
@@ -465,14 +477,8 @@ export class MRApp extends MRElement {
 
         // ----- System Updates ----- //
 
-        if (this.debug) {
-            this.stats.begin();
-        }
         for (const system of this.systems) {
             system._update(deltaTime, frame);
-        }
-        if (this.debug) {
-            this.stats.end();
         }
 
         // ----- Actually Render ----- //
@@ -480,18 +486,21 @@ export class MRApp extends MRElement {
         // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
         // from the pure loop but it is okay as is here for now.
 
-        this.renderer.clear();
-        // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem != undefined) {
-            // Render panel to stencil buffer and objects through it based on THREE.Group hierarchy
-            // and internally handled stenciling functions.
-            this.renderer.state.buffers.stencil.setTest(true);
-            this.renderer.state.buffers.stencil.setMask(0xff);
-            this.renderer.render(this.scene, this.camera);
-
-            // Render the main scene without stencil operations
-            this.renderer.state.buffers.stencil.setTest(false);
+        this.scene.updateMatrixWorld();
+        if (this.camera.parent === null) {
+            this.camera.updateMatrixWorld();
         }
+        this.renderer.clear();
+
+        // Need to wait until we have all needed rendering-associated systems loaded.
+        if (this.maskingSystem !== undefined) {
+            this.maskingSystem.sync();
+            const currentShadowEnabled = this.renderer.shadowMap.enabled;
+            this.renderer.shadowMap.enabled = false;
+            this.renderer.render(this.maskingSystem.scene, this.camera);
+            this.renderer.shadowMap.enabled = currentShadowEnabled;
+        }
+
         this.renderer.render(this.scene, this.camera);
     }
 }

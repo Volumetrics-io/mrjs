@@ -37,26 +37,6 @@ export class LayoutSystem extends MRSystem {
 
     /**
      * @function
-     * @description Getter to checks if we need to run this system's update call. Overridden implementation returns true if there are any items in this
-     * systems registry that need to be run AND the default systemUpdateCheck is true
-     * (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
-     * @returns {boolean} true if the system is in a state where this system is needed to update, false otherwise
-     */
-    get needsSystemUpdate() {
-        return this.registry.size > 0 && super.needsSystemUpdate;
-    }
-
-    /**
-     * @function
-     * @description Since this class overrides the default `get` for the `needsSystemUpdate` call, the `set` pair is needed for javascript to be happy.
-     * Relies on the parent's implementation. (see [MRSystem.needsSystemUpdate](https://docs.mrjs.io/javascript-api/#mrsystem.needssystemupdate) for default).
-     */
-    set needsSystemUpdate(bool) {
-        super.needsSystemUpdate = bool;
-    }
-
-    /**
-     * @function
      * @description The generic system update call. Handles updating all 3D items to match whatever layout position is expected.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -81,6 +61,8 @@ export class LayoutSystem extends MRSystem {
         }
         const panelRect = panel.getBoundingClientRect();
 
+        /** setup xy positioning of the entity **/
+
         let innerWidth = parseFloat(panel.compStyle.width.split('px')[0]);
         let innerHeight = parseFloat(panel.compStyle.height.split('px')[0]);
         let centerX = innerWidth / 2;
@@ -99,6 +81,8 @@ export class LayoutSystem extends MRSystem {
 
         entity.object3D.position.setX(threeX);
         entity.object3D.position.setY(-threeY);
+
+        /** setup z-index positioning of the entity **/
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.

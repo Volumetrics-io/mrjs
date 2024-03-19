@@ -67,6 +67,7 @@ export default {
                 { from: 'samples/index-style.css', to: 'index-style.css' },
                 { from: 'samples/examples', to: 'examples' },
                 { from: 'samples/assets', to: 'assets' },
+                { from: 'samples/sites', to: 'sites' },
             ],
         }),
         // new webpack.ProvidePlugin({
@@ -96,7 +97,7 @@ export default {
             },
             {
                 test: /\.json$/,
-                use: 'json-loader'
+                use: 'json-loader',
             },
         ],
     },
