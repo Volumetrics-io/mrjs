@@ -35,14 +35,6 @@ export class MRTextField extends MRTextEntity {
         this.wrapper.innerHTML = '<slot></slot>';
     }
 
-    get value() {
-        return this.input.value;
-    }
-
-    set value(val) {
-        this.input.value = val;
-    }
-
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
