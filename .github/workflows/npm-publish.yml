@@ -15,10 +15,9 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history for all tags and branches
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 21
 
       - name: Get version from package.json
         id: package_version
@@ -33,15 +32,36 @@ jobs:
             echo "EXISTS=false" >> $GITHUB_ENV
           fi
 
+      - name: Install Dependencies
+        if: env.EXISTS == 'false'
+        run: |
+          npm install
+
+      - name: 👷 Build again just in case
+        if: env.EXISTS == 'false'
+        run: |
+          rm -rf ./dist
+          npm run build
+
+      - name: Commit the clean build for the tag
+        if: env.EXISTS == 'false'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          commit_message=$'👷 MRjs Publish - Auto Dist For ${{ env.VERSION }} 👷\n\nChanges at '"${GITHUB_SHA}"
+          git add .
+          git commit -m "$commit_message"
+
       - name: Create Git tag
         if: env.EXISTS == 'false'
         run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
           git tag v${{ env.VERSION }}
           git push origin v${{ env.VERSION }}
 
       - name: Debug token availability
+        if: env.EXISTS == 'false'
         run: |
           echo "Token length: ${#NPM_MJRS_PUBLISH}"
 
