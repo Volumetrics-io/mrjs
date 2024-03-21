@@ -80,21 +80,28 @@ export class MaterialStyleSystem extends MRSystem {
      */
     setBackground(entity) {
         const color = entity.compStyle.backgroundColor;
-        if (color.includes('rgba')) {
-            const rgba = color
-                .substring(5, color.length - 1)
-                .split(',')
-                .map((part) => parseFloat(part.trim()));
+
+        if (color.startsWith('rgba')) {
+            const rgba = color.match(/rgba?\(([^)]+)\)/)[1].split(',').map(n => parseFloat(n.trim()));
             entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            if (rgba[3] == 0) {
-                entity.background.visible = false;
-            } else {
-                entity.background.material.transparent = true;
-                entity.background.material.opacity = rgba[3];
-                entity.background.visible = true;
-            }
-        } else {
+            entity.background.material.transparent = rgba.length === 4 && rgba[3] < 1;
+            entity.background.material.opacity = rgba.length === 4 ? rgba[3] : 1;
+            entity.background.visible = !(rgba.length === 4 && rgba[3] === 0);
+        } else if (color.startsWith('rgb')) {
+            // RGB colors are treated as fully opaque
             entity.background.material.color.setStyle(color);
+            entity.background.material.transparent = false;
+            entity.background.visible = true;
+        } else if (color.startsWith('#')) {
+            const {r, g, b, a} = mrjsUtils.color.hexToRgba(color);
+            entity.background.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
+            entity.background.material.transparent = a < 1;
+            entity.background.material.opacity = a;
+            entity.background.visible = a !== 0;
+        } else {
+            // This assumes the color is a CSS color word or another valid CSS color value
+            entity.background.material.color.setStyle(color);
+            entity.background.material.transparent = false;
             entity.background.visible = true;
         }
 

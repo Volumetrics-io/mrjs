@@ -7,6 +7,7 @@
 // // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 
 import { app } from './App.js';
+import { color } from './Color.js';
 import { css } from './CSS.js';
 import { display } from './Display.js';
 import { geometry } from './Geometry.js';
@@ -22,6 +23,7 @@ import { xr } from './XR.js';
 
 const mrjsUtils = {
     app,
+    color,
     css,
     display,
     error,
