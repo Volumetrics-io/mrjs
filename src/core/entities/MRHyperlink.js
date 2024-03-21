@@ -1,11 +1,11 @@
-import { MRTextEntity } from 'mrjs/core/MRTextEntity';
+import { MRTextEntity } from 'mrjs/core/entities/MRText';
 
 /**
  * @class MRHyperlink
  * @classdesc 3D representation of a hyperlink. `mr-a`
- * @augments MRTextEntity
+ * @augments MRText
  */
-export default class MRHyperlink extends MRTextEntity {
+export default class MRHyperlink extends MRText {
     /**
      * Constructor for the Model entity, does the default.
      */

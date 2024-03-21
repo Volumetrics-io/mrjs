@@ -9,7 +9,7 @@ import { MRDivEntity } from 'mrjs/core/MRDivEntity';
  *            Inherits from MRDivEntity.
  * @augments MRDivEntity
  */
-export class MRTextEntity extends MRDivEntity {
+export class MRText extends MRDivEntity {
     /**
      * @class
      * @description Constructor for the MRTextEntity object.
@@ -85,4 +85,4 @@ export class MRTextEntity extends MRDivEntity {
     }
 }
 
-customElements.get('mr-text') || customElements.define('mr-text', MRTextEntity);
+customElements.get('mr-text') || customElements.define('mr-text', MRText);
