@@ -7,9 +7,9 @@ import { MRTextEntity } from 'mrjs/core/entities/MRText';
 /**
  * @class MRTextInput
  * @classdesc The text element that is used to represent normal paragraph user-entry text field items one would expect in a web-browser. `mr-textarea`
- * @augments MRTextEntity
+ * @augments MRText
  */
-export class MRTextInput extends MRTextEntity {
+export class MRTextInput extends MRText {
     /**
      * @class
      * @description Constructor for the textArea entity component.
@@ -17,6 +17,14 @@ export class MRTextInput extends MRTextEntity {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+    }
+
+    get value() {
+        return this.input.value;
+    }
+
+    set value(val) {
+        this.input.value = val;
     }
 
     /**

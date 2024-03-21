@@ -26,24 +26,25 @@ import './core/MRApp';
 import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
-import './core/MRMedia';
 import './core/MRSystem';
-import './core/MRTextEntity';
 // CORE - USER
 import './core/user/MRHand';
 import './core/user/MRUser';
 // CORE - ENTITIES
-import './core/entities/MRVolume.js';
 import './core/entities/MRButton';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
-import './core/entities/MRVideo';
 import './core/entities/MRLight';
+import './core/entities/MRMedia';
 import './core/entities/MRModel';
 import './core/entities/MRPanel';
 import './core/entities/MRSkyBox';
+import './core/entities/MRText';
 import './core/entities/MRTextArea';
 import './core/entities/MRTextField';
+import './core/entities/MRTextInput';
+import './core/entities/MRVideo';
+import './core/entities/MRVolume';
 // CORE - COMPONENT-SYSTEMS
 import './core/componentSystems/AnchorSystem';
 import './core/componentSystems/AnimationSystem';
