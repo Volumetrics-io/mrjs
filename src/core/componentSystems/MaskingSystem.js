@@ -4,7 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRTextEntity } from 'mrjs/core/MRTextEntity';
+import { MRText } from 'mrjs/core/entities/MRText';
 
 /*
  * A system that handles elements that mask other elements by using stencil.

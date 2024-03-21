@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { MRMedia } from 'mrjs/core/MRMedia';
+import { MRMedia } from 'mrjs/core/entities/MRMedia';
 
 import { mrjsUtils } from 'mrjs';
 
