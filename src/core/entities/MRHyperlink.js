@@ -1,4 +1,4 @@
-import { MRTextEntity } from 'mrjs/core/entities/MRText';
+import { MRText } from 'mrjs/core/entities/MRText';
 
 /**
  * @class MRHyperlink

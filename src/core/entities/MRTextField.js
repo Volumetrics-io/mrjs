@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { getSelectionRects } from 'troika-three-text';
 
-import { MRTextEntity } from 'mrjs/core/entities/MRTextInput';
+import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
 
 /**
  * @class MRTextField
