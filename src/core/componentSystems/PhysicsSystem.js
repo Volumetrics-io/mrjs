@@ -4,9 +4,9 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
-import { MRDivEntity } from '../MRDivEntity';
-import { MRPanel } from '../entities/MRPanel';
-import { MRModel } from '../entities/MRModel';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
+import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
  * @class PhysicsSystem

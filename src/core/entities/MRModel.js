@@ -1,7 +1,7 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 
 /**
  * @class MRModel

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 

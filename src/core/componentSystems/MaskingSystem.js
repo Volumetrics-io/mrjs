@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRText } from 'mrjs/core/entities/MRText';
