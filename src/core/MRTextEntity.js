@@ -38,6 +38,14 @@ export class MRTextEntity extends MRDivEntity {
         });
     }
 
+    get value() {
+        return this.input.value;
+    }
+
+    set value(val) {
+        this.input.value = val;
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - sets up the textObject of the text item.

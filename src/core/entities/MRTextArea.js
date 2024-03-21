@@ -51,14 +51,6 @@ export class MRTextArea extends MRTextEntity {
         });
     }
 
-    get value() {
-        return this.input.value;
-    }
-
-    set value(val) {
-        this.input.value = val;
-    }
-
     /**
      * @function
      * @description Blurs the inputted text value and cursor information
