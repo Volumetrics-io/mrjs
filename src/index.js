@@ -23,7 +23,6 @@ import './dataManagers/MRPlaneManager';
 
 // CORE
 import './core/MRApp';
-import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
 import './core/MRSystem';
@@ -32,6 +31,7 @@ import './core/user/MRHand';
 import './core/user/MRUser';
 // CORE - ENTITIES
 import './core/entities/MRButton';
+import './core/entities/MRDivEntity';
 import './core/entities/MRHyperlink';
 import './core/entities/MRImage';
 import './core/entities/MRLight';
