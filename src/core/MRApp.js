@@ -83,7 +83,9 @@ export class MRApp extends MRElement {
 
         this.scene.add(this.origin);
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
+        // the renderer relies on certain component flags attached to the <mr-app> itself.
+        this.renderer = null; 
 
         this.lighting = {
             enabled: true,
@@ -193,6 +195,19 @@ export class MRApp extends MRElement {
      */
     init() {
         this.debug = this.getAttribute('debug') ?? false;
+
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true, 
+            // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
+            // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
+            // we're allowing it to be enabled by users when necessary.
+            //
+            // References:
+            // https://stackoverflow.com/questions/15558418/how-do-you-save-an-image-from-a-three-js-canvas
+            // https://stackoverflow.com/questions/30628064/how-to-toggle-preservedrawingbuffer-in-three-js
+            preserveDrawingBuffer: this.getAttribute('preserve-drawing-buffer') ?? false,
+        });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.appWidth, this.appHeight);
         this.renderer.autoClear = false;

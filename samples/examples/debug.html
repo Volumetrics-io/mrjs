@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mr.js</title>
+    <meta name="description" content="mr.js">
+    <script src="/mr.js"></script>
+    <link rel="stylesheet" type="text/css" href="debug-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body >
+   <mr-app debug="true" stats="true" preserve-drawing-buffer="true">
+      <mr-panel class="layout">
+        <mr-div id="navbar">
+         <mr-a href="https://mrjs.io" class="mrjs">
+            mrjs
+        </mr-a>
+            <mr-model
+            class="logo"
+            id="logo-model"  
+            src="/assets/models/logo.stl" 
+            data-comp-instancing="type: animate;"
+            data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
+            data-rotation="-22.91 17.1887 45.8366">
+            </mr-model>
+        <mr-a href="https://volumetrics.io" class="company">
+            volumetrics
+        </mr-a>
+        </mr-div>
+        
+        <mr-text class="col-2 title" >
+        Debugging
+        </mr-text>
+        
+        <mr-text class="col-2">
+        Debug flags can enable the use of certain features for physics, screencapture, and otherwise.
+        </mr-text>
+
+        <mr-text class="col-2">
+        Current flags enabled for this page are `debug="true"`, `stats=true`, and `preserve-drawing-buffer="true"`.
+        </mr-text>
+
+        <mr-text class="subtitle col-2">
+            Examples showing the features
+        </mr-text>
+
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                Model
+            </mr-text>
+            <mr-model 
+                id="stl"
+                style="scale: 0.0005;"
+                src="/assets/models/logo.stl">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                Image
+            </mr-text>
+            <mr-img 
+                id="img"
+                src="../assets/textures/headset-keyboard.jpeg">
+            </mr-model>
+        </mr-div>
+        
+    </mr-app>
+  </body>
+
+  <footer>
+  </footer>
+</html>
