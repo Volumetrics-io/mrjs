@@ -413,11 +413,10 @@ export class MREntity extends MRElement {
         callBack(this);
         const children = Array.from(this.children);
         for (const child of children) {
-            // if o is an object, traverse it again
-            if ((!child) instanceof MREntity) {
-                continue;
+            // if child is an entity, traverse it again
+            if (child instanceof MREntity) {
+                child.traverse(callBack);
             }
-            child.traverse(callBack);
         }
     }
 
