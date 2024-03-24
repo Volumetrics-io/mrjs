@@ -16,15 +16,24 @@ const observe = (root, target) => {
     const observer = new IntersectionObserver(
         (entries) => {
             for (const entry of entries) {
-                // TODO: Endure the visibility set by other systems is not overridden. For example,
-                //       even if another system has made an entity visible within the panel for some reasons,
-                //       this system makes it visible. This issue should be fixed.
+                // TODO: Ensure to avoid the visibility set up collision. If multiple systems set up the visibility
+                //       independently, only the last system before render call can have an effect. This callback
+                //       is fired asynchronously so it may be said that this callback is executed before all the
+                //       sync systems.
                 entry.target.object3D.visible = entry.intersectionRatio > 0;
             }
+            // Somehow callback is sometimes not fired even though crossing the threshold so as fallback
+            // always refresh the info as much as possible to keep it up-to-date.
+            // It seems that the callback is always called once soon after observe() is called,
+            // regardless of the intersection state of the entity.
+            // TODO: Confirm whether this behavior is intended. If it is not, there may be future
+            //       behavior changes or it may not work as intended on certain platforms.
+            // Alternative: Using multi-step threshold would mitigate the problem like [0.0, 0.05, 0.1]
+            observer.disconnect();
+            observer.observe(target);
         },
         {
-            root: root,
-            threshold: 0.0,
+            root: root
         }
     );
     observer.observe(target);
