@@ -51,7 +51,7 @@ export class TextSystem extends MRSystem {
         this.app.addEventListener('trigger-text-style-update', (e) => {
             // The event has the entity stored as its detail.
             if (e.detail !== undefined) {
-                console.log('trigger-text-style-update for ', e.detail)
+                // console.log('trigger-text-style-update for ', e.detail)
                 this._updateSpecificEntity(e.detail);
             }
         });
@@ -82,7 +82,7 @@ export class TextSystem extends MRSystem {
             }
 
             if (entity instanceof MRTextField || entity instanceof MRTextArea) {
-                if (entity == document.activeElement && entity instanceof MRTextInput) {
+                if (entity == document.activeElement) {
                     entity.updateCursorPosition();
                 } else {
                     entity.blur();
@@ -111,9 +111,12 @@ export class TextSystem extends MRSystem {
                       .trim();
 
             let textContentChanged = entity.textObj.text != text;
-            console.log('in text system', entity);
+            // console.log('in text system', entity);
             if (entity instanceof MRTextArea) {
-                console.log('on entity', entity, entity.textObj.text, text, textContentChanged);
+                console.log('on entity', entity);
+                console.log('entity.textObj.text', entity.textObj.text);
+                console.log('entity.input.value', text);
+                console.log('textcontentChanged', textContentChanged);
             }
 
             // Now that we know text is different or at least definitely needs an update

@@ -4,126 +4,6 @@ import * as THREE from 'three';
 
 import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
 
-// /**
-    //  * @class
-    //  * @description Constructor for the textArea entity component.
-    //  */
-    // constructor() {
-    //     super();
-    // }
-
-    // /**
-    //  * @function
-    //  * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
-    //  */
-    // connected() {
-    //     this.input = document.createElement('textarea');
-
-    //     super.connected();
-    // }
-
-    // /**
-    //  * @function
-    //  * @description Updates the cursor position based on click and selection location.
-    //  */
-    // updateCursorPosition = () => {
-    //     const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
-    //     const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
-    //     if (isNaN(selectBox.right)) {
-    //         return;
-    //     }
-    //     this.cursor.position.setX(this.input.selectionStart == 0 ? selectBox.left : selectBox.right);
-    //     this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
-    // };
-
-/**
- * @class MRTextArea
- * @classdesc The text element that is used to represent normal paragraph user-entry text field items one would expect in a web-browser. `mr-textarea`
- * @augments MRTextInput
- */
-// import * as THREE from 'three';
-// import { MRTe/xtInput } from './MRTextInput'; // Adjust the import path as necessary
-
-// export class MRTextArea extends MRTextInput {
-//     constructor() {
-//         super();
-//         this.cursorVisible = false;
-//         this.totalLines = [];
-//         this.visibleLineCount = 5; // Number of lines visible at any time
-//         this.scrollIndex = 0; // Index of the top visible line in `totalLines`
-//         this.setupInput();
-//         this.createCursorMesh();
-//     }
-
-//     setupInput() {
-//         super.setupInput(); // Call setupInput from MRTextInput if it exists
-//         // Make sure to override or extend functionalities specifically for MRTextArea
-//         this.input.addEventListener('input', () => {
-//             this.textObj.text = this.input.value; // Sync the 3D text object with the textarea value
-//             this.totalLines = this.input.value.split('\n');
-//             this.updateVisibleText(); // Update the 3D text to reflect only the visible lines
-//             this.updateCursorPosition(); // Ensure the cursor position updates with text input
-//         });
-
-//         this.input.style.opacity = '0'; // Ensure the textarea is invisible but functional
-//         this.input.style.position = 'fixed'; // Use fixed to prevent layout shifts
-//         this.input.style.top = '0';
-//         this.input.style.left = '-9999px'; // Move off-screen
-//         document.body.appendChild(this.input); // Add to the document body to capture input
-//     }
-
-//     createCursorMesh() {
-//         const cursorGeometry = new THREE.PlaneGeometry(0.005, 0.2); // Create a thin, vertical plane for the cursor
-//         const cursorMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Make the cursor white for visibility
-//         this.cursorMesh = new THREE.Mesh(cursorGeometry, cursorMaterial);
-//         this.cursorMesh.visible = false; // Start with the cursor invisible
-//         this.textObj.add(this.cursorMesh); // Add the cursor mesh to the text object in 3D space
-//     }
-
-//     updateCursorVisibility(visible) {
-//         this.cursorVisible = visible;
-//         this.cursorMesh.visible = visible;
-//         this.blinkCursor(); // Start or stop the cursor blinking
-//     }
-
-//     blinkCursor() {
-//         if (!this.cursorVisible) return; // If the cursor shouldn't be visible, exit
-//         this.cursorMesh.visible = !this.cursorMesh.visible; // Toggle visibility for blinking effect
-//         setTimeout(() => this.blinkCursor(), 530); // Continue blinking at a regular interval
-//     }
-
-//     updateCursorPosition() {
-//         // Assuming a fixed character width and line height for simplicity. Adjust as necessary.
-//         const charWidth = 0.008; // Character width in your 3D space units
-//         const lineHeight = 0.02; // Line height in your 3D space units
-//         const lines = this.input.value.substring(0, this.input.selectionStart).split('\n');
-//         const numLines = lines.length;
-//         const lastLineLength = lines[lines.length - 1].length;
-
-//         // Update the cursor's position based on the current text and cursor location within the input
-//         this.cursorMesh.position.x = lastLineLength * charWidth;
-//         this.cursorMesh.position.y = -(numLines - 1) * lineHeight;
-//         this.cursorMesh.visible = true; // Make sure the cursor is visible when moving
-//     }
-
-//     updateVisibleText() {
-//         // Determine which lines of text are visible based on the current scroll position
-//         const visibleLines = this.totalLines.slice(this.scrollIndex, this.scrollIndex + this.visibleLineCount);
-//         this.displayText(visibleLines.join('\n')); // Display only the visible lines in the 3D text object
-//     }
-
-//     displayText(text) {
-//         // This method actually updates the 3D text object with the given text
-//         this.textObj.text = text;
-//         // If using Troika Text and the text updates don't reflect immediately, you may need to call `sync()` on the text object
-//     }
-
-//     // Ensure the connected, focus, and blur methods are implemented correctly
-//     // You might need to override them from MRTextInput or add additional functionalities as needed
-
-//     // Additional methods for handling scrolling, focusing, etc., can be implemented here
-// }
-
 /**
  * @class MRTextArea
  * @classdesc The text area element that simulates the behavior of an HTML <textarea> tag,
@@ -138,7 +18,6 @@ export class MRTextArea extends MRTextInput {
         this.lineHeight = 1.2; // Default line height, can be adjusted as needed
         this.scrollOffset = 0; // The vertical scroll position
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
-        this.createHiddenInput();
         this.object3D.name = 'textArea'
     }
 
@@ -146,51 +25,90 @@ export class MRTextArea extends MRTextInput {
      * Overrides the connected method to include setup for handling multiline text.
      */
     connected() {
-        super.connected();
-
-        this.setupEventListeners();
-    }
-
-    createHiddenInput() {
         const inputElement = document.createElement('textarea');
         inputElement.style.position = 'absolute';
-        inputElement.style.opacity = '0';
-        inputElement.style.pointerEvents = 'none';
-        inputElement.style.height = '0';
+         inputElement.style.left = '-9999px'; // Position off-screen
+        inputElement.style.height = '1px';
+        inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
-        document.body.appendChild(inputElement);
+        document.body.appendChild(inputElement); // Ensure it's part of the DOM for event capturing
         this.input = inputElement;
+
+        super.connected();
+
+        // name: The name associated with the <textarea> for form submission and backend processing.
+        this.input.name = this.getAttribute('name');
+        // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
+        // TODO
+        // placeholder: Provides a hint to the user about what they should type into the <textarea>.
+        this.input.placeholder = this.getAttribute('placeholder');
+        // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
+        // this.input.readOnly = this.getAttribute('readOnly');
+        // disabled: Disables the text area so it cannot be interacted with or submitted.
+        // this.input.disabled = this.getAttribute('disabled');
+        // maxlength: Specifies the maximum number of characters that the user can enter.
+        // TODO
+        // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
+        // TODO
+
+        console.log('this.input created: ', this.input);
+
+        this.setupEventListeners();
+
+        this.triggerGeometryStyleUpdate();
+        this.triggerTextStyleUpdate();
+    }
+
+    /**
+     * @function
+     * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
+     */
+    focus = () => {
+        this._focus();
+    };
+
+    _focus() {
+        if (! this.input) {
+            return;
+        }
+        console.log('this._focus is hit');
+        this.input.focus();
+        this.input.selectionStart = this.input.value.length;
+        this.cursor.visible = true;
+
+        if (this.cursor.geometry !== undefined) {
+            this.cursor.geometry.dispose();
+        }
+        this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
+        this.updateCursorPosition();
+    }
+
+    /**
+     * @function
+     * @description Blurs the inputted text value and cursor information
+     */
+    blur = () => {
+        this._blur();
+    };
+
+    _blur() {
+        this.input.blur();
+        this.cursor.visible = false;
+    }
+
+    input = () => {
+        this.input.input();
     }
 
     setupEventListeners() {
         // Click event to focus and allow input
         this.addEventListener('click', () => {
-            super.focus();
-            this.triggerTextStyleUpdate(this);
+            this._focus();
         });
 
         // Keyboard input event to capture text
         this.input.addEventListener('input', () => {
-            console.log('hitting this');
             this.updateTextDisplay();
-            // this.triggerTextStyleUpdate(this);
-        });
-
-        // Handle focus and blur for visual indicators
-        this.input.addEventListener('focus', () => {
-            super.focus();
-            this.triggerTextStyleUpdate(this);
-        });
-
-        this.input.addEventListener('blur', () => {
-            super.blur();
-            this.triggerTextStyleUpdate(this);
-        });
-
-        // Scroll and keydown for additional controls
-        this.input.addEventListener('keydown', (event) => {
-            this.handleKeydown(event);
-            this.triggerTextStyleUpdate(this);
         });
     }
 
@@ -204,6 +122,8 @@ export class MRTextArea extends MRTextInput {
         console.log('new text: ', visibleText);
         this.textObj.text = visibleText;
         console.log('text updated: ', this.textObj.text);
+
+        this.updateCursorPosition();
     }
 
     /**
