@@ -32,8 +32,6 @@ export class MRTextInput extends MRText {
      * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
      */
     connected() {
-        this.input = document.createElement('textarea');
-
         const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
@@ -47,7 +45,7 @@ export class MRTextInput extends MRText {
         this.cursor.visible = false;
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            this.input.textContent = this.textContent.replace(/(\n)\s+/g, '$1').trim();
+            this.input.setAttribute('value', this.textContent.replace(/(\n)\s+/g, '$1').trim());
         });
 
         this.input.style.opacity = 0; // Make it invisible
@@ -55,7 +53,11 @@ export class MRTextInput extends MRText {
         this.shadowRoot.appendChild(this.input);
 
         this.addEventListener('click', (event) => {
-            this.focus();
+            this.focusInput();
+        });
+
+        this.addEventListener('keydown', (event) => {
+            this.triggerTextStyleUpdate(this);
         });
     }
 
@@ -88,12 +90,6 @@ export class MRTextInput extends MRText {
      * @description Updates the cursor position based on click and selection location.
      */
     updateCursorPosition = () => {
-        const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
-        const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
-        if (isNaN(selectBox.right)) {
-            return;
-        }
-        this.cursor.position.setX(this.input.selectionStart == 0 ? selectBox.left : selectBox.right);
-        this.cursor.position.setY(selectBox.bottom + this.textObj.fontSize / 2);
+        mrjsUtils.error.emptyParentFunction();
     };
 }
