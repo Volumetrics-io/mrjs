@@ -4,6 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRText } from 'mrjs/core/entities/MRText';
+import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
 import { MRTextField } from 'mrjs/core/entities/MRTextField';
 import { MRTextArea } from 'mrjs/core/entities/MRTextArea';
 
@@ -50,6 +51,7 @@ export class TextSystem extends MRSystem {
         this.app.addEventListener('trigger-text-style-update', (e) => {
             // The event has the entity stored as its detail.
             if (e.detail !== undefined) {
+                console.log('trigger-text-style-update for ', e.detail)
                 this._updateSpecificEntity(e.detail);
             }
         });
@@ -61,7 +63,7 @@ export class TextSystem extends MRSystem {
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
-        entity instanceof MRTextEntity ? this.registry.add(entity) : null;
+        entity instanceof MRText ? this.registry.add(entity) : null;
     }
 
     /**
@@ -80,7 +82,11 @@ export class TextSystem extends MRSystem {
             }
 
             if (entity instanceof MRTextField || entity instanceof MRTextArea) {
-                this.updateTextInput(entity);
+                if (entity == document.activeElement && entity instanceof MRTextInput) {
+                    entity.updateCursorPosition();
+                } else {
+                    entity.blur();
+                }
             }
         });
     }
@@ -91,6 +97,8 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
+
+            // Add a check in case a user manually 
             let text = entity instanceof MRTextField || entity instanceof MRTextArea
                 ? entity.input.value
                 : // troika honors newlines/white space
@@ -103,10 +111,13 @@ export class TextSystem extends MRSystem {
                       .trim();
 
             let textContentChanged = entity.textObj.text != text;
+            console.log('in text system', entity);
+            if (entity instanceof MRTextArea) {
+                console.log('on entity', entity, entity.textObj.text, text, textContentChanged);
+            }
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.
-
             if (textContentChanged) {
                 entity.textObj.text = text;
                 this._updateSpecificEntity(entity);
@@ -123,14 +134,6 @@ export class TextSystem extends MRSystem {
     update(deltaTime, frame) {
         // For this system, since we have the 'per entity' and 'per scene event' update calls,
         // we dont need a main update call here.
-    }
-
-    updateTextInput(entity) {
-        if (entity == document.activeElement) {
-            entity.updateCursorPosition();
-        } else {
-            entity.blur();
-        }
     }
 
     /**

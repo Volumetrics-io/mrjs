@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body >
-   <mr-app>
+   <mr-app debug="true">
     <mr-panel id="panel" class="layout" data-comp-anchor="type: fixed;">
         <mr-div id="navbar">
         <mr-a href="https://mrjs.io" class="mrjs">
@@ -53,7 +53,7 @@
         <mr-text class="col-2 label">
             mr-textarea
         </mr-text>
-        <mr-textarea class="col-2">
+        <mr-textarea class="col-2" style="z-index:3;">
             Hi hello I'm a bunch of text. I'm on one line with no breaks
 
             Im on another line now.
@@ -62,11 +62,11 @@
         <mr-text class="col-2 label" >
             textfield
         </mr-text>
-        <mr-textfield class="col-2">
+        <!-- <mr-textfield class="col-2">
             Hi hello I'm a bunch of text. I'm on one line with no breaks
 
             Im on another line now.
-        </mr-textfield>
+        </mr-textfield> -->
 
         <!-- <mr-text class="col-2 subtitle" >
         model

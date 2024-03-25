@@ -32,33 +32,19 @@ export class MRTextInput extends MRText {
      * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
      */
     connected() {
+        this.createCursor();
+        this.textObj.add(this.cursor);
+    }
+
+    createCursor() {
         const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
             side: THREE.DoubleSide,
         });
-
         this.cursor = new THREE.Mesh(geometry, material);
-
-        this.textObj.add(this.cursor);
         this.cursor.position.z += 0.001;
         this.cursor.visible = false;
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.input.setAttribute('value', this.textContent.replace(/(\n)\s+/g, '$1').trim());
-        });
-
-        this.input.style.opacity = 0; // Make it invisible
-        this.input.style.position = 'absolute'; // Avoid affecting layout
-        this.shadowRoot.appendChild(this.input);
-
-        this.addEventListener('click', (event) => {
-            this.focusInput();
-        });
-
-        this.addEventListener('keydown', (event) => {
-            this.triggerTextStyleUpdate(this);
-        });
     }
 
     /**
