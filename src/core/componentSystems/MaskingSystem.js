@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRText } from 'mrjs/core/entities/MRText';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
 /*
  * A system that handles elements that mask other elements by using stencil.
@@ -148,7 +148,7 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             if (this.panels.length >= MAX_PANEL_NUM) {
                 console.warn('Masking system supports up to eight panels.');
                 return;

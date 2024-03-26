@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-import { MRMedia } from 'mrjs/core/entities/MRMedia';
+import { MRMediaEntity } from 'mrjs/core/entities/MRMediaEntity';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class MRVideo
+ * @class MRVideoEntity
  * @classdesc Base html video represented in 3D space. `mr-video`
- * @augments MRMedia
+ * @augments MRMediaEntity
  */
-export class MRVideo extends MRMedia {
+export class MRVideoEntity extends MRMediaEntity {
     /**
      * @class
      * @description Constructs a base video entity using a UIPlane and other 3D elements as necessary.
@@ -80,4 +80,4 @@ export class MRVideo extends MRMedia {
     }
 }
 
-customElements.get('mr-video') || customElements.define('mr-video', MRVideo);
+customElements.get('mr-video') || customElements.define('mr-video', MRVideoEntity);

@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
+import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
 /**
- * @class MRTextArea
+ * @class MRTextAreaEntity
  * @classdesc The text area element that simulates the behavior of an HTML <textarea> tag,
- *            allowing for multiline text input and display. Inherits from MRTextInput, which
- *            in turn extends MRText.
- * @augments MRTextInput
+ *            allowing for multiline text input and display. Inherits from MRTextInputEntity, which
+ *            in turn extends MRTextEntity.
+ * @augments MRTextInputEntity
  */
-export class MRTextArea extends MRTextInput {
+export class MRTextAreaEntity extends MRTextInputEntity {
     constructor() {
         super();
         // Define additional properties for handling multiline text and scrolling
@@ -185,7 +185,7 @@ export class MRTextArea extends MRTextInput {
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
-        // Adjust for scrollOffset in MRTextArea
+        // Adjust for scrollOffset in MRTextAreaEntity
         const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
         const lines = this.input.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
@@ -218,4 +218,4 @@ export class MRTextArea extends MRTextInput {
     }
 }
 
-customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextArea);
+customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextAreaEntity);

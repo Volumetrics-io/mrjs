@@ -4,7 +4,7 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
-import { MRVolume } from '../entities/MRVolume';
+import { MRVolumeEntity } from '../entities/MRVolumeEntity';
 
 const PLANE_NUM = 6;
 
@@ -63,7 +63,7 @@ export class ClippingSystem extends MRSystem {
             this.coplanarPointB.set(-positions[positionIndexB], -positions[positionIndexB + 1], -positions[positionIndexB + 2]);
             this.coplanarPointC.set(-positions[positionIndexC], -positions[positionIndexC + 1], -positions[positionIndexC + 2]);
 
-            if (entity instanceof MRVolume) {
+            if (entity instanceof MRVolumeEntity) {
                 entity.volume.localToWorld(this.coplanarPointA);
                 entity.volume.localToWorld(this.coplanarPointB);
                 entity.volume.localToWorld(this.coplanarPointC);

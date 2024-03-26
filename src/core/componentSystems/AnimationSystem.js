@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
-import { MRModel } from 'mrjs/core/entities/MRModel';
+import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
 
 /**
  * @class AnimationSystem
@@ -39,7 +39,7 @@ export class AnimationSystem extends MRSystem {
 
     attachedComponent(entity) {
         let comp = entity.components.get('animation');
-        if (entity instanceof MRModel && entity.animations.length > 0) {
+        if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
             this.setAnimation(entity, comp);
@@ -48,7 +48,7 @@ export class AnimationSystem extends MRSystem {
 
     updatedComponent(entity) {
         let comp = entity.components.get('animation');
-        if (entity instanceof MRModel && entity.animations.length > 0) {
+        if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             this.setAnimation(entity, comp);
         }
     }
@@ -58,7 +58,7 @@ export class AnimationSystem extends MRSystem {
     }
 
     onNewEntity(entity) {
-        if (entity instanceof MRModel && entity.animations.length > 0) {
+        if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             let comp = entity.components.get('animation');
             if (!comp) {
                 return;

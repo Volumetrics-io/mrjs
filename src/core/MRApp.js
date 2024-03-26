@@ -6,7 +6,7 @@ import { XRButton } from 'three/addons/webxr/XRButton.js';
 import Stats from 'stats.js';
 
 import { MRElement } from 'mrjs/core/MRElement';
-import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -261,7 +261,7 @@ export class MRApp extends MRElement {
 
         // allows for mr-app style to have background:value to set the skybox
         if (this.compStyle.backgroundImage !== 'none') {
-            let skybox = new MRSkyBox();
+            let skybox = new MRSkyBoxEntity();
             let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
             skybox.setAttribute('src', imageUrl);
             skybox.connected();

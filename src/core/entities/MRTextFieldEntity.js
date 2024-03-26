@@ -2,14 +2,14 @@ import * as THREE from 'three';
 
 import { getSelectionRects } from 'troika-three-text';
 
-import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
+import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
 /**
- * @class MRTextField
+ * @class MRTextFieldEntity
  * @classdesc The text element that is used to represent normal user-entry text field items one would expect in a web-browser. Limits the one-line. `mr-textfield`
- * @augments MRTextInput
+ * @augments MRTextInputEntity
  */
-export class MRTextField extends MRTextInput {
+export class MRTextFieldEntity extends MRTextInputEntity {
     //  /**
     //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
     //  */
@@ -66,4 +66,4 @@ export class MRTextField extends MRTextInput {
     };
 }
 
-customElements.get('mr-textfield') || customElements.define('mr-textfield', MRTextField);
+customElements.get('mr-textfield') || customElements.define('mr-textfield', MRTextFieldEntity);

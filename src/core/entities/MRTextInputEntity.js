@@ -2,14 +2,14 @@ import { getSelectionRects } from 'troika-three-text';
 
 import * as THREE from 'three';
 
-import { MRText } from 'mrjs/core/entities/MRText';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
 /**
- * @class MRTextInput
+ * @class MRTextInputEntity
  * @classdesc The text element / TODO /
- * @augments MRText
+ * @augments MRTextEntity
  */
-export class MRTextInput extends MRText {
+export class MRTextInputEntity extends MRTextEntity {
     /**
      * @class
      * @description Constructor for the textArea entity component.
