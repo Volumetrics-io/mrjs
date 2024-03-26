@@ -49,13 +49,41 @@ npm i mrjs
 
 > You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
 
-First, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) and then run:
+First, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) (including its submodules for its samples)
 
 ```sh
-npm install && npm run build
+git clone --recurse-submodules the.cloning.url 
 ```
 
-To test in headset (see [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement) as well):
+If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:
+
+```sh
+git submodule update --init --recursive
+```
+
+and then setup your node environment:
+
+```sh
+npm install
+```
+
+and now build:
+
+```sh
+npm run build
+```
+
+serving and testing:
+
+> We serve some of our examples and testing files from submodules, so if this is your first time setting up the repo, make sure to run the following:
+
+```sh
+npm run update-submodules
+```
+
+you are able to test locally and in headset by running the following:
+
+> To test in headset (see [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement) as well):
 
 ```sh
 npm run server
