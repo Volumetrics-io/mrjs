@@ -120,6 +120,11 @@ mr-panel {
     padding: 10px;
 }
 
+.documentation {
+    background-color: var(--accent);
+    width: fit-content;
+}
+
 .example-link {
     font-size: 2rem;
 }
@@ -188,4 +193,5 @@ mr-button.hover {
     .first {
         order: -1;
     }
-}/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
+}
+/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
