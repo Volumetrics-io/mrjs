@@ -71,7 +71,7 @@ __*RUNNING THE SAMPLES*__
 
 serving the samples:
 
-> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this):
+> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this unless the test fails and tells you to do so):
 
 ```sh
 npm run update-submodules
