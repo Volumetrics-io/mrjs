@@ -114,6 +114,13 @@ jobs:
       with:
         name: build-artifacts
         path: ./dist
+
+    - name: Make sure required scripts are executable in the github action
+      run: |
+        # dangerous for this to be just chmod +x ./scripts/*.sh
+        # so making this specific to the right files
+        ls -al
+        ls -al ./scripts
     
     - name: 👷 Test
       run: npm run test
