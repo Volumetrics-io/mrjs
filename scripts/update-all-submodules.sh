@@ -16,60 +16,55 @@ prependAndAppend() {
     mv "$TEMP_FILE" "$filepath"
     rm "$TEMP_FILE"    
 
-    echo "The $filepath has been updated."
+    echo "--- The $filepath has been updated. ---"
 }
 
 replaceSingleLineInFile() {
     filepath=$1
-    to_replace=$2
-    replace_with=$3
+    to_replace=$(echo "$2" | sed 's|/|\\/|g') # Escaping forward slashes in the search pattern
+    replace_with=$(echo "$3" | sed 's|/|\\/|g') # Escaping forward slashes in the replacement pattern
 
-    # Check if the file contains the text to replace
+    echo "Attempting to replace in file: $filepath"
+    echo "Trying to replace: $to_replace"
+    echo "With: $replace_with"
+
     if grep -q "$to_replace" "$filepath"; then
-        # Print the original line
         echo "Before replacement:"
         grep "$to_replace" "$filepath"
 
-        # Perform the replacement
-        sed -i "s|$to_replace|$replace_with|" "$filepath"
+        sed -i '' "s|$to_replace|$replace_with|g" "$filepath"
 
-        # Print the new line
         echo "After replacement:"
         grep "$replace_with" "$filepath"
     else
         echo "Text to replace not found in $filepath."
     fi
 
-    # Confirm completion
-    echo "$filepath has been updated."
+    echo "--- $filepath has been updated. ---"
 }
 
 replaceEveryOccurenceInFile() {
     filepath=$1
-    to_replace=$2
-    replace_with=$3
+    to_replace=$(echo "$2" | sed 's|/|\\/|g') # Escaping forward slashes in the search pattern
+    replace_with=$(echo "$3" | sed 's|/|\\/|g') # Escaping forward slashes in the replacement pattern
 
-    # Ensure the text exists in the file before attempting replacement
-    if grep -q "$to_replace" "$filepath"; then
-        # Read the file line by line
-        while IFS= read -r line; do
-            # Check if the line contains the text to be replaced
-            if echo "$line" | grep -q "$to_replace"; then
-                # Print the before and after subsections for each replacement
-                echo "Before: $line"
-                line=$(echo "$line" | sed "s|$to_replace|$replace_with|g")
-                echo "After: $line"
-            fi
-        done < "$filepath"
+    # Debug: Print the patterns to be sure they're what you expect.
+    echo "Replacing '$to_replace' with '$replace_with' in $filepath"
 
-        # Perform the global replacement
-        sed -i "s|$to_replace|$replace_with|g" "$filepath"
-    else
-        echo "Text to replace not found in $filepath."
-    fi
+    # Use sed to perform the replacement and capture the output for debugging.
+    # Need this as we're doing more than one replacement
+    sed -i.bak "s|$to_replace|$replace_with|g" "$filepath" && echo "Replacement succeeded." || echo "Replacement failed."
 
-    # Confirm completion
-    echo "$filepath has been updated with every occurrence of '$to_replace' replaced with '$replace_with'."
+    # Check differences (optional, for debugging, requires the diff utility).
+    # This compares the original file (backup) and the modified one to see changes.
+    echo "Changes made:"
+    diff "$filepath.bak" "$filepath" || true
+
+    # Clean up the backup file.
+    rm "$filepath.bak"
+
+    # Confirm completion.
+    echo "--- $filepath has been updated with every occurrence of '$to_replace' replaced with '$replace_with'. ---"
 }
 
 # --------- submodule:MRjs.io repo:mrjs-landing --------- #
@@ -80,11 +75,11 @@ replaceEveryOccurenceInFile() {
 
 ## update the submodule if necessary
 SUBMODULE_DIR="samples/mrjsio"
-./scripts/check-and-update-submodule.sh "$SUBMODULE_DIR"
-script_exit_code=$?
+#./scripts/check-and-update-submodule.sh "$SUBMODULE_DIR"
+#script_exit_code=$?
 
 ## If the script exit code is 2, it means updates were made
-if [ $script_exit_code -eq 2 ]; then
+#if [ $script_exit_code -eq 2 ]; then
     ### Overwrite main files
     cp "$SUBMODULE_DIR/index.html" samples/index.html
     cp "$SUBMODULE_DIR/style.css" samples/index-style.css
@@ -115,4 +110,4 @@ if [ $script_exit_code -eq 2 ]; then
     REPLACE_WITH="./index-assets/"
     replaceEveryOccurenceInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH";
     replaceEveryOccurenceInFile "samples/index-style.css" $TO_REPLACE "$REPLACE_WITH";
-fi
+#fi
