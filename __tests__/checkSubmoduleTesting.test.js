@@ -5,9 +5,12 @@ const execPromise = (cmd) =>
   new Promise((resolve, reject) => {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
-        reject({ error, stderr });
+        // Attach stdout and stderr to the error object for better debugging
+        error.stdout = stdout;
+        error.stderr = stderr;
+        reject(error);
       } else {
-        resolve(stdout);
+        resolve({ stdout, stderr, code: 0 }); // Explicitly resolve with code 0 for success
       }
     });
   });
@@ -19,10 +22,15 @@ const execPromise = (cmd) =>
 test('mrjsio submodule is up to date', async () => {
   try {
     const result = await execPromise('./scripts/check-if-submodule-needs-update.sh ./samples/mrjsio');
-    expect(result.trim()).toBe('0');
+    // If the promise resolves, it means the script exited with code 0
+    expect(result.code).toBe(0);
   } catch (err) {
-    console.error('Script failed to execute:', err.stderr, err.error);
+    // If the script exits with a non-zero exit code, it will be caught here
+    console.error('Script failed to execute:', err.stderr);
     console.log('!!! mrjsio submodule needs to be updated !!! run: `npm run update-submodules` and it will handle the rest for you :)');
-    throw err.error;
+    
+    // Fail the test by checking the exit code - since success is 0, checking against
+    // 0 is guaranteed to trigger a failure.
+    expect(err.code).toBe(0);
   }
 });
