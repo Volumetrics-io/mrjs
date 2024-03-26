@@ -115,7 +115,7 @@ export class MaterialStyleSystem extends MRSystem {
         function makeVisible(entity, bool) {
             entity.object3D.visible = bool;
             if (entity.background) {
-                // The background for MRDivEntityEntities, but we want this css property allowed
+                // The background for MRDivEntity, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
                 // entity.background.visible = bool;
                 //

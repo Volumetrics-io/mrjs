@@ -7,7 +7,7 @@ import { mrjsUtils } from 'mrjs';
 /**
  * @class MRVideoEntity
  * @classdesc Base html video represented in 3D space. `mr-video`
- * @augments MRDivEntity
+ * @augments MRMediaEntity
  */
 export class MRVideoEntity extends MRMediaEntity {
     /**
