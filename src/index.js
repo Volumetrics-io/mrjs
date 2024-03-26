@@ -48,6 +48,7 @@ import './core/entities/MRVolumeEntity';
 // CORE - COMPONENT-SYSTEMS
 import './core/componentSystems/AnchorSystem';
 import './core/componentSystems/AnimationSystem';
+import './core/componentSystems/BoundaryVisibilitySystem';
 import './core/componentSystems/ClippingSystem';
 import './core/componentSystems/ControlSystem';
 import './core/componentSystems/GeometryStyleSystem';

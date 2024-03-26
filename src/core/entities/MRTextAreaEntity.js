@@ -216,6 +216,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // approach specific to Troika-Three-Text and Three.js.
         return text.length * 0.005; // Placeholder calculation
     }
+
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextAreaEntity);

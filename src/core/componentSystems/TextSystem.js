@@ -88,6 +88,7 @@ export class TextSystem extends MRSystem {
                 } else {
                     entity.blur();
                 }
+                //this.updateTextInput(entity);
             }
         });
     }
