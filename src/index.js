@@ -23,27 +23,27 @@ import './dataManagers/MRPlaneManager';
 
 // CORE
 import './core/MRApp';
-import './core/MRDivEntity';
 import './core/MRElement';
 import './core/MREntity';
-import './core/MRMedia';
 import './core/MRSystem';
-import './core/MRTextEntity';
 // CORE - USER
 import './core/user/MRHand';
 import './core/user/MRUser';
 // CORE - ENTITIES
-import './core/entities/MRVolume.js';
-import './core/entities/MRButton';
-import './core/entities/MRHyperlink';
-import './core/entities/MRImage';
-import './core/entities/MRVideo';
-import './core/entities/MRLight';
-import './core/entities/MRModel';
-import './core/entities/MRPanel';
-import './core/entities/MRSkyBox';
-import './core/entities/MRTextArea';
-import './core/entities/MRTextField';
+import './core/entities/MRButtonEntity';
+import './core/entities/MRDivEntity';
+import './core/entities/MRHyperlinkEntity';
+import './core/entities/MRImageEntity';
+import './core/entities/MRLightEntity';
+import './core/entities/MRMediaEntity';
+import './core/entities/MRModelEntity';
+import './core/entities/MRPanelEntity';
+import './core/entities/MRSkyBoxEntity';
+import './core/entities/MRTextEntity';
+import './core/entities/MRTextAreaEntity';
+import './core/entities/MRTextFieldEntity';
+import './core/entities/MRVideoEntity';
+import './core/entities/MRVolumeEntity';
 // CORE - COMPONENT-SYSTEMS
 import './core/componentSystems/AnchorSystem';
 import './core/componentSystems/AnimationSystem';

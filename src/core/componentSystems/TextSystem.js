@@ -1,11 +1,11 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRTextEntity } from 'mrjs/core/MRTextEntity';
-import { MRButton } from 'mrjs/core/entities/MRButton';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
+import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRTextField } from 'mrjs/core/entities/MRTextField';
-import { MRTextArea } from 'mrjs/core/entities/MRTextArea';
+import { MRTextFieldEntity } from 'mrjs/core/entities/MRTextFieldEntity';
+import { MRTextAreaEntity } from 'mrjs/core/entities/MRTextAreaEntity';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -72,14 +72,14 @@ export class TextSystem extends MRSystem {
         this.updateStyle(entity);
 
         entity.textObj.sync(() => {
-            if (entity instanceof MRButton) {
+            if (entity instanceof MRButtonEntity) {
                 entity.textObj.anchorX = 'center';
             } else {
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
             }
 
-            if (entity instanceof MRTextField || entity instanceof MRTextArea) {
+            if (entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity) {
                 this.updateTextInput(entity);
             }
         });
@@ -91,7 +91,7 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
-            let text = entity instanceof MRTextField || entity instanceof MRTextArea
+            let text = entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
                 ? entity.input.value
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values

@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class MRMedia
+ * @class MRMediaEntity
  * @classdesc Base html media entity represented in 3D space. `mr-media`
  * @augments MRDivEntity
  */
-export class MRMedia extends MRDivEntity {
+export class MRMediaEntity extends MRDivEntity {
     /**
      * @class
      * @description Constructs a base media entity using a UIPlane and other 3D elements as necessary.
@@ -23,7 +23,7 @@ export class MRMedia extends MRDivEntity {
         const material = new THREE.MeshStandardMaterial({
             side: THREE.FrontSide,
         });
-        // Object3D for MRMedia (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
+        // Object3D for MRMediaEntity (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
         this.object3D.renderOrder = 3;

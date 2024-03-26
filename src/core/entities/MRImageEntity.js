@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-import { MRMedia } from 'mrjs/core/MRMedia';
+import { MRMediaEntity } from 'mrjs/core/entities/MRMediaEntity';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class MRImage
+ * @class MRImageEntity
  * @classdesc Base html image represented in 3D space. `mr-image`
- * @augments MRMedia
+ * @augments MRMediaEntity
  */
-export class MRImage extends MRMedia {
+export class MRImageEntity extends MRMediaEntity {
     /**
      * @class
      * @description Constructs a base image entity using a UIPlane and other 3D elements as necessary.
@@ -17,7 +17,7 @@ export class MRImage extends MRMedia {
     constructor() {
         super();
 
-        // object3D and rest of mrvideo is pre-created in MRMedia
+        // object3D and rest of mrvideo is pre-created in MRMediaEntity
         this.object3D.name = 'image';
     }
 
@@ -57,7 +57,7 @@ export class MRImage extends MRMedia {
      */
     mutated(mutation) {
         // Mutations are only understood by their actual type. Any mutation
-        // passed through MRMedia directly is undefined since it is not
+        // passed through MRMediaEntity directly is undefined since it is not
         // a direct element for users. So we do the if-check here and then
         // follow the same as the parent's functionality.
         if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
@@ -66,4 +66,4 @@ export class MRImage extends MRMedia {
     }
 }
 
-customElements.get('mr-img') || customElements.define('mr-img', MRImage);
+customElements.get('mr-img') || customElements.define('mr-img', MRImageEntity);

@@ -1,6 +1,6 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 
 /**
  * @function
@@ -61,7 +61,7 @@ export class BoundaryVisibilitySystem extends MRSystem {
      */
     onNewEntity(entity) {
         // TODO: Support nested panels
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             this.registry.add(entity);
             entity.traverse((child) => {
                 if (child === entity) {

@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class MRPanel
+ * @class MRPanelEntity
  * @classdesc The main panel entity DOM used for webpages and UI elements in 3D space. `mr-panel`
  * @augments MRDivEntity
  */
-export class MRPanel extends MRDivEntity {
+export class MRPanelEntity extends MRDivEntity {
     get height() {
         let result = this.getBoundingClientRect().height;
 
@@ -154,4 +154,4 @@ export class MRPanel extends MRDivEntity {
     };
 }
 
-customElements.get('mr-panel') || customElements.define('mr-panel', MRPanel);
+customElements.get('mr-panel') || customElements.define('mr-panel', MRPanelEntity);
