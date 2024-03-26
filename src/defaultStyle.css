@@ -47,6 +47,7 @@ mr-button {
     background-color: #8a8a8a;
     border-radius: 0.5%;
     /* animation: back 0.25s ease-out forwards; */
+    width: fit-content;
 }
 
 mr-button.hover {
