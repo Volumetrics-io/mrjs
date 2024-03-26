@@ -1,8 +1,8 @@
 # Build/Dist - ignore in this repo, they'll be built directly by render.com
-dist/assets*
-dist/examples/
-dist/samples/
-dist/sites/
+dist/examples-assets*
+dist/examples*
+dist/samples*
+dist/sites*
 dist/index*
 dist/style*
 

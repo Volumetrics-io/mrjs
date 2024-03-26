@@ -66,8 +66,7 @@ export default {
                 { from: 'samples/index.html', to: 'index.html' },
                 { from: 'samples/index-style.css', to: 'index-style.css' },
                 { from: 'samples/examples', to: 'examples' },
-                { from: 'samples/assets', to: 'assets' },
-                { from: 'samples/sites', to: 'sites' },
+                { from: 'samples/examples-assets', to: 'examples-assets' },
             ],
         }),
         // new webpack.ProvidePlugin({
