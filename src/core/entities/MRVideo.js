@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 
-import { MRMedia } from 'mrjs/core/MRMedia';
+import { MRMedia } from 'mrjs/core/entities/MRMedia';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
  * @class MRVideo
  * @classdesc Base html video represented in 3D space. `mr-video`
- * @augments MRDivEntity
+ * @augments MRDiv
  */
 export class MRVideo extends MRMedia {
     /**

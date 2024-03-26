@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDiv } from 'mrjs/core/entities/MRDiv';
 
 import { mrjsUtils } from 'mrjs';
 
 /**
  * @class MRMedia
  * @classdesc Base html media entity represented in 3D space. `mr-media`
- * @augments MRDivEntity
+ * @augments MRDiv
  */
-export class MRMedia extends MRDivEntity {
+export class MRMedia extends MRDiv {
     /**
      * @class
      * @description Constructs a base media entity using a UIPlane and other 3D elements as necessary.

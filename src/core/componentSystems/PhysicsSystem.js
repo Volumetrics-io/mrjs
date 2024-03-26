@@ -4,9 +4,9 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
-import { MRDivEntity } from '../MRDivEntity';
-import { MRPanel } from '../entities/MRPanel';
-import { MRModel } from '../entities/MRModel';
+import { MRDiv } from 'mrjs/core/entities/MRDiv';
+import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRModel } from 'mrjs/core/entities/MRModel';
 
 /**
  * @class PhysicsSystem
@@ -60,7 +60,7 @@ export class PhysicsSystem extends MRSystem {
             }
             if (entity instanceof MRModel) {
                 this.updateSimpleBody(entity);
-            } else if (entity instanceof MRDivEntity) {
+            } else if (entity instanceof MRDiv) {
                 this.updateUIBody(entity);
             }
         }
@@ -96,7 +96,7 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if (entity instanceof MRDivEntity) {
+        if (entity instanceof MRDiv) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
         }
@@ -112,7 +112,7 @@ export class PhysicsSystem extends MRSystem {
         //       and model will get more complex as we add convexMesh support
         if (entity instanceof MRModel) {
             this.initSimpleBody(entity);
-        } else if (entity instanceof MRDivEntity) {
+        } else if (entity instanceof MRDiv) {
             this.initUIEntityBody(entity);
         }
 
@@ -243,7 +243,7 @@ export class PhysicsSystem extends MRSystem {
             //       and model will get more complex as we add convexMesh support
             if (entity instanceof MRModel) {
                 this.updateSimpleBody(entity);
-            } else if (entity instanceof MRDivEntity) {
+            } else if (entity instanceof MRDiv) {
                 this.updateUIBody(entity);
             }
         }

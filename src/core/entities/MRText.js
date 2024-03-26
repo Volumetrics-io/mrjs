@@ -1,18 +1,18 @@
 import { Text } from 'troika-three-text';
 
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDiv } from 'mrjs/core/entities/MRDiv';
 
 /**
- * @class MRTextEntity
+ * @class MRText
  * @classdesc The text element that is used to represent normal HTML text one would expect in a web browser.
  *            Used specifically on `mr-div` items.
- *            Inherits from MRDivEntity.
- * @augments MRDivEntity
+ *            Inherits from MRDiv.
+ * @augments MRDiv
  */
-export class MRTextEntity extends MRDivEntity {
+export class MRText extends MRDiv {
     /**
      * @class
-     * @description Constructor for the MRTextEntity object.
+     * @description Constructor for the MRText object.
      *              Sets up the 3D aspect of the text, including the object, texture, and update check.
      *              Additionally, adds an event listener for the text to auto-augment whenever the panel size changes.
      */
@@ -60,4 +60,4 @@ export class MRTextEntity extends MRDivEntity {
     }
 }
 
-customElements.get('mr-text') || customElements.define('mr-text', MRTextEntity);
+customElements.get('mr-text') || customElements.define('mr-text', MRText);

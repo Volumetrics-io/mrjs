@@ -1,11 +1,11 @@
-import { MRTextEntity } from 'mrjs/core/MRTextEntity';
+import { MRText } from 'mrjs/core/entities/MRText';
 
 /**
  * @class MRButton
  * @classdesc 3D representation of a Button mimicking the html version. `mr-button`
- * @augments MRTextEntity
+ * @augments MRText
  */
-export class MRButton extends MRTextEntity {
+export class MRButton extends MRText {
     /**
      * @class
      * @description Constructor for the Button entity, does the default.

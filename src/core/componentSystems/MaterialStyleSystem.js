@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDiv } from 'mrjs/core/entities/MRDiv';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
@@ -33,7 +33,7 @@ export class MaterialStyleSystem extends MRSystem {
      */
     _updateSpecificEntity(entity) {
         // Anything needed for mrjs defined entities - the order of the below matters
-        if (entity instanceof MRDivEntity) {
+        if (entity instanceof MRDiv) {
             this.setBackground(entity);
         }
         this.setVisibility(entity);
@@ -120,7 +120,7 @@ export class MaterialStyleSystem extends MRSystem {
                 // entity.background.visible = bool;
                 //
                 // XXX - right now all backgrounds are set as visible=false by default in their
-                // MRDivEntity constructors, so toggling them here isnt useful, but in future
+                // MRDiv constructors, so toggling them here isnt useful, but in future
                 // if this is requested for use or we want to add a feature for more use of the
                 // background - adding in toggling for this with the object will be useful.
             }

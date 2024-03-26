@@ -5,11 +5,11 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { mrjsUtils } from 'mrjs';
 
 /**
- * @class MRDivEntity
+ * @class MRDiv
  * @classdesc The MREntity that is used to solely describe UI Elements. Defaults as the html `mr-div` representation. `mr-div`
  * @augments MREntity
  */
-export class MRDivEntity extends MREntity {
+export class MRDiv extends MREntity {
     /**
      * @class
      * @description Constructor sets up the defaults for the background mesh, scaling, and world relevant elements.
@@ -90,7 +90,7 @@ export class MRDivEntity extends MREntity {
     add(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
         let panel = this.closest('mr-panel');
-        if (panel && entity instanceof MRDivEntity) {
+        if (panel && entity instanceof MRDiv) {
             panel.add(entity);
         } else {
             this.object3D.add(entity.object3D);
@@ -108,7 +108,7 @@ export class MRDivEntity extends MREntity {
     remove(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
         let panel = this.closest('mr-panel');
-        if (panel && entity instanceof MRDivEntity) {
+        if (panel && entity instanceof MRDiv) {
             panel.remove(entity);
         } else {
             this.object3D.remove(entity.object3D);
@@ -124,4 +124,4 @@ export class MRDivEntity extends MREntity {
     }
 }
 
-customElements.get('mr-div') || customElements.define('mr-div', MRDivEntity);
+customElements.get('mr-div') || customElements.define('mr-div', MRDiv);

@@ -1,7 +1,7 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRTextEntity } from 'mrjs/core/MRTextEntity';
+import { MRText } from 'mrjs/core/entities/MRText';
 import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRTextField } from 'mrjs/core/entities/MRTextField';
@@ -61,7 +61,7 @@ export class TextSystem extends MRSystem {
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
-        entity instanceof MRTextEntity ? this.registry.add(entity) : null;
+        entity instanceof MRText ? this.registry.add(entity) : null;
     }
 
     /**
@@ -136,7 +136,7 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Updates the style for the text's information based on compStyle and inputted css elements.
-     * @param {MRTextEntity} entity - the text entity whose style is being updated
+     * @param {MRText} entity - the text entity whose style is being updated
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
@@ -168,7 +168,7 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Handles when text is added as an entity updating content and style for the internal textObj appropriately.
-     * @param {MRTextEntity} entity - the text entity being updated
+     * @param {MRText} entity - the text entity being updated
      */
     addText = (entity) => {
         const text = entity.textContent.trim();

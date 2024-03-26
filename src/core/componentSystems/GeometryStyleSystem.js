@@ -1,7 +1,7 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/MRDivEntity';
+import { MRDiv } from 'mrjs/core/entities/MRDiv';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRMedia } from 'mrjs/core/MRMedia';
+import { MRMedia } from 'mrjs/core/entities/MRMedia';
 import { MRPanel } from 'mrjs/core/entities/MRPanel';
 import { MRButton } from 'mrjs/core/entities/MRButton';
 import { MRModel } from 'mrjs/core/entities/MRModel';
@@ -36,7 +36,7 @@ export class GeometryStyleSystem extends MRSystem {
         let changed = false;
 
         // Anything needed for mrjs defined entities - the order of the below matters
-        if (entity instanceof MRDivEntity) {
+        if (entity instanceof MRDiv) {
             changed = this.setUpdatedBorder(entity);
         }
         changed = this.setScale(entity);
