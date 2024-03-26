@@ -73,6 +73,7 @@ export class TextSystem extends MRSystem {
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
 
+        // the sync step ensures troika's text render info is up to date
         entity.textObj.sync(() => {
             if (entity instanceof MRButton) {
                 entity.textObj.anchorX = 'center';

@@ -1,5 +1,3 @@
-import { getSelectionRects } from 'troika-three-text';
-
 import * as THREE from 'three';
 
 import { MRTextInput } from 'mrjs/core/entities/MRTextInput';
@@ -27,7 +25,7 @@ export class MRTextArea extends MRTextInput {
     connected() {
         const inputElement = document.createElement('textarea');
         inputElement.style.position = 'absolute';
-         inputElement.style.left = '-9999px'; // Position off-screen
+        inputElement.style.left = '-9999px'; // Position off-screen
         inputElement.style.height = '1px';
         inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
@@ -59,14 +57,6 @@ export class MRTextArea extends MRTextInput {
         this.triggerTextStyleUpdate();
     }
 
-    /**
-     * @function
-     * @description Focuses the inputted text value and cursor information as if it is selected. Includes showing the cursor item.
-     */
-    focus = () => {
-        this._focus();
-    };
-
     _focus() {
         if (! this.input) {
             return;
@@ -83,27 +73,23 @@ export class MRTextArea extends MRTextInput {
         this.updateCursorPosition();
     }
 
-    /**
-     * @function
-     * @description Blurs the inputted text value and cursor information
-     */
-    blur = () => {
-        this._blur();
-    };
-
-    _blur() {
-        this.input.blur();
-        this.cursor.visible = false;
-    }
-
-    input = () => {
-        this.input.input();
-    }
-
     setupEventListeners() {
         // Click event to focus and allow input
         this.addEventListener('click', () => {
             this._focus();
+        });
+
+        this.addEventListener('blur', () => {
+            this.input.blur();
+            this.cursor.visible = false;
+        });
+
+        this.addEventListener('focus', () => {
+            this._focus();
+        });
+
+        this.addEventListener('input', () => {
+            this.input.input();
         });
 
         // Keyboard input event to capture text
@@ -112,16 +98,39 @@ export class MRTextArea extends MRTextInput {
         });
     }
 
+    // updateTextDisplay() {
+    //     const lines = this.input.value.split('\n');
+    //     const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
+    //     const visibleText = visibleLines.join('\n');
+        
+    //     // Update the 3D text object to display only the currently visible lines of text
+    //     this.textObj.text = visibleText;
+    //     console.log('text updated: ', this.textObj.text);
+
+    //     this.updateCursorPosition();
+    // }
+
     updateTextDisplay() {
-        const lines = this.input.value.split('\n');
+        // Determine the maximum number of characters per line based on renderable area (example given)
+        const maxCharsPerLine = 50; // This should be dynamically calculated
+        
+        const lines = this.input.value.split('\n').map(line => {
+            // Truncate or split lines here based on maxCharsPerLine if implementing horizontal scrolling
+            return line.substring(0, maxCharsPerLine);
+        });
+        
+        // Existing logic to determine visibleLines based on scrollOffset and maxVisibleLines
         const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
         const visibleText = visibleLines.join('\n');
         
-        // Update the 3D text object to display only the currently visible lines of text
-        console.log('old text: ', this.textObj.text);
-        console.log('new text: ', visibleText);
         this.textObj.text = visibleText;
         console.log('text updated: ', this.textObj.text);
+
+        // Logic to adjust scrollOffset for new input, ensuring the latest text is visible
+        if (lines.length > this.maxVisibleLines && this.input === document.activeElement) {
+            // Automatically adjust scrollOffset to make new lines visible
+            this.scrollOffset = Math.max(0, lines.length - this.maxVisibleLines);
+        }
 
         this.updateCursorPosition();
     }
@@ -186,6 +195,8 @@ export class MRTextArea extends MRTextInput {
 
         // Update the cursor's 3D position
         if (this.cursor) {
+            console.log('cursorXPosition', cursorXPosition);
+            console.log('cursorYPosition', cursorYPosition);
             this.cursor.position.x = cursorXPosition;
             this.cursor.position.y = cursorYPosition;
             this.cursor.visible = true; // Ensure the cursor is visible
