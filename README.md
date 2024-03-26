@@ -47,21 +47,15 @@ npm i mrjs
 
 ### From source:
 
-> You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
+__*CLONE AND BUILD*__
 
-First, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) (including its submodules for its samples)
+You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
 
-```sh
-git clone --recurse-submodules the.cloning.url 
-```
+Then, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories)
 
-If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:
+> If you are planning to contribute to this repo instead of just using is as a source you will need its submodules for proper samples and testing `git clone --recurse-submodules the.cloning.url `. If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:git submodule update --init --recursive`
 
-```sh
-git submodule update --init --recursive
-```
-
-and then setup your node environment:
+Next, setup your node environment:
 
 ```sh
 npm install
@@ -73,20 +67,30 @@ and now build:
 npm run build
 ```
 
-serving and testing:
+__*RUNNING THE SAMPLES*__
 
-> We serve some of our examples and testing files from submodules, so if this is your first time setting up the repo, make sure to run the following:
+serving the samples:
+
+> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this):
 
 ```sh
 npm run update-submodules
 ```
 
-you are able to test locally and in headset by running the following:
+You are able to try the samples locally and in headset by running the following:
 
-> To test in headset (see [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement) as well):
+ <sub><i>(note for in headset testing: [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement))</i></sub>
 
 ```sh
 npm run server
+```
+
+__*RUNNING THE TESTING*__
+
+ <sub><i>(this follows the need for the same `update-submodules` note as the 'serving the samples' section)</i></sub>
+
+```sh
+npm run test
 ```
 
 ### Documentation:
