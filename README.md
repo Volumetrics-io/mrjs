@@ -81,7 +81,7 @@ npm run server
 
 __*RUNNING THE TESTING*__
 
- <sub><i>(this follows the need for the same `update-submodules` note as the 'serving the samples' section)</i></sub>
+ <sub><i>(this follows the need for the same `update-submodules` note as the 'running the samples' section)</i></sub>
 
 ```sh
 npm run test
