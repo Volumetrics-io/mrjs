@@ -75,11 +75,11 @@ replaceEveryOccurenceInFile() {
 
 ## update the submodule if necessary
 SUBMODULE_DIR="samples/mrjsio"
-#./scripts/check-and-update-submodule.sh "$SUBMODULE_DIR"
-#script_exit_code=$?
+./scripts/check-and-update-submodule.sh "$SUBMODULE_DIR"
+script_exit_code=$?
 
 ## If the script exit code is 2, it means updates were made
-#if [ $script_exit_code -eq 2 ]; then
+if [ $script_exit_code -eq 2 ]; then
     ### Overwrite main files
     cp "$SUBMODULE_DIR/index.html" samples/index.html
     cp "$SUBMODULE_DIR/style.css" samples/index-style.css
@@ -110,4 +110,4 @@ SUBMODULE_DIR="samples/mrjsio"
     REPLACE_WITH="./index-assets/"
     replaceEveryOccurenceInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH";
     replaceEveryOccurenceInFile "samples/index-style.css" $TO_REPLACE "$REPLACE_WITH";
-#fi
+fi
