@@ -165,7 +165,7 @@ Creating a custom Entity is as simple as creating a Custom Element via the Web C
 Example:
 
 ```js
-class Spacecraft extends Entity {
+class Spacecraft extends MREntity {
     constructor(){
         this.object3D = this.generateSpacecraft()
     }
