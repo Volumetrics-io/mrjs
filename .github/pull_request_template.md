@@ -31,7 +31,11 @@ Options:
 - [ ] **VIDEO** - if this pr changes something visually - post a video here of it in headset-MR and/or on desktop (depending on what it affects) for the reviewer to reference.
 - [ ] **TITLE** - make sure the pr's title is updated appropriately as it will be used to name the commit on merge
 - [ ] **BREAKING CHANGE**
-  - make a pr in the [documentation repo](https://github.com/Volumetrics-io/documentation) that updates the manual docs to match the breaking change
-  - note: the docs underneath the `Javascript API` section come automated from the jsdocs inline with the code itself
-  - link the pr of the documentation repo here: *#pr*
-  - that documentation repo pr must be approved by `@lobau`
+  - **DOCUMENTATION**: This includes any changes to html tags and their components
+    - make a pr in the [documentation repo](https://github.com/Volumetrics-io/documentation) that updates the manual docs to match the breaking change
+    - link the pr of the documentation repo here: *#pr*
+    - that pr must be approved by `@lobau`
+  - **SAMPLES/INDEX.HTML**: This includes any changes (html tags or otherwise) that must be done to our landing page submodule as an effect of this pr's updates
+    - make a pr in the [mrjs landing page repo](https://github.com/Volumetrics-io/mrjs-landing) that updates the landing page to match the breaking change
+    - link the pr of the landing page repo here: *#pr*
+    - that pr must be approved by `@hanbollar`
