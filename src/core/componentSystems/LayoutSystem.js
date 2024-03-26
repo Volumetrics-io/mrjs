@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 
 /**
  * @class LayoutSystem
@@ -26,10 +26,10 @@ export class LayoutSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             return;
         }
-        if (entity instanceof MRDiv) {
+        if (entity instanceof MRDivEntity) {
             this.registry.add(entity);
             this.setLayoutPosition(entity);
         }

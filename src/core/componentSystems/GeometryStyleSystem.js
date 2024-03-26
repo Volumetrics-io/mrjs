@@ -1,10 +1,10 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRMedia } from 'mrjs/core/entities/MRMedia';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRModel } from 'mrjs/core/entities/MRModel';
+import { MRMediaEntity } from 'mrjs/core/entities/MRMediaEntity';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
+import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
+import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
 
 /**
  * @class GeometryStyleSystem
@@ -36,11 +36,11 @@ export class GeometryStyleSystem extends MRSystem {
         let changed = false;
 
         // Anything needed for mrjs defined entities - the order of the below matters
-        if (entity instanceof MRDiv) {
+        if (entity instanceof MRDivEntity) {
             changed = this.setUpdatedBorder(entity);
         }
         changed = this.setScale(entity);
-        if (entity instanceof MRMedia) {
+        if (entity instanceof MRMediaEntity) {
             changed = this.setUpdatedMediaPlane(entity);
         }
 

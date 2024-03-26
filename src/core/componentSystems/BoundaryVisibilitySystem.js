@@ -1,12 +1,12 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 
 /**
  * @function
- * @description Observe a target MRDiv and make the associated object visible only if it is in visible position in a root MRDiv
- * @param {MRDiv} root
- * @param {MRDiv} target
+ * @description Observe a target MRDivEntity and make the associated object visible only if it is in visible position in a root MRDivEntity
+ * @param {MRDivEntity} root
+ * @param {MRDivEntity} target
  */
 const observe = (root, target) => {
     // TODO: Callback is fired asynchronously so no guaranteed to be called immediately when the
@@ -61,7 +61,7 @@ export class BoundaryVisibilitySystem extends MRSystem {
      */
     onNewEntity(entity) {
         // TODO: Support nested panels
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             this.registry.add(entity);
             entity.traverse((child) => {
                 if (child === entity) {
@@ -75,7 +75,7 @@ export class BoundaryVisibilitySystem extends MRSystem {
                 this.observedEntities.add(child);
                 observe(entity, child);
             });
-        } else if (!this.observedEntities.has(entity) && entity instanceof MRDiv) {
+        } else if (!this.observedEntities.has(entity) && entity instanceof MRDivEntity) {
             // There is a chance that a child entity is added after parent panel addition.
             // Check registered panels and set up the observer if panels are found in parents.
             for (const panel of this.registry) {

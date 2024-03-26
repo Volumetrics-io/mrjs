@@ -2,14 +2,14 @@ import { getSelectionRects } from 'troika-three-text';
 
 import * as THREE from 'three';
 
-import { MRText } from 'mrjs/core/entities/MRText';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
 /**
- * @class MRTextArea
+ * @class MRTextAreaEntity
  * @classdesc The text element that is used to represent normal paragraph user-entry text field items one would expect in a web-browser. `mr-textarea`
- * @augments MRText
+ * @augments MRTextEntity
  */
-export class MRTextArea extends MRText {
+export class MRTextAreaEntity extends MRTextEntity {
     /**
      * @class
      * @description Constructor for the textArea entity component.
@@ -98,4 +98,4 @@ export class MRTextArea extends MRText {
     };
 }
 
-customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextArea);
+customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextAreaEntity);

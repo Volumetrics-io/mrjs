@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import { MREntity } from 'mrjs/core/MREntity';
 
 /**
- * @class MRSkyBox
+ * @class MRSkyBoxEntity
  * @classdesc The skybox entity that allows users to give multiple images to pattern into the 3D background space. `mr-skybox`
  * @augments MREntity
  */
-export class MRSkyBox extends MREntity {
+export class MRSkyBoxEntity extends MREntity {
     /**
      * @class
      * @description Constructor for skybox - defaults to the usual impl of an Entity.
@@ -113,4 +113,4 @@ export class MRSkyBox extends MREntity {
      */
     onLoad = () => {};
 }
-customElements.define('mr-skybox', MRSkyBox);
+customElements.define('mr-skybox', MRSkyBoxEntity);

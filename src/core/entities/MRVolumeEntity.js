@@ -1,6 +1,6 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
-export class MRVolume extends MREntity {
+export class MRVolumeEntity extends MREntity {
     constructor() {
         super();
         this.volume = new THREE.Object3D();
@@ -21,4 +21,4 @@ export class MRVolume extends MREntity {
     }
 }
 
-customElements.get('mr-volume') || customElements.define('mr-volume', MRVolume);
+customElements.get('mr-volume') || customElements.define('mr-volume', MRVolumeEntity);

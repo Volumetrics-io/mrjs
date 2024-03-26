@@ -1,10 +1,10 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRButton } from 'mrjs/core/entities/MRButton';
-import { MRModel } from 'mrjs/core/entities/MRModel';
-import { MRVideo } from 'mrjs/core/entities/MRVideo';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
+import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
+import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
+import { MRVideoEntity } from 'mrjs/core/entities/MRVideoEntity';
 
 /**
  * @class MaterialStyleSystem
@@ -33,7 +33,7 @@ export class MaterialStyleSystem extends MRSystem {
      */
     _updateSpecificEntity(entity) {
         // Anything needed for mrjs defined entities - the order of the below matters
-        if (entity instanceof MRDiv) {
+        if (entity instanceof MRDivEntity) {
             this.setBackground(entity);
         }
         this.setVisibility(entity);
@@ -115,12 +115,12 @@ export class MaterialStyleSystem extends MRSystem {
         function makeVisible(entity, bool) {
             entity.object3D.visible = bool;
             if (entity.background) {
-                // The background for MRDivEntities, but we want this css property allowed
+                // The background for MRDivEntityEntities, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
                 // entity.background.visible = bool;
                 //
                 // XXX - right now all backgrounds are set as visible=false by default in their
-                // MRDiv constructors, so toggling them here isnt useful, but in future
+                // MRDivEntity constructors, so toggling them here isnt useful, but in future
                 // if this is requested for use or we want to add a feature for more use of the
                 // background - adding in toggling for this with the object will be useful.
             }

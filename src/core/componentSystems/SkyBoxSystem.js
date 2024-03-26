@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRSkyBox } from 'mrjs/core/entities/MRSkyBox';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
 
 /**
  * @class SkyBoxSystem
@@ -35,7 +35,7 @@ export class SkyBoxSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof MRSkyBox) {
+        if (entity instanceof MRSkyBoxEntity) {
             if (entity.compStyle.scale == 'none') {
                 // has no css scale attribute then use as default otherwise use as the user-defined version.
                 const SCALING_OFFSET = 0.001;

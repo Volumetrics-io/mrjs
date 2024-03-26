@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import { MREntity } from 'mrjs/core/MREntity';
 
 /**
- * @class MRLight
+ * @class MRLightEntity
  * @classdesc Represents lights in 3D space. `mr-light`
  * @augments MREntity
  */
-export class MRLight extends MREntity {
+export class MRLightEntity extends MREntity {
     /**
      * @class
      * @description Constructs the base 3D object.
@@ -52,4 +52,4 @@ export class MRLight extends MREntity {
     };
 }
 
-customElements.get('mr-light') || customElements.define('mr-light', MRLight);
+customElements.get('mr-light') || customElements.define('mr-light', MRLightEntity);

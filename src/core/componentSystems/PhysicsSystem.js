@@ -4,9 +4,9 @@ import { MRSystem } from 'mrjs/core/MRSystem';
 import { MREntity } from 'mrjs/core/MREntity';
 
 import { mrjsUtils } from 'mrjs';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRModel } from 'mrjs/core/entities/MRModel';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
+import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
 
 /**
  * @class PhysicsSystem
@@ -58,9 +58,9 @@ export class PhysicsSystem extends MRSystem {
             if (entity.physics?.body == null) {
                 continue;
             }
-            if (entity instanceof MRModel) {
+            if (entity instanceof MRModelEntity) {
                 this.updateSimpleBody(entity);
-            } else if (entity instanceof MRDiv) {
+            } else if (entity instanceof MRDivEntity) {
                 this.updateUIBody(entity);
             }
         }
@@ -96,7 +96,7 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if (entity instanceof MRDiv) {
+        if (entity instanceof MRDivEntity) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
         }
@@ -110,9 +110,9 @@ export class PhysicsSystem extends MRSystem {
     initPhysicsBody(entity) {
         // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
         //       and model will get more complex as we add convexMesh support
-        if (entity instanceof MRModel) {
+        if (entity instanceof MRModelEntity) {
             this.initSimpleBody(entity);
-        } else if (entity instanceof MRDiv) {
+        } else if (entity instanceof MRDivEntity) {
             this.initUIEntityBody(entity);
         }
 
@@ -157,7 +157,7 @@ export class PhysicsSystem extends MRSystem {
     initSimpleBody(entity) {
         entity.physics.halfExtents = new THREE.Vector3();
 
-        if (entity instanceof MRModel) {
+        if (entity instanceof MRModelEntity) {
             entity.object3D.remove(entity.background);
             this.tempBBox.setFromObject(entity.object3D, true);
             entity.object3D.add(entity.background);
@@ -241,14 +241,14 @@ export class PhysicsSystem extends MRSystem {
             entity.physics.body.setEnabled(true);
             // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
             //       and model will get more complex as we add convexMesh support
-            if (entity instanceof MRModel) {
+            if (entity instanceof MRModelEntity) {
                 this.updateSimpleBody(entity);
-            } else if (entity instanceof MRDiv) {
+            } else if (entity instanceof MRDivEntity) {
                 this.updateUIBody(entity);
             }
         }
 
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             entity.panel.getWorldPosition(this.tempWorldPosition);
         } else {
             entity.object3D.getWorldPosition(this.tempWorldPosition);
@@ -283,7 +283,7 @@ export class PhysicsSystem extends MRSystem {
      * @param {MREntity} entity - the entity being updated
      */
     updateSimpleBody(entity) {
-        if (entity instanceof MRModel) {
+        if (entity instanceof MRModelEntity) {
             entity.object3D.remove(entity.background);
             this.tempBBox.setFromObject(entity.object3D, true);
             entity.object3D.add(entity.background);

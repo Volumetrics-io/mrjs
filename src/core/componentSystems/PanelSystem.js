@@ -1,5 +1,5 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 
 import { mrjsUtils } from 'mrjs';
 
@@ -35,7 +35,7 @@ export class PanelSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             this.registry.add(entity);
         }
     }

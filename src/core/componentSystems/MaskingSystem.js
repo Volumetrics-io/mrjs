@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDiv } from 'mrjs/core/entities/MRDiv';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRPanel } from 'mrjs/core/entities/MRPanel';
-import { MRText } from 'mrjs/core/entities/MRText';
+import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
 /*
  * A system that handles elements that mask other elements by using stencil.
@@ -148,7 +148,7 @@ export class MaskingSystem extends MRSystem {
      * @param {MREntity} entity - the entity being added.
      */
     onNewEntity(entity) {
-        if (entity instanceof MRPanel) {
+        if (entity instanceof MRPanelEntity) {
             if (this.panels.length >= MAX_PANEL_NUM) {
                 console.warn('Masking system supports up to eight panels.');
                 return;
@@ -183,7 +183,7 @@ export class MaskingSystem extends MRSystem {
                     return;
                 }
 
-                if (child instanceof MRDiv && !child.ignoreStencil) {
+                if (child instanceof MRDivEntity && !child.ignoreStencil) {
                     // The children we want to mask by the panel should only be DivEntities (ie UI elements). Other items
                     // will be clipped by the panel instead. Additionally, we want to allow for items (such as 3D elements)
                     // to be manually excluded from this masking by default or manual addition.
@@ -197,7 +197,7 @@ export class MaskingSystem extends MRSystem {
                     });
                 }
             });
-        } else if (entity instanceof MRDiv && !entity.ignoreStencil) {
+        } else if (entity instanceof MRDivEntity && !entity.ignoreStencil) {
             // There is a chance that a child entity is added after parent panel addition.
             // Check registered panels and set up the material if panels are found in parents.
             for (const panel of this.panels) {
