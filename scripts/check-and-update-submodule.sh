@@ -4,7 +4,7 @@
 ## !!                    IMPORTANT                           !! ##
 ## -- starts by stashing whatever local changes are made if any ##
 ##    to not have issues with bumping the submodule commit.     ##
-## -- if submodule needs and update, then updates it and        ##
+## -- if submodule needs an update, then updates it and         ##
 ##    commits the changes in this main repo.                    ##
 ## -- applies the stashed changes on any type of exit (error,   ##
 ##    success, etc) to put the user back in their original      ##
