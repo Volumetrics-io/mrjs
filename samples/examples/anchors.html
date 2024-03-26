@@ -18,7 +18,7 @@
         <mr-model
             class="logo"
             id="logo-model"  
-            src="/assets/models/logo.stl" 
+            src="/examples-assets/models/logo.stl" 
             data-comp-instancing="type: animate;"
             data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
             data-rotation="-22.91 17.1887 45.8366">
@@ -159,7 +159,7 @@
       
     </mr-panel>
 
-    <mr-skybox src="/assets/textures/skybox_starmap_4k.jpg"
+    <mr-skybox src="/examples-assets/textures/skybox_starmap_4k.jpg"
         data-position="0 -200 0"
         data-comp-animation="type: rotate; maxspeed: 0.0003; acceleration: 0.000004;">
         </mr-skybox>
@@ -168,7 +168,7 @@
         <mr-model
             data-rotation="0 180 0"  
             data-position="0 0.3 0"                        
-            src="/assets/models/island3.glb" 
+            src="/examples-assets/models/island3.glb" 
             style="scale: 0.1">
             </mr-model>
     </mr-entity>
@@ -183,7 +183,7 @@
             data-rotation="90 180 0"
             data-position="0 0.2 0.15"                        
    
-            src="/assets/models/animation_koifish.glb" 
+            src="/examples-assets/models/animation_koifish.glb" 
             style="scale: 0.05">
             </mr-model>
         </mr-entity>
@@ -201,7 +201,7 @@
         data-comp-animation="type: rotate; maxspeed: -0.001; acceleration: 0.000008;">
             <mr-model
             data-rotation="90 0 0"             
-            src="/assets/models/Mars.glb" 
+            src="/examples-assets/models/Mars.glb" 
             style="scale: 1">
             </mr-model>
         </mr-entity>
@@ -211,7 +211,7 @@
   </body>
 
   <footer>
-    <script src="/assets/js/SpinSystem.js"></script>
+    <script src="/examples-assets/js/SpinSystem.js"></script>
     <script>
 
         /*********** begin: mr-water entity ***********/
@@ -233,8 +233,8 @@
                     color: params.color,
                     scale: params.scale,
                     flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
-                    normalMap0: new THREE.TextureLoader().load('../assets/textures/Water_1_M_Normal.jpg'),
-                    normalMap1: new THREE.TextureLoader().load('../assets/textures/Water_2_M_Normal.jpg'),
+                    normalMap0: new THREE.TextureLoader().load('../examples-assets/textures/Water_1_M_Normal.jpg'),
+                    normalMap1: new THREE.TextureLoader().load('../examples-assets/textures/Water_2_M_Normal.jpg'),
                     textureWidth: 1024,
                     textureHeight: 1024
                 });

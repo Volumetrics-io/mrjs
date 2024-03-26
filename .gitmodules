@@ -1,0 +1,3 @@
+[submodule "samples/mrjsio"]
+	path = samples/mrjsio
+	url = git@github.com:Volumetrics-io/mrjs-landing.git
