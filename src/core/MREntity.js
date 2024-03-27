@@ -22,22 +22,6 @@ export class MREntity extends MRElement {
         type: 'none',
     };
 
-    components = {
-        get: (name) => {
-            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            return mrjsUtils.string.stringToJson(this.dataset[dataName]);
-        },
-
-        set: (name, data) => {
-            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
-            const component = mrjsUtils.string.stringToJson(this.dataset[dataName]) ?? {};
-            for (const key in data) {
-                component[key] = data[key];
-            }
-            this.dataset[dataName] = mrjsUtils.string.jsonToString(component);
-        },
-    };
-
     /**
      * @class
      * @description Constructor for the default Entity Component (MREntity).
@@ -71,6 +55,10 @@ export class MREntity extends MRElement {
 
         this.ignoreStencil = true;
     }
+
+    /*************************/
+    /*** Object Dimensions ***/
+    /*************************/
 
     /**
      * @function
@@ -110,6 +98,10 @@ export class MREntity extends MRElement {
         return this.size.y;
     }
 
+    /****************************/
+    /*** Updates And Triggers ***/
+    /****************************/
+
     /**
      * @function
      * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
@@ -132,17 +124,21 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
      * These are run after the MaterialStyleSystem does its own update on the entity.
      */
     updateMaterialStyle() {}
 
     /**
      * @function
-     * @description Inside the engine's ECS these arent filled in, theyre directly in the system themselves - but they can be added to by others when they create new entities.
+     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
      * These are run after the GeometryStyleSystem does its own update on the entity.
      */
     updateGeometryStyle() {}
+
+    /*****************************/
+    /*** On Interaction Events ***/
+    /*****************************/
 
     /**
      * @function
@@ -157,7 +153,7 @@ export class MREntity extends MRElement {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {};
-
+ 
     /**
      * @function
      * @description Handles the scroll event
@@ -167,7 +163,128 @@ export class MREntity extends MRElement {
         this.parentElement?.onScroll(event);
     };
 
+    /********************************/
+    /*** Handling data-attributes ***/
+    /********************************/
+
+    components = {
+        get: (name) => {
+            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+            return mrjsUtils.string.stringToJson(this.dataset[dataName]);
+        },
+
+        set: (name, data) => {
+            const dataName = `comp${name[0].toUpperCase()}${name.slice(1)}`;
+            const component = mrjsUtils.string.stringToJson(this.dataset[dataName]) ?? {};
+            for (const key in data) {
+                component[key] = data[key];
+            }
+            this.dataset[dataName] = mrjsUtils.string.jsonToString(component);
+        },
+    };
+
+    position = {
+        x: () => {
+            return this.dataset.position.split(' ')[0];
+        },
+
+        x: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            vec[0] = val;
+            this.dataset.position = mrjsUtils.string.vectorToString(vec);
+        },
+
+        y: () => {
+            return this.dataset.position.split(' ')[1];
+        },
+
+        y: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            vec[1] = val;
+            this.dataset.position = mrjsUtils.string.vectorToString(vec);
+        },
+
+        z: () => {
+            return this.dataset.position.split(' ')[2];
+        },
+
+        z: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            vec[2] = val;
+            this.dataset.position = mrjsUtils.string.vectorToString(vec);
+        },
+    }
+
+    rotation = {
+        x: () => {
+            return this.dataset.rotation.split(' ')[0];
+        },
+
+        x: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            vec[0] = val;
+            this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
+        },
+
+        y: () => {
+            return this.dataset.rotation.split(' ')[1];
+        },
+
+        y: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            vec[1] = val;
+            this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
+        },
+
+        z: () => {
+            return this.dataset.rotation.split(' ')[2];
+        },
+
+        z: (val) => {
+            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            vec[2] = val;
+            this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
+        },
+    }
+
     /**
+     * @function
+     * @description Loads all attributes of this entity's stored dataset including components, attaching them, and their associated rotations and positions.
+     */
+    loadAttributes() {
+        for (const attr in this.dataset) {
+            if (attr.includes('comp')) {
+                const compName = attr.split('comp')[1].toLocaleLowerCase();
+                this.dispatchEvent(
+                    new CustomEvent(`${attr}-attached`, {
+                        bubbles: true,
+                        detail: { entity: this },
+                    })
+                );
+            } else {
+                switch (attr) {
+                    case 'rotation':
+                        this.object3D.rotation.fromArray(mrjsUtils.string.stringToDegVector(this.dataset.rotation));
+                        break;
+                    case 'position':
+                        this.object3D.position.fromArray(mrjsUtils.string.stringToVector(this.dataset.position));
+                        break;
+                }
+            }
+        }
+    }
+
+    /************************************/
+    /*** Handling Entity Interactions ***/
+    /************************************/
+
+    /**
+     * @function
+     * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
+     */
+    connected() {}
+
+        /**
      * @function
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
@@ -254,39 +371,6 @@ export class MREntity extends MRElement {
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.connected();
     }
-
-    /**
-     * @function
-     * @description Loads all attributes of this entity's stored dataset including components, attaching them, and their associated rotations and positions.
-     */
-    loadAttributes() {
-        for (const attr in this.dataset) {
-            if (attr.includes('comp')) {
-                const compName = attr.split('comp')[1].toLocaleLowerCase();
-                this.dispatchEvent(
-                    new CustomEvent(`${attr}-attached`, {
-                        bubbles: true,
-                        detail: { entity: this },
-                    })
-                );
-            } else {
-                switch (attr) {
-                    case 'rotation':
-                        this.object3D.rotation.fromArray(mrjsUtils.string.stringToDegVector(this.dataset.rotation));
-                        break;
-                    case 'position':
-                        this.object3D.position.fromArray(mrjsUtils.string.stringToVector(this.dataset.position));
-                        break;
-                }
-            }
-        }
-    }
-
-    /**
-     * @function
-     * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
-     */
-    connected() {}
 
     /**
      * @function
