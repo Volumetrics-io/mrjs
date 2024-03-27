@@ -116,5 +116,7 @@ if [ $script_exit_code -eq 2 ]; then
     git commit -m "Overwrote main sample and information from mrjsio submodule"
     echo "Samples updated and committed"
 
-    echo "No changes remaining. Dont forget to 'git push' these commits!"
+    echo "----------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------"
+    echo ">>> No changes remaining. Dont forget to 'git push' these commits! <<<"
 fi
