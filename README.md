@@ -214,7 +214,7 @@ When a component is attached to or detached from an entity, it is added or remov
 Example:
 
 ```js
-class OrbitSystem extends System{
+class OrbitSystem extends MRSystem{
     constructor(){
         super()
     }
