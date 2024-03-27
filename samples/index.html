@@ -34,6 +34,14 @@
 
     <!-- MRjs -->
     <script src="./mr.js"></script>
+    <script>
+        class Foo extends MRModelEntity {
+            constructor() {
+                super();
+            }
+        }
+        customElements.define('mr-foo', Foo);
+    </script>
 
 </head>
 
@@ -163,6 +171,11 @@
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
                             href="/examples/skybox.html">Skybox</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/text.html">Text</mr-a>
                     </mr-div>
                     
                     <mr-div class="illustration">
