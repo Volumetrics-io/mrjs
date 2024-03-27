@@ -1,128 +1,252 @@
+<!-- THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED -->
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
-    <title>mr.js</title>
-    <meta name="description" content="mr.js">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Title -->
+    <title>MRjs</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- SEO -->
+    <meta name="description" content="An extensible library of Web Components for the spatial web." />
+
+    <!-- Basic Open Graph -->
+    <meta content="MRjs" itemProp="name" class="next-head" />
+    <meta content="An extensible library of Web Components for the spatial web." itemProp="description" class="next-head" />
+    <meta content="https://mrjs.io/opengraph.jpg" itemProp="image" class="next-head" />
+
+    <!-- Generic Open Graph -->
+    <meta property="og:type" content="article" class="next-head" />
+    <meta content="MRjs" property="og:title" class="next-head" />
+    <meta content="https://mrjs.io" property="og:url" class="next-head" />
+    <meta content="https://mrjs.io/opengraph.jpg" property="og:image" class="next-head" />
+    <meta content="An extensible library of Web Components for the spatial web." property="og:description"
+        class="next-head" />
+    <meta content="MRjs" property="og:site_name" class="next-head" />
+
+    <!-- CSS Styles -->
+    <link rel="stylesheet" type="text/css" href="index-style.css"/>
+
+    <!-- MRjs -->
     <script src="./mr.js"></script>
-    <link rel="stylesheet" type="text/css" href="./index-style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body >
-   <mr-app>
-      <mr-panel class="layout">
-        <mr-div id="navbar">
-          <mr-a href="https://volumetrics.io" target="_blank" class="company">
-            volumetrics
-          </mr-a>
-            <mr-model
-              id="logo-model"
-              src="/assets/models/logo.stl" 
-              data-comp-instancing="type: animate;"
-              data-comp-spin="maxspeed: -0.002; acceleration: -0.000008;"  
-              data-rotation="-22.91 17.1887 45.8366">
-            </mr-model>
-          <mr-button onclick="spin()" class="spin-button">
-            spin
-          </mr-button>
-        </mr-div>
 
-        <mr-textfield class="title">
-          mr.js
-        </mr-textfield>
+</head>
 
-        
-        <mr-div class="headset">
-          <mr-img src="/assets/textures/headset-keyboard.jpeg"></mr-img>
-          <mr-text class="sub-title">
-            Building for Mixed Reality, in Mixed Reality.
-          </mr-text>
-        </mr-div>
-        <mr-text class="col-2 example-header">
-            Examples
-          </mr-text>
-        <mr-div class="links col-2">
-          <mr-a class="example-link" href="/examples/anchors.html">
-            Anchoring
-          </mr-a>
-          <mr-a class="example-link" href="/examples/audio.html">
-            Audio
-          </mr-a>
-          <mr-a class="example-link" href="/examples/debug.html">
-            Debug
-          </mr-a>
-          <mr-a class="example-link" href="/examples/embed.html">
-            Embed
-          </mr-a>
-          <mr-a class="example-link" href="/examples/images.html">
-            Images
-          </mr-a>
-          <mr-a class="example-link" href="/examples/models.html">
-            Models
-          </mr-a>
-          <mr-a class="example-link" href="/examples/panels.html">
-            Panels
-          </mr-a>
-          <mr-a class="example-link" href="/examples/skybox.html">
-            Skybox
-          </mr-a>
-          <mr-a class="example-link" href="/examples/text.html">
-            Text
-          </mr-a>
-           <mr-a class="example-link" href="/examples/video.html">
-            Video
-          </mr-a>
-        </mr-div>
-        
-      <mr-text class="paragraph">
-        Ex veniam sunt laboris magna commodo minim eiusmod consequat dolore velit ipsum dolore. Sit nisi id tempor occaecat aute commodo nulla fugiat eu ex sit anim duis. Non eiusmod dolore exercitation adipisicing laboris elit commodo enim proident et.
+<body>
+    <!-- <mr-app debug="true"> -->
+    <mr-app>
+        <mr-light color="white" intensity="2" data-position="0 0.5 0.5"></mr-light>
+        <mr-light id="mouselight" color="white" intensity="0.25" data-position="0 0 0.5"></mr-light>
 
-        Eiusmod tempor veniam et nulla eiusmod ex aute excepteur enim. Velit voluptate proident fugiat aute ea. Qui proident ad consequat enim anim nulla. Est aliquip sint nostrud elit pariatur ipsum dolor magna est eiusmod Lorem pariatur labore. Adipisicing commodo occaecat ea ut nulla magna irure officia nostrud aliqua officia culpa ex pariatur. Aliquip consequat ad proident elit laboris et aliqua nisi est amet tempor. Dolor esse labore laboris reprehenderit id sit.
+        <mr-panel>
+            <mr-div class="gapped padded section">
+                <mr-model style="height: 100px; width: 220px; scale: 0.07; z-index: 10;"
+                    src="./index-assets/mrjs_logo_large.glb"></mr-model>
+                <mr-text class="h1">An extensible library of Web Components for the spatial web.</mr-text>
+                <mr-text class="chapeau">MRjs is a mixed-reality-first, WebXR interface library meant to bootstrap
+                    spatial web app development. It implements much of the foundational work so that developers can
+                    spend less time on the basics and more time on their app.</mr-text>
+                <mr-a target="_blank" href="https://github.com/Volumetrics-io/mrjs">See on GitHub</mr-a>
+                <mr-a target="_blank" href="https://discord.gg/volumetrics">Join us on Discord</mr-a>
+                <mr-button class="documentation" onclick="redirectToDocumentation()">Documentation</mr-button>
+            </mr-div>
 
-        Anim ipsum sit dolore id excepteur ex aliqua aute culpa duis adipisicing. Anim magna minim do nisi anim amet pariatur. Nulla ad ullamco labore culpa quis. Incididunt pariatur laboris do duis irure.
+            <mr-div class="triptych">
+                <mr-div class="gapped padded section">
+                    <mr-model id="extendable" data-position="0.01 0.01 5"
+                        style="height: 120px; width: 140px; scale: 2.7; z-index: 50 ;"
+                        src="./index-assets/jigsaw.glb"></mr-model>
+                    <mr-text class="h2">Extensible</mr-text>
+                    <mr-text class="narrow">Being open-source and built on top of web standards, you can easily
+                        implement custom elements and contribute to the ecosystem.</mr-text>
+                </mr-div>
+                <mr-div class="gapped padded section">
+                    <mr-model id="familiar" data-position="0 0 5"
+                        style="height: 120px; width: 140px; scale: 1.7; z-index: 50 ;"
+                        src="./index-assets/familiar.glb"></mr-model>
+                    <mr-text class="h2">Familiar</mr-text>
+                    <mr-text class="narrow">Looks and feels like native HTML and CSS, but designed from the ground up
+                        for mixed-reality. Start with 2D and ease your way into creating 3D content.</mr-text>
+                </mr-div>
+                <mr-div class="gapped padded section">
+                    <mr-model id="all-in-one" data-position="0 0 0"
+                        style="height: 120px; width: 140px; scale: 1.7; z-index: 30;"
+                        src="./index-assets/all-in-one.glb"></mr-model>
+                    <mr-text class="h2">All-in-one</mr-text>
+                    <mr-text class="narrow">Asset management, physics, and user interaction come built in, so you can
+                        spend less time laying the foundation and more time building your app.</mr-text>
+                </mr-div>
+            </mr-div>
 
-        Pariatur excepteur et proident nisi. Id exercitation qui pariatur aliquip eiusmod. Nulla pariatur ad excepteur aliqua dolore sint laboris sit laborum adipisicing voluptate.
+            <!-- <mr-div class="diptych">
+                <mr-div class="gapped padded section">
+                    <mr-text class="h2">Open-source and extendable</mr-text>
+                    <mr-text class="narrow">Built on top of web standards, you can implement custom elements and
+                        contribute to the ecosystem.</mr-text>
+                </mr-div>
+                <mr-div class="section">
+                    <mr-div class="illustration">
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
+                            data-comp-animation="clip: 0; action: play;"></mr-model>
+                    </mr-div>
+                </mr-div>
+            </mr-div>
 
-        Sit aliqua eu ullamco culpa labore nostrud sit. Ullamco sit cillum excepteur officia irure laboris occaecat. Esse anim ut voluptate excepteur excepteur nostrud laboris.
+            <mr-div class="diptych">
+                <mr-div class="section">
+                    <mr-div class="illustration">
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
+                            data-comp-animation="clip: 0; action: play;"></mr-model>
+                    </mr-div>
+                </mr-div>
+                <mr-div class="gapped padded section first">
+                    <mr-text class="h2">Familiar and powerful</mr-text>
+                    <mr-text class="narrow">Looks and feels like existing libraries, but designed from the ground up for
+                        mixed-reality. Start with 2D and ease your way into creating 3D content.</mr-text>
+                </mr-div>
+            </mr-div>
 
-        Voluptate amet exercitation in consequat adipisicing eu in ea nulla eu occaecat excepteur ea irure. Nisi enim mollit do proident ex. In exercitation nostrud anim ad nulla dolor aute Lorem ipsum nostrud adipisicing pariatur. Deserunt deserunt amet anim cillum. Ex nostrud eu aute eu amet dolor. Ex aute in quis qui irure ut pariatur nisi in. Proident id fugiat anim excepteur cupidatat duis cupidatat adipisicing reprehenderit.
+            <mr-div class="diptych">
+                <mr-div class="gapped padded section">
+                    <mr-text class="h2">All-in-one</mr-text>
+                    <mr-text class="narrow">Asset management, physics, and user interaction come built in, so you can
+                        spend less time laying the foundation and more time building your app.</mr-text>
+                </mr-div>
+                <mr-div class="section">
+                    <mr-div class="illustration">
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
+                            data-comp-animation="clip: 0; action: play;"></mr-model>
+                    </mr-div>
+                </mr-div>
+            </mr-div> -->
 
-                        Sint eiusmod laboris eu voluptate ullamco ea fugiat exercitation id ad magna commodo. Irure proident et qui ullamco aliquip aute dolor nostrud laborum excepteur sint aute ea. Sit consectetur qui Lorem esse magna voluptate irure aliqua nostrud adipisicing eu irure cupidatat sunt. Officia dolore sint laboris Lorem enim labore mollit reprehenderit laboris amet. Aute eiusmod fugiat labore veniam cupidatat dolor ipsum.
+            <mr-div class="gapped padded section">
+                <mr-text class="h1">Examples</mr-text>
 
-        Sit aliquip excepteur laboris ullamco minim sint sit dolor cupidatat culpa consequat quis sit tempor. Culpa voluptate eiusmod et eiusmod. Lorem deserunt ullamco laborum ut. Cillum aute dolore mollit sint amet. Qui ea deserunt consectetur eiusmod. Ullamco qui irure nostrud ea est do. Pariatur laboris labore in irure ea voluptate quis.
+                <mr-div class="mosaic">
 
-        Nostrud deserunt ad officia ut irure cupidatat pariatur ea fugiat. Cillum nisi ullamco tempor consequat laborum quis pariatur cillum enim in elit veniam. Cupidatat laborum do cupidatat irure occaecat sunt nostrud. Adipisicing cillum non adipisicing enim officia excepteur ullamco fugiat.
-        </mr-text>
-        
-      </mr-panel>
-    
-      <mr-entity data-comp-animation="type: rotate; maxspeed: 0.002; acceleration: 0.000008;" 
-                 data-position="0 0 2">
-        <mr-light layer="2" color="hsl(30, 100%, 50%)" intensity="1" data-position="0 1 0"></mr-light>
-        <mr-light layer="2" color="hsl(208, 100%, 50%)" intensity="2" data-position="1 -1 0"></mr-light>
-        <mr-light layer="2" color="hsl(340, 100%, 50%)" intensity="3" data-position="-1 -1 0"></mr-light>
-      </mr-entity>
-        
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/anchors.html">Anchoring</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/audio.html">Audio</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/debug.html">Debugging</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/embed.html">Embed</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/images.html">Images</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/models.html">Models</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/skybox.html">Skybox</mr-a>
+                    </mr-div>
+                    
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                             href="/examples/video.html">Video</mr-a>
+                    </mr-div>
+
+                </mr-div>
+            </mr-div>
+
+
+
+        </mr-panel>
     </mr-app>
-  </body>
 
-  <footer>
-    <script src="./assets/js/SpinSystem.js"></script>
     <script>
 
-      let model = document.querySelector('#logo-model')
+        function redirectToDocumentation() {
+          window.location.href = "https://docs.mrjs.io";
+        }
 
-      console.log(mrjsUtils.xr.isPresenting);
+        window.requestAnimationFrame(function rotate_extendable(timestamp) {
+            let rx = Math.cos(timestamp / 2000) * 5 + 50;
+            let ry = Math.cos(timestamp / 2000) * 5 - 40;
+            let rz = Math.sin(timestamp / 2000) * 5;
+            document.querySelector("#extendable").dataset.rotation = rx + " " + ry + " " + rz;
+            window.requestAnimationFrame(rotate_extendable);
+        });
 
-      // increases the maxspeed and acceleration of the animation component on the logo
-      function spin() {
-        console.log('spin');
-        // let animationComp = model.components.get('animation')
-        // if (animationComp !== undefined && animationComp !== null) {
-        //   model.components.set('animation', {maxspeed: animationComp.maxspeed * 10000, acceleration: animationComp.acceleration * 10000})
-        // }
-      }
-      
+        window.requestAnimationFrame(function rotate_familiar(timestamp) {
+            let rx = Math.cos(timestamp / 2000) * 10 + 25;
+            let ry = Math.cos(timestamp / 2000) * 10 + 230;
+            let rz = Math.sin(timestamp / 2000) * 10 + 5;
+            document.querySelector("#familiar").dataset.rotation = rx + " " + ry + " " + rz;
+            window.requestAnimationFrame(rotate_familiar);
+        });
+
+        window.requestAnimationFrame(function rotate_allInOne(timestamp) {
+            let rx = Math.cos(timestamp / 2000) * -10 + 25;
+            let ry = Math.cos(timestamp / 2000) * -10 + 50;
+            let rz = Math.sin(timestamp / 2000) * -10 + 5;
+            document.querySelector("#all-in-one").dataset.rotation = rx + " " + ry + " " + rz;
+            window.requestAnimationFrame(rotate_allInOne);
+        });
+
+
+        // Light follow mouse
+        (function () {
+            "use strict";
+
+            document.onmousemove = handleMouseMove;
+            function handleMouseMove(event) {
+                var dot, eventDoc, doc, body, pageX, pageY;
+
+                event = event || window.event; // IE-ism
+
+                // If pageX/Y aren't available and clientX/Y
+                // are, calculate pageX/Y - logic taken from jQuery
+                // Calculate pageX/Y if missing and clientX/Y available
+                if (event.pageX == null && event.clientX != null) {
+                    eventDoc = (event.target && event.target.ownerDocument) || document;
+                    doc = eventDoc.documentElement;
+                    body = eventDoc.body;
+
+                    event.pageX =
+                        event.clientX +
+                        ((doc && doc.scrollLeft) || (body && body.scrollLeft) || 0) -
+                        ((doc && doc.clientLeft) || (body && body.clientLeft) || 0);
+                    event.pageY =
+                        event.clientY +
+                        ((doc && doc.scrollTop) || (body && body.scrollTop) || 0) -
+                        ((doc && doc.clientTop) || (body && body.clientTop) || 0);
+                }
+
+                let ratioX = (event.pageX * 2) / window.innerWidth - 1;
+                let ratioY = -((event.pageY * 2) / window.innerHeight - 1);
+
+                document.querySelector("#mouselight").dataset.position =
+                    ratioX + " " + ratioY + " 0.25";
+            }
+        })();
+
     </script>
-  </footer>
+</body>
+
 </html>
+<!-- THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED -->

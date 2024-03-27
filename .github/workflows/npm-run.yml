@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
     
       # todo - run the npm install with a dockerfile setup instead of pure
       # install but not important to do right now since install isnt too long
@@ -58,6 +60,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Fetch all history for all tags and branches
+        submodules: 'recursive'
         token: ${{ secrets.MRJS_AND_DOCS_REPO_PAT }}
 
     - name: remove potentially old dist
@@ -90,6 +93,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
 
     - uses: actions/setup-node@v4
       with:
@@ -124,6 +129,8 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+      with: 
+        submodules: 'recursive'
 
     # NOTE - 
     #
@@ -216,6 +223,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
 
     # separating this out from the docs-to-doc-repo command since it needs linux for action-build.sh
 
@@ -284,6 +293,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
     
     - uses: actions/setup-node@v4
       with:

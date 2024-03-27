@@ -47,18 +47,44 @@ npm i mrjs
 
 ### From source:
 
-> You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
+__*CLONE AND BUILD*__
 
-First, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories) and then run:
+You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
+
+Then, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories)
+
+> If you are planning to contribute to this repo instead of just using is as a source you will need its submodules for proper samples and testing `git clone --recurse-submodules the.cloning.url `. If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:git submodule update --init --recursive`
+
+Next, setup your node environment:
 
 ```sh
-npm install && npm run build
+npm install
 ```
 
-To test in headset (see [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement) as well):
+and now build:
+
+```sh
+npm run build
+```
+
+__*RUNNING THE SAMPLES*__
+
+> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this unless the test fails and tells you to do so): `npm run update-submodules`
+
+You are able to try the samples locally and in headset by running the following:
+
+ <sub><i>(note for in headset testing: [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement))</i></sub>
 
 ```sh
 npm run server
+```
+
+__*RUNNING THE TESTING*__
+
+ <sub><i>(this follows the need for the same `update-submodules` note as the 'running the samples' section)</i></sub>
+
+```sh
+npm run test
 ```
 
 ### Documentation:
@@ -165,7 +191,7 @@ Creating a custom Entity is as simple as creating a Custom Element via the Web C
 Example:
 
 ```js
-class Spacecraft extends Entity {
+class Spacecraft extends MREntity {
     constructor(){
         this.object3D = this.generateSpacecraft()
     }

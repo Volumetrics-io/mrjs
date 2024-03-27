@@ -1,7 +1,6 @@
 import CopyPlugin from 'copy-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-// import webpack from 'webpack';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -63,16 +62,13 @@ export default {
         new CopyPlugin({
             patterns: [
                 // make these items generate in dist as default for the runner: index.html, style.css, and assets folder
+                { from: 'samples/index-assets', to: 'index-assets' },
                 { from: 'samples/index.html', to: 'index.html' },
                 { from: 'samples/index-style.css', to: 'index-style.css' },
                 { from: 'samples/examples', to: 'examples' },
-                { from: 'samples/assets', to: 'assets' },
-                { from: 'samples/sites', to: 'sites' },
+                { from: 'samples/examples-assets', to: 'examples-assets' },
             ],
         }),
-        // new webpack.ProvidePlugin({
-        //     mrjs: 'mrjs',
-        // }),
     ],
 
     module: {

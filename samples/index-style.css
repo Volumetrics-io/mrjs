@@ -1,261 +1,197 @@
-/*@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
+/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
 @font-face {
-  font-family: 'Roboto', sans-serif;
-}*/
-@font-face {
-  font-family: 'Roboto';
-  src: url('/assets/fonts/Roboto-Regular.woff') format('woff');
-  src: url('/assets/fonts/Roboto-Regular.ttf') format('truetype');
-  font-weight: 100 900;
+    font-family: 'Onest';
+    src: url(./index-assets/Onest-Regular.ttf') format('truetype');
+    font-weight: 400;
 }
 
-/*@import url(http://fonts.googleapis.com/css?family=Bricolage:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
 @font-face {
-  font-family: 'Bricolage', sans-serif;
-}*/
-@font-face {
-  font-family: 'Bricolage';
-  src: url('/assets/fonts/BricolageGrotesque.woff') format('woff'); /* Modern Browsers */
-  src: url('/assets/fonts/BricolageGrotesque.ttf') format('truetype'); /* Safari, Android, iOS */
-  font-weight: 100 900;
+    font-family: 'Bricolage';
+    src: url(./index-assets/BricolageGrotesque96pt-SemiBold.ttf') format('truetype');
+    font-weight: 700;
+}
+
+:root {
+    --font-head: "Bricolage";
+    --font-body: "Onest";
+
+    --ink: #242424;
+    --paper: white;
+    --accent: aquamarine;
+    --nav: #111;
+
+    --space-around: 3vw;
+    --space-between: 60px;
+    --space-vertical: 12px;
+    --height: 48px;
+    --max-width: 600px;
+    --max-width-h1: 840px;
+}
+
+html,
+body, mr-app, mr-panel {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-sizing: inherit;
 }
 
 mr-app {
-  background-image: url('/assets/textures/skybox_starmap_4k.jpg');
+    font-family: 'Onest';
+    line-height: 100%;
+    font-size: 18px;
 }
 
-
-:root {
-  --font-title: "Bricolage";
-  /* --font-body: "Onest", system-ui, sans-serif; */
-  /* PADDINGS & MARGINS */
-  --space: 4rem;
-  --outer: 1.5rem;
-  --inter: 1rem;
-  --inner: 0.5rem;
-  --inlet: 0.25rem;
-  /* CONSTRAINTS */
-  --hwdth: 56rem;
-  --mwdth: 68rem;
-  /* RADIUS */
-  --border-radius-large: 2rem;
-  /* SCROLL */
-  --scroll: 0;
-  --position: 0;
-  /* NEUTRAL COLORS */
-  --neutral-hue: 40;
-  --color-title: hsl(var(--neutral-hue), 20%, 20%);
-  --color-text: hsl(var(--neutral-hue), 15%, 10%);
-  --color-text-light: hsl(var(--neutral-hue), 20%, 42%);
-  --color-paper: hsl(var(--neutral-hue), 80%, 94%);
-  --color-paper-light: hsl(var(--neutral-hue), 75%, 92%);
-  --color-paper-card: white;
-  /* BUTTONS */
-  /* --rythm-hue: 310; */
-  --rythm-hue: 300;
-  /* --rythm-hue: 40; */
-  --color-button: hsl(var(--rythm-hue), 15%, 96%);
-  --color-button-hover: hsl(var(--rythm-hue), 100%, 90%);
-  --color-button-active: hsl(var(--rythm-hue), 100%, 85%);
-  --color-button-text: hsl(var(--rythm-hue), 15%, 15%);
-  --color-button-ring: hsl(var(--rythm-hue), 100%, 70%);
-  /* CTA */
-  /* --hue: 210; */
-  --hue: 210;
-  --color-cta: hsl(var(--hue), 70%, 40%);
-  --color-cta-hover: hsl(var(--hue), 70%, 55%);
-  --color-cta-active: hsl(var(--hue), 70%, 60%);
-  --color-cta-text: hsl(var(--hue), 10%, 100%);
-  --color-cta-focus-ring: hsl(var(--hue), 100%, 100%);
-  /* OPTIONS */
-  --option-hue: 40;
-  --color-option: hsl(var(--option-hue), 50%, 83%);
-  --color-option-hover: hsl(var(--option-hue), 50%, 86%);
-  --color-option-active: hsl(var(--option-hue), 50%, 88%);
-  --color-option-text: var(--color-text);
-  --color-option-focus-ring: hsl(var(--option-hue), 50%, 50%);
-  /* OPTIONS SELECTED */
-  --color-option-selected: hsl(var(--option-hue), 100%, 100%);
-  --color-option-selected-text: hsl(var(--hue), 80%, 30%);
-  /* FOCUS */
-  --color-focus-outline: hsl(var(--hue), 100%, 50%);
-  /* BORDERS */
-  --color-border-light: hsl(var(--rythm-hue), 15%, 92%);
-  --color-border-static: hsla(var(--rythm-hue), 100%, 15%, 15%);
-  --color-border-field-hover: hsl(var(--rythm-hue), 80%, 80%);
-  --color-border-field-active: hsl(var(--rythm-hue), 100%, 70%);
-  /* SHADOWS */
-  --button-shadow: 0 0.25rem 1rem -0.5rem hsla(30, 15%, 15%, 20%);
-  --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
+.nav {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    top: var(--space-around);
+    left: var(--space-around);
+    width: calc(100% - var(--space-around) - var(--space-around));
+    height: var(--height);
+    background-color: var(--nav);
+    align-items: center;
+    justify-content: center;
+    padding: 0px 8px;
+    border-radius: 24px;
 }
 
-body {
-  background-color: var(--c-plate);
-  font-family: var(--font-body);
-  color: var(--c-text);
-  font-size: 1px;
+mr-panel {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: start;
+    gap: var(--space-between);
+    padding: var(--space-around) 3vw;
+    background-color: var(--paper);
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 6rem;
-  background: var(--c-plate);
-  padding: 4vw;
-  overflow-y: auto;
-  max-width: var(--content-max-width);
-  margin: 0 auto;
+.section {
+    display: flex;
+    flex-direction: column;
+    /* align-items: start; */
+    /* justify-content: center; */
+    letter-spacing: 1px;
+    /* line-height: 1.25; */
+    line-height: 1.25;
+    width: 100%;
+    height: 100%;
 }
 
-#mark {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  z-index: 999;
-  padding-top: 1rem;
+.gapped {
+    gap: var(--space-vertical);
 }
 
-.layout {
-  background-color: var(--color-paper);
-  padding-top: 6vw;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 1vw;
-  grid-auto-rows: minmax(100px, auto);
+.padded {
+    padding: var(--space-around);
 }
 
-#navbar {
-  background-color: rgb(51, 50, 50);
-  border-radius: 1%;
-  position:fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr 2fr 0.5fr 0.5fr;
-  padding: 10px;
+.narrow {
+    max-width: 300px;
 }
 
-.title {
-  margin: 0 auto;
-  font-family: var(--font-title);
-  font-weight: 500;
-  font-size: 8vw;
-  line-height: 100%;
-  color: rgba(24, 24, 24, 0.75);
-  font-variation-settings: 'opsz' 80, 'wght' 550;
-  font-weight: bold;
-  align-self: center;
-  grid-column: 2;
-
-
+.diptych {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    /* grid-gap: 10px; */
+    justify-content: center;
+    align-items: center;
 }
 
-.company {
-  font-family: var(--font-title);
-  font-size: 4vw;
-  line-height: 100%;
-  color: rgb(55, 55, 55);
-  align-self: center;
-  grid-column: 1;
+.triptych {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: start;
+    align-items: start;
 }
 
-.spin-button {
-  margin: auto;
-  grid-column: 4;
-  align-self: end;
-  font-family: var(--font-title);
-  font-size: 4vw;
-  line-height: 100%;
+.illustration {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background-color: var(--accent);
+    border-radius: 10px;
+    padding: 10px;
 }
 
-#logo-model{
-  scale: 0.0005;
-  grid-column: 3;
-  z-index: 25;
-}
-
-#table-model{
-  scale: 0.002;
-}
-
-.sub-title {
-  font-family: var(--font-title);
-  font-size: 6vw;
-  margin-bottom: 1vh;
-  line-height: 100%;
-  text-align: center;
-  color: rgba(24, 24, 24, 0.75);
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-
+.documentation {
+    background-color: var(--accent);
+    width: fit-content;
 }
 
 .example-link {
-  font-family: var(--font-title);
-  font-size: 2.5vw;
-  line-height: 100%;
-  color: rgba(24, 24, 24, 0.75);
-  margin: 0 auto;
+    font-size: 2rem;
 }
 
-.example-header {
-  font-family: var(--font-title);
-  font-size: 3.5vw;
-  line-height: 100%;
-  text-align: center;
-  margin: 0 auto;
-  color: rgba(24, 24, 24, 0.75);
-  z-index: 2;
+mr-text {
+    letter-spacing: 1px;
+    line-height: 100%;
+    color: var(--ink);
 }
 
-.links {
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1vw;
-  margin-bottom: 10px;
-  z-index: 2;
+.chapeau {
+    font-size: 22px;
+    max-width: 760px;
 }
 
-.col-1{
-  grid-column: 1;
+.h1 {
+    max-width: var(--max-width-h1);
+    font-family: "Bricolage";
+    font-size: 44px;
+    font-weight: 700;
+    padding-bottom: 20px;
 }
 
-.col-2{
-  grid-column: 2;
+.h2 {
+    font-family: "Bricolage";
+    font-size: 32px;
+    font-weight: 700;
 }
 
-.col-3{
-  grid-column: 3;
+.h3 {
+    font-family: "Bricolage";
+    font-size: 24px;
+    font-weight: 700;
 }
 
-.headset {
-  grid-row: 2 / 5;
-  grid-column: 1 / -1;
-  z-index: 1;
+.mosaic {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: var(--space-around);
+    justify-items: center;
+    align-items: center;
 }
 
-mr-img {
-  object-fit: cover;
+mr-button {
+    padding: 8px 16px;
+    font-size: 18px;
+    color: var(--ink);
+    background-color: var(--accent);
+    border-radius: 16px;
 }
 
-/* .headset > mr-img {
-  width: 100%;
-  object-fit: cover;
-} */
-
-.paragraph {
-  font-family: 'Roboto';
-  line-height: 100%;
-  font-size: 16px;
-
-  grid-column: 2;
-  z-index: 2;
+mr-button.hover {
+    background-color: var(--nav);
 }
+
+@media only screen and (max-width: 56rem) {
+    .h1 {
+        font-size: 36px;
+    }
+
+    .diptych, .triptych {
+        grid-template-columns: 1fr;
+    }
+
+    .first {
+        order: -1;
+    }
+}
+/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
