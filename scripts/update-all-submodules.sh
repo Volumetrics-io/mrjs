@@ -14,7 +14,7 @@ prependAndAppend() {
 
     # Replace the original file with the temporary file
     mv "$TEMP_FILE" "$filepath"
-    rm "$TEMP_FILE"    
+    rm "$TEMP_FILE"
 
     echo "--- The $filepath has been updated. ---"
 }
@@ -69,8 +69,8 @@ replaceEveryOccurenceInFile() {
 
 # --------- submodule:MRjs.io repo:mrjs-landing --------- #
 
-# Update mrjsio submodule for landing page and 
-# edit the files as necessary to fit into our 
+# Update mrjsio submodule for landing page and
+# edit the files as necessary to fit into our
 # samples && testing sequence nicely
 
 ## update the submodule if necessary
@@ -85,7 +85,7 @@ if [ $script_exit_code -eq 2 ]; then
     cp "$SUBMODULE_DIR/style.css" samples/index-style.css
     cp "$SUBMODULE_DIR/favicon.svg" samples/favicon.svg
     cp "$SUBMODULE_DIR/opengraph.jpg" samples/opengraph.jpg
-    
+
     ### Overwrite assets folder
     rm -rf samples/index-assets
     cp -r "$SUBMODULE_DIR/assets" samples/index-assets
@@ -105,9 +105,18 @@ if [ $script_exit_code -eq 2 ]; then
     TO_REPLACE='<link rel="stylesheet" type="text/css" href="style.css" />'
     REPLACE_WITH='<link rel="stylesheet" type="text/css" href="index-style.css"/>'
     replaceSingleLineInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH"
-    ### overwrite asset loc for index.html and index-style.css from assets-->index-assets 
+    ### overwrite asset loc for index.html and index-style.css from assets-->index-assets
     TO_REPLACE="./assets/"
     REPLACE_WITH="./index-assets/"
     replaceEveryOccurenceInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH";
     replaceEveryOccurenceInFile "samples/index-style.css" $TO_REPLACE "$REPLACE_WITH";
+
+    ### commit and save replacement changes
+    git add samples/index-assets samples/index.html samples/index-style.css
+    git commit -m "Overwrote main sample and information from mrjsio submodule"
+    echo "Samples updated and committed"
+
+    echo "----------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------"
+    echo ">>> No changes remaining. Dont forget to 'git push' these commits! <<<"
 fi

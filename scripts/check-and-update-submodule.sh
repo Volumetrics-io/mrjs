@@ -73,7 +73,7 @@ else
     git checkout $LATEST_COMMIT
     cd "$REPO_DIR"
     git add "$SUBMODULE_DIR"
-    git commit -m "Updated submodule $SUBMODULE_DIR to latest commit"
+    git commit -m "Updated submodule $SUBMODULE_DIR to its latest repo commit: $LATEST_COMMIT"
     echo "Submodule updated and committed."
 
     # Change the trap for EXIT to use the cleanup_update function
