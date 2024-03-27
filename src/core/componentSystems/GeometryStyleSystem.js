@@ -1,9 +1,9 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRMediaEntity } from 'mrjs/core/entities/MRMediaEntity';
 import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
+import { MRMediaEntity } from 'mrjs/core/entities/MRMediaEntity';
 import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
 
 /**

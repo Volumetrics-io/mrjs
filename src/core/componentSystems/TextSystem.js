@@ -1,9 +1,10 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
+import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 import { MRTextFieldEntity } from 'mrjs/core/entities/MRTextFieldEntity';
 import { MRTextAreaEntity } from 'mrjs/core/entities/MRTextAreaEntity';
 
@@ -50,6 +51,7 @@ export class TextSystem extends MRSystem {
         this.app.addEventListener('trigger-text-style-update', (e) => {
             // The event has the entity stored as its detail.
             if (e.detail !== undefined) {
+                // console.log('trigger-text-style-update for ', e.detail)
                 this._updateSpecificEntity(e.detail);
             }
         });
@@ -71,6 +73,7 @@ export class TextSystem extends MRSystem {
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
 
+        // the sync step ensures troika's text render info is up to date
         entity.textObj.sync(() => {
             if (entity instanceof MRButtonEntity) {
                 entity.textObj.anchorX = 'center';
@@ -80,7 +83,12 @@ export class TextSystem extends MRSystem {
             }
 
             if (entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity) {
-                this.updateTextInput(entity);
+                if (entity == document.activeElement) {
+                    entity.updateCursorPosition();
+                } else {
+                    entity.blur();
+                }
+                //this.updateTextInput(entity);
             }
         });
     }
@@ -91,6 +99,8 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
+
+            // Add a check in case a user manually 
             let text = entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
                 ? entity.input.value
                 : // troika honors newlines/white space
@@ -103,10 +113,16 @@ export class TextSystem extends MRSystem {
                       .trim();
 
             let textContentChanged = entity.textObj.text != text;
+            // console.log('in text system', entity);
+            if (entity instanceof MRTextAreaEntity) {
+                console.log('on entity', entity);
+                console.log('entity.textObj.text', entity.textObj.text);
+                console.log('entity.input.value', text);
+                console.log('textcontentChanged', textContentChanged);
+            }
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.
-
             if (textContentChanged) {
                 entity.textObj.text = text;
                 this._updateSpecificEntity(entity);
@@ -125,18 +141,10 @@ export class TextSystem extends MRSystem {
         // we dont need a main update call here.
     }
 
-    updateTextInput(entity) {
-        if (entity == document.activeElement) {
-            entity.updateCursorPosition();
-        } else {
-            entity.blur();
-        }
-    }
-
     /**
      * @function
      * @description Updates the style for the text's information based on compStyle and inputted css elements.
-     * @param {MRTextEntity} entity - the text entity whose style is being updated
+     * @param {MRTextEntityEntity} entity - the text entity whose style is being updated
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
@@ -168,7 +176,7 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Handles when text is added as an entity updating content and style for the internal textObj appropriately.
-     * @param {MRTextEntity} entity - the text entity being updated
+     * @param {MRTextEntityEntity} entity - the text entity being updated
      */
     addText = (entity) => {
         const text = entity.textContent.trim();
