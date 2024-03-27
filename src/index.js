@@ -4,6 +4,7 @@
  */
 
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
+// for import and export
 
 // Log the version number
 import { version } from '../package.json';
@@ -64,9 +65,22 @@ import './core/componentSystems/TextSystem';
 export { mrjsUtils } from './utils/index.js';
 // EXTRAS
 export * from './extras/index.js';
-// ADDITIONALS from mrjs
+// THREE - So users dont need a separate versioning import for it.
 export * as THREE from 'three';
-export * from 'mrjs/core/MRElement';
+// MRJS - Exporting only necessary items for users to overwrite as they use MRjs.
 export * from 'mrjs/core/MRSystem';
 export * from 'mrjs/core/MREntity';
-export * from 'mrjs/dataTypes/MRClippingGeometry';
+export * from 'mrjs/core/entities/MRButtonEntity';
+export * from 'mrjs/core/entities/MRDivEntity';
+export * from 'mrjs/core/entities/MRHyperlinkEntity';
+export * from 'mrjs/core/entities/MRImageEntity';
+export * from 'mrjs/core/entities/MRLightEntity';
+export * from 'mrjs/core/entities/MRMediaEntity';
+export * from 'mrjs/core/entities/MRModelEntity';
+export * from 'mrjs/core/entities/MRPanelEntity';
+export * from 'mrjs/core/entities/MRSkyBoxEntity';
+export * from 'mrjs/core/entities/MRTextAreaEntity';
+export * from 'mrjs/core/entities/MRTextEntity';
+export * from 'mrjs/core/entities/MRTextFieldEntity';
+export * from 'mrjs/core/entities/MRVideoEntity';
+export * from 'mrjs/core/entities/MRVolumeEntity';
