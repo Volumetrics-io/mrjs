@@ -15,6 +15,16 @@ error.emptyParentFunction = function () {
 }
 
 /**
+ * @function
+ * @memberof error
+ * @description Function helper separated out to console error for when we eventually have a more robust
+ * erroring system.
+ */
+error.err = function(string) {
+    console.error(string);
+}
+
+/**
  * @namespace warn
  * @description Useful namespace for helping with error utility functions
  */
@@ -29,6 +39,16 @@ let warn = {};
  */
 warn.EmptyParentFunction = function () {
     console.warn('Empty parent function was reached, make sure this was overridden in children if more execution was expected.');
+}
+
+/**
+ * @function
+ * @memberof warn
+ * @description Function helper separated out to console warn for when we eventually have a more robust
+ * warning system.
+ */
+warn.warn = function(string) {
+    console.warn(string);
 }
 
 export { error, warn };

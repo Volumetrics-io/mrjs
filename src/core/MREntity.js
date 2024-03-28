@@ -184,11 +184,26 @@ export class MREntity extends MRElement {
     };
 
     position = {
+        get: () => {
+            return this.dataset.position;
+        },
+
+        set: (arr) => {
+            if (arr.length != 3) {
+                mrjsUtils.error.err('position must be set with an array of all three elements [x, y, z]');
+            }
+            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            vec[0] = arr[0];
+            vec[1] = arr[1];
+            vec[2] = arr[2];
+            this.dataset.position = mrjsUtils.string.vectorToString(vec);
+        },
+
         x: () => {
             return this.dataset.position.split(' ')[0];
         },
 
-        x: (val) => {
+        setX: (val) => {
             let vec = mrjsUtils.string.toVector(this.dataset.position);
             vec[0] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
@@ -198,7 +213,7 @@ export class MREntity extends MRElement {
             return this.dataset.position.split(' ')[1];
         },
 
-        y: (val) => {
+        setY: (val) => {
             let vec = mrjsUtils.string.toVector(this.dataset.position);
             vec[1] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
@@ -208,7 +223,7 @@ export class MREntity extends MRElement {
             return this.dataset.position.split(' ')[2];
         },
 
-        z: (val) => {
+        setZ: (val) => {
             let vec = mrjsUtils.string.toVector(this.dataset.position);
             vec[2] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
