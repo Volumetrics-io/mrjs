@@ -113,13 +113,6 @@ export class TextSystem extends MRSystem {
                       .trim();
 
             let textContentChanged = entity.textObj.text != text;
-            // console.log('in text system', entity);
-            if (entity instanceof MRTextAreaEntity) {
-                console.log('on entity', entity);
-                console.log('entity.textObj.text', entity.textObj.text);
-                console.log('entity.hiddenInput.value', text);
-                console.log('textcontentChanged', textContentChanged);
-            }
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.

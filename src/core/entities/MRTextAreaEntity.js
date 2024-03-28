@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import { getSelectionRects } from 'troika-three-text';
+
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
 /**
@@ -203,7 +205,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
         // Assuming we have a method to calculate the width of a string in 3D space
-        const cursorXPosition = this.calculateTextWidth(currentLineText);
+        console.log('------start: about to calculate updated cursor position');
+        const cursorXPosition = this.calculateTextLineWidth(currentLineText);
+        console.log('------done')
         const cursorYPosition = -(visibleLinesStartIndex * this.lineHeight * this.textObj.fontSize);
         
         const cursorDebugObj = {
@@ -220,6 +224,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         console.log('troika obj:', this.textObj);
         this.printCurrentTextDebugInfo();
+        console.log('cursor debug obj:', cursorDebugObj);
         
         // set maxWidth to this.background's width property.
         this.textObj.maxWidth = this.width;
@@ -230,27 +235,28 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Update the cursor's 3D position
         if (this.cursor) {
-            console.log('old cursor position:', this.cursor.position);
             this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
             this.cursor.position.y = this._cursorCalculatedStartingPosition.y + cursorYPosition;
-            this.cursor.visible = true; // Ensure the cursor is visible
-            console.log('new cursor position:', this.cursor.position);
-            console.log('cursorDebugValues: ', cursorDebugObj);
+            this.cursor.visible = true;
         }
     }
 
+    // _oneCharacterWidth = 
+
     /**
-     * Calculates the width of a given string of text. This is a placeholder function
-     * and needs to be implemented based on your text rendering method.
+     * Calculates the width of a given string of text.
      * 
      * @param {string} text The text for which to calculate the width.
      * @return {number} The calculated width of the text.
      */
-    calculateTextWidth(text) {
+    calculateTextLineWidth(textLine) {
+
         // This method needs to be implemented based on your text rendering setup.
         // For example, this could involve using the TextMetrics API or a similar
         // approach specific to Troika-Three-Text and Three.js.
-        return text.length * 0.005; // Placeholder calculation
+        console.log('trying to calculate width for text: ', textLine, 'text widht: ' , textLine.textWidth);
+        return textLine.length * 0.005; // Placeholder calculation
+        // return getSelectionRects(text.textLine.textWidth;
     }
 
 }
