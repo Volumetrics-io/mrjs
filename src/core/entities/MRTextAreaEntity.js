@@ -30,26 +30,26 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
         document.body.appendChild(inputElement); // Ensure it's part of the DOM for event capturing
-        this.input = inputElement;
+        this.hiddenInput = inputElement;
 
         super.connected();
 
         // name: The name associated with the <textarea> for form submission and backend processing.
-        this.input.name = this.getAttribute('name');
+        this.hiddenInput.name = this.getAttribute('name');
         // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
         // TODO
         // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-        this.input.placeholder = this.getAttribute('placeholder');
+        this.hiddenInput.placeholder = this.getAttribute('placeholder');
         // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-        // this.input.readOnly = this.getAttribute('readOnly');
+        // this.hiddenInput.readOnly = this.getAttribute('readOnly');
         // disabled: Disables the text area so it cannot be interacted with or submitted.
-        // this.input.disabled = this.getAttribute('disabled');
+        // this.hiddenInput.disabled = this.getAttribute('disabled');
         // maxlength: Specifies the maximum number of characters that the user can enter.
         // TODO
         // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
         // TODO
 
-        console.log('this.input created: ', this.input);
+        console.log('this.hiddenInput created: ', this.hiddenInput);
 
         this.setupEventListeners();
 
@@ -58,12 +58,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     }
 
     _focus() {
-        if (! this.input) {
+        if (! this.hiddenInput) {
             return;
         }
         console.log('this._focus is hit');
-        this.input.focus();
-        this.input.selectionStart = this.input.value.length;
+        this.hiddenInput.focus();
+        this.hiddenInput.selectionStart = this.hiddenInput.value.length;
         this.cursor.visible = true;
 
         if (this.cursor.geometry !== undefined) {
@@ -80,7 +80,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         });
 
         this.addEventListener('blur', () => {
-            this.input.blur();
+            this.hiddenInput.blur();
             this.cursor.visible = false;
         });
 
@@ -89,17 +89,17 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         });
 
         this.addEventListener('input', () => {
-            this.input.input();
+            this.hiddenInput.input();
         });
 
         // Keyboard input event to capture text
-        this.input.addEventListener('input', () => {
+        this.hiddenInput.addEventListener('input', () => {
             this.updateTextDisplay();
         });
     }
 
     // updateTextDisplay() {
-    //     const lines = this.input.value.split('\n');
+    //     const lines = this.hiddenInput.value.split('\n');
     //     const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
     //     const visibleText = visibleLines.join('\n');
         
@@ -114,7 +114,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
         
-        const lines = this.input.value.split('\n').map(line => {
+        const lines = this.hiddenInput.value.split('\n').map(line => {
             // Truncate or split lines here based on maxCharsPerLine if implementing horizontal scrolling
             return line.substring(0, maxCharsPerLine);
         });
@@ -127,7 +127,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         console.log('text updated: ', this.textObj.text);
 
         // Logic to adjust scrollOffset for new input, ensuring the latest text is visible
-        if (lines.length > this.maxVisibleLines && this.input === document.activeElement) {
+        if (lines.length > this.maxVisibleLines && this.hiddenInput === document.activeElement) {
             // Automatically adjust scrollOffset to make new lines visible
             this.scrollOffset = Math.max(0, lines.length - this.maxVisibleLines);
         }
@@ -161,7 +161,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
             event.preventDefault(); // Prevent default to avoid moving the caret to the start/end
         } else if (isDown) {
-            if (this.scrollOffset < this.input.value.split('\n').length - this.maxVisibleLines) {
+            if (this.scrollOffset < this.hiddenInput.value.split('\n').length - this.maxVisibleLines) {
                 this.scrollOffset++;
                 this.updateTextDisplay();
             }
@@ -177,29 +177,65 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     // Additional methods for managing text area specific behavior can be added here,
     // such as text selection, clipboard operations (cut/copy/paste), and more advanced scrolling features.
 
+    // We assume the default starting position is the origin: 0,0,0. This actually defaults
+    // to the geometry's 0,0,0 origin which is its center and not it's top left as assumed
+    // by most web-applications.
+    //
+    // Storing it so we have something to compare against when calculating cursor start
+    // in comparison to geometry origin.
+    _cursorDefaultStartingPosition = new THREE.Vector3(0, 0, 0);
+    // We store this for the geometry so we can do our geometry vs web origin calculations
+    // more easily as well. We update this based on the geometry's own changes.
+    //
+    // Set as 0,0,0 to start, and updated when the geometry updates.
+    _cursorCalculatedStartingPosition = new THREE.Vector3(0, 0, 0);
+
     updateCursorPosition = () => {
         // Calculate the cursor position within the hiddenInput
-        const cursorIndex = this.input.selectionStart;
-        const textBeforeCursor = this.input.value.substring(0, cursorIndex);
+        const cursorIndex = this.hiddenInput.selectionStart;
+        const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
         const linesBeforeCursor = textBeforeCursor.split('\n');
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
         // Adjust for scrollOffset in MRTextAreaEntity
         const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
-        const lines = this.input.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
+        const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
         // Assuming we have a method to calculate the width of a string in 3D space
         const cursorXPosition = this.calculateTextWidth(currentLineText);
         const cursorYPosition = -(visibleLinesStartIndex * this.lineHeight * this.textObj.fontSize);
+        
+        const cursorDebugObj = {
+            cursorIndex : cursorIndex,
+            textBeforeCursor : textBeforeCursor,
+            linesBeforeCursor : linesBeforeCursor,
+            numberOfLines : numberOfLines,
+            currentLineText : currentLineText,
+            visibleLinesStartIndex : visibleLinesStartIndex,
+            lines : lines,
+            cursorXPosition : cursorXPosition,
+            cursorYPosition : cursorYPosition
+        };
+
+        console.log('troika obj:', this.textObj);
+        this.printCurrentTextDebugInfo();
+        
+        // set maxWidth to this.background's width property.
+        this.textObj.maxWidth = this.width;
+        this.textObj.maxHeight = this.height;
+        // calculate the textObj's width for the cursorCalculatedStartingPosition
+        this._cursorCalculatedStartingPosition.x = -1.0 * this.textObj.maxWidth / 2;
+        this._cursorCalculatedStartingPosition.y = 1.0 * this.textObj.maxHeight / 2 - this._cursorHeight / 2;
 
         // Update the cursor's 3D position
         if (this.cursor) {
-            console.log('cursorXPosition', cursorXPosition);
-            console.log('cursorYPosition', cursorYPosition);
-            this.cursor.position.x = cursorXPosition;
-            this.cursor.position.y = cursorYPosition;
+            console.log('old cursor position:', this.cursor.position);
+            this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
+            this.cursor.position.y = this._cursorCalculatedStartingPosition.y + cursorYPosition;
             this.cursor.visible = true; // Ensure the cursor is visible
+            console.log('new cursor position:', this.cursor.position);
+            console.log('cursorDebugValues: ', cursorDebugObj);
         }
     }
 

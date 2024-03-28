@@ -73,7 +73,8 @@ export class TextSystem extends MRSystem {
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
 
-        // the sync step ensures troika's text render info is up to date
+        // the sync step ensures troika's text render info and geometry is up to date
+        // with any text content changes.
         entity.textObj.sync(() => {
             if (entity instanceof MRButtonEntity) {
                 entity.textObj.anchorX = 'center';
@@ -88,7 +89,6 @@ export class TextSystem extends MRSystem {
                 } else {
                     entity.blur();
                 }
-                //this.updateTextInput(entity);
             }
         });
     }
@@ -102,7 +102,7 @@ export class TextSystem extends MRSystem {
 
             // Add a check in case a user manually 
             let text = entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
-                ? entity.input.value
+                ? entity.hiddenInput.value
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
                   // so we have to clean these from the text
@@ -117,7 +117,7 @@ export class TextSystem extends MRSystem {
             if (entity instanceof MRTextAreaEntity) {
                 console.log('on entity', entity);
                 console.log('entity.textObj.text', entity.textObj.text);
-                console.log('entity.input.value', text);
+                console.log('entity.hiddenInput.value', text);
                 console.log('textcontentChanged', textContentChanged);
             }
 

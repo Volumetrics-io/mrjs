@@ -20,11 +20,11 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     get value() {
-        return this.input.value;
+        return this.hiddenInput.value;
     }
 
     set value(val) {
-        this.input.value = val;
+        this.hiddenInput.value = val;
     }
 
     /**
@@ -37,7 +37,9 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     _createCursor() {
-        const geometry = new THREE.PlaneGeometry(0.0015, 0.02);
+        this._cursorWidth = 0.0015;
+        this._cursorHeight = 0.02;
+        const geometry = new THREE.PlaneGeometry(this._cursorWidth, this._cursorHeight);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
             side: THREE.DoubleSide,
