@@ -231,6 +231,21 @@ export class MREntity extends MRElement {
     }
 
     rotation = {
+        get: () => {
+            return this.dataset.rotation;
+        },
+
+        set: (arr) => {
+            if (arr.length != 3) {
+                mrjsUtils.error.err('position must be set with an array of all three elements [x, y, z]');
+            }
+            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            vec[0] = arr[0];
+            vec[1] = arr[1];
+            vec[2] = arr[2];
+            this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
+        },
+
         x: () => {
             return this.dataset.rotation.split(' ')[0];
         },
