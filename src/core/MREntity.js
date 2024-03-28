@@ -192,7 +192,7 @@ export class MREntity extends MRElement {
             if (arr.length != 3) {
                 mrjsUtils.error.err('position must be set with an array of all three elements [x, y, z]');
             }
-            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.position ?? "0 0 0");
             vec[0] = arr[0];
             vec[1] = arr[1];
             vec[2] = arr[2];
@@ -204,7 +204,7 @@ export class MREntity extends MRElement {
         },
 
         setX: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.position);
             vec[0] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
         },
@@ -214,7 +214,7 @@ export class MREntity extends MRElement {
         },
 
         setY: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.position);
             vec[1] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
         },
@@ -224,7 +224,7 @@ export class MREntity extends MRElement {
         },
 
         setZ: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.position);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.position);
             vec[2] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
         },
@@ -237,9 +237,9 @@ export class MREntity extends MRElement {
 
         set: (arr) => {
             if (arr.length != 3) {
-                mrjsUtils.error.err('position must be set with an array of all three elements [x, y, z]');
+                mrjsUtils.error.err('rotation must be set with an array of all three elements [x, y, z]');
             }
-            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation ?? "0 0 0")
             vec[0] = arr[0];
             vec[1] = arr[1];
             vec[2] = arr[2];
@@ -251,7 +251,7 @@ export class MREntity extends MRElement {
         },
 
         x: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation);
             vec[0] = val;
             this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
         },
@@ -261,7 +261,7 @@ export class MREntity extends MRElement {
         },
 
         y: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation);
             vec[1] = val;
             this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
         },
@@ -271,7 +271,7 @@ export class MREntity extends MRElement {
         },
 
         z: (val) => {
-            let vec = mrjsUtils.string.toVector(this.dataset.rotation);
+            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation);
             vec[2] = val;
             this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
         },
