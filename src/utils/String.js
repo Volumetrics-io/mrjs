@@ -87,6 +87,17 @@ string.stringToVector = function (str) {
     return str.split(' ').map(Number);
 };
 
+string.vectorToString = function (arr) {
+    let str = '';
+    for (let i = 0; i < arr.length; ++i) {
+        str += arr[i];
+        if (i + 1 != arr.length) {
+            str += ' ';
+        }
+    }
+    return str;
+}
+
 /**
  * @function
  * @memberof string
