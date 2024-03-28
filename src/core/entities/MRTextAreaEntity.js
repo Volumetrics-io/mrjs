@@ -100,18 +100,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         });
     }
 
-    // updateTextDisplay() {
-    //     const lines = this.hiddenInput.value.split('\n');
-    //     const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
-    //     const visibleText = visibleLines.join('\n');
-        
-    //     // Update the 3D text object to display only the currently visible lines of text
-    //     this.textObj.text = visibleText;
-    //     console.log('text updated: ', this.textObj.text);
-
-    //     this.updateCursorPosition();
-    // }
-
     updateTextDisplay() {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
