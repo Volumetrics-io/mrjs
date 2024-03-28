@@ -243,6 +243,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
     // _oneCharacterWidth = 
 
+    _tempTextObj
+
     /**
      * Calculates the width of a given string of text.
      * 
