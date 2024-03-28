@@ -11,7 +11,8 @@ class SpinSystem extends MRSystem {
             if (Math.abs(component.speed) < Math.abs(component.maxspeed)) {
                 entity.components.set("spin", { speed: parseFloat(component.speed) + parseFloat(component.acceleration) })
             }
-            entity.object3D.rotation.z += parseFloat(component.speed);
+            entity.rotation.z += parseFloat(component.speed);
+            // entity.object3D.rotation.z += parseFloat(component.speed);
         }
     }
 
