@@ -27,6 +27,14 @@ export class MRTextInputEntity extends MRTextEntity {
         this.hiddenInput.value = val;
     }
 
+    createHiddenInputElement() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
+    fillInHiddenInputElementWithUserData() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
     /**
      * @function
      * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
@@ -34,6 +42,8 @@ export class MRTextInputEntity extends MRTextEntity {
     connected() {
         this._createCursor();
         this.object3D.add(this.cursor);
+
+        this.createHiddenInputElement();
 
         this.setupEventListeners();
 
@@ -76,14 +86,20 @@ export class MRTextInputEntity extends MRTextEntity {
         }
         console.log('this._focus is hit');
         this.hiddenInput.focus();
+        console.log('hi2');
         this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+        console.log('hi3');
         this.cursor.visible = true;
+        console.log('hi4');
 
         if (this.cursor.geometry !== undefined) {
             this.cursor.geometry.dispose();
         }
+        console.log('hi5');
         this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
+        console.log('hi6');
         this.updateCursorPosition();
+        console.log('hi7');
     }
 
     setupEventListeners() {
@@ -121,7 +137,8 @@ export class MRTextInputEntity extends MRTextEntity {
         this.addEventListener('update-cursor-position', () => {
             this.updateCursorPosition();
         });
-        this.addEventListener('key-down-event', (event) => {
+        this.addEventListener('keydown', (event) => {
+            console.log('hi');
             this.handleKeydown(event);
         });
     }

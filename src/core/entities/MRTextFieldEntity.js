@@ -20,15 +20,9 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.wrapper.innerHTML = '<slot></slot>';
     }
 
-    /**
-     * @function
-     * @description Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
-     */
-    connected() {
+    createHiddenInputElement() {
         this.hiddenInput = document.createElement('input');
         this.hiddenInput.setAttribute('type', 'text');
-
-        super.connected();
     }
 
     updateTextDisplay() {

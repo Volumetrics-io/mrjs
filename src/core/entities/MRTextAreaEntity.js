@@ -34,10 +34,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
     }
 
-    /**
-     * Overrides the connected method to include setup for handling multiline text.
-     */
-    connected() {
+    createHiddenInputElement() {
         const inputElement = document.createElement('textarea');
         inputElement.style.position = 'absolute';
         inputElement.style.left = '-9999px'; // Position off-screen
@@ -46,9 +43,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         inputElement.style.overflow = 'hidden';
         document.body.appendChild(inputElement); // Ensure it's part of the DOM for event capturing
         this.hiddenInput = inputElement;
+    }
 
-        super.connected();
-
+    fillInHiddenInputElementWithUserData() {
         // name: The name associated with the <textarea> for form submission and backend processing.
         this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
         // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
@@ -67,6 +64,17 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.textObj.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
         // whitespace : Controls if text wraps with the overflowWrap feature or not.
         this.textObj.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
+    }
+
+    /**
+     * Overrides the connected method to include setup for handling multiline text.
+     */
+    connected() {
+        
+
+        super.connected();
+
+        
     }
 
     updateTextDisplay() {
