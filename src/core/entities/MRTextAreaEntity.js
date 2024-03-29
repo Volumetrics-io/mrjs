@@ -49,7 +49,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // maxlength: Specifies the maximum number of characters that the user can enter.
         // TODO
         // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-        this.hiddenInput.wrap = ...
+        // this.hiddenInput.wrap = ...
         this.textObj.overflowWrap = 'normal'; // wrap breaks at whitespace chars
         this.textObj.whiteSpace = 'normal'; // yes to text wrap with overflowWrap feature;
 
@@ -212,14 +212,15 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Assuming we have a method to calculate the width of a string in 3D space
         console.log('------start: about to calculate updated cursor position');
         // TODO - this needs to happen within a text obj sync and it should be good.
-        let after_end_index = cursorIndex + 1;
-        let start_index = lastNewLineIndex + 1;
-        let rects = getSelectionRects(this.textObj.textRenderInfo, start_index, after_end_index);
-        console.log('the seleciton rects:', rects);
-        // this.calculateTextCharWidth(currentLineText, cursorIndex, lastNewLineIndex);
-        const cursorXPosition = currentLineText.length * this._textCharWidth;
+        this.textObj.sync(() => {
+            let end_index = cursorIndex;
+            let start_index = lastNewLineIndex + 1;
+            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, start_index, end_index);
+            console.log('start_index', start_index, 'end_index', end_index, 'the selection rects:', selectionRects);
+        });
+        const cursorXPosition = currentLineText.length * this._textCharWidth + (currentLineText.length - 1) * this.textObj.letterSpacing;
         console.log('------done')
-        const cursorYPosition = -(visibleLinesStartIndex * this.lineHeight * this.textObj.fontSize);
+        const cursorYPosition = -(visibleLinesStartIndex * (this.lineHeight * this._textCharHeight) * this.textObj.fontSize);
         
         const cursorDebugObj = {
             cursorIndex : cursorIndex,
