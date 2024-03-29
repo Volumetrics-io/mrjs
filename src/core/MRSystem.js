@@ -113,9 +113,9 @@ export class MRSystem {
         // case where we think we should be ignoring an item, but it ends up having an update
         // implementation later in the building development of MRjs.
         // 
-        // This of this as, unless there's a reason for the system to update as part of the
-        // render loop, that is, it's update function is implemented, we're only going to have it
-        // update when it actually needs to do so.
+        // Unless there's a reason for the system to update as part of the render loop,
+        // that is, its update function is implemented, we're only going to have it update
+        // when it actually needs to do so (ie on event trigger where necessary).
         
         // We remove this system from the renderLoop systems but it still remains
         // a valid overarching system in this.app.systems.
