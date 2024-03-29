@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { getSelectionRects } from 'troika-three-text';
+import { getSelectionRects, Text } from 'troika-three-text';
 
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
@@ -49,7 +49,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // maxlength: Specifies the maximum number of characters that the user can enter.
         // TODO
         // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-        // TODO
+        this.hiddenInput.wrap = ...
+        this.textObj.overflowWrap = 'normal'; // wrap breaks at whitespace chars
+        this.textObj.whiteSpace = 'normal'; // yes to text wrap with overflowWrap feature;
 
         console.log('this.hiddenInput created: ', this.hiddenInput);
 
@@ -179,11 +181,27 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     //
     // Set as 0,0,0 to start, and updated when the geometry updates.
     _cursorCalculatedStartingPosition = new THREE.Vector3(0, 0, 0);
+    // Only needs to be adjusted on style changes.
+    // TextCharWidth is specific to a font and text-size in relation to how much
+    // actual 3d space a character is expected to take up.
+    //
+    // This is useful for things like cursor positioning, etc.
+     _textCharWidth = 0;
 
     updateCursorPosition = () => {
+        // set maxWidth to this.background's width property.
+        this.textObj.maxWidth = this.width;
+        this.textObj.maxHeight = this.height;
+        // calculate the textObj's width for the cursorCalculatedStartingPosition
+        if (this._cursorCalculatedStartingPosition.x == 0 && this._cursorCalculatedStartingPosition.y == 0) {
+            this._cursorCalculatedStartingPosition.x = -1.0 * this.textObj.maxWidth / 2;
+            this._cursorCalculatedStartingPosition.y = 1.0 * this.textObj.maxHeight / 2 - this._cursorHeight / 2;
+        }
+
         // Calculate the cursor position within the hiddenInput
         const cursorIndex = this.hiddenInput.selectionStart;
         const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+        const lastNewLineIndex = this.hiddenInput.value.lastIndexOf('\n');
         const linesBeforeCursor = textBeforeCursor.split('\n');
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
@@ -194,7 +212,13 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Assuming we have a method to calculate the width of a string in 3D space
         console.log('------start: about to calculate updated cursor position');
-        const cursorXPosition = this.calculateTextLineWidth(currentLineText);
+        // TODO - this needs to happen within a text obj sync and it should be good.
+        let after_end_index = cursorIndex + 1;
+        let start_index = lastNewLineIndex + 1;
+        let rects = getSelectionRects(this.textObj.textRenderInfo, start_index, after_end_index);
+        console.log('the seleciton rects:', rects);
+        // this.calculateTextCharWidth(currentLineText, cursorIndex, lastNewLineIndex);
+        const cursorXPosition = currentLineText.length * this._textCharWidth;
         console.log('------done')
         const cursorYPosition = -(visibleLinesStartIndex * this.lineHeight * this.textObj.fontSize);
         
@@ -214,39 +238,13 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.printCurrentTextDebugInfo();
         console.log('cursor debug obj:', cursorDebugObj);
         
-        // set maxWidth to this.background's width property.
-        this.textObj.maxWidth = this.width;
-        this.textObj.maxHeight = this.height;
-        // calculate the textObj's width for the cursorCalculatedStartingPosition
-        this._cursorCalculatedStartingPosition.x = -1.0 * this.textObj.maxWidth / 2;
-        this._cursorCalculatedStartingPosition.y = 1.0 * this.textObj.maxHeight / 2 - this._cursorHeight / 2;
-
+        
         // Update the cursor's 3D position
         if (this.cursor) {
             this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
             this.cursor.position.y = this._cursorCalculatedStartingPosition.y + cursorYPosition;
             this.cursor.visible = true;
         }
-    }
-
-    // _oneCharacterWidth = 
-
-    _tempTextObj
-
-    /**
-     * Calculates the width of a given string of text.
-     * 
-     * @param {string} text The text for which to calculate the width.
-     * @return {number} The calculated width of the text.
-     */
-    calculateTextLineWidth(textLine) {
-
-        // This method needs to be implemented based on your text rendering setup.
-        // For example, this could involve using the TextMetrics API or a similar
-        // approach specific to Troika-Three-Text and Three.js.
-        console.log('trying to calculate width for text: ', textLine, 'text widht: ' , textLine.textWidth);
-        return textLine.length * 0.005; // Placeholder calculation
-        // return getSelectionRects(text.textLine.textWidth;
     }
 
 }
