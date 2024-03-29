@@ -29,33 +29,42 @@ export class MRSystem {
         }
 
         this.frameRate = frameRate;
-        // Need a way to register and deregister systems per environment
+
+        // TODO - Need a way to register and deregister systems per environment
         this.registry = new Set();
 
+        // The basic info for the system.
         this.systemName = this.constructor.name.split('System')[0];
         this.componentName = `comp${this.systemName}`;
 
+        // Add the system to our list of systems and reset the render loop systems
+        // set to make sure we include all appropriate items that are needed.
         this.app.registerSystem(this);
+        this.app.renderLoopSystemsReset();
 
+        // Add component items
         if (useComponents) {
             document.addEventListener(`${this.componentName}-attached`, this.onAttach);
             document.addEventListener(`${this.componentName}-updated`, this.onUpdate);
             document.addEventListener(`${this.componentName}-detached`, this.onDetach);
         }
 
+        // Handle events properly.
+        // Handle new-entity events.
         this.app.addEventListener('new-entity', (event) => {
             if (this.registry.has(event.target)) {
                 return;
             }
             this.onNewEntity(event.target);
         });
-
+        // Handle any global update events
         for (const eventType of GLOBAL_UPDATE_EVENTS) {
             document.addEventListener(eventType, (event) => {
                 this.eventUpdate();
             });
         }
 
+        // Add any MREntity items to this main system by default.
         const entities = document.querySelectorAll(`[${this.componentName}]`);
         for (const entity of entities) {
             if (!(entity instanceof MREntity)) {
@@ -110,7 +119,9 @@ export class MRSystem {
         
         // We remove this system from the renderLoop systems but it still remains
         // a valid overarching system in this.app.systems.
-        console.log('removing system: ', this);
+        if (this.app.debug) {
+            console.log('MRSystem does not have an `update` function. Ignoring in render update loop: ', this);
+        }
         this.app._renderLoopSystems.delete(this);
     }
 

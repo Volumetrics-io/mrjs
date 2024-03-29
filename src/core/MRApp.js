@@ -439,9 +439,12 @@ export class MRApp extends MRElement {
      * @description Helper function to go with the regular renderLoopSystems.
      * Useful to reset the internal renderLoopSystems set and check against
      * all the items in the system if they were added by the `engine-started`
-     * trigger or after.
+     * trigger or after. Needed to make sure that renderLoopSystems is always
+     * a subsetEqual of all available systems.
      */
     renderLoopSystemsReset() {
+        // TODO - there's probably a better way to do a reset, but this is clean
+        // and simple enough for now.
         if (this._renderLoopSystems) {
             this._renderLoopSystems.clear();
         } else {
@@ -464,7 +467,6 @@ export class MRApp extends MRElement {
     get renderLoopSystems() {
         // We've already created this._renderLoopSystems.
         if (this._renderLoopSystems.size != 0) {
-            console.log('this._renderLoopSystems', this._renderLoopSystems);
             return this._renderLoopSystems;
         }
 
@@ -482,6 +484,9 @@ export class MRApp extends MRElement {
         for (const system of this.systems) {
             this._renderLoopSystems.add(system);
         }
+        if (this.debug) {
+            console.log('this.renderLoopSystems was reset for a new MRSystem addition; it is now:', this._renderLoopSystems);
+        }   
         return this._renderLoopSystems;
     }
 
