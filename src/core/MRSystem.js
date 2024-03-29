@@ -96,6 +96,19 @@ export class MRSystem {
         this.delta = 0;
     }
 
+    _ignoreDuringSceneUpdateLoop() {
+        // For this system, since we have the 'per entity' and 'per scene event' update calls,
+        // we dont need a main update call here.
+        //
+        // Added as a function call placed in the update function to prevent the overlap
+        // case where we think we should be ignoring an item, but it ends up having an update
+        // implementation later in the building development of MRjs.
+        
+        // We remove this system from the renderLoop systems but it still remains
+        // a valid overarching system in this.app.systems.
+        this.app._renderLoopSystems.remove(this);
+    }
+
     /**
      * @function
      * @description The generic system update call per render-frame.

@@ -111,7 +111,7 @@ export class MaskingSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        // leave for when needed.
+        this._ignoreDuringSceneRenderLoop();
     }
 
     /**

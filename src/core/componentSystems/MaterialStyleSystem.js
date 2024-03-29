@@ -61,8 +61,7 @@ export class MaterialStyleSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        // For this system, since we have the 'per entity' and 'per scene event' update calls,
-        // we dont need a main update call here.
+        this._ignoreDuringSceneRenderLoop();
     }
 
     /**

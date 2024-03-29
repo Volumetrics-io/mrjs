@@ -429,6 +429,39 @@ export class MRApp extends MRElement {
 
     /**
      * @function
+     * @description Creates the private variable for all systems that need
+     * to run as part of the render loop update. That is, some systems run 
+     * best only on event or scene updates and not every frame call, so their
+     * frame call `update` function is empty. We can remove those from the list
+     * and pass those stack changes.
+     * 
+     * We can do this separation since once we create all our systems, we never
+     * remove them from our scene, so this is just a subset and we wont have
+     * to worry about the difference between the two.
+     */
+    get renderLoopSystems() {
+        // We've already created this._renderLoopSystems.
+        if (this._renderLoopSystems) {
+            return this._renderLoopSystems;
+        }
+
+        // Otherwise, this is the first loop we hit this call.
+        //
+        // When the systems go through the render loop for the first pass,
+        // if theyre supposed to be skipped, they'll self select as part of
+        // their update call to be removed from the set.
+        // 
+        // We can do this without issue because the JavaScript Set object
+        // handles the iteration in a way that safely allows elements to 
+        // be removed during iteration. 
+        this._renderLoopSystems = new Set();
+        for (const system of this.systems) {
+            this._renderLoopSystems.add(system);
+        }
+    }
+
+    /**
+     * @function
      * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
      */
     onWindowResize() {
@@ -495,7 +528,7 @@ export class MRApp extends MRElement {
 
         // ----- System Updates ----- //
 
-        for (const system of this.systems) {
+        for (const system of this.renderLoopSystems) {
             system._update(deltaTime, frame);
         }
 
