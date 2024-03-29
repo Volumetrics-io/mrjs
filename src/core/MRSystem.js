@@ -96,17 +96,22 @@ export class MRSystem {
         this.delta = 0;
     }
 
-    _ignoreDuringSceneUpdateLoop() {
+    _ignoreDuringSceneRenderLoop() {
         // For this system, since we have the 'per entity' and 'per scene event' update calls,
         // we dont need a main update call here.
         //
         // Added as a function call placed in the update function to prevent the overlap
         // case where we think we should be ignoring an item, but it ends up having an update
         // implementation later in the building development of MRjs.
+        // 
+        // This of this as, unless there's a reason for the system to update as part of the
+        // render loop, that is, it's update function is implemented, we're only going to have it
+        // update when it actually needs to do so.
         
         // We remove this system from the renderLoop systems but it still remains
         // a valid overarching system in this.app.systems.
-        this.app._renderLoopSystems.remove(this);
+        console.log('removing system: ', this);
+        this.app._renderLoopSystems.delete(this);
     }
 
     /**
@@ -115,7 +120,9 @@ export class MRSystem {
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
-    update(deltaTime, frame) {}
+    update(deltaTime, frame) {
+        this._ignoreDuringSceneRenderLoop();
+    }
 
     /**
      * @function

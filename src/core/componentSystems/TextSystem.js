@@ -114,16 +114,6 @@ export class TextSystem extends MRSystem {
         }
     }
 
-    /**
-     * @function
-     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
-        this._ignoreDuringSceneRenderLoop();
-    }
-
     updateTextInput(entity) {
         if (entity == document.activeElement) {
             entity.updateCursorPosition();

@@ -76,7 +76,10 @@ export class MRApp extends MRElement {
         this.isMobile = window.mobileCheck(); // resolves true/false
 
         this.clock = new THREE.Clock();
+
         this.systems = new Set();
+        this._renderLoopSystems = new Set();
+
         this.scene = new THREE.Scene();
         this.scene.matrixWorldAutoUpdate = false;
         this.anchor = null;
@@ -143,6 +146,10 @@ export class MRApp extends MRElement {
             // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
             this.maskingSystem = new MaskingSystem();
+
+            // reset and refill in the renderLoopSystems in the next
+            // update loop for the new systems we've added.
+            this.renderLoopSystemsReset();
         });
     }
 
@@ -429,11 +436,26 @@ export class MRApp extends MRElement {
 
     /**
      * @function
+     * @description Helper function to go with the regular renderLoopSystems.
+     * Useful to reset the internal renderLoopSystems set and check against
+     * all the items in the system if they were added by the `engine-started`
+     * trigger or after.
+     */
+    renderLoopSystemsReset() {
+        if (this._renderLoopSystems) {
+            this._renderLoopSystems.clear();
+        } else {
+            this._renderLoopSystems = new Set();
+        }
+    }
+
+    /**
+     * @function
      * @description Creates the private variable for all systems that need
      * to run as part of the render loop update. That is, some systems run 
      * best only on event or scene updates and not every frame call, so their
      * frame call `update` function is empty. We can remove those from the list
-     * and pass those stack changes.
+     * and skip those stack changes.
      * 
      * We can do this separation since once we create all our systems, we never
      * remove them from our scene, so this is just a subset and we wont have
@@ -441,11 +463,14 @@ export class MRApp extends MRElement {
      */
     get renderLoopSystems() {
         // We've already created this._renderLoopSystems.
-        if (this._renderLoopSystems) {
+        if (this._renderLoopSystems.size != 0) {
+            console.log('this._renderLoopSystems', this._renderLoopSystems);
             return this._renderLoopSystems;
         }
 
-        // Otherwise, this is the first loop we hit this call.
+        // Otherwise, this is the first loop we hit this call or the 
+        // system reset call happened (ie size == 0), so we're filling out
+        // the necessary list again.
         //
         // When the systems go through the render loop for the first pass,
         // if theyre supposed to be skipped, they'll self select as part of
@@ -454,10 +479,10 @@ export class MRApp extends MRElement {
         // We can do this without issue because the JavaScript Set object
         // handles the iteration in a way that safely allows elements to 
         // be removed during iteration. 
-        this._renderLoopSystems = new Set();
         for (const system of this.systems) {
             this._renderLoopSystems.add(system);
         }
+        return this._renderLoopSystems;
     }
 
     /**

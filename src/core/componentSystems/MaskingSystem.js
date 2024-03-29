@@ -106,16 +106,6 @@ export class MaskingSystem extends MRSystem {
 
     /**
      * @function
-     * @description ...
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
-        this._ignoreDuringSceneRenderLoop();
-    }
-
-    /**
-     * @function
      * @description Copy the source world matrices to the objects writing to stencil buffer
      */
     sync() {

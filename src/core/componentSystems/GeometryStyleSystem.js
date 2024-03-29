@@ -68,16 +68,6 @@ export class GeometryStyleSystem extends MRSystem {
 
     /**
      * @function
-     * @description The per-frame system update call. 
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
-        this._ignoreDuringSceneRenderLoop();
-    }
-
-    /**
-     * @function
      * @description Called when a new entity is added to the scene. Adds said new entity to the style's system registry.
      * @param {MREntity} entity - the entity being added.
      */
