@@ -137,7 +137,7 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Updates the style for the text's information based on compStyle and inputted css elements.
-     * @param {MRTextEntityEntity} entity - the text entity whose style is being updated
+     * @param {MRTextEntity} entity - the text entity whose style is being updated
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
@@ -169,7 +169,7 @@ export class TextSystem extends MRSystem {
     /**
      * @function
      * @description Handles when text is added as an entity updating content and style for the internal textObj appropriately.
-     * @param {MRTextEntityEntity} entity - the text entity being updated
+     * @param {MRTextEntity} entity - the text entity being updated
      */
     addText = (entity) => {
         const text = entity.textContent.trim();

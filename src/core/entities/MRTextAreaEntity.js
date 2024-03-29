@@ -120,7 +120,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Logic to adjust scrollOffset for new input, ensuring the latest text is visible
         if (lines.length > this.maxVisibleLines && this.hiddenInput === document.activeElement) {
-            // Automatically adjust scrollOffset to make new lines visible
             this.scrollOffset = Math.max(0, lines.length - this.maxVisibleLines);
         }
 

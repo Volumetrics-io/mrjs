@@ -411,6 +411,24 @@ export class MRApp extends MRElement {
 
     /**
      * @function
+     * @description Creates the private variable for all systems that need
+     * to run as part of the render loop update. That is, some systems run 
+     * best only on event or scene updates and not every frame call, so their
+     * frame call `update` function is empty. We can remove those from the list
+     * and pass those stack changes.
+     */
+    get renderLoopSystems() {
+        if (this._renderLoopSystems) {
+            return this._renderLoopSystems;
+        }
+
+        // otherwise this is the first loop we hit this call
+        
+        this._renderLoopSystems
+    }
+
+    /**
+     * @function
      * @description Adding an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be added.
      */
