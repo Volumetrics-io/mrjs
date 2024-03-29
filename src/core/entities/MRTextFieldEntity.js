@@ -10,20 +10,6 @@ import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
  * @augments MRTextInputEntity
  */
 export class MRTextFieldEntity extends MRTextInputEntity {
-    //  /**
-    //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
-    //  */
-    //  get height() {
-    //     return Math.abs(this.textObj.textRenderInfo?.blockBounds[1] ?? 1);
-    // }
-
-    // /**
-    //  * @returns {number} - the height of the rendering area for the text. Counts as the css height px value representation.
-    //  */
-    // get width() {
-    //     return Math.abs(this.textObj.textRenderInfo?.blockBounds[2] ?? 1);
-    // }
-
     /**
      * @class
      * @description Constructor for the textField entity component.
@@ -39,30 +25,67 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      * @description Callback function of MREntity - handles setting up this textfield once it is connected to run as an entity component.
      */
     connected() {
-        this.input = document.createElement('input');
-        this.input.setAttribute('type', 'text');
+        this.hiddenInput = document.createElement('input');
+        this.hiddenInput.setAttribute('type', 'text');
 
         super.connected();
+    }
+
+    updateTextDisplay() {
+        // Determine the maximum number of characters per line based on renderable area (example given)
+        const maxCharsPerLine = 50; // This should be dynamically calculated
+        
+        this.textObj.text = visibleText;
+
+        this.updateCursorPosition();
+    }
+
+    /**
+     * Handles keydown events for scrolling and cursor navigation.
+     */
+    handleKeydown(event) {
+        const { keyCode } = event;
+        const isUp = keyCode === 38; // Arrow up
+        const isDown = keyCode === 40; // Arrow down
+        const isBackspace = keyCode === 8; // Backspace
+        const isDelete = keyCode === 46; // Delete
+        const isEnter = keyCode === 13; // Enter
+
+        // Adjust for special keys that alter text
+        if (isBackspace || isDelete || isEnter) {
+            setTimeout(() => {
+                this.updateTextDisplay(); // Ensure text display updates after key press
+            }, 0);
+        }
+
+        // TODO - anything else?
+
+        // Ensure the cursor position is updated to reflect the current caret position
+        setTimeout(() => {
+            this.updateCursorPosition();
+        }, 0);
     }
 
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition = () => {
-        const end = this.input.selectionStart > 0 ? this.input.selectionStart : 1;
-        const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
-        if (!selectBox || isNaN(selectBox.left)) {
-            this.cursor.position.setX(0);
-            return;
-        } else {
-            if (this.input.selectionStart == 0) {
-                this.cursor.position.setX(selectBox.left);
-            } else {
-                this.cursor.position.setX(selectBox.right);
-            }
-            this.cursor.position.setY(selectBox.bottom / 2); //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
-        }
+    updateCursorPosition() {
+        // to be resolved in future implementation.
+
+        // const end = this.hiddenInput.selectionStart > 0 ? this.hiddenInput.selectionStart : 1;
+        // const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
+        // if (!selectBox || isNaN(selectBox.left)) {
+        //     this.cursor.position.setX(0);
+        //     return;
+        // } else {
+        //     if (this.hiddenInput.selectionStart == 0) {
+        //         this.cursor.position.setX(selectBox.left);
+        //     } else {
+        //         this.cursor.position.setX(selectBox.right);
+        //     }
+        //     this.cursor.position.setY(selectBox.bottom / 2); //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
+        // }
     };
 }
 

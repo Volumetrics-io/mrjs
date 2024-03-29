@@ -67,54 +67,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.textObj.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
         // whitespace : Controls if text wraps with the overflowWrap feature or not.
         this.textObj.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
-
-        console.log('this.hiddenInput created: ', this.hiddenInput);
-
-        this.setupEventListeners();
-
-        this.triggerGeometryStyleUpdate();
-        this.triggerTextStyleUpdate();
-    }
-
-    _focus() {
-        if (! this.hiddenInput) {
-            return;
-        }
-        console.log('this._focus is hit');
-        this.hiddenInput.focus();
-        this.hiddenInput.selectionStart = this.hiddenInput.value.length;
-        this.cursor.visible = true;
-
-        if (this.cursor.geometry !== undefined) {
-            this.cursor.geometry.dispose();
-        }
-        this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
-        this.updateCursorPosition();
-    }
-
-    setupEventListeners() {
-        // Click event to focus and allow input
-        this.addEventListener('click', () => {
-            this._focus();
-        });
-
-        this.addEventListener('blur', () => {
-            this.hiddenInput.blur();
-            this.cursor.visible = false;
-        });
-
-        this.addEventListener('focus', () => {
-            this._focus();
-        });
-
-        this.addEventListener('input', () => {
-            this.hiddenInput.input();
-        });
-
-        // Keyboard input event to capture text
-        this.hiddenInput.addEventListener('input', () => {
-            this.updateTextDisplay();
-        });
     }
 
     updateTextDisplay() {
@@ -131,7 +83,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const visibleText = visibleLines.join('\n');
         
         this.textObj.text = visibleText;
-        console.log('text updated: ', this.textObj.text);
+        // console.log('text updated: ', this.textObj.text);
 
         // Logic to adjust scrollOffset for new input, ensuring the latest text is visible
         if (lines.length > this.maxVisibleLines && this.hiddenInput === document.activeElement) {
@@ -202,7 +154,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     // This is useful for things like cursor positioning, etc.
      _textCharWidth = 0;
 
-    updateCursorPosition = () => {
+    updateCursorPosition() {
         // set maxWidth to this.background's width property.
         this.textObj.maxWidth = this.width;
         this.textObj.maxHeight = this.height;
@@ -224,17 +176,17 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
         const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
-        // Assuming we have a method to calculate the width of a string in 3D space
-        console.log('------start: about to calculate updated cursor position');
-        // TODO - this needs to happen within a text obj sync and it should be good.
-        this.textObj.sync(() => {
-            let end_index = cursorIndex;
-            let start_index = lastNewLineIndex + 1;
-            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, start_index, end_index);
-            console.log('start_index', start_index, 'end_index', end_index, 'the selection rects:', selectionRects);
-        });
-        const cursorXPosition = currentLineText.length * this._textCharWidth + (currentLineText.length - 1) * this.textObj.letterSpacing;
-        console.log('------done')
+        // Below commented needs to finish being fixed
+        // console.log('------start: about to calculate updated cursor position');
+        // this.textObj.sync(() => {
+        //     let end_index = cursorIndex;
+        //     let start_index = lastNewLineIndex + 1;
+        //     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, start_index, end_index);
+        //     console.log('start_index', start_index, 'end_index', end_index, 'the selection rects:', selectionRects);
+        // });
+        // const cursorXPosition = currentLineText.length * this._textCharWidth + (currentLineText.length - 1) * this.textObj.letterSpacing;
+        const cursorXPosition = currentLineText.length * 0.005;
+        // console.log('------done')
         const cursorYPosition = -(visibleLinesStartIndex * (this.lineHeight * this._textCharHeight) * this.textObj.fontSize);
         
         const cursorDebugObj = {
@@ -249,10 +201,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             cursorYPosition : cursorYPosition
         };
 
-        console.log('troika obj:', this.textObj);
-        this.printCurrentTextDebugInfo();
-        console.log('cursor debug obj:', cursorDebugObj);
-        
+        // console.log('troika obj:', this.textObj);
+        // this.printCurrentTextDebugInfo();
+        // console.log('cursor debug obj:', cursorDebugObj);
         
         // Update the cursor's 3D position
         if (this.cursor) {

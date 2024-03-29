@@ -34,6 +34,11 @@ export class MRTextInputEntity extends MRTextEntity {
     connected() {
         this._createCursor();
         this.object3D.add(this.cursor);
+
+        this.setupEventListeners();
+
+        this.triggerGeometryStyleUpdate();
+        this.triggerTextStyleUpdate();
     }
 
     _createCursor() {
@@ -53,7 +58,71 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition = () => {
+    updateCursorPosition() {
         mrjsUtils.error.emptyParentFunction();
     };
+
+    handleKeydown(event) {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
+    updateTextDisplay() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
+    _focus() {
+        if (! this.hiddenInput) {
+            return;
+        }
+        console.log('this._focus is hit');
+        this.hiddenInput.focus();
+        this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+        this.cursor.visible = true;
+
+        if (this.cursor.geometry !== undefined) {
+            this.cursor.geometry.dispose();
+        }
+        this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
+        this.updateCursorPosition();
+    }
+
+    setupEventListeners() {
+        // Since we want the text input children to be able
+        // to override the parent function event triggers,
+        // separating them into an actual function here 
+        // and calling them manually. This allows us to call
+        // super.func() for event functions; otherwise, theyre
+        // not accessible.
+        //
+        // TODO - is this a reasonable approach? is javascript
+        // really this clunky?
+
+        this.addEventListener('click', () => {
+            this._focus();
+        });
+
+        this.addEventListener('blur', () => {
+            this.hiddenInput.blur();
+            this.cursor.visible = false;
+        });
+
+        this.addEventListener('focus', () => {
+            this._focus();
+        });
+
+        this.addEventListener('input', () => {
+            this.hiddenInput.input();
+        });
+
+        // Keyboard input event to capture text
+        this.hiddenInput.addEventListener('input', () => {
+            this.updateTextDisplay();
+        });
+        this.addEventListener('update-cursor-position', () => {
+            this.updateCursorPosition();
+        });
+        this.addEventListener('key-down-event', (event) => {
+            this.handleKeydown(event);
+        });
+    }
 }
