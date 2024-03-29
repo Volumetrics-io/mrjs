@@ -6,7 +6,7 @@ import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 /**
  * @class MRModelEntity
  * @classdesc Loads in any supported 3D model type to the requested location. `mr-model`
- * @augments MREntity
+ * @augments MRDivEntity
  */
 export class MRModelEntity extends MRDivEntity {
     /**

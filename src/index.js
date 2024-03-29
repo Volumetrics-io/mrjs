@@ -43,6 +43,7 @@ import './core/entities/MRSkyBoxEntity';
 import './core/entities/MRTextEntity';
 import './core/entities/MRTextAreaEntity';
 import './core/entities/MRTextFieldEntity';
+import './core/entities/MRTextInputEntity';
 import './core/entities/MRVideoEntity';
 import './core/entities/MRVolumeEntity';
 // CORE - COMPONENT-SYSTEMS

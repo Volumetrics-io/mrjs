@@ -1,9 +1,10 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
+import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 import { MRTextFieldEntity } from 'mrjs/core/entities/MRTextFieldEntity';
 import { MRTextAreaEntity } from 'mrjs/core/entities/MRTextAreaEntity';
 
@@ -50,6 +51,7 @@ export class TextSystem extends MRSystem {
         this.app.addEventListener('trigger-text-style-update', (e) => {
             // The event has the entity stored as its detail.
             if (e.detail !== undefined) {
+                // console.log('trigger-text-style-update for ', e.detail)
                 this._updateSpecificEntity(e.detail);
             }
         });
@@ -71,6 +73,8 @@ export class TextSystem extends MRSystem {
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
 
+        // the sync step ensures troika's text render info and geometry is up to date
+        // with any text content changes.
         entity.textObj.sync(() => {
             if (entity instanceof MRButtonEntity) {
                 entity.textObj.anchorX = 'center';
@@ -80,7 +84,11 @@ export class TextSystem extends MRSystem {
             }
 
             if (entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity) {
-                this.updateTextInput(entity);
+                if (entity == document.activeElement) {
+                    entity.updateCursorPosition();
+                } else {
+                    entity.blur();
+                }
             }
         });
     }
@@ -91,8 +99,10 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
+
+            // Add a check in case a user manually 
             let text = entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
-                ? entity.input.value
+                ? entity.hiddenInput.value
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
                   // so we have to clean these from the text
@@ -106,7 +116,6 @@ export class TextSystem extends MRSystem {
 
             // Now that we know text is different or at least definitely needs an update
             // we can go and do the larger calculations and changes.
-
             if (textContentChanged) {
                 entity.textObj.text = text;
                 this._updateSpecificEntity(entity);

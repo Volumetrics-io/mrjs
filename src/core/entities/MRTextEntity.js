@@ -58,6 +58,67 @@ export class MRTextEntity extends MRDivEntity {
     triggerTextStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-text-style-update', { detail: this, bubbles: true }));
     }
+
+    printCurrentTextDebugInfo(textObj) {
+        if (! textObj) {
+            const textDebugObj = {
+                anchorX : this.textObj.anchorX,
+                anchorY : this.textObj.anchorY,
+                colorRanges : this.textObj.colorRanges,
+                curveRadius : this.textObj.curveRadius,
+                customDepthMaterials : this.textObj.customDepthMaterials,
+                customDistanceMaterials : this.textObj.customDistanceMaterials,
+                direction : this.textObj.direction,
+                font : this.textObj.font,
+                fontSize : this.textObj.fontSize,
+                fontStyle : this.textObj.fontStyle,
+                fontWeight : this.textObj.fontWeight,
+                glyphGeometryDetail : this.textObj.glyphGeometryDetail,
+                lang : this.textObj.lang,
+                letterSpacing : this.textObj.letterSpacing,
+                lineHeight : this.textObj.lineHeight,
+                material : this.textObj.material,
+                maxWidth : this.textObj.maxWidth,
+                overflowWrap : this.textObj.overflowWrap,
+                sdfGlyphSize : this.textObj.sdfGlyphSize,
+                text : this.textObj.text,
+                textAlign : this.textObj.textAlign,
+                textIndent : this.textObj.textIndent,
+                textRenderInfo : this.textObj.textRenderInfo,
+                whiteSpace : this.textObj.whiteSpace,
+            };
+            console.log('textDebugInfo: ', textDebugObj);
+            return;
+        }
+
+        const textDebugObj = {
+            anchorX : textObj.anchorX,
+            anchorY : textObj.anchorY,
+            colorRanges : textObj.colorRanges,
+            curveRadius : textObj.curveRadius,
+            customDepthMaterials : textObj.customDepthMaterials,
+            customDistanceMaterials : textObj.customDistanceMaterials,
+            direction : textObj.direction,
+            font : textObj.font,
+            fontSize : textObj.fontSize,
+            fontStyle : textObj.fontStyle,
+            fontWeight : textObj.fontWeight,
+            glyphGeometryDetail : textObj.glyphGeometryDetail,
+            lang : textObj.lang,
+            letterSpacing : textObj.letterSpacing,
+            lineHeight : textObj.lineHeight,
+            material : textObj.material,
+            maxWidth : textObj.maxWidth,
+            overflowWrap : textObj.overflowWrap,
+            sdfGlyphSize : textObj.sdfGlyphSize,
+            text : textObj.text,
+            textAlign : textObj.textAlign,
+            textIndent : textObj.textIndent,
+            textRenderInfo : textObj.textRenderInfo,
+            whiteSpace : textObj.whiteSpace,
+        };
+        console.log('textDebugInfo: ', textDebugObj);
+    }
 }
 
 customElements.get('mr-text') || customElements.define('mr-text', MRTextEntity);
