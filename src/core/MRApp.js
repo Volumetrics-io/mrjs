@@ -197,6 +197,7 @@ export class MRApp extends MRElement {
      */
     init() {
         this.debug = this.getAttribute('debug') ?? false;
+        this.orbital = this.getAttribute('orbital') ?? false;
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -240,7 +241,7 @@ export class MRApp extends MRElement {
             document.body.appendChild(this.stats.dom);
         }
 
-        if (this.debug) {
+        if (this.debug || this.orbital) {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
