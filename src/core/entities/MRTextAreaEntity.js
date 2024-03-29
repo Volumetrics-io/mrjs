@@ -19,6 +19,19 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.scrollOffset = 0; // The vertical scroll position
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
         this.object3D.name = 'textArea'
+
+        this.defaults = {
+            name : 'mr-textarea',
+            rows: '...',
+            cols: '...',
+            placeholder: '',
+            readonly: '...',
+            disabled: '...',
+            maxLength: '...',
+            wrap: '...',
+            overflowWrap: 'normal',
+            whiteSpace: 'normal'
+        }
     }
 
     /**
@@ -37,21 +50,23 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         super.connected();
 
         // name: The name associated with the <textarea> for form submission and backend processing.
-        this.hiddenInput.name = this.getAttribute('name');
+        this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
         // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
-        // TODO
+        this.hiddenInput.rows = this.getAttribute('rows') ?? this.defaults.rows;
         // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-        this.hiddenInput.placeholder = this.getAttribute('placeholder');
+        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? this.defaults.placeholder;
         // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-        // this.hiddenInput.readOnly = this.getAttribute('readOnly');
+        this.hiddenInput.readonly = this.getAttribute('readonly') ?? this.defaults.readonly;
         // disabled: Disables the text area so it cannot be interacted with or submitted.
-        // this.hiddenInput.disabled = this.getAttribute('disabled');
+        this.hiddenInput.disabled = this.getAttribute('disabled') ?? this.defaults.disabled;
         // maxlength: Specifies the maximum number of characters that the user can enter.
-        // TODO
+        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? this.defaults.maxlength;
         // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-        // this.hiddenInput.wrap = ...
-        this.textObj.overflowWrap = 'normal'; // wrap breaks at whitespace chars
-        this.textObj.whiteSpace = 'normal'; // yes to text wrap with overflowWrap feature;
+        this.hiddenInput.wrap = this.getAttribute('wrap') ?? this.defaults.wrap;
+        // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
+        this.textObj.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
+        // whitespace : Controls if text wraps with the overflowWrap feature or not.
+        this.textObj.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
 
         console.log('this.hiddenInput created: ', this.hiddenInput);
 
