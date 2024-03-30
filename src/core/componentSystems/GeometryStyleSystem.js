@@ -95,10 +95,6 @@ export class GeometryStyleSystem extends MRSystem {
      */
     setScale(entity) {
         let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) : 1;
-
-        if(entity.closest('mr-panel')) {
-            new_scale *= mrjsUtils.app.scale
-        }
         if (new_scale != entity.object3D.scale) {
             entity.object3D.scale.setScalar(new_scale);
             return true;

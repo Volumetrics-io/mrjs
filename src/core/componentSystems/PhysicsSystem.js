@@ -207,6 +207,8 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
+     * @param object3D
+     * @param scale
      * @description Initializes a convexMesh collider from a THREE.js geometry
      * NOTE: not currently in use until we can sync it with animations
      * @param {MREntity} entity - the entity being updated
@@ -215,7 +217,7 @@ export class PhysicsSystem extends MRSystem {
         const positionAttribute = object3D.geometry.getAttribute('position');
         const vertices = [];
         for (let i = 0; i < positionAttribute.count; i++) {
-            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale * mrjsUtils.app.scale);
+            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale);
             vertices.push(vertex.toArray());
         }
 
@@ -267,7 +269,11 @@ export class PhysicsSystem extends MRSystem {
     updateUIBody(entity) {
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
-        this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        if (entity instanceof MRPanelEntity) {
+            this.tempWorldScale.setFromMatrixScale(entity.panel.matrixWorld);
+        } else {
+            this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
+        }
         this.tempBBox.getSize(this.tempSize);
         this.tempSize.multiply(this.tempWorldScale);
 
