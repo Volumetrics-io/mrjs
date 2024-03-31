@@ -38,19 +38,6 @@ export class MRElement extends HTMLElement {
         //    specification guarantees that the callback would always be called during the next
         //    idle time after .observe() is executed, the problem would be less significant.)
         this._boundingClientRect = null;
-        const intersectionObserver = new IntersectionObserver((entries) => {
-            for (const entry of entries) {
-                this._boundingClientRect = entry.boundingClientRect;
-            }
-            // Refresh the rect info to keep it up-to-date as much as possible.
-            // It seems that the callback is always called once soon after observe() is called,
-            // regardless of the intersection state of the entity.
-            // TODO: Confirm whether this behavior is intended. If it is not, there may be future
-            //       behavior changes or it may not work as intended on certain platforms.
-            intersectionObserver.disconnect();
-            intersectionObserver.observe(this);
-        });
-        intersectionObserver.observe(this);
     }
 
     /**
