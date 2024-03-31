@@ -92,6 +92,14 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loaded = true;
 
+            this.object3D.traverse(object => {
+                if (object.isMesh) {
+                    object.renderOrder = 3;
+                    object.receiveShadow = true;
+                    object.castShadow = true;
+                }
+            })
+
             this.onLoad();
 
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
