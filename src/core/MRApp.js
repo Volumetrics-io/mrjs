@@ -26,6 +26,7 @@ import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
 import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
+import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
 import MRUser from 'mrjs/core/user/MRUser';
 
 ('use strict');
@@ -127,6 +128,7 @@ export class MRApp extends MRElement {
         this.geometryStyleSystem = new GeometryStyleSystem();
         this.materialStyleSystem = new MaterialStyleSystem();
         this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
+        this.statsSystem = new StatsSystem();
 
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
