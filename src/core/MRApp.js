@@ -245,19 +245,28 @@ export class MRApp extends MRElement {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
-            orbitControls.enabled = false;
 
-            document.addEventListener('keydown', (event) => {
-                if (event.key == '=') {
-                    orbitControls.enabled = true;
-                }
-            });
+            // Note: order of the two below if-statements matter.
+            // Want if debug=true and orbital=true for orbital to take priority.
+            if (this.orbital) {
+                // always allow orbital controls
+                orbitControls.enabled = true;
+            } else if (this.debug) {
+                // only allow orbital controls on += keypress
+                orbitControls.enabled = false;
+                document.addEventListener('keydown', (event) => {
+                    if (event.key == '=') {
+                        orbitControls.enabled = true;
+                    }
+                });
+                document.addEventListener('keyup', (event) => {
+                    if (event.key == '=') {
+                        orbitControls.enabled = false;
+                    }
+                });
+            }
 
-            document.addEventListener('keyup', (event) => {
-                if (event.key == '=') {
-                    orbitControls.enabled = false;
-                }
-            });
+            
         }
 
         this.appendChild(this.renderer.domElement);
