@@ -49,7 +49,7 @@ export class MRMediaEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the width of the media based on the media tag in the shadow root
+     * @description Calculates the width of the MRMedia object
      * @returns {number} - the resolved width
      */
     get width() {
@@ -59,7 +59,7 @@ export class MRMediaEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Calculates the height of the media based on the media tag in the shadow root
+     * @description Calculates the height of the MRMedia object
      * @returns {number} - the resolved height
      */
     get height() {
@@ -67,14 +67,35 @@ export class MRMediaEntity extends MRDivEntity {
         return height > 0 ? height : super.height;
     }
 
+    /**
+     * @function
+     * @description Calculates the width of the media based on the media tag itself
+     * This function will error if called directly as an MRMedia item. Made to be overridden
+     * by children.
+     * @returns {number} - the resolved height
+     */
     get mediaWidth() {
         mrjsUtils.error.emptyParentFunction();
+        return null;
     }
 
+    /**
+     * @function
+     * @description Calculates the height of the media based on the media tag itself
+     * This function will error if called directly as an MRMedia item. Made to be overridden
+     * by children.
+     * @returns {number} - the resolved height
+     */
     get mediaHeight() {
         mrjsUtils.error.emptyParentFunction();
+        return null;
     }
 
+    /**
+     * @function
+     * @description Creates the Media Plane Geometry used to draw the Image,Video,etc
+     * This is a separate object to allow for common css styling such as 'contain' and 'scale-down'.
+     */
     generateNewMediaPlaneGeometry() {
         if (this.object3D.geometry !== undefined) {
             this.object3D.geometry.dispose();
@@ -82,6 +103,12 @@ export class MRMediaEntity extends MRDivEntity {
         this.object3D.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, this.borderRadii, 18);
     }
 
+    /**
+     * @function
+     * @description Loads the associated media into 3D based on its html properties.
+     * This function will error if called directly as an MRMedia item. Made to be overridden
+     * by children.
+     */
     loadMediaTexture() {
         mrjsUtils.error.emptyParentFunction();
     }
@@ -143,14 +170,14 @@ export class MRMediaEntity extends MRDivEntity {
             // to make sure that texture is set properly
             this.object3D.material.visible = true;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         const _hideMainMediaMesh = () => {
             // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
             // and debugging later on.
             this.object3D.material.visible = false;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;

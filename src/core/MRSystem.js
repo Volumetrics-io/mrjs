@@ -68,14 +68,14 @@ export class MRSystem {
     /**
      * @function
      * @description Called when a new entity is added to the scene
-     * @param {MRApp} app - the app the system is registered to.
+     * @param {object} app - the app the system is registered to.
      */
     onRegister(app) {}
 
     /**
      * @function
      * @description Called when the system is registered to an app is added.
-     * @param {MRApp} app - the app the system is registered to.
+     * @param {object} app - the app the system is registered to.
      */
     onUnregister(app) {}
 
@@ -107,7 +107,7 @@ export class MRSystem {
     /**
      * @function
      * @description An event triggered update, called when any global scene level events occur.
-     * See GLOBAL_UPDATE_EVENTS of MRSystem.js 
+     * See GLOBAL_UPDATE_EVENTS of MRSystem.js
      */
     eventUpdate() {}
 

@@ -14,17 +14,6 @@ import { mrjsUtils } from 'mrjs';
  */
 export class MRPanelEntity extends MRDivEntity {
     /**
-     *
-     */
-    get height() {
-        let result = this.getBoundingClientRect().height;
-
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        }
-        return (result / global.appHeight) * global.viewPortHeight;
-    }
-    /**
      * @class
      * @description Constructor for the main Panel. Sets up all the relevant object3D and window information. Includes information necessary for proper scrolling usage.
      */
@@ -44,6 +33,20 @@ export class MRPanelEntity extends MRDivEntity {
         this.delta = 0;
 
         this.momentumTimeout;
+    }
+
+    /**
+     * @function
+     * @description Gets the height of the current panel in 2D or 3D space (depending on the xr user state)
+     * @returns {number} height - the calcualted height value
+     */
+    get height() {
+        let result = this.getBoundingClientRect().height;
+
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return (result / global.appHeight) * global.viewPortHeight;
     }
 
     /**

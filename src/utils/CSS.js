@@ -17,12 +17,12 @@ css.domToThree = function (val) {
             switch (valuepair[1]) {
                 case 'px':
                     if (mrjsUtils.xr.isPresenting) {
-                        return (val.split('px')[0] / global.appWidth);
+                        return val.split('px')[0] / global.appWidth;
                     }
                     return (val.split('px')[0] / global.appWidth) * global.viewPortWidth;
                 case '%':
                     if (mrjsUtils.xr.isPresenting) {
-                        return (parseFloat(val) / 100);
+                        return parseFloat(val) / 100;
                     }
                     return (parseFloat(val) / 100) * global.viewPortWidth;
                 default:
@@ -57,7 +57,7 @@ css.pxToThree = function (val) {
     let px = val instanceof String ? val.split('px')[0] : val;
 
     if (mrjsUtils.xr.isPresenting) {
-        return (px / global.appWidth);
+        return px / global.appWidth;
     }
     return (px / global.appWidth) * global.viewPortWidth;
 };

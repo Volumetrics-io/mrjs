@@ -20,18 +20,20 @@ export class AudioSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param dt
-     * @param frame
+     * @function
+     * @description The generic system update call. Updates the clipped view of every entity in this system's registry.
+     * @param {number} deltaTime - given timestep to be used for any feature changes
+     * @param {object} frame - given frame information to be used for any feature changes
      */
-    update(dt, frame) {
+    update(deltaTime, frame) {
         this.listener.position.setFromMatrixPosition(this.app.user.origin.matrixWorld);
         this.listener.setRotationFromMatrix(this.app.user.origin.matrixWorld);
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is initialized
+     * @param {object} entity - the entity being attached/initialized.
      */
     attachedComponent(entity) {
         entity.sound = new THREE.PositionalAudio(this.listener);
@@ -51,8 +53,9 @@ export class AudioSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is updated
+     * @param {object} entity - the entity being updated based on the component.
      */
     updatedComponent(entity) {
         let comp = entity.components.get('audio');
@@ -62,8 +65,9 @@ export class AudioSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is detached
+     * @param {object} entity - the entity being updated based on the component being detached.
      */
     detachedComponent(entity) {
         entity.sound.stop();
@@ -72,9 +76,10 @@ export class AudioSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
-     * @param state
+     * @function
+     * @description Updates the Audio State based on the user passed 'state' variable.
+     * @param {object} entity - the entity being updated based on the component being detached.
+     * @param {string} state - represents a parameter for the state of the sound 'play', 'pause', 'stop', etc
      */
     setAudioState(entity, state) {
         switch (state) {

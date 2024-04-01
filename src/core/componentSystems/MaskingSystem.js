@@ -46,9 +46,9 @@ const MAX_PANEL_NUM = 8;
 /**
  * @function
  * @description Setting up a material for an object that maskes other elements
- * @param {THREE.Material} material
- * @param {number} shiftBit
- * @param {debug} boolean
+ * @param {THREE.Material} material - the material whose values are augmented to mask as expected.
+ * @param {number} shiftBit - used to offset the stencilWriteMask and stencilRef.
+ * @param {boolean} debug - true if in debug mode, false otherwise
  */
 const setupMaskingMaterial = (material, shiftBit, debug = false) => {
     material.transparent = true;
@@ -69,8 +69,8 @@ const setupMaskingMaterial = (material, shiftBit, debug = false) => {
 /**
  * @function
  * @description Setting up a material for an object that is masked by another element
- * @param {THREE.Material} material
- * @param {number} shiftBit
+ * @param {THREE.Material} material - the material whose values are augmented to mask as expected.
+ * @param {number} shiftBit - used to offset the stencilWriteMask and stencilRef.
  */
 const setupMaskedMaterial = (material, shiftBit) => {
     material.stencilWrite = true;

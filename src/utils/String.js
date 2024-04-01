@@ -96,7 +96,7 @@ string.vectorToString = function (arr) {
         }
     }
     return str;
-}
+};
 
 /**
  * @function

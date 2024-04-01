@@ -15,10 +15,13 @@ let color = {};
  *      g: number, // Green component (0-255)
  *      b: number, // Blue component (0-255)
  *      a: number  // Alpha component (0-1 for transparency)
- * } 
+ * }
  */
 color.hexToRgba = function (hex) {
-    let r = 0, g = 0, b = 0, a = 1; // Default is black
+    let r = 0,
+        g = 0,
+        b = 0,
+        a = 1; // Default is black
     if (hex.startsWith('#')) {
         hex = hex.substring(1);
     }
@@ -42,7 +45,7 @@ color.hexToRgba = function (hex) {
         b = parseInt(hex.substring(4, 6), 16);
         a = parseInt(hex.substring(6, 8), 16) / 255;
     }
-    return {r, g, b, a};
-}
+    return { r, g, b, a };
+};
 
 export { color };

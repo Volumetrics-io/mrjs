@@ -67,9 +67,9 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * @param entity
      * @function
-     * @description The per entity triggered update call.  Handles updating all text items including updates for style and cleaning of content for special characters.
+     * @param {object} entity - the entity that needs to be updated.
+     * @description The per entity triggered update call. Handles updating all text items including updates for style and cleaning of content for special characters.
      */
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);
@@ -100,18 +100,18 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
-
-            // Add a check in case a user manually 
-            let text = entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
-                ? entity.hiddenInput.value
-                : // troika honors newlines/white space
-                  // we want to mimic h1, p, etc which do not honor these values
-                  // so we have to clean these from the text
-                  // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
-                  entity.textContent
-                      .replace(/(\n)\s+/g, '$1')
-                      .replace(/(\r\n|\n|\r)/gm, ' ')
-                      .trim();
+            // Add a check in case a user manually
+            let text =
+                entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
+                    ? entity.hiddenInput.value
+                    : // troika honors newlines/white space
+                      // we want to mimic h1, p, etc which do not honor these values
+                      // so we have to clean these from the text
+                      // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                      entity.textContent
+                          .replace(/(\n)\s+/g, '$1')
+                          .replace(/(\r\n|\n|\r)/gm, ' ')
+                          .trim();
 
             let textContentChanged = entity.textObj.text != text;
 
@@ -122,7 +122,7 @@ export class TextSystem extends MRSystem {
                 this._updateSpecificEntity(entity);
             }
         }
-    }
+    };
 
     /**
      * @function

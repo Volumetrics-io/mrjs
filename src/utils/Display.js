@@ -13,7 +13,7 @@ display.VIRTUAL_DISPLAY_RESOLUTION = 1080; //alert(_VIRTUAL_DISPLAY_RESOLUTION);
 
 /**
  * @function
- * @memberof Display
+ * @memberof display
  * @description Checks whether the user is on mobile or not based on a large list of potential options.
  * @returns {boolean} - returns true if on any mobile devices.
  */

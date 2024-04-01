@@ -49,73 +49,76 @@ export class MRTextEntity extends MRDivEntity {
         this.triggerTextStyleUpdate();
     }
 
-        /**
+    /**
      * @function
-     * @description Triggers a system run to update text specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * @description Triggers a system run to update text specifically for the entity calling it. Useful when it's not an overall scene event and for cases where
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerTextStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-text-style-update', { detail: this, bubbles: true }));
     }
 
+    /**
+     *
+     * @param {object} textObj - the textobj
+     */
     printCurrentTextDebugInfo(textObj) {
-        if (! textObj) {
+        if (!textObj) {
             const textDebugObj = {
-                anchorX : this.textObj.anchorX,
-                anchorY : this.textObj.anchorY,
-                colorRanges : this.textObj.colorRanges,
-                curveRadius : this.textObj.curveRadius,
-                customDepthMaterials : this.textObj.customDepthMaterials,
-                customDistanceMaterials : this.textObj.customDistanceMaterials,
-                direction : this.textObj.direction,
-                font : this.textObj.font,
-                fontSize : this.textObj.fontSize,
-                fontStyle : this.textObj.fontStyle,
-                fontWeight : this.textObj.fontWeight,
-                glyphGeometryDetail : this.textObj.glyphGeometryDetail,
-                lang : this.textObj.lang,
-                letterSpacing : this.textObj.letterSpacing,
-                lineHeight : this.textObj.lineHeight,
-                material : this.textObj.material,
-                maxWidth : this.textObj.maxWidth,
-                overflowWrap : this.textObj.overflowWrap,
-                sdfGlyphSize : this.textObj.sdfGlyphSize,
-                text : this.textObj.text,
-                textAlign : this.textObj.textAlign,
-                textIndent : this.textObj.textIndent,
-                textRenderInfo : this.textObj.textRenderInfo,
-                whiteSpace : this.textObj.whiteSpace,
+                anchorX: this.textObj.anchorX,
+                anchorY: this.textObj.anchorY,
+                colorRanges: this.textObj.colorRanges,
+                curveRadius: this.textObj.curveRadius,
+                customDepthMaterials: this.textObj.customDepthMaterials,
+                customDistanceMaterials: this.textObj.customDistanceMaterials,
+                direction: this.textObj.direction,
+                font: this.textObj.font,
+                fontSize: this.textObj.fontSize,
+                fontStyle: this.textObj.fontStyle,
+                fontWeight: this.textObj.fontWeight,
+                glyphGeometryDetail: this.textObj.glyphGeometryDetail,
+                lang: this.textObj.lang,
+                letterSpacing: this.textObj.letterSpacing,
+                lineHeight: this.textObj.lineHeight,
+                material: this.textObj.material,
+                maxWidth: this.textObj.maxWidth,
+                overflowWrap: this.textObj.overflowWrap,
+                sdfGlyphSize: this.textObj.sdfGlyphSize,
+                text: this.textObj.text,
+                textAlign: this.textObj.textAlign,
+                textIndent: this.textObj.textIndent,
+                textRenderInfo: this.textObj.textRenderInfo,
+                whiteSpace: this.textObj.whiteSpace,
             };
             console.log('textDebugInfo: ', textDebugObj);
             return;
         }
 
         const textDebugObj = {
-            anchorX : textObj.anchorX,
-            anchorY : textObj.anchorY,
-            colorRanges : textObj.colorRanges,
-            curveRadius : textObj.curveRadius,
-            customDepthMaterials : textObj.customDepthMaterials,
-            customDistanceMaterials : textObj.customDistanceMaterials,
-            direction : textObj.direction,
-            font : textObj.font,
-            fontSize : textObj.fontSize,
-            fontStyle : textObj.fontStyle,
-            fontWeight : textObj.fontWeight,
-            glyphGeometryDetail : textObj.glyphGeometryDetail,
-            lang : textObj.lang,
-            letterSpacing : textObj.letterSpacing,
-            lineHeight : textObj.lineHeight,
-            material : textObj.material,
-            maxWidth : textObj.maxWidth,
-            overflowWrap : textObj.overflowWrap,
-            sdfGlyphSize : textObj.sdfGlyphSize,
-            text : textObj.text,
-            textAlign : textObj.textAlign,
-            textIndent : textObj.textIndent,
-            textRenderInfo : textObj.textRenderInfo,
-            whiteSpace : textObj.whiteSpace,
+            anchorX: textObj.anchorX,
+            anchorY: textObj.anchorY,
+            colorRanges: textObj.colorRanges,
+            curveRadius: textObj.curveRadius,
+            customDepthMaterials: textObj.customDepthMaterials,
+            customDistanceMaterials: textObj.customDistanceMaterials,
+            direction: textObj.direction,
+            font: textObj.font,
+            fontSize: textObj.fontSize,
+            fontStyle: textObj.fontStyle,
+            fontWeight: textObj.fontWeight,
+            glyphGeometryDetail: textObj.glyphGeometryDetail,
+            lang: textObj.lang,
+            letterSpacing: textObj.letterSpacing,
+            lineHeight: textObj.lineHeight,
+            material: textObj.material,
+            maxWidth: textObj.maxWidth,
+            overflowWrap: textObj.overflowWrap,
+            sdfGlyphSize: textObj.sdfGlyphSize,
+            text: textObj.text,
+            textAlign: textObj.textAlign,
+            textIndent: textObj.textIndent,
+            textRenderInfo: textObj.textRenderInfo,
+            whiteSpace: textObj.whiteSpace,
         };
         console.log('textDebugInfo: ', textDebugObj);
     }

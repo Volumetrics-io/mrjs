@@ -21,10 +21,20 @@ export class MRImageEntity extends MRMediaEntity {
         this.object3D.name = 'image';
     }
 
+    /**
+     * @function
+     * @description Gets the width of the internal media object
+     * @returns {number} width - the value of the width
+     */
     get mediaWidth() {
         return this.media.width;
     }
 
+    /**
+     * @function
+     * @description Gets the height of the internal media object
+     * @returns {number} height - the value of the height
+     */
     get mediaHeight() {
         return this.media.height;
     }
@@ -38,6 +48,10 @@ export class MRImageEntity extends MRMediaEntity {
         super.connected();
     }
 
+    /**
+     * @function
+     * @description Loads the Media texture of the setup this.media object based on its html source info.
+     */
     loadMediaTexture() {
         mrjsUtils.material
             .loadTextureAsync(this.media.src)

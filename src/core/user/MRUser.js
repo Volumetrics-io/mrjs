@@ -1,5 +1,8 @@
 import { MRHand } from 'mrjs/core/user/MRHand';
 
+/**
+ * @class MRUser
+ */
 export default class MRUser {
     forward = new THREE.Object3D();
 
@@ -11,6 +14,11 @@ export default class MRUser {
         left: null,
         right: null,
     };
+    /**
+     * Constructor for the MRUser class, sets up the camera, hands, and spotlight information.
+     * @param {object} camera - the threejs camera to be used as the user's pov.
+     * @param {object} scene - the threejs scene in which the user will be immersed.
+     */
     constructor(camera, scene) {
         this.camera = camera;
 
@@ -34,6 +42,10 @@ export default class MRUser {
         this.spotLightScale = 1;
     }
 
+    /**
+     * Initializes the spotlight associated with the user's pov.
+     * @returns {object} spotlight - the spotlight to be used.
+     */
     initSpotlight() {
         this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 64), new THREE.MeshBasicMaterial());
         this.spotlight.material.colorWrite = false;
@@ -43,6 +55,9 @@ export default class MRUser {
         return this.spotlight;
     }
 
+    /**
+     * The update function for a user, its spotlight, and its hands.
+     */
     update() {
         this.hands.left.update();
         this.hands.right.update();
