@@ -246,6 +246,8 @@ export class MRApp extends MRElement {
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
 
+            // Note: order of the two below if-statements matter.
+            // Want if debug=true and orbital=true for orbital to take priority.
             if (this.orbital) {
                 // always allow orbital controls
                 orbitControls.enabled = true;
