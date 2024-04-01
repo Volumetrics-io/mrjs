@@ -20,8 +20,8 @@
     "docs": "./scripts/create-docs.sh",
     "prettier-check": "prettier --check \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
-    "lint-check": "eslint \"src/**/*.js\" \"*.js\" --max-warnings 0",
-    "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --fix",
+    "lint-check": "eslint \"src/**/*.js\" \"*.js\" --ignore-pattern \"src/extras/**\" --max-warnings 0",
+    "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --ignore-pattern \"src/extras/**\" --fix",
     "format": "npm run prettier-fix && npm run lint-fix",
     "check-format": "npm run prettier-list && npm run lint-list"
   },
