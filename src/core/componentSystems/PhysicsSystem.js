@@ -269,11 +269,7 @@ export class PhysicsSystem extends MRSystem {
     updateUIBody(entity) {
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
-        if (entity instanceof MRPanelEntity) {
-            this.tempWorldScale.setFromMatrixScale(entity.panel.matrixWorld);
-        } else {
-            this.tempWorldScale.setFromMatrixScale(entity.object3D.matrixWorld);
-        }
+        this.tempWorldScale.setFromMatrixScale( (entity instanceof MRPanelEntity) ? entity.panel.matrixWorld : entity.object3D.matrixWorld );
         this.tempBBox.getSize(this.tempSize);
         this.tempSize.multiply(this.tempWorldScale);
 
