@@ -30,10 +30,6 @@ export class MREntity extends MRElement {
     constructor() {
         super();
 
-        Object.defineProperty(this, 'isApp', {
-            value: false,
-            writable: false,
-        });
 
         this.object3D = new THREE.Group();
         this.object3D.userData.isEntityObject3DRoot = true;
@@ -315,9 +311,9 @@ export class MREntity extends MRElement {
     connected() {}
 
         /**
-     * @function
-     * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
-     */
+         * @function
+         * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
+         */
     connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
 
@@ -346,7 +342,7 @@ export class MREntity extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
-        /** Handle scene Global level events **/
+        /** Handle scene Global level events */
 
         document.addEventListener('DOMContentLoaded', (event) => {
             this.loadAttributes();
@@ -357,7 +353,7 @@ export class MREntity extends MRElement {
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         });
 
-        /** Handle events specific to this entity **/
+        /** Handle events specific to this entity */
         // note: these will need the trigger for Material or Geometry if applicable
 
         MOUSE_EVENTS.forEach((eventType) => {
@@ -397,6 +393,20 @@ export class MREntity extends MRElement {
             this.triggerGeometryStyleUpdate();
             this.triggerMaterialStyleUpdate();
         });
+
+        const intersectionObserver = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                this._boundingClientRect = entry.boundingClientRect;
+            }
+            // Refresh the rect info to keep it up-to-date as much as possible.
+            // It seems that the callback is always called once soon after observe() is called,
+            // regardless of the intersection state of the entity.
+            // TODO: Confirm whether this behavior is intended. If it is not, there may be future
+            //       behavior changes or it may not work as intended on certain platforms.
+            intersectionObserver.disconnect();
+            intersectionObserver.observe(this);
+        });
+        intersectionObserver.observe(this);
 
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.connected();
