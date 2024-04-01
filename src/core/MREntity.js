@@ -30,10 +30,6 @@ export class MREntity extends MRElement {
     constructor() {
         super();
 
-        // Object.defineProperty(this, 'isApp', {
-        //     value: false,
-        //     writable: false,
-        // });
 
         this.object3D = new THREE.Group();
         this.object3D.userData.isEntityObject3DRoot = true;
@@ -47,7 +43,7 @@ export class MREntity extends MRElement {
 
         this.scale = 1;
 
-        // this.componentMutated = this.componentMutated.bind(this);
+        this.componentMutated = this.componentMutated.bind(this);
 
         this.touch = false;
         this.grabbed = false;
