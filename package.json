@@ -23,7 +23,7 @@
     "lint-check": "eslint \"src/**/*.js\" \"*.js\" --ignore-pattern \"src/extras/**\" --max-warnings 0",
     "lint-fix": "eslint \"src/**/*.js\" \"*.js\" --ignore-pattern \"src/extras/**\" --fix",
     "format": "npm run prettier-fix && npm run lint-fix",
-    "check-format": "npm run prettier-list && npm run lint-list"
+    "check-format": "npm run prettier-check && npm run lint-check"
   },
   "repository": {
     "type": "git",
