@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
 import { MRSystem } from 'mrjs/core/MRSystem';
-import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
 
 /**
