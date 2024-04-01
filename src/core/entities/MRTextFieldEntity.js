@@ -42,7 +42,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
 
     /**
      * Handles keydown events for scrolling and cursor navigation.
-     * @param event
+     * @param {event} event - keydown event
      */
     handleKeydown(event) {
         const { keyCode } = event;

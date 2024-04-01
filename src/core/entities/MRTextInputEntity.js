@@ -20,7 +20,7 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
+     * @returns {string} value - the value of the current text input
      */
     get value() {
         return this.hiddenInput.value;
@@ -89,7 +89,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
     /**
      *
-     * @param event
+     * @param {event} event - the keydown event
      */
     handleKeydown(event) {
         mrjsUtils.error.emptyParentFunction();

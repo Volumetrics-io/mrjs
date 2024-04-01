@@ -53,7 +53,6 @@ export class MRTextEntity extends MRDivEntity {
      * @function
      * @description Triggers a system run to update text specifically for the entity calling it. Useful when it's not an overall scene event and for cases where
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerTextStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-text-style-update', { detail: this, bubbles: true }));
@@ -61,7 +60,7 @@ export class MRTextEntity extends MRDivEntity {
 
     /**
      *
-     * @param textObj
+     * @param {object} textObj - the textobj
      */
     printCurrentTextDebugInfo(textObj) {
         if (!textObj) {
