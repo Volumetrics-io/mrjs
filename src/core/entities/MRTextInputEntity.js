@@ -19,18 +19,30 @@ export class MRTextInputEntity extends MRTextEntity {
         this.attachShadow({ mode: 'open' });
     }
 
+    /**
+     *
+     */
     get value() {
         return this.hiddenInput.value;
     }
 
+    /**
+     *
+     */
     set value(val) {
         this.hiddenInput.value = val;
     }
 
+    /**
+     *
+     */
     createHiddenInputElement() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     fillInHiddenInputElementWithUserData() {
         mrjsUtils.error.emptyParentFunction();
     }
@@ -51,6 +63,9 @@ export class MRTextInputEntity extends MRTextEntity {
         this.triggerTextStyleUpdate();
     }
 
+    /**
+     *
+     */
     _createCursor() {
         this._cursorWidth = 0.0015;
         this._cursorHeight = 0.02;
@@ -72,14 +87,24 @@ export class MRTextInputEntity extends MRTextEntity {
         mrjsUtils.error.emptyParentFunction();
     };
 
+    /**
+     *
+     * @param event
+     */
     handleKeydown(event) {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     updateTextDisplay() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     _focus() {
         if (! this.hiddenInput) {
             return;
@@ -102,6 +127,9 @@ export class MRTextInputEntity extends MRTextEntity {
         console.log('hi7');
     }
 
+    /**
+     *
+     */
     setupEventListeners() {
         // Since we want the text input children to be able
         // to override the parent function event triggers,

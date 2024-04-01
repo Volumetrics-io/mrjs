@@ -20,14 +20,27 @@ export class MRVideoEntity extends MRMediaEntity {
         this.playing = false;
     }
 
+    /**
+     * @function
+     * @description Calculates the width of the video based on the video tag itself
+     * @returns {number} - the resolved width
+     */
     get mediaWidth() {
         return this.media.videoWidth;
     }
 
+    /**
+     * @function
+     * @description Calculates the height of the video based on the video tag itself
+     * @returns {number} - the resolved height
+     */
     get mediaHeight() {
         return this.media.videoHeight;
     }
 
+    /**
+     *
+     */
     loadMediaTexture() {
         mrjsUtils.material
             .loadVideoTextureAsync(this.media)
@@ -52,6 +65,9 @@ export class MRVideoEntity extends MRMediaEntity {
         super.connected();
     }
 
+    /**
+     *
+     */
     set srcObject(src) {
         this.media.srcObject = src;
         // on loadeddata event, update the objectFitDimensions

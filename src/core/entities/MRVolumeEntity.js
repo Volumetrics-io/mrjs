@@ -1,12 +1,21 @@
 import { MREntity } from 'mrjs/core/MREntity';
 
+/**
+ *
+ */
 export class MRVolumeEntity extends MREntity {
+    /**
+     *
+     */
     constructor() {
         super();
         this.volume = new THREE.Object3D();
         this.object3D.add(this.volume);
     }
 
+    /**
+     *
+     */
     connected() {
         this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(1, 1, 1));
         this.ignoreStencil = true;

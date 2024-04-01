@@ -1,6 +1,14 @@
 import { Color, Matrix4, Mesh, PerspectiveCamera, Plane, Quaternion, ShaderMaterial, UniformsUtils, Vector3, Vector4, WebGLRenderTarget, HalfFloatType } from 'three';
 
+/**
+ *
+ */
 class Refractor extends Mesh {
+    /**
+     *
+     * @param geometry
+     * @param options
+     */
     constructor(geometry, options = {}) {
         super(geometry);
 
@@ -136,6 +144,10 @@ class Refractor extends Mesh {
         // This will update the texture matrix that is used for projective texture mapping in the shader.
         // see: http://developer.download.nvidia.com/assets/gamedev/docs/projective_texture_mapping.pdf
 
+        /**
+         *
+         * @param camera
+         */
         function updateTextureMatrix(camera) {
             // this matrix does range mapping to [ 0, 1 ]
 
@@ -152,6 +164,12 @@ class Refractor extends Mesh {
 
         //
 
+        /**
+         *
+         * @param renderer
+         * @param scene
+         * @param camera
+         */
         function render(renderer, scene, camera) {
             scope.visible = false;
 

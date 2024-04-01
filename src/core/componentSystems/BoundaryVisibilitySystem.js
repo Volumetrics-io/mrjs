@@ -5,8 +5,8 @@ import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 /**
  * @function
  * @description Observe a target MRDivEntity and make the associated object visible only if it is in visible position in a root MRDivEntity
- * @param {MRDivEntity} root
- * @param {MRDivEntity} target
+ * @param {MRDivEntity} root - the root object being compared against
+ * @param {MRDivEntity} target - the target object for which we're determining visiblity.
  */
 const observe = (root, target) => {
     // TODO: Callback is fired asynchronously so no guaranteed to be called immediately when the
@@ -57,7 +57,7 @@ export class BoundaryVisibilitySystem extends MRSystem {
     /**
      * @function
      * @description Called when a new entity is added to the scene.
-     * @param {MREntity} entity - the entity being added.
+     * @param {object} entity - the entity being added.
      */
     onNewEntity(entity) {
         // TODO: Support nested panels

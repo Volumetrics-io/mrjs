@@ -20,11 +20,17 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.wrapper.innerHTML = '<slot></slot>';
     }
 
+    /**
+     *
+     */
     createHiddenInputElement() {
         this.hiddenInput = document.createElement('input');
         this.hiddenInput.setAttribute('type', 'text');
     }
 
+    /**
+     *
+     */
     updateTextDisplay() {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
@@ -36,6 +42,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
 
     /**
      * Handles keydown events for scrolling and cursor navigation.
+     * @param event
      */
     handleKeydown(event) {
         const { keyCode } = event;

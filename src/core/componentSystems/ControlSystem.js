@@ -103,6 +103,11 @@ export class ControlSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Check for any collisions with this MRHand and the rapier physics world.
+     * @param {object} hand - the MRHand object whose collisions we are checking with this function.
+     */
     checkCollisions(hand) {
         for (let jointCursor of hand.jointCursors) {
             mrjsUtils.physics.world.contactPairsWith(jointCursor.collider, (collider2) => {
@@ -182,7 +187,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the start of touch between two different colliders and the current entity.
      * @param {number} collider1 - the first collider
      * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
+     * @param {object} entity - the current entity
      */
     touchStart = (collider1, collider2, entity) => {
         entity.touch = true;
@@ -207,7 +212,7 @@ export class ControlSystem extends MRSystem {
     /**
      * @function
      * @description Handles the end of touch for the current entity
-     * @param {MREntity} entity - the current entity
+     * @param {object} entity - the current entity
      */
     touchEnd = (entity) => {
         this.tempPreviousPosition.set(0, 0, 0);
@@ -228,7 +233,7 @@ export class ControlSystem extends MRSystem {
      * @description Handles the start of hovering over/around a specific entity.
      * @param {number} collider1 - the first collider
      * @param {number} collider2 - the second collider
-     * @param {MREntity} entity - the current entity
+     * @param {object} entity - the current entity
      */
     hoverStart = (collider1, collider2, entity) => {
         entity.classList.add('hover');
@@ -253,7 +258,7 @@ export class ControlSystem extends MRSystem {
     /**
      * @function
      * @description Handles the end of hovering over/around a specific entity.
-     * @param {MREntity} entity - the current entity
+     * @param {object} entity - the current entity
      */
     hoverEnd = (entity) => {
         entity.classList.remove('hover');
@@ -266,6 +271,10 @@ export class ControlSystem extends MRSystem {
         entity.dispatchEvent(new MouseEvent('mouseleave'));
     };
 
+    /**
+     * @function
+     * @description Fills in the this.origin,direction,ray, and hit values based on the rapier world
+     */
     pointerRay() {
         this.origin.setFromMatrixPosition(this.app.user.origin.matrixWorld);
         this.direction.setFromMatrixPosition(this.activeHand.pointer.matrixWorld).sub(this.origin).normalize();
@@ -343,6 +352,12 @@ export class ControlSystem extends MRSystem {
         this.currentEntity = null;
     };
 
+    /**
+     * @function
+     * @description Checks what kind of interactions should happen based on the current entity and any events that
+     * have happened so far.
+     * @param {object} entity - checking if there is any interaction required based on current events and this entity.
+     */
     interact(entity) {
         if (!entity) {
             return;
@@ -401,7 +416,7 @@ export class ControlSystem extends MRSystem {
         let y = 0;
         if (event.type.includes('touchmove')) {
             if (event.touches.length == 0) {
-                return;
+                return null;
             }
 
             x = event.touches[0].clientX;

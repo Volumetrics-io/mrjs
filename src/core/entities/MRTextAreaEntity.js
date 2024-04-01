@@ -12,6 +12,9 @@ import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
  * @augments MRTextInputEntity
  */
 export class MRTextAreaEntity extends MRTextInputEntity {
+    /**
+     * @class
+     */
     constructor() {
         super();
         // Define additional properties for handling multiline text and scrolling
@@ -34,6 +37,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
     }
 
+    /**
+     *
+     */
     createHiddenInputElement() {
         const inputElement = document.createElement('textarea');
         inputElement.style.position = 'absolute';
@@ -45,6 +51,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput = inputElement;
     }
 
+    /**
+     *
+     */
     fillInHiddenInputElementWithUserData() {
         // name: The name associated with the <textarea> for form submission and backend processing.
         this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
@@ -77,6 +86,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         
     }
 
+    /**
+     *
+     */
     updateTextDisplay() {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
@@ -103,6 +115,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
     /**
      * Handles keydown events for scrolling and cursor navigation.
+     * @param event
      */
     handleKeydown(event) {
         const { keyCode } = event;
@@ -162,6 +175,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     // This is useful for things like cursor positioning, etc.
      _textCharWidth = 0;
 
+    /**
+     *
+     */
     updateCursorPosition() {
         // set maxWidth to this.background's width property.
         this.textObj.maxWidth = this.width;

@@ -32,7 +32,7 @@ export class SkyBoxSystem extends MRSystem {
     /**
      * @function
      * @description Called when a new entity is added to the scene. Adds said new entity to the style's system registry.
-     * @param {MREntity} entity - the entity being added.
+     * @param {object} entity - the entity being added.
      */
     onNewEntity(entity) {
         if (entity instanceof MRSkyBoxEntity) {

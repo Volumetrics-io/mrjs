@@ -67,9 +67,9 @@ export class TextSystem extends MRSystem {
     }
 
     /**
-     * @param entity
      * @function
-     * @description The per entity triggered update call.  Handles updating all text items including updates for style and cleaning of content for special characters.
+     * @param {object} entity - the entity that needs to be updated.
+     * @description The per entity triggered update call. Handles updating all text items including updates for style and cleaning of content for special characters.
      */
     _updateSpecificEntity(entity) {
         this.updateStyle(entity);

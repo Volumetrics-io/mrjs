@@ -16,6 +16,7 @@ error.emptyParentFunction = function () {
 
 /**
  * @function
+ * @param {string} string - string of texted emitted through the console.
  * @memberof error
  * @description Function helper separated out to console error for when we eventually have a more robust
  * erroring system.
@@ -43,6 +44,7 @@ warn.EmptyParentFunction = function () {
 
 /**
  * @function
+ * @param {string} string - string of texted emitted through the console.
  * @memberof warn
  * @description Function helper separated out to console warn for when we eventually have a more robust
  * warning system.

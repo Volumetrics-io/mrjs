@@ -102,7 +102,6 @@ export class MREntity extends MRElement {
      * @function
      * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerGeometryStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
@@ -112,7 +111,6 @@ export class MREntity extends MRElement {
      * @function
      * @description Triggers a system run to update material specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerMaterialStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
@@ -120,15 +118,17 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
-     * These are run after the MaterialStyleSystem does its own update on the entity.
+     * @description Directly in MRjs, this function is empty. It is called directly in the 
+     * MaterialStyleSystem. This allows outside users to add their own additional functionality
+     * for the entities. These are run after the MaterialStyleSystem does its own update on the entity.
      */
     updateMaterialStyle() {}
 
     /**
      * @function
-     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
-     * These are run after the GeometryStyleSystem does its own update on the entity.
+     * @description Directly in MRjs, this function is empty. It is called directly in the 
+     * GeometryStyleSystem. This allows outside users to add their own additional functionality
+     * for the entities. These are run after the GeometryStyleSystem does its own update on the entity.
      */
     updateGeometryStyle() {}
 

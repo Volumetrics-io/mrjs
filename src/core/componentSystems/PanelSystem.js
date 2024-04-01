@@ -26,12 +26,10 @@ export class PanelSystem extends MRSystem {
     /**
      * @function
      * @description The generic system update call. keeps panel positions up to date.
-     * @param dt
-     * @param f
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
-    update(dt, f) {
+    update(deltaTime, frame) {
         for (const entity of this.registry) {
             this.updatePanel(entity);
         }
@@ -40,7 +38,7 @@ export class PanelSystem extends MRSystem {
     /**
      * @function
      * @description Called when a new entity is added to this system
-     * @param {MREntity} entity - the entity being added.
+     * @param {object} entity - the entity being added.
      */
     onNewEntity(entity) {
         if (entity instanceof MRPanelEntity) {
@@ -51,7 +49,7 @@ export class PanelSystem extends MRSystem {
     /**
      * @function
      * @description used to set the position of an individual panel
-     * @param {MREntity} entity - the entity being added.
+     * @param {object} entity - the entity being updated.
      */
     updatePanel(entity) {
         const rect = entity.getBoundingClientRect();

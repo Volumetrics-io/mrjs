@@ -28,8 +28,8 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
-     * @param entity
      * @function
+     * @param {object} entity - the MREntity to be updated by this function.
      * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      */
     _updateSpecificEntity(entity) {
@@ -90,8 +90,10 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Sets the scale of the MREntity based on its css scale value, otherwise defaults to 1.
+     * @param {object} entity - the MREntity to be updated by this function.
+     * @returns {boolean} true if updated, false otherwise.
      */
     setScale(entity) {
         let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) : 1;
@@ -103,9 +105,10 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
-     * @param entity
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
+     * @param {object} entity - the MREntity to be updated by this function.
+     * @returns {boolean} true if updated, false otherwise
      */
     setUpdatedBorder(entity) {
         // geometry will only update if width, height, or borderRadii have changed
@@ -130,8 +133,10 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Updates the Media Plane for this geometry. Specific to the MRMedia subclasses.
+     * @param {object} entity - the MRMediaEntity to be updated by this function.
+     * @returns {boolean} true if updated, false otherwise
      */
     setUpdatedMediaPlane(entity) {
         entity.computeObjectFitDimensions();
@@ -145,8 +150,6 @@ export class GeometryStyleSystem extends MRSystem {
             // no update needed
             return false;
         }
-
-        
 
         return true;
     }

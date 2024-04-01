@@ -39,27 +39,6 @@ window.mobileCheck = function () {
  * @augments MRElement
  */
 export class MRApp extends MRElement {
-    /**
-     *
-     */
-    get appWidth() {
-        let result = parseFloat(this.compStyle.width.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        }
-        return result;
-    }
-
-    /**
-     *
-     */
-    get appHeight() {
-        let result = parseFloat(this.compStyle.height.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        }
-        return result;
-    }
 
     /**
      * @class
@@ -101,6 +80,32 @@ export class MRApp extends MRElement {
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
+    }
+
+    /**
+     * @function
+     * @memberof MRApp
+     * @returns {number} width in 3d or pixel space (depending on if in xr) of the current open app
+     */
+    get appWidth() {
+        let result = parseFloat(this.compStyle.width.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return result;
+    }
+
+    /**
+     * @function
+     * @memberof MRApp
+     * @returns {number} height in 3d or pixel space (depending on if in xr) of the current open app
+     */
+    get appHeight() {
+        let result = parseFloat(this.compStyle.height.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return result;
     }
 
     /**

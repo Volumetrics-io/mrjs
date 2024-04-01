@@ -29,6 +29,7 @@ export class MaterialStyleSystem extends MRSystem {
 
     /**
      * @function
+     * @param {object} entity - the MREntity being updated.
      * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      */
     _updateSpecificEntity(entity) {
@@ -68,7 +69,7 @@ export class MaterialStyleSystem extends MRSystem {
     /**
      * @function
      * @description Called when a new entity is added to the scene. Adds said new entity to the style's system registry.
-     * @param {MREntity} entity - the entity being added.
+     * @param {object} entity - the MREntity being touched by this function.
      */
     onNewEntity(entity) {
         this.registry.add(entity);
@@ -76,6 +77,7 @@ export class MaterialStyleSystem extends MRSystem {
 
     /**
      * @function
+     * @param {object} entity - the MREntity being updated.
      * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground(entity) {
@@ -111,9 +113,16 @@ export class MaterialStyleSystem extends MRSystem {
         entity.background.material.needsUpdate = true;
     }
 
+    /**
+     * @function
+     * @description Sets the visibility of the MREntity based on its css 'visibility' property.
+     * @param {object} entity - the MREntity being updated.
+     */
     setVisibility(entity) {
-        function makeVisible(entity, bool) {
-            entity.object3D.visible = bool;
+        if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
+            // visbility: hidden or visible are the options we care about
+            const isVisible = entity.compStyle.visibility !== 'hidden';
+            entity.object3D.visible = isVisible;
             if (entity.background) {
                 // The background for MRDivEntity, but we want this css property allowed
                 // for all, so using this checker to confirm the existence first.
@@ -124,11 +133,6 @@ export class MaterialStyleSystem extends MRSystem {
                 // if this is requested for use or we want to add a feature for more use of the
                 // background - adding in toggling for this with the object will be useful.
             }
-        }
-        if (entity.compStyle.visibility && entity.compStyle.visibility !== 'none' && entity.compStyle.visibility !== 'collapse') {
-            // visbility: hidden or visible are the options we care about
-            const isVisible = entity.compStyle.visibility !== 'hidden';
-            makeVisible(entity, isVisible);
         }
     }
 }
