@@ -314,7 +314,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         //         console.log('renderable cursor positon is:', this.cursor.position);
         //     }
         // });
+
         // Inside the sync callback for tempTextObj
+        // todo - incorporate scale offset from parent since tempTextObj doesnt have that yet
+        // then call sync for render so the calculations fit properly as expected
         tempTextObj.sync(() => {
             // Assuming getSelectionRects is properly imported and used here
             let selectionRects = getSelectionRects(tempTextObj.textRenderInfo, 0, cursorIndex);
@@ -331,6 +334,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                     console.log('renderable cursor positon is:', this.cursor.position);
                 }
             }
+            console.log('textObj', this.textObj);
+            console.log('TEMPTextObj', tempTextObj);
         });
     }
 }
