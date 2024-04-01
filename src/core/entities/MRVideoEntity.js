@@ -39,7 +39,8 @@ export class MRVideoEntity extends MRMediaEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Loads the associated video into 3D based on its html properties.
      */
     loadMediaTexture() {
         mrjsUtils.material
@@ -66,7 +67,9 @@ export class MRVideoEntity extends MRMediaEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Sets the srcObject of the video media (since it uses 'srcObject' instead of 'src' like other items).
+     * @param {string} src - the string to the new source object we want
      */
     set srcObject(src) {
         this.media.srcObject = src;
@@ -85,7 +88,6 @@ export class MRVideoEntity extends MRMediaEntity {
         this.playing = true;
     }
 
-    //pause
     /**
      * @function
      * @description Pauses the video in the shadow root
