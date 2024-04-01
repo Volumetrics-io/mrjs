@@ -40,28 +40,6 @@ window.mobileCheck = function () {
  */
 export class MRApp extends MRElement {
     /**
-     *
-     */
-    get appWidth() {
-        let result = parseFloat(this.compStyle.width.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        }
-        return result;
-    }
-
-    /**
-     *
-     */
-    get appHeight() {
-        let result = parseFloat(this.compStyle.height.split('px')[0]);
-        if (mrjsUtils.xr.isPresenting) {
-            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        }
-        return result;
-    }
-
-    /**
      * @class
      * @description Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
      */
@@ -86,7 +64,7 @@ export class MRApp extends MRElement {
 
         // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
         // the renderer relies on certain component flags attached to the <mr-app> itself.
-        this.renderer = null; 
+        this.renderer = null;
 
         this.lighting = {
             enabled: true,
@@ -101,6 +79,32 @@ export class MRApp extends MRElement {
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
+    }
+
+    /**
+     * @function
+     * @memberof MRApp
+     * @returns {number} width in 3d or pixel space (depending on if in xr) of the current open app
+     */
+    get appWidth() {
+        let result = parseFloat(this.compStyle.width.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.innerWidth) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return result;
+    }
+
+    /**
+     * @function
+     * @memberof MRApp
+     * @returns {number} height in 3d or pixel space (depending on if in xr) of the current open app
+     */
+    get appHeight() {
+        let result = parseFloat(this.compStyle.height.split('px')[0]);
+        if (mrjsUtils.xr.isPresenting) {
+            result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
+        }
+        return result;
     }
 
     /**
@@ -201,7 +205,7 @@ export class MRApp extends MRElement {
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
-            alpha: true, 
+            alpha: true,
             // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
             // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
             // we're allowing it to be enabled by users when necessary.
@@ -265,8 +269,6 @@ export class MRApp extends MRElement {
                     }
                 });
             }
-
-            
         }
 
         this.appendChild(this.renderer.domElement);

@@ -20,15 +20,21 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.wrapper.innerHTML = '<slot></slot>';
     }
 
+    /**
+     *
+     */
     createHiddenInputElement() {
         this.hiddenInput = document.createElement('input');
         this.hiddenInput.setAttribute('type', 'text');
     }
 
+    /**
+     *
+     */
     updateTextDisplay() {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
-        
+
         this.textObj.text = visibleText;
 
         this.updateCursorPosition();
@@ -36,6 +42,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
 
     /**
      * Handles keydown events for scrolling and cursor navigation.
+     * @param {event} event - keydown event
      */
     handleKeydown(event) {
         const { keyCode } = event;
@@ -66,7 +73,6 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      */
     updateCursorPosition() {
         // to be resolved in future implementation.
-
         // const end = this.hiddenInput.selectionStart > 0 ? this.hiddenInput.selectionStart : 1;
         // const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
         // if (!selectBox || isNaN(selectBox.left)) {
@@ -80,7 +86,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         //     }
         //     this.cursor.position.setY(selectBox.bottom / 2); //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
         // }
-    };
+    }
 }
 
 customElements.get('mr-textfield') || customElements.define('mr-textfield', MRTextFieldEntity);

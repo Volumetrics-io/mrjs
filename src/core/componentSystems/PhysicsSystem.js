@@ -205,27 +205,28 @@ export class PhysicsSystem extends MRSystem {
         });
     }
 
-    /**
-     * @function
-     * @param object3D
-     * @param scale
-     * @description Initializes a convexMesh collider from a THREE.js geometry
-     * NOTE: not currently in use until we can sync it with animations
-     * @param {MREntity} entity - the entity being updated
-     */
-    initConvexMeshCollider(object3D, scale) {
-        const positionAttribute = object3D.geometry.getAttribute('position');
-        const vertices = [];
-        for (let i = 0; i < positionAttribute.count; i++) {
-            const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale);
-            vertices.push(vertex.toArray());
-        }
+    // /**
+    //  * @function
+    //  * @param object3D
+    //  * @param scale
+    //  * @description Initializes a convexMesh collider from a THREE.js geometry
+    //  * NOTE: not currently in use until we can sync it with animations
+    //  * NOTE: commenting for now until we make sure this works like the other init functions.
+    //  * @param {object} entity - the entity being updated
+    //  */
+    // initConvexMeshCollider(object3D, scale) {
+    //     // const positionAttribute = object3D.geometry.getAttribute('position');
+    //     // const vertices = [];
+    //     // for (let i = 0; i < positionAttribute.count; i++) {
+    //     //     const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).multiplyScalar(scale);
+    //     //     vertices.push(vertex.toArray());
+    //     // }
 
-        // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
-        const verticesFlat = new Float32Array(vertices.flat());
+    //     // // Convert vertices to a flat Float32Array as required by RAPIER.ConvexHull
+    //     // const verticesFlat = new Float32Array(vertices.flat());
 
-        return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat);
-    }
+    //     // return mrjsUtils.physics.RAPIER.ColliderDesc.convexMesh(verticesFlat);
+    // }
 
     /**
      * @function
@@ -269,7 +270,7 @@ export class PhysicsSystem extends MRSystem {
     updateUIBody(entity) {
         this.tempBBox.setFromCenterAndSize(entity.object3D.position, new THREE.Vector3(entity.width, entity.height, 0.002));
 
-        this.tempWorldScale.setFromMatrixScale( (entity instanceof MRPanelEntity) ? entity.panel.matrixWorld : entity.object3D.matrixWorld );
+        this.tempWorldScale.setFromMatrixScale(entity instanceof MRPanelEntity ? entity.panel.matrixWorld : entity.object3D.matrixWorld);
         this.tempBBox.getSize(this.tempSize);
         this.tempSize.multiply(this.tempWorldScale);
 

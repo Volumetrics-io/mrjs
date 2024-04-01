@@ -155,8 +155,9 @@ export class AnchorSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is initialized
+     * @param {object} entity - the entity being attached/initialized.
      */
     attachedComponent(entity) {
         entity.object3D.userData.originalMatrix = new THREE.Matrix4();
@@ -165,8 +166,9 @@ export class AnchorSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is updated
+     * @param {object} entity - the entity being updated based on the component.
      */
     updatedComponent(entity) {
         // delete before creating a new one.
@@ -176,8 +178,9 @@ export class AnchorSystem extends MRSystem {
     }
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description Called when the entity component is detached
+     * @param {object} entity - the entity being updated based on the component being detached.
      */
     detachedComponent(entity) {
         entity.object3D.matrixAutoUpdate = true;
@@ -187,7 +190,7 @@ export class AnchorSystem extends MRSystem {
     /**
      * @function
      * @description deletes anchors from the scene and removes all references to the anchored plane (if any)
-     * @param entity
+     * @param {object} entity - the entity whose anchor is being deleted.
      */
     deleteAnchor(entity) {
         if (entity.plane) {
@@ -202,8 +205,8 @@ export class AnchorSystem extends MRSystem {
     /**
      * @function
      * @description creates the anchor specified by the data-anchor-comp
-     * @param entity
-     * @param comp
+     * @param {object} entity - the entity whose anchor is being created.
+     * @param {object} comp - the data component with a type value that represents the string 'fixed', 'plane', 'floating', etc
      */
     createAnchor(entity, comp) {
         switch (comp.type) {
@@ -222,6 +225,11 @@ export class AnchorSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Sets the origin of the MRApp being touched by all systems to allow anchoring to position
+     * itself properly.
+     */
     setAppOrigin() {
         if (!mrjsUtils.xr.isPresenting) {
             return;
@@ -242,6 +250,11 @@ export class AnchorSystem extends MRSystem {
         });
     }
 
+    /**
+     * @function
+     * @description Updates the origin of the MRApp being touched by all systems to allow anchoring to position.
+     * @param {object} frame - given frame information to be used for any feature changes (from the update(..) loop)
+     */
     updateOrigin(frame) {
         let pose = frame.getPose(this.app.anchor.anchorSpace, mrjsUtils.xr.referenceSpace);
         let transform = this.multiplyQuaternionWithXRRigidTransform(this.axisSwapQuat, pose.transform);
@@ -253,8 +266,8 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
-     * @description anchors the given entity half a meter in front of the users position at launch.
-     * @param entity
+     * @description Anchors the given entity half a meter in front of the users position at launch.
+     * @param {object} entity - the entity being positioned.
      */
     fixed(entity) {
         this.anchoringQueue.add(entity);
@@ -274,9 +287,9 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
-     * @description creates an anchor at the position specified by the user,
+     * @description Creates an anchor at the position specified by the user,
      * either floating in front of them or pinned to the scene mesh
-     * @param frame
+     * @param {object} frame - given frame information to be used for any feature changes (from the update(..) loop)
      */
     floating(frame) {
         this.hitResults = frame.getHitTestResults(this.source);
@@ -293,10 +306,10 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
-     * @description anchors the provided entity to the nearest unoccupied plane that meets the given orientation and label.
+     * @description Anchors the provided entity to the nearest unoccupied plane that meets the given orientation and label.
      * each plane is currently limited to one anchor for simplicity.
-     * @param entity
-     * @param comp
+     * @param {object} entity - the entity being anchored by this function.
+     * @param {object} comp - the data-component to determine the orientation and label of the associated plane
      */
     plane(entity, comp) {
         this.anchoringQueue.add(entity);
@@ -352,8 +365,9 @@ export class AnchorSystem extends MRSystem {
      * @function
      * @description converts the provided XRRigidTransform to a Matrix4 and adjusts it to ensure
      * that it's y-axis is pointing directly up and it's z-axis is facing inward
-     * @param xrRigidTransform
-     * @returns a THREE.js Matrix4
+     * @param {object} xrRigidTransform - a THREE.js transformation matrix that we want to adjust
+     * @param {boolean} origin - true if this is positioned at the origin or not (handles special case of div-0).
+     * @returns {object} a new adjusted THREE.js Matrix4
      */
     adjustTransform(xrRigidTransform, origin = false) {
         // Create a Three.js Quaternion for the XRRigidTransform's orientation
@@ -391,8 +405,9 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
-     * @description converts the provided matrix4 into a webXR xompatible XRRigidTransform
-     * @param matrix4
+     * @description Converts the provided matrix4 into a webXR xompatible XRRigidTransform
+     * @param {object} matrix4 - the matrix we want to convert to a XRRigidTransform
+     * @returns {object} xrRigidTransform - the converted representation of the param matrix4
      */
     matrix4ToXRRigidTransform(matrix4) {
         // Extract the translation component from the Matrix4
@@ -415,9 +430,10 @@ export class AnchorSystem extends MRSystem {
 
     /**
      * @function
-     * @description multuplies an xr rigid transform by the provided quaternion
-     * @param quaternion
-     * @param xrRigidTransform
+     * @description Multiplies an xr rigid transform by the provided quaternion
+     * @param {object} quaternion - the quaternion we want to multiply with the xrRigidTransform
+     * @param {object} xrRigidTransform - the second part of the multiplication we are looking to perform.
+     * @returns {object} xrRigidTransform - the output of the quaternion * xrRigidTransform in the form of an xrRigidTransform
      */
     multiplyQuaternionWithXRRigidTransform(quaternion, xrRigidTransform) {
         // Create a Three.js Quaternion for the XRRigidTransform's orientation

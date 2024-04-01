@@ -19,18 +19,30 @@ export class MRTextInputEntity extends MRTextEntity {
         this.attachShadow({ mode: 'open' });
     }
 
+    /**
+     * @returns {string} value - the value of the current text input
+     */
     get value() {
         return this.hiddenInput.value;
     }
 
+    /**
+     *
+     */
     set value(val) {
         this.hiddenInput.value = val;
     }
 
+    /**
+     *
+     */
     createHiddenInputElement() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     fillInHiddenInputElementWithUserData() {
         mrjsUtils.error.emptyParentFunction();
     }
@@ -51,6 +63,9 @@ export class MRTextInputEntity extends MRTextEntity {
         this.triggerTextStyleUpdate();
     }
 
+    /**
+     *
+     */
     _createCursor() {
         this._cursorWidth = 0.0015;
         this._cursorHeight = 0.02;
@@ -70,18 +85,28 @@ export class MRTextInputEntity extends MRTextEntity {
      */
     updateCursorPosition() {
         mrjsUtils.error.emptyParentFunction();
-    };
+    }
 
+    /**
+     *
+     * @param {event} event - the keydown event
+     */
     handleKeydown(event) {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     updateTextDisplay() {
         mrjsUtils.error.emptyParentFunction();
     }
 
+    /**
+     *
+     */
     _focus() {
-        if (! this.hiddenInput) {
+        if (!this.hiddenInput) {
             return;
         }
         console.log('this._focus is hit');
@@ -102,10 +127,13 @@ export class MRTextInputEntity extends MRTextEntity {
         console.log('hi7');
     }
 
+    /**
+     *
+     */
     setupEventListeners() {
         // Since we want the text input children to be able
         // to override the parent function event triggers,
-        // separating them into an actual function here 
+        // separating them into an actual function here
         // and calling them manually. This allows us to call
         // super.func() for event functions; otherwise, theyre
         // not accessible.

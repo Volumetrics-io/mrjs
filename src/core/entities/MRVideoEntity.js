@@ -20,14 +20,28 @@ export class MRVideoEntity extends MRMediaEntity {
         this.playing = false;
     }
 
+    /**
+     * @function
+     * @description Calculates the width of the video based on the video tag itself
+     * @returns {number} - the resolved width
+     */
     get mediaWidth() {
         return this.media.videoWidth;
     }
 
+    /**
+     * @function
+     * @description Calculates the height of the video based on the video tag itself
+     * @returns {number} - the resolved height
+     */
     get mediaHeight() {
         return this.media.videoHeight;
     }
 
+    /**
+     * @function
+     * @description Loads the associated video into 3D based on its html properties.
+     */
     loadMediaTexture() {
         mrjsUtils.material
             .loadVideoTextureAsync(this.media)
@@ -52,6 +66,11 @@ export class MRVideoEntity extends MRMediaEntity {
         super.connected();
     }
 
+    /**
+     * @function
+     * @description Sets the srcObject of the video media (since it uses 'srcObject' instead of 'src' like other items).
+     * @param {string} src - the string to the new source object we want
+     */
     set srcObject(src) {
         this.media.srcObject = src;
         // on loadeddata event, update the objectFitDimensions
@@ -69,7 +88,6 @@ export class MRVideoEntity extends MRMediaEntity {
         this.playing = true;
     }
 
-    //pause
     /**
      * @function
      * @description Pauses the video in the shadow root

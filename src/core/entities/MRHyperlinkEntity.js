@@ -15,6 +15,11 @@ export default class MRHyperlinkEntity extends MRTextEntity {
         this.object3D.name = 'hyperlink';
     }
 
+    /**
+     * @function
+     * @description Creates the link object if it's not already created and handles the href and
+     * target attributes.
+     */
     _createLink() {
         if (!this.link) {
             this.link = document.createElement('a');
@@ -23,18 +28,30 @@ export default class MRHyperlinkEntity extends MRTextEntity {
         }
     }
 
+    /**
+     * @function
+     * @description Grabs the href of the link object
+     * @returns {string} the href value
+     */
     get href() {
         this._createLink();
         return this.link.getAttribute('href');
     }
 
+    /**
+     * @function
+     * @description Sets the href of the link object
+     * @param {string} src_str - the new href value
+     */
     set href(src_str) {
         this._createLink();
         this.link.setAttribute('href', src_str);
     }
 
     /**
-     *
+     * @function
+     * @description Callback function of MREntity - makes sure the link object is created and sets up event
+     * listeners for touchstart and click.
      */
     connected() {
         super.connected();

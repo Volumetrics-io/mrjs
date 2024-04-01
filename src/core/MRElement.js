@@ -57,6 +57,7 @@ export class MRElement extends HTMLElement {
     /**
      * @function
      * @description Overrides getBoundingClientRect() to avoid reflow in sync as optimization
+     * @returns {object} rect - the bounding client rect of the HTMLElement representation of this MRElement.
      */
     getBoundingClientRect() {
         // This is a fallback in case if .getBoundingClientRect() is called before

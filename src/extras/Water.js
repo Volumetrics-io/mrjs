@@ -9,7 +9,15 @@ import { MRSystem } from '../core/MRSystem';
  *
  */
 
+/**
+ *
+ */
 class Water extends Mesh {
+    /**
+     *
+     * @param geometry
+     * @param options
+     */
     constructor(geometry, options = {}) {
         super(geometry);
 
@@ -103,6 +111,10 @@ class Water extends Mesh {
 
     // functions
 
+    /**
+     *
+     * @param camera
+     */
     updateTextureMatrix(camera) {
         this.textureMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0);
 
@@ -111,6 +123,10 @@ class Water extends Mesh {
         this.textureMatrix.multiply(this.matrixWorld);
     }
 
+    /**
+     *
+     * @param delta
+     */
     updateFlow(delta) {
         this.delta = delta;
         this.config = this.material.uniforms['config'];
@@ -286,12 +302,24 @@ class Water extends Mesh {
     };
 }
 
+/**
+ *
+ */
 class WaterSystem extends MRSystem {
+    /**
+     *
+     * @param water
+     */
     constructor(water) {
         super(false, 1 / water.fps);
         this.water = water;
     }
 
+    /**
+     *
+     * @param dt
+     * @param f
+     */
     update(dt, f) {
         if (this.water.visible) {
             this.water.updateTextureMatrix(this.app.camera);

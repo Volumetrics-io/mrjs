@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 /**
  * @namespace math
  * @description Useful namespace for helping with Math utility functions including numerical, 3d, etc.

@@ -10,8 +10,9 @@ const PLANE_LABELS = ['floor', 'wall', 'ceiling', 'table', 'desk', 'couch', 'doo
  */
 export class MRPlaneManager {
     /**
-     *
-     * @param scene
+     * @class
+     * @param {object} scene - the MRApp's threejs scene object
+     * @param {boolean} occlusion - whether or not the MRPlaneManager should make the planes visible or not
      */
     constructor(scene, occlusion) {
         // TODO: add app level controls for:
@@ -101,6 +102,14 @@ export class MRPlaneManager {
         });
     }
 
+    /**
+     * @function
+     * @description Initializes the MRPlane for this.currentPlanes at the 'plane' key
+     * @param {object} plane - the map key of this.currentPlanes for which we want to initPlane to fill in its value.
+     * @param {number} width - expected width of the new MRPlane
+     * @param {number} height - expected height of the new MRPlane
+     * @returns {object} MRPlane - the MRPlane object that was initialized by this function.
+     */
     initPlane(plane, width, height) {
         let mrPlane = new MRPlane();
 
@@ -135,6 +144,12 @@ export class MRPlaneManager {
         return mrPlane;
     }
 
+    /**
+     * @function
+     * @description Removes the MRPlane from the scene and removes the plane object from the currentPlanes map.
+     * @param {object} plane - plane object associated with this specific MRPlane in the scene
+     * @param {object} mrplane - the specific MRPlane object being removed from the scene
+     */
     removePlane(plane, mrplane) {
         mrplane.mesh.geometry.dispose();
         mrplane.mesh.material.dispose();
@@ -148,8 +163,8 @@ export class MRPlaneManager {
 
     /**
      * @function
-     * @description initializes the physics body of an MR Plane
-     * @param plane
+     * @description Initializes the physics body of an MRPlane
+     * @returns {object} body - the created rigid body for the plane
      */
     initPhysicsBody() {
         const rigidBodyDesc = mrjsUtils.physics.RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(...this.tempPosition);

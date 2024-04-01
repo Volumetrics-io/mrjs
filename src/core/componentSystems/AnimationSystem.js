@@ -37,6 +37,11 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Called when the entity component is initialized
+     * @param {object} entity - the entity being attached/initialized.
+     */
     attachedComponent(entity) {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
@@ -46,6 +51,11 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Called when the entity component is updated
+     * @param {object} entity - the entity being updated based on the component.
+     */
     updatedComponent(entity) {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
@@ -53,10 +63,20 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Called when the entity component is detached
+     * @param {object} entity - the entity being updated based on the component being detached.
+     */
     detachedComponent(entity) {
         entity.mixer.stopAllActions();
     }
 
+    /**
+     * @function
+     * @description When the system swaps to a new entity, this handles setting up the animations for the system runs.
+     * @param {object} entity - given entity that might be handled by the system.
+     */
     onNewEntity(entity) {
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             let comp = entity.components.get('animation');
@@ -69,6 +89,12 @@ export class AnimationSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description Sets the Animation of the entity object based on the component value associated with it.
+     * @param {object} entity - the entity being updated based on the component being detached.
+     * @param {object} comp - component that contains a string value of 'play', 'pause', 'stop'
+     */
     setAnimation(entity, comp) {
         let clip = entity.animations[comp.clip];
         switch (comp.action) {

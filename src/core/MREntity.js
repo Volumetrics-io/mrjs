@@ -30,7 +30,6 @@ export class MREntity extends MRElement {
     constructor() {
         super();
 
-
         this.object3D = new THREE.Group();
         this.object3D.userData.isEntityObject3DRoot = true;
         this.object3D.userData.bbox = new THREE.Box3();
@@ -100,9 +99,8 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * @description Triggers a system run to update geometry specifically for the entity calling it. Useful when it's not an overall scene event and for cases where
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerGeometryStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-geometry-style-update', { detail: this, bubbles: true }));
@@ -110,9 +108,8 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Triggers a system run to update material specifically for the entity calling it. Useful when it's not an overall scene event and for cases where 
+     * @description Triggers a system run to update material specifically for the entity calling it. Useful when it's not an overall scene event and for cases where
      * relying on an overall scene or all items to update isnt beneficial.
-     * @returns {number} - height of the 3D object.
      */
     triggerMaterialStyleUpdate() {
         this.dispatchEvent(new CustomEvent('trigger-material-style-update', { detail: this, bubbles: true }));
@@ -120,15 +117,17 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
-     * These are run after the MaterialStyleSystem does its own update on the entity.
+     * @description Directly in MRjs, this function is empty. It is called directly in the
+     * MaterialStyleSystem. This allows outside users to add their own additional functionality
+     * for the entities. These are run after the MaterialStyleSystem does its own update on the entity.
      */
     updateMaterialStyle() {}
 
     /**
      * @function
-     * @description Inside the MRjs engine's ECS these arent filled in, though theyre still called directly in the system themselves. This allows outside users to add their own additional functionality for the entities.
-     * These are run after the GeometryStyleSystem does its own update on the entity.
+     * @description Directly in MRjs, this function is empty. It is called directly in the
+     * GeometryStyleSystem. This allows outside users to add their own additional functionality
+     * for the entities. These are run after the GeometryStyleSystem does its own update on the entity.
      */
     updateGeometryStyle() {}
 
@@ -149,7 +148,7 @@ export class MREntity extends MRElement {
      * @param {object} event - the touch event
      */
     onTouch = (event) => {};
- 
+
     /**
      * @function
      * @description Handles the scroll event
@@ -188,7 +187,7 @@ export class MREntity extends MRElement {
             if (arr.length != 3) {
                 mrjsUtils.error.err('position must be set with an array of all three elements [x, y, z]');
             }
-            let vec = mrjsUtils.string.stringToVector(this.dataset.position ?? "0 0 0");
+            let vec = mrjsUtils.string.stringToVector(this.dataset.position ?? '0 0 0');
             vec[0] = arr[0];
             vec[1] = arr[1];
             vec[2] = arr[2];
@@ -224,7 +223,7 @@ export class MREntity extends MRElement {
             vec[2] = val;
             this.dataset.position = mrjsUtils.string.vectorToString(vec);
         },
-    }
+    };
 
     rotation = {
         get: () => {
@@ -235,7 +234,7 @@ export class MREntity extends MRElement {
             if (arr.length != 3) {
                 mrjsUtils.error.err('rotation must be set with an array of all three elements [x, y, z]');
             }
-            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation ?? "0 0 0")
+            let vec = mrjsUtils.string.stringToVector(this.dataset.rotation ?? '0 0 0');
             vec[0] = arr[0];
             vec[1] = arr[1];
             vec[2] = arr[2];
@@ -271,7 +270,7 @@ export class MREntity extends MRElement {
             vec[2] = val;
             this.dataset.rotation = mrjsUtils.string.vectorToString(vec);
         },
-    }
+    };
 
     /**
      * @function
@@ -310,10 +309,10 @@ export class MREntity extends MRElement {
      */
     connected() {}
 
-        /**
-         * @function
-         * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
-         */
+    /**
+     * @function
+     * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
+     */
     connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
 
