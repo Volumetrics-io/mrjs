@@ -28,6 +28,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
+     * @param entity
      * @function
      * @description The per entity triggered update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      */
@@ -39,7 +40,9 @@ export class GeometryStyleSystem extends MRSystem {
         if (entity instanceof MRDivEntity) {
             changed = this.setUpdatedBorder(entity);
         }
+
         changed = this.setScale(entity);
+        
         if (entity instanceof MRMediaEntity) {
             changed = this.setUpdatedMediaPlane(entity);
         }
@@ -86,8 +89,12 @@ export class GeometryStyleSystem extends MRSystem {
         this.registry.add(entity);
     }
 
+    /**
+     *
+     * @param entity
+     */
     setScale(entity) {
-        let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) * mrjsUtils.app.scale : 1;
+        let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) : 1;
         if (new_scale != entity.object3D.scale) {
             entity.object3D.scale.setScalar(new_scale);
             return true;
@@ -96,6 +103,7 @@ export class GeometryStyleSystem extends MRSystem {
     }
 
     /**
+     * @param entity
      * @function
      * @description Sets the border of the UI based on compStyle and inputted css elements.
      */
@@ -121,6 +129,10 @@ export class GeometryStyleSystem extends MRSystem {
         return true;
     }
 
+    /**
+     *
+     * @param entity
+     */
     setUpdatedMediaPlane(entity) {
         entity.computeObjectFitDimensions();
 

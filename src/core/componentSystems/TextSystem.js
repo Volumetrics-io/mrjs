@@ -67,6 +67,7 @@ export class TextSystem extends MRSystem {
     }
 
     /**
+     * @param entity
      * @function
      * @description The per entity triggered update call.  Handles updating all text items including updates for style and cleaning of content for special characters.
      */
@@ -200,9 +201,6 @@ export class TextSystem extends MRSystem {
      */
     parseFontSize(val, el) {
         const result = parseFloat(val.split('px')[0]) / mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
-        if (mrjsUtils.xr.isPresenting) {
-            return result * mrjsUtils.app.scale;
-        }
         return result;
     }
 
