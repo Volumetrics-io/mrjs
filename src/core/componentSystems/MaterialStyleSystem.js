@@ -84,7 +84,10 @@ export class MaterialStyleSystem extends MRSystem {
         const color = entity.compStyle.backgroundColor;
 
         if (color.startsWith('rgba')) {
-            const rgba = color.match(/rgba?\(([^)]+)\)/)[1].split(',').map(n => parseFloat(n.trim()));
+            const rgba = color
+                .match(/rgba?\(([^)]+)\)/)[1]
+                .split(',')
+                .map((n) => parseFloat(n.trim()));
             entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
             entity.background.material.transparent = rgba.length === 4 && rgba[3] < 1;
             entity.background.material.opacity = rgba.length === 4 ? rgba[3] : 1;
@@ -95,7 +98,7 @@ export class MaterialStyleSystem extends MRSystem {
             entity.background.material.transparent = false;
             entity.background.visible = true;
         } else if (color.startsWith('#')) {
-            const {r, g, b, a} = mrjsUtils.color.hexToRgba(color);
+            const { r, g, b, a } = mrjsUtils.color.hexToRgba(color);
             entity.background.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
             entity.background.material.transparent = a < 1;
             entity.background.material.opacity = a;

@@ -170,14 +170,14 @@ export class MRMediaEntity extends MRDivEntity {
             // to make sure that texture is set properly
             this.object3D.material.visible = true;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         const _hideMainMediaMesh = () => {
             // to parallel the '_makeSureMainMediaMeshHasTexture' for readability
             // and debugging later on.
             this.object3D.material.visible = false;
             this.object3D.material.needsUpdate = true;
-        }
+        };
 
         let containerWidth = this.parentElement.width;
         let containerHeight = this.parentElement.height;

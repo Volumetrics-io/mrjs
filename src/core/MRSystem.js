@@ -107,7 +107,7 @@ export class MRSystem {
     /**
      * @function
      * @description An event triggered update, called when any global scene level events occur.
-     * See GLOBAL_UPDATE_EVENTS of MRSystem.js 
+     * See GLOBAL_UPDATE_EVENTS of MRSystem.js
      */
     eventUpdate() {}
 

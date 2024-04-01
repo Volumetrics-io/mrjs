@@ -33,7 +33,7 @@ const observe = (root, target) => {
             observer.observe(target);
         },
         {
-            root: root
+            root: root,
         }
     );
     observer.observe(target);

@@ -42,7 +42,7 @@ export class GeometryStyleSystem extends MRSystem {
         }
 
         changed = this.setScale(entity);
-        
+
         if (entity instanceof MRMediaEntity) {
             changed = this.setUpdatedMediaPlane(entity);
         }
@@ -71,7 +71,7 @@ export class GeometryStyleSystem extends MRSystem {
 
     /**
      * @function
-     * @description The per-frame system update call. 
+     * @description The per-frame system update call.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -142,10 +142,8 @@ export class GeometryStyleSystem extends MRSystem {
         entity.computeObjectFitDimensions();
 
         // geometry will only update if width, height, or borderRadii have changed
-        if (entity._storedWidth != entity.width
-            || entity._storedHeight != entity.height
-            || entity._storedBorderRadii != entity.borderRadii) {
-           entity.generateNewMediaPlaneGeometry();
+        if (entity._storedWidth != entity.width || entity._storedHeight != entity.height || entity._storedBorderRadii != entity.borderRadii) {
+            entity.generateNewMediaPlaneGeometry();
         } else {
             // no update needed
             return false;

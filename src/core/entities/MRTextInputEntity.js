@@ -85,7 +85,7 @@ export class MRTextInputEntity extends MRTextEntity {
      */
     updateCursorPosition() {
         mrjsUtils.error.emptyParentFunction();
-    };
+    }
 
     /**
      *
@@ -106,7 +106,7 @@ export class MRTextInputEntity extends MRTextEntity {
      *
      */
     _focus() {
-        if (! this.hiddenInput) {
+        if (!this.hiddenInput) {
             return;
         }
         console.log('this._focus is hit');
@@ -133,7 +133,7 @@ export class MRTextInputEntity extends MRTextEntity {
     setupEventListeners() {
         // Since we want the text input children to be able
         // to override the parent function event triggers,
-        // separating them into an actual function here 
+        // separating them into an actual function here
         // and calling them manually. This allows us to call
         // super.func() for event functions; otherwise, theyre
         // not accessible.

@@ -19,7 +19,7 @@ export class PanelSystem extends MRSystem {
 
     eventUpdate = () => {
         for (const entity of this.registry) {
-            entity.panel.scale.setScalar(mrjsUtils.app.scale)
+            entity.panel.scale.setScalar(mrjsUtils.app.scale);
         }
     };
 

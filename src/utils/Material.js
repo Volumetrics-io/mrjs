@@ -57,7 +57,7 @@ material.setObjectMaterial = function (parent, material) {
     }
     return parent;
 };
- 
+
 /**
  * @function
  * @memberof material

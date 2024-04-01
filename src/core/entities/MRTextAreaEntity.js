@@ -21,10 +21,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.lineHeight = 1.2; // Default line height, can be adjusted as needed
         this.scrollOffset = 0; // The vertical scroll position
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
-        this.object3D.name = 'textArea'
+        this.object3D.name = 'textArea';
 
         this.defaults = {
-            name : 'mr-textarea',
+            name: 'mr-textarea',
             rows: '...',
             cols: '...',
             placeholder: '',
@@ -33,8 +33,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             maxLength: '...',
             wrap: '...',
             overflowWrap: 'normal',
-            whiteSpace: 'normal'
-        }
+            whiteSpace: 'normal',
+        };
     }
 
     /**
@@ -79,11 +79,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * Overrides the connected method to include setup for handling multiline text.
      */
     connected() {
-        
-
         super.connected();
-
-        
     }
 
     /**
@@ -92,16 +88,16 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     updateTextDisplay() {
         // Determine the maximum number of characters per line based on renderable area (example given)
         const maxCharsPerLine = 50; // This should be dynamically calculated
-        
-        const lines = this.hiddenInput.value.split('\n').map(line => {
+
+        const lines = this.hiddenInput.value.split('\n').map((line) => {
             // Truncate or split lines here based on maxCharsPerLine if implementing horizontal scrolling
             return line.substring(0, maxCharsPerLine);
         });
-        
+
         // Existing logic to determine visibleLines based on scrollOffset and maxVisibleLines
         const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
         const visibleText = visibleLines.join('\n');
-        
+
         this.textObj.text = visibleText;
         // console.log('text updated: ', this.textObj.text);
 
@@ -173,7 +169,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     // actual 3d space a character is expected to take up.
     //
     // This is useful for things like cursor positioning, etc.
-     _textCharWidth = 0;
+    _textCharWidth = 0;
 
     /**
      *
@@ -184,8 +180,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.textObj.maxHeight = this.height;
         // calculate the textObj's width for the cursorCalculatedStartingPosition
         if (this._cursorCalculatedStartingPosition.x == 0 && this._cursorCalculatedStartingPosition.y == 0) {
-            this._cursorCalculatedStartingPosition.x = -1.0 * this.textObj.maxWidth / 2;
-            this._cursorCalculatedStartingPosition.y = 1.0 * this.textObj.maxHeight / 2 - this._cursorHeight / 2;
+            this._cursorCalculatedStartingPosition.x = (-1.0 * this.textObj.maxWidth) / 2;
+            this._cursorCalculatedStartingPosition.y = (1.0 * this.textObj.maxHeight) / 2 - this._cursorHeight / 2;
         }
 
         // Calculate the cursor position within the hiddenInput
@@ -212,23 +208,23 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const cursorXPosition = currentLineText.length * 0.005;
         // console.log('------done')
         const cursorYPosition = -(visibleLinesStartIndex * (this.lineHeight * this._textCharHeight) * this.textObj.fontSize);
-        
+
         const cursorDebugObj = {
-            cursorIndex : cursorIndex,
-            textBeforeCursor : textBeforeCursor,
-            linesBeforeCursor : linesBeforeCursor,
-            numberOfLines : numberOfLines,
-            currentLineText : currentLineText,
-            visibleLinesStartIndex : visibleLinesStartIndex,
-            lines : lines,
-            cursorXPosition : cursorXPosition,
-            cursorYPosition : cursorYPosition
+            cursorIndex: cursorIndex,
+            textBeforeCursor: textBeforeCursor,
+            linesBeforeCursor: linesBeforeCursor,
+            numberOfLines: numberOfLines,
+            currentLineText: currentLineText,
+            visibleLinesStartIndex: visibleLinesStartIndex,
+            lines: lines,
+            cursorXPosition: cursorXPosition,
+            cursorYPosition: cursorYPosition,
         };
 
         // console.log('troika obj:', this.textObj);
         // this.printCurrentTextDebugInfo();
         // console.log('cursor debug obj:', cursorDebugObj);
-        
+
         // Update the cursor's 3D position
         if (this.cursor) {
             this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
@@ -236,7 +232,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             this.cursor.visible = true;
         }
     }
-
 }
 
 customElements.get('mr-textarea') || customElements.define('mr-textarea', MRTextAreaEntity);

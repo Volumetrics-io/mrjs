@@ -39,7 +39,6 @@ window.mobileCheck = function () {
  * @augments MRElement
  */
 export class MRApp extends MRElement {
-
     /**
      * @class
      * @description Constructs the base information of the app including system, camera, engine, xr, and rendering defaults.
@@ -65,7 +64,7 @@ export class MRApp extends MRElement {
 
         // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
         // the renderer relies on certain component flags attached to the <mr-app> itself.
-        this.renderer = null; 
+        this.renderer = null;
 
         this.lighting = {
             enabled: true,
@@ -206,7 +205,7 @@ export class MRApp extends MRElement {
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
-            alpha: true, 
+            alpha: true,
             // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
             // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
             // we're allowing it to be enabled by users when necessary.
@@ -270,8 +269,6 @@ export class MRApp extends MRElement {
                     }
                 });
             }
-
-            
         }
 
         this.appendChild(this.renderer.domElement);

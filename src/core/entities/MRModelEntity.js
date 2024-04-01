@@ -92,13 +92,13 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loaded = true;
 
-            this.traverseObjects(object => {
+            this.traverseObjects((object) => {
                 if (object.isMesh) {
                     object.renderOrder = 3;
                     object.receiveShadow = true;
                     object.castShadow = true;
                 }
-            })
+            });
 
             this.onLoad();
 
