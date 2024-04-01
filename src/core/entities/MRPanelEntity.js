@@ -13,13 +13,16 @@ import { mrjsUtils } from 'mrjs';
  * @augments MRDivEntity
  */
 export class MRPanelEntity extends MRDivEntity {
+    /**
+     *
+     */
     get height() {
         let result = this.getBoundingClientRect().height;
 
         if (mrjsUtils.xr.isPresenting) {
             result = (result / window.screen.height) * mrjsUtils.display.VIRTUAL_DISPLAY_RESOLUTION;
         }
-        return (result / global.appHeight) * global.viewPortHeight * mrjsUtils.app.scale;
+        return (result / global.appHeight) * global.viewPortHeight;
     }
     /**
      * @class

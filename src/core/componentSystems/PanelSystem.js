@@ -17,9 +17,17 @@ export class PanelSystem extends MRSystem {
         super(false);
     }
 
+    eventUpdate = () => {
+        for (const entity of this.registry) {
+            entity.panel.scale.setScalar(mrjsUtils.app.scale)
+        }
+    };
+
     /**
      * @function
      * @description The generic system update call. keeps panel positions up to date.
+     * @param dt
+     * @param f
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
      */
@@ -49,15 +57,15 @@ export class PanelSystem extends MRSystem {
         const rect = entity.getBoundingClientRect();
         const appRect = this.app.getBoundingClientRect();
 
-        /** setup xy positioning of the entity **/
+        /** setup xy positioning of the entity */
 
         let innerWidth = global.appWidth;
         let innerHeight = global.appHeight;
         let centerX = innerWidth / 2;
         let centerY = innerHeight / 2;
 
-        let windowWidth = global.viewPortWidth * mrjsUtils.app.scale;
-        let windowHeight = global.viewPortHeight * mrjsUtils.app.scale;
+        let windowWidth = global.viewPortWidth;
+        let windowHeight = global.viewPortHeight;
 
         let top = rect.top - appRect.top;
         let left = rect.left - appRect.left;
@@ -77,7 +85,7 @@ export class PanelSystem extends MRSystem {
         entity.panel.position.setX(threeX);
         entity.panel.position.setY(-threeY);
 
-        /** setup z-index positioning of the entity **/
+        /** setup z-index positioning of the entity */
 
         if (entity.compStyle.zIndex != 'auto') {
             // default zIndex values in css are in the 1000s - using this arbitrary divide to convert to an actual usable threejs value.
