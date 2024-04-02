@@ -52,24 +52,31 @@ export class MRTextInputEntity extends MRTextEntity {
      * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
      */
     connected() {
-        this._createCursor();
+        // Cursor Setup
+        this._createCursorObject();
         this.object3D.add(this.cursor);
 
+        // DOM
         this.createHiddenInputElement();
 
+        // make it trigger happy
         this.setupEventListeners();
 
+        // Updates for baseline visual
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
+        
+        // all items should start out as 'not selected'
+        this._blur();
     }
 
     /**
      *
      */
-    _createCursor() {
-        this._cursorWidth = 0.0015;
-        this._cursorHeight = 0.02;
-        const geometry = new THREE.PlaneGeometry(this._cursorWidth, this._cursorHeight);
+    _createCursorObject() {
+        this.cursorWidth = 0.002;
+        this.cursorHeight = 0.015;
+        const geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
         const material = new THREE.MeshBasicMaterial({
             color: 0x000000,
             side: THREE.DoubleSide,
@@ -77,6 +84,12 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor = new THREE.Mesh(geometry, material);
         this.cursor.position.z += 0.001;
         this.cursor.visible = false;
+        
+        // We store this for the geometry so we can do our geometry vs web origin calculations
+        // more easily as well. We update this based on the geometry's own changes.
+        //
+        // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
+        this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
     }
 
     /**
@@ -109,22 +122,23 @@ export class MRTextInputEntity extends MRTextEntity {
         if (!this.hiddenInput) {
             return;
         }
-        console.log('this._focus is hit');
         this.hiddenInput.focus();
-        console.log('hi2');
         this.hiddenInput.selectionStart = this.hiddenInput.value.length;
-        console.log('hi3');
-        this.cursor.visible = true;
-        console.log('hi4');
+        this.cursor.visible = false;
 
-        if (this.cursor.geometry !== undefined) {
-            this.cursor.geometry.dispose();
+        if (this.cursor.geometry.height != this.textObj.fontSize) {
+            this.cursor.geometry.height = this.textObj.fontSize;
+            this.cursor.geometry.needsUpdate = true;
+            this.cursorHeight = this.textObj.fontSize;
         }
-        console.log('hi5');
-        this.cursor.geometry = new THREE.PlaneGeometry(0.002, this.textObj.fontSize);
-        console.log('hi6');
+        console.log('hit focus, updating cursor position now - before:', this.cursor.position.x, this.cursor.position.y);
         this.updateCursorPosition();
-        console.log('hi7');
+        console.log('after:', this.cursor.position.x, this.cursor.position.y)
+    }
+
+    _blur() {
+        this.hiddenInput.blur();
+        this.cursor.visible = false;
     }
 
     /**
@@ -146,8 +160,7 @@ export class MRTextInputEntity extends MRTextEntity {
         });
 
         this.addEventListener('blur', () => {
-            this.hiddenInput.blur();
-            this.cursor.visible = false;
+           this._blur(); 
         });
 
         this.addEventListener('focus', () => {
@@ -166,7 +179,6 @@ export class MRTextInputEntity extends MRTextEntity {
             this.updateCursorPosition();
         });
         this.addEventListener('keydown', (event) => {
-            console.log('hi');
             this.handleKeydown(event);
         });
     }

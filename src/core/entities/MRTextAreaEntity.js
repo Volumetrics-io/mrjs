@@ -149,171 +149,74 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }, 0);
     }
 
-    // Additional methods for managing text area specific behavior can be added here,
-    // such as text selection, clipboard operations (cut/copy/paste), and more advanced scrolling features.
-
-    // We assume the default starting position is the origin: 0,0,0. This actually defaults
-    // to the geometry's 0,0,0 origin which is its center and not it's top left as assumed
-    // by most web-applications.
-    //
-    // Storing it so we have something to compare against when calculating cursor start
-    // in comparison to geometry origin.
-    _cursorDefaultStartingPosition = new THREE.Vector3(0, 0, 0);
-    // We store this for the geometry so we can do our geometry vs web origin calculations
-    // more easily as well. We update this based on the geometry's own changes.
-    //
-    // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
-    _cursorCalculatedStartingPosition = new THREE.Vector3(0, 0, 0);
-    // Only needs to be adjusted on style changes.
-    // TextCharWidth is specific to a font and text-size in relation to how much
-    // actual 3d space a character is expected to take up.
-    //
-    // This is useful for things like cursor positioning, etc.
-    _textCharWidth = 0;
-
-    calculateCursorStartingPosition() {
-        // set maxWidth to this.background's width property.
-        this.textObj.maxWidth = this.width;
-        this.textObj.maxHeight = this.height;
-        // calculate the textObj's width for the cursorCalculatedStartingPosition
-        if (this._cursorCalculatedStartingPosition.x == 0 && this._cursorCalculatedStartingPosition.y == 0) {
-            this._cursorCalculatedStartingPosition.x = (-1.0 * this.textObj.maxWidth) / 2;
-            this._cursorCalculatedStartingPosition.y = (1.0 * this.textObj.maxHeight) / 2 - this._cursorHeight / 2;
-        }
-        console.log('calculated cursor starting position is:', this._cursorCalculatedStartingPosition);
-    }
-
-    // async getTextWidth(troikaTextMesh) {
-    getTextWidth(troikaTextMesh) {
-      // Ensure the text is fully synthesized by waiting for the 'synthesized' event.
-      // This returns a promise that resolves when the text is ready.
-      // await new Promise(resolve => {
-      //   if (troikaTextMesh.textRenderInfo) {
-      //     resolve(); // Text is already synthesized.
-      //   } else {
-      //     // Listen for the 'synthesization' event, which indicates the text is ready.
-      //     troikaTextMesh.addEventListener('synthesized', resolve, {once: true});
-      //   }
-      // });
-
-      // Now that the text is synthesized, access the textRenderInfo property.
-      const textRenderInfo = troikaTextMesh.textRenderInfo;
-      if (textRenderInfo && textRenderInfo.blockBounds) {
-        // The blockBounds property gives you [left, top, right, bottom] of the bounding box.
-        const width = textRenderInfo.blockBounds[2] - textRenderInfo.blockBounds[0];
-        return width;
-      }
-
-      return 0; // Return 0 if unable to compute the width.
-    }
-
-    // Assuming 'TroikaTextMesh' is imported or accessible in your environment
-    // and 'originalTextMesh' is the Troika 3D Text object you want to copy.
-
     copyTroikaTextObject(originalTextMesh) {
-      // Create a new instance of the text mesh class.
-      const newTextMesh = new Text();
-      
-      // List of properties you want to copy.
-      // This is a basic set; depending on your usage, you may need to add more.
-      const propertiesToCopy = [
-        'text',
-        'fontSize',
-        'font',
-        'color',
-        'maxWidth',
-        'lineHeight',
-        'letterSpacing',
-        'textAlign',
-        'material',
-        // Add any other properties that are essential for your use case.
-      ];
-      
-      // Iterate over each property and copy it from the original to the new object.
-      propertiesToCopy.forEach(prop => {
-        if (originalTextMesh.hasOwnProperty(prop)) {
-          newTextMesh[prop] = originalTextMesh[prop];
-        }
-      });
-      
-      // Don't forget to call .sync() if needed to ensure the text is rendered.
-      newTextMesh.sync();
+        // Create a new instance of the text mesh class.
+        const newTextMesh = new Text();
 
-      return newTextMesh;
+        // List of properties you want to copy.
+        // This is a basic set; depending on your usage, you may need to add more.
+        const propertiesToCopy = [
+            'text',
+            'fontSize',
+            'font',
+            'color',
+            'maxWidth',
+            'lineHeight',
+            'letterSpacing',
+            'textAlign',
+            'material',
+            // Add any other properties that are essential for your use case.
+        ];
+
+        // Iterate over each property and copy it from the original to the new object.
+        propertiesToCopy.forEach(prop => {
+            if (originalTextMesh.hasOwnProperty(prop)) {
+              newTextMesh[prop] = originalTextMesh[prop];
+            }
+        });
+
+        // Don't forget to call .sync() if needed to ensure the text is rendered.
+        newTextMesh.sync();
+
+        return newTextMesh;
     }
 
     /**
      *
      */
     updateCursorPosition() {
-        this.textObj.sync();
+        if (!this.hiddenInput) {
+            return;
+        }
+        
+        // Since no text is selected, this and selectionEnd are just the cursor position.
+        // XXX - when we actually allow for seleciton in future, some of the below will need to
+        // be thought through again.
+        const cursorIndex = this.hiddenInput.selectionStart;
+        
+        // early escape for empty text
+        if (cursorIndex == 0) {
+            this.cursor.position.x = this.cursorStartingPosition.x;
+            this.cursor.position.y = this.cursorStartingPosition.y;
+            this.cursor.visible = true;
+            return;
+        }
 
-        this.calculateCursorStartingPosition();
-
-        // Calculate the cursor position within the hiddenInput
-        const cursorIndex = this.hiddenInput.selectionStart; // since no text is selected, this and selectionEnd are just the cursor position
+        // Setup variables for calculations.
         const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
         const lastNewLineIndex = this.hiddenInput.value.lastIndexOf('\n');
         const linesBeforeCursor = textBeforeCursor.split('\n');
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
-        // Setup variables to adjust for scrolling area of MRTextAreaEntity
+        // Setup variables to adjust for scrolling area of MRTextAreaEntity.
         // TODO - actually use these
         const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
         const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
-        // Below commented needs to finish being fixed
-        // console.log('------start: about to calculate updated cursor position');
-        // console.log('cursor index is: ', cursorIndex, 'lastNewLineIndex is: ', lastNewLineIndex);
-        // let end_index = cursorIndex;
-        // let start_index = lastNewLineIndex + 1;
-        // console.log('this.textObj.textRenderInfo', this.textObj.textRenderInfo);
-        // let selectionRects = getSelectionRects(this.textObj.textRenderInfo, start_index, end_index);
-        // console.log('start_index', start_index, 'end_index', end_index, 'the selection rects:', selectionRects);
-        
-        // const cursorXPosition = currentLineText.length * this._textCharWidth + (currentLineText.length - 1) * this.textObj.letterSpacing;
-        // const cursorXPosition = currentLineText.length * 0.005;
+        // Create temp text obj since getSelectionRects has issues with the main one
         let tempTextObj = this.copyTroikaTextObject(this.textObj);
         tempTextObj.text = currentLineText;
-        // tempTextObj.sync(() => {
-
-        //     console.log('tempTextObj is:', tempTextObj);
-        //     const cursorXPosition = this.getTextWidth(tempTextObj);
-        //     // console.log('------done')
-
-        //     // const widthBetweenLetters = textObj.letterSpacing + 
-        //     // cursorXPosition = textObj.letterSpacing + 
-
-        //     // Doing negative because webpages are the reverse of 3D space
-        //     const cursorYPosition = this.lineHeight * numberOfLines; //-(visibleLinesStartIndex * (this.lineHeight * this.textObj.fontSize * (this._textCharHeight + this.textObj.textRenderInfo.topBaseline));
-        //     // const cursorYPosition = -(visibleLinesStartIndex * (this.lineHeight * this._textCharHeight) * (this.textObj.fontSize));
-        //     console.log('deltaYPos:', cursorYPosition);
-
-        //     const cursorDebugObj = {
-        //         cursorIndex: cursorIndex,
-        //         textBeforeCursor: textBeforeCursor,
-        //         linesBeforeCursor: linesBeforeCursor,
-        //         numberOfLines: numberOfLines,
-        //         currentLineText: currentLineText,
-        //         visibleLinesStartIndex: visibleLinesStartIndex,
-        //         lines: lines,
-        //         cursorXPosition: cursorXPosition,
-        //         cursorYPosition: cursorYPosition,
-        //     };
-
-        //     // console.log('troika obj:', this.textObj);
-        //     // this.printCurrentTextDebugInfo();
-        //     console.log('cursor debug obj:', cursorDebugObj);
-
-        //     // Update the cursor's 3D position
-        //     if (this.cursor) {
-        //         this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
-        //         this.cursor.position.y = this._cursorCalculatedStartingPosition.y - cursorYPosition;
-        //         this.cursor.visible = true;
-        //         console.log('renderable cursor positon is:', this.cursor.position);
-        //     }
-        // });
 
         // Inside the sync callback for tempTextObj
         // todo - incorporate scale offset from parent since tempTextObj doesnt have that yet
@@ -327,15 +230,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const cursorYPosition = 0;//-(numberOfLines-1);//*this._textCharHeight;// * this.lineHeight; // Adjust based on your coordinate system
                 
                 // Update the cursor's 3D position
-                if (this.cursor) {
-                    this.cursor.position.x = this._cursorCalculatedStartingPosition.x + cursorXPosition;
-                    this.cursor.position.y = this._cursorCalculatedStartingPosition.y + cursorYPosition;
-                    this.cursor.visible = true;
-                    console.log('renderable cursor positon is:', this.cursor.position);
-                }
+                this.cursor.position.x = this.cursorStartingPosition.x + cursorXPosition;
+                this.cursor.position.y = this.cursorStartingPosition.y + cursorYPosition;
+                this.cursor.visible = true;
             }
-            console.log('textObj', this.textObj);
-            console.log('TEMPTextObj', tempTextObj);
         });
     }
 }

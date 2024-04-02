@@ -81,39 +81,7 @@ export class MaterialStyleSystem extends MRSystem {
      * @description Sets the background based on compStyle and inputted css elements.
      */
     setBackground(entity) {
-        const color = entity.compStyle.backgroundColor;
-
-        if (color.startsWith('rgba')) {
-            const rgba = color
-                .match(/rgba?\(([^)]+)\)/)[1]
-                .split(',')
-                .map((n) => parseFloat(n.trim()));
-            entity.background.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-            entity.background.material.transparent = rgba.length === 4 && rgba[3] < 1;
-            entity.background.material.opacity = rgba.length === 4 ? rgba[3] : 1;
-            entity.background.visible = !(rgba.length === 4 && rgba[3] === 0);
-        } else if (color.startsWith('rgb')) {
-            // RGB colors are treated as fully opaque
-            entity.background.material.color.setStyle(color);
-            entity.background.material.transparent = false;
-            entity.background.visible = true;
-        } else if (color.startsWith('#')) {
-            const { r, g, b, a } = mrjsUtils.color.hexToRgba(color);
-            entity.background.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
-            entity.background.material.transparent = a < 1;
-            entity.background.material.opacity = a;
-            entity.background.visible = a !== 0;
-        } else {
-            // This assumes the color is a CSS color word or another valid CSS color value
-            entity.background.material.color.setStyle(color);
-            entity.background.material.transparent = false;
-            entity.background.visible = true;
-        }
-
-        if (entity.compStyle.opacity < 1) {
-            entity.background.material.opacity = entity.compStyle.opacity;
-        }
-        entity.background.material.needsUpdate = true;
+        mrjsUtils.color.setObject3DColor(entity.background, entity.compStyle.backgroundColor, entity.compStyle.opacity);
     }
 
     /**

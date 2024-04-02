@@ -28,15 +28,8 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('type', 'text');
     }
 
-    /**
-     *
-     */
-    updateTextDisplay() {
-        // Determine the maximum number of characters per line based on renderable area (example given)
-        const maxCharsPerLine = 50; // This should be dynamically calculated
-
-        this.textObj.text = visibleText;
-
+    connected() {
+        super.connected();
         this.updateCursorPosition();
     }
 
