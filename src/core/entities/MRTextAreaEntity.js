@@ -125,19 +125,19 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
             // TODO
         } else if (isLeftArrow) {
-            console.log('left arrow, start pos:', this.hiddenInput.selectionStart)
-            this.hiddenInput.selectionStart -= 1;
-            if (this.hiddenInput.selectionStart < 0) {
-                this.hiddenInput.selectionStart = 0;
+            // Only want to move when not at the first index
+            if (this.hiddenInput.selectionStart != 0) {
+                this.hiddenInput.selectionStart -= 1;
             }
-            console.log('left arrow, end pos:', this.hiddenInput.selectionStart)
+            console.log('left arrow, end pos:', this.hiddenInput.selectionStart);
         } else if (isRightArrow) {
-            this.hiddenInput.selectionStart += 1;
-            if (this.hiddenInput.selectionStart > this.hiddenInput.value.length) {
-                this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+            // Only want to move when not on the last index
+            if (this.hiddenInput.selectionStart != this.hiddenInput.value.length - 1) {
+                this.hiddenInput.selectionStart += 1;
             }
         }
-        this.updateCursorPosition();
+        this.updateCursorPosition(true);
+
 
         // // Ensure the cursor position is updated to reflect the current caret position
         // setTimeout(() => {
@@ -159,7 +159,34 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     /**
      *
      */
-    updateCursorPosition() {
+    updateCursorPosition(fromCursorMove=false) {
+
+        const updateBasedOnSelectionRects = (textBeforeCursor, cursorIndex) => {
+            // Assuming getSelectionRects is properly imported and used here
+            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
+            if (selectionRects.length > 0) {
+                let lastRect = selectionRects[selectionRects.length - 1];
+
+                // Check if cursor matches our font size before using values.
+                const cursorVisibleHeight = lastRect.top - lastRect.bottom;
+                if (this.cursor.geometry.height != cursorVisibleHeight) {
+                    this.cursor.geometry.height = cursorVisibleHeight;
+                    this.cursor.geometry.needsUpdate = true;
+                    this.cursorHeight = cursorVisibleHeight;
+                }
+
+                // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
+                // a little bit of buffer room.
+                const cursorXPosition = lastRect.right + this.cursorWidth;
+                const cursorYPosition = lastRect.bottom + this.cursorHeight;
+
+                // Update the cursor's 3D position
+                this.cursor.position.x = this.cursorStartingPosition.x + cursorXPosition;
+                this.cursor.position.y = this.cursorStartingPosition.y + cursorYPosition;
+                this.cursor.visible = true;
+            }
+        }
+
         console.log('here in update cursor position');
         // Check if we have any DOM element to work with.
         if (!this.hiddenInput) {
@@ -189,31 +216,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // XXX handle visible lines for scrolloffset here in future
 
-        this.textObj.sync(() => {
-            // Assuming getSelectionRects is properly imported and used here
-            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-            if (selectionRects.length > 0) {
-                let lastRect = selectionRects[selectionRects.length - 1];
+        console.log('here');
 
-                // Check if cursor matches our font size before using values.
-                const cursorVisibleHeight = lastRect.top - lastRect.bottom;
-                if (this.cursor.geometry.height != cursorVisibleHeight) {
-                    this.cursor.geometry.height = cursorVisibleHeight;
-                    this.cursor.geometry.needsUpdate = true;
-                    this.cursorHeight = cursorVisibleHeight;
-                }
-
-                // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
-                // a little bit of buffer room.
-                const cursorXPosition = lastRect.right + this.cursorWidth;
-                const cursorYPosition = lastRect.bottom + this.cursorHeight;
-
-                // Update the cursor's 3D position
-                this.cursor.position.x = this.cursorStartingPosition.x + cursorXPosition;
-                this.cursor.position.y = this.cursorStartingPosition.y + cursorYPosition;
-                this.cursor.visible = true;
-            }
-        });
+        // Separating textObj sync from the cursor update based on rects
+        // since textObj sync resolves when there's actual changes to the
+        // object. Otherwise, it'll hang and never hit the update function.
+        if (fromCursorMove) {
+            updateBasedOnSelectionRects(textBeforeCursor, cursorIndex);
+        } else {
+            this.textObj.sync(() => {
+                updateBasedOnSelectionRects(textBeforeCursor, cursorIndex);
+            });
+        }
     }
 }
 
