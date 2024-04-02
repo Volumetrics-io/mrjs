@@ -76,35 +76,13 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     }
 
     /**
-     * Overrides the connected method to include setup for handling multiline text.
-     */
-    // connected() {
-    //     super.connected();
-    // }
-
-    /**
      *
      */
     updateTextDisplay() {
-        // Determine the maximum number of characters per line based on renderable area (example given)
-        const maxCharsPerLine = 50; // This should be dynamically calculated
+        // XXX - add scrolling logic in here for areas where text is greater than
+        // the width/domain the user creates visually
 
-        const lines = this.hiddenInput.value.split('\n').map((line) => {
-            // Truncate or split lines here based on maxCharsPerLine if implementing horizontal scrolling
-            return line.substring(0, maxCharsPerLine);
-        });
-
-        // Existing logic to determine visibleLines based on scrollOffset and maxVisibleLines
-        const visibleLines = lines.slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
-        const visibleText = visibleLines.join('\n');
-
-        this.textObj.text = visibleText;
-        // console.log('text updated: ', this.textObj.text);
-
-        // Logic to adjust scrollOffset for new input, ensuring the latest text is visible
-        if (lines.length > this.maxVisibleLines && this.hiddenInput === document.activeElement) {
-            this.scrollOffset = Math.max(0, lines.length - this.maxVisibleLines);
-        }
+        this.textObj.text = this.hiddenInput.value;
 
         this.updateCursorPosition();
     }
@@ -190,13 +168,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             return;
         }
 
-        // Check if cursor matches our font size before using values.
-        if (this.cursor.geometry.height != this.textObj.fontSize) {
-            this.cursor.geometry.height = this.textObj.fontSize;
-            this.cursor.geometry.needsUpdate = true;
-            this.cursorHeight = this.textObj.fontSize;
-        }
-
         // Since no text is selected, this and selectionEnd are just the cursor position.
         // XXX - when we actually allow for seleciton in future, some of the below will need to
         // be thought through again.
@@ -217,10 +188,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
+        // Leave this as a future todo:
         // Setup variables to adjust for scrolling area of MRTextAreaEntity.
-        // TODO - actually use these
-        const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
-        const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
+        // const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
+        // const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
         // Inside the sync callback for tempTextObj
         // todo - incorporate scale offset from parent since tempTextObj doesnt have that yet
@@ -230,10 +201,22 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
             if (selectionRects.length > 0) {
                 let lastRect = selectionRects[selectionRects.length - 1];
-                const cursorXPosition = lastRect.right; // X position is the right of the last rectangle
-                const cursorYPosition = 0;//-(numberOfLines-1);//*this._textCharHeight;// * this.lineHeight; // Adjust based on your coordinate system
-                
+
+                // Check if cursor matches our font size before using values.
+                const cursorVisibleHeight = lastRect.top - lastRect.bottom;
+                if (this.cursor.geometry.height != cursorVisibleHeight) {
+                    this.cursor.geometry.height = cursorVisibleHeight;
+                    this.cursor.geometry.needsUpdate = true;
+                    this.cursorHeight = cursorVisibleHeight;
+                }
+
+                // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
+                // a little bit of buffer room.
+                const cursorXPosition = lastRect.right + this.cursorWidth;
+                const cursorYPosition = lastRect.bottom + this.cursorHeight;
+
                 // Update the cursor's 3D position
+                console.log(this.textObj);
                 this.cursor.position.x = this.cursorStartingPosition.x + cursorXPosition;
                 this.cursor.position.y = this.cursorStartingPosition.y + cursorYPosition;
                 this.cursor.visible = true;

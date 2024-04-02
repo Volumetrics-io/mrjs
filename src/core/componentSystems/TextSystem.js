@@ -70,6 +70,7 @@ export class TextSystem extends MRSystem {
      * @description The per entity triggered update call. Handles updating all text items including updates for style and cleaning of content for special characters.
      */
     _updateSpecificEntity(entity) {
+        this.checkIfTextContentChanged(entity);
         this.handleTextContentUpdate(entity);
     }
 
@@ -122,7 +123,7 @@ export class TextSystem extends MRSystem {
                 }
             } else {
                 // MRTextEntity
-                
+
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
             }
@@ -135,9 +136,8 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
-            if (this.checkIfTextContentChanged(entity)) {
-                this.handleTextContentUpdate(entity);
-            }
+            this.checkIfTextContentChanged(entity);
+            this.handleTextContentUpdate(entity);
         }
     };
 
