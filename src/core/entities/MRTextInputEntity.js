@@ -92,6 +92,10 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
     }
 
+    updateSelectionPosition() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -118,12 +122,23 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      *
      */
-    _focus() {
+    _focus(event) {
         if (!this.hiddenInput) {
             return;
         }
         this.hiddenInput.focus();
-        this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+
+        if (event) {
+            // An actual mouse selection event triggered this, so we need
+            // to position the cursor based on the selection location in
+            // the geometry of text.
+            this.hiddenInput.selectionStart = this.updateSelectionPosition(event);
+        } else {
+            // A pure focus call triggered this, so we default the selection
+            // location to be the current length of text.
+            this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+        }
+        
 
         this.updateCursorPosition();
         this.cursor.visible = true;
@@ -148,8 +163,8 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - is this a reasonable approach? is javascript
         // really this clunky?
 
-        this.addEventListener('click', () => {
-            this._focus();
+        this.addEventListener('click', (event) => {
+            this._focus(event);
         });
 
         this.addEventListener('blur', () => {

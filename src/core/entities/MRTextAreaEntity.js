@@ -93,32 +93,30 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      */
     handleKeydown(event) {
         const { keyCode } = event;
-        const isUp = keyCode === 38; // Arrow up
-        const isDown = keyCode === 40; // Arrow down
-        const isBackspace = keyCode === 8; // Backspace
-        const isDelete = keyCode === 46; // Delete
-        const isEnter = keyCode === 13; // Enter
+        const isUpArrow = keyCode === 38;
+        const isDownArrow = keyCode === 40;
+        const isBackspace = keyCode === 8;
+        const isDelete = keyCode === 46;
+        const isEnter = keyCode === 13;
 
         // Adjust for special keys that alter text
         if (isBackspace || isDelete || isEnter) {
             setTimeout(() => {
-                this.updateTextDisplay(); // Ensure text display updates after key press
+                // Ensure text display updates after key press
+                this.updateTextDisplay();
             }, 0);
         }
 
         // Scroll handling for arrow keys
         if (isUp) {
-            if (this.scrollOffset > 0) {
-                this.scrollOffset--;
-                this.updateTextDisplay();
-            }
-            event.preventDefault(); // Prevent default to avoid moving the caret to the start/end
+            // XXX - handle scrolloffset in future.
+            // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
+            this.updateTextDisplay();
+            event.preventDefault(); 
         } else if (isDown) {
-            if (this.scrollOffset < this.hiddenInput.value.split('\n').length - this.maxVisibleLines) {
-                this.scrollOffset++;
-                this.updateTextDisplay();
-            }
-            event.preventDefault(); // Prevent default to avoid moving the caret to the start/end
+            // XXX - handle scrolloffset in future
+            // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
+            this.updateTextDisplay();
         }
 
         // Ensure the cursor position is updated to reflect the current caret position
@@ -127,36 +125,15 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }, 0);
     }
 
-    copyTroikaTextObject(originalTextMesh) {
-        // Create a new instance of the text mesh class.
-        const newTextMesh = new Text();
-
-        // List of properties you want to copy.
-        // This is a basic set; depending on your usage, you may need to add more.
-        const propertiesToCopy = [
-            'text',
-            'fontSize',
-            'font',
-            'color',
-            'maxWidth',
-            'lineHeight',
-            'letterSpacing',
-            'textAlign',
-            'material',
-            // Add any other properties that are essential for your use case.
-        ];
-
-        // Iterate over each property and copy it from the original to the new object.
-        propertiesToCopy.forEach(prop => {
-            if (originalTextMesh.hasOwnProperty(prop)) {
-              newTextMesh[prop] = originalTextMesh[prop];
-            }
+    /**
+     * 
+     */
+    updateSelectionPosition(event) {
+        console.log('trigger event on focus for loc:', event);
+        console.log('event pos in 2d space:', event.clientX, event.clientY);
+        this.textObj.sync(() => {
+            // getCaretAtPoint(this.textObj.textRenderInfo, x, y);
         });
-
-        // Don't forget to call .sync() if needed to ensure the text is rendered.
-        newTextMesh.sync();
-
-        return newTextMesh;
     }
 
     /**
@@ -188,14 +165,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const numberOfLines = linesBeforeCursor.length;
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
-        // Leave this as a future todo:
-        // Setup variables to adjust for scrolling area of MRTextAreaEntity.
-        // const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
-        // const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
+        // XXX handle visible lines for scrolloffset here in future
 
-        // Inside the sync callback for tempTextObj
-        // todo - incorporate scale offset from parent since tempTextObj doesnt have that yet
-        // then call sync for render so the calculations fit properly as expected
         this.textObj.sync(() => {
             // Assuming getSelectionRects is properly imported and used here
             let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
@@ -216,7 +187,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const cursorYPosition = lastRect.bottom + this.cursorHeight;
 
                 // Update the cursor's 3D position
-                console.log(this.textObj);
                 this.cursor.position.x = this.cursorStartingPosition.x + cursorXPosition;
                 this.cursor.position.y = this.cursorStartingPosition.y + cursorYPosition;
                 this.cursor.visible = true;
