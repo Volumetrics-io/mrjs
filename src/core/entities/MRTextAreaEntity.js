@@ -185,10 +185,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      *
      */
     updateCursorPosition() {
+        // Check if we have any DOM element to work with.
         if (!this.hiddenInput) {
             return;
         }
-        
+
+        // Check if cursor matches our font size before using values.
+        if (this.cursor.geometry.height != this.textObj.fontSize) {
+            this.cursor.geometry.height = this.textObj.fontSize;
+            this.cursor.geometry.needsUpdate = true;
+            this.cursorHeight = this.textObj.fontSize;
+        }
+
         // Since no text is selected, this and selectionEnd are just the cursor position.
         // XXX - when we actually allow for seleciton in future, some of the below will need to
         // be thought through again.
@@ -214,16 +222,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const visibleLinesStartIndex = Math.max(0, numberOfLines - this.scrollOffset - 1);
         const lines = this.hiddenInput.value.split('\n').slice(this.scrollOffset, this.scrollOffset + this.maxVisibleLines);
 
-        // Create temp text obj since getSelectionRects has issues with the main one
-        let tempTextObj = this.copyTroikaTextObject(this.textObj);
-        tempTextObj.text = currentLineText;
-
         // Inside the sync callback for tempTextObj
         // todo - incorporate scale offset from parent since tempTextObj doesnt have that yet
         // then call sync for render so the calculations fit properly as expected
-        tempTextObj.sync(() => {
+        this.textObj.sync(() => {
             // Assuming getSelectionRects is properly imported and used here
-            let selectionRects = getSelectionRects(tempTextObj.textRenderInfo, 0, cursorIndex);
+            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
             if (selectionRects.length > 0) {
                 let lastRect = selectionRects[selectionRects.length - 1];
                 const cursorXPosition = lastRect.right; // X position is the right of the last rectangle

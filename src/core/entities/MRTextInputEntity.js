@@ -124,16 +124,9 @@ export class MRTextInputEntity extends MRTextEntity {
         }
         this.hiddenInput.focus();
         this.hiddenInput.selectionStart = this.hiddenInput.value.length;
-        this.cursor.visible = false;
 
-        if (this.cursor.geometry.height != this.textObj.fontSize) {
-            this.cursor.geometry.height = this.textObj.fontSize;
-            this.cursor.geometry.needsUpdate = true;
-            this.cursorHeight = this.textObj.fontSize;
-        }
-        console.log('hit focus, updating cursor position now - before:', this.cursor.position.x, this.cursor.position.y);
         this.updateCursorPosition();
-        console.log('after:', this.cursor.position.x, this.cursor.position.y)
+        this.cursor.visible = true;
     }
 
     _blur() {
