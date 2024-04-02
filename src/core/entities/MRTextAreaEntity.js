@@ -92,8 +92,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @param {event} event - the keydown event
      */
     handleKeydown(event) {
+        console.log('helloooo');
         const { keyCode } = event;
+        const isLeftArrow = keyCode == 37;
         const isUpArrow = keyCode === 38;
+        const isRightArrow = keyCode == 39;
         const isDownArrow = keyCode === 40;
         const isBackspace = keyCode === 8;
         const isDelete = keyCode === 46;
@@ -101,28 +104,45 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Adjust for special keys that alter text
         if (isBackspace || isDelete || isEnter) {
-            setTimeout(() => {
-                // Ensure text display updates after key press
-                this.updateTextDisplay();
-            }, 0);
+            this.updateTextDisplay();
+
+            // setTimeout(() => {
+            //     // Ensure text display updates after key press
+            //     this.updateTextDisplay();
+            // }, 0);
         }
+
+        // TODO - we need to also make sure we are updating selectionEnd as well - need
+        // to cleanup this workflow
 
         // Scroll handling for arrow keys
-        if (isUp) {
+        if (isUpArrow) {
             // XXX - handle scrolloffset in future.
             // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
-            this.updateTextDisplay();
-            event.preventDefault(); 
-        } else if (isDown) {
+            // TODO
+        } else if (isDownArrow) {
             // XXX - handle scrolloffset in future
             // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
-            this.updateTextDisplay();
+            // TODO
+        } else if (isLeftArrow) {
+            console.log('left arrow, start pos:', this.hiddenInput.selectionStart)
+            this.hiddenInput.selectionStart -= 1;
+            if (this.hiddenInput.selectionStart < 0) {
+                this.hiddenInput.selectionStart = 0;
+            }
+            console.log('left arrow, end pos:', this.hiddenInput.selectionStart)
+        } else if (isRightArrow) {
+            this.hiddenInput.selectionStart += 1;
+            if (this.hiddenInput.selectionStart > this.hiddenInput.value.length) {
+                this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+            }
         }
+        this.updateCursorPosition();
 
-        // Ensure the cursor position is updated to reflect the current caret position
-        setTimeout(() => {
-            this.updateCursorPosition();
-        }, 0);
+        // // Ensure the cursor position is updated to reflect the current caret position
+        // setTimeout(() => {
+        //     this.updateCursorPosition();
+        // }, 0);
     }
 
     /**
@@ -140,6 +160,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      *
      */
     updateCursorPosition() {
+        console.log('here in update cursor position');
         // Check if we have any DOM element to work with.
         if (!this.hiddenInput) {
             return;
@@ -149,6 +170,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // XXX - when we actually allow for seleciton in future, some of the below will need to
         // be thought through again.
         const cursorIndex = this.hiddenInput.selectionStart;
+        console.log('found cursor index as:', cursorIndex);
         
         // early escape for empty text
         if (cursorIndex == 0) {

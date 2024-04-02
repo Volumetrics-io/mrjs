@@ -186,7 +186,8 @@ export class MRTextInputEntity extends MRTextEntity {
         this.addEventListener('update-cursor-position', () => {
             this.updateCursorPosition();
         });
-        this.addEventListener('keydown', (event) => {
+        this.hiddenInput.addEventListener('keydown', (event) => {
+            console.log('keydown event was triggered');
             this.handleKeydown(event);
         });
     }
