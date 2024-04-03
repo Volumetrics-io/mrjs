@@ -87,21 +87,28 @@ export class ControlSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-            /* Handle the collision event. */
 
-            if (started) {
-                this.onContactStart(handle1, handle2);
-            } else {
-                this.onContactEnd(handle1, handle2);
-            }
-        });
+        if (!mrjsUtils.xr.isPresenting) { return }
 
-        this.checkCollisions(this.app.user.hands.left);
-        this.checkCollisions(this.app.user.hands.right);
+        if(!this.down) {
+            mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+                /* Handle the collision event. */
+                if (started) {
+                    this.onContactStart(handle1, handle2);
+                } else {
+                    this.onContactEnd(handle1, handle2);
+                }
+            });
 
-        if (mrjsUtils.xr.isPresenting && !this.directTouch) {
+            this.checkCollisions(this.app.user.hands.left);
+            this.checkCollisions(this.app.user.hands.right);
+        }
+
+
+        if(!this.directTouch) {
             this.pointerRay();
+        } else if (this.cursorViz.visible){
+            this.clearPointer()
         }
         this.directTouch = false
     }
@@ -313,6 +320,19 @@ export class ControlSystem extends MRSystem {
         }
     }
 
+    /**
+     *
+     */
+    clearPointer() {
+        this.cursorViz.visible = false;
+        if(this.currentEntity){
+            this.currentEntity.focus = false;
+            this.hoverEndEvents()
+        }
+
+        this.currentEntity = null;
+    }
+
     /************ Interaction Events ************/
 
     /**
@@ -434,8 +454,8 @@ export class ControlSystem extends MRSystem {
     }
 
     hoverEndEvents = () => {
-        this.currentEntity.classList.remove('hover');
-        this.currentEntity.dispatchEvent(
+        this.currentEntity?.classList.remove('hover');
+        this.currentEntity?.dispatchEvent(
             new MouseEvent('mouseout', {
                 bubbles: true,
             })
@@ -448,7 +468,7 @@ export class ControlSystem extends MRSystem {
         //     })
         // );
 
-        this.currentEntity.dispatchEvent(
+        this.currentEntity?.dispatchEvent(
             new CustomEvent('hoverend', {
                 bubbles: true
             })
