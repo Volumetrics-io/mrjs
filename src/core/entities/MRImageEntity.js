@@ -44,7 +44,7 @@ export class MRImageEntity extends MRMediaEntity {
      * @description Callback function of MREntity - handles setting up this Image and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     async connected() {
-        await super.connected()
+        await super.connected();
         this.media = document.createElement('img');
         super.connected();
     }

@@ -79,7 +79,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * Overrides the connected method to include setup for handling multiline text.
      */
     async connected() {
-        await super.connected()
+        await super.connected();
     }
 
     /**

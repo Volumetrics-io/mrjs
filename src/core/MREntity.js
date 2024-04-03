@@ -388,7 +388,7 @@ export class MREntity extends MRElement {
             this.triggerGeometryStyleUpdate();
             this.triggerMaterialStyleUpdate();
         });
-        
+
         // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization
         // const intersectionObserver = new IntersectionObserver((entries) => {
         //     for (const entry of entries) {
@@ -403,7 +403,6 @@ export class MREntity extends MRElement {
         //     intersectionObserver.observe(this);
         // });
         // intersectionObserver.observe(this);
-
 
         document.addEventListener('engine-started', async (event) => {
             await this.connected();

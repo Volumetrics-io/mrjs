@@ -55,7 +55,7 @@ export class MRPanelEntity extends MRDivEntity {
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     async connected() {
-        await super.connected()
+        await super.connected();
         this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 1));
         window.addEventListener('load', (event) => {
             this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));

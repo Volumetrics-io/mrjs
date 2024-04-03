@@ -63,7 +63,9 @@ export class TextSystem extends MRSystem {
      * @param {MREntity} entity - the entity being set up
      */
     onNewEntity(entity) {
-        if(!(entity instanceof MRTextEntity)) { return }
+        if (!(entity instanceof MRTextEntity)) {
+            return;
+        }
         this.registry.add(entity);
         this._updateSpecificEntity(entity);
     }

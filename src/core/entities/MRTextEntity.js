@@ -43,11 +43,11 @@ export class MRTextEntity extends MRDivEntity {
      * @description Callback function of MREntity - sets up the textObject of the text item.
      */
     async connected() {
-        await super.connected()
+        await super.connected();
         const text = this.textContent
-                        .replace(/(\n)\s+/g, '$1')
-                        .replace(/(\r\n|\n|\r)/gm, ' ')
-                        .trim();
+            .replace(/(\n)\s+/g, '$1')
+            .replace(/(\r\n|\n|\r)/gm, ' ')
+            .trim();
         this.textObj.text = text.length > 0 ? text : ' ';
         this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.triggerGeometryStyleUpdate();

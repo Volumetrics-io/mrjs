@@ -103,7 +103,6 @@ export class MRModelEntity extends MRDivEntity {
             });
 
             this.onLoad();
-
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }

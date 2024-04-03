@@ -35,7 +35,6 @@ window.mobileCheck = function () {
 
 const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started', 'resize'];
 
-
 /**
  * @class MRApp
  * @classdesc The engine handler for running MRjs as an App. `mr-app`
@@ -123,7 +122,6 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
-
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
             this.user = new MRUser(this.camera, this.scene);
@@ -154,15 +152,15 @@ export class MRApp extends MRElement {
         });
 
         this.addEventListener('new-entity', (event) => {
-            for(const system of this.systems) {
-                system._onNewEntity(event.target)
+            for (const system of this.systems) {
+                system._onNewEntity(event.target);
             }
         });
 
         for (const eventType of GLOBAL_UPDATE_EVENTS) {
             document.addEventListener(eventType, (event) => {
-                for(const system of this.systems) {
-                    system.eventUpdate()
+                for (const system of this.systems) {
+                    system.eventUpdate();
                 }
             });
         }
