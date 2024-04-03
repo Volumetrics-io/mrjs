@@ -40,6 +40,7 @@ import './core/entities/MRMediaEntity';
 import './core/entities/MRModelEntity';
 import './core/entities/MRPanelEntity';
 import './core/entities/MRSkyBoxEntity';
+import './core/entities/MRStatsEntity';
 import './core/entities/MRTextEntity';
 import './core/entities/MRTextAreaEntity';
 import './core/entities/MRTextFieldEntity';
@@ -59,6 +60,7 @@ import './core/componentSystems/MaskingSystem';
 import './core/componentSystems/MaterialStyleSystem';
 import './core/componentSystems/PhysicsSystem';
 import './core/componentSystems/SkyBoxSystem';
+import './core/componentSystems/StatsSystem';
 import './core/componentSystems/TextSystem';
 
 // EXPORTS

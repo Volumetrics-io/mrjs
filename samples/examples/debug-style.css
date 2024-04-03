@@ -84,7 +84,7 @@
   --main-shadow: 0 0 1rem -0.5rem hsla(30, 50%, 25%, 50%);
 }
 
-mr-text {
+mr-text, mr-stats {
   font-family: 'Roboto';
   line-height: 100%;
   font-size: 16px;
