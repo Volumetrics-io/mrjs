@@ -1,33 +1,34 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 import { XRButton } from 'three/addons/webxr/XRButton.js';
-
 import Stats from 'stats.js';
-
-import { MRElement } from 'mrjs/core/MRElement';
-import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
 
 import { mrjsUtils } from 'mrjs';
 
+import { MRElement } from 'mrjs/core/MRElement';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
+
+import MRUser from 'mrjs/core/user/MRUser';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
+import { MRStatsEntity } from 'mrjs/core/entities/MRStatsEntity';
+
+import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
-import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
-import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
-import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
-import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
-import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
+import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
-import MRUser from 'mrjs/core/user/MRUser';
+import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
+
 
 ('use strict');
 window.mobileCheck = function () {
@@ -241,10 +242,20 @@ export class MRApp extends MRElement {
 
         const statsEnabled = this.getAttribute('stats');
 
-        if (statsEnabled) {
-            this.stats = new Stats();
-            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild(this.stats.dom);
+        if (this.getAttribute('stats') ?? false) {
+            this.stats = new MRStatsEntity();
+            this.stats.connected();
+            this.add(this.stats);
+
+            // Old version of stats using the Stats.js visual 
+            // setup. Commenting out for now and leaving for future.
+            // We dont want to use this at the moment in headset
+            // because it can be incredibly costly. Turn this or
+            // a better variation back on when that's been optimized.
+            //
+            // this.stats = new Stats();
+            // this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+            // document.body.appendChild(this.stats.dom);
         }
 
         if (this.debug || this.orbital) {
@@ -477,12 +488,6 @@ export class MRApp extends MRElement {
         // ----- grab important vars ----- //
 
         const deltaTime = this.clock.getDelta();
-
-        // ----- Update stats if enabled ----- //
-
-        if (this.stats) {
-            this.stats.update();
-        }
 
         // ----- Update needed items ----- //
 
