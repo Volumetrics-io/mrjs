@@ -47,13 +47,12 @@ export class AnimationSystem extends MRSystem {
 
         await new Promise((resolve) => {
             const interval = setInterval(() => {
-              if (entity.loaded) {
-                clearInterval(interval);
-                resolve();
-              }
+                if (entity.loaded) {
+                    clearInterval(interval);
+                    resolve();
+                }
             }, 100); // Checks every 100ms
-          });
-
+        });
 
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations

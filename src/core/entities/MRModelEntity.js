@@ -18,7 +18,7 @@ export class MRModelEntity extends MRDivEntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
-        this.loading = false
+        this.loading = false;
         this.loaded = false;
 
         // Store animations for the AnimationSystem to use
@@ -29,7 +29,7 @@ export class MRModelEntity extends MRDivEntity {
         this.animations = [];
     }
 
-    #src = null
+    #src = null;
 
     /**
      * @function
@@ -55,11 +55,11 @@ export class MRModelEntity extends MRDivEntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        let url = mrjsUtils.html.resolvePath(value)
-        if(this.#src != url) {
-            this.#src = url
+        let url = mrjsUtils.html.resolvePath(value);
+        if (this.#src != url) {
+            this.#src = url;
             this.setAttribute('src', url);
-            if(!this.loading) {
+            if (!this.loading) {
                 this.loadModel();
             }
         }
@@ -70,7 +70,7 @@ export class MRModelEntity extends MRDivEntity {
      * @description Async function that fills in this Model object based on src file information
      */
     async loadModel() {
-        this.loading = true
+        this.loading = true;
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         try {
@@ -121,22 +121,22 @@ export class MRModelEntity extends MRDivEntity {
      * Includes loading up the model and associated data.
      */
     async connected() {
-        this.#src = this.getAttribute('src') ? mrjsUtils.html.resolvePath(this.getAttribute('src')) : null
+        this.#src = this.getAttribute('src') ? mrjsUtils.html.resolvePath(this.getAttribute('src')) : null;
         if (!this.src || this.loaded) {
             return;
         }
 
-        if(!this.loading) {
+        if (!this.loading) {
             await this.loadModel();
         } else {
             return new Promise((resolve) => {
                 const interval = setInterval(() => {
-                  if (this.loaded) {
-                    clearInterval(interval);
-                    resolve();
-                  }
+                    if (this.loaded) {
+                        clearInterval(interval);
+                        resolve();
+                    }
                 }, 100);
-              });
+            });
         }
     }
 

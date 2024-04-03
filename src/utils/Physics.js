@@ -20,7 +20,7 @@ physics.CollisionGroups = {
  */
 physics.RAPIER = null;
 
-physics.initialized = false
+physics.initialized = false;
 
 physics.initializePhysics = async function () {
     if (!physics.initialized) {

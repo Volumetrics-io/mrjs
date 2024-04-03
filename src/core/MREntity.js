@@ -397,7 +397,7 @@ export class MREntity extends MRElement {
         // });
         // intersectionObserver.observe(this);
 
-        if(mrjsUtils.physics.initialized) {
+        if (mrjsUtils.physics.initialized) {
             await this.connected();
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             this.loadAttributes();
