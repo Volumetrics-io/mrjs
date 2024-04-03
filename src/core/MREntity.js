@@ -313,7 +313,7 @@ export class MREntity extends MRElement {
      * @function
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
-    connectedCallback() {
+    async connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
 
         if (!(this.parentElement instanceof MRElement)) {
@@ -404,10 +404,15 @@ export class MREntity extends MRElement {
         // });
         // intersectionObserver.observe(this);
 
-        document.addEventListener('engine-started', async (event) => {
+        if(mrjsUtils.physics.initialized) {
             await this.connected();
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-        });
+        } else {
+            document.addEventListener('engine-started', async (event) => {
+                await this.connected();
+                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            });
+        }
     }
 
     /**

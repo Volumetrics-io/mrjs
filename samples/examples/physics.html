@@ -29,8 +29,8 @@
             for(let y = 0; y < height; y++) {
                 for(let z = -depth / 2; z < depth / 2; z++) {
                     let model = document.createElement('mr-model')
-                    model.src = "../examples-assets/models/animation_koifish.glb"
                     app.appendChild(model)
+                    model.src = "../examples-assets/models/animation_koifish.glb"
                     model.components.set('animation', {
                         clip: 1,
                         action: 'play'
