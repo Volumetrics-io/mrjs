@@ -29,7 +29,6 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
-
 ('use strict');
 window.mobileCheck = function () {
     return mrjsUtils.display.mobileCheckFunction();
@@ -241,7 +240,7 @@ export class MRApp extends MRElement {
         }
 
         if (this.getAttribute('stats') ?? false) {
-            // Old version of stats using the Stats.js visual 
+            // Old version of stats using the Stats.js visual
             // setup. Leaving to allow for top left quick visual of stats.
             // Is /not/ performant in headset. Documentation notes this.
             //
