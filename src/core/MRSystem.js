@@ -98,8 +98,9 @@ export class MRSystem {
     eventUpdate() {}
 
     /**
-     *
-     * @param entity
+     * @function
+     * @description internal function, called when a new entity is added to the scene
+     * @param {MREntity} entity - the entity being added.
      */
     _onNewEntity(entity) {
         if (this.registry.has(entity)) {
@@ -139,7 +140,7 @@ export class MRSystem {
 
     /**
      * @function
-     * @description Handles the component and registry aspect of the event when an entity component attaches to this system.
+     * @description (async) Handles the component and registry aspect of the event when an entity component attaches to this system.
      * @param {object} event - the attach event
      */
     onAttach = async (event) => {

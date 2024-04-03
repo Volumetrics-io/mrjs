@@ -159,6 +159,7 @@ export class MRApp extends MRElement {
             }
         });
 
+        // Call `eventUpdate` on all systems if any of the global events are triggered
         for (const eventType of GLOBAL_UPDATE_EVENTS) {
             document.addEventListener(eventType, (event) => {
                 for (const system of this.systems) {
