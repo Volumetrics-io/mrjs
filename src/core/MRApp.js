@@ -34,6 +34,9 @@ window.mobileCheck = function () {
     return mrjsUtils.display.mobileCheckFunction();
 };
 
+// events that trigger the eventUpdate call for all MRSystems
+const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started', 'resize'];
+
 /**
  * @class MRApp
  * @classdesc The engine handler for running MRjs as an App. `mr-app`
@@ -121,15 +124,6 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
-        // order matters for all the below system creation items
-        this.panelSystem = new PanelSystem();
-        this.layoutSystem = new LayoutSystem();
-        this.textSystem = new TextSystem();
-        this.geometryStyleSystem = new GeometryStyleSystem();
-        this.materialStyleSystem = new MaterialStyleSystem();
-        this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
-        this.statsSystem = new StatsSystem();
-
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
             this.user = new MRUser(this.camera, this.scene);
@@ -137,6 +131,14 @@ export class MRApp extends MRElement {
             if (this.getAttribute('occlusion') == 'spotlight') {
                 this.scene.add(this.user.initSpotlight());
             }
+            // order matters for all the below system creation items
+            this.panelSystem = new PanelSystem();
+            this.layoutSystem = new LayoutSystem();
+            this.textSystem = new TextSystem();
+            this.geometryStyleSystem = new GeometryStyleSystem();
+            this.materialStyleSystem = new MaterialStyleSystem();
+            this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
+            this.statsSystem = new StatsSystem();
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
@@ -150,6 +152,21 @@ export class MRApp extends MRElement {
             this.clippingSystem = new ClippingSystem();
             this.maskingSystem = new MaskingSystem();
         });
+
+        this.addEventListener('new-entity', (event) => {
+            for (const system of this.systems) {
+                system._onNewEntity(event.target);
+            }
+        });
+
+        // Call `eventUpdate` on all systems if any of the global events are triggered
+        for (const eventType of GLOBAL_UPDATE_EVENTS) {
+            document.addEventListener(eventType, (event) => {
+                for (const system of this.systems) {
+                    system.eventUpdate();
+                }
+            });
+        }
     }
 
     /**

@@ -18,6 +18,7 @@ export class MRModelEntity extends MRDivEntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+        this.loading = false;
         this.loaded = false;
 
         // Store animations for the AnimationSystem to use
@@ -27,6 +28,8 @@ export class MRModelEntity extends MRDivEntity {
         // guaranteed that theyre not animations for sub-group objects.
         this.animations = [];
     }
+
+    #src = null;
 
     /**
      * @function
@@ -39,7 +42,7 @@ export class MRModelEntity extends MRDivEntity {
      * @returns {string} the value of the src html attribute
      */
     get src() {
-        return this.getAttribute('src');
+        return this.#src;
     }
 
     /**
@@ -52,9 +55,14 @@ export class MRModelEntity extends MRDivEntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        this.setAttribute('src', mrjsUtils.html.resolvePath(value));
-        this.loaded = false;
-        this.loadModel();
+        let url = mrjsUtils.html.resolvePath(value);
+        if (this.#src != url) {
+            this.#src = url;
+            this.setAttribute('src', url);
+            if (!this.loading) {
+                this.loadModel();
+            }
+        }
     }
 
     /**
@@ -62,6 +70,7 @@ export class MRModelEntity extends MRDivEntity {
      * @description Async function that fills in this Model object based on src file information
      */
     async loadModel() {
+        this.loading = true;
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         try {
@@ -101,8 +110,6 @@ export class MRModelEntity extends MRDivEntity {
             });
 
             this.onLoad();
-
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }
@@ -110,15 +117,27 @@ export class MRModelEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
+     * @description (async) Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
      * Includes loading up the model and associated data.
      */
-    connected() {
+    async connected() {
+        this.#src = this.getAttribute('src') ? mrjsUtils.html.resolvePath(this.getAttribute('src')) : null;
         if (!this.src || this.loaded) {
             return;
         }
 
-        this.loadModel();
+        if (!this.loading) {
+            await this.loadModel();
+        } else {
+            return new Promise((resolve) => {
+                const interval = setInterval(() => {
+                    if (this.loaded) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
     }
 
     /**

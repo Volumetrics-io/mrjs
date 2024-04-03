@@ -305,15 +305,15 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
+     * @description (async) does nothing. Is called by the connectedCallback.
      */
-    connected() {}
+    async connected() {}
 
     /**
      * @function
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
-    connectedCallback() {
+    async connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
 
         if (!(this.parentElement instanceof MRElement)) {
@@ -340,17 +340,6 @@ export class MREntity extends MRElement {
         this.mutationCallback = this.mutationCallback.bind(this);
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
-
-        /** Handle scene Global level events */
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.loadAttributes();
-        });
-        this.loadAttributes();
-
-        document.addEventListener('engine-started', (event) => {
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-        });
 
         /** Handle events specific to this entity */
         // note: these will need the trigger for Material or Geometry if applicable
@@ -393,22 +382,34 @@ export class MREntity extends MRElement {
             this.triggerMaterialStyleUpdate();
         });
 
-        const intersectionObserver = new IntersectionObserver((entries) => {
-            for (const entry of entries) {
-                this._boundingClientRect = entry.boundingClientRect;
-            }
-            // Refresh the rect info to keep it up-to-date as much as possible.
-            // It seems that the callback is always called once soon after observe() is called,
-            // regardless of the intersection state of the entity.
-            // TODO: Confirm whether this behavior is intended. If it is not, there may be future
-            //       behavior changes or it may not work as intended on certain platforms.
-            intersectionObserver.disconnect();
-            intersectionObserver.observe(this);
-        });
-        intersectionObserver.observe(this);
+        // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization
+        // const intersectionObserver = new IntersectionObserver((entries) => {
+        //     for (const entry of entries) {
+        //         this._boundingClientRect = entry.boundingClientRect;
+        //     }
+        //     // Refresh the rect info to keep it up-to-date as much as possible.
+        //     // It seems that the callback is always called once soon after observe() is called,
+        //     // regardless of the intersection state of the entity.
+        //     // TODO: Confirm whether this behavior is intended. If it is not, there may be future
+        //     //       behavior changes or it may not work as intended on certain platforms.
+        //     intersectionObserver.disconnect();
+        //     intersectionObserver.observe(this);
+        // });
+        // intersectionObserver.observe(this);
 
-        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-        this.connected();
+        // If the physics not yet inititalized, set an event listener and wait til the engine
+        // has started before completing initialization
+        if (mrjsUtils.physics.initialized) {
+            await this.connected();
+            this.loadAttributes();
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+        } else {
+            document.addEventListener('engine-started', async (event) => {
+                await this.connected();
+                this.loadAttributes();
+                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            });
+        }
     }
 
     /**

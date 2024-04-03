@@ -20,11 +20,12 @@ physics.CollisionGroups = {
  */
 physics.RAPIER = null;
 
-let rapierLoaded = false;
+physics.initialized = false;
+
 physics.initializePhysics = async function () {
-    if (!rapierLoaded) {
+    if (!physics.initialized) {
         physics.RAPIER = await import('@dimforge/rapier3d');
-        rapierLoaded = true;
+        physics.initialized = true;
         physics.eventQueue = new physics.RAPIER.EventQueue(true);
         physics.world = new physics.RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
 

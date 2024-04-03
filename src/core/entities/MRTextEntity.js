@@ -40,10 +40,14 @@ export class MRTextEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - sets up the textObject of the text item.
+     * @description (async) sets up the textObject of the text item.
      */
-    connected() {
-        const text = this.textContent.trim();
+    async connected() {
+        await super.connected();
+        const text = this.textContent
+            .replace(/(\n)\s+/g, '$1')
+            .replace(/(\r\n|\n|\r)/gm, ' ')
+            .trim();
         this.textObj.text = text.length > 0 ? text : ' ';
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();

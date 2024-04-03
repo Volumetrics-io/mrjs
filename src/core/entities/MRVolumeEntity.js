@@ -20,9 +20,9 @@ export class MRVolumeEntity extends MREntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles creating clipping geometry around the entire volume for visible restrictions.
+     * @description (async) handles creating clipping geometry around the entire volume for visible restrictions.
      */
-    connected() {
+    async connected() {
         this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(1, 1, 1));
         this.ignoreStencil = true;
 

@@ -115,9 +115,9 @@ export class MRMediaEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this media and associated 3D geometry style (from css) once it is connected to run as an entity component.
+     * @description (async) handles setting up this media and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
-    connected() {
+    async connected() {
         this.media.setAttribute('src', mrjsUtils.html.resolvePath(this.getAttribute('src')));
         this.media.setAttribute('style', 'object-fit:inherit; width:inherit');
 

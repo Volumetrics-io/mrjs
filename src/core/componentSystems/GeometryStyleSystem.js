@@ -87,6 +87,7 @@ export class GeometryStyleSystem extends MRSystem {
      */
     onNewEntity(entity) {
         this.registry.add(entity);
+        this._updateSpecificEntity(entity);
     }
 
     /**
