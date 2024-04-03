@@ -1,3 +1,4 @@
+import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRStatsEntity } from 'mrjs/core/entities/MRStatsEntity';
 
@@ -20,7 +21,7 @@ export class StatsSystem extends MRSystem {
     /**
      * @function
      * @description Registers MRStatsEntity
-     * @param {MREntity} entity
+     * @param {MREntity} entity - given entity that might be handled by this system
      */
     onNewEntity(entity) {
         if (entity instanceof MRStatsEntity) {
@@ -31,7 +32,7 @@ export class StatsSystem extends MRSystem {
     /**
      * @function
      * @description Tracks the elapsed time and updates the fps counter periodically.
-     * @param {number} deltaTime
+     * @param {number} deltaTime - the time elapsed since the last update call
      */
     update(deltaTime) {
         for (const stats of this.registry) {
