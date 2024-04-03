@@ -87,6 +87,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.updateCursorPosition();
     }
 
+    handleMouseClick(event) {
+        // TODO
+        console.log(event);
+    }
+
     /**
      * Handles keydown events for scrolling and cursor navigation.
      * @param {event} event - the keydown event
@@ -137,12 +142,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         }
         this.updateCursorPosition(true);
-
-
-        // // Ensure the cursor position is updated to reflect the current caret position
-        // setTimeout(() => {
-        //     this.updateCursorPosition();
-        // }, 0);
     }
 
     /**

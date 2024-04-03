@@ -112,6 +112,14 @@ export class MRTextInputEntity extends MRTextEntity {
         mrjsUtils.error.emptyParentFunction();
     }
 
+        /**
+     *
+     * @param {event} event - the keydown event
+     */
+    handleMouseClick(event) {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
     /**
      *
      */
@@ -122,26 +130,22 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      *
      */
-    _focus(event) {
+    _focus(isPureFocusEvent=true) {
         if (!this.hiddenInput) {
             return;
         }
         this.hiddenInput.focus();
 
-        if (event) {
-            // An actual mouse selection event triggered this, so we need
-            // to position the cursor based on the selection location in
-            // the geometry of text.
-            this.hiddenInput.selectionStart = this.updateSelectionPosition(event);
-        } else {
-            // A pure focus call triggered this, so we default the selection
-            // location to be the current length of text.
+        if (isPureFocusEvent) {
+            // Only want to update cursor and selection position if 
+            // this is a pure focus event; otherwise, we're assuming
+            // the other event will position those properly (so that
+            // we dont do redundant positioning here and then there as well).
             this.hiddenInput.selectionStart = this.hiddenInput.value.length;
+            this.updateCursorPosition();
         }
-        
 
-        this.updateCursorPosition();
-        this.cursor.visible = true;
+        this.cursor.visible = true;        
     }
 
     _blur() {
@@ -162,33 +166,45 @@ export class MRTextInputEntity extends MRTextEntity {
         //
         // TODO - is this a reasonable approach? is javascript
         // really this clunky?
-
-        this.addEventListener('click', (event) => {
-            this._focus(event);
-        });
-
+       
+        // Blur events
         this.addEventListener('blur', () => {
            this._blur(); 
         });
 
+        // Focus Events
         this.addEventListener('focus', () => {
+            // pure focus event
             this._focus();
         });
+        this.addEventListener('click', (event) => {
+            // pure focus event
+            this._focus();
+        });
+        this.hiddenInput.addEventListener('mousedown', (event) => {
+            console.log('MOUSEDOWN HAPPENED');
+            this._focus(event);
+            this.handleMouseClick(event);
+        });
 
+        // Keyboard input event to capture text in the 
+        // hidden input.
         this.addEventListener('input', () => {
+            // This function calls the this.hiddenInput.addEventListener('input');
+            // We just want to make sure the two are linked (textObj --> hiddenInput).
             this.hiddenInput.input();
         });
-
-        // Keyboard input event to capture text
         this.hiddenInput.addEventListener('input', () => {
             this.updateTextDisplay();
-        });
-        this.addEventListener('update-cursor-position', () => {
-            this.updateCursorPosition();
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
             console.log('keydown event was triggered');
             this.handleKeydown(event);
+        });
+
+        // Separate trigger call just in case.
+        this.addEventListener('update-cursor-position', () => {
+            this.updateCursorPosition();
         });
     }
 }
