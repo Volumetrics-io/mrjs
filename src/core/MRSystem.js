@@ -117,10 +117,10 @@ export class MRSystem {
 
     /**
      * @function
-     * @description Called when the entity component is initialized
+     * @description (async) Called when the entity component is initialized
      * @param {MREntity} entity - the entity being attached/initialized.
      */
-    attachedComponent(entity) {}
+    async attachedComponent(entity) {}
 
     /**
      * @function
@@ -142,9 +142,9 @@ export class MRSystem {
      * @description Handles the component and registry aspect of the event when an entity component attaches to this system.
      * @param {object} event - the attach event
      */
-    onAttach = (event) => {
+    onAttach = async (event) => {
+        await this.attachedComponent(event.target);
         this.registry.add(event.target);
-        this.attachedComponent(event.target);
     };
 
     /**

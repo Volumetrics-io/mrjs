@@ -341,13 +341,6 @@ export class MREntity extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true, attributeOldValue: true });
 
-        /** Handle scene Global level events */
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            this.loadAttributes();
-        });
-        this.loadAttributes();
-
         /** Handle events specific to this entity */
         // note: these will need the trigger for Material or Geometry if applicable
 
@@ -407,9 +400,11 @@ export class MREntity extends MRElement {
         if(mrjsUtils.physics.initialized) {
             await this.connected();
             this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            this.loadAttributes();
         } else {
             document.addEventListener('engine-started', async (event) => {
                 await this.connected();
+                this.loadAttributes();
                 this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             });
         }

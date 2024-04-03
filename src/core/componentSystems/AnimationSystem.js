@@ -42,8 +42,19 @@ export class AnimationSystem extends MRSystem {
      * @description Called when the entity component is initialized
      * @param {object} entity - the entity being attached/initialized.
      */
-    attachedComponent(entity) {
+    async attachedComponent(entity) {
         let comp = entity.components.get('animation');
+
+        await new Promise((resolve) => {
+            const interval = setInterval(() => {
+              if (entity.loaded) {
+                clearInterval(interval);
+                resolve();
+              }
+            }, 100); // Checks every 100ms
+          });
+
+
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
