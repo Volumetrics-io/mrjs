@@ -19,14 +19,14 @@
     <script>
         let width = 4
         let height = 4
-        let depth = 4
+        let depth = 2
 
         let scale = 0.25
 
         let app = document.querySelector('mr-app')
 
         for(let x = -width / 2; x < width / 2; x++) {
-            for(let y = -height / 2; y < height / 2; y++) {
+            for(let y = 0; y < height; y++) {
                 for(let z = -depth / 2; z < depth / 2; z++) {
                     let model = document.createElement('mr-model')
                     model.src = "../examples-assets/models/animation_koifish.glb"
@@ -36,10 +36,65 @@
                         action: 'play'
                     })
 
+                    model.onLoad = () => {
+                        modelLoaded(model)
+                    }
+
+                    model.addEventListener('hoverstart', hover)
+                    model.addEventListener('hoverend', hover)
+
+                    model.addEventListener('touchstart', click)
+                    model.addEventListener('touchend', click)
+
                     model.dataset.position = `${x * scale} ${y * scale} ${z * scale}`
                 }
             }
         }
+
+        function hover(e) {
+            e.target.hoverMesh.visible = !e.target.hoverMesh.visible
+        }
+
+        function click(e) {
+            e.target.touchMesh.visible = !e.target.touchMesh.visible
+        }
+
+        let tempBox = new THREE.Box3()
+        let tempSize = new THREE.Vector3()
+        
+
+
+        function modelLoaded(model) {
+            tempBox.setFromObject(model.object3D, true);
+            tempBox.getSize(tempSize);
+            // tempSize.multiplyScalar(model.compStyle.scale)
+            let geometry = new THREE.BoxGeometry(...tempSize)
+
+            let hoverMaterial = new THREE.MeshPhongMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.5
+            })
+
+            let touchMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+                transparent: true,
+                opacity: 0.5
+            })
+
+            let hoverMesh = new THREE.Mesh(geometry, hoverMaterial)
+            let touchMesh = new THREE.Mesh(geometry, touchMaterial)
+
+            model.hoverMesh = hoverMesh
+            model.touchMesh = touchMesh
+
+            hoverMesh.visible = false
+            touchMesh.visible = false
+
+            model.object3D.add(touchMesh)
+            model.object3D.add(hoverMesh)
+        }
+
     </script>
   </body>
 
