@@ -117,7 +117,7 @@ export class MRModelEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
+     * @description (async) Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
      * Includes loading up the model and associated data.
      */
     async connected() {

@@ -51,7 +51,7 @@ export class MRPanelEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
+     * @description (async) Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
     async connected() {

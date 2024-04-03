@@ -305,7 +305,7 @@ export class MREntity extends MRElement {
 
     /**
      * @function
-     * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
+     * @description (async) does nothing. Is called by the connectedCallback.
      */
     async connected() {}
 
@@ -397,10 +397,12 @@ export class MREntity extends MRElement {
         // });
         // intersectionObserver.observe(this);
 
+        // If the physics not yet inititalized, set an event listener and wait til the engine
+        // has started before completing initialization
         if (mrjsUtils.physics.initialized) {
             await this.connected();
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
             this.loadAttributes();
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } else {
             document.addEventListener('engine-started', async (event) => {
                 await this.connected();

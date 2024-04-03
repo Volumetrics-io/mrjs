@@ -39,12 +39,12 @@ export class AnimationSystem extends MRSystem {
 
     /**
      * @function
-     * @description Called when the entity component is initialized
+     * @description (async) Called when the entity component is initialized
      * @param {object} entity - the entity being attached/initialized.
      */
     async attachedComponent(entity) {
         let comp = entity.components.get('animation');
-
+        // the animations list does not load immediately, so we set a promise to wait for the model to load.
         await new Promise((resolve) => {
             const interval = setInterval(() => {
                 if (entity.loaded) {

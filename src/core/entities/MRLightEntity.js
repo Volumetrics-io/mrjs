@@ -20,7 +20,7 @@ export class MRLightEntity extends MREntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this Light once it is connected to run as an entity component.
+     * @description (async) handles setting up this Light once it is connected to run as an entity component.
      */
     async connected() {
         this.object3D.color.setStyle(this.getAttribute('color'));
@@ -29,7 +29,7 @@ export class MRLightEntity extends MREntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - Updates the lights color and intensity as requested.
+     * @description (async) Updates the lights color and intensity as requested.
      * @param {object} mutation - the update/change/mutation to be handled.
      */
     mutated = (mutation) => {

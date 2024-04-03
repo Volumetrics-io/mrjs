@@ -54,7 +54,7 @@ export class MRSkyBoxEntity extends MREntity {
 
     /**
      * @function
-     * @description Lifecycle method that is called when the entity is connected.
+     * @description (async) Lifecycle method that is called when the entity is connected.
      *              This method initializes and starts the texture loading process.
      */
     async connected() {

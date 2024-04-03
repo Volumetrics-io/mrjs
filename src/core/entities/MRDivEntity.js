@@ -117,7 +117,7 @@ export class MRDivEntity extends MREntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - connects the background geometry of this item to an actual UIPlane geometry.
+     * @description (async) connects the background geometry of this item to an actual UIPlane geometry.
      */
     async connected() {
         this.background.geometry = mrjsUtils.geometry.UIPlane(this.width, this.height, [0], 18);

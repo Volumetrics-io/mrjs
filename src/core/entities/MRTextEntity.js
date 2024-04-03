@@ -40,7 +40,7 @@ export class MRTextEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - sets up the textObject of the text item.
+     * @description (async) sets up the textObject of the text item.
      */
     async connected() {
         await super.connected();
