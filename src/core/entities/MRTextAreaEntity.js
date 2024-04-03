@@ -76,6 +76,15 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     }
 
     /**
+     * Overrides the connected method to include setup for handling multiline text.
+     * @function
+     * @description (async) sets up the textObject of the text item.
+     */
+    async connected() {
+        await super.connected();
+    }
+
+    /**
      *
      */
     updateTextDisplay() {

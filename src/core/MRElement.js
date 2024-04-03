@@ -13,6 +13,7 @@ export class MRElement extends HTMLElement {
         this.environment = null;
         this.observer = null;
 
+        // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization @takahirox
         // Hack for the performance.
         // Element.getBoundingClientRect() is called from many places
         // mainly to sync the layout between DOM elements and 3D scene.
@@ -54,19 +55,20 @@ export class MRElement extends HTMLElement {
      */
     remove(entity) {}
 
-    /**
-     * @function
-     * @description Overrides getBoundingClientRect() to avoid reflow in sync as optimization
-     * @returns {object} rect - the bounding client rect of the HTMLElement representation of this MRElement.
-     */
-    getBoundingClientRect() {
-        // This is a fallback in case if .getBoundingClientRect() is called before
-        // ._boundingClientRect is initialized.
-        if (this._boundingClientRect === null) {
-            this._boundingClientRect = super.getBoundingClientRect();
-        }
-        // Assuming the values in the return value object are not overridden in the callers.
-        // If it happens, it affects to all the callers until ._boundingClientRect is refreshed.
-        return this._boundingClientRect;
-    }
+    // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization
+    // /**
+    //  * @function
+    //  * @description Overrides getBoundingClientRect() to avoid reflow in sync as optimization
+    //  * @returns {object} rect - the bounding client rect of the HTMLElement representation of this MRElement.
+    //  */
+    // getBoundingClientRect() {
+    //     // This is a fallback in case if .getBoundingClientRect() is called before
+    //     // ._boundingClientRect is initialized.
+    //     if (this._boundingClientRect === null) {
+    //         this._boundingClientRect = super.getBoundingClientRect();
+    //     }
+    //     // Assuming the values in the return value object are not overridden in the callers.
+    //     // If it happens, it affects to all the callers until ._boundingClientRect is refreshed.
+    //     return this._boundingClientRect;
+    // }
 }

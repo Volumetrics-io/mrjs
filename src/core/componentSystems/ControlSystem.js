@@ -58,6 +58,8 @@ export class ControlSystem extends MRSystem {
         this.tempPreviousPosition = new THREE.Vector3();
         this.touchDelta = new THREE.Vector3();
 
+        this.directTouch = false;
+
         this.currentEntity = null;
 
         this.cursorViz = new THREE.Mesh(new THREE.RingGeometry(0.005, 0.007, 32), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.7, transparent: true }));
@@ -85,22 +87,30 @@ export class ControlSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-            /* Handle the collision event. */
-
-            if (started) {
-                this.onContactStart(handle1, handle2);
-            } else {
-                this.onContactEnd(handle1, handle2);
-            }
-        });
-
-        this.checkCollisions(this.app.user.hands.left);
-        this.checkCollisions(this.app.user.hands.right);
-
-        if (mrjsUtils.xr.isPresenting) {
-            this.pointerRay();
+        if (!mrjsUtils.xr.isPresenting) {
+            return;
         }
+
+        if (!this.down) {
+            mrjsUtils.physics.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+                /* Handle the collision event. */
+                if (started) {
+                    this.onContactStart(handle1, handle2);
+                } else {
+                    this.onContactEnd(handle1, handle2);
+                }
+            });
+
+            this.checkCollisions(this.app.user.hands.left);
+            this.checkCollisions(this.app.user.hands.right);
+        }
+
+        if (!this.directTouch) {
+            this.pointerRay();
+        } else if (this.cursorViz.visible) {
+            this.clearPointer();
+        }
+        this.directTouch = false;
     }
 
     /**
@@ -114,16 +124,29 @@ export class ControlSystem extends MRSystem {
                 const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[collider2.handle];
 
                 if (entity) {
+                    this.directTouch = true;
+                    this.tempPreviousPosition.copy(this.tempLocalPosition);
+
+                    this.tempLocalPosition.copy(jointCursor.collider.translation());
+                    entity.object3D.worldToLocal(this.tempLocalPosition);
+
+                    this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
+
                     if (!jointCursor.name.includes('hover') && entity.touch) {
-                        this.tempPreviousPosition.copy(this.tempLocalPosition);
-
-                        this.tempLocalPosition.copy(jointCursor.collider.translation());
-                        entity.object3D.worldToLocal(this.tempLocalPosition);
-
-                        this.touchDelta.subVectors(this.tempLocalPosition, this.tempPreviousPosition);
-
                         entity.dispatchEvent(
                             new CustomEvent('touchmove', {
+                                bubbles: true,
+                                detail: {
+                                    joint: jointCursor.name,
+                                    worldPosition: jointCursor.collider.translation(),
+                                    position: this.tempLocalPosition,
+                                    delta: this.touchDelta,
+                                },
+                            })
+                        );
+                    } else if (jointCursor.name.includes('hover') && !entity.touch) {
+                        entity.dispatchEvent(
+                            new CustomEvent('hovermove', {
                                 bubbles: true,
                                 detail: {
                                     joint: jointCursor.name,
@@ -152,7 +175,7 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if (joint && entity) {
+        if (!joint || !entity) {
             return;
         }
         if (!joint.includes('hover')) {
@@ -172,7 +195,7 @@ export class ControlSystem extends MRSystem {
         const joint = mrjsUtils.physics.INPUT_COLLIDER_HANDLE_NAMES[handle1];
         const entity = mrjsUtils.physics.COLLIDER_ENTITY_MAP[handle2];
 
-        if (joint && entity) {
+        if (!joint || !entity) {
             return;
         }
         if (!joint.includes('hover')) {
@@ -268,7 +291,7 @@ export class ControlSystem extends MRSystem {
             })
         );
 
-        entity.dispatchEvent(new MouseEvent('mouseleave'));
+        entity.dispatchEvent(new MouseEvent('mouseout'));
     };
 
     /**
@@ -297,6 +320,20 @@ export class ControlSystem extends MRSystem {
         }
     }
 
+    /**
+     * @function
+     * @description clears the gaze/pinch pointer from the scene
+     */
+    clearPointer() {
+        this.cursorViz.visible = false;
+        if (this.currentEntity) {
+            this.currentEntity.focus = false;
+            this.hoverEndEvents();
+        }
+
+        this.currentEntity = null;
+    }
+
     /************ Interaction Events ************/
 
     /**
@@ -309,8 +346,9 @@ export class ControlSystem extends MRSystem {
 
         if (this.hit != null) {
             this.hitPosition.copy(this.ray.pointAt(this.hit.toi));
-            this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit.collider.handle]);
         }
+
+        this.interact(mrjsUtils.physics.COLLIDER_ENTITY_MAP[this.hit?.collider.handle]);
     };
 
     /**
@@ -322,6 +360,12 @@ export class ControlSystem extends MRSystem {
         this.down = true;
         this.currentEntity?.classList.remove('hover');
         this.currentEntity?.classList.add('active');
+
+        this.currentEntity?.dispatchEvent(
+            new CustomEvent('hoverend', {
+                bubbles: true,
+            })
+        );
 
         this.currentEntity?.dispatchEvent(
             new CustomEvent('touchstart', {
@@ -349,7 +393,7 @@ export class ControlSystem extends MRSystem {
             })
         );
 
-        this.currentEntity = null;
+        this.hoverStartEvents();
     };
 
     /**
@@ -359,36 +403,17 @@ export class ControlSystem extends MRSystem {
      * @param {object} entity - checking if there is any interaction required based on current events and this entity.
      */
     interact(entity) {
-        if (!entity) {
-            return;
+        if (!this.down && this.currentEntity != entity) {
+            if (this.currentEntity) {
+                this.currentEntity.focus = false;
+                this.hoverEndEvents();
+            }
+
+            this.currentEntity = null;
         }
 
-        if (!this.currentEntity) {
-            this.currentEntity = entity;
-            this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(
-                new MouseEvent('mouseover', {
-                    bubbles: true,
-                })
-            );
-            this.currentEntity.focus = true;
-        } else if (!this.down && this.currentEntity != entity) {
-            this.currentEntity.classList.remove('hover');
-            this.currentEntity.dispatchEvent(
-                new MouseEvent('mouseleave', {
-                    bubbles: true,
-                })
-            );
-            this.currentEntity.focus = false;
-
-            this.currentEntity = entity;
-            this.currentEntity?.classList.add('hover');
-            this.currentEntity.dispatchEvent(
-                new MouseEvent('mouseover', {
-                    bubbles: true,
-                })
-            );
-            this.currentEntity.focus = true;
+        if (!entity) {
+            return;
         }
 
         if (this.down) {
@@ -400,8 +425,58 @@ export class ControlSystem extends MRSystem {
                     },
                 })
             );
+            return;
+        }
+
+        if (!this.currentEntity) {
+            this.currentEntity = entity;
+            this.currentEntity.focus = true;
+            this.hoverStartEvents();
         }
     }
+
+    hoverStartEvents = () => {
+        this.currentEntity?.classList.add('hover');
+        this.currentEntity?.dispatchEvent(
+            new MouseEvent('mouseover', {
+                bubbles: true,
+            })
+        );
+        this.currentEntity?.dispatchEvent(
+            new CustomEvent('hoverstart', {
+                bubbles: true,
+            })
+        );
+
+        // TODO: this will require slightly more complex logic to implement correctly
+        // this.currentEntity.dispatchEvent(
+        //     new MouseEvent('mouseenter', {
+        //         bubbles: false,
+        //     })
+        // );
+    };
+
+    hoverEndEvents = () => {
+        this.currentEntity?.classList.remove('hover');
+        this.currentEntity?.dispatchEvent(
+            new MouseEvent('mouseout', {
+                bubbles: true,
+            })
+        );
+
+        this.currentEntity?.dispatchEvent(
+            new CustomEvent('hoverend', {
+                bubbles: true,
+            })
+        );
+
+        // TODO: this will require slightly more complex logic to implement correctly
+        // this.currentEntity.dispatchEvent(
+        //     new MouseEvent('mouseout', {
+        //         bubbles: false,
+        //     })
+        // );
+    };
 
     /************ Tools && Helpers ************/
 

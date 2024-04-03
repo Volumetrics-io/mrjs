@@ -1,10 +1,6 @@
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRDivEntity } from 'mrjs/core/entities/MRDivEntity';
 import { MREntity } from 'mrjs/core/MREntity';
-import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
-import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
-import { MRModelEntity } from 'mrjs/core/entities/MRModelEntity';
-import { MRVideoEntity } from 'mrjs/core/entities/MRVideoEntity';
 
 /**
  * @class MaterialStyleSystem
@@ -47,16 +43,6 @@ export class MaterialStyleSystem extends MRSystem {
 
     /**
      * @function
-     * @description The per global scene event update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
-     */
-    eventUpdate = () => {
-        for (const entity of this.registry) {
-            this._updateSpecificEntity(entity);
-        }
-    };
-
-    /**
-     * @function
      * @description The per-frame system update call. Handles updating all 3D items to match whatever geometry/style is expected whether that be a 2D setup or a 3D change.
      * @param {number} deltaTime - given timestep to be used for any feature changes
      * @param {object} frame - given frame information to be used for any feature changes
@@ -64,6 +50,9 @@ export class MaterialStyleSystem extends MRSystem {
     update(deltaTime, frame) {
         // For this system, since we have the 'per entity' and 'per scene event' update calls,
         // we dont need a main update call here.
+        for (const entity of this.registry) {
+            this._updateSpecificEntity(entity);
+        }
     }
 
     /**

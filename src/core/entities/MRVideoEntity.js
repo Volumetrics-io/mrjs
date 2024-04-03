@@ -57,9 +57,10 @@ export class MRVideoEntity extends MRMediaEntity {
 
     /**
      * @function
-     * @description Callback function of MREntity - handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
+     * @description (async) handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
-    connected() {
+    async connected() {
+        await super.connected();
         this.media = document.createElement('video');
         this.media.setAttribute('crossorigin', 'anonymous');
 

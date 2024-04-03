@@ -1,37 +1,41 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 import { XRButton } from 'three/addons/webxr/XRButton.js';
-
 import Stats from 'stats.js';
-
-import { MRElement } from 'mrjs/core/MRElement';
-import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
 
 import { mrjsUtils } from 'mrjs';
 
+import { MRElement } from 'mrjs/core/MRElement';
 import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
+
+import MRUser from 'mrjs/core/user/MRUser';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
+import { MRStatsEntity } from 'mrjs/core/entities/MRStatsEntity';
+
+import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
 import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
 import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
 import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
 import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
 import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
 import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
 import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
-import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
-import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
-import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
-import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
-import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
 import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
-import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
-import MRUser from 'mrjs/core/user/MRUser';
+import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
+import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
+import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
 ('use strict');
 window.mobileCheck = function () {
     return mrjsUtils.display.mobileCheckFunction();
 };
+
+// events that trigger the eventUpdate call for all MRSystems
+const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started', 'resize'];
 
 /**
  * @class MRApp
@@ -120,14 +124,6 @@ export class MRApp extends MRElement {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
-        // order matters for all the below system creation items
-        this.panelSystem = new PanelSystem();
-        this.layoutSystem = new LayoutSystem();
-        this.textSystem = new TextSystem();
-        this.geometryStyleSystem = new GeometryStyleSystem();
-        this.materialStyleSystem = new MaterialStyleSystem();
-        this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
-
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
             this.user = new MRUser(this.camera, this.scene);
@@ -135,6 +131,14 @@ export class MRApp extends MRElement {
             if (this.getAttribute('occlusion') == 'spotlight') {
                 this.scene.add(this.user.initSpotlight());
             }
+            // order matters for all the below system creation items
+            this.panelSystem = new PanelSystem();
+            this.layoutSystem = new LayoutSystem();
+            this.textSystem = new TextSystem();
+            this.geometryStyleSystem = new GeometryStyleSystem();
+            this.materialStyleSystem = new MaterialStyleSystem();
+            this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
+            this.statsSystem = new StatsSystem();
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
             this.anchorSystem = new AnchorSystem();
@@ -148,6 +152,21 @@ export class MRApp extends MRElement {
             this.clippingSystem = new ClippingSystem();
             this.maskingSystem = new MaskingSystem();
         });
+
+        this.addEventListener('new-entity', (event) => {
+            for (const system of this.systems) {
+                system._onNewEntity(event.target);
+            }
+        });
+
+        // Call `eventUpdate` on all systems if any of the global events are triggered
+        for (const eventType of GLOBAL_UPDATE_EVENTS) {
+            document.addEventListener(eventType, (event) => {
+                for (const system of this.systems) {
+                    system.eventUpdate();
+                }
+            });
+        }
     }
 
     /**
@@ -237,9 +256,11 @@ export class MRApp extends MRElement {
             }
         }
 
-        const statsEnabled = this.getAttribute('stats');
-
-        if (statsEnabled) {
+        if (this.getAttribute('stats') ?? false) {
+            // Old version of stats using the Stats.js visual
+            // setup. Leaving to allow for top left quick visual of stats.
+            // Is /not/ performant in headset. Documentation notes this.
+            //
             this.stats = new Stats();
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
@@ -278,8 +299,7 @@ export class MRApp extends MRElement {
             let skybox = new MRSkyBoxEntity();
             let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
             skybox.setAttribute('src', imageUrl);
-            skybox.connected();
-            this.add(skybox);
+            this.appendChild(skybox);
 
             // Need to zero out the background-image property otherwise
             // we'll end up with a canvas background as well as the skybox
@@ -476,7 +496,7 @@ export class MRApp extends MRElement {
 
         const deltaTime = this.clock.getDelta();
 
-        // ----- Update stats if enabled ----- //
+        // ----- If using the threejs stats for 'stats=true' ---- //
 
         if (this.stats) {
             this.stats.update();
