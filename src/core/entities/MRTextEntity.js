@@ -49,7 +49,6 @@ export class MRTextEntity extends MRDivEntity {
             .replace(/(\r\n|\n|\r)/gm, ' ')
             .trim();
         this.textObj.text = text.length > 0 ? text : ' ';
-        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
     }
