@@ -307,7 +307,7 @@ export class MREntity extends MRElement {
      * @function
      * @description Callback function of MREntity - does nothing. Is called by the connectedCallback.
      */
-    connected() {}
+    async connected() {}
 
     /**
      * @function
@@ -347,10 +347,6 @@ export class MREntity extends MRElement {
             this.loadAttributes();
         });
         this.loadAttributes();
-
-        document.addEventListener('engine-started', (event) => {
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-        });
 
         /** Handle events specific to this entity */
         // note: these will need the trigger for Material or Geometry if applicable
@@ -392,23 +388,27 @@ export class MREntity extends MRElement {
             this.triggerGeometryStyleUpdate();
             this.triggerMaterialStyleUpdate();
         });
+        
+        // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization
+        // const intersectionObserver = new IntersectionObserver((entries) => {
+        //     for (const entry of entries) {
+        //         this._boundingClientRect = entry.boundingClientRect;
+        //     }
+        //     // Refresh the rect info to keep it up-to-date as much as possible.
+        //     // It seems that the callback is always called once soon after observe() is called,
+        //     // regardless of the intersection state of the entity.
+        //     // TODO: Confirm whether this behavior is intended. If it is not, there may be future
+        //     //       behavior changes or it may not work as intended on certain platforms.
+        //     intersectionObserver.disconnect();
+        //     intersectionObserver.observe(this);
+        // });
+        // intersectionObserver.observe(this);
 
-        const intersectionObserver = new IntersectionObserver((entries) => {
-            for (const entry of entries) {
-                this._boundingClientRect = entry.boundingClientRect;
-            }
-            // Refresh the rect info to keep it up-to-date as much as possible.
-            // It seems that the callback is always called once soon after observe() is called,
-            // regardless of the intersection state of the entity.
-            // TODO: Confirm whether this behavior is intended. If it is not, there may be future
-            //       behavior changes or it may not work as intended on certain platforms.
-            intersectionObserver.disconnect();
-            intersectionObserver.observe(this);
+
+        document.addEventListener('engine-started', async (event) => {
+            await this.connected();
+            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         });
-        intersectionObserver.observe(this);
-
-        this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
-        this.connected();
     }
 
     /**

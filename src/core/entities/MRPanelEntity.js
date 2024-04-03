@@ -54,7 +54,8 @@ export class MRPanelEntity extends MRDivEntity {
      * @description Callback function of MREntity - handles setting up this Panel once it is connected to run as an entity component.
      *              Relevant tasks include setting up clipping and setting up for all necessary dispatchEvent connections including mutations and scrolling.
      */
-    connected() {
+    async connected() {
+        await super.connected()
         this.clipping = new MRClippingGeometry(new THREE.BoxGeometry(this.width, this.height, 1));
         window.addEventListener('load', (event) => {
             this.dispatchEvent(new CustomEvent('panelupdate', { bubbles: true }));

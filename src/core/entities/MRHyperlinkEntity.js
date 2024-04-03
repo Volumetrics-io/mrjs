@@ -53,7 +53,7 @@ export default class MRHyperlinkEntity extends MRTextEntity {
      * @description Callback function of MREntity - makes sure the link object is created and sets up event
      * listeners for touchstart and click.
      */
-    connected() {
+    async connected() {
         super.connected();
         this._createLink();
 

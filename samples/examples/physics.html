@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mr.js - physics & interactions</title>
+    <meta name="description" content="mr.js example - physics & interactions">
+    <script src="/mr.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        mr-model {
+            scale: 0.025;
+        }
+    </style>
+  </head>
+  <body >
+   <mr-app orbital="true" debug="true">
+      
+    </mr-app>
+    <script>
+        let width = 4
+        let height = 4
+        let depth = 4
+
+        let scale = 0.25
+
+        let app = document.querySelector('mr-app')
+
+        for(let x = -width / 2; x < width / 2; x++) {
+            for(let y = -height / 2; y < height / 2; y++) {
+                for(let z = -depth / 2; z < depth / 2; z++) {
+                    let model = document.createElement('mr-model')
+                    model.src = "../examples-assets/models/animation_koifish.glb"
+                    app.appendChild(model)
+                    model.components.set('animation', {
+                        clip: 1,
+                        action: 'play'
+                    })
+
+                    model.dataset.position = `${x * scale} ${y * scale} ${z * scale}`
+                }
+            }
+        }
+    </script>
+  </body>
+
+  <footer>
+    
+  </footer>
+</html>

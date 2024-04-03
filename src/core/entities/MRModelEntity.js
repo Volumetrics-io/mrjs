@@ -54,7 +54,9 @@ export class MRModelEntity extends MRDivEntity {
     set src(value) {
         this.setAttribute('src', mrjsUtils.html.resolvePath(value));
         this.loaded = false;
-        this.loadModel();
+        // if(document.body.contains(this)) {
+        //     await this.loadModel();
+        // }
     }
 
     /**
@@ -102,7 +104,6 @@ export class MRModelEntity extends MRDivEntity {
 
             this.onLoad();
 
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }
@@ -113,12 +114,12 @@ export class MRModelEntity extends MRDivEntity {
      * @description Callback function of MREntity - handles setting up this Model once it is connected to run as an entity component.
      * Includes loading up the model and associated data.
      */
-    connected() {
+    async connected() {
         if (!this.src || this.loaded) {
             return;
         }
 
-        this.loadModel();
+        await this.loadModel();
     }
 
     /**

@@ -51,7 +51,8 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Callback function of MREntity - handles setting up this textarea once it is connected to run as an entity component.
      */
-    connected() {
+    async connected() {
+        await super.connected()
         this._createCursor();
         this.object3D.add(this.cursor);
 

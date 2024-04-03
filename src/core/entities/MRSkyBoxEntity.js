@@ -57,7 +57,8 @@ export class MRSkyBoxEntity extends MREntity {
      * @description Lifecycle method that is called when the entity is connected.
      *              This method initializes and starts the texture loading process.
      */
-    connected() {
+    async connected() {
+        await super.connected()
         // you can have texturesList be all individual textures
         // or you can store them in a specified path and just
         // load them up solely by filename in that path.

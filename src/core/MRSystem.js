@@ -4,7 +4,6 @@ import { MREntity } from 'mrjs/core/MREntity';
  * @description Listing of events that are considered global scene updates.
  * These trigger the `eventUpdate` function call.
  */
-const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started'];
 
 /**
  * @class MRSystem
@@ -41,19 +40,6 @@ export class MRSystem {
             document.addEventListener(`${this.componentName}-attached`, this.onAttach);
             document.addEventListener(`${this.componentName}-updated`, this.onUpdate);
             document.addEventListener(`${this.componentName}-detached`, this.onDetach);
-        }
-
-        this.app.addEventListener('new-entity', (event) => {
-            if (this.registry.has(event.target)) {
-                return;
-            }
-            this.onNewEntity(event.target);
-        });
-
-        for (const eventType of GLOBAL_UPDATE_EVENTS) {
-            document.addEventListener(eventType, (event) => {
-                this.eventUpdate();
-            });
         }
 
         const entities = document.querySelectorAll(`[${this.componentName}]`);
@@ -110,6 +96,17 @@ export class MRSystem {
      * See GLOBAL_UPDATE_EVENTS of MRSystem.js
      */
     eventUpdate() {}
+
+    /**
+     *
+     * @param entity
+     */
+    _onNewEntity(entity) {
+        if (this.registry.has(entity)) {
+            return;
+        }
+        this.onNewEntity(entity);
+    }
 
     /**
      * @function
