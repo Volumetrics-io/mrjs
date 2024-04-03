@@ -291,7 +291,7 @@ export class ControlSystem extends MRSystem {
             })
         );
 
-        entity.dispatchEvent(new MouseEvent('mouseleave'));
+        entity.dispatchEvent(new MouseEvent('mouseout'));
     };
 
     /**
@@ -472,7 +472,7 @@ export class ControlSystem extends MRSystem {
 
         // TODO: this will require slightly more complex logic to implement correctly
         // this.currentEntity.dispatchEvent(
-        //     new MouseEvent('mouseleave', {
+        //     new MouseEvent('mouseout', {
         //         bubbles: false,
         //     })
         // );
