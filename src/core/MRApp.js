@@ -279,8 +279,6 @@ export class MRApp extends MRElement {
         this.appendChild(this.renderer.domElement);
 
         // allows for mr-app style to have background:value to set the skybox
-        console.log(this.compStyle);
-        console.log(this.compStyle.backgroundImage);
         if (this.compStyle.backgroundImage !== 'none') {
             let skybox = new MRSkyBoxEntity();
             let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
