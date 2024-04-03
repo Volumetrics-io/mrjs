@@ -39,14 +39,11 @@ export class StatsSystem extends MRSystem {
             stats.frame++;
             stats.elapsedTime += deltaTime;
             if (stats.elapsedTime >= REFRESH_SEC) {
-                stats.textContent = (stats.frame / stats.elapsedTime).toFixed(2) + 'fps';
-
-                // Ideally this copying from .textContent to .textObj.text should
-                // be done in TextSystem but currently there doesn't seem to be
-                // a way to fire it from outside of TextSystem. As a workaround
-                // explicitly copying here.
-                // TODO: Fix it.
-                stats.textObj.text = stats.textContent;
+                // Note: We dont want to directly update the stats.textContent html element
+                // as that will fill it in as an html value on the screen in 2D. We only
+                // want to update the stats.textObj.text here directly for the 3D element
+                // to update.
+                stats.textObj.text = (stats.frame / stats.elapsedTime).toFixed(2) + 'fps';
 
                 stats.frame = 0;
                 stats.elapsedTime = 0.0;

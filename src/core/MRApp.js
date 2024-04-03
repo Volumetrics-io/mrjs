@@ -240,22 +240,14 @@ export class MRApp extends MRElement {
             }
         }
 
-        const statsEnabled = this.getAttribute('stats');
-
         if (this.getAttribute('stats') ?? false) {
-            this.stats = new MRStatsEntity();
-            this.stats.connected();
-            this.add(this.stats);
-
             // Old version of stats using the Stats.js visual 
-            // setup. Commenting out for now and leaving for future.
-            // We dont want to use this at the moment in headset
-            // because it can be incredibly costly. Turn this or
-            // a better variation back on when that's been optimized.
+            // setup. Leaving to allow for top left quick visual of stats.
+            // Is /not/ performant in headset. Documentation notes this.
             //
-            // this.stats = new Stats();
-            // this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            // document.body.appendChild(this.stats.dom);
+            this.stats = new Stats();
+            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+            document.body.appendChild(this.stats.dom);
         }
 
         if (this.debug || this.orbital) {
@@ -287,12 +279,13 @@ export class MRApp extends MRElement {
         this.appendChild(this.renderer.domElement);
 
         // allows for mr-app style to have background:value to set the skybox
+        console.log(this.compStyle);
+        console.log(this.compStyle.backgroundImage);
         if (this.compStyle.backgroundImage !== 'none') {
             let skybox = new MRSkyBoxEntity();
             let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
             skybox.setAttribute('src', imageUrl);
-            skybox.connected();
-            this.add(skybox);
+            this.appendChild(skybox);
 
             // Need to zero out the background-image property otherwise
             // we'll end up with a canvas background as well as the skybox
@@ -488,6 +481,12 @@ export class MRApp extends MRElement {
         // ----- grab important vars ----- //
 
         const deltaTime = this.clock.getDelta();
+
+        // ----- If using the threejs stats for 'stats=true' ---- //
+
+        if (this.stats) {
+            this.stats.update();
+        }
 
         // ----- Update needed items ----- //
 

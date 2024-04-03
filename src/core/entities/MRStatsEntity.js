@@ -19,6 +19,7 @@ export class MRStatsEntity extends MRTextEntity {
         super();
         this.frame = 0;
         this.elapsedTime = 0.0;
+        this.object3D.name = 'stats';
     }
 }
 
