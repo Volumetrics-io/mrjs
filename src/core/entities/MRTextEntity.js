@@ -38,6 +38,11 @@ export class MRTextEntity extends MRDivEntity {
         });
     }
 
+    /**
+     * @function
+     * @description Helper for anytime text is manually touched - in connected and by use of `innerText`.
+     * Handles setting `innerText` like expected, sanitizing it for our use, and also making sure the updates are called.
+     */
     _textWasManuallyUpdated() {
         const text = this.textContent
             .replace(/(\n)\s+/g, '$1')
@@ -48,6 +53,10 @@ export class MRTextEntity extends MRDivEntity {
         this.triggerTextStyleUpdate();
     }
 
+    /**
+     * @function
+     * @description setter capture. Handles setting `innerText` like expected by also making sure it's sanitized and the updates are called.
+     */
     set innerText(newText) {
         this.textContent = newText;
         this._textWasManuallyUpdated();
