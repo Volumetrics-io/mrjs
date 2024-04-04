@@ -94,10 +94,6 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
     }
 
-    updateSelectionPosition() {
-        mrjsUtils.error.emptyParentFunction();
-    }
-
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -179,8 +175,12 @@ export class MRTextInputEntity extends MRTextEntity {
             // pure focus event
             this._focus(true);
         });
-        this.addEventListener('click', (event) => {
-            console.log('CLICK EVENT HAPPENED')
+        this.addEventListener('click', () => {
+            // pure focus event
+            this._focus(true);
+        })
+        this.addEventListener('touchstart', (event) => {
+            console.log('ACTUAL CLICK EVENT HAPPENED')
             console.log(event);
             this._focus();
             this.handleMouseClick(event);
@@ -195,6 +195,7 @@ export class MRTextInputEntity extends MRTextEntity {
         });
         this.hiddenInput.addEventListener('input', () => {
             this.updateTextDisplay();
+            this.updateCursorPosition();
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
             console.log('keydown event was triggered');
