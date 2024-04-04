@@ -81,7 +81,7 @@ export class TextSystem extends MRSystem {
     checkIfTextContentChanged(entity) {
         // Add a check in case a user manually updates the text value
         let text = entity instanceof MRTextInputEntity
-                ? entity.hiddenInput.value
+                ? (entity.hiddenInput?.value ?? false)
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
                   // so we have to clean these from the text

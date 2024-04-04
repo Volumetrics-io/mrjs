@@ -61,14 +61,14 @@ export class MRTextInputEntity extends MRTextEntity {
         // DOM
         this.createHiddenInputElement();
 
-        // make it trigger happy
+        // Make it trigger happy
         this.setupEventListeners();
 
         // Updates for baseline visual
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
         
-        // all items should start out as 'not selected'
+        // All items should start out as 'not selected'
         this._blur();
     }
 
