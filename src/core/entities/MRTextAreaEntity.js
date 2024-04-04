@@ -86,12 +86,17 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     }
 
     handleMouseClick(event) {
-        // TODO
-        console.log(event);
+        // Convert isx position from world position to local:
+        // - make sure textObj has updated matrices so we're not calculating info wrong
+        // - note: textObj doesnt need sync
+        this.textObj.updateMatrixWorld(true);
+        const inverseMatrixWorld = new THREE.Matrix4().copy(this.textObj.matrixWorld).invert();
+        const localPosition = inverseMatrixWorld * event.worldPosition;
 
-        // textObj doesnt need sync
-        const caret = getCaretAtPoint(this.textObj.textRenderInfo, event.detail.clientX, event.detail.clientY);
-        console.log('caret:', caret);
+        // update cursor position based on click
+        const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
+        this.hiddenInput.selectionStart = caret.charIndex;
+        this.updateCursorPosition();
     }
 
     /**
@@ -157,20 +162,20 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const currentLineIndexStart = totalLengthToCursorLine + allLines[cursorIsOnLineIndex].length;
                 
 
-                let obj = {
-                    textBeforeCursor: textBeforeCursor,
-                    linesUpToCursor: linesUpToCursor,
-                    allLines: allLines,
-                    totalNumberOfLines: totalNumberOfLines,
-                    cursorIsOnLineIndex: cursorIsOnLineIndex,
-                    totalLengthToCursorLine: totalLengthToCursorLine,
-                    cursorIndexOnCurrentLine: cursorIndexOnCurrentLine,
-                    lineAbove: lineAbove,
-                    maxIndexOptionOfLineAbove: maxIndexOptionOfLineAbove,
-                    cursorIndexOnNewLine: cursorIndexOnNewLine,
-                    currentLineIndexStart: currentLineIndexStart,
-                }
-                console.log('debug textobj:' obj);
+                // let obj = {
+                //     textBeforeCursor: textBeforeCursor,
+                //     linesUpToCursor: linesUpToCursor,
+                //     allLines: allLines,
+                //     totalNumberOfLines: totalNumberOfLines,
+                //     cursorIsOnLineIndex: cursorIsOnLineIndex,
+                //     totalLengthToCursorLine: totalLengthToCursorLine,
+                //     cursorIndexOnCurrentLine: cursorIndexOnCurrentLine,
+                //     lineAbove: lineAbove,
+                //     maxIndexOptionOfLineAbove: maxIndexOptionOfLineAbove,
+                //     cursorIndexOnNewLine: cursorIndexOnNewLine,
+                //     currentLineIndexStart: currentLineIndexStart,
+                // }
+                // console.log('debug textobj:' obj);
 
                 this.hiddenInput.selectionStart = currentLineIndexStart + cursorIndexOnNewLine;
             } else {
@@ -263,16 +268,16 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
             
-            if (isNewLine) {
-                // Faking the newline cursor position since troika doesnt create it until you type something
-                // after the '\n' character sequence, which means the cursor lingers on the current line one
-                // keypress too long, which isnt expected.
-                //
-                // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
-                // nor the this.hiddenInputs physical position.
-                cursorXOffsetPosition = 0;
-                cursorYOffsetPosition = this.cursorHeight * (cursorIsOnLineIndex + 1);
-            } else {
+            // if (isNewLine) {
+            //     // Faking the newline cursor position since troika doesnt create it until you type something
+            //     // after the '\n' character sequence, which means the cursor lingers on the current line one
+            //     // keypress too long, which isnt expected.
+            //     //
+            //     // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
+            //     // nor the this.hiddenInputs physical position.
+            //     cursorXOffsetPosition = 0;
+            //     cursorYOffsetPosition = this.cursorHeight * (cursorIsOnLineIndex + 1);
+            // } else {
                 // Assuming getSelectionRects is properly imported and used here
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
                 if (selectionRects.length > 0) {
@@ -291,7 +296,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                     cursorXOffsetPosition = lastRect.right + this.cursorWidth;
                     cursorYOffsetPosition = lastRect.bottom + this.cursorHeight;
                 }
-            }
+            // }
 
             // Update the cursor's 3D position
             this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;

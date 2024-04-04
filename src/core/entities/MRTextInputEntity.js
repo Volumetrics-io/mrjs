@@ -180,8 +180,6 @@ export class MRTextInputEntity extends MRTextEntity {
             this._focus(true);
         })
         this.addEventListener('touchstart', (event) => {
-            console.log('ACTUAL CLICK EVENT HAPPENED')
-            console.log(event);
             this._focus();
             this.handleMouseClick(event);
         });
