@@ -123,25 +123,56 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Adjust for special keys that alter text
         if (isBackspace || isDelete || isEnter) {
             this.updateTextDisplay();
-
-            // setTimeout(() => {
-            //     // Ensure text display updates after key press
-            //     this.updateTextDisplay();
-            // }, 0);
         }
 
-        // TODO - we need to also make sure we are updating selectionEnd as well - need
+        // XXX - we need to also make sure we are updating selectionEnd as well - need
         // to cleanup this workflow
 
         // Scroll handling for arrow keys
         if (isUpArrow) {
             // XXX - handle scrolloffset in future.
             // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
-            // TODO
+            
+            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+            const lastNewLineIndexBeforeCursor = textBeforeCursor.lastIndexOf('\n');
+            const linesBeforeCursor = textBeforeCursor.split('\n');
+            const numberOfLinesToCursor = linesBeforeCursor.length;
+            const currentLineText = linesBeforeCursor[numberOfLinesToCursor - 1];
+
+            // Only want to move up when not already on the top line
+            if (numberOfLinesToCursor != 0) {
+                // Grab current line cursor index
+                const cursorIndexOnLine = cursorIndex - textBeforeCursor;
+                // Determine where cursor should hit index on line above this one: same index or end of line
+                const secondLastNewLineIndexBeforeCursor = textBeforeCursor.substring(0, lastNewLineIndexBeforeCursor).lastIndexOf('\n');
+                const newLineLength = lastNewLineIndexBeforeCursor - secondLastNewLineIndexBeforeCursor;
+                const cursorIndexOnNewLine = (cursorIndexOnLine < newLineLength) ? cursorIndexOnLine : newLineLength;
+                this.hiddenInput.selectionStart = secondBeforeLastNewLineIndex + cursorIndexOnNewLine;
+            }
         } else if (isDownArrow) {
             // XXX - handle scrolloffset in future
             // XXX - includes adding event.preventDefault to avoid moving the caret to the start/end
-            // TODO
+            
+            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+            const linesBeforeCursor = textBeforeCursor.split('\n');
+            const totalNumberOfLines = this.hiddenInput.value.split('\n');
+            const numberOfLinesToCursor = linesBeforeCursor.length;
+
+            // Only want to move up when not already on the top line
+            if (numberOfLinesToCursor != totalNumberOfLines) {
+                const textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
+                const linesAfterCursor = textAfterCursor.split('\n');
+                const currentLineText = linesBeforeCursor[numberOfLinesToCursor - 1];
+                const nextLineText = linesAfterCursor[0];
+
+                // Grab current line cursor index
+                const cursorIndexOnLine = cursorIndex - textBeforeCursor;
+                // Determine where cursor should hit index on line below this one: same index or end of line
+                const nextNewLineIndexAfterCursor = textAfterCursor.firstIndexOf('\n');
+                const newLineLength = linesAfterCursor[1].length;
+                const cursorIndexOnNewLine = (cursorIndexOnLine < newLineLength) ? cursorIndexOnLine : newLineLength;
+                this.hiddenInput.selectionStart = cursorIndex + nextNewLineIndexAfterCursor + cursorIndexOnNewLine;
+            }
         } else if (isLeftArrow) {
             // Only want to move when not at the first index
             if (this.hiddenInput.selectionStart != 0) {
@@ -220,13 +251,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
 
         // Setup variables for calculations.
-        const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-        const lastNewLineIndex = this.hiddenInput.value.lastIndexOf('\n');
-        const linesBeforeCursor = textBeforeCursor.split('\n');
-        const numberOfLines = linesBeforeCursor.length;
-        const currentLineText = linesBeforeCursor[numberOfLines - 1];
-
         // XXX handle visible lines for scrolloffset here in future
+        const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
 
         // Separating textObj sync from the cursor update based on rects
         // since textObj sync resolves when there's actual changes to the
