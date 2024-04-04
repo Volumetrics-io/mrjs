@@ -40,10 +40,10 @@ export class MRTextEntity extends MRDivEntity {
 
     /**
      * @function
-     * @description (async) sets up the textObject of the text item.
+     * @description Helper for anytime text is manually touched - in connected and by use of `innerText`.
+     * Handles setting `innerText` like expected, sanitizing it for our use, and also making sure the updates are called.
      */
-    async connected() {
-        await super.connected();
+    _textWasManuallyUpdated() {
         const text = this.textContent
             .replace(/(\n)\s+/g, '$1')
             .replace(/(\r\n|\n|\r)/gm, ' ')
@@ -51,6 +51,24 @@ export class MRTextEntity extends MRDivEntity {
         this.textObj.text = text.length > 0 ? text : ' ';
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
+    }
+
+    /**
+     * @function
+     * @description setter capture. Handles setting `innerText` like expected by also making sure it's sanitized and the updates are called.
+     */
+    set innerText(newText) {
+        this.textContent = newText;
+        this._textWasManuallyUpdated();
+    }
+
+    /**
+     * @function
+     * @description (async) sets up the textObject of the text item.
+     */
+    async connected() {
+        await super.connected();
+        this._textWasManuallyUpdated();
     }
 
     /**
