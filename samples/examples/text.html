@@ -51,6 +51,17 @@
         </mr-text>
 
         <mr-text class="col-2 label">
+            mr-text that should be `.innerText` updated by js
+        </mr-text>
+
+        <mr-text class="col-2" id="before">
+            Before I said this
+        </mr-text>
+        <mr-text class="col-2" id="after">
+            Before I said this
+        </mr-text>
+
+        <mr-text class="col-2 label">
             mr-textarea
         </mr-text>
         <mr-textarea class="col-2" style="z-index:3;" placeholder="Hi hello I'm a bunch of text. I'm on one line with no breaks \n\nIm on another line now.">
@@ -88,6 +99,10 @@
   </body>
 
   <footer>
+    <script>
+        let changingText = document.querySelector('#after');
+        changingText.innerText = "now I say this";
+    </script>
     <script src="/assets/js/SpinSystem.js"></script>
   </footer>
 </html>

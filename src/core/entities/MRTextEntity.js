@@ -38,12 +38,7 @@ export class MRTextEntity extends MRDivEntity {
         });
     }
 
-    /**
-     * @function
-     * @description (async) sets up the textObject of the text item.
-     */
-    async connected() {
-        await super.connected();
+    _textWasManuallyUpdated() {
         const text = this.textContent
             .replace(/(\n)\s+/g, '$1')
             .replace(/(\r\n|\n|\r)/gm, ' ')
@@ -51,6 +46,20 @@ export class MRTextEntity extends MRDivEntity {
         this.textObj.text = text.length > 0 ? text : ' ';
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
+    }
+
+    set innerText(newText) {
+        this.textContent = newText;
+        this._textWasManuallyUpdated();
+    }
+
+    /**
+     * @function
+     * @description (async) sets up the textObject of the text item.
+     */
+    async connected() {
+        await super.connected();
+        this._textWasManuallyUpdated();
     }
 
     /**
