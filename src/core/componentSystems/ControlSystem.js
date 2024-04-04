@@ -383,9 +383,39 @@ export class ControlSystem extends MRSystem {
      * @param {event} event - the mouse up event
      */
     onMouseUp = (event) => {
+        // this.down = false;
+        // this.currentEntity?.classList.remove('active');
+        // this.currentEntity?.dispatchEvent(new Event('click'));
+
+        // this.currentEntity?.dispatchEvent(
+        //     new CustomEvent('touchend', {
+        //         bubbles: true,
+        //     })
+        // );
+
+        // this.hoverStartEvents();
+
         this.down = false;
         this.currentEntity?.classList.remove('active');
-        this.currentEntity?.dispatchEvent(new Event('click'));
+
+        // Handle the click event properly s.t. it passes to our
+        // entities with the needed clientX and clientY information.
+        if (this.currentEntity) {
+            // Calculate relative X and Y positions
+            const rect = this.currentEntity.getBoundingClientRect();
+            const entityX = event.clientX - rect.left;
+            const entityY = event.clientY - rect.top;
+            const clientX = event.clientX;
+            const clientY = event.clientY;
+
+            // Dispatch the custom 'click' event with position data
+            this.currentEntity.dispatchEvent(
+                new CustomEvent('click', {
+                    detail: { entityX, entityY, clientX, clientY }, // Include the calculated positions in the event detail
+                    bubbles: true,
+                })
+            );
+        }
 
         this.currentEntity?.dispatchEvent(
             new CustomEvent('touchend', {

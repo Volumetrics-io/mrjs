@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { getSelectionRects, Text } from 'troika-three-text';
+import { getCaretAtPoint, getSelectionRects, Text } from 'troika-three-text';
 
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
@@ -99,6 +99,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     handleMouseClick(event) {
         // TODO
         console.log(event);
+
+        // textObj doesnt need sync
+        const caret = getCaretAtPoint(this.textObj.textRenderInfo, event.detail.clientX, event.detail.clientY);
+        console.log('caret:', caret);
     }
 
     /**
@@ -223,8 +227,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const currentLineText = linesBeforeCursor[numberOfLines - 1];
 
         // XXX handle visible lines for scrolloffset here in future
-
-        console.log('here');
 
         // Separating textObj sync from the cursor update based on rects
         // since textObj sync resolves when there's actual changes to the

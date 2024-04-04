@@ -132,7 +132,7 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      *
      */
-    _focus(isPureFocusEvent=true) {
+    _focus(isPureFocusEvent=false) {
         if (!this.hiddenInput) {
             return;
         }
@@ -177,15 +177,12 @@ export class MRTextInputEntity extends MRTextEntity {
         // Focus Events
         this.addEventListener('focus', () => {
             // pure focus event
-            this._focus();
+            this._focus(true);
         });
         this.addEventListener('click', (event) => {
-            // pure focus event
+            console.log('CLICK EVENT HAPPENED')
+            console.log(event);
             this._focus();
-        });
-        this.hiddenInput.addEventListener('mousedown', (event) => {
-            console.log('MOUSEDOWN HAPPENED');
-            this._focus(event);
             this.handleMouseClick(event);
         });
 
