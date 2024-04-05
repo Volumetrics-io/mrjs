@@ -14,7 +14,7 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 // // import { IFCLoader }        from 'web-ifc-three';
 // // import { IFCSPACE }         from 'web-ifc';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-// import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 // import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
 // import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 // import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
@@ -70,7 +70,7 @@ model.loadOBJ = function (filePath) {
         loader.load(
             filePath,
             (obj) => {
-                resolve(fbx);
+                resolve(obj);
             },
             undefined,
             (error) => {
@@ -78,6 +78,48 @@ model.loadOBJ = function (filePath) {
                 reject(error);
             }
         );
+    });
+};
+
+/**
+ * @function
+ * @memberof model
+ * @description Loads OBJ file that has an attached MTL file
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
+ * the full path and the relative path directly to the file.
+ * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
+ */
+model.loadOBJWithMTL = function (filePath) {
+    let paths = filePath.split(',');
+    // Assigning each path to a variable
+    if (paths.length != 2) {
+        mrjsUtils.error.err('Expected the loading of an MTL file and an OBJ file like "path/to/mtlFile.mtl,path/to/the/objFile.obj" - got:', filePath);
+        return;
+    }
+    const filePathMTL = paths[0];
+    const filePathOBJ = paths[1];
+
+    const mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load(filePathMTL, function (materials) {
+
+        materials.preload();
+
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+
+        return new Promise((resolve, reject) => {
+            loader.load(
+                filePathOBJ,
+                (obj) => {
+                    resolve(obj);
+                },
+                undefined,
+                (error) => {
+                    console.error(error);
+                    reject(error);
+                }
+            );
+        });
     });
 };
 
@@ -217,7 +259,12 @@ model.loadModel = function (filePath, extension) {
     } else if (extension == 'stl') {
         return model.loadSTL(filePath);
     } else if (extension == 'obj') {
-        return model.loadOBJ(filePath);
+        if (filePath.includes(',')) {
+            // has a preceeding material file
+            model.loadOBJWithMTL(filePath);
+        } else {
+            return model.loadOBJ(filePath);
+        }
     }
     const allowed = false;
     if (extension == 'dae') {

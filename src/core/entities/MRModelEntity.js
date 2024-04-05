@@ -71,6 +71,8 @@ export class MRModelEntity extends MRDivEntity {
      */
     async loadModel() {
         this.loading = true;
+
+
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         try {

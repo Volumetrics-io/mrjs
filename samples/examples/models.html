@@ -83,8 +83,8 @@
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                dae
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                dae - note the difference in coordinate system
             </mr-text>
             <mr-model 
                 id="dae"
@@ -106,26 +106,37 @@
         </mr-div> -->
         <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - without mtl
+                obj - without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"
             </mr-text>
             <mr-model 
                 id="obj"
-                style="scale: 0.025; z-index: 12;"
+                style="scale: 0.0005; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
                 src="../examples-assets/models/logo_nomtl.obj">
             </mr-model>
         </mr-div>
-        <!--<mr-div class="links col-2">
+        <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - with mtl
+                obj - with mtl referenced in file, but file not loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
             </mr-text>
             <mr-model 
                 id="obj_with_mtl"
                 style="scale: 0.025; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.obj,../examples-assets/models/koifish.mtl">
+                src="../examples-assets/models/koifish.obj">
             </mr-model>
-        </mr-div>-->
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                obj - with mtl: "mr-model src='/path/to/mtlFile.mtl,/path/to/the/objFile.obj'"
+            </mr-text>
+            <mr-model 
+                id="obj_with_mtl"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/koifish.mtl,../examples-assets/models/koifish.obj">
+            </mr-model>
+        </mr-div>
 
         <mr-text class="col-2 subtitle" >
         model
