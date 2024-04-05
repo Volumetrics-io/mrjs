@@ -23,11 +23,9 @@ export class TextSystem extends MRSystem {
     constructor() {
         super(false);
 
+        // Setup all the preloaded fonts
         this.preloadedFonts = {};
-
-        this.styles = {};
         const styleSheets = Array.from(document.styleSheets);
-
         styleSheets.forEach((styleSheet) => {
             const cssRules = Array.from(styleSheet.cssRules);
             // all the font-faces rules
@@ -48,10 +46,10 @@ export class TextSystem extends MRSystem {
             });
         });
 
+        // Handle text style needs update
         this.app.addEventListener('trigger-text-style-update', (e) => {
             // The event has the entity stored as its detail.
             if (e.detail !== undefined) {
-                // console.log('trigger-text-style-update for ', e.detail)
                 this._updateSpecificEntity(e.detail);
             }
         });
@@ -76,24 +74,72 @@ export class TextSystem extends MRSystem {
      * @description The per entity triggered update call. Handles updating all text items including updates for style and cleaning of content for special characters.
      */
     _updateSpecificEntity(entity) {
+        this.checkIfTextContentChanged(entity);
+        this.handleTextContentUpdate(entity);
+    }
+
+    /**
+     *
+     * @param {object} entity - checks if the content changed and if so, updates it to match.
+     * @returns {boolean} true if the content needed to be updated, false otherwise.
+     */
+    checkIfTextContentChanged(entity) {
+        // Add a check in case a user manually updates the text value
+        let text =
+            entity instanceof MRTextInputEntity
+                ? entity.hiddenInput?.value ?? false
+                : // troika honors newlines/white space
+                  // we want to mimic h1, p, etc which do not honor these values
+                  // so we have to clean these from the text
+                  // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
+                  entity.textContent
+                      .replace(/(\n)\s+/g, '$1')
+                      .replace(/(\r\n|\n|\r)/gm, ' ')
+                      .trim();
+
+        if (entity.textObj.text != text) {
+            entity.textObj.text = text;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param {object} entity - the entity whose content updated.
+     */
+    handleTextContentUpdate(entity) {
         this.updateStyle(entity);
 
-        // the sync step ensures troika's text render info and geometry is up to date
+        // The sync step ensures troika's text render info and geometry is up to date
         // with any text content changes.
         entity.textObj.sync(() => {
             if (entity instanceof MRButtonEntity) {
+                // MRButtonEntity
+
                 entity.textObj.anchorX = 'center';
-            } else {
+            } else if (entity instanceof MRTextInputEntity) {
+                // MRTextAreaEntity, MRTextFieldEntity, etc
+
+                // textObj positioning and dimensions
+                entity.textObj.maxWidth = entity.width;
+                entity.textObj.maxHeight = entity.height;
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
-            }
-
-            if (entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity) {
+                // cursor positioning and dimensions
+                entity.cursorStartingPosition.x = entity.textObj.position.x;
+                entity.cursorStartingPosition.y = entity.textObj.position.y - entity.cursorHeight / 2;
+                // handle activity
                 if (entity == document.activeElement) {
                     entity.updateCursorPosition();
                 } else {
                     entity.blur();
                 }
+            } else {
+                // MRTextEntity
+
+                entity.textObj.position.setX(-entity.width / 2);
+                entity.textObj.position.setY(entity.height / 2);
             }
         });
     }
@@ -104,27 +150,8 @@ export class TextSystem extends MRSystem {
      */
     eventUpdate = () => {
         for (const entity of this.registry) {
-            // Add a check in case a user manually
-            let text =
-                entity instanceof MRTextFieldEntity || entity instanceof MRTextAreaEntity
-                    ? entity.hiddenInput.value
-                    : // troika honors newlines/white space
-                      // we want to mimic h1, p, etc which do not honor these values
-                      // so we have to clean these from the text
-                      // ref: https://github.com/protectwise/troika/issues/289#issuecomment-1841916850
-                      entity.textContent
-                          .replace(/(\n)\s+/g, '$1')
-                          .replace(/(\r\n|\n|\r)/gm, ' ')
-                          .trim();
-
-            let textContentChanged = entity.textObj.text != text;
-
-            // Now that we know text is different or at least definitely needs an update
-            // we can go and do the larger calculations and changes.
-            if (textContentChanged) {
-                entity.textObj.text = text;
-                this._updateSpecificEntity(entity);
-            }
+            this.checkIfTextContentChanged(entity);
+            this.handleTextContentUpdate(entity);
         }
     };
 
@@ -146,28 +173,26 @@ export class TextSystem extends MRSystem {
      */
     updateStyle = (entity) => {
         const { textObj } = entity;
-        if (textObj.text.trim().length != 0) {
-            textObj.font = this.preloadedFonts[entity.compStyle.fontFamily];
-        } else {
-            textObj.font = null;
-        }
+
+        // Font
+        textObj.font = textObj.text.trim().length != 0 ? this.preloadedFonts[entity.compStyle.fontFamily] : null;
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
         textObj.fontStyle = entity.compStyle.fontStyle;
 
+        // Alignment
         textObj.anchorY = this.getVerticalAlign(entity.compStyle.verticalAlign, entity);
-
         textObj.textAlign = this.getTextAlign(entity.compStyle.textAlign);
-
         textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
-        textObj.material.opacity = entity.compStyle.opacity ?? 1;
+        // Color and opacity
+        mrjsUtils.color.setTEXTObject3DColor(textObj, entity.compStyle.color, entity.compStyle.opacity ?? 1);
 
-        this.setColor(textObj, entity.compStyle.color);
-
+        // Whitespace and Wrapping
         textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
         textObj.maxWidth = entity.width * 1.001;
 
+        // Offset position for visibility on top of background plane
         textObj.position.z = 0.0001;
     };
 
@@ -267,26 +292,6 @@ export class TextSystem extends MRSystem {
             return 'right';
         }
         return textAlign;
-    }
-
-    /**
-     * @function
-     * @description Sets the matrial color and opacity based on the css color element
-     * @param {object} textObj - the textObj whose color is being updated
-     * @param {object} color - the representation of color as `rgba(xxx,xxx,xxx)` or as `#xxx`
-     */
-    setColor(textObj, color) {
-        if (color.includes('rgba')) {
-            const rgba = color
-                .substring(5, color.length - 1)
-                .split(',')
-                .map((part) => parseFloat(part.trim()));
-            textObj.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-
-            textObj.material.opacity = rgba[3];
-        } else {
-            textObj.material.color.setStyle(color ?? '#000');
-        }
     }
 
     /**
