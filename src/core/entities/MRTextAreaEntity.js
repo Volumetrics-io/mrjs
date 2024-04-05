@@ -93,7 +93,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         let fromCursorMove = !(isBackspace || isDelete || isEnter);
 
-        // Handle Special Keys, then Up/Down, then Left/Right 
+        // Handle Special Keys, then Up/Down, then Left/Right
         // as some may trigger the others being required
         // based on assumed implementations for them for the
         // textarea dom element.
@@ -133,9 +133,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 // Determine where cursor should hit index on line above this one: same index or end of line
                 const prevLineText = allLines[cursorIsOnLineIndex - 1];
                 const maxIndexOptionOfPrevLine = prevLineText.length - 1;
-                const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine) ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
+                const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
-            } 
+            }
         } else if (isDownArrow) {
             // XXX - handle scrolloffset in future.
 
@@ -143,9 +143,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
                 const currentLineText = allLines[cursorIsOnLineIndex];
                 // Determine where cursor should hit index on line below this one: same index or end of line
-                const nextLineText = allLines[cursorIsOnLineIndex + 1]
+                const nextLineText = allLines[cursorIsOnLineIndex + 1];
                 const maxIndexOptionOfNextLine = nextLineText.length - 1;
-                const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfNextLine) ? maxIndexOptionOfNextLine : cursorIndexOnCurrentLine;
+                const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfNextLine ? maxIndexOptionOfNextLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine + currentLineText.length + cursorIndexOnNewLine;
             }
         }

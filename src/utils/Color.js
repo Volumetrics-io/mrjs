@@ -48,7 +48,7 @@ color.hexToRgba = function (hex) {
     return { r, g, b, a };
 };
 
-color.setObject3DColor = function (object3D, color, compStyle_opacity='1', default_color='#000') {
+color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', default_color = '#000') {
     if (color.startsWith('rgba')) {
         const rgba = color
             .match(/rgba?\(([^)]+)\)/)[1]
@@ -79,10 +79,10 @@ color.setObject3DColor = function (object3D, color, compStyle_opacity='1', defau
         object3D.material.opacity = compStyle_opacity;
     }
     object3D.material.needsUpdate = true;
-}
+};
 
-color.setTEXTObject3DColor = function (object3D, color, default_color='#000') {
-   if (color.includes('rgba')) {
+color.setTEXTObject3DColor = function (object3D, color, default_color = '#000') {
+    if (color.includes('rgba')) {
         const rgba = color
             .substring(5, color.length - 1)
             .split(',')
@@ -94,6 +94,6 @@ color.setTEXTObject3DColor = function (object3D, color, default_color='#000') {
         object3D.material.color.setStyle(color ?? '#000');
     }
     object3D.material.needsUpdate = true;
-}
+};
 
 export { color };

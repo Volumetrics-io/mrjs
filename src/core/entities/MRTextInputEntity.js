@@ -66,7 +66,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.object3D.add(this.cursor);
 
         // DOM
-        this.createHiddenInputElement(); 
+        this.createHiddenInputElement();
         // this.fillInHiddenInputElementWithUserData(); // TODO - <-- swap to this when trying a live example
 
         // Make it trigger happy
@@ -75,7 +75,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // Updates for baseline visual
         this.triggerGeometryStyleUpdate();
         this.triggerTextStyleUpdate();
-        
+
         // All items should start out as 'not selected'
         this.blur();
     }
@@ -94,7 +94,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor = new THREE.Mesh(geometry, material);
         this.cursor.position.z += 0.001;
         this.cursor.visible = false;
-        
+
         // We store this for the geometry so we can do our geometry vs web origin calculations
         // more easily as well. We update this based on the geometry's own changes.
         //
@@ -110,7 +110,7 @@ export class MRTextInputEntity extends MRTextEntity {
         mrjsUtils.error.emptyParentFunction();
     }
 
-        /**
+    /**
      *
      * @param {event} event - the keydown event
      */
@@ -130,15 +130,18 @@ export class MRTextInputEntity extends MRTextEntity {
 
     /**
      *
+     * @param {boolean} isPureFocusEvent - Boolean to allow us to update the cursor position with this function
+     * directly. Otherwise, we assume there's other things happening after focus was called as part of the event
+     * and that the cursor position will be handled there instead.
      */
-    focus(isPureFocusEvent=false) {
+    focus(isPureFocusEvent = false) {
         if (!this.hiddenInput) {
             return;
         }
         this.hiddenInput.focus();
 
         if (isPureFocusEvent) {
-            // Only want to update cursor and selection position if 
+            // Only want to update cursor and selection position if
             // this is a pure focus event; otherwise, we're assuming
             // the other event will position those properly (so that
             // we dont do redundant positioning here and then there as well).
@@ -146,9 +149,12 @@ export class MRTextInputEntity extends MRTextEntity {
             this.updateCursorPosition();
         }
 
-        this.cursor.visible = true;        
+        this.cursor.visible = true;
     }
 
+    /**
+     *
+     */
     blur() {
         this.hiddenInput.blur();
         this.cursor.visible = false;
@@ -166,10 +172,10 @@ export class MRTextInputEntity extends MRTextEntity {
         // connection allows us to call super.func() for event
         // functions; otherwise, theyre not accessible nor implemented
         // in the subclasses.
-       
+
         // Blur events
         this.addEventListener('blur', () => {
-           this.blur(); 
+            this.blur();
         });
 
         // Pure Focus Events
@@ -178,14 +184,14 @@ export class MRTextInputEntity extends MRTextEntity {
         });
         this.addEventListener('click', () => {
             this.focus(true);
-        })
+        });
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
             this.focus();
             this.handleMouseClick(event);
         });
 
-        // Keyboard events to capture text in the 
+        // Keyboard events to capture text in the
         // hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
             console.log('handling EVENT, hiddenInput, INPUT');
@@ -199,7 +205,7 @@ export class MRTextInputEntity extends MRTextEntity {
             // want those handled only in the keydown event
             // - also need to figure out which events
             // /are/ triggered by input but /not/ keydown
-            
+
             this.updateTextDisplay();
             this.updateCursorPosition();
         });
@@ -215,11 +221,16 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
+     * @param {boolean} fromCursorMove - false by default. Used to determine if we need to run
+     * based off a text object update sync or we can directly grab information. This requirement
+     * occurs because the sync isnt usable if no text content changed.
+     * @param {boolean} isNewLine - false by default. Used to determine if the new character added
+     * was a newline character to try to augment the cursor position to something the user
+     * would recognize since troika places it in a weird spot until the next character is entered.
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition(fromCursorMove=false, isNewLine=false) {
-
+    updateCursorPosition(fromCursorMove = false, isNewLine = false) {
         const updateBasedOnSelectionRects = (cursorIndex, isNewLine) => {
             // Setup variables for calculations.
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
@@ -230,7 +241,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
-            
+
             if (isNewLine) {
                 console.log('in the isNewLine section');
                 // Faking the newline cursor position since troika doesnt create it until you type something
@@ -271,7 +282,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 console.log('this.cursor.position:', this.cursor.position);
             }
             this.cursor.visible = true;
-        }
+        };
 
         console.log('here in update cursor position');
         // Check if we have any DOM element to work with.
@@ -284,7 +295,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // be thought through again.
         const cursorIndex = this.hiddenInput.selectionStart;
         console.log('found cursor index as:', cursorIndex);
-        
+
         // early escape for empty text
         if (cursorIndex == 0) {
             this.cursor.position.x = this.cursorStartingPosition.x;

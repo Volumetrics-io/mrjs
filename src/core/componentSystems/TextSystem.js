@@ -78,10 +78,16 @@ export class TextSystem extends MRSystem {
         this.handleTextContentUpdate(entity);
     }
 
+    /**
+     *
+     * @param {object} entity - checks if the content changed and if so, updates it to match.
+     * @returns {boolean} true if the content needed to be updated, false otherwise.
+     */
     checkIfTextContentChanged(entity) {
         // Add a check in case a user manually updates the text value
-        let text = entity instanceof MRTextInputEntity
-                ? (entity.hiddenInput?.value ?? false)
+        let text =
+            entity instanceof MRTextInputEntity
+                ? entity.hiddenInput?.value ?? false
                 : // troika honors newlines/white space
                   // we want to mimic h1, p, etc which do not honor these values
                   // so we have to clean these from the text
@@ -98,6 +104,10 @@ export class TextSystem extends MRSystem {
         return false;
     }
 
+    /**
+     *
+     * @param {object} entity - the entity whose content updated.
+     */
     handleTextContentUpdate(entity) {
         this.updateStyle(entity);
 
@@ -165,7 +175,7 @@ export class TextSystem extends MRSystem {
         const { textObj } = entity;
 
         // Font
-        textObj.font = (textObj.text.trim().length != 0) ? this.preloadedFonts[entity.compStyle.fontFamily] : null;
+        textObj.font = textObj.text.trim().length != 0 ? this.preloadedFonts[entity.compStyle.fontFamily] : null;
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
         textObj.fontStyle = entity.compStyle.fontStyle;
