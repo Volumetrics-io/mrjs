@@ -109,7 +109,7 @@
                 obj - without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"
             </mr-text>
             <mr-model 
-                id="obj"
+                id="obj_nomtl"
                 style="scale: 0.0005; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
                 src="../examples-assets/models/logo_nomtl.obj">
@@ -117,10 +117,10 @@
         </mr-div>
         <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - with mtl referenced in file, but file not loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
+                obj - with mtl referenced in file, BUT file NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
             </mr-text>
             <mr-model 
-                id="obj_with_mtl"
+                id="obj_with_mtl_obj_only"
                 style="scale: 0.025; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
                 src="../examples-assets/models/koifish.obj">
@@ -128,7 +128,7 @@
         </mr-div>
         <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - with mtl: "mr-model src='/path/to/mtlFile.mtl,/path/to/the/objFile.obj'"
+                obj - with mtl referenced in file, AND mtl file IS loaded as part of 'src': "mr-model src='/path/to/mtlFile.mtl,/path/to/the/objFile.obj'"
             </mr-text>
             <mr-model 
                 id="obj_with_mtl"

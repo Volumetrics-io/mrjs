@@ -97,36 +97,50 @@ model.loadOBJWithMTL = function (filePath) {
         mrjsUtils.error.err('Expected the loading of an MTL file and an OBJ file like "path/to/mtlFile.mtl,path/to/the/objFile.obj" - got:', filePath);
         return;
     }
+
+    // check they're actually resolved
     const filePathMTL = paths[0];
     const filePathOBJ = paths[1];
     console.log('filepaths:', filePathMTL, filePathOBJ);
 
-    const mtlLoader = new MTLLoader();
-    mtlLoader.load(filePathMTL, function (materials) {
-
-        materials.preload();
-
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-
+    const loadMTL = (filePath) => {
         return new Promise((resolve, reject) => {
-            objLoader.load(
-                filePathOBJ,
-                (obj) => {
-                    const scene = obj.scene;
-                    const animations = obj.animations;
-
-                    // Resolve the promise with the loaded scene and animations
-                    resolve({ scene, animations });
-                },
-                undefined,
-                (error) => {
-                    console.error(error);
-                    reject(error);
-                }
-            );
+            const mtlLoader = new MTLLoader();
+            mtlLoader.load(filePath, materials => {
+                materials.preload();
+                resolve(materials);
+            }, undefined, error => {
+                console.error('Failed to load MTL:', error);
+                reject(error);
+            });
         });
-    });
+    };
+
+    const loadOBJ = (filePath, materials) => {
+        return new Promise((resolve, reject) => {
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load(filePath, obj => {
+                console.log('in final:', obj);
+                resolve(obj);
+                // resolve({ scene: obj.scene, animations: obj.animations });
+            }, undefined, error => {
+                console.error('Failed to load OBJ:', error);
+                reject(error);
+            });
+        });
+    };
+
+    loadMTL(filePathMTL)
+        .then(materials => loadOBJ(filePathOBJ, materials))
+        .then((obj) => {
+            // console.log('Scene and animations loaded successfully:', scene, animations);
+            return obj;
+        })
+        .catch(error => {
+            console.error('An error occurred:', error);
+        });
+
 };
 
 /**
