@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import { getCaretAtPoint, getSelectionRects, Text } from 'troika-three-text';
-
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
 /**
@@ -22,19 +20,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.scrollOffset = 0; // The vertical scroll position
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
         this.object3D.name = 'textArea';
-
-        // this.defaults = {
-        //     name: 'mr-textarea',
-        //     rows: '...',
-        //     cols: '...',
-        //     placeholder: '',
-        //     readonly: '...',
-        //     disabled: '...',
-        //     maxLength: '...',
-        //     wrap: '...',
-        //     overflowWrap: 'normal',
-        //     whiteSpace: 'normal',
-        // };
     }
 
     /**
@@ -54,26 +39,26 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     /**
      *
      */
-    // fillInHiddenInputElementWithUserData() {
-    //     // name: The name associated with the <textarea> for form submission and backend processing.
-    //     this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
-    //     // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
-    //     this.hiddenInput.rows = this.getAttribute('rows') ?? this.defaults.rows;
-    //     // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-    //     this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? this.defaults.placeholder;
-    //     // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-    //     this.hiddenInput.readonly = this.getAttribute('readonly') ?? this.defaults.readonly;
-    //     // disabled: Disables the text area so it cannot be interacted with or submitted.
-    //     this.hiddenInput.disabled = this.getAttribute('disabled') ?? this.defaults.disabled;
-    //     // maxlength: Specifies the maximum number of characters that the user can enter.
-    //     this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? this.defaults.maxlength;
-    //     // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-    //     this.hiddenInput.wrap = this.getAttribute('wrap') ?? this.defaults.wrap;
-    //     // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
-    //     this.hiddenInput.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
-    //     // whitespace : Controls if text wraps with the overflowWrap feature or not.
-    //     this.hiddenInput.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
-    // }
+    fillInHiddenInputElementWithUserData() {
+        // name: The name associated with the <textarea> for form submission and backend processing.
+        this.hiddenInput.name = this.getAttribute('name') ?? undefined;
+        // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
+        this.hiddenInput.rows = this.getAttribute('rows') ?? undefined;
+        // placeholder: Provides a hint to the user about what they should type into the <textarea>.
+        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? undefined;
+        // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
+        this.hiddenInput.readonly = this.getAttribute('readonly') ?? undefined;
+        // disabled: Disables the text area so it cannot be interacted with or submitted.
+        this.hiddenInput.disabled = this.getAttribute('disabled') ?? undefined;
+        // maxlength: Specifies the maximum number of characters that the user can enter.
+        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? undefined;
+        // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
+        this.hiddenInput.wrap = this.getAttribute('wrap') ?? undefined;
+        // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
+        this.hiddenInput.overflowWrap = this.getAttribute('overflowWrap') ?? undefined;
+        // whitespace : Controls if text wraps with the overflowWrap feature or not.
+        this.hiddenInput.whiteSpace = this.getAttribute('whitespace') ?? undefined;
+    }
 
     /**
      *
@@ -85,20 +70,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.textObj.text = this.hiddenInput.value;
     }
 
-    handleMouseClick(event) {
-        // Convert isx position from world position to local:
-        // - make sure textObj has updated matrices so we're not calculating info wrong
-        // - note: textObj doesnt need sync
-        this.textObj.updateMatrixWorld(true);
-        const inverseMatrixWorld = new THREE.Matrix4().copy(this.textObj.matrixWorld).invert();
-        const localPosition = inverseMatrixWorld * event.worldPosition;
-
-        // update cursor position based on click
-        const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
-        this.hiddenInput.selectionStart = caret.charIndex;
-        this.updateCursorPosition();
-    }
-
     /**
      * Handles keydown events for scrolling and cursor navigation. Note
      * that this is different than an input event which for our purposes,
@@ -107,9 +78,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      */
     handleKeydown(event) {
         const { keyCode } = event;
-        let isLeftArrow = keyCode === 37;
+        const isLeftArrow = keyCode === 37;
         const isUpArrow = keyCode === 38;
-        let isRightArrow = keyCode === 39;
+        const isRightArrow = keyCode === 39;
         const isDownArrow = keyCode === 40;
         const isBackspace = keyCode === 8;
         const isDelete = keyCode === 46;
@@ -120,8 +91,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             this.updateTextDisplay();
         }
 
-        let needsCursorUpdate = true;
-        let isNewLine = false;
+        let fromCursorMove = !(isBackspace || isDelete || isEnter);
 
         // Handle Special Keys, then Up/Down, then Left/Right 
         // as some may trigger the others being required
@@ -129,12 +99,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // textarea dom element.
 
         if (isBackspace || isDelete) {
-            this.updateTextDisplay(); // Ensure text display updates after key press
-            this.hiddenInput.selectionStart--;
+            this.updateTextDisplay();
+            this.updateCursorPosition(fromCursorMove);
+            return;
         } else if (isEnter) {
-            // this.updateTextDisplay(); // Ensure text display updates after key press
-            isNewLine = true;
-            // this.hiddenInput.selectionStart++;
+            this.updateCursorPosition(fromCursorMove, true);
+            return;
         }
 
         // Some shared variables
@@ -153,8 +123,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
-        // Need to handle up and down arrow properly otherwise these act as left
-        // and right arrows like in textfield.
+        // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
+        // and RIGHT arrows like in textfield.
         if (isUpArrow) {
             // XXX - handle scrolloffset in future.
 
@@ -187,100 +157,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
-            if (needsCursorUpdate) {
-                this.updateCursorPosition(true, isNewLine);
-            }
+            this.updateCursorPosition(fromCursorMove);
         }, 0);
-    }
-
-    /**
-     *
-     */
-    updateCursorPosition(fromCursorMove=false, isNewLine=false) {
-
-        const updateBasedOnSelectionRects = (cursorIndex, isNewLine) => {
-            // Setup variables for calculations.
-            // XXX - handle cursor position change for visible lines for scrolloffset here in future
-            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            const allLines = this.hiddenInput.value.split('\n');
-            const linesBeforeCursor = textBeforeCursor.split('\n');
-            const cursorIsOnLineIndex = linesBeforeCursor.length - 1;
-
-            let cursorXOffsetPosition = 0;
-            let cursorYOffsetPosition = 0;
-            
-            if (isNewLine) {
-                console.log('in the isNewLine section');
-                // Faking the newline cursor position since troika doesnt create it until you type something
-                // after the '\n' character sequence, which means the cursor lingers on the current line one
-                // keypress too long, which isnt expected.
-                //
-                // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
-                // nor the this.hiddenInputs physical position.
-                cursorXOffsetPosition = 0;
-                cursorYOffsetPosition = 0 - this.cursorHeight * (cursorIsOnLineIndex + 1);
-                console.log('cursorXOffsetPosition: ', cursorXOffsetPosition, 'cursorYOffsetPosition: ', cursorYOffsetPosition);
-            } else {
-                // Assuming getSelectionRects is properly imported and used here
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-                if (selectionRects.length > 0) {
-                    let lastRect = selectionRects[selectionRects.length - 1];
-
-                    // Check if cursor matches our font size before using values.
-                    const cursorVisibleHeight = lastRect.top - lastRect.bottom;
-                    if (this.cursor.geometry.height != cursorVisibleHeight) {
-                        this.cursor.geometry.height = cursorVisibleHeight;
-                        this.cursor.geometry.needsUpdate = true;
-                        this.cursorHeight = cursorVisibleHeight;
-                    }
-
-                    // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
-                    // a little bit of buffer room.
-                    cursorXOffsetPosition = lastRect.right + this.cursorWidth;
-                    cursorYOffsetPosition = lastRect.bottom + this.cursorHeight;
-                }
-            }
-
-            // Update the cursor's 3D position
-            this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;
-            this.cursor.position.y = this.cursorStartingPosition.y + cursorYOffsetPosition;
-            // if (isNewLine) {
-                console.log('this.cursorStartingPosition:', this.cursorStartingPosition);
-                console.log('this.cursor.position:', this.cursor.position);
-            // }
-            this.cursor.visible = true;
-        }
-
-        console.log('here in update cursor position');
-        // Check if we have any DOM element to work with.
-        if (!this.hiddenInput) {
-            return;
-        }
-
-        // Since no text is selected, this and selectionEnd are just the cursor position.
-        // XXX - when we actually allow for seleciton in future, some of the below will need to
-        // be thought through again.
-        const cursorIndex = this.hiddenInput.selectionStart;
-        console.log('found cursor index as:', cursorIndex);
-        
-        // early escape for empty text
-        if (cursorIndex == 0) {
-            this.cursor.position.x = this.cursorStartingPosition.x;
-            this.cursor.position.y = this.cursorStartingPosition.y;
-            this.cursor.visible = true;
-            return;
-        }
-
-        // Separating textObj sync from the cursor update based on rects
-        // since textObj sync resolves when there's actual changes to the
-        // object. Otherwise, it'll hang and never hit the update function.
-        if (fromCursorMove) {
-            updateBasedOnSelectionRects(cursorIndex, isNewLine);
-        } else {
-            this.textObj.sync(() => {
-                updateBasedOnSelectionRects(cursorIndex, isNewLine);
-            });
-        }
     }
 }
 

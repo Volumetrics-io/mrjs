@@ -28,57 +28,53 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('type', 'text');
     }
 
-    connected() {
-        super.connected();
-        this.updateCursorPosition();
+    /**
+     *
+     */
+    updateTextDisplay() {
+        // This wont need any extra logic for scrolling in future.
+        this.textObj.text = this.hiddenInput.value;
     }
 
     /**
-     * Handles keydown events for scrolling and cursor navigation.
-     * @param {event} event - keydown event
+     * Handles keydown events for scrolling and cursor navigation. Note
+     * that this is different than an input event which for our purposes,
+     * handles the non-navigation key-presses.
+     * @param {event} event - the keydown event
      */
     handleKeydown(event) {
         const { keyCode } = event;
-        const isUp = keyCode === 38; // Arrow up
-        const isDown = keyCode === 40; // Arrow down
-        const isBackspace = keyCode === 8; // Backspace
-        const isDelete = keyCode === 46; // Delete
-        const isEnter = keyCode === 13; // Enter
+        let isLeftArrow = keyCode === 37;
+        const isUpArrow = keyCode === 38;
+        let isRightArrow = keyCode === 39;
+        const isDownArrow = keyCode === 40;
+        const isBackspace = keyCode === 8;
+        const isDelete = keyCode === 46;
+        const isEnter = keyCode === 13;
 
-        // Adjust for special keys that alter text
-        if (isBackspace || isDelete || isEnter) {
-            setTimeout(() => {
-                this.updateTextDisplay(); // Ensure text display updates after key press
-            }, 0);
+        if (!(isLeftArrow || isUpArrow || isRightArrow || isDownArrow || isBackspace || isDelete || isEnter)) {
+            // not special event, then handle as normal input
+            this.updateTextDisplay();
         }
 
-        // TODO - anything else?
+        // LeftArrow, RightArrow are inherently handled by the textField with Up and Down already
+        // defaulting to left and right as expected, so not a lot of extra logic is needed here.
+
+        // Handle special characters
+        if (isBackspace || isDelete) {
+            this.updateTextDisplay(); // Ensure text display updates after key press
+            this.hiddenInput.selectionStart--;
+        }
+
+        // Make sure selectionEnd matches the newly updated start position since
+        // they start out that way and for consistency until we actually use them
+        // for another purpose, we want them to be the same.
+        this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
-            this.updateCursorPosition();
+            this.updateCursorPosition(true, false);
         }, 0);
-    }
-
-    /**
-     * @function
-     * @description Updates the cursor position based on click and selection location.
-     */
-    updateCursorPosition() {
-        // to be resolved in future implementation.
-        // const end = this.hiddenInput.selectionStart > 0 ? this.hiddenInput.selectionStart : 1;
-        // const selectBox = getSelectionRects(this.textObj.textRenderInfo, 0, end).pop();
-        // if (!selectBox || isNaN(selectBox.left)) {
-        //     this.cursor.position.setX(0);
-        //     return;
-        // } else {
-        //     if (this.hiddenInput.selectionStart == 0) {
-        //         this.cursor.position.setX(selectBox.left);
-        //     } else {
-        //         this.cursor.position.setX(selectBox.right);
-        //     }
-        //     this.cursor.position.setY(selectBox.bottom / 2); //+ this.textObj.fontSize / 2); <--keep here for now, might bring it back
-        // }
     }
 }
 
