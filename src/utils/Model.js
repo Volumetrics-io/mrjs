@@ -85,58 +85,8 @@ model.loadOBJ = async function (filePath) {
 /**
  * @function
  * @memberof model
- * @description Loads OBJ file that has an attached MTL file
- * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
- * the full path and the relative path directly to the file.
- * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
- */
-// model.loadOBJWithMTL = function(filePath) {
-//     let paths = filePath.split(',');
-//     // Assigning each path to a variable
-//     if (paths.length != 2) {
-//         console.error('Expected the loading of an MTL file and an OBJ file like "path/to/mtlFile.mtl,path/to/the/objFile.obj" - got:', filePath);
-//         return Promise.reject(new Error('Invalid path format for OBJ and MTL files.'));
-//     }
-
-//     const filePathMTL = paths[0];
-//     const filePathOBJ = paths[1];
-
-//     const loadMTL = (filePath) => new Promise((resolve, reject) => {
-//         const mtlLoader = new MTLLoader();
-//         mtlLoader.load(filePath, materials => {
-//             materials.preload();
-//             resolve(materials);
-//         }, undefined, error => {
-//             console.error('Failed to load MTL:', error);
-//             reject(error);
-//         });
-//     });
-
-//     const loadOBJ = (filePath, materials) => new Promise((resolve, reject) => {
-//         const objLoader = new OBJLoader();
-//         objLoader.setMaterials(materials);
-//         objLoader.load(filePath, obj => {
-//             console.log('in final:', obj);
-//             resolve(obj);
-//         }, undefined, error => {
-//             console.error('Failed to load OBJ:', error);
-//             reject(error);
-//         });
-//     });
-
-//     return loadMTL(filePathMTL)
-//         .then(materials => loadOBJ(filePathOBJ, materials))
-//         .catch(error => {
-//             console.error('An error occurred:', error);
-//             throw error; // Ensure errors are propagated
-//         });
-// };
-/**
- * @function
- * @memberof model
  * @description Loads OBJ file with externally hosted MTL file
- * @param {string} objFilePath - The path to the OBJ file.
- * @param {string} mtlUrl - The URL to the externally hosted MTL file.
+ * @param {string} filePath - The path of the form '/path/to/mtlFile.mtl,/path/to/objFile.obj'.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
 model.loadOBJWithMTL = function(filePath) {
