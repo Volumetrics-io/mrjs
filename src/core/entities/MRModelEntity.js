@@ -79,8 +79,6 @@ export class MRModelEntity extends MRDivEntity {
 
             let loadedMeshModel, animations;
 
-            console.log(result);
-
             // Handle the different formats of the loaded result
             if (result?.scene ?? false) {
                 // For loaders that return an object with multiple properties (scene, animation, joints, etc)
