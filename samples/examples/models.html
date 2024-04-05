@@ -71,6 +71,61 @@
                 src="../examples-assets/models/animation_koifish.glb">
             </mr-model>
         </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                fbx
+            </mr-text>
+            <mr-model 
+                id="fbx"
+                style="scale: 0.0005; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/logo.fbx">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class="label" style="margin-bottom: 30px;" >
+                dae - note the difference in coordinate system
+            </mr-text>
+            <mr-model 
+                id="dae"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/koifish.dae">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                obj - without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"
+            </mr-text>
+            <mr-model 
+                id="obj_nomtl"
+                style="scale: 0.0005; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/logo_nomtl.obj">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                obj - mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
+            </mr-text>
+            <mr-model 
+                id="obj_with_mtl_obj_only"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/koifish.obj">
+            </mr-model>
+        </mr-div>
+        <mr-div class="links col-2">
+            <mr-text class=" label" style="margin-bottom: 30px;" >
+                obj - mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"
+            </mr-text>
+            <mr-model 
+                id="obj_with_mtl"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play;"
+                src="../examples-assets/models/koifish.mtl,../examples-assets/models/koifish.obj">
+            </mr-model>
+        </mr-div>
 
         <mr-div class="links col-2">
             <mr-button id="switch" onclick="swapSrc()" class=" label" style="margin-bottom: 30px;" >

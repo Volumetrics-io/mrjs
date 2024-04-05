@@ -73,6 +73,7 @@ export class MRModelEntity extends MRDivEntity {
      */
     async loadModel() {
         this.loading = true;
+
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
         let modelChange = false;
@@ -93,14 +94,14 @@ export class MRModelEntity extends MRDivEntity {
             let animations;
 
             // Handle the different formats of the loaded result
-            if (result.scene) {
+            if (result?.scene ?? false) {
                 // For loaders that return an object with multiple properties (scene, animation, joints, etc)
                 // For ex: GLB
                 this.modelObj = result.scene;
                 animations = result.animations;
             } else {
                 // For loaders that return the object directly
-                // For ex: STL
+                // For ex: STL, OBJ
                 this.modelObj = result;
             }
 

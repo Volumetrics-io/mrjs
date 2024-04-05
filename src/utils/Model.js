@@ -4,6 +4,8 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 // Keeping the below imports in as reference for future items we can add.
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
@@ -13,8 +15,6 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // // import { IFCLoader }        from 'web-ifc-three';
 // // import { IFCSPACE }         from 'web-ifc';
-// import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-// import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 // import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
 // import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 // import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
@@ -37,7 +37,7 @@ let model = {};
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadDAE = function (filePath) {
+model.loadDAE = async function (filePath) {
     const loader = new ColladaLoader();
 
     return new Promise((resolve, reject) => {
@@ -58,12 +58,98 @@ model.loadDAE = function (filePath) {
 /**
  * @function
  * @memberof model
+ * @description Loads OBJ file
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
+ * the full path and the relative path directly to the file.
+ * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
+ */
+model.loadOBJ = async function (filePath) {
+    const loader = new OBJLoader();
+
+    return new Promise((resolve, reject) => {
+        loader.load(
+            filePath,
+            (obj) => {
+                resolve(obj);
+            },
+            undefined,
+            (error) => {
+                console.error(error);
+                reject(error);
+            }
+        );
+    });
+};
+
+/**
+ * @function
+ * @memberof model
+ * @description Loads OBJ file with externally hosted MTL file
+ * @param {string} filePath - The path of the form '/path/to/mtlFile.mtl,/path/to/objFile.obj'.
+ * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
+ */
+model.loadOBJWithMTL = function (filePath) {
+    let paths = filePath.split(',');
+    // Assigning each path to a variable
+    if (paths.length != 2) {
+        console.error('Expected the loading of an MTL file and an OBJ file like "path/to/mtlFile.mtl,path/to/the/objFile.obj" - got:', filePath);
+        return Promise.reject(new Error('Invalid path format for OBJ and MTL files.'));
+    }
+
+    const filePathMTL = paths[0];
+    const filePathOBJ = paths[1];
+
+    const loadMTL = (url) =>
+        new Promise((resolve, reject) => {
+            const mtlLoader = new MTLLoader();
+            mtlLoader.load(
+                url,
+                (materials) => {
+                    materials.preload();
+                    resolve(materials);
+                },
+                undefined,
+                (error) => {
+                    console.error('Failed to load MTL from URL:', error);
+                    reject(error);
+                }
+            );
+        });
+
+    const loadOBJ = (filePath, materials) =>
+        new Promise((resolve, reject) => {
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load(
+                filePath,
+                (obj) => {
+                    resolve(obj);
+                },
+                undefined,
+                (error) => {
+                    console.error('Failed to load OBJ:', error);
+                    reject(error);
+                }
+            );
+        });
+
+    return loadMTL(filePathMTL)
+        .then((materials) => loadOBJ(filePathOBJ, materials))
+        .catch((error) => {
+            console.error('An error occurred while loading OBJ with external MTL:', error);
+            throw error; // Ensure errors are propagated
+        });
+};
+
+/**
+ * @function
+ * @memberof model
  * @description Loads FBX file
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadFBX = function (filePath) {
+model.loadFBX = async function (filePath) {
     const loader = new FBXLoader();
 
     return new Promise((resolve, reject) => {
@@ -89,7 +175,7 @@ model.loadFBX = function (filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadGLTF = function (filePath) {
+model.loadGLTF = async function (filePath) {
     const loader = new GLTFLoader();
 
     return new Promise((resolve, reject) => {
@@ -119,7 +205,7 @@ model.loadGLTF = function (filePath) {
  * the full path and the relative path directly to the file.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadSTL = function (filePath) {
+model.loadSTL = async function (filePath) {
     const loader = new STLLoader();
 
     return new Promise((resolve, reject) => {
@@ -171,30 +257,34 @@ model.loadUSDZ = async function (filePath) {
  * @description The main loading function
  * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
  * the full path and the relative path directly to the file.
- * @param {string} extension - The extension of the file type. Current allowed extensions are `fbx`, `glb`, and `stl`.
+ * @param {string} extension - The extension of the file type. Current allowed extensions are `dae`, fbx`, `glb`, `obj`, and `stl`.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadModel = function (filePath, extension) {
-    // later on - this would be better//faster with enums<->string<-->num interop but
-    // quick impl for now
+model.loadModel = async function (filePath, extension) {
+    // Flag used for debugging the ones that are only 'partially implemented' and
+    // still as todos.
+    const allowed = false;
 
-    // if (extension == 'gltf') { // - need to be able to have additional filepaths
-    //   return loadGLTF(filePath);
-    // }
-    // if (extension == 'dae') {
-    //     return loadDAE(filePath);
-    // } else
     if (extension == 'fbx') {
         return model.loadFBX(filePath);
     } else if (extension == 'glb') {
         return model.loadGLTF(filePath);
+    } else if (allowed && extension == 'gltf') {
+        // TODO
+        return model.loadGLTF(filePath);
     } else if (extension == 'stl') {
         return model.loadSTL(filePath);
-    }
-    const allowed = false;
-    if (allowed && extension == 'dae') {
+    } else if (extension == 'obj') {
+        if (filePath.includes(',')) {
+            // has a preceeding material file
+            return model.loadOBJWithMTL(filePath);
+        } else {
+            return model.loadOBJ(filePath);
+        }
+    } else if (extension == 'dae') {
         return model.loadDAE(filePath);
     } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
+        // TODO
         return model.loadUSDZ(filePath);
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);

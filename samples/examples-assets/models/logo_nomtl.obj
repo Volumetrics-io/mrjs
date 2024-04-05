@@ -1,6 +1,6 @@
 # Blender 4.0.0
 # www.blender.org
-mtllib logo.mtl
+
 o logo
 v -15.705039 -10.852082 -22.589548
 v -15.104493 -10.436368 -23.799362
