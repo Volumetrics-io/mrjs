@@ -48,6 +48,13 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
+     *
+     */
+    updateTextDisplay() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
+    /**
      * @function
      * @description (async) handles setting up this textarea once it is connected to run as an entity component.
      */
@@ -59,7 +66,8 @@ export class MRTextInputEntity extends MRTextEntity {
         this.object3D.add(this.cursor);
 
         // DOM
-        this.createHiddenInputElement();
+        this.createHiddenInputElement(); 
+        // this.fillInHiddenInputElementWithUserData(); // TODO - <-- swap to this when trying a live example
 
         // Make it trigger happy
         this.setupEventListeners();
@@ -118,13 +126,6 @@ export class MRTextInputEntity extends MRTextEntity {
         const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
         this.hiddenInput.selectionStart = caret.charIndex;
         this.updateCursorPosition();
-    }
-
-    /**
-     *
-     */
-    updateTextDisplay() {
-        mrjsUtils.error.emptyParentFunction();
     }
 
     /**
