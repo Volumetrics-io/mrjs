@@ -21,7 +21,7 @@ export class MRModelEntity extends MRDivEntity {
         this.loading = false;
         this.loaded = false;
 
-        this.modelObj = null
+        this.modelObj = null;
 
         // Store animations for the AnimationSystem to use
         // Need to store this separately from the model, because with
@@ -75,16 +75,16 @@ export class MRModelEntity extends MRDivEntity {
         this.loading = true;
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-        let modelChange = false
-        if(this.modelObj) {
-            this.modelObj.visible = false
-            while(this.modelObj.parent) {
-                this.modelObj.removeFromParent()
+        let modelChange = false;
+        if (this.modelObj) {
+            this.modelObj.visible = false;
+            while (this.modelObj.parent) {
+                this.modelObj.removeFromParent();
             }
 
-            this.modelObj = null
+            this.modelObj = null;
 
-            modelChange = true
+            modelChange = true;
         }
 
         try {
@@ -106,7 +106,6 @@ export class MRModelEntity extends MRDivEntity {
 
             this.object3D.add(this.modelObj);
 
-
             this.modelObj.receiveShadow = true;
             this.modelObj.renderOrder = 3;
 
@@ -126,7 +125,7 @@ export class MRModelEntity extends MRDivEntity {
 
             this.onLoad();
 
-            this.loading = false
+            this.loading = false;
 
             if (modelChange) {
                 this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
