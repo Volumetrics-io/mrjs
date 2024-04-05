@@ -77,7 +77,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.triggerTextStyleUpdate();
         
         // All items should start out as 'not selected'
-        this._blur();
+        this.blur();
     }
 
     /**
@@ -131,7 +131,7 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      *
      */
-    _focus(isPureFocusEvent=false) {
+    focus(isPureFocusEvent=false) {
         if (!this.hiddenInput) {
             return;
         }
@@ -149,7 +149,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor.visible = true;        
     }
 
-    _blur() {
+    blur() {
         this.hiddenInput.blur();
         this.cursor.visible = false;
     }
@@ -161,26 +161,27 @@ export class MRTextInputEntity extends MRTextEntity {
         // Since we want the text input children to be able
         // to override the parent function event triggers,
         // separating them into an actual function here
-        // and calling them manually. This allows us to call
-        // super.func() for event functions; otherwise, theyre
-        // not accessible.
+        // and calling them manually instead of doing the pure
+        // 'functionname () => {} event type setup'. This manual
+        // connection allows us to call super.func() for event
+        // functions; otherwise, theyre not accessible nor implemented
+        // in the subclasses.
        
         // Blur events
         this.addEventListener('blur', () => {
-           this._blur(); 
+           this.blur(); 
         });
 
-        // Focus Events
+        // Pure Focus Events
         this.addEventListener('focus', () => {
-            // pure focus event
-            this._focus(true);
+            this.focus(true);
         });
         this.addEventListener('click', () => {
-            // pure focus event
-            this._focus(true);
+            this.focus(true);
         })
+        // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
-            this._focus();
+            this.focus();
             this.handleMouseClick(event);
         });
 
@@ -190,6 +191,14 @@ export class MRTextInputEntity extends MRTextEntity {
             console.log('handling EVENT, hiddenInput, INPUT');
             // Input captures all main text character inputs
             // BUT it does not capture arrow keys :(
+            //
+            // TODO:
+            // This duplicates /some/ of the keydown events
+            // those that we care about: isDelete/isEnter
+            // since that changes how we handle some of keydown
+            // want those handled only in the keydown event
+            // - also need to figure out which events
+            // /are/ triggered by input but /not/ keydown
             
             this.updateTextDisplay();
             this.updateCursorPosition();
