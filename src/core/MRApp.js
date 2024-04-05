@@ -131,6 +131,7 @@ export class MRApp extends MRElement {
             if (this.getAttribute('occlusion') == 'spotlight') {
                 this.scene.add(this.user.initSpotlight());
             }
+
             // order matters for all the below system creation items
             this.panelSystem = new PanelSystem();
             this.layoutSystem = new LayoutSystem();
@@ -146,7 +147,7 @@ export class MRApp extends MRElement {
             this.skyBoxSystem = new SkyBoxSystem();
             this.audioSystem = new AudioSystem();
 
-            // these must be the last three systems since
+            // These must be the last three systems since
             // they affect rendering. Clipping must happen
             // before masking. Rendering must be the last step.
             this.clippingSystem = new ClippingSystem();
@@ -339,9 +340,7 @@ export class MRApp extends MRElement {
 
         window.addEventListener('resize', this.onWindowResize);
 
-        const lightString = this.getAttribute('lighting');
-
-        if (lightString) {
+        if (this.getAttribute('lighting') ?? false) {
             this.lighting = mrjsUtils.string.stringToJson(this.lighting);
         }
 
