@@ -20,14 +20,14 @@ html.resolvePath = function (path, baseUrl) {
         let a = document.createElement('a');
         a.href = html.removeUrlQueries(path, baseUrl);
         return a.href;
-    }
+    };
 
     // multiple paths
-    if (path.includes(",")) {
-        let returnedPathStr = "";
+    if (path.includes(',')) {
+        let returnedPathStr = '';
         let pathList = path.split(',');
         for (let i = 0; i < pathList.length; ++i) {
-            returnedPathStr += fixPath(pathList[i], baseUrl) + ((i != pathList.length-1) ? "," : "");
+            returnedPathStr += fixPath(pathList[i], baseUrl) + (i != pathList.length - 1 ? ',' : '');
         }
         return returnedPathStr;
     }

@@ -7,7 +7,6 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
-
 // Keeping the below imports in as reference for future items we can add.
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
 // import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
@@ -89,7 +88,7 @@ model.loadOBJ = async function (filePath) {
  * @param {string} filePath - The path of the form '/path/to/mtlFile.mtl,/path/to/objFile.obj'.
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
-model.loadOBJWithMTL = function(filePath) {
+model.loadOBJWithMTL = function (filePath) {
     let paths = filePath.split(',');
     // Assigning each path to a variable
     if (paths.length != 2) {
@@ -100,36 +99,47 @@ model.loadOBJWithMTL = function(filePath) {
     const filePathMTL = paths[0];
     const filePathOBJ = paths[1];
 
-    const loadMTL = (url) => new Promise((resolve, reject) => {
-        const mtlLoader = new MTLLoader();
-        mtlLoader.load(url, materials => {
-            materials.preload();
-            resolve(materials);
-        }, undefined, error => {
-            console.error('Failed to load MTL from URL:', error);
-            reject(error);
+    const loadMTL = (url) =>
+        new Promise((resolve, reject) => {
+            const mtlLoader = new MTLLoader();
+            mtlLoader.load(
+                url,
+                (materials) => {
+                    materials.preload();
+                    resolve(materials);
+                },
+                undefined,
+                (error) => {
+                    console.error('Failed to load MTL from URL:', error);
+                    reject(error);
+                }
+            );
         });
-    });
 
-    const loadOBJ = (filePath, materials) => new Promise((resolve, reject) => {
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.load(filePath, obj => {
-            resolve(obj);
-        }, undefined, error => {
-            console.error('Failed to load OBJ:', error);
-            reject(error);
+    const loadOBJ = (filePath, materials) =>
+        new Promise((resolve, reject) => {
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load(
+                filePath,
+                (obj) => {
+                    resolve(obj);
+                },
+                undefined,
+                (error) => {
+                    console.error('Failed to load OBJ:', error);
+                    reject(error);
+                }
+            );
         });
-    });
 
     return loadMTL(filePathMTL)
-        .then(materials => loadOBJ(filePathOBJ, materials))
-        .catch(error => {
+        .then((materials) => loadOBJ(filePathOBJ, materials))
+        .catch((error) => {
             console.error('An error occurred while loading OBJ with external MTL:', error);
             throw error; // Ensure errors are propagated
         });
 };
-
 
 /**
  * @function
@@ -251,7 +261,7 @@ model.loadUSDZ = async function (filePath) {
  * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
  */
 model.loadModel = async function (filePath, extension) {
-    // Flag used for debugging the ones that are only 'partially implemented' and 
+    // Flag used for debugging the ones that are only 'partially implemented' and
     // still as todos.
     const allowed = false;
 
@@ -259,7 +269,8 @@ model.loadModel = async function (filePath, extension) {
         return model.loadFBX(filePath);
     } else if (extension == 'glb') {
         return model.loadGLTF(filePath);
-    } else if (allowed && extension == 'gltf') { // TODO
+    } else if (allowed && extension == 'gltf') {
+        // TODO
         return model.loadGLTF(filePath);
     } else if (extension == 'stl') {
         return model.loadSTL(filePath);
@@ -272,7 +283,8 @@ model.loadModel = async function (filePath, extension) {
         }
     } else if (extension == 'dae') {
         return model.loadDAE(filePath);
-    } else if (allowed && (extension == 'usdc' || extension == 'usdz')) { // TODO
+    } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
+        // TODO
         return model.loadUSDZ(filePath);
     }
     console.error(`ERR: the extensions ${extension} is not supported by MR.js`);
