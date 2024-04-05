@@ -76,6 +76,14 @@ export class GeometryStyleSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
+        for (const entity of this.registry) {
+            let changed = this.setScale(entity);
+            if (changed) {
+                // TODO - TBH i think this is only needed for scale, but just in case others use changed
+                // width/height for anything else, and update is required for children as well
+                entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+            }
+        }
         // For this system, since we have the 'per entity' and 'per scene event' update calls,
         // we dont need a main update call here.
     }
@@ -98,7 +106,7 @@ export class GeometryStyleSystem extends MRSystem {
      */
     setScale(entity) {
         let new_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) : 1;
-        if (new_scale != entity.object3D.scale) {
+        if (new_scale != entity.object3D.scale.x) {
             entity.object3D.scale.setScalar(new_scale);
             return true;
         }
