@@ -13,7 +13,7 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // // import { IFCLoader }        from 'web-ifc-three';
 // // import { IFCSPACE }         from 'web-ifc';
-// import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 // import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
 // import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
@@ -45,6 +45,32 @@ model.loadDAE = function (filePath) {
             filePath,
             (dae) => {
                 resolve(dae.scene);
+            },
+            undefined,
+            (error) => {
+                console.error(error);
+                reject(error);
+            }
+        );
+    });
+};
+
+/**
+ * @function
+ * @memberof model
+ * @description Loads OBJ file
+ * @param {string} filePath - The path to the file(s) needing to be loaded. For now this only supports
+ * the full path and the relative path directly to the file.
+ * @returns {Promise<THREE.Mesh>} - the promise of the loaded mesh object.
+ */
+model.loadOBJ = function (filePath) {
+    const loader = new OBJLoader();
+
+    return new Promise((resolve, reject) => {
+        loader.load(
+            filePath,
+            (obj) => {
+                resolve(fbx);
             },
             undefined,
             (error) => {
@@ -190,6 +216,8 @@ model.loadModel = function (filePath, extension) {
         return model.loadGLTF(filePath);
     } else if (extension == 'stl') {
         return model.loadSTL(filePath);
+    } else if (extension == 'obj') {
+        return model.loadOBJ(filePath);
     }
     const allowed = false;
     if (extension == 'dae') {
