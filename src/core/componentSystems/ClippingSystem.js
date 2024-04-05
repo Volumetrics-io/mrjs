@@ -119,6 +119,7 @@ export class ClippingSystem extends MRSystem {
         this.updatePlanes(entity);
     }
 
+    // TODO: polish and move this into MRSystem
     /**
      * @function
      * @description a function called when a specific entity has an event update
