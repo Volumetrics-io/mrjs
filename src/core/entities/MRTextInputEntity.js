@@ -184,24 +184,19 @@ export class MRTextInputEntity extends MRTextEntity {
             this.handleMouseClick(event);
         });
 
-        // Keyboard input event to capture text in the 
+        // Keyboard events to capture text in the 
         // hidden input.
-        // this.addEventListener('input', () => {
-        //     console.log('handling EVENT, reg, INPUT');
-        //     // This function calls the this.hiddenInput.addEventListener('input');
-        //     // We just want to make sure the two are linked (textObj --> hiddenInput).
-        //     this.hiddenInput.input();
-        // });
-        this.hiddenInput.addEventListener('input', () => {
+        this.hiddenInput.addEventListener('input', (event) => {
             console.log('handling EVENT, hiddenInput, INPUT');
+            // Input captures all main text character inputs
+            // BUT it does not capture arrow keys :(
+            
             this.updateTextDisplay();
             this.updateCursorPosition();
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
             console.log('THIS WAS A KEYDOWN');
-            // this.updateTextDisplay();
             this.handleKeydown(event);
-            // this.updateCursorPosition();
         });
 
         // Separate trigger call just in case.

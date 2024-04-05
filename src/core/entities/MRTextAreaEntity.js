@@ -132,9 +132,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             this.updateTextDisplay(); // Ensure text display updates after key press
             this.hiddenInput.selectionStart--;
         } else if (isEnter) {
-            this.updateTextDisplay(); // Ensure text display updates after key press
+            // this.updateTextDisplay(); // Ensure text display updates after key press
             isNewLine = true;
-            this.hiddenInput.selectionStart++;
+            // this.hiddenInput.selectionStart++;
         }
 
         // Some shared variables
@@ -153,6 +153,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
+        // Need to handle up and down arrow properly otherwise these act as left
+        // and right arrows like in textfield.
         if (isUpArrow) {
             // XXX - handle scrolloffset in future.
 
@@ -163,9 +165,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const maxIndexOptionOfPrevLine = prevLineText.length - 1;
                 const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine) ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
-            } else {
-                isLeftArrow = true;
-            }
+            } 
         } else if (isDownArrow) {
             // XXX - handle scrolloffset in future.
 
@@ -177,24 +177,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const maxIndexOptionOfNextLine = nextLineText.length - 1;
                 const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfNextLine) ? maxIndexOptionOfNextLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine + currentLineText.length + cursorIndexOnNewLine;
-            } else {
-                isRightArrow = true;
-            }
-        }
-
-        if (isLeftArrow) {
-            // Only want to move when not at the first index
-            if (this.hiddenInput.selectionStart != 0) {
-                // this.hiddenInput.selectionStart -= 1;
-            } else {
-                // needsCursorUpdate = false;
-            }
-        } else if (isRightArrow) {
-            // Only want to move when not on the last index
-            if (this.hiddenInput.selectionStart != this.hiddenInput.value.length) {
-                // this.hiddenInput.selectionStart += 1; // leaving this commented out prevents the duplicated right arrow???
-            } else {
-                // needsCursorUpdate = false;
             }
         }
 
