@@ -192,7 +192,7 @@ model.loadModel = function (filePath, extension) {
         return model.loadSTL(filePath);
     }
     const allowed = false;
-    if (allowed && extension == 'dae') {
+    if (extension == 'dae') {
         return model.loadDAE(filePath);
     } else if (allowed && (extension == 'usdc' || extension == 'usdz')) {
         return model.loadUSDZ(filePath);
