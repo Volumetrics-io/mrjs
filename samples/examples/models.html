@@ -40,7 +40,7 @@
             Examples
         </mr-text>
 
-        <!-- <mr-div class="links col-2">
+        <mr-div class="links col-2">
             <mr-text class="label" style="margin-bottom: 30px;" >
                 stl
             </mr-text>
@@ -106,7 +106,7 @@
         </mr-div>
         <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - with mtl referenced in file, BUT file NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
+                obj - mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
             </mr-text>
             <mr-model 
                 id="obj_with_mtl_obj_only"
@@ -114,10 +114,10 @@
                 data-comp-animation="clip: 1; action: play;"
                 src="../examples-assets/models/koifish.obj">
             </mr-model>
-        </mr-div> -->
+        </mr-div>
         <mr-div class="links col-2">
             <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - with mtl referenced in file, AND mtl file IS loaded as part of 'src': "mr-model src='/path/to/mtlFile.mtl,/path/to/the/objFile.obj'"
+                obj - mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"
             </mr-text>
             <mr-model 
                 id="obj_with_mtl"
