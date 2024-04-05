@@ -23,18 +23,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
         this.object3D.name = 'textArea';
 
-        this.defaults = {
-            name: 'mr-textarea',
-            rows: '...',
-            cols: '...',
-            placeholder: '',
-            readonly: '...',
-            disabled: '...',
-            maxLength: '...',
-            wrap: '...',
-            overflowWrap: 'normal',
-            whiteSpace: 'normal',
-        };
+        // this.defaults = {
+        //     name: 'mr-textarea',
+        //     rows: '...',
+        //     cols: '...',
+        //     placeholder: '',
+        //     readonly: '...',
+        //     disabled: '...',
+        //     maxLength: '...',
+        //     wrap: '...',
+        //     overflowWrap: 'normal',
+        //     whiteSpace: 'normal',
+        // };
     }
 
     /**
@@ -54,26 +54,26 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     /**
      *
      */
-    fillInHiddenInputElementWithUserData() {
-        // name: The name associated with the <textarea> for form submission and backend processing.
-        this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
-        // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
-        this.hiddenInput.rows = this.getAttribute('rows') ?? this.defaults.rows;
-        // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? this.defaults.placeholder;
-        // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-        this.hiddenInput.readonly = this.getAttribute('readonly') ?? this.defaults.readonly;
-        // disabled: Disables the text area so it cannot be interacted with or submitted.
-        this.hiddenInput.disabled = this.getAttribute('disabled') ?? this.defaults.disabled;
-        // maxlength: Specifies the maximum number of characters that the user can enter.
-        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? this.defaults.maxlength;
-        // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-        this.hiddenInput.wrap = this.getAttribute('wrap') ?? this.defaults.wrap;
-        // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
-        this.hiddenInput.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
-        // whitespace : Controls if text wraps with the overflowWrap feature or not.
-        this.hiddenInput.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
-    }
+    // fillInHiddenInputElementWithUserData() {
+    //     // name: The name associated with the <textarea> for form submission and backend processing.
+    //     this.hiddenInput.name = this.getAttribute('name') ?? this.defaults.name;
+    //     // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
+    //     this.hiddenInput.rows = this.getAttribute('rows') ?? this.defaults.rows;
+    //     // placeholder: Provides a hint to the user about what they should type into the <textarea>.
+    //     this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? this.defaults.placeholder;
+    //     // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
+    //     this.hiddenInput.readonly = this.getAttribute('readonly') ?? this.defaults.readonly;
+    //     // disabled: Disables the text area so it cannot be interacted with or submitted.
+    //     this.hiddenInput.disabled = this.getAttribute('disabled') ?? this.defaults.disabled;
+    //     // maxlength: Specifies the maximum number of characters that the user can enter.
+    //     this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? this.defaults.maxlength;
+    //     // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
+    //     this.hiddenInput.wrap = this.getAttribute('wrap') ?? this.defaults.wrap;
+    //     // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
+    //     this.hiddenInput.overflowWrap = this.getAttribute('overflowWrap') ?? this.defaults.overflowWrap;
+    //     // whitespace : Controls if text wraps with the overflowWrap feature or not.
+    //     this.hiddenInput.whiteSpace = this.getAttribute('whitespace') ?? this.defaults.whiteSpace;
+    // }
 
     /**
      *
@@ -119,9 +119,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         let needsCursorUpdate = true;
         let isNewLine = false;
 
-        // Some shared variables
-        const cursorIndex = this.hiddenInput.selectionStart;
-
         // Handle Special Keys, then Up/Down, then Left/Right 
         // as some may trigger the others being required
         // based on assumed implementations for them for the
@@ -130,83 +127,53 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         if (isBackspace || isDelete) {
             this.updateTextDisplay(); // Ensure text display updates after key press
             this.hiddenInput.selectionStart--;
-            // setTimeout(() => {
-                
-            // }, 0);
         } else if (isEnter) {
-            console.log('isEnter was pressed');
-            // setTimeout(() => {
-                this.updateTextDisplay(); // Ensure text display updates after key press
-                // isNewLine = true;
-                this.hiddenInput.selectionStart++;
-            // }, 0);
-            // needsCursorUpdate = false;
+            this.updateTextDisplay(); // Ensure text display updates after key press
+            // isNewLine = true;
+            this.hiddenInput.selectionStart++;
         }
+
+        // Some shared variables
+        const cursorIndex = this.hiddenInput.selectionStart;
+        const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+        const linesInclUpToCursorPosition = textBeforeCursor.split('\n');
+        const allLines = this.hiddenInput.value.split('\n');
+        const totalNumberOfLines = allLines.length;
+        const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
+        // Grab current local cursor index on the line
+        //
+        // note: when looping skipping the last index as that
+        // is the line that includes the cursor in it and we only
+        let totalLengthToCursorIndexLine = 0;
+        for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
+            totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
+        }
+        const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
         if (isUpArrow) {
             // XXX - handle scrolloffset in future.
 
-            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            const linesInclUpToCursorPosition = textBeforeCursor.split('\n');
-            const allLines = this.hiddenInput.value.split('\n');
-            const totalNumberOfLines = allLines.length;
-            const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
-
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != 0) {
-                // Grab current local cursor index on the line
-                //
-                // note: when looping skipping the last index as that
-                // is the line that includes the cursor in it and we only
-                let totalLengthToCursorIndexLine = 0;
-                for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
-                    totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
-                }
-                const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
                 // Determine where cursor should hit index on line above this one: same index or end of line
-                const lineAbove = allLines[cursorIsOnLineIndex - 1];
-                const maxIndexOptionOfLineAbove = lineAbove.length - 1;
-                const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfLineAbove ? maxIndexOptionOfLineAbove : cursorIndexOnCurrentLine;
-                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - lineAbove.length + cursorIndexOnNewLine;
+                const prevLineText = allLines[cursorIsOnLineIndex - 1];
+                const maxIndexOptionOfPrevLine = prevLineText.length - 1;
+                const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine) ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
+                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
             } else {
                 isLeftArrow = true;
             }
         } else if (isDownArrow) {
-            // XXX - handle scrolloffset in future
-            
-            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            const linesBeforeCursor = textBeforeCursor.split('\n');
-            const allLines = this.hiddenInput.value.split('\n');
-            const totalNumberOfLines = allLines.length;
-            const cursorIsOnLineIndex = linesBeforeCursor.length - 1;
-
-            let obj = {
-                textBeforeCursor : textBeforeCursor,
-                linesBeforeCursor : linesBeforeCursor,
-                totalNumberOfLines : totalNumberOfLines,
-                cursorIsOnLineIndex : cursorIsOnLineIndex,
-            }
-
-            console.log('debug info: ', obj);
-            console.log('should do down arrow: cursorIsOnLineIndex != totalNumberOfLines - 1', cursorIsOnLineIndex != (totalNumberOfLines - 1));
+            // XXX - handle scrolloffset in future.
 
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
                 const currentLineText = allLines[cursorIsOnLineIndex];
-                const nextLineText = allLines[cursorIsOnLineIndex + 1]
-
-                // Grab current line cursor index
-                const cursorIndexOnLine = cursorIndex - textBeforeCursor.length - 1;
                 // Determine where cursor should hit index on line below this one: same index or end of line
-                const newLineIndexLength = nextLineText.length - 1;
-                const cursorIndexOnNewLine = (cursorIndexOnLine < newLineIndexLength) ? cursorIndexOnLine : newLineIndexLength;
-                console.log('cursorIndexOnLine: ', cursorIndexOnLine);
-                console.log('currentLineText: ', currentLineText);
-                console.log('nextLineText: ', nextLineText);
-                console.log('cursorIndexOnLine: ', cursorIndexOnLine);
-                console.log('newLineIndexLength: ', newLineIndexLength);
-                console.log('cursorIndexOnNewLine: ', cursorIndexOnNewLine);
-                this.hiddenInput.selectionStart = textBeforeCursor - cursorIndexOnLine + currentLineText.length + cursorIndexOnNewLine;
+                const nextLineText = allLines[cursorIsOnLineIndex + 1]
+                const maxIndexOptionOfNextLine = nextLineText.length - 1;
+                const cursorIndexOnNewLine = (cursorIndexOnCurrentLine > maxIndexOptionOfNextLine) ? maxIndexOptionOfNextLine : cursorIndexOnCurrentLine;
+                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine + currentLineText.length + cursorIndexOnNewLine;
             } else {
                 isRightArrow = true;
             }
