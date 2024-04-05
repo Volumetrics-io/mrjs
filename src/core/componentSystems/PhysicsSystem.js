@@ -38,6 +38,9 @@ export class PhysicsSystem extends MRSystem {
         this.tempBBox = new THREE.Box3();
         this.tempSize = new THREE.Vector3();
 
+        //for oriented BBox
+        this.savedQuaternion = new THREE.Quaternion()
+
         if (this.debug && this.debug == 'true') {
             const material = new THREE.LineBasicMaterial({
                 color: 0xffffff,
@@ -65,6 +68,14 @@ export class PhysicsSystem extends MRSystem {
             }
         }
     };
+
+    entityEventUpdate = (e) => {
+        if (e.target instanceof MRModelEntity) {
+            this.updateSimpleBody(e.target);
+        } else if (e.target instanceof MRDivEntity) {
+            this.updateUIBody(e.target);
+        }
+    }
 
     /**
      * @function
@@ -99,6 +110,7 @@ export class PhysicsSystem extends MRSystem {
         if (entity instanceof MRDivEntity) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
+            entity.addEventListener('modelchange', this.entityEventUpdate)
         }
     }
 
@@ -158,9 +170,16 @@ export class PhysicsSystem extends MRSystem {
         entity.physics.halfExtents = new THREE.Vector3();
 
         if (entity instanceof MRModelEntity) {
+            this.savedQuaternion.copy(entity.object3D.quaternion)
+            entity.object3D.quaternion.set(0, 0, 0, 1)
+            entity.object3D.updateMatrixWorld(true)
+            
             entity.object3D.remove(entity.background);
+
             this.tempBBox.setFromObject(entity.object3D, true);
+
             entity.object3D.add(entity.background);
+            entity.object3D.quaternion.copy(this.savedQuaternion)
         } else {
             this.tempBBox.setFromObject(entity.object3D, true);
         }
@@ -287,9 +306,16 @@ export class PhysicsSystem extends MRSystem {
      */
     updateSimpleBody(entity) {
         if (entity instanceof MRModelEntity) {
+            this.savedQuaternion.copy(entity.object3D.quaternion)
+            entity.object3D.quaternion.set(0, 0, 0, 1)
+            entity.object3D.updateMatrixWorld(true)
+            
             entity.object3D.remove(entity.background);
+
             this.tempBBox.setFromObject(entity.object3D, true);
+
             entity.object3D.add(entity.background);
+            entity.object3D.quaternion.copy(this.savedQuaternion)
         } else {
             this.tempBBox.setFromObject(entity.object3D, true);
         }

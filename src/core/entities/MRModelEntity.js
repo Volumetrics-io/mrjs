@@ -21,6 +21,8 @@ export class MRModelEntity extends MRDivEntity {
         this.loading = false;
         this.loaded = false;
 
+        this.modelObj = null
+
         // Store animations for the AnimationSystem to use
         // Need to store this separately from the model, because with
         // the threejs load from glb, we cant directly add it back to
@@ -73,27 +75,40 @@ export class MRModelEntity extends MRDivEntity {
         this.loading = true;
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
+        let modelChange = false
+        if(this.modelObj) {
+            this.modelObj.visible = false
+            while(this.modelObj.parent) {
+                this.modelObj.removeFromParent()
+            }
+
+            this.modelObj = null
+
+            modelChange = true
+        }
+
         try {
             const result = await mrjsUtils.model.loadModel(this.src, extension);
 
-            let loadedMeshModel, animations;
+            let animations;
 
             // Handle the different formats of the loaded result
             if (result.scene) {
                 // For loaders that return an object with multiple properties (scene, animation, joints, etc)
                 // For ex: GLB
-                loadedMeshModel = result.scene;
+                this.modelObj = result.scene;
                 animations = result.animations;
             } else {
                 // For loaders that return the object directly
                 // For ex: STL
-                loadedMeshModel = result;
+                this.modelObj = result;
             }
 
-            this.object3D.add(loadedMeshModel);
+            this.object3D.add(this.modelObj);
 
-            loadedMeshModel.receiveShadow = true;
-            loadedMeshModel.renderOrder = 3;
+
+            this.modelObj.receiveShadow = true;
+            this.modelObj.renderOrder = 3;
 
             if (animations && animations.length > 0) {
                 this.animations = animations;
@@ -110,6 +125,12 @@ export class MRModelEntity extends MRDivEntity {
             });
 
             this.onLoad();
+
+            this.loading = false
+
+            if (modelChange) {
+                this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
+            }
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }

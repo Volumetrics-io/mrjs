@@ -5,6 +5,7 @@ import { MREntity } from 'mrjs/core/MREntity';
 
 import { MRClippingGeometry } from 'mrjs/dataTypes/MRClippingGeometry';
 import { MRVolumeEntity } from '../entities/MRVolumeEntity';
+import { MRModelEntity } from '../entities/MRModelEntity';
 
 const PLANE_NUM = 6;
 
@@ -118,6 +119,15 @@ export class ClippingSystem extends MRSystem {
         this.updatePlanes(entity);
     }
 
+    entityEventUpdate = (e) => {
+        let entity = e.target
+        for (const parent of this.registry) {
+            if (parent.contains(entity)) {
+                this.applyClipping(entity, parent.clipping);
+            }
+        }
+    }
+
     /**
      * @function
      * @description When the system swaps to a new entity, this handles applying the clipping planes as needed in the system run.
@@ -136,6 +146,9 @@ export class ClippingSystem extends MRSystem {
                     entity.traverse((child) => {
                         this.applyClipping(child, parent.clipping);
                     });
+                    if(entity instanceof MRModelEntity) {
+                        entity.addEventListener('modelchange', this.entityEventUpdate)
+                    }
                 }
             }
             return;
@@ -148,6 +161,9 @@ export class ClippingSystem extends MRSystem {
                 return;
             }
             this.applyClipping(child, entity.clipping);
+            if(entity instanceof MRModelEntity) {
+                entity.addEventListener('modelchange', this.entityEventUpdate)
+            }
         });
     }
 }
