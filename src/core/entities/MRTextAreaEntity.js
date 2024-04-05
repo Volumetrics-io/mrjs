@@ -108,9 +108,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     handleKeydown(event) {
         console.log('helloooo');
         const { keyCode } = event;
-        const isLeftArrow = keyCode == 37;
+        let isLeftArrow = keyCode === 37;
         const isUpArrow = keyCode === 38;
-        const isRightArrow = keyCode == 39;
+        let isRightArrow = keyCode === 39;
         const isDownArrow = keyCode === 40;
         const isBackspace = keyCode === 8;
         const isDelete = keyCode === 46;
@@ -122,64 +122,54 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
 
+        // Handle Special Keys, then Up/Down, then Left/Right 
+        // as some may trigger the others being required
+        // based on assumed implementations for them for the
+        // textarea dom element.
+
         if (isBackspace || isDelete) {
-            setTimeout(() => {
-                this.updateTextDisplay(); // Ensure text display updates after key press
-                this.hiddenInput.selectionStart--;
-            }, 0);
+            this.updateTextDisplay(); // Ensure text display updates after key press
+            this.hiddenInput.selectionStart--;
+            // setTimeout(() => {
+                
+            // }, 0);
         } else if (isEnter) {
             console.log('isEnter was pressed');
-            setTimeout(() => {
-                // this.updateTextDisplay(); // Ensure text display updates after key press
-                isNewLine = true;
+            // setTimeout(() => {
+                this.updateTextDisplay(); // Ensure text display updates after key press
+                // isNewLine = true;
                 this.hiddenInput.selectionStart++;
-            }, 0);
+            // }, 0);
             // needsCursorUpdate = false;
-        } else if (isUpArrow) {
+        }
+
+        if (isUpArrow) {
             // XXX - handle scrolloffset in future.
 
             const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            const linesUpToCursor = textBeforeCursor.split('\n');
+            const linesInclUpToCursorPosition = textBeforeCursor.split('\n');
             const allLines = this.hiddenInput.value.split('\n');
             const totalNumberOfLines = allLines.length;
-            const cursorIsOnLineIndex = linesUpToCursor.length - 1;
+            const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
 
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != 0) {
                 // Grab current local cursor index on the line
                 //
                 // note: when looping skipping the last index as that
-                // is the line that includes the cursor in it.
-                let totalLengthToCursorLine = 0;
-                for (let i = 0; i < linesUpToCursor.length - 1; ++i) {
-                    totalLengthToCursorLine += linesUpToCursor[i].length;
+                // is the line that includes the cursor in it and we only
+                let totalLengthToCursorIndexLine = 0;
+                for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
+                    totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
                 }
-                const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorLine;
+                const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
                 // Determine where cursor should hit index on line above this one: same index or end of line
                 const lineAbove = allLines[cursorIsOnLineIndex - 1];
                 const maxIndexOptionOfLineAbove = lineAbove.length - 1;
                 const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfLineAbove ? maxIndexOptionOfLineAbove : cursorIndexOnCurrentLine;
-                const currentLineIndexStart = totalLengthToCursorLine + allLines[cursorIsOnLineIndex].length;
-                
-
-                // let obj = {
-                //     textBeforeCursor: textBeforeCursor,
-                //     linesUpToCursor: linesUpToCursor,
-                //     allLines: allLines,
-                //     totalNumberOfLines: totalNumberOfLines,
-                //     cursorIsOnLineIndex: cursorIsOnLineIndex,
-                //     totalLengthToCursorLine: totalLengthToCursorLine,
-                //     cursorIndexOnCurrentLine: cursorIndexOnCurrentLine,
-                //     lineAbove: lineAbove,
-                //     maxIndexOptionOfLineAbove: maxIndexOptionOfLineAbove,
-                //     cursorIndexOnNewLine: cursorIndexOnNewLine,
-                //     currentLineIndexStart: currentLineIndexStart,
-                // }
-                // console.log('debug textobj:' obj);
-
-                this.hiddenInput.selectionStart = currentLineIndexStart + cursorIndexOnNewLine;
+                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - lineAbove.length + cursorIndexOnNewLine;
             } else {
-                needsCursorUpdate = false;
+                isLeftArrow = true;
             }
         } else if (isDownArrow) {
             // XXX - handle scrolloffset in future
@@ -218,9 +208,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 console.log('cursorIndexOnNewLine: ', cursorIndexOnNewLine);
                 this.hiddenInput.selectionStart = textBeforeCursor - cursorIndexOnLine + currentLineText.length + cursorIndexOnNewLine;
             } else {
-                needsCursorUpdate = false;
+                isRightArrow = true;
             }
-        } else if (isLeftArrow) {
+        }
+
+        if (isLeftArrow) {
             // Only want to move when not at the first index
             if (this.hiddenInput.selectionStart != 0) {
                 this.hiddenInput.selectionStart -= 1;
@@ -229,8 +221,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         } else if (isRightArrow) {
             // Only want to move when not on the last index
-            console.log('this.hiddenInput.selectionStart', this.hiddenInput.selectionStart, 'this.hiddenInput.value.length', this.hiddenInput.value.length);
-
             if (this.hiddenInput.selectionStart != this.hiddenInput.value.length) {
                 this.hiddenInput.selectionStart += 1;
             } else {
@@ -243,7 +233,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // for another purpose, we want them to be the same.
         // this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
-       
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
             if (needsCursorUpdate) {
