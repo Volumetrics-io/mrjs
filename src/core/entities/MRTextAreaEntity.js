@@ -106,7 +106,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @param {event} event - the keydown event
      */
     handleKeydown(event) {
-        console.log('helloooo');
         const { keyCode } = event;
         let isLeftArrow = keyCode === 37;
         const isUpArrow = keyCode === 38;
@@ -115,6 +114,10 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const isBackspace = keyCode === 8;
         const isDelete = keyCode === 46;
         const isEnter = keyCode === 13;
+
+        if (!(isLeftArrow || isUpArrow || isRightArrow || isDownArrow || isBackspace || isDelete || isEnter)) {
+            return;
+        }
 
         let needsCursorUpdate = true;
         let isNewLine = false;
@@ -188,8 +191,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         } else if (isRightArrow) {
             // Only want to move when not on the last index
+            console.log('isRightArrow');
             if (this.hiddenInput.selectionStart != this.hiddenInput.value.length) {
-                this.hiddenInput.selectionStart += 1;
+                // this.hiddenInput.selectionStart += 1; // leaving this commented out prevents the duplicated right arrow???
             } else {
                 needsCursorUpdate = false;
             }
