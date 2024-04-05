@@ -116,7 +116,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const isEnter = keyCode === 13;
 
         if (!(isLeftArrow || isUpArrow || isRightArrow || isDownArrow || isBackspace || isDelete || isEnter)) {
-            return;
+            // not special event, then handle as normal input
+            this.updateTextDisplay();
         }
 
         let needsCursorUpdate = true;
@@ -132,7 +133,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             this.hiddenInput.selectionStart--;
         } else if (isEnter) {
             this.updateTextDisplay(); // Ensure text display updates after key press
-            // isNewLine = true;
+            isNewLine = true;
             this.hiddenInput.selectionStart++;
         }
 
@@ -143,10 +144,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const allLines = this.hiddenInput.value.split('\n');
         const totalNumberOfLines = allLines.length;
         const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
-        // Grab current local cursor index on the line
-        //
-        // note: when looping skipping the last index as that
-        // is the line that includes the cursor in it and we only
+        // Grab current local cursor index on the line. When looping skipping the
+        // last index as that is the line that includes the cursor in it and we only
+        // want all lines up to that line, not including it.
         let totalLengthToCursorIndexLine = 0;
         for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
             totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
@@ -185,24 +185,23 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         if (isLeftArrow) {
             // Only want to move when not at the first index
             if (this.hiddenInput.selectionStart != 0) {
-                this.hiddenInput.selectionStart -= 1;
+                // this.hiddenInput.selectionStart -= 1;
             } else {
-                needsCursorUpdate = false;
+                // needsCursorUpdate = false;
             }
         } else if (isRightArrow) {
             // Only want to move when not on the last index
-            console.log('isRightArrow');
             if (this.hiddenInput.selectionStart != this.hiddenInput.value.length) {
                 // this.hiddenInput.selectionStart += 1; // leaving this commented out prevents the duplicated right arrow???
             } else {
-                needsCursorUpdate = false;
+                // needsCursorUpdate = false;
             }
         }
 
         // Make sure selectionEnd matches the newly updated start position since
         // they start out that way and for consistency until we actually use them
         // for another purpose, we want them to be the same.
-        // this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
+        this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
@@ -228,16 +227,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
             
-            // if (isNewLine) {
-            //     // Faking the newline cursor position since troika doesnt create it until you type something
-            //     // after the '\n' character sequence, which means the cursor lingers on the current line one
-            //     // keypress too long, which isnt expected.
-            //     //
-            //     // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
-            //     // nor the this.hiddenInputs physical position.
-            //     cursorXOffsetPosition = 0;
-            //     cursorYOffsetPosition = this.cursorHeight * (cursorIsOnLineIndex + 1);
-            // } else {
+            if (isNewLine) {
+                console.log('in the isNewLine section');
+                // Faking the newline cursor position since troika doesnt create it until you type something
+                // after the '\n' character sequence, which means the cursor lingers on the current line one
+                // keypress too long, which isnt expected.
+                //
+                // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
+                // nor the this.hiddenInputs physical position.
+                cursorXOffsetPosition = 0;
+                cursorYOffsetPosition = 0 - this.cursorHeight * (cursorIsOnLineIndex + 1);
+                console.log('cursorXOffsetPosition: ', cursorXOffsetPosition, 'cursorYOffsetPosition: ', cursorYOffsetPosition);
+            } else {
                 // Assuming getSelectionRects is properly imported and used here
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
                 if (selectionRects.length > 0) {
@@ -256,11 +257,15 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                     cursorXOffsetPosition = lastRect.right + this.cursorWidth;
                     cursorYOffsetPosition = lastRect.bottom + this.cursorHeight;
                 }
-            // }
+            }
 
             // Update the cursor's 3D position
             this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;
             this.cursor.position.y = this.cursorStartingPosition.y + cursorYOffsetPosition;
+            // if (isNewLine) {
+                console.log('this.cursorStartingPosition:', this.cursorStartingPosition);
+                console.log('this.cursor.position:', this.cursor.position);
+            // }
             this.cursor.visible = true;
         }
 
