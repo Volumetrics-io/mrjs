@@ -22,31 +22,18 @@ html.resolvePath = function (path, baseUrl) {
         return a.href;
     }
 
-    // singular path
+    // multiple paths
     if (path.includes(",")) {
-        // multiple paths
-        // handle multiple paths
-        let retPath = "";
-        let paths = path.split(',');
-        console.log(paths);
-        for (let i=0; i<paths.length; ++i) {
-            console.log('path:', paths[i]);
-            retPath += fixPath(paths[i], baseUrl) + ((i != paths.length-1) ? "," : "");
+        let returnedPathStr = "";
+        let pathList = path.split(',');
+        for (let i = 0; i < pathList.length; ++i) {
+            returnedPathStr += fixPath(pathList[i], baseUrl) + ((i != pathList.length-1) ? "," : "");
         }
-        console.log(retPath);
-        return retPath;
-    } else {
-        // singular path
-        return fixPath(path, baseUrl);
+        return returnedPathStr;
     }
-    // console.log(path);
-    // console.log(paths);
-    // if (paths == 0) {
-    //     let p = fixPath(path, baseUrl);
-    //     console.log(p);
-    //     return p;
-    // }
-    
+
+    // singular path
+    return fixPath(path, baseUrl);
 };
 
 /**
