@@ -4,6 +4,9 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+
 
 // Keeping the below imports in as reference for future items we can add.
 // import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
@@ -13,8 +16,6 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // // import { IFCLoader }        from 'web-ifc-three';
 // // import { IFCSPACE }         from 'web-ifc';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 // import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
 // import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 // import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
@@ -98,8 +99,9 @@ model.loadOBJWithMTL = function (filePath) {
     }
     const filePathMTL = paths[0];
     const filePathOBJ = paths[1];
+    console.log('filepaths:', filePathMTL, filePathOBJ);
 
-    const mtlLoader = new THREE.MTLLoader();
+    const mtlLoader = new MTLLoader();
     mtlLoader.load(filePathMTL, function (materials) {
 
         materials.preload();
@@ -108,10 +110,14 @@ model.loadOBJWithMTL = function (filePath) {
         objLoader.setMaterials(materials);
 
         return new Promise((resolve, reject) => {
-            loader.load(
+            objLoader.load(
                 filePathOBJ,
                 (obj) => {
-                    resolve(obj);
+                    const scene = obj.scene;
+                    const animations = obj.animations;
+
+                    // Resolve the promise with the loaded scene and animations
+                    resolve({ scene, animations });
                 },
                 undefined,
                 (error) => {
@@ -249,9 +255,6 @@ model.loadModel = function (filePath, extension) {
     // if (extension == 'gltf') { // - need to be able to have additional filepaths
     //   return loadGLTF(filePath);
     // }
-    // if (extension == 'dae') {
-    //     return loadDAE(filePath);
-    // } else
     if (extension == 'fbx') {
         return model.loadFBX(filePath);
     } else if (extension == 'glb') {
@@ -261,7 +264,7 @@ model.loadModel = function (filePath, extension) {
     } else if (extension == 'obj') {
         if (filePath.includes(',')) {
             // has a preceeding material file
-            model.loadOBJWithMTL(filePath);
+            return model.loadOBJWithMTL(filePath);
         } else {
             return model.loadOBJ(filePath);
         }
