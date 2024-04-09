@@ -89,6 +89,29 @@ color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', def
     }
 };
 
+color.setEntityOpacity = function (object3D, compStyle_opacity) {
+    entity.traverseObjects((object) => {
+        if (object.isMesh) {
+            mrjsUtils.color.setObject3DOpacity(object, compStyle_opacity);
+        }
+    });
+};
+
+color.setObject3DOpacity = function (object3D, compStyle_opacity) {
+    const setOpacity = (object3D, compStyle_opacity) => {
+        if (compStyle_opacity <= 1) {
+            object3D.material.opacity = compStyle_opacity;
+        }
+        object3D.material.needsUpdate = true;
+    };
+
+    if (object3D.isGroup) {
+        mrjsUtils.warn.warn("setObject3DOpacity will not handle groups as expected, please use 'setEntityOpacity' instead.");
+    } else {
+        setOpacity(object3D, compStyle_opacity);
+    }
+};
+
 color.setEntityColor = function (entity, color, compStyle_opacity = '1', default_color = '#000') {
     entity.traverseObjects((object) => {
         if (object.isMesh) {
