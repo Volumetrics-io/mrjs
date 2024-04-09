@@ -95,7 +95,7 @@ color.setEntityOpacity = function (object3D, compStyle_opacity) {
             mrjsUtils.color.setObject3DOpacity(object, compStyle_opacity);
         }
     });
-}
+};
 
 color.setObject3DOpacity = function (object3D, compStyle_opacity) {
     const setOpacity = (object3D, compStyle_opacity) => {
@@ -110,7 +110,7 @@ color.setObject3DOpacity = function (object3D, compStyle_opacity) {
     } else {
         setOpacity(object3D, compStyle_opacity);
     }
-}
+};
 
 color.setEntityColor = function (entity, color, compStyle_opacity = '1', default_color = '#000') {
     entity.traverseObjects((object) => {
