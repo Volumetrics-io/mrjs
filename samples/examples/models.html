@@ -41,9 +41,13 @@
         </mr-text>
 
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                stl
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    stl
+                </mr-text>
+                <mr-text>
+                </mr-text>
+            </mr-div>
             <mr-model 
                 id="stl"
                 style="scale: 0.0005;"
@@ -51,19 +55,28 @@
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                glb
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    glb
+                </mr-text>
+                <mr-text>
+                </mr-text>
+                <mr-a href="../examples-assets/models/glb/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="glb"
                 style="scale: 0.00815; z-index: 10;"
-                src="../examples-assets/models/island3.glb">
+                src="../examples-assets/models/glb/cassetteTape.glb">
             </mr-model>
+            <!-- Model by https://sketchfab.com/3d-models/walkman-1e8296b489084d6ba76b485d1c2fd37c -->
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                glb - anim
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    glb
+                </mr-text>
+                <mr-text>With Animation as part of the file format.</mr-text>
+            </mr-div>
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12;"
@@ -72,70 +85,96 @@
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                fbx
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    fbx
+                </mr-text>
+                <mr-text>
+                    With Animation as part of the file format.
+                </mr-text>
+                 <mr-a href="../examples-assets/models/fbx/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="fbx"
-                style="scale: 0.0005; z-index: 12;"
-                data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/logo.fbx">
+                style="scale: 0.000095; z-index: 12;"
+                data-comp-animation="clip: 0; action: play;"
+                src="../examples-assets/models/fbx/animatedChick.fbx">
             </mr-model>
+            <!-- Model by https://sketchfab.com/3d-models/walkman-1e8296b489084d6ba76b485d1c2fd37c -->
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                dae - note the difference in coordinate system
-            </mr-text>
+             <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    dae
+                </mr-text>
+                <mr-text>Note that dae can have a Y-up vs Z-up coordinate system difference that threejs will warn about.</mr-text>
+                <mr-a href="../examples-assets/models/dae/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="dae"
-                style="scale: 0.025; z-index: 12;"
-                data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.dae">
+                style="scale: 0.15; z-index: 12;"
+                src="../examples-assets/models/dae/spiderPlant.dae">
             </mr-model>
+            <!-- Model by  https://sketchfab.com/3d-models/spider-plant-e21199e3cb874bc2be8a13588813f9f5 -->
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2" >
+                    obj
+                </mr-text>
+                <mr-text>Without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"</mr-text>
+                <mr-a href="../examples-assets/models/obj1/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="obj_nomtl"
-                style="scale: 0.0005; z-index: 12;"
-                data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/logo_nomtl.obj">
+                style="scale: 0.025; z-index: 12;"
+                src="../examples-assets/models/obj1/cow.obj">
             </mr-model>
+            <!-- Model by https://sketchfab.com/3d-models/cow-farm-animal-3december2022-19e0659dea1240eea1f16c3c3176c7d0 -->
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    obj
+                </mr-text>
+                <mr-text>With mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"</mr-text>
+                <mr-a href="../examples-assets/models/obj2/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="obj_with_mtl_obj_only"
-                style="scale: 0.025; z-index: 12;"
-                data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.obj">
+                style="scale: 0.055; z-index: 12;"
+                src="../examples-assets/models/obj2/stillLife.obj">
             </mr-model>
+            <!-- Model by https://sketchfab.com/3d-models/still-life-based-on-heathers-artwork-abbcbfa6be104fcc8dc8d5b07b607719 -->
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    obj
+                </mr-text>
+                <mr-text>mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"</mr-text>
+                <mr-a href="../examples-assets/models/obj2/attribution.txt">attribution</mr-a>
+            </mr-div>
             <mr-model 
                 id="obj_with_mtl"
-                style="scale: 0.025; z-index: 12;"
-                data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.mtl,../examples-assets/models/koifish.obj">
+                style="scale: 0.055; z-index: 12;"
+                src="../examples-assets/models/obj2/stillLife.mtl,../examples-assets/models/obj2/stillLife.obj">
             </mr-model>
+            <!-- Model by https://sketchfab.com/3d-models/still-life-based-on-heathers-artwork-abbcbfa6be104fcc8dc8d5b07b607719 -->
         </mr-div>
-
         <mr-div class="links col-2">
-            <mr-button id="switch" onclick="swapSrc()" class=" label" style="margin-bottom: 30px;" >
-                dynamic switch
-            </mr-button>
+            <mr-div class="text-section">
+                <mr-text class="label-2">
+                    dynamic switch of `src`
+                </mr-text>
+                <mr-button id="switch" onclick="swapSrc()" class="label" >
+                    switch button
+                </mr-button>
+            </mr-div>
             <mr-model 
                 id="swap_model"
                 style="scale: 0.0002; z-index: 12;"
                 data-rotation="0 90 0"
-                data-comp-animation="clip: 0; action: play;"
                 src="../examples-assets/models/blue_whale.glb">
             </mr-model>
         </mr-div>
@@ -182,7 +221,6 @@
             }
 
             isShark = !isShark
-
         }
         
 
