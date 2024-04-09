@@ -105,11 +105,11 @@ export class MRDivEntity extends MREntity {
      * @description Removing an entity as a sub-object of this panel (for example an mr-model, button, etc).
      * @param {MREntity} entity - the entity to be removed added.
      */
-    remove(entity) {
+    removeEntity(entity) {
         // `this` must have `mr-panel` as its closest parent entity for threejs to handle positioning appropriately.
         let panel = this.closest('mr-panel');
         if (panel && entity instanceof MRDivEntity) {
-            panel.remove(entity);
+            panel.removeEntity(entity);
         } else {
             this.object3D.remove(entity.object3D);
         }

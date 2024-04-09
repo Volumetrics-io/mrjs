@@ -154,9 +154,19 @@ export class MRApp extends MRElement {
             this.maskingSystem = new MaskingSystem();
         });
 
-        this.addEventListener('new-entity', (event) => {
+        this.addEventListener('entityadded', (event) => {
             for (const system of this.systems) {
                 system._onNewEntity(event.target);
+            }
+        });
+
+        document.addEventListener('entityremoved', async (event) => {
+            for (const system of this.systems) {
+                system._entityRemoved(event.detail.entity);
+            }
+
+            while (event.detail.entity.object3D.parent) {
+                event.detail.entity.object3D.removeFromParent();
             }
         });
 
@@ -453,7 +463,7 @@ export class MRApp extends MRElement {
      * @description Removing an entity as an object in this MRApp engine's scene.
      * @param {MREntity} entity - the entity to be removed.
      */
-    remove(entity) {
+    removeEntity(entity) {
         this.origin.remove(entity.object3D);
     }
 

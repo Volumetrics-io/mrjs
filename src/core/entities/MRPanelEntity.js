@@ -112,7 +112,7 @@ export class MRPanelEntity extends MRDivEntity {
      * @description Remove an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
-    remove(entity) {
+    removeEntity(entity) {
         this.panel.remove(entity.object3D);
     }
 
