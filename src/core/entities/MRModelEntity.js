@@ -91,20 +91,18 @@ export class MRModelEntity extends MRDivEntity {
         try {
             const result = await mrjsUtils.model.loadModel(this.src, extension);
 
-            let animations;
-
             // Handle the different formats of the loaded result
-            if (result?.scene ?? false) {
-                // For loaders that return an object with multiple properties (scene, animation, joints, etc)
-                // For ex: GLB
-                this.modelObj = result.scene;
-                animations = result.animations;
-            } else {
-                // For loaders that return the object directly
-                // For ex: STL, OBJ
-                this.modelObj = result;
-            }
+            this.modelObj = (result?.scene ?? false)
+                ?   // For loaders that return an object with multiple properties (scene, animation, joints, etc)
+                    // For ex: GLB
+                    result.scene
+                :   // For loaders that return the object directly
+                    // For ex: STL, OBJ, FBX
+                    result;
+            let animations = result.animations;
 
+            console.log('result:', result);
+            console.log('animations:', animations);
             this.object3D.add(this.modelObj);
 
             this.modelObj.receiveShadow = true;
