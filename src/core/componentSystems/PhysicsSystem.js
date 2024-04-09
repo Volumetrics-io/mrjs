@@ -122,6 +122,16 @@ export class PhysicsSystem extends MRSystem {
 
     /**
      * @function
+     * @description when an entity is removed, remove and destroy it's physics body
+     * @param entity
+     */
+    entityRemoved(entity) {
+        mrjsUtils.physics.world.removeRigidBody(entity.physics.body);
+        entity.physics.body = null
+    }
+
+    /**
+     * @function
      * @description Initializes the rigid body used by the physics part of the entity
      * @param {MREntity} entity - the entity being updated
      */

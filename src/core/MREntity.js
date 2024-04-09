@@ -402,12 +402,12 @@ export class MREntity extends MRElement {
         if (mrjsUtils.physics.initialized) {
             await this.connected();
             this.loadAttributes();
-            this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+            this.dispatchEvent(new CustomEvent('entityadded', { bubbles: true }));
         } else {
             document.addEventListener('engine-started', async (event) => {
                 await this.connected();
                 this.loadAttributes();
-                this.dispatchEvent(new CustomEvent('new-entity', { bubbles: true }));
+                this.dispatchEvent(new CustomEvent('entityadded', { bubbles: true }));
             });
         }
     }
@@ -423,13 +423,11 @@ export class MREntity extends MRElement {
      * @description The disconnectedCallback function that runs whenever this entity component becomes disconnected from something else.
      */
     disconnectedCallback() {
-        while (this.object3D.parent) {
-            this.object3D.removeFromParent();
-        }
-
-        if (this.physics) {
-            mrjsUtils.physics.world.removeRigidBody(this.physics.body);
-        }
+        document.dispatchEvent(new CustomEvent('entityremoved', { 
+                                                                    detail: {
+                                                                        entity: this
+                                                                    }
+                                                                }));
 
         this.environment = null;
         this.observer.disconnect();
@@ -524,7 +522,7 @@ export class MREntity extends MRElement {
      * @description Removing an entity as a sub-object of this entity.
      * @param {MREntity} entity - the entity to be removed.
      */
-    remove(entity) {
+    removeEntity(entity) {
         this.object3D.remove(entity.object3D);
     }
 

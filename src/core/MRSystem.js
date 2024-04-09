@@ -116,6 +116,27 @@ export class MRSystem {
      */
     onNewEntity(entity) {}
 
+
+    /**
+     * @function
+     * @description internal function, called when a new entity is added to the scene
+     * @param {MREntity} entity - the entity being added.
+     */
+    _entityRemoved(entity) {
+        if (!this.registry.has(entity)) {
+            return;
+        }
+        this.registry.delete(entity)
+        this.entityRemoved(entity);
+    }
+
+    /**
+     * @function
+     * @description Called when a new entity is added to the scene
+     * @param {MREntity} entity - the entity being added.
+     */
+    entityRemoved(entity) {}
+
     /**
      * @function
      * @description (async) Called when the entity component is initialized

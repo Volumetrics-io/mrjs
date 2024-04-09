@@ -37,6 +37,7 @@ const observe = (root, target) => {
         }
     );
     observer.observe(target);
+    return observer
 };
 
 /**
@@ -52,6 +53,7 @@ export class BoundaryVisibilitySystem extends MRSystem {
     constructor() {
         super(false);
         this.observedEntities = new WeakSet();
+        this.observers = new Map()
     }
 
     /**
@@ -73,7 +75,9 @@ export class BoundaryVisibilitySystem extends MRSystem {
                 }
 
                 this.observedEntities.add(child);
-                observe(entity, child);
+
+                this.observers.set(child, observe(entity, child))
+
             });
         } else if (!this.observedEntities.has(entity) && entity instanceof MRDivEntity) {
             // There is a chance that a child entity is added after parent panel addition.
@@ -81,10 +85,32 @@ export class BoundaryVisibilitySystem extends MRSystem {
             for (const panel of this.registry) {
                 if (panel.contains(entity)) {
                     this.observedEntities.add(entity);
-                    observe(panel, entity);
+                    this.observers.set(child, observe(panel, entity))
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * @function
+     * @description Called when an entity is removed from the scene.
+     * @param {object} entity - the entity being added.
+     */
+    _entityRemoved(entity) {
+        if (entity instanceof MRPanelEntity) {
+            this.registry.delete(entity);
+            entity.traverse((child) => {
+                if (this.observedEntities.has(child)) {
+                    this.observedEntities.delete(child);
+                    this.observers.get(child).unobserve(child)
+                    this.observers.delete(child)
+                }
+            })
+        } else if (this.observedEntities.has(entity)) {
+            this.observedEntities.delete(entity);
+            this.observers.get(entity).unobserve(entity)
+            this.observers.delete(entity)
         }
     }
 }

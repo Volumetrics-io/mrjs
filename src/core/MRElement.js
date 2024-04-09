@@ -53,7 +53,7 @@ export class MRElement extends HTMLElement {
      * @description Removing an entity as a sub-object of this entity.
      * @param {object} entity - the entity to be removed.
      */
-    remove(entity) {}
+    removeEntity(entity) {}
 
     // TODO: find alternative solution. This breaks with the switch to asychronous entity initialization
     // /**
