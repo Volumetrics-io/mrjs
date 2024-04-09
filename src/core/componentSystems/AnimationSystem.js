@@ -31,9 +31,7 @@ export class AnimationSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            // console.log('hit entity:', entity);
             if (entity.mixer) {
-                // console.log('updating entity.mixer:', entity.mixer);
                 entity.mixer.update(deltaTime);
             }
         }
@@ -91,14 +89,12 @@ export class AnimationSystem extends MRSystem {
      */
     onNewEntity(entity) {
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
-            console.log('entity:', entity);
             let comp = entity.components.get('animation');
             if (!comp) {
                 return;
             }
             this.registry.add(entity);
             entity.mixer = new THREE.AnimationMixer(entity.object3D);
-            console.log('entity.mixer:', entity.mixer);
             this.setAnimation(entity, comp);
         }
     }

@@ -156,7 +156,6 @@ model.loadFBX = async function (filePath) {
         loader.load(
             filePath,
             (fbx) => {
-                console.log(fbx);
                 resolve(fbx);
             },
             undefined,
@@ -185,8 +184,6 @@ model.loadGLTF = async function (filePath) {
             (gltf) => {
                 const scene = gltf.scene;
                 const animations = gltf.animations;
-
-                console.log(gltf);
 
                 // Resolve the promise with the loaded scene and animations
                 resolve({ scene, animations });
