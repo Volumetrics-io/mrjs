@@ -100,17 +100,14 @@ export class MRModelEntity extends MRDivEntity {
                     // For ex: STL, OBJ, FBX
                     result;
             let animations = result.animations;
+            if (animations && animations.length > 0) {
+                this.animations = animations;
+            }
 
-            console.log('result:', result);
-            console.log('animations:', animations);
             this.object3D.add(this.modelObj);
 
             this.modelObj.receiveShadow = true;
             this.modelObj.renderOrder = 3;
-
-            if (animations && animations.length > 0) {
-                this.animations = animations;
-            }
 
             this.loaded = true;
 
