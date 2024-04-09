@@ -123,11 +123,11 @@ export class PhysicsSystem extends MRSystem {
     /**
      * @function
      * @description when an entity is removed, remove and destroy it's physics body
-     * @param entity
+     * @param {MREntity} entity - the removed entity
      */
     entityRemoved(entity) {
         mrjsUtils.physics.world.removeRigidBody(entity.physics.body);
-        entity.physics.body = null
+        entity.physics.body = null;
     }
 
     /**

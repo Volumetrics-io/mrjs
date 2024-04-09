@@ -116,7 +116,6 @@ export class MRSystem {
      */
     onNewEntity(entity) {}
 
-
     /**
      * @function
      * @description internal function, called when a new entity is added to the scene
@@ -126,7 +125,7 @@ export class MRSystem {
         if (!this.registry.has(entity)) {
             return;
         }
-        this.registry.delete(entity)
+        this.registry.delete(entity);
         this.entityRemoved(entity);
     }
 

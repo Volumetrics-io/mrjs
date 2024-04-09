@@ -164,9 +164,9 @@ export class MRApp extends MRElement {
             for (const system of this.systems) {
                 system._entityRemoved(event.detail.entity);
             }
-            
-            while(event.detail.entity.object3D.parent) {
-                event.detail.entity.object3D.removeFromParent()
+
+            while (event.detail.entity.object3D.parent) {
+                event.detail.entity.object3D.removeFromParent();
             }
         });
 

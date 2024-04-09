@@ -423,11 +423,13 @@ export class MREntity extends MRElement {
      * @description The disconnectedCallback function that runs whenever this entity component becomes disconnected from something else.
      */
     disconnectedCallback() {
-        document.dispatchEvent(new CustomEvent('entityremoved', { 
-                                                                    detail: {
-                                                                        entity: this
-                                                                    }
-                                                                }));
+        document.dispatchEvent(
+            new CustomEvent('entityremoved', {
+                detail: {
+                    entity: this,
+                },
+            })
+        );
 
         this.environment = null;
         this.observer.disconnect();
