@@ -41,9 +41,13 @@
         </mr-text>
 
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                stl
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    stl
+                </mr-text>
+                <mr-text>
+                </mr-text>
+            </mr-div>
             <mr-model 
                 id="stl"
                 style="scale: 0.0005;"
@@ -51,19 +55,26 @@
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                glb
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    glb
+                </mr-text>
+                <mr-text>
+                </mr-text>
+            </mr-div>
             <mr-model 
                 id="glb"
                 style="scale: 0.00815; z-index: 10;"
-                src="../examples-assets/models/island3.glb">
+                src="../examples-assets/models/glb/cassetteTape.glb">
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                glb - anim
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    glb
+                </mr-text>
+                <mr-text>With Animation</mr-text>
+            </mr-div>
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12;"
@@ -72,65 +83,86 @@
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                fbx
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    fbx
+                </mr-text>
+                <mr-text>
+                </mr-text>
+            </mr-div>
             <mr-model 
                 id="fbx"
-                style="scale: 0.0005; z-index: 12;"
+                style="scale: 0.00005; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/logo.fbx">
+                src="../examples-assets/models/fbx/animatedChick.fbx">
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class="label" style="margin-bottom: 30px;" >
-                dae - note the difference in coordinate system
-            </mr-text>
+             <mr-div class="text-section">
+                <mr-text class="label-2" >
+                    dae
+                </mr-text>
+                <mr-text>Note that dae can have a Y-up vs Z-up coordinate system difference that threejs will warn about.</mr-text>
+            </mr-div>
             <mr-model 
                 id="dae"
-                style="scale: 0.025; z-index: 12;"
+                style="scale: 0.15; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.dae">
+                src="../examples-assets/models/dae/spiderPlant.dae">
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2" >
+                    obj
+                </mr-text>
+                <mr-text>Without mtl referenced in file. "mr-model src='/path/to/objFile.obj'"</mr-text>
+            </mr-div>
             <mr-model 
                 id="obj_nomtl"
-                style="scale: 0.0005; z-index: 12;"
+                style="scale: 0.025; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/logo_nomtl.obj">
+                src="../examples-assets/models/obj1/cow.obj">
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    obj
+                </mr-text>
+                <mr-text>With mtl referenced in file, mtl NOT loaded as part of 'src'. "mr-model src='/path/to/objFile.obj'"</mr-text>
+            </mr-div>
             <mr-model 
                 id="obj_with_mtl_obj_only"
-                style="scale: 0.025; z-index: 12;"
+                style="scale: 0.055; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.obj">
+                src="../examples-assets/models/obj2/stillLife.obj">
             </mr-model>
         </mr-div>
         <mr-div class="links col-2">
-            <mr-text class=" label" style="margin-bottom: 30px;" >
-                obj - mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"
-            </mr-text>
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    obj
+                </mr-text>
+                <mr-text>mtl referenced in file AND mtl IS loaded as part of 'src'. "mr-model src='/pathto/mtlFile.mtl,/pathto/objFile.obj'"</mr-text>
+            </mr-div>
             <mr-model 
                 id="obj_with_mtl"
-                style="scale: 0.025; z-index: 12;"
+                style="scale: 0.055; z-index: 12;"
                 data-comp-animation="clip: 1; action: play;"
-                src="../examples-assets/models/koifish.mtl,../examples-assets/models/koifish.obj">
+                src="../examples-assets/models/obj2/stillLife.mtl,../examples-assets/models/obj2/stillLife.obj">
             </mr-model>
         </mr-div>
 
         <mr-div class="links col-2">
-            <mr-button id="switch" onclick="swapSrc()" class=" label" style="margin-bottom: 30px;" >
-                dynamic switch
-            </mr-button>
+            <mr-div class="text-section">
+                <mr-text class="label-2">
+                    dynamic switch of `src`
+                </mr-text>
+                <mr-button id="switch" onclick="swapSrc()" class="label" >
+                    switch button
+                </mr-button>
+            </mr-div>
             <mr-model 
                 id="swap_model"
                 style="scale: 0.0002; z-index: 12;"

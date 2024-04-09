@@ -194,6 +194,10 @@ mr-text {
   color: rgba(24, 24, 24, 0.75);
 }
 
+.text-section {
+  margin-bottom: 90px;
+}
+
 .label-2 {
   font-family: var(--font-title);
   font-size: 1.5vw;
