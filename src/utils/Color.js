@@ -49,7 +49,6 @@ color.hexToRgba = function (hex) {
 };
 
 color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', default_color = '#000') {
-
     const setColor = (object3D, color, compStyle_opacity, default_color) => {
         if (color.startsWith('rgba')) {
             const rgba = color
@@ -81,23 +80,22 @@ color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', def
             object3D.material.opacity = compStyle_opacity;
         }
         object3D.material.needsUpdate = true;
-    }
+    };
 
     if (object3D.isGroup) {
         mrjsUtils.warn.warn("setObject3DColor will not handle groups as expected, please use 'setEntityColor' instead.");
     } else {
         setColor(object3D, color, compStyle_opacity, default_color);
     }
-    
 };
 
-color.setEntityColor = function(entity, color, compStyle_opacity = '1', default_color = '#000') {
+color.setEntityColor = function (entity, color, compStyle_opacity = '1', default_color = '#000') {
     entity.traverseObjects((object) => {
         if (object.isMesh) {
             mrjsUtils.color.setObject3DColor(object, color, compStyle_opacity, default_color);
         }
     });
-}
+};
 
 color.setTEXTObject3DColor = function (object3D, color, default_color = '#000') {
     if (color.includes('rgba')) {
