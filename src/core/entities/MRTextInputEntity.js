@@ -138,6 +138,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * @param {event} event - the mouseclick event
      */
     handleMouseClick(event) {
+        console.log(event);
         // Convert isx position from world position to local:
         // - make sure textObj has updated matrices so we're not calculating info wrong
         // - note: textObj doesnt need sync

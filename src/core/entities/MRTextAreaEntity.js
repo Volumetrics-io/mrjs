@@ -30,7 +30,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // style
         inputElement.style.position = 'absolute';
-        inputElement.style.left = '-9999px'; // Position off-screen
+        // inputElement.style.left = '-9999px'; // Position off-screen
         inputElement.style.height = '1px';
         inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
@@ -40,32 +40,32 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput = inputElement;
     }
 
-    // /**
-    //  * @function
-    //  * @description Called by connected after createHiddenInputElement to fill
-    //  * it in with the user's given attribute information.
-    //  */
-    // fillInHiddenInputElementWithUserData() {
-    //     // name: The name associated with the <textarea> for form submission and backend processing.
-    //     this.hiddenInput.setAttribute('name', this.getAttribute('name') ?? undefined);
-    //     // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
-    //     this.hiddenInput.setAttribute('rows', this.getAttribute('rows') ?? undefined);
-    //     this.hiddenInput.setAttribute('cols', this.getAttribute('cols') ?? undefined);
-    //     // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-    //     this.hiddenInput.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
-    //     // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-    //     this.hiddenInput.setAttribute('readonly', this.getAttribute('readonly') ?? false);
-    //     // disabled: Disables the text area so it cannot be interacted with or submitted.
-    //     this.hiddenInput.setAttribute('disabled', this.getAttribute('disabled') ?? false);
-    //     // maxlength: Specifies the maximum number of characters that the user can enter.
-    //     this.hiddenInput.setAttribute('maxlength', this.getAttribute('maxlength') ?? undefined);
-    //     // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-    //     this.hiddenInput.setAttribute('wrap', this.getAttribute('wrap') ?? undefined);
-    //     // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
-    //     this.hiddenInput.setAttribute('overflowWrap', this.getAttribute('overflowWrap') ?? undefined);
-    //     // whitespace : Controls if text wraps with the overflowWrap feature or not.
-    //     this.hiddenInput.setAttribute('whitespace', this.getAttribute('whitespace') ?? undefined);
-    // }
+    /**
+     * @function
+     * @description Called by connected after createHiddenInputElement to fill
+     * it in with the user's given attribute information.
+     */
+    fillInHiddenInputElementWithUserData() {
+        // name: The name associated with the <textarea> for form submission and backend processing.
+        this.hiddenInput.setAttribute('name', this.getAttribute('name') ?? undefined);
+        // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
+        this.hiddenInput.setAttribute('rows', this.getAttribute('rows') ?? undefined);
+        this.hiddenInput.setAttribute('cols', this.getAttribute('cols') ?? undefined);
+        // placeholder: Provides a hint to the user about what they should type into the <textarea>.
+        this.hiddenInput.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
+        // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
+        this.hiddenInput.setAttribute('readonly', this.getAttribute('readonly') ?? false);
+        // disabled: Disables the text area so it cannot be interacted with or submitted.
+        this.hiddenInput.setAttribute('disabled', this.getAttribute('disabled') ?? false);
+        // maxlength: Specifies the maximum number of characters that the user can enter.
+        this.hiddenInput.setAttribute('maxlength', this.getAttribute('maxlength') ?? undefined);
+        // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
+        this.hiddenInput.setAttribute('wrap', this.getAttribute('wrap') ?? undefined);
+        // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
+        this.hiddenInput.setAttribute('overflowWrap', this.getAttribute('overflowWrap') ?? undefined);
+        // whitespace : Controls if text wraps with the overflowWrap feature or not.
+        this.hiddenInput.setAttribute('whitespace', this.getAttribute('whitespace') ?? undefined);
+    }
 
     /**
      * @function
