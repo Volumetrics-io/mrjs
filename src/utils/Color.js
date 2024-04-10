@@ -120,19 +120,4 @@ color.setEntityColor = function (entity, color, compStyle_opacity = '1', default
     });
 };
 
-color.setTEXTObject3DColor = function (object3D, color, default_color = '#000') {
-    if (color.includes('rgba')) {
-        const rgba = color
-            .substring(5, color.length - 1)
-            .split(',')
-            .map((part) => parseFloat(part.trim()));
-        object3D.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
-
-        object3D.material.opacity = rgba[3];
-    } else {
-        object3D.material.color.setStyle(color ?? '#000');
-    }
-    object3D.material.needsUpdate = true;
-};
-
 export { color };
