@@ -134,7 +134,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * directly. Otherwise, we assume there's other things happening after focus was called as part of the event
      * and that the cursor position will be handled there instead.
      */
-    _focus(isPureFocusEvent=false) {
+    _focus(isPureFocusEvent = false) {
         if (!this.hiddenInput) {
             return;
         }
@@ -189,7 +189,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.addEventListener('click', () => {
             this._focus(true);
         });
-        
+
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
             this._focus();
@@ -202,9 +202,9 @@ export class MRTextInputEntity extends MRTextEntity {
             // Input captures all main text character inputs
             // BUT it does not capture arrow keys, so we handle
             // those specifically by the 'keydown' event.
-            // 
+            //
             // We handle all the rest by relying on the internal
-            // 'hiddenInput's update system so we dont have to 
+            // 'hiddenInput's update system so we dont have to
             // manage as many things directly ourselves.
 
             this.updateTextDisplay();
@@ -215,7 +215,7 @@ export class MRTextInputEntity extends MRTextEntity {
             // handled by the input event - check the comment there
             // for more reasoning.
 
-            if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+            if (event.key == 'ArrowUp' || event.key == 'ArrowDown' || event.key == 'ArrowLeft' || event.key == 'ArrowRight') {
                 this.handleKeydown(event);
             }
         });
@@ -236,8 +236,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition(fromCursorMove=false) {
-
+    updateCursorPosition(fromCursorMove = false) {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
         // does the browser handle this for us?
 
@@ -278,7 +277,6 @@ export class MRTextInputEntity extends MRTextEntity {
                     rectX = rect.left;
                     rectY = rect.bottom;
                 }
-                
             } else {
                 // default
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);

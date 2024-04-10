@@ -83,7 +83,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const isRightArrow = keyCode === 39;
         const isDownArrow = keyCode === 40;
 
-        // We need to handle the up/down arrows in a special way here; otherwise, 
+        // We need to handle the up/down arrows in a special way here; otherwise,
         // they'll default to the left/right implementation.
         //
         // And in all cases, we need to update the selction points and the cursor

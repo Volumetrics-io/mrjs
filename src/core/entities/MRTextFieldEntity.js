@@ -46,7 +46,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         const { keyCode } = event;
 
         // We dont need to do anything fancy to differentiate up/down versus left/right
-        // arrow keys, we just need to make sure theyre handled properly, so we 
+        // arrow keys, we just need to make sure theyre handled properly, so we
         // update the selction points and the cursor position here.
 
         // Make sure selectionEnd matches the newly updated start position since
