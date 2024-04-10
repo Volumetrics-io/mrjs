@@ -17,7 +17,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         super();
         // Define additional properties for handling multiline text and scrolling
         this.lineHeight = 1.2; // Default line height, can be adjusted as needed
-        this.scrollOffset = 0; // The vertical scroll position
+        // this.scrollOffset = 0; // The vertical scroll position
         this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
         this.object3D.name = 'textArea';
     }

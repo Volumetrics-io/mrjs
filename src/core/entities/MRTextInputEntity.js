@@ -134,7 +134,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * directly. Otherwise, we assume there's other things happening after focus was called as part of the event
      * and that the cursor position will be handled there instead.
      */
-    focus(isPureFocusEvent = false) {
+    focus(isPureFocusEvent=false) {
         if (!this.hiddenInput) {
             return;
         }
@@ -180,6 +180,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Pure Focus Events
         this.addEventListener('focus', () => {
+            console.log(this);
             this.focus(true);
         });
         this.addEventListener('click', () => {
@@ -187,6 +188,7 @@ export class MRTextInputEntity extends MRTextEntity {
         });
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
+            console.log(this);
             this.focus();
             this.handleMouseClick(event);
         });
