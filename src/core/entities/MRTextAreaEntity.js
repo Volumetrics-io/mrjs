@@ -82,30 +82,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const isUpArrow = keyCode === 38;
         const isRightArrow = keyCode === 39;
         const isDownArrow = keyCode === 40;
-        const isBackspace = keyCode === 8;
-        const isDelete = keyCode === 46;
-        const isEnter = keyCode === 13;
 
-        if (!(isLeftArrow || isUpArrow || isRightArrow || isDownArrow || isBackspace || isDelete || isEnter)) {
-            // not special event, then handle as normal input
-            this.updateTextDisplay();
-        }
-
-        let fromCursorMove = !(isBackspace || isDelete || isEnter);
-
-        // Handle Special Keys, then Up/Down, then Left/Right
-        // as some may trigger the others being required
-        // based on assumed implementations for them for the
-        // textarea dom element.
-
-        if (isBackspace || isDelete) {
-            this.updateTextDisplay();
-            this.updateCursorPosition(fromCursorMove);
-            return;
-        } else if (isEnter) {
-            this.updateCursorPosition(fromCursorMove, true);
-            return;
-        }
+        // We need to handle the up/down arrows in a special way here; otherwise, 
+        // they'll default to the left/right implementation.
+        //
+        // And in all cases, we need to update the selction points and the cursor
+        // position here.
 
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
@@ -157,8 +139,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
-            this.updateCursorPosition(fromCursorMove);
-        }, 0);
+            this.updateCursorPosition(true, event);
+        }, 0.2);
     }
 }
 

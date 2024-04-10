@@ -184,7 +184,6 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Pure Focus Events
         this.addEventListener('focus', () => {
-            console.log(this);
             this._focus(true);
         });
         this.addEventListener('click', () => {
@@ -192,32 +191,33 @@ export class MRTextInputEntity extends MRTextEntity {
         });
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
-            console.log(this);
-            this._focus(false);
+            this._focus();
             this.handleMouseClick(event);
         });
 
         // Keyboard events to capture text in the
         // hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
-            console.log('handling EVENT, hiddenInput, INPUT');
+            console.log('INPUT EVENT:', event);
             // Input captures all main text character inputs
-            // BUT it does not capture arrow keys :(
-            //
-            // TODO:
-            // This duplicates /some/ of the keydown events
-            // those that we care about: isDelete/isEnter
-            // since that changes how we handle some of keydown
-            // want those handled only in the keydown event
-            // - also need to figure out which events
-            // /are/ triggered by input but /not/ keydown
+            // BUT it does not capture arrow keys, so we handle
+            // those specifically by the 'keydown' event.
+            // 
+            // We handle all the rest by relying on the internal
+            // 'hiddenInput's update system so we dont have to 
+            // manage as many things directly ourselves.
 
             this.updateTextDisplay();
-            this.updateCursorPosition();
+            this.updateCursorPosition(false, event);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
-            console.log('handling EVENT, reg, KEYDOWN');
-            this.handleKeydown(event);
+            // Only using keydown for arrow keys, everything else is
+            // handled by the input event - check the comment there
+            // for more reasoning.
+            console.log("KEYDOWN EVENT:", event);
+            if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+                this.handleKeydown(event);
+            }
         });
 
         // Separate trigger call just in case.
@@ -230,25 +230,31 @@ export class MRTextInputEntity extends MRTextEntity {
      * @param {boolean} fromCursorMove - false by default. Used to determine if we need to run
      * based off a text object update sync or we can directly grab information. This requirement
      * occurs because the sync isnt usable if no text content changed.
-     * @param {boolean} isNewLine - false by default. Used to determine if the new character added
+     * @param {boolean} fromEnterPress - false by default. Used to determine if the new character added
      * was a newline character to try to augment the cursor position to something the user
      * would recognize since troika places it in a weird spot until the next character is entered.
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition(fromCursorMove = false, isNewLine = false) {
-        const updateBasedOnSelectionRects = (cursorIndex, isNewLine) => {
+    updateCursorPosition(fromCursorMove=false, keyEvent=undefined) {
+        const updateBasedOnSelectionRects = (cursorIndex, keyEvent) => {
             // Setup variables for calculations.
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
-            const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            const allLines = this.hiddenInput.value.split('\n');
-            const linesBeforeCursor = textBeforeCursor.split('\n');
-            const cursorIsOnLineIndex = linesBeforeCursor.length - 1;
+            let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+            let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
+            let allLines = this.hiddenInput.value.split('/\r?\n/');
+            let linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
+            let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
 
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
 
-            if (isNewLine) {
+            // determine if we need to handle special cases based on the KeyEvent
+            const isEnter = keyEvent?.key=="Enter" ?? false;
+            const isArrowLeft = keyEvent?.key == "ArrowLeft" ?? false;
+            const isArrowRight = keyEvent?.key == "ArrowRight" ?? false;
+
+            if (isEnter) {
                 console.log('in the isNewLine section');
                 // Faking the newline cursor position since troika doesnt create it until you type something
                 // after the '\n' character sequence, which means the cursor lingers on the current line one
@@ -260,13 +266,40 @@ export class MRTextInputEntity extends MRTextEntity {
                 cursorYOffsetPosition = 0 - this.cursorHeight * (cursorIsOnLineIndex + 1);
                 console.log('cursorXOffsetPosition: ', cursorXOffsetPosition, 'cursorYOffsetPosition: ', cursorYOffsetPosition);
             } else {
+
+                // Check if we ran into a newline character after moving the cursor; if so, skip.
+                if (fromCursorMove) {
+                    console.log("keyevent:", keyEvent);
+                    console.log(isArrowLeft, textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n', isArrowRight, textAfterCursor.charAt(0) === '\n')
+                }
+                // if (fromCursorMove && isArrowLeft && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n') {//textAfterCursor.charAt(0) === '\n') {
+                //     --this.hiddenInput.selectionStart;
+                //     --cursorIndex;
+                //     textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+                //     textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
+                //     allLines = this.hiddenInput.value.split('/\r?\n/');
+                //     linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
+                //     cursorIsOnLineIndex = linesBeforeCursor.length - 1;
+                // } else if (fromCursorMove && isArrowRight && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n') {
+                //     ++this.hiddenInput.selectionStart;
+                //     ++cursorIndex;
+                //     textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+                //     textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
+                //     allLines = this.hiddenInput.value.split('/\r?\n/');
+                //     linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
+                //     cursorIsOnLineIndex = linesBeforeCursor.length - 1;
+                // }
+
                 // Assuming getSelectionRects is properly imported and used here
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
                 if (selectionRects.length > 0) {
-                    let lastRect = selectionRects[selectionRects.length - 1];
+                    let rectIndex = selectionRects.length - 1;
+                    let rect = selectionRects[rectIndex];
+
+                    const isBegOfCurrLine = (fromCursorMove && isArrowLeft && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n');
 
                     // Check if cursor matches our font size before using values.
-                    const cursorVisibleHeight = lastRect.top - lastRect.bottom;
+                    const cursorVisibleHeight = rectIndex.top - rectIndex.bottom;
                     if (this.cursor.geometry.height != cursorVisibleHeight) {
                         this.cursor.geometry.height = cursorVisibleHeight;
                         this.cursor.geometry.needsUpdate = true;
@@ -275,18 +308,18 @@ export class MRTextInputEntity extends MRTextEntity {
 
                     // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
                     // a little bit of buffer room.
-                    cursorXOffsetPosition = lastRect.right + this.cursorWidth;
-                    cursorYOffsetPosition = lastRect.bottom + this.cursorHeight;
+                    cursorXOffsetPosition = (isBegOfCurrLine) ? rectIndex.left : rectIndex.right + this.cursorWidth;
+                    cursorYOffsetPosition = rectIndex.bottom + this.cursorHeight;
                 }
             }
 
             // Update the cursor's 3D position
             this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;
             this.cursor.position.y = this.cursorStartingPosition.y + cursorYOffsetPosition;
-            if (isNewLine) {
-                console.log('this.cursorStartingPosition:', this.cursorStartingPosition);
-                console.log('this.cursor.position:', this.cursor.position);
-            }
+            // if (isNewLine) {
+            //     console.log('this.cursorStartingPosition:', this.cursorStartingPosition);
+            //     console.log('this.cursor.position:', this.cursor.position);
+            // }
             this.cursor.visible = true;
         };
 
@@ -314,10 +347,10 @@ export class MRTextInputEntity extends MRTextEntity {
         // since textObj sync resolves when there's actual changes to the
         // object. Otherwise, it'll hang and never hit the update function.
         if (fromCursorMove) {
-            updateBasedOnSelectionRects(cursorIndex, isNewLine);
+            updateBasedOnSelectionRects(cursorIndex, keyEvent);
         } else {
             this.textObj.sync(() => {
-                updateBasedOnSelectionRects(cursorIndex, isNewLine);
+                updateBasedOnSelectionRects(cursorIndex, keyEvent);
             });
         }
     }
