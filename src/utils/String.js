@@ -84,7 +84,7 @@ string.jsonToString = function (componentData) {
  * @returns {object} - the vector version of the inputted string.
  */
 string.stringToVector = function (str) {
-    return str.split(' ').map(Number);
+    return str?.split(' ').map(Number) ?? null;
 };
 
 string.vectorToString = function (arr) {
