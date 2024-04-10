@@ -156,7 +156,11 @@ export class MRTextInputEntity extends MRTextEntity {
      *
      */
     blur() {
+        if (!this.hiddenInput) {
+            return;
+        }
         this.hiddenInput.blur();
+
         this.cursor.visible = false;
     }
 
@@ -189,7 +193,8 @@ export class MRTextInputEntity extends MRTextEntity {
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
             console.log(this);
-            this.focus();
+            console.log(this.focus());
+            this.focus(false);
             this.handleMouseClick(event);
         });
 
