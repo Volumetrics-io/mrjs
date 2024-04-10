@@ -49,31 +49,31 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      */
     fillInHiddenInputElementWithUserData() {
         // name: The name associated with the <textfield> for form submission and backend processing.
-        this.hiddenInput.name = this.getAttribute('name') ?? undefined;
+        this.hiddenInput.setAttribute('name', this.getAttribute('name') ?? undefined);
         // value: Sets the initial value of the input field.
-        this.hiddenInput.value = this.getAttribute('value') ?? undefined;
+        this.hiddenInput.setAttribute('value', this.getAttribute('value') ?? undefined);
         // placeholder: Specifies a short hint that describes the expected value of the input field.
-        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? undefined;
+        this.hiddenInput.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
         // maxlength: Sets the maximum number of characters that can be entered into the input field.
-        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? undefined;
+        this.hiddenInput.setAttribute('maxlength', this.getAttribute('maxlength') ?? undefined);
         // size: Defines the width of the input field in characters.
-        this.hiddenInput.size = this.getAttribute('size') ?? undefined;
+        this.hiddenInput.setAttribute('size', this.getAttribute('size') ?? 10);
         // autofocus: If present, specifies that the input field should automatically get focus when the page loads.
-        this.hiddenInput.autofocus = this.getAttribute('autofocus') ?? undefined;
+        this.hiddenInput.setAttribute('autofocus', this.getAttribute('autofocus') ?? false);
         // readonly: If present, specifies that the input field is read-only and cannot be edited by the user.
-        this.hiddenInput.readonly = this.getAttribute('readonly') ?? undefined;
+        this.hiddenInput.setAttribute('readonly', this.getAttribute('readonly') ?? false);
         // disabled: If present, disables the input field so that it cannot be interacted with or submitted.
-        this.hiddenInput.disabled = this.getAttribute('disabled') ?? undefined;
+        this.hiddenInput.setAttribute('disabled', this.getAttribute('disabled') ?? false);
         // required: If present, specifies that the input field must be filled out before submitting the form.
-        this.hiddenInput.required = this.getAttribute('required') ?? undefined;
+        this.hiddenInput.setAttribute('required', this.getAttribute('required') ?? false);
         // autocomplete: Enables or disables autocomplete suggestions for the input field. Values can be "on" or "off".
-        this.hiddenInput.autocomplete = this.getAttribute('autocomplete') ?? undefined;
+        this.hiddenInput.setAttribute('autocomplete', this.getAttribute('autocomplete') ?? undefined);
         // pattern: Specifies a regular expression that the input's value must match in order for the form to be submitted.
-        this.hiddenInput.pattern = this.getAttribute('pattern') ?? undefined;
+        this.hiddenInput.setAttribute('pattern', this.getAttribute('pattern') ?? undefined);
         // title: Provides a tooltip or advisory information about the input field when hovered over.
-        this.hiddenInput.title = this.getAttribute('title') ?? undefined;
+        this.hiddenInput.setAttribute('title', this.getAttribute('title') ?? undefined);
         // id: Specifies a unique ID for the input field, which can be used for targeting with CSS or JavaScript.
-        this.hiddenInput.id = this.getAttribute('id') ?? undefined;
+        this.hiddenInput.setAttribute('id', this.getAttribute('id') ?? undefined);
     }
 
     /**

@@ -77,7 +77,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // DOM
         this.createHiddenInputElement();
-        this.fillInHiddenInputElementWithUserData();
+        // this.fillInHiddenInputElementWithUserData(); // TODO - need good list of defaults
 
         // Make it trigger happy
         this.setupEventListeners();
@@ -88,8 +88,13 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // All items should start out as 'not selected'
         // unless noted otherwise.
-        if (!this.hiddenInput.autofocus ?? false) {
+        if (!this.hiddenInput.getAttribute('autofocus') ?? false) {
             this._blur();
+        }
+
+        // Handle any placeholder setup s.t. it can be overwritten easily.
+        if (this.hiddenInput.getAttribute('placeholder') ?? false) {
+            this.textObj.text = this.hiddenInput.getAttribute('placeholder');
         }
     }
 
@@ -188,6 +193,14 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor.visible = false;
     }
 
+    get inputIsDisabled() {
+        return this.hiddenInput.getAttribute('disabled') ?? false;
+    }
+
+    get inputIsReadOnly() {
+        return this.hiddenInput.getAttribute('readonly') ?? false;
+    }
+
     /**
      * @function
      * @description Connecting the event listeners to the actual functions that handle them. Includes
@@ -210,14 +223,17 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Pure Focus Events
         this.addEventListener('focus', () => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
             this._focus(true);
         });
         this.addEventListener('click', () => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
             this._focus(true);
         });
 
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
             this._focus();
             this.handleMouseClick(event);
         });
@@ -225,6 +241,8 @@ export class MRTextInputEntity extends MRTextEntity {
         // Keyboard events to capture text in the
         // hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+
             // Input captures all main text character inputs
             // BUT it does not capture arrow keys, so we handle
             // those specifically by the 'keydown' event.
@@ -237,6 +255,8 @@ export class MRTextInputEntity extends MRTextEntity {
             this.updateCursorPosition(false);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+
             // Only using keydown for arrow keys, everything else is
             // handled by the input event - check the comment there
             // for more reasoning.
@@ -248,6 +268,8 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Separate trigger call just in case.
         this.addEventListener('update-cursor-position', () => {
+            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+
             this.updateCursorPosition();
         });
     }
