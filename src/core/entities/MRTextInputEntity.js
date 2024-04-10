@@ -237,13 +237,15 @@ export class MRTextInputEntity extends MRTextEntity {
      * @description Updates the cursor position based on click and selection location.
      */
     updateCursorPosition(fromCursorMove=false, keyEvent=undefined) {
+
         const updateBasedOnSelectionRects = (cursorIndex, keyEvent) => {
             // Setup variables for calculations.
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
             let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
-            let allLines = this.hiddenInput.value.split('/\r?\n/');
-            let linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
+            let allLines = this.hiddenInput.value.split('\n');
+            // TODO - handle as '/\r?\n/'
+            let linesBeforeCursor = textBeforeCursor.split('\n');
             let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
 
             let cursorXOffsetPosition = 0;
@@ -270,7 +272,8 @@ export class MRTextInputEntity extends MRTextEntity {
                 // Check if we ran into a newline character after moving the cursor; if so, skip.
                 if (fromCursorMove) {
                     console.log("keyevent:", keyEvent);
-                    console.log(isArrowLeft, textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n', isArrowRight, textAfterCursor.charAt(0) === '\n')
+                    console.log(isArrowLeft, '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1),
+                        isArrowRight, '\n' === textAfterCursor.charAt(0))
                 }
                 // if (fromCursorMove && isArrowLeft && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n') {//textAfterCursor.charAt(0) === '\n') {
                 //     --this.hiddenInput.selectionStart;
@@ -290,16 +293,47 @@ export class MRTextInputEntity extends MRTextEntity {
                 //     cursorIsOnLineIndex = linesBeforeCursor.length - 1;
                 // }
 
-                // Assuming getSelectionRects is properly imported and used here
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-                if (selectionRects.length > 0) {
-                    let rectIndex = selectionRects.length - 1;
-                    let rect = selectionRects[rectIndex];
+                
+                // if (selectionRects.length > 0) {
+                    let rectX = undefined;
+                    let rectY = undefined;
+                    let rect = undefined;
 
-                    const isBegOfCurrLine = (fromCursorMove && isArrowLeft && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n');
+                    const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
+                    const nextIsNewlineChar = '\n' === textAfterCursor.charAt(0);
+                    console.log('check against newline: prev:', prevIsNewlineChar, 'next:', nextIsNewlineChar);
+                    if (prevIsNewlineChar) {
+                        // When on newline char, hiddenInput puts selection at end of newline char,
+                        // not beg of next line. Make sure cursor visual is at beg of next line
+                        // without moving selection point.
+
+                        // special case where next line doesnt exist yet, fake it with our current line's information
+                        // if current cursor position is already on last line index - then fake it
+                        const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
+                        if (isLastLine) {
+                            const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
+                            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, indexOfBegOfLine, cursorIndex);
+                            rect = selectionRects[0];
+                            rectX = rect.left;
+                            rectY = rect.bottom - this.cursorHeight;
+                        } else {
+                            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex + 1);
+                            rect = selectionRects[selectionRects.length - 1];
+                            rectX = rect.left;
+                            rectY = rect.bottom;
+                        }
+                        
+                    } else {
+                        // default
+                        let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
+                        let rectIndex = selectionRects.length - 1;
+                        rect = selectionRects[rectIndex];
+                        rectX = rect.right;
+                        rectY = rect.bottom;
+                    }
 
                     // Check if cursor matches our font size before using values.
-                    const cursorVisibleHeight = rectIndex.top - rectIndex.bottom;
+                    const cursorVisibleHeight = rect.top - rect.bottom;
                     if (this.cursor.geometry.height != cursorVisibleHeight) {
                         this.cursor.geometry.height = cursorVisibleHeight;
                         this.cursor.geometry.needsUpdate = true;
@@ -308,9 +342,9 @@ export class MRTextInputEntity extends MRTextEntity {
 
                     // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
                     // a little bit of buffer room.
-                    cursorXOffsetPosition = (isBegOfCurrLine) ? rectIndex.left : rectIndex.right + this.cursorWidth;
-                    cursorYOffsetPosition = rectIndex.bottom + this.cursorHeight;
-                }
+                    cursorXOffsetPosition = rectX + this.cursorWidth;
+                    cursorYOffsetPosition = rectY + this.cursorHeight;
+                // }
             }
 
             // Update the cursor's 3D position
