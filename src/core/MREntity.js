@@ -238,7 +238,7 @@ export class MREntity extends MRElement {
 
     rotation = {
         get: () => {
-            return mrjsUtils.string.stringToVector(this.dataset.position);
+            return mrjsUtils.string.stringToVector(this.dataset.rotation);
         },
 
         set: (arr) => {
