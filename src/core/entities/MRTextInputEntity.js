@@ -192,7 +192,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Connecting the event listeners to the actual functions that handle them. Includes
      * additional calls where necessary.
-     * 
+     *
      * Since we want the text input children to be able
      * to override the parent function event triggers,
      * separating them into an actual function here

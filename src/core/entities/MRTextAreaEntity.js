@@ -36,11 +36,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         inputElement.style.overflow = 'hidden';
 
         // Ensure it's part of the DOM for event capturing
-        document.body.appendChild(inputElement); 
+        document.body.appendChild(inputElement);
         this.hiddenInput = inputElement;
     }
 
-   /**
+    /**
      * @function
      * @description Called by connected after createHiddenInputElement to fill
      * it in with the user's given attribute information.

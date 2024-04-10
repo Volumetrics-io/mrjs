@@ -320,7 +320,7 @@ export class TextSystem extends MRSystem {
 
     /**
      * @function
-     * @description Sets the text object3D color. 
+     * @description Sets the text object3D color.
      * @param {object} object3D - the threejs object representation of the troika textt to be colored
      * @param {string} color - the string representation of the color in rgba, hex, or name ('red') form
      * @param {string} default_color - fallback color used if the system does not understand the color parameter. Defaults to black.

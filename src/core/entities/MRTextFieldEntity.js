@@ -38,7 +38,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         inputElement.style.overflow = 'hidden';
 
         // Ensure it's part of the DOM for event capturing
-        document.body.appendChild(inputElement); 
+        document.body.appendChild(inputElement);
         this.hiddenInput = inputElement;
     }
 
