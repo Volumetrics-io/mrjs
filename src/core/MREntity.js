@@ -176,6 +176,17 @@ export class MREntity extends MRElement {
             }
             this.dataset[dataName] = mrjsUtils.string.jsonToString(component);
         },
+
+        toJSON: () => {
+            let all = {}
+            for (const key in this.dataset) {
+                let compName = key.split('comp')[1]
+                if(compName) {
+                    all[compName.toLowerCase()] = mrjsUtils.string.stringToJson(this.dataset[key])
+                }
+            }
+            return all
+        }
     };
 
     position = {
