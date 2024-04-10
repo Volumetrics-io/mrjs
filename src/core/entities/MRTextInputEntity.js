@@ -6,13 +6,13 @@ import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
 /**
  * @class MRTextInputEntity
- * @classdesc The text element / TODO /
+ * @classdesc Base text inpu entity represented in 3D space. `mr-text-input`
  * @augments MRTextEntity
  */
 export class MRTextInputEntity extends MRTextEntity {
     /**
      * @class
-     * @description Constructor for the textArea entity component.
+     * @description Constructor for the MRTextInputEntity entity component.
      */
     constructor() {
         super();
@@ -20,35 +20,45 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     * @returns {string} value - the value of the current text input
+     * @function
+     * @description Gets the value of the text for the current hiddenInput DOM object
+     * @returns {string} value - the text value of the current hiddenInput DOM object
      */
     get value() {
         return this.hiddenInput.value;
     }
 
     /**
-     *
+     * @function
+     * @description Sets the value of the text for the current hiddenInput DOM object
      */
     set value(val) {
         this.hiddenInput.value = val;
     }
 
     /**
-     *
+     * @function
+     * @description Function to be overwritten by children. Called by connected to make sure
+     * the hiddenInput dom element is created as expected.
      */
     createHiddenInputElement() {
         mrjsUtils.error.emptyParentFunction();
     }
 
     /**
-     *
+     * @function
+     * @description Function to be overwritten by children. Called by connected after
+     * createHiddenInputElement to fill it in with the user's given
+     * attribute information.
      */
     fillInHiddenInputElementWithUserData() {
         mrjsUtils.error.emptyParentFunction();
     }
 
     /**
-     *
+     * @function
+     * @description Function to be overwritten by children. Used on event trigger to
+     * update the textObj visual based on the hiddenInput DOM element.
      */
     updateTextDisplay() {
         mrjsUtils.error.emptyParentFunction();
@@ -56,7 +66,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
     /**
      * @function
-     * @description (async) handles setting up this textarea once it is connected to run as an entity component.
+     * @description (async) Handles setting up this textarea once it is connected to run as an entity component.
      */
     async connected() {
         await super.connected();
@@ -67,7 +77,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // DOM
         this.createHiddenInputElement();
-        // this.fillInHiddenInputElementWithUserData(); // TODO - <-- swap to this when trying a live example
+        this.fillInHiddenInputElementWithUserData();
 
         // Make it trigger happy
         this.setupEventListeners();
@@ -77,11 +87,16 @@ export class MRTextInputEntity extends MRTextEntity {
         this.triggerTextStyleUpdate();
 
         // All items should start out as 'not selected'
-        this._blur();
+        // unless noted otherwise.
+        if (!this.hiddenInput.autofocus ?? false) {
+            this._blur();
+        }
     }
 
     /**
-     *
+     * @function
+     * @description Internal function used to setup the cursor object and associated variables
+     * needed during runtime.
      */
     _createCursorObject() {
         this.cursorWidth = 0.002;
@@ -103,7 +118,8 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Function to be overwritten by children. Called by the keydown event trigger.
      * @param {event} event - the keydown event
      */
     handleKeydown(event) {
@@ -111,8 +127,10 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
-     * @param {event} event - the keydown event
+     * @function
+     * @description Called by the mouse click event trigger. Handles determining the
+     * caret position based on the 3D textObj to hiddenInput DOM position conversion.
+     * @param {event} event - the mouseclick event
      */
     handleMouseClick(event) {
         // Convert isx position from world position to local:
@@ -129,7 +147,10 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Called by the focus event trigger and in other 'focus' situations. We use the
+     * private version of this function signature to not hit the intersection of the actual 'focus()'
+     * event naming that we have connected. See 'setupEventListeners()' description for more info.
      * @param {boolean} isPureFocusEvent - Boolean to allow us to update the cursor position with this function
      * directly. Otherwise, we assume there's other things happening after focus was called as part of the event
      * and that the cursor position will be handled there instead.
@@ -153,7 +174,10 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Called by the blur event trigger and in other 'blur' situations. We use the
+     * private version of this function signature to not hit the intersection of the actual 'blur()'
+     * event naming that we have connected. See 'setupEventListeners()' description for more info.
      */
     _blur() {
         if (!this.hiddenInput) {
@@ -165,18 +189,20 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
-     *
+     * @function
+     * @description Connecting the event listeners to the actual functions that handle them. Includes
+     * additional calls where necessary.
+     * 
+     * Since we want the text input children to be able
+     * to override the parent function event triggers,
+     * separating them into an actual function here
+     * and calling them manually instead of doing the pure
+     * 'functionname () => {} event type setup'. This manual
+     * connection allows us to call super.func() for event
+     * functions; otherwise, theyre not accessible nor implemented
+     * in the subclasses.
      */
     setupEventListeners() {
-        // Since we want the text input children to be able
-        // to override the parent function event triggers,
-        // separating them into an actual function here
-        // and calling them manually instead of doing the pure
-        // 'functionname () => {} event type setup'. This manual
-        // connection allows us to call super.func() for event
-        // functions; otherwise, theyre not accessible nor implemented
-        // in the subclasses.
-
         // Blur events
         this.addEventListener('blur', () => {
             this._blur();
@@ -227,14 +253,11 @@ export class MRTextInputEntity extends MRTextEntity {
     }
 
     /**
+     * @function
+     * @description Updates the cursor position based on click and selection location.
      * @param {boolean} fromCursorMove - false by default. Used to determine if we need to run
      * based off a text object update sync or we can directly grab information. This requirement
      * occurs because the sync isnt usable if no text content changed.
-     * @param {boolean} fromEnterPress - false by default. Used to determine if the new character added
-     * was a newline character to try to augment the cursor position to something the user
-     * would recognize since troika places it in a weird spot until the next character is entered.
-     * @function
-     * @description Updates the cursor position based on click and selection location.
      */
     updateCursorPosition(fromCursorMove = false) {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
@@ -305,7 +328,6 @@ export class MRTextInputEntity extends MRTextEntity {
             this.cursor.visible = true;
         };
 
-        console.log('here in update cursor position');
         // Check if we have any DOM element to work with.
         if (!this.hiddenInput) {
             return;
@@ -315,7 +337,6 @@ export class MRTextInputEntity extends MRTextEntity {
         // XXX - when we actually allow for seleciton in future, some of the below will need to
         // be thought through again.
         const cursorIndex = this.hiddenInput.selectionStart;
-        console.log('found cursor index as:', cursorIndex);
 
         // early escape for empty text
         if (cursorIndex == 0) {

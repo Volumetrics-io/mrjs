@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import { getSelectionRects } from 'troika-three-text';
-
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 
 /**
@@ -16,20 +14,72 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      */
     constructor() {
         super();
-        this.wrapper = this.shadowRoot.appendChild(document.createElement('div'));
-        this.wrapper.innerHTML = '<slot></slot>';
+        this.lineHeight = 1.2; // Default line height, can be adjusted as needed
+        this.object3D.name = 'textField';
+
+        // this.wrapper = this.shadowRoot.appendChild(document.createElement('div'));
+        // this.wrapper.innerHTML = '<slot></slot>';
     }
 
     /**
-     *
+     * @function
+     * @description Called by connected to make sure the hiddenInput dom element is created as expected.
      */
     createHiddenInputElement() {
-        this.hiddenInput = document.createElement('input');
-        this.hiddenInput.setAttribute('type', 'text');
+        // setup
+        const inputElement = document.createElement('input');
+        inputElement.setAttribute('type', 'text');
+
+        // style
+        inputElement.style.position = 'absolute';
+        inputElement.style.left = '-9999px'; // Position off-screen
+        inputElement.style.height = '1px';
+        inputElement.style.width = '1px';
+        inputElement.style.overflow = 'hidden';
+
+        // Ensure it's part of the DOM for event capturing
+        document.body.appendChild(inputElement); 
+        this.hiddenInput = inputElement;
     }
 
     /**
-     *
+     * @function
+     * @description Called by connected after createHiddenInputElement to fill
+     * it in with the user's given attribute information.
+     */
+    fillInHiddenInputElementWithUserData() {
+        // name: The name associated with the <textfield> for form submission and backend processing.
+        this.hiddenInput.name = this.getAttribute('name') ?? undefined;
+        // value: Sets the initial value of the input field.
+        this.hiddenInput.value = this.getAttribute('value') ?? undefined;
+        // placeholder: Specifies a short hint that describes the expected value of the input field.
+        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? undefined;
+        // maxlength: Sets the maximum number of characters that can be entered into the input field.
+        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? undefined;
+        // size: Defines the width of the input field in characters.
+        this.hiddenInput.size = this.getAttribute('size') ?? undefined;
+        // autofocus: If present, specifies that the input field should automatically get focus when the page loads.
+        this.hiddenInput.autofocus = this.getAttribute('autofocus') ?? undefined;
+        // readonly: If present, specifies that the input field is read-only and cannot be edited by the user.
+        this.hiddenInput.readonly = this.getAttribute('readonly') ?? undefined;
+        // disabled: If present, disables the input field so that it cannot be interacted with or submitted.
+        this.hiddenInput.disabled = this.getAttribute('disabled') ?? undefined;
+        // required: If present, specifies that the input field must be filled out before submitting the form.
+        this.hiddenInput.required = this.getAttribute('required') ?? undefined;
+        // autocomplete: Enables or disables autocomplete suggestions for the input field. Values can be "on" or "off".
+        this.hiddenInput.autocomplete = this.getAttribute('autocomplete') ?? undefined;
+        // pattern: Specifies a regular expression that the input's value must match in order for the form to be submitted.
+        this.hiddenInput.pattern = this.getAttribute('pattern') ?? undefined;
+        // title: Provides a tooltip or advisory information about the input field when hovered over.
+        this.hiddenInput.title = this.getAttribute('title') ?? undefined;
+        // id: Specifies a unique ID for the input field, which can be used for targeting with CSS or JavaScript.
+        this.hiddenInput.id = this.getAttribute('id') ?? undefined;
+    }
+
+    /**
+     * @function
+     * @description Used on event trigger to update the textObj visual based on
+     * the hiddenInput DOM element.
      */
     updateTextDisplay() {
         // This wont need any extra logic for scrolling in future.
@@ -37,7 +87,8 @@ export class MRTextFieldEntity extends MRTextInputEntity {
     }
 
     /**
-     * Handles keydown events for scrolling and cursor navigation. Note
+     * @function
+     * @description Handles keydown events for scrolling and cursor navigation. Note
      * that this is different than an input event which for our purposes,
      * handles the non-navigation key-presses.
      * @param {event} event - the keydown event
