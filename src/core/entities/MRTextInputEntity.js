@@ -77,7 +77,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.triggerTextStyleUpdate();
 
         // All items should start out as 'not selected'
-        this.blur();
+        this._blur();
     }
 
     /**
@@ -134,7 +134,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * directly. Otherwise, we assume there's other things happening after focus was called as part of the event
      * and that the cursor position will be handled there instead.
      */
-    focus(isPureFocusEvent=false) {
+    _focus(isPureFocusEvent=false) {
         if (!this.hiddenInput) {
             return;
         }
@@ -155,7 +155,7 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      *
      */
-    blur() {
+    _blur() {
         if (!this.hiddenInput) {
             return;
         }
@@ -179,22 +179,21 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Blur events
         this.addEventListener('blur', () => {
-            this.blur();
+            this._blur();
         });
 
         // Pure Focus Events
         this.addEventListener('focus', () => {
             console.log(this);
-            this.focus(true);
+            this._focus(true);
         });
         this.addEventListener('click', () => {
-            this.focus(true);
+            this._focus(true);
         });
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
             console.log(this);
-            console.log(this.focus());
-            this.focus(false);
+            this._focus(false);
             this.handleMouseClick(event);
         });
 
