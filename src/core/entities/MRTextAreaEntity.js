@@ -139,8 +139,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // Ensure the cursor position is updated to reflect the current caret position
         setTimeout(() => {
-            this.updateCursorPosition(true, event);
-        }, 0.2);
+            this.updateCursorPosition(true);
+        }, 0);
     }
 }
 

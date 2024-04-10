@@ -189,6 +189,7 @@ export class MRTextInputEntity extends MRTextEntity {
         this.addEventListener('click', () => {
             this._focus(true);
         });
+        
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
             this._focus();
@@ -198,7 +199,6 @@ export class MRTextInputEntity extends MRTextEntity {
         // Keyboard events to capture text in the
         // hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
-            console.log('INPUT EVENT:', event);
             // Input captures all main text character inputs
             // BUT it does not capture arrow keys, so we handle
             // those specifically by the 'keydown' event.
@@ -208,13 +208,13 @@ export class MRTextInputEntity extends MRTextEntity {
             // manage as many things directly ourselves.
 
             this.updateTextDisplay();
-            this.updateCursorPosition(false, event);
+            this.updateCursorPosition(false);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
             // Only using keydown for arrow keys, everything else is
             // handled by the input event - check the comment there
             // for more reasoning.
-            console.log("KEYDOWN EVENT:", event);
+
             if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
                 this.handleKeydown(event);
             }
@@ -236,124 +236,74 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Updates the cursor position based on click and selection location.
      */
-    updateCursorPosition(fromCursorMove=false, keyEvent=undefined) {
+    updateCursorPosition(fromCursorMove=false) {
 
-        const updateBasedOnSelectionRects = (cursorIndex, keyEvent) => {
+        // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
+        // does the browser handle this for us?
+
+        const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
             let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
             let allLines = this.hiddenInput.value.split('\n');
-            // TODO - handle as '/\r?\n/'
             let linesBeforeCursor = textBeforeCursor.split('\n');
             let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
 
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
 
-            // determine if we need to handle special cases based on the KeyEvent
-            const isEnter = keyEvent?.key=="Enter" ?? false;
-            const isArrowLeft = keyEvent?.key == "ArrowLeft" ?? false;
-            const isArrowRight = keyEvent?.key == "ArrowRight" ?? false;
+            let rectX = undefined;
+            let rectY = undefined;
+            let rect = undefined;
 
-            if (isEnter) {
-                console.log('in the isNewLine section');
-                // Faking the newline cursor position since troika doesnt create it until you type something
-                // after the '\n' character sequence, which means the cursor lingers on the current line one
-                // keypress too long, which isnt expected.
+            const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
+            if (prevIsNewlineChar) {
+                // When on newline char, hiddenInput puts selection at end of newline char,
+                // not beg of next line. Make sure cursor visual is at beg of next line
+                // without moving selection point.
                 //
-                // Note that for this case, the cursor indicating position is /not/ matching the selectionRects
-                // nor the this.hiddenInputs physical position.
-                cursorXOffsetPosition = 0;
-                cursorYOffsetPosition = 0 - this.cursorHeight * (cursorIsOnLineIndex + 1);
-                console.log('cursorXOffsetPosition: ', cursorXOffsetPosition, 'cursorYOffsetPosition: ', cursorYOffsetPosition);
-            } else {
-
-                // Check if we ran into a newline character after moving the cursor; if so, skip.
-                if (fromCursorMove) {
-                    console.log("keyevent:", keyEvent);
-                    console.log(isArrowLeft, '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1),
-                        isArrowRight, '\n' === textAfterCursor.charAt(0))
+                // Also handle special case where next line doesnt exist yet, fake it with our
+                // current line's information.
+                const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
+                if (isLastLine) {
+                    const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, indexOfBegOfLine, cursorIndex);
+                    rect = selectionRects[0];
+                    rectX = rect.left;
+                    rectY = rect.bottom - this.cursorHeight;
+                } else {
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex + 1);
+                    rect = selectionRects[selectionRects.length - 1];
+                    rectX = rect.left;
+                    rectY = rect.bottom;
                 }
-                // if (fromCursorMove && isArrowLeft && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n') {//textAfterCursor.charAt(0) === '\n') {
-                //     --this.hiddenInput.selectionStart;
-                //     --cursorIndex;
-                //     textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-                //     textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
-                //     allLines = this.hiddenInput.value.split('/\r?\n/');
-                //     linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
-                //     cursorIsOnLineIndex = linesBeforeCursor.length - 1;
-                // } else if (fromCursorMove && isArrowRight && textBeforeCursor.charAt(textBeforeCursor.length - 1) === '\n') {
-                //     ++this.hiddenInput.selectionStart;
-                //     ++cursorIndex;
-                //     textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-                //     textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
-                //     allLines = this.hiddenInput.value.split('/\r?\n/');
-                //     linesBeforeCursor = textBeforeCursor.split('/\r?\n/');
-                //     cursorIsOnLineIndex = linesBeforeCursor.length - 1;
-                // }
-
                 
-                // if (selectionRects.length > 0) {
-                    let rectX = undefined;
-                    let rectY = undefined;
-                    let rect = undefined;
-
-                    const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
-                    const nextIsNewlineChar = '\n' === textAfterCursor.charAt(0);
-                    console.log('check against newline: prev:', prevIsNewlineChar, 'next:', nextIsNewlineChar);
-                    if (prevIsNewlineChar) {
-                        // When on newline char, hiddenInput puts selection at end of newline char,
-                        // not beg of next line. Make sure cursor visual is at beg of next line
-                        // without moving selection point.
-
-                        // special case where next line doesnt exist yet, fake it with our current line's information
-                        // if current cursor position is already on last line index - then fake it
-                        const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
-                        if (isLastLine) {
-                            const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
-                            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, indexOfBegOfLine, cursorIndex);
-                            rect = selectionRects[0];
-                            rectX = rect.left;
-                            rectY = rect.bottom - this.cursorHeight;
-                        } else {
-                            let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex + 1);
-                            rect = selectionRects[selectionRects.length - 1];
-                            rectX = rect.left;
-                            rectY = rect.bottom;
-                        }
-                        
-                    } else {
-                        // default
-                        let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-                        let rectIndex = selectionRects.length - 1;
-                        rect = selectionRects[rectIndex];
-                        rectX = rect.right;
-                        rectY = rect.bottom;
-                    }
-
-                    // Check if cursor matches our font size before using values.
-                    const cursorVisibleHeight = rect.top - rect.bottom;
-                    if (this.cursor.geometry.height != cursorVisibleHeight) {
-                        this.cursor.geometry.height = cursorVisibleHeight;
-                        this.cursor.geometry.needsUpdate = true;
-                        this.cursorHeight = cursorVisibleHeight;
-                    }
-
-                    // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
-                    // a little bit of buffer room.
-                    cursorXOffsetPosition = rectX + this.cursorWidth;
-                    cursorYOffsetPosition = rectY + this.cursorHeight;
-                // }
+            } else {
+                // default
+                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
+                let rectIndex = selectionRects.length - 1;
+                rect = selectionRects[rectIndex];
+                rectX = rect.right;
+                rectY = rect.bottom;
             }
+
+            // Check if cursor matches our font size before using values.
+            const cursorVisibleHeight = rect.top - rect.bottom;
+            if (this.cursor.geometry.height != cursorVisibleHeight) {
+                this.cursor.geometry.height = cursorVisibleHeight;
+                this.cursor.geometry.needsUpdate = true;
+                this.cursorHeight = cursorVisibleHeight;
+            }
+
+            // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
+            // a little bit of buffer room.
+            cursorXOffsetPosition = rectX + this.cursorWidth;
+            cursorYOffsetPosition = rectY + this.cursorHeight;
 
             // Update the cursor's 3D position
             this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;
             this.cursor.position.y = this.cursorStartingPosition.y + cursorYOffsetPosition;
-            // if (isNewLine) {
-            //     console.log('this.cursorStartingPosition:', this.cursorStartingPosition);
-            //     console.log('this.cursor.position:', this.cursor.position);
-            // }
             this.cursor.visible = true;
         };
 
@@ -381,10 +331,10 @@ export class MRTextInputEntity extends MRTextEntity {
         // since textObj sync resolves when there's actual changes to the
         // object. Otherwise, it'll hang and never hit the update function.
         if (fromCursorMove) {
-            updateBasedOnSelectionRects(cursorIndex, keyEvent);
+            updateBasedOnSelectionRects(cursorIndex);
         } else {
             this.textObj.sync(() => {
-                updateBasedOnSelectionRects(cursorIndex, keyEvent);
+                updateBasedOnSelectionRects(cursorIndex);
             });
         }
     }
