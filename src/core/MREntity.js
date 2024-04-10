@@ -176,11 +176,22 @@ export class MREntity extends MRElement {
             }
             this.dataset[dataName] = mrjsUtils.string.jsonToString(component);
         },
+
+        toJSON: () => {
+            let all = {};
+            for (const key in this.dataset) {
+                let compName = key.split('comp')[1];
+                if (compName) {
+                    all[compName.toLowerCase()] = mrjsUtils.string.stringToJson(this.dataset[key]);
+                }
+            }
+            return all;
+        },
     };
 
     position = {
         get: () => {
-            return this.dataset.position;
+            return mrjsUtils.string.stringToVector(this.dataset.position);
         },
 
         set: (arr) => {
@@ -227,7 +238,7 @@ export class MREntity extends MRElement {
 
     rotation = {
         get: () => {
-            return this.dataset.rotation;
+            return mrjsUtils.string.stringToVector(this.dataset.rotation);
         },
 
         set: (arr) => {
