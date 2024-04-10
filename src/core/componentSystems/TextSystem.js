@@ -179,7 +179,7 @@ export class TextSystem extends MRSystem {
         // For now since that creates a weird affect for styling (white edges), leaving as the
         // current implementation. This probably just means there's a default style css thing
         // we need to change before we swap.
-        this.setTEXTObject3DColor(textObj, entity.compStyle.color);
+        this.setTextObject3DColor(textObj, entity.compStyle.color);
 
         // Whitespace and Wrapping
         textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
