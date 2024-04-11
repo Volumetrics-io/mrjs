@@ -57,10 +57,24 @@ export class MRModelEntity extends MRDivEntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        let url = mrjsUtils.html.resolvePath(value);
-        if (this.#src != url) {
-            this.#src = url;
-            this.setAttribute('src', url);
+        if (this.#src != value) {
+            this.#src = value;
+            if(this.#src != this.getAttribute('src')) {
+                this.setAttribute('src', value)
+            }
+        }
+    }
+
+    /**
+     * @function
+     * @description Callback function of MREntity - Updates the media's cover,fill,etc based on the mutation request.
+     * @param {object} mutation - the update/change/mutation to be handled.
+     */
+    mutated(mutation) {
+        super.mutated();
+
+        if (mutation.type == 'attributes' && mutation.attributeName == 'src') {
+            this.src = this.getAttribute('src');
             if (!this.loading) {
                 this.loadModel();
             }
@@ -76,7 +90,6 @@ export class MRModelEntity extends MRDivEntity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-        let modelChange = false;
         if (this.modelObj) {
             this.modelObj.visible = false;
             while (this.modelObj.parent) {
@@ -85,11 +98,11 @@ export class MRModelEntity extends MRDivEntity {
 
             this.modelObj = null;
 
-            modelChange = true;
         }
 
         try {
-            const result = await mrjsUtils.model.loadModel(this.src, extension);
+            let url = mrjsUtils.html.resolvePath(this.src)
+            const result = await mrjsUtils.model.loadModel(url, extension);
 
             // Handle the different formats of the loaded result
             this.modelObj =
@@ -124,9 +137,7 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loading = false;
 
-            if (modelChange) {
-                this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
-            }
+            this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }
@@ -138,7 +149,7 @@ export class MRModelEntity extends MRDivEntity {
      * Includes loading up the model and associated data.
      */
     async connected() {
-        this.#src = this.getAttribute('src') ? mrjsUtils.html.resolvePath(this.getAttribute('src')) : null;
+        this.src = this.getAttribute('src')
         if (!this.src || this.loaded) {
             return;
         }

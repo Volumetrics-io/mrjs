@@ -116,7 +116,9 @@ export class PhysicsSystem extends MRSystem {
         if (entity instanceof MRDivEntity) {
             this.initPhysicsBody(entity);
             this.registry.add(entity);
-            entity.addEventListener('modelchange', this.entityEventUpdate);
+            entity.addEventListener('modelchange', (e) => {
+                this.entityEventUpdate(e)
+            });
         }
     }
 
