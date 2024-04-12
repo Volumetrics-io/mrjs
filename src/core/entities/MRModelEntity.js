@@ -90,6 +90,7 @@ export class MRModelEntity extends MRDivEntity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
+        let modelChanged = false
         if (this.modelObj) {
             this.modelObj.visible = false;
             while (this.modelObj.parent) {
@@ -97,6 +98,7 @@ export class MRModelEntity extends MRDivEntity {
             }
 
             this.modelObj = null;
+            modelChanged = true
 
         }
 
@@ -123,8 +125,6 @@ export class MRModelEntity extends MRDivEntity {
             this.modelObj.receiveShadow = true;
             this.modelObj.renderOrder = 3;
 
-            this.loaded = true;
-
             this.traverseObjects((object) => {
                 if (object.isMesh) {
                     object.renderOrder = 3;
@@ -137,7 +137,12 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loading = false;
 
-            this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
+            this.loaded = true;
+
+            if(this.isConnected && modelChanged) {
+                this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
+            }
+
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }
@@ -151,7 +156,14 @@ export class MRModelEntity extends MRDivEntity {
     async connected() {
         this.src = this.getAttribute('src')
         if (!this.src || this.loaded) {
-            return;
+            return new Promise((resolve) => {
+                const interval = setInterval(() => {
+                    if (this.loaded) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
         }
 
         if (!this.loading) {

@@ -14,7 +14,8 @@
   </head>
   <body >
    <mr-app orbital="true" debug="true">
-    <mr-model src="../examples-assets/models/animation_koifish.glb" 
+    <mr-model id="baseline" src="../examples-assets/models/tiledesert001.glb" 
+                style="scale: 0.1;"
               data-comp-animation="clip: 1; action: play;" 
               data-position="-0.125 0.125 0"></mr-model>
     <mr-test></mr-test>
@@ -43,23 +44,34 @@
                             fischCount += 1
                             this.appendChild(label)
 
+                            model.dataset.position = `${x * this.modScale} ${y * this.modScale} ${z * this.modScale}`
+                            label.dataset.position = `${x * this.modScale} ${y * this.modScale + 0.1} ${z * this.modScale}`
+
+                            model.onLoad = () => {
+                                modelLoaded(model)
+                            }
+
                             switch(fischCount) {
                                 case 1:
+                                model.id = 'setAtrr_after'
                                 label.innerText = 'set after'
                                 this.appendChild(model)
                                 model.setAttribute('src', "../examples-assets/models/animation_koifish.glb")
                                 break
                                 case 2:
+                                model.id = 'setAtrr_before'
                                 label.innerText = 'set before'
                                 model.setAttribute('src', "../examples-assets/models/animation_koifish.glb")
                                 this.appendChild(model)
                                 break
                                 case 3:
+                                model.id = 'setSrc_after'
                                 label.innerText = 'src after'
                                 this.appendChild(model)
                                 model.src = "../examples-assets/models/animation_koifish.glb"
                                 break
                                 case 4:
+                                model.id = 'setSrc_before'
                                 label.innerText = 'src before'
                                 model.src = "../examples-assets/models/animation_koifish.glb"
                                 this.appendChild(model)
@@ -72,18 +84,12 @@
                                 action: 'play'
                             })
 
-                            // model.onLoad = () => {
-                            //     modelLoaded(model)
-                            // }
+                            model.addEventListener('hoverstart', hover)
+                            model.addEventListener('hoverend', hover)
 
-                            // model.addEventListener('hoverstart', hover)
-                            // model.addEventListener('hoverend', hover)
+                            model.addEventListener('touchstart', click)
+                            model.addEventListener('touchend', click)
 
-                            // model.addEventListener('touchstart', click)
-                            // model.addEventListener('touchend', click)
-
-                            model.dataset.position = `${x * this.modScale} ${y * this.modScale} ${z * this.modScale}`
-                            label.dataset.position = `${x * this.modScale} ${y * this.modScale + 0.1} ${z * this.modScale}`
                         }
                     }
                 }
@@ -98,7 +104,9 @@
         }
 
         function click(e) {
-            e.target.touchMesh.visible = !e.target.touchMesh.visible
+            console.log(e.target.touchMesh);
+
+            e.target.touchMesh.visible = true
         }
 
         let tempBox = new THREE.Box3()
