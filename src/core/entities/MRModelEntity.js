@@ -18,6 +18,8 @@ export class MRModelEntity extends MRDivEntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+
+        // TODO: replace with single status enum.
         this.loading = false;
         this.loaded = false;
 

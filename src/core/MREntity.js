@@ -388,7 +388,7 @@ export class MREntity extends MRElement {
             this.onHover(event);
         });
 
-        this.addEventListener('child-updated', (event) => {
+        this.addEventListener('entityupdated', (event) => {
             this.triggerGeometryStyleUpdate();
             this.triggerMaterialStyleUpdate();
         });

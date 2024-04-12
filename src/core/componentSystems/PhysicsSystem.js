@@ -124,7 +124,7 @@ export class PhysicsSystem extends MRSystem {
                 this.entityEventUpdate(e);
             });
 
-            entity.addEventListener('child-updated', (e) => {
+            entity.addEventListener('entityupdated', (e) => {
                 this.entityEventUpdate(e);
             });
         }
