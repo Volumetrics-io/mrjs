@@ -33,9 +33,18 @@ mr-text, mr-stats {
 }
 
 mr-textarea, mr-textfield {
-    background-color: rgba(255, 255, 255, 0.5);
-    font-size: 1.5vw;
+    background-color: rgba(255, 255, 255, 0.75);
+    font-size: 16px;
     border-radius: 2%;
+}
+
+mr-textarea {
+    height: 100%;
+}
+
+mr-textfield {
+    height: 100%;
+    font-size: 100%;
 }
 
 mr-panel {

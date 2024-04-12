@@ -32,6 +32,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
 
         // style
         inputElement.style.position = 'absolute';
+        inputElement.style.left = '-9999px'; // Position off-screen so dont have weird white spot at top
         inputElement.style.height = '1px';
         inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
