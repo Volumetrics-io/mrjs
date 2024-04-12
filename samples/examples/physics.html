@@ -74,6 +74,7 @@
                                 model.id = 'setSrc_before'
                                 label.innerText = 'src before'
                                 model.src = "../examples-assets/models/animation_koifish.glb"
+                                model.style.pointerEvents = 'none'
                                 this.appendChild(model)
                                 break
 
@@ -106,7 +107,7 @@
         function click(e) {
             console.log(e.target.touchMesh);
 
-            e.target.touchMesh.visible = true
+            e.target.touchMesh.visible = !e.target.touchMesh.visible
         }
 
         let tempBox = new THREE.Box3()
