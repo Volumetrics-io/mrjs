@@ -18,6 +18,8 @@ export class MRModelEntity extends MRDivEntity {
 
         this.ignoreStencil = true;
         this.object3D.name = 'model';
+
+        // TODO: replace with single status enum.
         this.loading = false;
         this.loaded = false;
 
@@ -57,10 +59,24 @@ export class MRModelEntity extends MRDivEntity {
      * and none of the above class extensions for Model have it as a defined property.
      */
     set src(value) {
-        let url = mrjsUtils.html.resolvePath(value);
-        if (this.#src != url) {
-            this.#src = url;
-            this.setAttribute('src', url);
+        if (this.#src != value) {
+            this.#src = value;
+            if (this.#src != this.getAttribute('src')) {
+                this.setAttribute('src', value);
+            }
+        }
+    }
+
+    /**
+     * @function
+     * @description Callback function of MREntity - Updates the media's cover,fill,etc based on the mutation request.
+     * @param {object} mutation - the update/change/mutation to be handled.
+     */
+    mutated(mutation) {
+        super.mutated();
+
+        if (mutation.type == 'attributes' && mutation.attributeName == 'src') {
+            this.src = this.getAttribute('src');
             if (!this.loading) {
                 this.loadModel();
             }
@@ -76,7 +92,7 @@ export class MRModelEntity extends MRDivEntity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-        let modelChange = false;
+        let modelChanged = false;
         if (this.modelObj) {
             this.modelObj.visible = false;
             while (this.modelObj.parent) {
@@ -84,12 +100,12 @@ export class MRModelEntity extends MRDivEntity {
             }
 
             this.modelObj = null;
-
-            modelChange = true;
+            modelChanged = true;
         }
 
         try {
-            const result = await mrjsUtils.model.loadModel(this.src, extension);
+            let url = mrjsUtils.html.resolvePath(this.src);
+            const result = await mrjsUtils.model.loadModel(url, extension);
 
             // Handle the different formats of the loaded result
             this.modelObj =
@@ -110,8 +126,6 @@ export class MRModelEntity extends MRDivEntity {
             this.modelObj.receiveShadow = true;
             this.modelObj.renderOrder = 3;
 
-            this.loaded = true;
-
             this.traverseObjects((object) => {
                 if (object.isMesh) {
                     object.renderOrder = 3;
@@ -124,7 +138,9 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loading = false;
 
-            if (modelChange) {
+            this.loaded = true;
+
+            if (this.isConnected && modelChanged) {
                 this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
             }
         } catch (error) {
@@ -138,9 +154,16 @@ export class MRModelEntity extends MRDivEntity {
      * Includes loading up the model and associated data.
      */
     async connected() {
-        this.#src = this.getAttribute('src') ? mrjsUtils.html.resolvePath(this.getAttribute('src')) : null;
+        this.src = this.getAttribute('src');
         if (!this.src || this.loaded) {
-            return;
+            return new Promise((resolve) => {
+                const interval = setInterval(() => {
+                    if (this.loaded) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
         }
 
         if (!this.loading) {

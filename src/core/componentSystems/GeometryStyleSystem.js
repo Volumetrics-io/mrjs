@@ -55,7 +55,7 @@ export class GeometryStyleSystem extends MRSystem {
         if (changed) {
             // TODO - TBH i think this is only needed for scale, but just in case others use changed
             // width/height for anything else, and update is required for children as well
-            entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+            entity.dispatchEvent(new CustomEvent('entityupdated', { bubbles: true }));
         }
     }
 
@@ -81,7 +81,7 @@ export class GeometryStyleSystem extends MRSystem {
             if (changed) {
                 // TODO - TBH i think this is only needed for scale, but just in case others use changed
                 // width/height for anything else, and update is required for children as well
-                entity.dispatchEvent(new CustomEvent('child-updated', { bubbles: true }));
+                entity.dispatchEvent(new CustomEvent('entityupdated', { bubbles: true }));
             }
         }
         // For this system, since we have the 'per entity' and 'per scene event' update calls,

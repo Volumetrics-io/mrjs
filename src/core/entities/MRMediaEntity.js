@@ -137,7 +137,7 @@ export class MRMediaEntity extends MRDivEntity {
     mutated(mutation) {
         super.mutated();
 
-        if (mutation.type != 'attributes' && mutation.attributeName == 'src') {
+        if (mutation.type == 'attributes' && mutation.attributeName == 'src') {
             this.media.setAttribute('src', this.getAttribute('src'));
             this.computeObjectFitDimensions();
             this.loadMediaTexture();
