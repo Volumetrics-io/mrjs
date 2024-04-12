@@ -107,7 +107,7 @@
         function click(e) {
             console.log(e.target.touchMesh);
 
-            e.target.touchMesh.visible = true
+            e.target.touchMesh.visible = !e.target.touchMesh.visible
         }
 
         let tempBox = new THREE.Box3()
