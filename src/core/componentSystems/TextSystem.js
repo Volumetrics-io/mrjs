@@ -126,6 +126,12 @@ export class TextSystem extends MRSystem {
                 entity.textObj.maxHeight = entity.height;
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
+                // background positioning and dimensions
+                // Always want background to be slightly bigger for input field 'niceness', but
+                // we dont want this to be specifically based on the margin since the user might
+                // have other purposes for the margin css attribute.
+                entity.background.scale.x = entity.textObj.scale.x + 0.1;
+                entity.background.scale.y = entity.textObj.scale.y + 0.1;
                 // cursor positioning and dimensions
                 entity.cursorStartingPosition.x = entity.textObj.position.x;
                 entity.cursorStartingPosition.y = entity.textObj.position.y - entity.cursorHeight / 2;

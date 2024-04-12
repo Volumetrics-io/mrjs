@@ -27,13 +27,14 @@ mr-div, mr-button, mr-img, mr-video, mr-a, mr-text, mr-textarea, mr-textfield, m
     opacity: 100%;
 }
 
-mr-text, mr-textarea, mr-textfield, mr-stats {
+mr-text, mr-stats {
     line-height: 100%;
     font-size: 16px;
 }
 
 mr-textarea, mr-textfield {
     background-color: rgba(255, 255, 255, 0.5);
+    font-size: 1.5vw;
     border-radius: 2%;
 }
 
