@@ -224,17 +224,23 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Pure Focus Events
         this.addEventListener('focus', () => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
             this._focus(true);
         });
         this.addEventListener('click', () => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
             this._focus(true);
         });
 
         // Focus and Handle Event
         this.addEventListener('touchstart', (event) => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
             this._focus();
             this.handleMouseClick(event);
         });
@@ -242,7 +248,9 @@ export class MRTextInputEntity extends MRTextEntity {
         // Keyboard events to capture text in the
         // hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
 
             // Input captures all main text character inputs
             // BUT it does not capture arrow keys, so we handle
@@ -256,7 +264,9 @@ export class MRTextInputEntity extends MRTextEntity {
             this.updateCursorPosition(false);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
 
             // Only using keydown for arrow keys, everything else is
             // handled by the input event - check the comment there
@@ -269,7 +279,9 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Separate trigger call just in case.
         this.addEventListener('update-cursor-position', () => {
-            if (this.inputIsDisabled || this.inputIsReadOnly) { return; }
+            if (this.inputIsDisabled || this.inputIsReadOnly) {
+                return;
+            }
 
             this.updateCursorPosition();
         });
