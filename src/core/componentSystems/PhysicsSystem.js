@@ -290,9 +290,9 @@ export class PhysicsSystem extends MRSystem {
             return;
         }
 
-        if (entity.compStyle.visibility == 'hidden' && entity.physics.body.isEnabled()) {
+        if ((entity.compStyle.visibility == 'hidden' || entity.compStyle.pointerEvents == 'none') && entity.physics.body.isEnabled()) {
             entity.physics.body.setEnabled(false);
-        } else if (!entity.physics.body.isEnabled() && entity.compStyle.visibility == 'visible') {
+        } else if (!entity.physics.body.isEnabled() && (entity.compStyle.visibility == 'visible' && entity.compStyle.pointerEvents != 'none')) {
             entity.physics.body.setEnabled(true);
             // TODO: we should find a way to consolidate these 2, UI and Model are created in slightly different ways
             //       and model will get more complex as we add convexMesh support
