@@ -59,8 +59,8 @@ export class MRModelEntity extends MRDivEntity {
     set src(value) {
         if (this.#src != value) {
             this.#src = value;
-            if(this.#src != this.getAttribute('src')) {
-                this.setAttribute('src', value)
+            if (this.#src != this.getAttribute('src')) {
+                this.setAttribute('src', value);
             }
         }
     }
@@ -90,7 +90,7 @@ export class MRModelEntity extends MRDivEntity {
 
         const extension = this.src.slice(((this.src.lastIndexOf('.') - 1) >>> 0) + 2);
 
-        let modelChanged = false
+        let modelChanged = false;
         if (this.modelObj) {
             this.modelObj.visible = false;
             while (this.modelObj.parent) {
@@ -98,12 +98,11 @@ export class MRModelEntity extends MRDivEntity {
             }
 
             this.modelObj = null;
-            modelChanged = true
-
+            modelChanged = true;
         }
 
         try {
-            let url = mrjsUtils.html.resolvePath(this.src)
+            let url = mrjsUtils.html.resolvePath(this.src);
             const result = await mrjsUtils.model.loadModel(url, extension);
 
             // Handle the different formats of the loaded result
@@ -139,10 +138,9 @@ export class MRModelEntity extends MRDivEntity {
 
             this.loaded = true;
 
-            if(this.isConnected && modelChanged) {
+            if (this.isConnected && modelChanged) {
                 this.dispatchEvent(new CustomEvent('modelchange', { bubbles: true }));
             }
-
         } catch (error) {
             console.error(`ERR: in loading model ${this.src}. Error was:`, error);
         }
@@ -154,7 +152,7 @@ export class MRModelEntity extends MRDivEntity {
      * Includes loading up the model and associated data.
      */
     async connected() {
-        this.src = this.getAttribute('src')
+        this.src = this.getAttribute('src');
         if (!this.src || this.loaded) {
             return new Promise((resolve) => {
                 const interval = setInterval(() => {
