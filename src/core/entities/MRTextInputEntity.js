@@ -194,10 +194,20 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor.visible = false;
     }
 
+    /**
+     * @function
+     * @description Getter for a commonly needed attribute: 'disabled' for whether this input is still being updated.
+     * @returns {boolean} true if disabled, false otherwise
+     */
     get inputIsDisabled() {
         return this.hiddenInput.getAttribute('disabled') ?? false;
     }
 
+    /**
+     * @function
+     * @description Getter for a commonly needed attribute: 'readonly' for whether this input's text can still be changed.
+     * @returns {boolean} true if readonly, false otherwise
+     */
     get inputIsReadOnly() {
         return this.hiddenInput.getAttribute('readonly') ?? false;
     }
