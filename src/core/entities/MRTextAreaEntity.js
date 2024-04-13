@@ -12,56 +12,64 @@ import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 export class MRTextAreaEntity extends MRTextInputEntity {
     /**
      * @class
+     * @description Constructor for the MRTextInputEntity entity component.
      */
     constructor() {
         super();
-        // Define additional properties for handling multiline text and scrolling
         this.lineHeight = 1.2; // Default line height, can be adjusted as needed
-        this.scrollOffset = 0; // The vertical scroll position
-        this.maxVisibleLines = 10; // Maximum number of lines visible without scrolling
         this.object3D.name = 'textArea';
     }
 
     /**
-     *
+     * @function
+     * @description Called by connected to make sure the hiddenInput dom element is created as expected.
      */
     createHiddenInputElement() {
+        // setup
         const inputElement = document.createElement('textarea');
+
+        // style
         inputElement.style.position = 'absolute';
-        inputElement.style.left = '-9999px'; // Position off-screen
         inputElement.style.height = '1px';
         inputElement.style.width = '1px';
         inputElement.style.overflow = 'hidden';
-        document.body.appendChild(inputElement); // Ensure it's part of the DOM for event capturing
+
+        // Ensure it's part of the DOM for event capturing
+        this.shadowRoot.appendChild(inputElement);
         this.hiddenInput = inputElement;
     }
 
     /**
-     *
+     * @function
+     * @description Called by connected after createHiddenInputElement to fill
+     * it in with the user's given attribute information.
      */
     fillInHiddenInputElementWithUserData() {
         // name: The name associated with the <textarea> for form submission and backend processing.
-        this.hiddenInput.name = this.getAttribute('name') ?? undefined;
+        this.hiddenInput.setAttribute('name', this.getAttribute('name') ?? undefined);
         // rows and cols: These attributes control the size of the <textarea> in terms of the number of text rows and columns visible.
-        this.hiddenInput.rows = this.getAttribute('rows') ?? undefined;
+        this.hiddenInput.setAttribute('rows', this.getAttribute('rows') ?? undefined);
+        this.hiddenInput.setAttribute('cols', this.getAttribute('cols') ?? undefined);
         // placeholder: Provides a hint to the user about what they should type into the <textarea>.
-        this.hiddenInput.placeholder = this.getAttribute('placeholder') ?? undefined;
+        this.hiddenInput.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
         // readonly: Makes the <textarea> uneditable, allowing the text to be only read, not modified.
-        this.hiddenInput.readonly = this.getAttribute('readonly') ?? undefined;
+        this.hiddenInput.setAttribute('readonly', this.getAttribute('readonly') ?? false);
         // disabled: Disables the text area so it cannot be interacted with or submitted.
-        this.hiddenInput.disabled = this.getAttribute('disabled') ?? undefined;
+        this.hiddenInput.setAttribute('disabled', this.getAttribute('disabled') ?? false);
         // maxlength: Specifies the maximum number of characters that the user can enter.
-        this.hiddenInput.maxlength = this.getAttribute('maxlength') ?? undefined;
+        this.hiddenInput.setAttribute('maxlength', this.getAttribute('maxlength') ?? undefined);
         // wrap: Controls how text is wrapped in the textarea, with values like soft and hard affecting form submission.
-        this.hiddenInput.wrap = this.getAttribute('wrap') ?? undefined;
+        this.hiddenInput.setAttribute('wrap', this.getAttribute('wrap') ?? undefined);
         // overflowwrap : Controls how wrap breaks, at whitespace characters or in the middle of words.
-        this.hiddenInput.overflowWrap = this.getAttribute('overflowWrap') ?? undefined;
+        this.hiddenInput.setAttribute('overflowWrap', this.getAttribute('overflowWrap') ?? undefined);
         // whitespace : Controls if text wraps with the overflowWrap feature or not.
-        this.hiddenInput.whiteSpace = this.getAttribute('whitespace') ?? undefined;
+        this.hiddenInput.setAttribute('whitespace', this.getAttribute('whitespace') ?? undefined);
     }
 
     /**
-     *
+     * @function
+     * @description Used on event trigger to update the textObj visual based on
+     * the hiddenInput DOM element.
      */
     updateTextDisplay() {
         // XXX - add scrolling logic in here for areas where text is greater than
@@ -71,9 +79,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     }
 
     /**
-     * Handles keydown events for scrolling and cursor navigation. Note
-     * that this is different than an input event which for our purposes,
-     * handles the non-navigation key-presses.
+     * @function
+     * @description Called by the keydown event trigger. Handles the arrow key movements.
      * @param {event} event - the keydown event
      */
     handleKeydown(event) {
@@ -82,30 +89,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const isUpArrow = keyCode === 38;
         const isRightArrow = keyCode === 39;
         const isDownArrow = keyCode === 40;
-        const isBackspace = keyCode === 8;
-        const isDelete = keyCode === 46;
-        const isEnter = keyCode === 13;
 
-        if (!(isLeftArrow || isUpArrow || isRightArrow || isDownArrow || isBackspace || isDelete || isEnter)) {
-            // not special event, then handle as normal input
-            this.updateTextDisplay();
-        }
-
-        let fromCursorMove = !(isBackspace || isDelete || isEnter);
-
-        // Handle Special Keys, then Up/Down, then Left/Right
-        // as some may trigger the others being required
-        // based on assumed implementations for them for the
-        // textarea dom element.
-
-        if (isBackspace || isDelete) {
-            this.updateTextDisplay();
-            this.updateCursorPosition(fromCursorMove);
-            return;
-        } else if (isEnter) {
-            this.updateCursorPosition(fromCursorMove, true);
-            return;
-        }
+        // We need to handle the up/down arrows in a special way here; otherwise,
+        // they'll default to the left/right implementation.
+        //
+        // And in all cases, we need to update the selction points and the cursor
+        // position here.
 
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
@@ -156,9 +145,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
         // Ensure the cursor position is updated to reflect the current caret position
-        setTimeout(() => {
-            this.updateCursorPosition(fromCursorMove);
-        }, 0);
+        this.updateCursorPosition(true);
     }
 }
 

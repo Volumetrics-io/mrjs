@@ -81,8 +81,10 @@ export class MRTextEntity extends MRDivEntity {
     }
 
     /**
-     *
-     * @param {object} textObj - the textobj
+     * @function
+     * @description Helper method for debugging the textObj visual information
+     * @param {object} textObj - the textobj threejs renderable visual. Handled by troika.
+     * If no object is passed, defers to the textObj within this entity.
      */
     printCurrentTextDebugInfo(textObj) {
         if (!textObj) {

@@ -1,8 +1,8 @@
 import { getSelectionRects, preloadFont } from 'troika-three-text';
 
-import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRButtonEntity } from 'mrjs/core/entities/MRButtonEntity';
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 import { MRTextInputEntity } from 'mrjs/core/entities/MRTextInputEntity';
 import { MRTextFieldEntity } from 'mrjs/core/entities/MRTextFieldEntity';
@@ -126,6 +126,12 @@ export class TextSystem extends MRSystem {
                 entity.textObj.maxHeight = entity.height;
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
+                // background positioning and dimensions
+                // Always want background to be slightly bigger for input field 'niceness', but
+                // we dont want this to be specifically based on the margin since the user might
+                // have other purposes for the margin css attribute.
+                entity.background.scale.x = entity.textObj.scale.x + mrjsUtils.css.pxToThree(30);
+                entity.background.scale.y = entity.textObj.scale.y + mrjsUtils.css.pxToThree(30);
                 // cursor positioning and dimensions
                 entity.cursorStartingPosition.x = entity.textObj.position.x;
                 entity.cursorStartingPosition.y = entity.textObj.position.y - entity.cursorHeight / 2;
@@ -157,17 +163,6 @@ export class TextSystem extends MRSystem {
 
     /**
      * @function
-     * @description The per-frame system update call for all text items including updates for style and cleaning of content for special characters.
-     * @param {number} deltaTime - given timestep to be used for any feature changes
-     * @param {object} frame - given frame information to be used for any feature changes
-     */
-    update(deltaTime, frame) {
-        // For this system, since we have the 'per entity' and 'per scene event' update calls,
-        // we dont need a main update call here.
-    }
-
-    /**
-     * @function
      * @description Updates the style for the text's information based on compStyle and inputted css elements.
      * @param {MRTextEntity} entity - the text entity whose style is being updated
      */
@@ -186,7 +181,11 @@ export class TextSystem extends MRSystem {
         textObj.lineHeight = this.getLineHeight(entity.compStyle.lineHeight, entity);
 
         // Color and opacity
-        mrjsUtils.color.setTEXTObject3DColor(textObj, entity.compStyle.color, entity.compStyle.opacity ?? 1);
+        // TODO - swap this to use the mrjsUtils.color.setObject3DColor function in future.
+        // For now since that creates a weird affect for styling (white edges), leaving as the
+        // current implementation. This probably just means there's a default style css thing
+        // we need to change before we swap.
+        this.setTextObject3DColor(textObj, entity.compStyle.color);
 
         // Whitespace and Wrapping
         textObj.whiteSpace = entity.compStyle.whiteSpace ?? textObj.whiteSpace;
@@ -324,4 +323,26 @@ export class TextSystem extends MRSystem {
 
         return obj;
     }
+
+    /**
+     * @function
+     * @description Sets the text object3D color.
+     * @param {object} object3D - the threejs object representation of the troika textt to be colored
+     * @param {string} color - the string representation of the color in rgba, hex, or name ('red') form
+     * @param {string} default_color - fallback color used if the system does not understand the color parameter. Defaults to black.
+     */
+    setTextObject3DColor = function (object3D, color, default_color = '#000') {
+        if (color.includes('rgba')) {
+            const rgba = color
+                .substring(5, color.length - 1)
+                .split(',')
+                .map((part) => parseFloat(part.trim()));
+            object3D.material.color.setStyle(`rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`);
+
+            object3D.material.opacity = rgba[3];
+        } else {
+            object3D.material.color.setStyle(color ?? '#000');
+        }
+        object3D.material.needsUpdate = true;
+    };
 }
