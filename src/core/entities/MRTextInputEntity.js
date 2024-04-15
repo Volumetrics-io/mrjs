@@ -382,10 +382,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 // the way troika handles it
                 // """
                 // 
-                // using (*) to denote the 'you are here'.
-                //
-                // Also handle special case where next line doesnt exist yet, fake it with our
-                // current line's information.
+                // In the below, using (*) to denote the 'you are here'.
                 const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
                 let indexOfBegOfLine = lengthToTextObjCursorLine;
                 if (isLastLine) {
@@ -394,25 +391,29 @@ export class MRTextInputEntity extends MRTextEntity {
                     // the way troika handles it\n(*)
                     // """
                     // 
-                    // Fake the new cursor position in the line below.
+                    // Special case where next line doesnt exist yet, fake it sitting below with our
+                    // current line's information.
                     let usingIndex = indexOfBegOfLine;
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
-                    rectX = rect.left;
                     rectY = rect.bottom - this.cursorHeight;
                 } else {
+                    // """
+                    // This is an example of text\n(*)
+                    // the way troika handles it
+                    // """
                     let usingIndex = cursorIndexWithinTextObj;
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
-                    rectX = rect.left;
                     rectY = rect.bottom;
                 }
+                rectX = rect.left;
             } else {
                 // default
                 let usingIndex = cursorIndexWithinTextObj;
