@@ -96,6 +96,8 @@ export class MRTextInputEntity extends MRTextEntity {
         if (this.hiddenInput.getAttribute('placeholder') ?? false) {
             this.textObj.text = this.hiddenInput.getAttribute('placeholder');
         }
+
+        this._updateCursorSize();
     }
 
     /**
@@ -120,6 +122,16 @@ export class MRTextInputEntity extends MRTextEntity {
         //
         // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
         this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
+    }
+
+    _updateCursorSize() {
+        // Check if cursor matches our line height for this font size before using values.
+        const cursorVisibleHeight = this.textObj.fontSize * this.lineHeight;
+        if (this.cursor.geometry.height != cursorVisibleHeight) {
+            this.cursor.geometry.height = cursorVisibleHeight;
+            this.cursor.geometry.needsUpdate = true;
+            this.cursorHeight = cursorVisibleHeight;
+        }
     }
 
     /**
@@ -363,13 +375,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom;
             }
 
-            // Check if cursor matches our line height for this font size before using values.
-            const cursorVisibleHeight = this.textObj.fontSize * this.lineHeight;
-            if (this.cursor.geometry.height != cursorVisibleHeight) {
-                this.cursor.geometry.height = cursorVisibleHeight;
-                this.cursor.geometry.needsUpdate = true;
-                this.cursorHeight = cursorVisibleHeight;
-            }
+            this._updateCursorSize();
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
