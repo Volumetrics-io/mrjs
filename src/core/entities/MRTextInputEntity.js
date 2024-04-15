@@ -309,8 +309,9 @@ export class MRTextInputEntity extends MRTextEntity {
         // does the browser handle this for us?
 
         const updateBasedOnSelectionRects = (cursorIndex) => {
-            // Setup variables for calculations.
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
+
+            // Setup variables for calculations.
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
             let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
             let allLines = this.hiddenInput.value.split('\n');
