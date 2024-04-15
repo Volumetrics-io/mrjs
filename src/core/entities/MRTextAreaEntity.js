@@ -66,6 +66,16 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('whitespace', this.getAttribute('whitespace') ?? undefined);
     }
 
+    get hasTextSubsetForVerticalScrolling() {
+        return true;
+    }
+
+    // todo - better name
+    get hasTextSubsetForHorizontalScrolling() {
+        // todo - handle wrapping etc lol
+        mrjsUtils.error.emptyParentFunction();
+    }
+
     /**
      * @function
      * @description Used on event trigger to update the textObj visual based on
@@ -74,6 +84,30 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     updateTextDisplay() {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
+        
+        // console.log('--- updating text display:');
+
+        // // check if a new line was added - if so, handle offset
+        // // check if a line was removed - if so, handle offset
+        // // const numHiddenInputLines = this.verticalEndLineIndex - this.
+        // const allLines = this.hiddenInput.value.split('\n');
+        // const maxHiddenInputLineIndex = allLines.length - 1;
+        // if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
+        //     --this.verticalTextObjEndLineIndex;
+        //     --this.verticalTextObjStartLineIndex;
+        // } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
+        //     ++this.verticalTextObjEndLineIndex;
+        //     ++this.verticalTextObjStartLineIndex;
+        // }
+
+        // let text = "";
+        // for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex; ++lineIdx) {
+        //     text += allLines[lineIdx] ?? "";
+        // }
+
+        // console.log('new text was:', text);
+
+        // this.textObj.text = text;
 
         this.textObj.text = this.hiddenInput.value;
     }
@@ -145,7 +179,14 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
         // Ensure the cursor position is updated to reflect the current caret position
-        this.updateCursorPosition(true);
+        // This is actually needed otherwise the cursor event's are off by a count (ie
+        // press left 2x, the right 1x and the first press and third press wont function
+        // as the user expects and it'll still be waiting for a 4th press. That is -
+        // it'll go: 1)nothing 2)left 3)left 4)right
+        // instead of expected: 1)left 2) left 3) right
+        setTimeout(() => {
+            this.updateCursorPosition(true);
+        }, 0);
     }
 }
 

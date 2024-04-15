@@ -75,6 +75,16 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('id', this.getAttribute('id') ?? undefined);
     }
 
+    get hasTextSubsetForVerticalScrolling() {
+        return false;
+    }
+
+    // todo - better name
+    get hasTextSubsetForHorizontalScrolling() {
+        // todo - handle wrapping etc lol
+        mrjsUtils.error.emptyParentFunction();
+    }
+
     /**
      * @function
      * @description Used on event trigger to update the textObj visual based on

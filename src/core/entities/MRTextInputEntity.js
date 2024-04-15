@@ -96,6 +96,12 @@ export class MRTextInputEntity extends MRTextEntity {
         if (this.hiddenInput.getAttribute('placeholder') ?? false) {
             this.textObj.text = this.hiddenInput.getAttribute('placeholder');
         }
+
+        if (this.hasTextSubsetForVerticalScrolling) {
+            this.verticalTextObjStartLineIndex = 0;
+            this.verticalTextObjEndLineIndex = 0;
+            // this.cursorIsOnScrollLineIndex = 0;
+        }
     }
 
     /**
@@ -192,6 +198,17 @@ export class MRTextInputEntity extends MRTextEntity {
         this.hiddenInput.blur();
 
         this.cursor.visible = false;
+    }
+
+    // todo - better name
+    get hasTextSubsetForVerticalScrolling() {
+        mrjsUtils.error.emptyParentFunction();
+    }
+
+    // todo - better name
+    get hasTextSubsetForHorizontalScrolling() {
+        // todo - handle wrapping etc lol
+        mrjsUtils.error.emptyParentFunction();
     }
 
     /**
@@ -303,6 +320,10 @@ export class MRTextInputEntity extends MRTextEntity {
      * @param {boolean} fromCursorMove - false by default. Used to determine if we need to run
      * based off a text object update sync or we can directly grab information. This requirement
      * occurs because the sync isnt usable if no text content changed.
+     * 
+     * Note: this function does not change anything about the this.hiddenInput.selectionStart nor
+     * this.hiddenInput.selectionEnd. Those values should be changed prior to this function being
+     * called.
      */
     updateCursorPosition(fromCursorMove = false) {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
@@ -325,6 +346,9 @@ export class MRTextInputEntity extends MRTextEntity {
             let rectY = undefined;
             let rect = undefined;
 
+            // create specific variables for textObj lines subset given vertical scrolling
+            let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
+
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
                 // When on newline char, hiddenInput puts selection at end of newline char,
@@ -333,24 +357,21 @@ export class MRTextInputEntity extends MRTextEntity {
                 //
                 // Also handle special case where next line doesnt exist yet, fake it with our
                 // current line's information.
+                
+                // note: doing it this way to not have to sum up all the lines of text before this one.
                 const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
-                if (isLastLine) {
-                    const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
-                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, indexOfBegOfLine, cursorIndex);
-                    rect = selectionRects[0];
-                    rectX = rect.left;
-                    rectY = rect.bottom - this.cursorHeight;
-                } else {
-                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex + 1);
-                    rect = selectionRects[selectionRects.length - 1];
-                    rectX = rect.left;
-                    rectY = rect.bottom;
-                }
+                const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
+                let usingIndex = isLastLine ? indexOfBegOfLine : cursorIndex;
+                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                // rect information for use in cursor positioning
+                rect = selectionRects[0];
+                rectX = rect.left;
+                rectY = rect.bottom - (isLastLine ? this.cursorHeight : 0);
             } else {
                 // default
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-                let rectIndex = selectionRects.length - 1;
-                rect = selectionRects[rectIndex];
+                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, cursorIndex - 1, cursorIndex);
+                // rect information for use in cursor positioning
+                rect = selectionRects[0];
                 rectX = rect.right;
                 rectY = rect.bottom;
             }
