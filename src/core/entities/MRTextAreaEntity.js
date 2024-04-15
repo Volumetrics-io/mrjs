@@ -85,31 +85,33 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
         
-        // console.log('--- updating text display:');
+        console.log('--- updating text display in mrtextarea:');
 
-        // // check if a new line was added - if so, handle offset
-        // // check if a line was removed - if so, handle offset
-        // // const numHiddenInputLines = this.verticalEndLineIndex - this.
-        // const allLines = this.hiddenInput.value.split('\n');
-        // const maxHiddenInputLineIndex = allLines.length - 1;
-        // if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
-        //     --this.verticalTextObjEndLineIndex;
-        //     --this.verticalTextObjStartLineIndex;
-        // } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
-        //     ++this.verticalTextObjEndLineIndex;
-        //     ++this.verticalTextObjStartLineIndex;
-        // }
+        // check if a new line was added/removed - if so, handle offset
+        const allLines = this.hiddenInput.value.split('\n');
+        const maxHiddenInputLineIndex = allLines.length - 1;
+        if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
+            --this.verticalTextObjEndLineIndex;
+            --this.verticalTextObjStartLineIndex;
+        } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
+            ++this.verticalTextObjEndLineIndex;
+            ++this.verticalTextObjStartLineIndex;
+        }
 
-        // let text = "";
-        // for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex; ++lineIdx) {
-        //     text += allLines[lineIdx] ?? "";
-        // }
+        let text = "";
+        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex; ++lineIdx) {
+            console.log("summing up lines for updated text:", allLines[lineIdx]);
+            text += allLines[lineIdx] ?? "";
+            if (lineIdx != allLines.length - 1) {
+                text += "\n";
+            }
+        }
 
-        // console.log('new text was:', text);
+        console.log('new text was:', text);
 
-        // this.textObj.text = text;
+        this.textObj.text = text;
 
-        this.textObj.text = this.hiddenInput.value;
+        // this.textObj.text = this.hiddenInput.value;
     }
 
     /**

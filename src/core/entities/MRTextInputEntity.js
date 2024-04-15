@@ -99,7 +99,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         if (this.hasTextSubsetForVerticalScrolling) {
             this.verticalTextObjStartLineIndex = 0;
-            this.verticalTextObjEndLineIndex = 0;
+            this.verticalTextObjEndLineIndex = 1;
         }
     }
 
@@ -321,6 +321,14 @@ export class MRTextInputEntity extends MRTextEntity {
         return totalLengthTolineIndex;
     }
 
+    _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
+            totalLengthTolineIndex += allLines[i].length;
+        }
+        return totalLengthTolineIndex;
+    }
+
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -354,8 +362,14 @@ export class MRTextInputEntity extends MRTextEntity {
             let rect = undefined;
 
             // create specific variables for textObj lines subset given vertical scrolling
+            console.log('-- in update cursor pos:');
+            console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, "endlineidx:", this.verticalTextObjEndLineIndex);
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
-            let lengthToVerticalTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex);
+            console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
+            let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
+            let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
+            let cursorIndexWithinTextObj = cursorIndex - lengthToCursorTextObjStartLineIndex;
+            console.log('lengthToCursorTextObjStartLineIndex:', lengthToCursorTextObjStartLineIndex);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
@@ -363,21 +377,45 @@ export class MRTextInputEntity extends MRTextEntity {
                 // not beg of next line. Make sure cursor visual is at beg of next line
                 // without moving selection point.
                 //
+                // """
+                // This is an example of text\n
+                // the way troika handles it
+                // """
+                // 
+                // using (*) to denote the 'you are here'.
+                //
                 // Also handle special case where next line doesnt exist yet, fake it with our
                 // current line's information.
-                
-                // note: doing it this way to not have to sum up all the lines of text before this one.
                 const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
-                let indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
-                let usingIndex = (isLastLine ? indexOfBegOfLine : cursorIndex) - lengthToVerticalTextObjStartLineIndex;
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
-                // rect information for use in cursor positioning
-                rect = selectionRects[0];
-                rectX = rect.left;
-                rectY = rect.bottom - (isLastLine ? this.cursorHeight : 0);
+                let indexOfBegOfLine = lengthToTextObjCursorLine;
+                if (isLastLine) {
+                    // """
+                    // This is an example of text\n
+                    // the way troika handles it\n(*)
+                    // """
+                    // 
+                    // Fake the new cursor position in the line below.
+                    let usingIndex = indexOfBegOfLine;
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                    console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
+                    console.log('selectionRects:', selectionRects);
+                    // rect information for use in cursor positioning
+                    rect = selectionRects[0];
+                    rectX = rect.left;
+                    rectY = rect.bottom - this.cursorHeight;
+                } else {
+                    let usingIndex = cursorIndexWithinTextObj;
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                    console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
+                    console.log('selectionRects:', selectionRects);
+                    // rect information for use in cursor positioning
+                    rect = selectionRects[0];
+                    rectX = rect.left;
+                    rectY = rect.bottom;
+                }
             } else {
                 // default
-                let usingIndex = cursorIndex - lengthToVerticalTextObjStartLineIndex;
+                let usingIndex = cursorIndexWithinTextObj;
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, cursorIndex - 1, cursorIndex);
                 // rect information for use in cursor positioning
                 rect = selectionRects[0];
