@@ -100,7 +100,6 @@ export class MRTextInputEntity extends MRTextEntity {
         if (this.hasTextSubsetForVerticalScrolling) {
             this.verticalTextObjStartLineIndex = 0;
             this.verticalTextObjEndLineIndex = 0;
-            // this.cursorIsOnScrollLineIndex = 0;
         }
     }
 
@@ -314,6 +313,14 @@ export class MRTextInputEntity extends MRTextEntity {
         });
     }
 
+    _totalLengthUpToLineIndex(lineIndex, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = 0; i < lineIndex; ++i) {
+            totalLengthTolineIndex += allLines[i].length;
+        }
+        return totalLengthTolineIndex;
+    }
+
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -348,6 +355,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
             // create specific variables for textObj lines subset given vertical scrolling
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
+            let lengthToVerticalTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
@@ -360,8 +368,8 @@ export class MRTextInputEntity extends MRTextEntity {
                 
                 // note: doing it this way to not have to sum up all the lines of text before this one.
                 const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
-                const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
-                let usingIndex = isLastLine ? indexOfBegOfLine : cursorIndex;
+                let indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
+                let usingIndex = (isLastLine ? indexOfBegOfLine : cursorIndex) - lengthToVerticalTextObjStartLineIndex;
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                 // rect information for use in cursor positioning
                 rect = selectionRects[0];
@@ -369,6 +377,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom - (isLastLine ? this.cursorHeight : 0);
             } else {
                 // default
+                let usingIndex = cursorIndex - lengthToVerticalTextObjStartLineIndex;
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, cursorIndex - 1, cursorIndex);
                 // rect information for use in cursor positioning
                 rect = selectionRects[0];

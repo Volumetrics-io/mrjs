@@ -140,10 +140,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Grab current local cursor index on the line. When looping skipping the
         // last index as that is the line that includes the cursor in it and we only
         // want all lines up to that line, not including it.
-        let totalLengthToCursorIndexLine = 0;
-        for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
-            totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
-        }
+        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
