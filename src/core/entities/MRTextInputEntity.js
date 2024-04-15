@@ -349,7 +349,7 @@ export class MRTextInputEntity extends MRTextEntity {
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
                 // When on newline char, hiddenInput puts selection at end of newline char,
-                // not begginning of next line. Make sure cursor visual is at begginning
+                // not beginning of next line. Make sure cursor visual is at beginning
                 // of the next line without moving selection point.
                 //
                 // Also handle special case where next line doesnt exist yet, fake it with our
