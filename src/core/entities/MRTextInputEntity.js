@@ -147,7 +147,17 @@ export class MRTextInputEntity extends MRTextEntity {
         const localPosition = inverseMatrixWorld * event.worldPosition;
 
         // update cursor position based on click
+        // TODO - hitting an issue where carret's hit locations are undefined (ie not hit when it should)
+        // so the return is defaulting to 0 index. Tried also the below of maybe with textObj but then it
+        // never actually runs the code either (bc no text sync update is needed).
+        // this.textObj.sync(() => {
+        //     const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
+        //     console.log('caret position: ', caret);
+        //     this.hiddenInput.selectionStart = caret.charIndex;
+        //     this.updateCursorPosition();
+        // });
         const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
+        console.log('caret position: ', caret);
         this.hiddenInput.selectionStart = caret.charIndex;
         this.updateCursorPosition();
     }
@@ -255,8 +265,7 @@ export class MRTextInputEntity extends MRTextEntity {
             this.handleMouseClick(event);
         });
 
-        // Keyboard events to capture text in the
-        // hidden input.
+        // Keyboard events to capture text in the hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
             if (this.inputIsDisabled || this.inputIsReadOnly) {
                 return;
@@ -327,8 +336,8 @@ export class MRTextInputEntity extends MRTextEntity {
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
                 // When on newline char, hiddenInput puts selection at end of newline char,
-                // not beg of next line. Make sure cursor visual is at beg of next line
-                // without moving selection point.
+                // not begginning of next line. Make sure cursor visual is at begginning
+                // of the next line without moving selection point.
                 //
                 // Also handle special case where next line doesnt exist yet, fake it with our
                 // current line's information.
@@ -354,8 +363,8 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom;
             }
 
-            // Check if cursor matches our font size before using values.
-            const cursorVisibleHeight = rect.top - rect.bottom;
+            // Check if cursor matches our line height for this font size before using values.
+            const cursorVisibleHeight = this.textObj.fontSize * this.lineHeight;
             if (this.cursor.geometry.height != cursorVisibleHeight) {
                 this.cursor.geometry.height = cursorVisibleHeight;
                 this.cursor.geometry.needsUpdate = true;
