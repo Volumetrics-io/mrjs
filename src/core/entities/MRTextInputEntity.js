@@ -124,9 +124,10 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
     }
 
-    _updateCursorSize() {
+    _updateCursorSize(newHeight) {
+        const cursorVisibleHeight = newHeight ?? this.textObj.fontSize * this.lineHeight;
         // Check if cursor matches our line height for this font size before using values.
-        const cursorVisibleHeight = this.textObj.fontSize * this.lineHeight;
+        console.log("cursorVisibleHeight: ", cursorVisibleHeight, "this.textObj.fontSize", this.textObj.fontSize, "this.lineHeight", this.lineHeight);
         if (this.cursor.geometry.height != cursorVisibleHeight) {
             this.cursor.geometry.height = cursorVisibleHeight;
             this.cursor.geometry.needsUpdate = true;
@@ -375,7 +376,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom;
             }
 
-            this._updateCursorSize();
+            this._updateCursorSize();//rect.top - rect.bottom);
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
