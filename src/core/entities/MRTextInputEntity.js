@@ -136,8 +136,10 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      * @function
      * @description Internal function used to setup the cursor object and associated variables
-     * needed during runtime. Checks whether cursor height should be updated based on fontSize
-     * compared to line height and other aspects.
+     * needed during runtime. User can pass in a new height directly or the function checks
+     * whether cursor height should be updated based on fontSize compared to line height
+     * and other aspects.
+     * @param {number} newHeight - an optional parameter to be used as the cursor's new height.
      */
     _updateCursorSize(newHeight) {
         const cursorVisibleHeight = newHeight ?? this.textObj.fontSize * this.lineHeight;
