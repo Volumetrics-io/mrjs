@@ -384,7 +384,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom;
             }
 
-            this._updateCursorSize();//rect.top - rect.bottom);
+            this._updateCursorSize();
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
