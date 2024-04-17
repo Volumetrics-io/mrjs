@@ -84,6 +84,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     updateTextDisplay() {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
+
+        // TODO - switch this s.t. it moves the visual field to make sure that 
+        // selectionIndex is always within the textObj visual space
+        // and adjusts verticalTextObj Indices accordingly
+        // -- right now it's missing this part of the step
         
         console.log('--- updating text display in mrtextarea:');
 
@@ -145,8 +150,8 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // // Grab current local cursor index on the line. When looping skipping the
         // // last index as that is the line that includes the cursor in it and we only
         // // want all lines up to that line, not including it.
-        // let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
-        // const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
+        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
+        const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
         // create specific variables for textObj lines subset given vertical scrolling
         console.log('-- in handleKeydown:');
@@ -161,26 +166,26 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
         // and RIGHT arrows like in textfield.
         if (isUpArrow) {
-            // XXX - handle scrolloffset in future.
-
             // Only want to move up when not already on the hiddenInput top line
             // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                if (cursorIsOnTextObjLineIndex == 0) {
-                    // Determine where cursor should hit index on line above this one: same index or end of line
-                    const prevLineText = allLines[cursorIsOnLineIndex - 1];
-                    const maxIndexOptionOfPrevLine = prevLineText.length - 1;
-                    const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
-                    this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
-                    this.
+                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex) {
+                    // scroll for the up arrow
                     this.updateTextDisplay();
                 }
+                // Determine where cursor should hit index on line above this one: same index or end of line
+                const prevLineText = allLines[cursorIsOnLineIndex - 1];
+                const maxIndexOptionOfPrevLine = prevLineText.length - 1;
+                const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
+                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
             }
         } else if (isDownArrow) {
-            // XXX - handle scrolloffset in future.
-
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
+                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
+                    // scroll for the down arrow
+                    this.updateTextDisplay();
+                }
                 const currentLineText = allLines[cursorIsOnLineIndex];
                 // Determine where cursor should hit index on line below this one: same index or end of line
                 const nextLineText = allLines[cursorIsOnLineIndex + 1];
