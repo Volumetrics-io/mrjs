@@ -72,7 +72,17 @@ export class MRTextInputEntity extends MRTextEntity {
         await super.connected();
 
         // Cursor Setup
+        this.cursorWidth = 0.002;
+        this.cursorHeight = 0.015;
         this._createCursorObject();
+        // initial style
+        this.cursor.position.z += 0.001;
+        this.cursor.visible = false;
+        // We store this for the geometry so we can do our geometry vs web origin calculations
+        // more easily as well. We update this based on the geometry's own changes.
+        //
+        // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
+        this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
         this.object3D.add(this.cursor);
 
         // DOM
@@ -103,35 +113,33 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      * @function
      * @description Internal function used to setup the cursor object and associated variables
-     * needed during runtime.
+     * needed during runtime. Sets the cursor geometry based on dev updated cursorWidth and 
+     * cursorHeight MRTextInputEntity variables.
      */
     _createCursorObject() {
-        this.cursorWidth = 0.002;
-        this.cursorHeight = 0.015;
-        const geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
-        const material = new THREE.MeshBasicMaterial({
-            color: 0x000000,
-            side: THREE.DoubleSide,
-        });
-        this.cursor = new THREE.Mesh(geometry, material);
-        this.cursor.position.z += 0.001;
-        this.cursor.visible = false;
-
-        // We store this for the geometry so we can do our geometry vs web origin calculations
-        // more easily as well. We update this based on the geometry's own changes.
-        //
-        // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
-        this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
+        if (!this.cursor) {
+            // setup basic cursor info and material.
+            this.cursor = new THREE.Mesh();
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                side: THREE.DoubleSide,
+            });
+            this.cursor.material = material;
+        }
+        if (this.cursor.geometry !== undefined) {
+            // handle geometry clearing
+            this.cursor.geometry.dispose();
+        }
+        // setup basic cursor geometry
+        this.cursor.geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
+        this.cursor.geometry.needsUpdate = true;
     }
 
     _updateCursorSize(newHeight) {
         const cursorVisibleHeight = newHeight ?? this.textObj.fontSize * this.lineHeight;
-        // Check if cursor matches our line height for this font size before using values.
-        console.log("cursorVisibleHeight: ", cursorVisibleHeight, "this.textObj.fontSize", this.textObj.fontSize, "this.lineHeight", this.lineHeight);
-        if (this.cursor.geometry.height != cursorVisibleHeight) {
-            this.cursor.geometry.height = cursorVisibleHeight;
-            this.cursor.geometry.needsUpdate = true;
+        if (this.cursor.geometry.parameters.height != cursorVisibleHeight) {
             this.cursorHeight = cursorVisibleHeight;
+            this._createCursorObject();
         }
     }
 
