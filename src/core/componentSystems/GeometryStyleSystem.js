@@ -107,13 +107,13 @@ export class GeometryStyleSystem extends MRSystem {
     setScale(entity) {
         // grab the entity's local scale
         let css_scale = entity.compStyle.scale != 'none' ? parseFloat(entity.compStyle.scale) : 1;
-        let new_scale = new THREE.Vector3(css_scale,css_scale,css_scale);
+        let new_scale = new THREE.Vector3(css_scale, css_scale, css_scale);
 
         // We need to compound the scale value from parent to child specifically
         // if theyre within an mr-panel, because although we have the object3D
         // connection, we flatten the hierarchy for objects within a panel s.t.
         // all of their parents are the panel itself for faster loading.
-        if (! (entity instanceof MRPanelEntity) && entity.closest('mr-panel') != null) {
+        if (!(entity instanceof MRPanelEntity) && entity.closest('mr-panel') != null) {
             // We're allowed to call the scale directly from the object3D
             // based on the assumption that the parent's entity was already
             // hit in this system's traversal given order of creation.
