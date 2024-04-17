@@ -132,6 +132,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // And in all cases, we need to update the selction points and the cursor
         // position here.
 
+        // Note: movement should be based on TextObj primarily, while using hiddenInput
+        // for full boundary checking.
+
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
         const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
@@ -139,24 +142,39 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const allLines = this.hiddenInput.value.split('\n');
         const totalNumberOfLines = allLines.length;
         const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
-        // Grab current local cursor index on the line. When looping skipping the
-        // last index as that is the line that includes the cursor in it and we only
-        // want all lines up to that line, not including it.
-        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
-        const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
+        // // Grab current local cursor index on the line. When looping skipping the
+        // // last index as that is the line that includes the cursor in it and we only
+        // // want all lines up to that line, not including it.
+        // let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
+        // const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
+
+        // create specific variables for textObj lines subset given vertical scrolling
+        console.log('-- in handleKeydown:');
+        console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, "endlineidx:", this.verticalTextObjEndLineIndex);
+        let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
+        console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
+        let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
+        let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
+        let cursorIndexWithinTextObj = cursorIndex - lengthToCursorTextObjStartLineIndex;
+        console.log('lengthToCursorTextObjStartLineIndex:', lengthToCursorTextObjStartLineIndex);
 
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
         // and RIGHT arrows like in textfield.
         if (isUpArrow) {
             // XXX - handle scrolloffset in future.
 
-            // Only want to move up when not already on the top line
+            // Only want to move up when not already on the hiddenInput top line
+            // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                // Determine where cursor should hit index on line above this one: same index or end of line
-                const prevLineText = allLines[cursorIsOnLineIndex - 1];
-                const maxIndexOptionOfPrevLine = prevLineText.length - 1;
-                const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
-                this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
+                if (cursorIsOnTextObjLineIndex == 0) {
+                    // Determine where cursor should hit index on line above this one: same index or end of line
+                    const prevLineText = allLines[cursorIsOnLineIndex - 1];
+                    const maxIndexOptionOfPrevLine = prevLineText.length - 1;
+                    const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
+                    this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
+                    this.
+                    this.updateTextDisplay();
+                }
             }
         } else if (isDownArrow) {
             // XXX - handle scrolloffset in future.
@@ -176,6 +194,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // they start out that way and for consistency until we actually use them
         // for another purpose, we want them to be the same.
         this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
+
+        // if doing scrolling with textobj != hiddeninpput
+        this.updateTextDisplay();
 
         // Ensure the cursor position is updated to reflect the current caret position
         // This is actually needed otherwise the cursor event's are off by a count (ie
