@@ -5,9 +5,9 @@
 let css = {};
 
 css.extractNumFromPixelStr = function (str) {
-  const result = str.match(/(\d+)px/);
-  return result ? parseInt(result[1]) : null;
-}
+    const result = str.match(/(\d+)px/);
+    return result ? parseInt(result[1]) : null;
+};
 
 /**
  * @function

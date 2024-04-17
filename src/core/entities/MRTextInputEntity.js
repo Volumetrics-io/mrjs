@@ -73,7 +73,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         // Cursor Setup
         this.cursorWidth = 0.002;
-        this.cursorHeight = 0.015;
+        this.cursorHeight = mrjsUtils.css.pxToThree(mrjsUtils.css.extractNumFromPixelStr(this.compStyle.fontSize));
         this._createCursorObject();
         // initial style
         this.cursor.position.z += 0.001;
@@ -106,19 +106,17 @@ export class MRTextInputEntity extends MRTextEntity {
         if (this.hiddenInput.getAttribute('placeholder') ?? false) {
             this.textObj.text = this.hiddenInput.getAttribute('placeholder');
         }
-
-        this._updateCursorSize();
     }
 
     /**
      * @function
      * @description Internal function used to setup the cursor object and associated variables
-     * needed during runtime. Sets the cursor geometry based on dev updated cursorWidth and 
+     * needed during runtime. Sets the cursor geometry based on dev updated cursorWidth and
      * cursorHeight MRTextInputEntity variables.
      */
     _createCursorObject() {
         if (!this.cursor) {
-            // setup basic cursor info and material.
+            // Setup basic cursor info and material for if it was reset.
             this.cursor = new THREE.Mesh();
             const material = new THREE.MeshBasicMaterial({
                 color: 0x000000,
@@ -127,14 +125,20 @@ export class MRTextInputEntity extends MRTextEntity {
             this.cursor.material = material;
         }
         if (this.cursor.geometry !== undefined) {
-            // handle geometry clearing
+            // Handle geometry reclearing
             this.cursor.geometry.dispose();
         }
-        // setup basic cursor geometry
+        // Setup basic cursor geometry
         this.cursor.geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
         this.cursor.geometry.needsUpdate = true;
     }
 
+    /**
+     * @function
+     * @description Internal function used to setup the cursor object and associated variables
+     * needed during runtime. Checks whether cursor height should be updated based on fontSize
+     * compared to line height and other aspects.
+     */
     _updateCursorSize(newHeight) {
         const cursorVisibleHeight = newHeight ?? this.textObj.fontSize * this.lineHeight;
         if (this.cursor.geometry.parameters.height != cursorVisibleHeight) {
