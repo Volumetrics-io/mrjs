@@ -421,7 +421,7 @@ export class MRTextInputEntity extends MRTextEntity {
             console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
             let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
             let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
-            let cursorIndexWithinTextObj = cursorIndex - lengthToCursorTextObjStartLineIndex;
+            let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex+1); // add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
             console.log('lengthToCursorTextObjStartLineIndex:', lengthToCursorTextObjStartLineIndex);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
@@ -480,8 +480,8 @@ export class MRTextInputEntity extends MRTextEntity {
                 // default
                 // early escape for empty text based on textobj top line
                 let usingIndex = cursorIndexWithinTextObj;
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, cursorIndex - 1, cursorIndex);
-                console.log('selectionRects is :', selectionRects);
+                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                console.log('selectionRects is :', selectionRects, " and using index is: ", usingIndex);
                 if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
                     return;
                 }
