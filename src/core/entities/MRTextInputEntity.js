@@ -414,13 +414,10 @@ export class MRTextInputEntity extends MRTextEntity {
 
             // create specific variables for textObj lines subset given vertical scrolling
             console.log('-- in update cursor pos:');
-            console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, 'endlineidx:', this.verticalTextObjEndLineIndex);
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
-            console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
             let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
             let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
             let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1); // add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
-            console.log('lengthToCursorTextObjStartLineIndex:', lengthToCursorTextObjStartLineIndex);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {

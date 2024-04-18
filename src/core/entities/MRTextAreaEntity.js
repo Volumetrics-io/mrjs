@@ -81,12 +81,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
-    updateTextDisplay(fromCursorMove = false) {
+    updateTextDisplay(fromCursorMove=false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
 
         // check if a new line was added/removed - if so, handle offset
-        // note: movement of the vertical indices should be handled by
+        // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
         if (!fromCursorMove) {
             console.log('handling cursor move based on key input!!!! for textobj update');
@@ -107,9 +107,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         }
 
-        let text = '';
+        let text = "";
         for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx < allLines.length; ++lineIdx) {
-            text += allLines[lineIdx] ?? '';
+            text += allLines[lineIdx] ?? "";
             if (lineIdx != allLines.length - 1) {
                 text += '\n';
             }
@@ -144,35 +144,30 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
         const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-        const linesInclUpToCursorPosition = textBeforeCursor.split('\n');
         const allLines = this.hiddenInput.value.split('\n');
-        const totalNumberOfLines = allLines.length;
-        const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
-        // // Grab current local cursor index on the line. When looping skipping the
-        // // last index as that is the line that includes the cursor in it and we only
-        // // want all lines up to that line, not including it.
-        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(linesInclUpToCursorPosition.length - 1, allLines);
+        const cursorIsOnLineIndex = textBeforeCursor.split('\n').length - 1;
+        // Grab current local cursor index on the line. When looping skipping the
+        // last index as that is the line that includes the cursor in it and we only
+        // want all lines up to that line, not including it.
+        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(cursorIsOnLineIndex, allLines);
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
         // create specific variables for textObj lines subset given vertical scrolling
         console.log('-- in handleKeydown:');
-        console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, 'endlineidx:', this.verticalTextObjEndLineIndex);
-        let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
-        console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
-        let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
-        let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
-        let cursorIndexWithinTextObj = cursorIndex - lengthToCursorTextObjStartLineIndex;
-        console.log('lengthToCursorTextObjStartLineIndex:', lengthToCursorTextObjStartLineIndex);
+        let prevCursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
+        console.log('cursor line index to change:', cursorIsOnLineIndex);
+        console.log('textobj line index to change: ' , prevCursorIsOnTextObjLineIndex);
+        console.log('vertical line idx to change - START:', this.verticalTextObjStartLineIndex, 'END:', this.verticalTextObjEndLineIndex);
 
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
         // and RIGHT arrows like in textfield.
         if (isUpArrow) {
-            console.log('IS UP ARROW: cursor line index: ', cursorIsOnLineIndex, ' vertical start line:', this.verticalTextObjStartLineIndex);
+            console.log('IS UP ARROW');
             // Only want to move up when not already on the hiddenInput top line
             // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                if (cursorIsOnLineIndex <= this.verticalTextObjStartLineIndex) {
-                    // scroll for the up arrow
+                if (prevCursorIsOnTextObjLineIndex == 0) {
+                    // theyre the same so cursor will move the visual display, scroll for the up arrow
                     --this.verticalTextObjStartLineIndex;
                     --this.verticalTextObjEndLineIndex;
                     this.updateTextDisplay(true);
@@ -182,12 +177,17 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const maxIndexOptionOfPrevLine = prevLineText.length - 1;
                 const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfPrevLine ? maxIndexOptionOfPrevLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
+                
+                console.log('----UPARROW---');
+                console.log('HIDDEN INPUT SELECTIONSTART INDEX:', cursorIsOnLineIndex-1);
+                console.log('TEXTOBJ VISIBLE STARTLINEINDEX:', this.verticalTextObjStartLineIndex);
             }
         } else if (isDownArrow) {
+            console.log('IS DOWN ARROW');
             // Only want to move up when not already on the top line
-            if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
-                if (cursorIsOnLineIndex >= this.verticalTextObjEndLineIndex) {
-                    // scroll for the down arrow
+            if (cursorIsOnLineIndex != allLines.length - 1) {
+                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
+                    // theyre the same so cursor will move the visual display, scroll for the down arrow
                     ++this.verticalTextObjStartLineIndex;
                     ++this.verticalTextObjEndLineIndex;
                     this.updateTextDisplay(true);
@@ -198,6 +198,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 const maxIndexOptionOfNextLine = nextLineText.length - 1;
                 const cursorIndexOnNewLine = cursorIndexOnCurrentLine > maxIndexOptionOfNextLine ? maxIndexOptionOfNextLine : cursorIndexOnCurrentLine;
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine + currentLineText.length + cursorIndexOnNewLine;
+                console.log('----DOWNARROW---');
+                console.log('HIDDEN INPUT SELECTIONSTART INDEX:', cursorIsOnLineIndex+1);
+                console.log('TEXTOBJ VISIBLE STARTLINEINDEX:', this.verticalTextObjStartLineIndex);
             }
         }
 
