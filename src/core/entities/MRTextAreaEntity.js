@@ -89,13 +89,13 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
         if (!fromCursorMove) {
-            console.log('handling cursor move!!!! for textobj update');
-            // handle update for edges
+            console.log('handling cursor move based on key input!!!! for textobj update');
+            // handle update for edges where key pressing adds to it
             const maxHiddenInputLineIndex = allLines.length - 1;
-            if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
-                --this.verticalTextObjEndLineIndex;
+            if (maxHiddenInputLineIndex <= this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
+                --this.verticalTextObjEndLineIndex; // end line index is adjusted in the text system by the visual area and the start index, so we dont offset it here
                 --this.verticalTextObjStartLineIndex;
-            } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
+            } else if (maxHiddenInputLineIndex >= this.verticalTextObjEndLineIndex) {
                 ++this.verticalTextObjEndLineIndex;
                 ++this.verticalTextObjStartLineIndex;
             }
