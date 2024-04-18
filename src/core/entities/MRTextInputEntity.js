@@ -385,7 +385,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // does the browser handle this for us?
 
         const handleIfTopLineAndCheckEarlyReturn = (rects) => {
-            if (rects[0].left == NaN || rects[0].right == NaN || rects[0].bottom == undefined) {
+            if (rects.length == 0 || rects[0].left == NaN || rects[0].right == NaN || rects[0].bottom == undefined) {
                 this._updateCursorSize();
                 this.cursor.position.x = this.cursorStartingPosition.x;
                 this.cursor.position.y = this.cursorStartingPosition.y;
