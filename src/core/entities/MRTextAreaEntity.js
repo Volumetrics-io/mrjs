@@ -96,6 +96,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
         if (!fromCursorMove) {
+            console.log('handling cursor move!!!! for textobj update');
             // handle update for edges
             const maxHiddenInputLineIndex = allLines.length - 1;
             if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
@@ -170,10 +171,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
         // and RIGHT arrows like in textfield.
         if (isUpArrow) {
+            console.log('IS UP ARROW: cursor line index: ', cursorIsOnLineIndex, ' vertical start line:', this.verticalTextObjStartLineIndex);
             // Only want to move up when not already on the hiddenInput top line
             // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex-1) {
+                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex) {
                     // scroll for the up arrow
                     --this.verticalTextObjStartLineIndex;
                     --this.verticalTextObjEndLineIndex;
@@ -188,7 +190,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         } else if (isDownArrow) {
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
-                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex+1) {
+                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
                     // scroll for the down arrow
                     ++this.verticalTextObjStartLineIndex;
                     ++this.verticalTextObjEndLineIndex;
