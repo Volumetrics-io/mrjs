@@ -92,17 +92,23 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             console.log('handling cursor move based on key input!!!! for textobj update');
             // handle update for edges where key pressing adds to it
             const maxHiddenInputLineIndex = allLines.length - 1;
-            if (maxHiddenInputLineIndex <= this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
-                --this.verticalTextObjEndLineIndex; // end line index is adjusted in the text system by the visual area and the start index, so we dont offset it here
+            if (maxHiddenInputLineIndex < 0) {
+                // nothing
+                this.verticalTextObjStartLineIndex = 0;
+                this.verticalTextObjEndLineIndex = 0;
+            } else if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex) {
+                // deletion, scroll up
+                --this.verticalTextObjEndLineIndex;
                 --this.verticalTextObjStartLineIndex;
-            } else if (maxHiddenInputLineIndex >= this.verticalTextObjEndLineIndex) {
+            } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex) {
+                // adding, scroll down
                 ++this.verticalTextObjEndLineIndex;
                 ++this.verticalTextObjStartLineIndex;
             }
         }
 
         let text = "";
-        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx <= allLines.length; ++lineIdx) {
+        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx < allLines.length; ++lineIdx) {
             text += allLines[lineIdx] ?? "";
             if (lineIdx != allLines.length - 1) {
                 text += "\n";
