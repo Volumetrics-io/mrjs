@@ -4,6 +4,11 @@
  */
 let css = {};
 
+css.extractNumFromPixelStr = function (str) {
+    const result = str.match(/(\d+)px/);
+    return result ? parseInt(result[1]) : null;
+};
+
 /**
  * @function
  * @description Converts the dom string to a 3D numerical value

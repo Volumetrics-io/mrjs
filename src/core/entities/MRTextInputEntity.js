@@ -72,7 +72,17 @@ export class MRTextInputEntity extends MRTextEntity {
         await super.connected();
 
         // Cursor Setup
+        this.cursorWidth = 0.002;
+        this.cursorHeight = mrjsUtils.css.pxToThree(mrjsUtils.css.extractNumFromPixelStr(this.compStyle.fontSize));
         this._createCursorObject();
+        // initial style
+        this.cursor.position.z += 0.001;
+        this.cursor.visible = false;
+        // We store this for the geometry so we can do our geometry vs web origin calculations
+        // more easily as well. We update this based on the geometry's own changes.
+        //
+        // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
+        this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
         this.object3D.add(this.cursor);
 
         // DOM
@@ -101,25 +111,42 @@ export class MRTextInputEntity extends MRTextEntity {
     /**
      * @function
      * @description Internal function used to setup the cursor object and associated variables
-     * needed during runtime.
+     * needed during runtime. Sets the cursor geometry based on dev updated cursorWidth and
+     * cursorHeight MRTextInputEntity variables.
      */
     _createCursorObject() {
-        this.cursorWidth = 0.002;
-        this.cursorHeight = 0.015;
-        const geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
-        const material = new THREE.MeshBasicMaterial({
-            color: 0x000000,
-            side: THREE.DoubleSide,
-        });
-        this.cursor = new THREE.Mesh(geometry, material);
-        this.cursor.position.z += 0.001;
-        this.cursor.visible = false;
+        if (!this.cursor) {
+            // Setup basic cursor info and material for if it was reset.
+            this.cursor = new THREE.Mesh();
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                side: THREE.DoubleSide,
+            });
+            this.cursor.material = material;
+        }
+        if (this.cursor.geometry !== undefined) {
+            // Handle geometry reclearing
+            this.cursor.geometry.dispose();
+        }
+        // Setup basic cursor geometry
+        this.cursor.geometry = new THREE.PlaneGeometry(this.cursorWidth, this.cursorHeight);
+        this.cursor.geometry.needsUpdate = true;
+    }
 
-        // We store this for the geometry so we can do our geometry vs web origin calculations
-        // more easily as well. We update this based on the geometry's own changes.
-        //
-        // Set as 0,0,0 to start, and updated when the geometry updates in case it changes in 3d space.
-        this.cursorStartingPosition = new THREE.Vector3(0, 0, 0);
+    /**
+     * @function
+     * @description Internal function used to setup the cursor object and associated variables
+     * needed during runtime. User can pass in a new height directly or the function checks
+     * whether cursor height should be updated based on fontSize compared to line height
+     * and other aspects.
+     * @param {number} newHeight - an optional parameter to be used as the cursor's new height.
+     */
+    _updateCursorSize(newHeight) {
+        const cursorVisibleHeight = newHeight ?? this.textObj.fontSize * this.lineHeight;
+        if (this.cursor.geometry.parameters.height != cursorVisibleHeight) {
+            this.cursorHeight = cursorVisibleHeight;
+            this._createCursorObject();
+        }
     }
 
     /**
@@ -147,7 +174,17 @@ export class MRTextInputEntity extends MRTextEntity {
         const localPosition = inverseMatrixWorld * event.worldPosition;
 
         // update cursor position based on click
+        // TODO - hitting an issue where carret's hit locations are undefined (ie not hit when it should)
+        // so the return is defaulting to 0 index. Tried also the below of maybe with textObj but then it
+        // never actually runs the code either (bc no text sync update is needed).
+        // this.textObj.sync(() => {
+        //     const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
+        //     console.log('caret position: ', caret);
+        //     this.hiddenInput.selectionStart = caret.charIndex;
+        //     this.updateCursorPosition();
+        // });
         const caret = getCaretAtPoint(this.textObj.textRenderInfo, localPosition.x, localPosition.y);
+        console.log('caret position: ', caret);
         this.hiddenInput.selectionStart = caret.charIndex;
         this.updateCursorPosition();
     }
@@ -255,8 +292,7 @@ export class MRTextInputEntity extends MRTextEntity {
             this.handleMouseClick(event);
         });
 
-        // Keyboard events to capture text in the
-        // hidden input.
+        // Keyboard events to capture text in the hidden input.
         this.hiddenInput.addEventListener('input', (event) => {
             if (this.inputIsDisabled || this.inputIsReadOnly) {
                 return;
@@ -327,8 +363,8 @@ export class MRTextInputEntity extends MRTextEntity {
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
                 // When on newline char, hiddenInput puts selection at end of newline char,
-                // not beg of next line. Make sure cursor visual is at beg of next line
-                // without moving selection point.
+                // not beginning of next line. Make sure cursor visual is at beginning
+                // of the next line without moving selection point.
                 //
                 // Also handle special case where next line doesnt exist yet, fake it with our
                 // current line's information.
@@ -354,13 +390,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 rectY = rect.bottom;
             }
 
-            // Check if cursor matches our font size before using values.
-            const cursorVisibleHeight = rect.top - rect.bottom;
-            if (this.cursor.geometry.height != cursorVisibleHeight) {
-                this.cursor.geometry.height = cursorVisibleHeight;
-                this.cursor.geometry.needsUpdate = true;
-                this.cursorHeight = cursorVisibleHeight;
-            }
+            this._updateCursorSize();
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
