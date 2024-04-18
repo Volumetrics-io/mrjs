@@ -90,7 +90,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
-    updateTextDisplay(fromCursorMove=false) {
+    updateTextDisplay(fromCursorMove = false) {
         // This wont need any extra logic for scrolling in future.
         this.textObj.text = this.hiddenInput.value;
     }

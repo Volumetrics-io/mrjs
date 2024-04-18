@@ -142,7 +142,7 @@ export class TextSystem extends MRSystem {
 
                     const height = entity.cursorHeight;
                     const num_lines = Math.floor(entity.height / (entity.lineHeight * entity.textObj.fontSize));
-                    
+
                     const num_visual_lines = entity.verticalTextObjEndLineIndex - entity.verticalTextObjStartLineIndex + 1;
                     console.log('HANDLE TEXT CONTENT UPDATE');
                     console.log('num_lines:', num_lines, 'num_visual_lines:', num_visual_lines);
@@ -151,9 +151,9 @@ export class TextSystem extends MRSystem {
                         console.log('UPDATING ENDLINE IDX');
                         const diff = Math.abs(num_visual_lines - num_lines) - 1;
                         if (num_lines < num_visual_lines) {
-                            entity.verticalTextObjEndLineIndex = (num_lines == 0) ? 0 : entity.verticalTextObjEndLineIndex - diff;
+                            entity.verticalTextObjEndLineIndex = num_lines == 0 ? 0 : entity.verticalTextObjEndLineIndex - diff;
                         } else if (num_lines > num_visual_lines) {
-                            entity.verticalTextObjEndLineIndex = entity.verticalTextObjStartLineIndex + diff; 
+                            entity.verticalTextObjEndLineIndex = entity.verticalTextObjStartLineIndex + diff;
                         }
                         console.log('IS NOW:', entity.verticalTextObjEndLineIndex);
                     }

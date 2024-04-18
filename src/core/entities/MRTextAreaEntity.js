@@ -81,12 +81,12 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
-    updateTextDisplay(fromCursorMove=false) {
+    updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
 
         // check if a new line was added/removed - if so, handle offset
-        // note: movement of the vertical indices should be handled by 
+        // note: movement of the vertical indices should be handled by
         const allLines = this.hiddenInput.value.split('\n');
         if (!fromCursorMove) {
             console.log('handling cursor move based on key input!!!! for textobj update');
@@ -107,11 +107,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         }
 
-        let text = "";
+        let text = '';
         for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx < allLines.length; ++lineIdx) {
-            text += allLines[lineIdx] ?? "";
+            text += allLines[lineIdx] ?? '';
             if (lineIdx != allLines.length - 1) {
-                text += "\n";
+                text += '\n';
             }
         }
 
@@ -156,7 +156,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
         // create specific variables for textObj lines subset given vertical scrolling
         console.log('-- in handleKeydown:');
-        console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, "endlineidx:", this.verticalTextObjEndLineIndex);
+        console.log('textobj: startlineidx:', this.verticalTextObjStartLineIndex, 'endlineidx:', this.verticalTextObjEndLineIndex);
         let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
         console.log('cursor is on textobj line idx:', cursorIsOnTextObjLineIndex);
         let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
