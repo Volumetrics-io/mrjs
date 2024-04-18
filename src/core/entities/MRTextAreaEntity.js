@@ -81,7 +81,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
-    updateTextDisplay() {
+    updateTextDisplay(fromCursorMove=false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
 
@@ -93,14 +93,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         console.log('--- updating text display in mrtextarea:');
 
         // check if a new line was added/removed - if so, handle offset
+        // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
-        const maxHiddenInputLineIndex = allLines.length - 1;
-        if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
-            --this.verticalTextObjEndLineIndex;
-            --this.verticalTextObjStartLineIndex;
-        } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
-            ++this.verticalTextObjEndLineIndex;
-            ++this.verticalTextObjStartLineIndex;
+        if (!fromCursorMove) {
+            // handle update for edges
+            const maxHiddenInputLineIndex = allLines.length - 1;
+            if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex && this.verticalTextObjStartLineIndex != 0) {
+                --this.verticalTextObjEndLineIndex;
+                --this.verticalTextObjStartLineIndex;
+            } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex && this.verticalTextObjEndLineIndex != maxHiddenInputLineIndex) {
+                ++this.verticalTextObjEndLineIndex;
+                ++this.verticalTextObjStartLineIndex;
+            }
         }
 
         let text = "";
@@ -169,9 +173,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             // Only want to move up when not already on the hiddenInput top line
             // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex) {
+                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex-1) {
                     // scroll for the up arrow
-                    this.updateTextDisplay();
+                    --this.verticalTextObjStartLineIndex;
+                    --this.verticalTextObjEndLineIndex;
+                    this.updateTextDisplay(true);
                 }
                 // Determine where cursor should hit index on line above this one: same index or end of line
                 const prevLineText = allLines[cursorIsOnLineIndex - 1];
@@ -182,9 +188,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         } else if (isDownArrow) {
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
-                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
+                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex+1) {
                     // scroll for the down arrow
-                    this.updateTextDisplay();
+                    ++this.verticalTextObjStartLineIndex;
+                    ++this.verticalTextObjEndLineIndex;
+                    this.updateTextDisplay(true);
                 }
                 const currentLineText = allLines[cursorIsOnLineIndex];
                 // Determine where cursor should hit index on line below this one: same index or end of line
@@ -199,9 +207,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // they start out that way and for consistency until we actually use them
         // for another purpose, we want them to be the same.
         this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
-
-        // if doing scrolling with textobj != hiddeninpput
-        this.updateTextDisplay();
 
         // Ensure the cursor position is updated to reflect the current caret position
         // This is actually needed otherwise the cursor event's are off by a count (ie

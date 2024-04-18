@@ -60,7 +60,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * @description Function to be overwritten by children. Used on event trigger to
      * update the textObj visual based on the hiddenInput DOM element.
      */
-    updateTextDisplay() {
+    updateTextDisplay(fromCursorMove=false) {
         mrjsUtils.error.emptyParentFunction();
     }
 
@@ -99,7 +99,7 @@ export class MRTextInputEntity extends MRTextEntity {
 
         if (this.hasTextSubsetForVerticalScrolling) {
             this.verticalTextObjStartLineIndex = 0;
-            this.verticalTextObjEndLineIndex = 1;
+            this.verticalTextObjEndLineIndex = 0;
         }
     }
 
@@ -286,7 +286,7 @@ export class MRTextInputEntity extends MRTextEntity {
             // 'hiddenInput's update system so we dont have to
             // manage as many things directly ourselves.
 
-            this.updateTextDisplay();
+            this.updateTextDisplay(false);
             this.updateCursorPosition(false);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
@@ -316,16 +316,20 @@ export class MRTextInputEntity extends MRTextEntity {
     _totalLengthUpToLineIndex(lineIndex, allLines) {
         let totalLengthTolineIndex = 0;
         for (let i = 0; i < lineIndex; ++i) {
-            totalLengthTolineIndex += allLines[i].length;
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
         }
+        // TODO - we're going to need a check/fix to handle the case where the last index 
+        // may or may not have a '\n' in it
         return totalLengthTolineIndex;
     }
 
     _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
         let totalLengthTolineIndex = 0;
         for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
-            totalLengthTolineIndex += allLines[i].length;
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
         }
+        // TODO - we're going to need a check/fix to handle the case where the last index 
+        // may or may not have a '\n' in it
         return totalLengthTolineIndex;
     }
 
@@ -340,9 +344,30 @@ export class MRTextInputEntity extends MRTextEntity {
      * this.hiddenInput.selectionEnd. Those values should be changed prior to this function being
      * called.
      */
-    updateCursorPosition(fromCursorMove = false) {
+    updateCursorPosition(fromCursorMove=false) {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
         // does the browser handle this for us?
+
+        const updateCursorHeight = () => {
+             // Check if cursor matches our font size before using values.
+            const cursorVisibleHeight = this.textObj.fontSize * this.lineHeight;
+            if (this.cursor.geometry.height != cursorVisibleHeight) {
+                this.cursor.geometry.height = cursorVisibleHeight;
+                this.cursor.geometry.needsUpdate = true;
+                this.cursorHeight = cursorVisibleHeight;
+            }
+        }
+
+        const handleIfTopLineAndCheckEarlyReturn = (rects) => {
+            if (rects[0].left == NaN || rects[0].right == NaN || rects[0].bottom == undefined) {
+                updateCursorHeight();
+                this.cursor.position.x = this.cursorStartingPosition.x;
+                this.cursor.position.y = this.cursorStartingPosition.y;
+                this.cursor.visible = true;
+                return true;
+            }
+            return false;
+        }
 
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // XXX - handle cursor position change for visible lines for scrolloffset here in future
@@ -353,6 +378,8 @@ export class MRTextInputEntity extends MRTextEntity {
             let allLines = this.hiddenInput.value.split('\n');
             let linesBeforeCursor = textBeforeCursor.split('\n');
             let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
+
+            console.log('all lines:', allLines);
 
             let cursorXOffsetPosition = 0;
             let cursorYOffsetPosition = 0;
@@ -386,6 +413,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
                 let indexOfBegOfLine = lengthToTextObjCursorLine;
                 if (isLastLine) {
+                    console.log('prev is newline char && IS LAST LINE');
                     // """
                     // This is an example of text\n
                     // the way troika handles it\n(*)
@@ -397,10 +425,14 @@ export class MRTextInputEntity extends MRTextEntity {
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
+                    if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                        return;
+                    }
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
                     rectY = rect.bottom - this.cursorHeight;
                 } else {
+                    console.log('prev is newline char && IS NOT LAST LINE');
                     // """
                     // This is an example of text\n(*)
                     // the way troika handles it
@@ -409,15 +441,24 @@ export class MRTextInputEntity extends MRTextEntity {
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
+                    if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                        return;
+                    }
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
                     rectY = rect.bottom;
                 }
                 rectX = rect.left;
             } else {
+                console.log('DEFAULT HANDLE OF CURSOR RECT POSITIONING');
                 // default
+                // early escape for empty text based on textobj top line
                 let usingIndex = cursorIndexWithinTextObj;
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, cursorIndex - 1, cursorIndex);
+                console.log('selectionRects is :', selectionRects);
+                if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                    return;
+                }
                 // rect information for use in cursor positioning
                 rect = selectionRects[0];
                 rectX = rect.right;
@@ -425,12 +466,7 @@ export class MRTextInputEntity extends MRTextEntity {
             }
 
             // Check if cursor matches our font size before using values.
-            const cursorVisibleHeight = rect.top - rect.bottom;
-            if (this.cursor.geometry.height != cursorVisibleHeight) {
-                this.cursor.geometry.height = cursorVisibleHeight;
-                this.cursor.geometry.needsUpdate = true;
-                this.cursorHeight = cursorVisibleHeight;
-            }
+            updateCursorHeight();
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
@@ -453,8 +489,9 @@ export class MRTextInputEntity extends MRTextEntity {
         // be thought through again.
         const cursorIndex = this.hiddenInput.selectionStart;
 
-        // early escape for empty text
+        // early escape for empty text based on hiddenInput top line
         if (cursorIndex == 0) {
+            updateCursorHeight();
             this.cursor.position.x = this.cursorStartingPosition.x;
             this.cursor.position.y = this.cursorStartingPosition.y;
             this.cursor.visible = true;
