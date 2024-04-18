@@ -121,21 +121,24 @@ export class TextSystem extends MRSystem {
             } else if (entity instanceof MRTextInputEntity) {
                 // MRTextAreaEntity, MRTextFieldEntity, etc
 
-                // textObj positioning and dimensions
+                // -- textObj positioning and dimensions -- //
                 entity.textObj.maxWidth = entity.width;
                 entity.textObj.maxHeight = entity.height;
                 entity.textObj.position.setX(-entity.width / 2);
                 entity.textObj.position.setY(entity.height / 2);
-                // background positioning and dimensions
+
+                // -- background positioning and dimensions -- //
                 // Always want background to be slightly bigger for input field 'niceness', but
                 // we dont want this to be specifically based on the margin since the user might
                 // have other purposes for the margin css attribute.
                 entity.background.scale.x = entity.textObj.scale.x + mrjsUtils.css.pxToThree(30);
                 entity.background.scale.y = entity.textObj.scale.y + mrjsUtils.css.pxToThree(30);
-                // cursor positioning and dimensions
+
+                // -- cursor positioning and dimensions -- //
                 entity.cursorStartingPosition.x = entity.textObj.position.x;
-                entity.cursorStartingPosition.y = entity.textObj.position.y - entity.cursorHeight / 2;
-                // handle activity
+                entity.cursorStartingPosition.y = entity.textObj.position.y - entity.textObj.fontSize / 2;
+
+                // -- handle activity -- //
                 if (entity == document.activeElement) {
                     entity.updateCursorPosition();
                 } else {
