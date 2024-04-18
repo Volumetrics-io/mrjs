@@ -396,8 +396,6 @@ export class MRTextInputEntity extends MRTextEntity {
         }
 
         const updateBasedOnSelectionRects = (cursorIndex) => {
-            // XXX - handle cursor position change for visible lines for scrolloffset here in future
-
             // Setup variables for calculations.
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
             let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
@@ -448,10 +446,11 @@ export class MRTextInputEntity extends MRTextEntity {
                     // Special case where next line doesnt exist yet, fake it sitting below with our
                     // current line's information.
                     let usingIndex = indexOfBegOfLine;
-                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex - 1, usingIndex);
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
                     if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                        console.log('here1');
                         return;
                     }
                     // rect information for use in cursor positioning
@@ -468,13 +467,14 @@ export class MRTextInputEntity extends MRTextEntity {
                     console.log('isLastLine:', isLastLine, "indexOfBegOfLine:", indexOfBegOfLine, "usingIndex:", usingIndex);
                     console.log('selectionRects:', selectionRects);
                     if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                        console.log('here2');
                         return;
                     }
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
                     rectY = rect.bottom;
                 }
-                rectX = rect.left;
+                rectX = 0;//rect.left;
             } else {
                 console.log('DEFAULT HANDLE OF CURSOR RECT POSITIONING');
                 // default
@@ -483,6 +483,7 @@ export class MRTextInputEntity extends MRTextEntity {
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                 console.log('selectionRects is :', selectionRects, " and using index is: ", usingIndex);
                 if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                    console.log('here3');
                     return;
                 }
                 // rect information for use in cursor positioning

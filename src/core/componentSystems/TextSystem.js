@@ -134,6 +134,31 @@ export class TextSystem extends MRSystem {
                 entity.background.scale.x = entity.textObj.scale.x + mrjsUtils.css.pxToThree(30);
                 entity.background.scale.y = entity.textObj.scale.y + mrjsUtils.css.pxToThree(30);
 
+                if (entity instanceof MRTextAreaEntity) {
+                    // Handle vertical limiting dimensions - check if the start-to-end
+                    // indices range need to be updated for larger or limited view.
+                    //
+                    // Only offsetting the end range for any changes.
+
+                    const height = entity.cursorHeight;
+                    const num_lines = Math.floor(entity.height / entity.textObj.fontSize);
+                    
+                    const num_visual_lines = entity.verticalTextObjEndLineIndex - entity.verticalTextObjStartLineIndex + 1;
+                    console.log('HANDLE TEXT CONTENT UPDATE');
+                    console.log('num_lines:', num_lines, 'num_visual_lines:', num_visual_lines);
+                    console.log('startline idx:', entity.verticalTextObjStartLineIndex, 'endline idx:', entity.verticalTextObjEndLineIndex);
+                    if (num_lines != num_visual_lines) {
+                        console.log('UPDATING ENDLINE IDX');
+                        const diff = Math.abs(num_visual_lines - num_lines);
+                        if (num_lines < num_visual_lines) {
+                            entity.verticalTextObjEndLineIndex = (num_lines == 0) ? 0 : entity.verticalTextObjEndLineIndex - diff;
+                        } else if (num_lines > num_visual_lines) {
+                            entity.verticalTextObjEndLineIndex = entity.verticalTextObjStartLineIndex + diff - 1; 
+                        }
+                        console.log('IS NOW:', entity.verticalTextObjEndLineIndex);
+                    }
+                }
+
                 // -- cursor positioning and dimensions -- //
                 entity.cursorStartingPosition.x = entity.textObj.position.x;
                 entity.cursorStartingPosition.y = entity.textObj.position.y - entity.textObj.fontSize / 2;

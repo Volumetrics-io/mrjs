@@ -85,13 +85,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
 
-        // TODO - switch this s.t. it moves the visual field to make sure that 
-        // selectionIndex is always within the textObj visual space
-        // and adjusts verticalTextObj Indices accordingly
-        // -- right now it's missing this part of the step
-        
-        console.log('--- updating text display in mrtextarea:');
-
         // check if a new line was added/removed - if so, handle offset
         // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
@@ -109,8 +102,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         }
 
         let text = "";
-        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex; ++lineIdx) {
-            console.log("summing up lines for updated text:", allLines[lineIdx]);
+        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx <= allLines.length; ++lineIdx) {
             text += allLines[lineIdx] ?? "";
             if (lineIdx != allLines.length - 1) {
                 text += "\n";
@@ -120,8 +112,6 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         console.log('new text was:', text);
 
         this.textObj.text = text;
-
-        // this.textObj.text = this.hiddenInput.value;
     }
 
     /**
@@ -175,7 +165,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             // Only want to move up when not already on the hiddenInput top line
             // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
-                if (cursorIsOnLineIndex == this.verticalTextObjStartLineIndex) {
+                if (cursorIsOnLineIndex <= this.verticalTextObjStartLineIndex) {
                     // scroll for the up arrow
                     --this.verticalTextObjStartLineIndex;
                     --this.verticalTextObjEndLineIndex;
@@ -190,7 +180,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         } else if (isDownArrow) {
             // Only want to move up when not already on the top line
             if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
-                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
+                if (cursorIsOnLineIndex >= this.verticalTextObjEndLineIndex) {
                     // scroll for the down arrow
                     ++this.verticalTextObjStartLineIndex;
                     ++this.verticalTextObjEndLineIndex;
