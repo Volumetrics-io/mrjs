@@ -88,6 +88,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // check if a new line was added/removed - if so, handle offset
         // note: movement of the vertical indices should be handled by 
         const allLines = this.hiddenInput.value.split('\n');
+        const cursorIndex = this.hiddenInput.selectionStart;
+        let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+        let linesBeforeCursor = textBeforeCursor.split('\n');
+        let cursorIsOnLineIndex = linesBeforeCursor.length;
+        console.log('UPDATING TEXT DISPLAY, FROMCURSORMOVE:', fromCursorMove ? "TRUE" : "FALSE", "IF FALSE - handles scrolling");
         if (!fromCursorMove) {
             console.log('handling cursor move based on key input!!!! for textobj update');
             // handle update for edges where key pressing adds to it
@@ -96,12 +101,14 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 // nothing
                 this.verticalTextObjStartLineIndex = 0;
                 this.verticalTextObjEndLineIndex = 0;
-            } else if (maxHiddenInputLineIndex < this.verticalTextObjStartLineIndex) {
+            } else if (cursorIsOnLineIndex < this.verticalTextObjStartLineIndex) {
                 // deletion, scroll up
+                console.log('SOMETHING WAS DELETED');
                 --this.verticalTextObjEndLineIndex;
                 --this.verticalTextObjStartLineIndex;
-            } else if (maxHiddenInputLineIndex > this.verticalTextObjEndLineIndex) {
+            } else if (cursorIsOnLineIndex > this.verticalTextObjEndLineIndex) {
                 // adding, scroll down
+                console.log('SOMETHING WAS ADDED');
                 ++this.verticalTextObjEndLineIndex;
                 ++this.verticalTextObjStartLineIndex;
             }
@@ -153,7 +160,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
 
         // create specific variables for textObj lines subset given vertical scrolling
-        console.log('-- in handleKeydown:');
+        console.log('---------------------- in HANDLEKEYDOWN:');
         let prevCursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
         console.log('cursor line index to change:', cursorIsOnLineIndex);
         console.log('textobj line index to change: ' , prevCursorIsOnTextObjLineIndex);

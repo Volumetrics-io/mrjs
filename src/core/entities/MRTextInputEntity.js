@@ -398,7 +398,6 @@ export class MRTextInputEntity extends MRTextEntity {
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
             let allLines = this.hiddenInput.value.split('\n');
             let linesBeforeCursor = textBeforeCursor.split('\n');
             let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
@@ -413,7 +412,7 @@ export class MRTextInputEntity extends MRTextEntity {
             let rect = undefined;
 
             // create specific variables for textObj lines subset given vertical scrolling
-            console.log('-- in update cursor pos:');
+            console.log('line movement and inputs/keypresses/textObj update already happened:');
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
             let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
             let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
@@ -431,9 +430,11 @@ export class MRTextInputEntity extends MRTextEntity {
                 // """
                 //
                 // In the below, using (*) to denote the 'you are here'.
-                const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
+                console.log('cursorIsOnLineIndex:', cursorIsOnLineIndex, 'allLines.length:', allLines.length);
+                console.log('indexOfBegOfLine:', lengthToTextObjCursorLine);
+                const isFakeNewLine = cursorIsOnLineIndex == allLines.length - 1;
                 let indexOfBegOfLine = lengthToTextObjCursorLine;
-                if (isLastLine) {
+                if (isFakeNewLine) {
                     console.log('prev is newline char && IS LAST LINE');
                     // """
                     // This is an example of text\n
@@ -444,12 +445,12 @@ export class MRTextInputEntity extends MRTextEntity {
                     // current line's information.
                     let usingIndex = indexOfBegOfLine;
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex - 1, usingIndex);
-                    console.log('isLastLine:', isLastLine, 'indexOfBegOfLine:', indexOfBegOfLine, 'usingIndex:', usingIndex);
+                    console.log('isLastLine:', isFakeNewLine, 'indexOfBegOfLine:', indexOfBegOfLine, 'usingIndex:', usingIndex);
                     console.log('selectionRects:', selectionRects);
-                    if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
-                        console.log('here1');
-                        return;
-                    }
+                    // if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                    //     console.log('here1???????');
+                    //     return;
+                    // }
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
                     rectY = rect.bottom - this.cursorHeight;
@@ -461,12 +462,12 @@ export class MRTextInputEntity extends MRTextEntity {
                     // """
                     let usingIndex = cursorIndexWithinTextObj;
                     let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
-                    console.log('isLastLine:', isLastLine, 'indexOfBegOfLine:', indexOfBegOfLine, 'usingIndex:', usingIndex);
+                    console.log('isLastLine:', isFakeNewLine, 'indexOfBegOfLine:', indexOfBegOfLine, 'usingIndex:', usingIndex);
                     console.log('selectionRects:', selectionRects);
-                    if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
-                        console.log('here2');
-                        return;
-                    }
+                    // if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                    //     console.log('here2?????????');
+                    //     return;
+                    // }
                     // rect information for use in cursor positioning
                     rect = selectionRects[0];
                     rectY = rect.bottom;
@@ -479,10 +480,10 @@ export class MRTextInputEntity extends MRTextEntity {
                 let usingIndex = cursorIndexWithinTextObj;
                 let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
                 console.log('selectionRects is :', selectionRects, ' and using index is: ', usingIndex);
-                if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
-                    console.log('here3');
-                    return;
-                }
+                // if (handleIfTopLineAndCheckEarlyReturn(selectionRects)) {
+                //     console.log('here3?????????');
+                //     return;
+                // }
                 // rect information for use in cursor positioning
                 rect = selectionRects[0];
                 rectX = rect.right;
@@ -501,6 +502,8 @@ export class MRTextInputEntity extends MRTextEntity {
             this.cursor.position.y = this.cursorStartingPosition.y + cursorYOffsetPosition;
             this.cursor.visible = true;
         };
+
+        console.log('---------- in cursor update');
 
         // Check if we have any DOM element to work with.
         if (!this.hiddenInput) {
