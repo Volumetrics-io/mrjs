@@ -374,6 +374,14 @@ export class MRTextInputEntity extends MRTextEntity {
 
     // TODO - see note where this is called - need to rethink small part of indexing
     // logic so this manual aspect is not necessary.
+    /**
+     * @function
+     * @description Helper function for `handleKeyDown` and `updateCursorPosition` when
+     * handling textObj.
+     * @param {number} lineIndex - the ending line index non-inclusive of the summation.
+     * @param {Array} allLines - the array of line strings
+     * @returns {number} length of summed string.
+     */
     _totalLengthUpToLineIndex(lineIndex, allLines) {
         let totalLengthTolineIndex = 0;
         for (let i = 0; i < lineIndex; ++i) {
@@ -382,10 +390,19 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - will we need a check/fix to handle the case where the last index
         // may or may not have a '\n' in it?
         return totalLengthTolineIndex;
-    };
+    }
 
     // TODO - see note where this is called - need to rethink small part of indexing
     // logic so this manual aspect is not necessary.
+    /**
+     * @function
+     * @description Helper function for `handleKeyDown` and `updateCursorPosition` when
+     * handling textObj.
+     * @param {number} lineIndexStart - the starting line index inclusive of the summation.
+     * @param {number} lineIndexEnd - the starting line index non-inclusive of the summation.
+     * @param {Array} allLines - the array of line strings
+     * @returns {number} length of summed string.
+     */
     _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
         let totalLengthTolineIndex = 0;
         for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
@@ -394,7 +411,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - will we need a check/fix to handle the case where the last index
         // may or may not have a '\n' in it?
         return totalLengthTolineIndex;
-    };
+    }
 
     /**
      * @function
