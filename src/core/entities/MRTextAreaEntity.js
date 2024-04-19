@@ -84,6 +84,11 @@ export class MRTextAreaEntity extends MRTextInputEntity {
     updateTextDisplay(fromCursorMove=false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
+        //
+        // XXX - handle text wrapping properly - textarea already handles wrapping
+        // nicely, but textObj's start/end line index need to accomodate for that
+        // wrapping better. To look into: troika's setup in terms of width/height for
+        // why wrapping works nicely but the height limit for it doesnt.
 
         // check if a new line was added/removed - if so, handle offset
         // note: movement of the vertical indices should be handled by 

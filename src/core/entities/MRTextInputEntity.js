@@ -107,6 +107,7 @@ export class MRTextInputEntity extends MRTextEntity {
             this.textObj.text = this.hiddenInput.getAttribute('placeholder');
         }
 
+        // TODO - this needs better boolean naming
         if (this.hasTextSubsetForVerticalScrolling) {
             this.verticalTextObjStartLineIndex = 0;
             this.verticalTextObjEndLineIndex = 0;
@@ -236,14 +237,29 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor.visible = false;
     }
 
-    // todo - better name
+    // TODO - better name?
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle vertical scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
     get hasTextSubsetForVerticalScrolling() {
+        // Leaving this as a function instead of a pure boolean if in case it's dependant
+        // on certain parameters changing that need to be recalculated depending on the input
+        // setup, etc.
         mrjsUtils.error.emptyParentFunction();
     }
 
-    // todo - better name
+    // TODO - better name?
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle horizontal scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
     get hasTextSubsetForHorizontalScrolling() {
-        // todo - handle wrapping etc lol
+        // Leaving this as a function instead of a pure boolean if in case it's dependant
+        // on certain parameters changing that need to be recalculated depending on the input
+        // setup, etc.
         mrjsUtils.error.emptyParentFunction();
     }
 
@@ -349,30 +365,6 @@ export class MRTextInputEntity extends MRTextEntity {
         });
     }
 
-    // TODO - need to think of a better way to do this than summing up previous lines
-    // or at least lean on js framework to do this better than this setup
-    _totalLengthUpToLineIndex(lineIndex, allLines) {
-        let totalLengthTolineIndex = 0;
-        for (let i = 0; i < lineIndex; ++i) {
-            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
-        }
-        // TODO - will we need a check/fix to handle the case where the last index
-        // may or may not have a '\n' in it?
-        return totalLengthTolineIndex;
-    }
-
-    // TODO - need to think of a better way to do this than summing up previous lines
-    // or at least lean on js framework to do this better than this setup
-    _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
-        let totalLengthTolineIndex = 0;
-        for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
-            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
-        }
-        // TODO - will we need a check/fix to handle the case where the last index
-        // may or may not have a '\n' in it?
-        return totalLengthTolineIndex;
-    }
-
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -388,6 +380,30 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
         // does the browser handle this for us?
 
+        // TODO - see note where this is called - need to rethink small part of indexing 
+        // logic so this manual aspect is not necessary.
+        const totalLengthUpToLineIndex = (lineIndex, allLines) => {
+            let totalLengthTolineIndex = 0;
+            for (let i = 0; i < lineIndex; ++i) {
+                totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+            }
+            // TODO - will we need a check/fix to handle the case where the last index
+            // may or may not have a '\n' in it?
+            return totalLengthTolineIndex;
+        }
+
+        // TODO - see note where this is called - need to rethink small part of indexing 
+        // logic so this manual aspect is not necessary.
+        const totalLengthBetweenLineIndices = (lineIndexStart, lineIndexEnd, allLines) => {
+            let totalLengthTolineIndex = 0;
+            for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
+                totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+            }
+            // TODO - will we need a check/fix to handle the case where the last index
+            // may or may not have a '\n' in it?
+            return totalLengthTolineIndex;
+        }
+
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
@@ -402,8 +418,8 @@ export class MRTextInputEntity extends MRTextEntity {
             // Setup textObj variables for calculations
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
             // TODO - there needs to be a cleaner way to do this than summing up every time
-            let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
-            let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
+            let lengthToCursorTextObjStartLineIndex = totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
+            let lengthToTextObjCursorLine = totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
             // note: add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
             let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1); 
 

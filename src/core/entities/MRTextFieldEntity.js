@@ -16,9 +16,6 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         super();
         this.lineHeight = 1.2; // Default line height, can be adjusted as needed
         this.object3D.name = 'textField';
-
-        // this.wrapper = this.shadowRoot.appendChild(document.createElement('div'));
-        // this.wrapper.innerHTML = '<slot></slot>';
     }
 
     /**
@@ -75,23 +72,15 @@ export class MRTextFieldEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('id', this.getAttribute('id') ?? undefined);
     }
 
-    get hasTextSubsetForVerticalScrolling() {
-        return false;
-    }
-
-    // todo - better name
-    get hasTextSubsetForHorizontalScrolling() {
-        // todo - handle wrapping etc lol
-        mrjsUtils.error.emptyParentFunction();
-    }
-
     /**
      * @function
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
     updateTextDisplay(fromCursorMove = false) {
-        // This wont need any extra logic for scrolling in future.
+        // XXX - add scrolling logic in here for areas where text is greater than
+        // the width/domain the user creates visually
+        
         this.textObj.text = this.hiddenInput.value;
     }
 

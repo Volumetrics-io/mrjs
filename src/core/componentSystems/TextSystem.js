@@ -135,27 +135,29 @@ export class TextSystem extends MRSystem {
                 entity.background.scale.y = entity.textObj.scale.y + mrjsUtils.css.pxToThree(30);
 
                 if (entity instanceof MRTextAreaEntity) {
+                    // XXX - add scrolling logic in here for areas where text is greater than
+                    // the width/domain the user creates visually
+                    //
+                    // XXX - handle text wrapping properly - textarea already handles wrapping
+                    // nicely, but textObj's start/end line index need to accomodate for that
+                    // wrapping better. To look into: troika's setup in terms of width/height for
+                    // why wrapping works nicely but the height limit for it doesnt.
+
                     // Handle vertical limiting dimensions - check if the start-to-end
                     // indices range need to be updated for larger or limited view.
                     //
                     // Only offsetting the end range for any changes.
-
                     const height = entity.cursorHeight;
                     const num_lines = Math.floor(entity.height / (entity.lineHeight * entity.textObj.fontSize));
 
                     const num_visual_lines = entity.verticalTextObjEndLineIndex - entity.verticalTextObjStartLineIndex + 1;
-                    console.log('HANDLE TEXT CONTENT UPDATE');
-                    console.log('num_lines:', num_lines, 'num_visual_lines:', num_visual_lines);
-                    console.log('startline idx:', entity.verticalTextObjStartLineIndex, 'endline idx:', entity.verticalTextObjEndLineIndex);
                     if (num_lines != num_visual_lines) {
-                        console.log('UPDATING ENDLINE IDX');
                         const diff = Math.abs(num_visual_lines - num_lines) - 1;
                         if (num_lines < num_visual_lines) {
                             entity.verticalTextObjEndLineIndex = num_lines == 0 ? 0 : entity.verticalTextObjEndLineIndex - diff;
                         } else if (num_lines > num_visual_lines) {
                             entity.verticalTextObjEndLineIndex = entity.verticalTextObjStartLineIndex + diff;
                         }
-                        console.log('IS NOW:', entity.verticalTextObjEndLineIndex);
                     }
                 }
 
