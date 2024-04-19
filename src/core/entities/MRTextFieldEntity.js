@@ -76,12 +76,36 @@ export class MRTextFieldEntity extends MRTextInputEntity {
      * @function
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
+     * @param {boolean} fromCursorMove - default set as false if not supplied. Used because
+     * we only want to move the visible region if it is not already handled. Since cursor
+     * movement already handles that region change, then we only need to update the new
+     * text. Otherwise, we also need to scroll and update the new text.
      */
     updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
 
         this.textObj.text = this.hiddenInput.value;
+    }
+
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle vertical scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForVerticalScrolling() {
+        return false;
+    }
+
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle horizontal scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForHorizontalScrolling() {
+        // XXX - not handling this yet, but true for when it is. Need to change the truth-ness
+        // based on if they have char limit or not based on width, etc.
+        return true;
     }
 
     /**

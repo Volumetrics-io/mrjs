@@ -59,6 +59,11 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Function to be overwritten by children. Used on event trigger to
      * update the textObj visual based on the hiddenInput DOM element.
+     * @param {boolean} fromCursorMove - default set as false if not supplied. See `MRTextArea`
+     * and `MRTextField` as examples. This param is helpful for cases where the visible
+     * region of text can differ from the full text value. Since cursor movement already handles
+     * scrolling for that region change, then we only need to update the new text. Otherwise, we
+     * also need to scroll and update the new text.
      */
     updateTextDisplay(fromCursorMove = false) {
         mrjsUtils.error.emptyParentFunction();
@@ -248,6 +253,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // on certain parameters changing that need to be recalculated depending on the input
         // setup, etc.
         mrjsUtils.error.emptyParentFunction();
+        return false;
     }
 
     // TODO - better name?
@@ -261,6 +267,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // on certain parameters changing that need to be recalculated depending on the input
         // setup, etc.
         mrjsUtils.error.emptyParentFunction();
+        return false;
     }
 
     /**

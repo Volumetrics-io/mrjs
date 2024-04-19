@@ -66,20 +66,33 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput.setAttribute('whitespace', this.getAttribute('whitespace') ?? undefined);
     }
 
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle vertical scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
     get hasTextSubsetForVerticalScrolling() {
         return true;
     }
 
-    // todo - better name
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle horizontal scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
     get hasTextSubsetForHorizontalScrolling() {
-        // todo - handle wrapping etc lol
-        mrjsUtils.error.emptyParentFunction();
+        // XXX - change this to accommodate wrapping or no wrapping features
+        return false;
     }
 
     /**
      * @function
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
+     * @param {boolean} fromCursorMove - default set as false if not supplied. Used because
+     * we only want to move the visible region if it is not already handled. Since cursor
+     * movement already handles that region change, then we only need to update the new
+     * text. Otherwise, we also need to scroll and update the new text.
      */
     updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
