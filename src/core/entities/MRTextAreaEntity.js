@@ -91,7 +91,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         const cursorIndex = this.hiddenInput.selectionStart;
         let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
         let linesBeforeCursor = textBeforeCursor.split('\n');
-        let cursorIsOnLineIndex = linesBeforeCursor.length;
+        let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
         console.log('UPDATING TEXT DISPLAY, FROMCURSORMOVE:', fromCursorMove ? "TRUE" : "FALSE", "IF FALSE - handles scrolling");
         if (!fromCursorMove) {
             console.log('handling cursor move based on key input!!!! for textobj update');
@@ -108,9 +108,18 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 --this.verticalTextObjStartLineIndex;
             } else if (cursorIsOnLineIndex > this.verticalTextObjEndLineIndex) {
                 // adding, scroll down
-                console.log('SOMETHING WAS ADDED');
+                                    console.log('SOMETHING WAS ADDED');
+
+                console.log('cursorIsOnLineIndex:', cursorIsOnLineIndex, 'allLines:', allLines);
+                // if (cursorIsOnLineIndex == allLines.length - 1 && allLines[cursorIsOnLineIndex] == '') {
+                //     // dont scroll - special enter faking case
+
+                // } else {
                 ++this.verticalTextObjEndLineIndex;
                 ++this.verticalTextObjStartLineIndex;
+                // }
+                
+                
             }
         }
 
