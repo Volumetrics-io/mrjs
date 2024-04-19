@@ -372,6 +372,30 @@ export class MRTextInputEntity extends MRTextEntity {
         });
     }
 
+    // TODO - see note where this is called - need to rethink small part of indexing
+    // logic so this manual aspect is not necessary.
+    _totalLengthUpToLineIndex(lineIndex, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = 0; i < lineIndex; ++i) {
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+        }
+        // TODO - will we need a check/fix to handle the case where the last index
+        // may or may not have a '\n' in it?
+        return totalLengthTolineIndex;
+    };
+
+    // TODO - see note where this is called - need to rethink small part of indexing
+    // logic so this manual aspect is not necessary.
+    _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+        }
+        // TODO - will we need a check/fix to handle the case where the last index
+        // may or may not have a '\n' in it?
+        return totalLengthTolineIndex;
+    };
+
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
@@ -387,30 +411,6 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
         // does the browser handle this for us?
 
-        // TODO - see note where this is called - need to rethink small part of indexing
-        // logic so this manual aspect is not necessary.
-        const totalLengthUpToLineIndex = (lineIndex, allLines) => {
-            let totalLengthTolineIndex = 0;
-            for (let i = 0; i < lineIndex; ++i) {
-                totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
-            }
-            // TODO - will we need a check/fix to handle the case where the last index
-            // may or may not have a '\n' in it?
-            return totalLengthTolineIndex;
-        };
-
-        // TODO - see note where this is called - need to rethink small part of indexing
-        // logic so this manual aspect is not necessary.
-        const totalLengthBetweenLineIndices = (lineIndexStart, lineIndexEnd, allLines) => {
-            let totalLengthTolineIndex = 0;
-            for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
-                totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
-            }
-            // TODO - will we need a check/fix to handle the case where the last index
-            // may or may not have a '\n' in it?
-            return totalLengthTolineIndex;
-        };
-
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
@@ -425,8 +425,8 @@ export class MRTextInputEntity extends MRTextEntity {
             // Setup textObj variables for calculations
             let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
             // TODO - there needs to be a cleaner way to do this than summing up every time
-            let lengthToCursorTextObjStartLineIndex = totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
-            let lengthToTextObjCursorLine = totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
+            let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
+            let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
             // note: add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
             let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1);
 
