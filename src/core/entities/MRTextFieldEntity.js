@@ -80,7 +80,7 @@ export class MRTextFieldEntity extends MRTextInputEntity {
     updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
-        
+
         this.textObj.text = this.hiddenInput.value;
     }
 

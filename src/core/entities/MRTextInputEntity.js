@@ -380,7 +380,7 @@ export class MRTextInputEntity extends MRTextEntity {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
         // does the browser handle this for us?
 
-        // TODO - see note where this is called - need to rethink small part of indexing 
+        // TODO - see note where this is called - need to rethink small part of indexing
         // logic so this manual aspect is not necessary.
         const totalLengthUpToLineIndex = (lineIndex, allLines) => {
             let totalLengthTolineIndex = 0;
@@ -390,9 +390,9 @@ export class MRTextInputEntity extends MRTextEntity {
             // TODO - will we need a check/fix to handle the case where the last index
             // may or may not have a '\n' in it?
             return totalLengthTolineIndex;
-        }
+        };
 
-        // TODO - see note where this is called - need to rethink small part of indexing 
+        // TODO - see note where this is called - need to rethink small part of indexing
         // logic so this manual aspect is not necessary.
         const totalLengthBetweenLineIndices = (lineIndexStart, lineIndexEnd, allLines) => {
             let totalLengthTolineIndex = 0;
@@ -402,7 +402,7 @@ export class MRTextInputEntity extends MRTextEntity {
             // TODO - will we need a check/fix to handle the case where the last index
             // may or may not have a '\n' in it?
             return totalLengthTolineIndex;
-        }
+        };
 
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
@@ -421,7 +421,7 @@ export class MRTextInputEntity extends MRTextEntity {
             let lengthToCursorTextObjStartLineIndex = totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
             let lengthToTextObjCursorLine = totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
             // note: add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
-            let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1); 
+            let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {

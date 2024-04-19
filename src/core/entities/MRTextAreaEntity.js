@@ -81,7 +81,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
      */
-    updateTextDisplay(fromCursorMove=false) {
+    updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
         //
@@ -91,7 +91,7 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // why wrapping works nicely but the height limit for it doesnt.
 
         // check if a new line was added/removed - if so, handle offset
-        // note: movement of the vertical indices should be handled by 
+        // note: movement of the vertical indices should be handled by
         const allLines = this.hiddenInput.value.split('\n');
         const cursorIndex = this.hiddenInput.selectionStart;
         let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
@@ -115,9 +115,9 @@ export class MRTextAreaEntity extends MRTextInputEntity {
             }
         }
 
-        let text = "";
+        let text = '';
         for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx < allLines.length; ++lineIdx) {
-            text += allLines[lineIdx] ?? "";
+            text += allLines[lineIdx] ?? '';
             if (lineIdx != allLines.length - 1) {
                 text += '\n';
             }
