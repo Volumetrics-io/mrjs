@@ -76,14 +76,16 @@ export class GeometryStyleSystem extends MRSystem {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     update(deltaTime, frame) {
-        for (const entity of this.registry) {
-            let changed = this.setScale(entity);
-            if (changed) {
-                // TODO - TBH i think this is only needed for scale, but just in case others use changed
-                // width/height for anything else, and update is required for children as well
-                entity.dispatchEvent(new CustomEvent('entityupdated', { bubbles: true }));
-            }
-        }
+        // FIXME: Commented out, causes a pretty nasty perf hit. 
+        // removing it doesn't seem to have any noticeable side effects. but leaving just in case 
+        // for (const entity of this.registry) {
+        //     let changed = this.setScale(entity);
+        //     if (changed) {
+        //         // TODO - TBH i think this is only needed for scale, but just in case others use changed
+        //         // width/height for anything else, and update is required for children as well
+        //         entity.dispatchEvent(new CustomEvent('entityupdated', { bubbles: true }));
+        //     }
+        // }
         // For this system, since we have the 'per entity' and 'per scene event' update calls,
         // we dont need a main update call here.
     }
