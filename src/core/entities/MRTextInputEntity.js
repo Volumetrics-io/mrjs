@@ -59,8 +59,13 @@ export class MRTextInputEntity extends MRTextEntity {
      * @function
      * @description Function to be overwritten by children. Used on event trigger to
      * update the textObj visual based on the hiddenInput DOM element.
+     * @param {boolean} fromCursorMove - default set as false if not supplied. See `MRTextArea`
+     * and `MRTextField` as examples. This param is helpful for cases where the visible
+     * region of text can differ from the full text value. Since cursor movement already handles
+     * scrolling for that region change, then we only need to update the new text. Otherwise, we
+     * also need to scroll and update the new text.
      */
-    updateTextDisplay() {
+    updateTextDisplay(fromCursorMove = false) {
         mrjsUtils.error.emptyParentFunction();
     }
 
@@ -105,6 +110,12 @@ export class MRTextInputEntity extends MRTextEntity {
         // Handle any placeholder setup s.t. it can be overwritten easily.
         if (this.hiddenInput.getAttribute('placeholder') ?? false) {
             this.textObj.text = this.hiddenInput.getAttribute('placeholder');
+        }
+
+        // TODO - this needs better boolean naming
+        if (this.hasTextSubsetForVerticalScrolling) {
+            this.verticalTextObjStartLineIndex = 0;
+            this.verticalTextObjEndLineIndex = 0;
         }
     }
 
@@ -231,6 +242,34 @@ export class MRTextInputEntity extends MRTextEntity {
         this.cursor.visible = false;
     }
 
+    // TODO - better name?
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle vertical scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForVerticalScrolling() {
+        // Leaving this as a function instead of a pure boolean if in case it's dependant
+        // on certain parameters changing that need to be recalculated depending on the input
+        // setup, etc.
+        mrjsUtils.error.emptyParentFunction();
+        return false;
+    }
+
+    // TODO - better name?
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle horizontal scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForHorizontalScrolling() {
+        // Leaving this as a function instead of a pure boolean if in case it's dependant
+        // on certain parameters changing that need to be recalculated depending on the input
+        // setup, etc.
+        mrjsUtils.error.emptyParentFunction();
+        return false;
+    }
+
     /**
      * @function
      * @description Getter for a commonly needed attribute: 'disabled' for whether this input is still being updated.
@@ -306,7 +345,7 @@ export class MRTextInputEntity extends MRTextEntity {
             // 'hiddenInput's update system so we dont have to
             // manage as many things directly ourselves.
 
-            this.updateTextDisplay();
+            this.updateTextDisplay(false);
             this.updateCursorPosition(false);
         });
         this.hiddenInput.addEventListener('keydown', (event) => {
@@ -333,12 +372,57 @@ export class MRTextInputEntity extends MRTextEntity {
         });
     }
 
+    // TODO - see note where this is called - need to rethink small part of indexing
+    // logic so this manual aspect is not necessary.
+    /**
+     * @function
+     * @description Helper function for `handleKeyDown` and `updateCursorPosition` when
+     * handling textObj.
+     * @param {number} lineIndex - the ending line index non-inclusive of the summation.
+     * @param {Array} allLines - the array of line strings
+     * @returns {number} length of summed string.
+     */
+    _totalLengthUpToLineIndex(lineIndex, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = 0; i < lineIndex; ++i) {
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+        }
+        // TODO - will we need a check/fix to handle the case where the last index
+        // may or may not have a '\n' in it?
+        return totalLengthTolineIndex;
+    }
+
+    // TODO - see note where this is called - need to rethink small part of indexing
+    // logic so this manual aspect is not necessary.
+    /**
+     * @function
+     * @description Helper function for `handleKeyDown` and `updateCursorPosition` when
+     * handling textObj.
+     * @param {number} lineIndexStart - the starting line index inclusive of the summation.
+     * @param {number} lineIndexEnd - the starting line index non-inclusive of the summation.
+     * @param {Array} allLines - the array of line strings
+     * @returns {number} length of summed string.
+     */
+    _totalLengthBetweenLineIndices(lineIndexStart, lineIndexEnd, allLines) {
+        let totalLengthTolineIndex = 0;
+        for (let i = lineIndexStart; i < lineIndexEnd; ++i) {
+            totalLengthTolineIndex += allLines[i].length + 1; // one additional for '\n' char
+        }
+        // TODO - will we need a check/fix to handle the case where the last index
+        // may or may not have a '\n' in it?
+        return totalLengthTolineIndex;
+    }
+
     /**
      * @function
      * @description Updates the cursor position based on click and selection location.
      * @param {boolean} fromCursorMove - false by default. Used to determine if we need to run
      * based off a text object update sync or we can directly grab information. This requirement
      * occurs because the sync isnt usable if no text content changed.
+     *
+     * Note: this function does not change anything about the this.hiddenInput.selectionStart nor
+     * this.hiddenInput.selectionEnd. Those values should be changed prior to this function being
+     * called.
      */
     updateCursorPosition(fromCursorMove = false) {
         // TODO - QUESTION: handle '\n' --> as '/\r?\n/' for crossplatform compat
@@ -346,19 +430,22 @@ export class MRTextInputEntity extends MRTextEntity {
 
         const updateBasedOnSelectionRects = (cursorIndex) => {
             // Setup variables for calculations.
-            // XXX - handle cursor position change for visible lines for scrolloffset here in future
             let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-            let textAfterCursor = this.hiddenInput.value.substring(cursorIndex);
             let allLines = this.hiddenInput.value.split('\n');
             let linesBeforeCursor = textBeforeCursor.split('\n');
             let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
 
-            let cursorXOffsetPosition = 0;
-            let cursorYOffsetPosition = 0;
-
             let rectX = undefined;
             let rectY = undefined;
             let rect = undefined;
+
+            // Setup textObj variables for calculations
+            let cursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
+            // TODO - there needs to be a cleaner way to do this than summing up every time
+            let lengthToCursorTextObjStartLineIndex = this._totalLengthUpToLineIndex(this.verticalTextObjStartLineIndex, allLines);
+            let lengthToTextObjCursorLine = this._totalLengthBetweenLineIndices(this.verticalTextObjStartLineIndex, cursorIsOnLineIndex, allLines);
+            // note: add one to start it on the actual start line so we can index cursor Index at 0 if beg of line
+            let cursorIndexWithinTextObj = cursorIndex - (lengthToCursorTextObjStartLineIndex + 1);
 
             const prevIsNewlineChar = '\n' === textBeforeCursor.charAt(textBeforeCursor.length - 1);
             if (prevIsNewlineChar) {
@@ -366,26 +453,44 @@ export class MRTextInputEntity extends MRTextEntity {
                 // not beginning of next line. Make sure cursor visual is at beginning
                 // of the next line without moving selection point.
                 //
-                // Also handle special case where next line doesnt exist yet, fake it with our
-                // current line's information.
-                const isLastLine = cursorIsOnLineIndex == allLines.length - 1;
-                if (isLastLine) {
-                    const indexOfBegOfLine = textBeforeCursor.substring(0, textBeforeCursor.length - 1).lastIndexOf('\n') + 1;
-                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, indexOfBegOfLine, cursorIndex);
+                // """
+                // This is an example of text\n
+                // the way troika handles it
+                // """
+                //
+                // In the below, using (*) to denote the 'you are here'.
+                const isFakeNewLine = cursorIsOnLineIndex == allLines.length - 1;
+                let indexOfBegOfLine = lengthToTextObjCursorLine;
+                if (isFakeNewLine) {
+                    // """
+                    // This is an example of text\n
+                    // the way troika handles it\n(*)
+                    // """
+                    //
+                    // Special case where next line doesnt exist yet, fake it sitting below with our
+                    // current line's information.
+                    let usingIndex = indexOfBegOfLine - 1;
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                    // rect information for use in cursor positioning
                     rect = selectionRects[0];
-                    rectX = rect.left;
                     rectY = rect.bottom - this.cursorHeight;
                 } else {
-                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex + 1);
-                    rect = selectionRects[selectionRects.length - 1];
-                    rectX = rect.left;
+                    // """
+                    // This is an example of text\n(*)
+                    // the way troika handles it
+                    // """
+                    let usingIndex = cursorIndexWithinTextObj;
+                    let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                    rect = selectionRects[0];
                     rectY = rect.bottom;
                 }
+                rectX = 0;
             } else {
                 // default
-                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, textBeforeCursor.length - 1, cursorIndex);
-                let rectIndex = selectionRects.length - 1;
-                rect = selectionRects[rectIndex];
+                let usingIndex = cursorIndexWithinTextObj;
+                let selectionRects = getSelectionRects(this.textObj.textRenderInfo, usingIndex, usingIndex + 1);
+                // rect information for use in cursor positioning
+                rect = selectionRects[0];
                 rectX = rect.right;
                 rectY = rect.bottom;
             }
@@ -394,8 +499,8 @@ export class MRTextInputEntity extends MRTextEntity {
 
             // Add the cursor dimension info to the position s.t. it doesnt touch the text itself. We want
             // a little bit of buffer room.
-            cursorXOffsetPosition = rectX + this.cursorWidth;
-            cursorYOffsetPosition = rectY + this.cursorHeight;
+            const cursorXOffsetPosition = rectX + this.cursorWidth;
+            const cursorYOffsetPosition = rectY + this.cursorHeight;
 
             // Update the cursor's 3D position
             this.cursor.position.x = this.cursorStartingPosition.x + cursorXOffsetPosition;
@@ -409,12 +514,13 @@ export class MRTextInputEntity extends MRTextEntity {
         }
 
         // Since no text is selected, this and selectionEnd are just the cursor position.
-        // XXX - when we actually allow for seleciton in future, some of the below will need to
+        // XXX - when we actually allow for selection in future, some of the below will need to
         // be thought through again.
         const cursorIndex = this.hiddenInput.selectionStart;
 
-        // early escape for empty text
+        // early escape for empty text based on hiddenInput top line
         if (cursorIndex == 0) {
+            this._updateCursorSize();
             this.cursor.position.x = this.cursorStartingPosition.x;
             this.cursor.position.y = this.cursorStartingPosition.y;
             this.cursor.visible = true;

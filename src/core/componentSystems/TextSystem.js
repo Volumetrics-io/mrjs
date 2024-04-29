@@ -134,6 +134,33 @@ export class TextSystem extends MRSystem {
                 entity.background.scale.x = entity.textObj.scale.x + mrjsUtils.css.pxToThree(30);
                 entity.background.scale.y = entity.textObj.scale.y + mrjsUtils.css.pxToThree(30);
 
+                if (entity instanceof MRTextAreaEntity) {
+                    // XXX - add scrolling logic in here for areas where text is greater than
+                    // the width/domain the user creates visually
+                    //
+                    // XXX - handle text wrapping properly - textarea already handles wrapping
+                    // nicely, but textObj's start/end line index need to accomodate for that
+                    // wrapping better. To look into: troika's setup in terms of width/height for
+                    // why wrapping works nicely but the height limit for it doesnt.
+
+                    // Handle vertical limiting dimensions - check if the start-to-end
+                    // indices range need to be updated for larger or limited view.
+                    //
+                    // Only offsetting the end range for any changes.
+                    const height = entity.cursorHeight;
+                    const num_lines = Math.floor(entity.height / (entity.lineHeight * entity.textObj.fontSize));
+
+                    const num_visual_lines = entity.verticalTextObjEndLineIndex - entity.verticalTextObjStartLineIndex + 1;
+                    if (num_lines != num_visual_lines) {
+                        const diff = Math.abs(num_visual_lines - num_lines) - 1;
+                        if (num_lines < num_visual_lines) {
+                            entity.verticalTextObjEndLineIndex = num_lines == 0 ? 0 : entity.verticalTextObjEndLineIndex - diff;
+                        } else if (num_lines > num_visual_lines) {
+                            entity.verticalTextObjEndLineIndex = entity.verticalTextObjStartLineIndex + diff;
+                        }
+                    }
+                }
+
                 // -- cursor positioning and dimensions -- //
                 entity.cursorStartingPosition.x = entity.textObj.position.x;
                 entity.cursorStartingPosition.y = entity.textObj.position.y - entity.textObj.fontSize / 2;

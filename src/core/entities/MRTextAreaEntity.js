@@ -68,14 +68,75 @@ export class MRTextAreaEntity extends MRTextInputEntity {
 
     /**
      * @function
+     * @description Getter for whether this textinput should handle vertical scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForVerticalScrolling() {
+        return true;
+    }
+
+    /**
+     * @function
+     * @description Getter for whether this textinput should handle horizontal scrolling or not.
+     * @returns {boolean} true if it should be handled, false otherwise
+     */
+    get hasTextSubsetForHorizontalScrolling() {
+        // XXX - change this to accommodate wrapping or no wrapping features
+        return false;
+    }
+
+    /**
+     * @function
      * @description Used on event trigger to update the textObj visual based on
      * the hiddenInput DOM element.
+     * @param {boolean} fromCursorMove - default set as false if not supplied. Used because
+     * we only want to move the visible region if it is not already handled. Since cursor
+     * movement already handles that region change, then we only need to update the new
+     * text. Otherwise, we also need to scroll and update the new text.
      */
-    updateTextDisplay() {
+    updateTextDisplay(fromCursorMove = false) {
         // XXX - add scrolling logic in here for areas where text is greater than
         // the width/domain the user creates visually
+        //
+        // XXX - handle text wrapping properly - textarea already handles wrapping
+        // nicely, but textObj's start/end line index need to accomodate for that
+        // wrapping better. To look into: troika's setup in terms of width/height for
+        // why wrapping works nicely but the height limit for it doesnt.
 
-        this.textObj.text = this.hiddenInput.value;
+        // check if a new line was added/removed - if so, handle offset
+        // note: movement of the vertical indices should be handled by
+        const allLines = this.hiddenInput.value.split('\n');
+        const cursorIndex = this.hiddenInput.selectionStart;
+        let textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
+        let linesBeforeCursor = textBeforeCursor.split('\n');
+        let cursorIsOnLineIndex = linesBeforeCursor.length - 1;
+        if (!fromCursorMove) {
+            // handle update for edges where key pressing adds to it
+            const maxHiddenInputLineIndex = allLines.length - 1;
+            if (maxHiddenInputLineIndex < 0) {
+                // nothing
+                this.verticalTextObjStartLineIndex = 0;
+                this.verticalTextObjEndLineIndex = 0;
+            } else if (cursorIsOnLineIndex < this.verticalTextObjStartLineIndex) {
+                // deletion, scroll up
+                --this.verticalTextObjEndLineIndex;
+                --this.verticalTextObjStartLineIndex;
+            } else if (cursorIsOnLineIndex > this.verticalTextObjEndLineIndex) {
+                // adding, scroll down
+                ++this.verticalTextObjEndLineIndex;
+                ++this.verticalTextObjStartLineIndex;
+            }
+        }
+
+        let text = '';
+        for (let lineIdx = this.verticalTextObjStartLineIndex; lineIdx <= this.verticalTextObjEndLineIndex && lineIdx < allLines.length; ++lineIdx) {
+            text += allLines[lineIdx] ?? '';
+            if (lineIdx != allLines.length - 1) {
+                text += '\n';
+            }
+        }
+
+        this.textObj.text = text;
     }
 
     /**
@@ -99,26 +160,29 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         // Some shared variables
         const cursorIndex = this.hiddenInput.selectionStart;
         const textBeforeCursor = this.hiddenInput.value.substring(0, cursorIndex);
-        const linesInclUpToCursorPosition = textBeforeCursor.split('\n');
         const allLines = this.hiddenInput.value.split('\n');
-        const totalNumberOfLines = allLines.length;
-        const cursorIsOnLineIndex = linesInclUpToCursorPosition.length - 1;
+        const cursorIsOnLineIndex = textBeforeCursor.split('\n').length - 1;
         // Grab current local cursor index on the line. When looping skipping the
         // last index as that is the line that includes the cursor in it and we only
         // want all lines up to that line, not including it.
-        let totalLengthToCursorIndexLine = 0;
-        for (let i = 0; i < linesInclUpToCursorPosition.length - 1; ++i) {
-            totalLengthToCursorIndexLine += linesInclUpToCursorPosition[i].length;
-        }
+        let totalLengthToCursorIndexLine = this._totalLengthUpToLineIndex(cursorIsOnLineIndex, allLines);
         const cursorIndexOnCurrentLine = cursorIndex - totalLengthToCursorIndexLine;
+
+        // create specific variables for textObj lines subset given vertical scrolling
+        let prevCursorIsOnTextObjLineIndex = cursorIsOnLineIndex - this.verticalTextObjStartLineIndex;
 
         // Need to handle UP and DOWN arrow properly otherwise these act as LEFT
         // and RIGHT arrows like in textfield.
         if (isUpArrow) {
-            // XXX - handle scrolloffset in future.
-
-            // Only want to move up when not already on the top line
+            // Only want to move up when not already on the hiddenInput top line
+            // and if on the textObj top line, need to scroll the textobj as well
             if (cursorIsOnLineIndex != 0) {
+                if (prevCursorIsOnTextObjLineIndex == 0) {
+                    // theyre the same so cursor will move the visual display, scroll for the up arrow
+                    --this.verticalTextObjStartLineIndex;
+                    --this.verticalTextObjEndLineIndex;
+                    this.updateTextDisplay(true);
+                }
                 // Determine where cursor should hit index on line above this one: same index or end of line
                 const prevLineText = allLines[cursorIsOnLineIndex - 1];
                 const maxIndexOptionOfPrevLine = prevLineText.length - 1;
@@ -126,10 +190,14 @@ export class MRTextAreaEntity extends MRTextInputEntity {
                 this.hiddenInput.selectionStart = totalLengthToCursorIndexLine - prevLineText.length + cursorIndexOnNewLine;
             }
         } else if (isDownArrow) {
-            // XXX - handle scrolloffset in future.
-
             // Only want to move up when not already on the top line
-            if (cursorIsOnLineIndex != totalNumberOfLines - 1) {
+            if (cursorIsOnLineIndex != allLines.length - 1) {
+                if (cursorIsOnLineIndex == this.verticalTextObjEndLineIndex) {
+                    // theyre the same so cursor will move the visual display, scroll for the down arrow
+                    ++this.verticalTextObjStartLineIndex;
+                    ++this.verticalTextObjEndLineIndex;
+                    this.updateTextDisplay(true);
+                }
                 const currentLineText = allLines[cursorIsOnLineIndex];
                 // Determine where cursor should hit index on line below this one: same index or end of line
                 const nextLineText = allLines[cursorIsOnLineIndex + 1];
@@ -145,7 +213,14 @@ export class MRTextAreaEntity extends MRTextInputEntity {
         this.hiddenInput.selectionEnd = this.hiddenInput.selectionStart;
 
         // Ensure the cursor position is updated to reflect the current caret position
-        this.updateCursorPosition(true);
+        // This is actually needed otherwise the cursor event's are off by a count (ie
+        // press left 2x, the right 1x and the first press and third press wont function
+        // as the user expects and it'll still be waiting for a 4th press. That is -
+        // it'll go: 1)nothing 2)left 3)left 4)right
+        // instead of expected: 1)left 2) left 3) right
+        setTimeout(() => {
+            this.updateCursorPosition(true);
+        }, 0);
     }
 }
 
