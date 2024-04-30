@@ -75,11 +75,11 @@
             </mr-text>
 
             <mr-text class="label col-2">
-                state
+                action
             </mr-text>
 
             <mr-text class="col-2">
-                the playback state
+                the playback state action
             </mr-text>
 
             <mr-text class="col-2">
@@ -138,16 +138,16 @@
         function rain() {
             rainLoopPlay = !rainLoopPlay
             if (rainLoopPlay) {
-                rainEntity.components.set('audio', {state: 'play'})
+                rainEntity.components.set('audio', {action: 'play'})
             } else {
-                rainEntity.components.set('audio', {state: 'stop'})
+                rainEntity.components.set('audio', {action: 'stop'})
             }
         }
 
         function thunder() {
             // set thunder entity to random position within 5m
             thunderEntity.setAttribute('data-position', `${getRandomWholeNumber(-20, 20)} 1 ${getRandomWholeNumber(-20, 20)}`)
-            thunderEntity.components.set('audio', {state: 'play'})
+            thunderEntity.components.set('audio', {action: 'play'})
         }
 
         function getRandomWholeNumber(min, max) {
