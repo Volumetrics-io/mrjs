@@ -123,11 +123,13 @@ export class AnimationSystem extends MRSystem {
                     break;
                 default:
                     mrjsUtils.err.error('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
-                    break;
+                    return;
             }
         }
-        
-        if (comp.hasOwnProperty('loop')) {
+
+        let hasLoop = comp.hasOwnProperty('loop');
+        let hasLoopMode = comp.hasOwnProperty('loopMode');
+        if (hasLoop && !hasLoopMode) {
             switch (comp.loop) {
                 case 'true':
                     action.setLoop(THREE.LoopRepeat, Infinity);
@@ -136,33 +138,40 @@ export class AnimationSystem extends MRSystem {
                     action.setLoop(THREE.LoopOnce, 1);
                     break;
                 default:
-                    if (comp.loopMode == 'once') {
-                        action.setLoop(THREE.LoopOnce, 1);
-                        break;
-                    }
+                    // loopMode doesnt exist so we hit an unexpected value
+                    mrjsUtils.err.error('Bad configuration for loop. It isnt set to true/false (did you mean to pair it with loopMode?) specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
+                    return;
 
-                    // All other cases of loopMode need loop to represent the count value.
-                    if (! comp.hasOwnProperty('loopMode')) {
-                        mrjsUtils.err.error('loopMode must be set when using loop as count. entity:', entity, ' comp:', comp);
-                        return;
-                    }
-                    let loopCount = +comp.loop;
-                    if (! mrjsUtils.math.isNormalNumber(comp.loop)) {
-                        mrjsUtils.err.error('Trying to use an invalid number value for loop with loopMode in the AnimationSystem from entity:', entity, '. comp is:', comp);
-                        return;
-                    }
-                    switch (comp.loopMode) {
-                        case 'repeat':
-                            action.setLoop(THREE.LoopRepeat, loopCount);
-                            break;
-                        case 'pingpong':
-                            action.setLoop(THREE.LoopPingPong, loopCount);
-                            break;
-                        default:
-                            mrjsUtils.err.error('Unknown case hit for loopMode in the AnimationSystem from entity:', entity, '. comp is:', comp);
-                            break;
-                    }
             }
+        } else if (hasLoopMode && !hasLoop) {
+            // the only time where loop doesnt need to exist but loopMode does is for 'once'.
+            if (comp.loopMode === 'once') {
+                action.setLoop(THREE.LoopOnce, 1);
+            } else {
+                mrjsUtils.err.error('Unknown loopMode specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
+                return;
+            }
+        } else if (hasLoop && hasLoopMode) {
+            // Convert comp.loop to a number, and check if it's a valid normal number or Infinity
+            let loopCount = Number(comp.loop);
+            if (! ((Number.isInteger(loopCount) && loopCount >= 0) || loopCount === Infinity)) {
+                mrjsUtils.err.error('loop must be a non-negative integer or Infinity when using loop as count. Entity:', entity, ' Comp:', comp);
+                return;
+            }
+            // Use the appropriate looping based on loopMode
+            switch (comp.loopMode) {
+                case 'repeat':
+                    action.setLoop(THREE.LoopRepeat, loopCount);
+                    break;
+                case 'pingpong':
+                    action.setLoop(THREE.LoopPingPong, loopCount);
+                    break;
+                default:
+                    mrjsUtils.err.error('Unknown loopMode specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
+                    break;
+            }
+        } else {
+            mrjsUtils.err.error('Unknown configuration of loopMode and loop specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
         }
     }
 }
