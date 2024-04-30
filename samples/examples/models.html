@@ -37,7 +37,81 @@
         </mr-text>
 
         <mr-text class="subtitle col-2">
-            Examples
+            Animation / Looping
+        </mr-text>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop = 'true'
+                </mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play; loop: true;"
+                src="../examples-assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop = 'false'
+                </mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play; loop: false;"
+                src="../examples-assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loopMode = once
+                </mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play; loopMode: once;"
+                src="../examples-assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop = 3, loopMode = repeat
+                </mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play; loopMode: repeat; loop: 3;"
+                src="../examples-assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop = 5, loopMode = pingpong
+                </mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="clip: 1; action: play; loopMode: pingpong; loop: 5;"
+                src="../examples-assets/models/animation_koifish.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-text class="subtitle col-2">
+            Different Format Examples
         </mr-text>
 
         <mr-div class="links col-2">

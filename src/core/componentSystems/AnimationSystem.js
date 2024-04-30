@@ -136,6 +136,12 @@ export class AnimationSystem extends MRSystem {
                     action.setLoop(THREE.LoopOnce, 1);
                     break;
                 default:
+                    if (comp.loopMode == 'once') {
+                        action.setLoop(THREE.LoopOnce, 1);
+                        break;
+                    }
+
+                    // All other cases of loopMode need loop to represent the count value.
                     if (! comp.hasOwnProperty('loopMode')) {
                         mrjsUtils.err.error('loopMode must be set when using loop as count. entity:', entity, ' comp:', comp);
                         return;
@@ -148,9 +154,6 @@ export class AnimationSystem extends MRSystem {
                     switch (comp.loopMode) {
                         case 'repeat':
                             action.setLoop(THREE.LoopRepeat, loopCount);
-                            break;
-                        case 'once':
-                            action.setLoop(THREE.LoopOnce, 1);
                             break;
                         case 'pingpong':
                             action.setLoop(THREE.LoopPingPong, loopCount);
