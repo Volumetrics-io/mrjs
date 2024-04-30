@@ -109,93 +109,99 @@ export class AnimationSystem extends MRSystem {
      * @param {object} comp - component that contains the values of 'action', 'loop', and/or 'loopMode'
      */
     setAnimation(entity, comp) {
-        let clip = entity.animations[comp.clip];
-        let action = entity.mixer.clipAction(clip);
 
-        // Handle ending position.
-        // Threejs defaults to the starting position. `clampWhenFinished` being true, makes it default to the ending position.
-        // action.clampWhenFinished = comp.clampWhenFinished ?? false;
+        // XXX in future - add conditions to play specific animations based on names
+        // or other properties.
+        // For now, just looping through all existing ones to update as needed.
+        entity.animations.forEach((clip, index) => {
+            let action = entity.mixer.clipAction(clip);
 
-        if (comp.hasOwnProperty('action')) {
-            switch (comp.action) {
-                case 'play':
-                    action.play();
-                    break;
-                case 'pause':
-                    action.pause();
-                    break;
-                case 'stop':
-                    action.stop();
-                    break;
-                default:
-                    mrjsUtils.error.err('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
-                    return;
-            }
-        }
+            // Handle ending position. Threejs defaults to the starting position; when
+            // `clampWhenFinished` is true, it defaults the stop position as the ending
+            // clip of the animation.
+            action.clampWhenFinished = comp.clampWhenFinished ?? false;
 
-        let hasLoop = comp.hasOwnProperty('loop');
-        let hasLoopMode = comp.hasOwnProperty('loopMode');
-        if (hasLoop || hasLoopMode) {
-            if (hasLoop && !hasLoopMode) {
-                switch (comp.loop) {
-                    case true:
-                    case 'true':
-                        action.setLoop(THREE.LoopRepeat, Infinity);
+            if (comp.hasOwnProperty('action')) {
+                switch (comp.action) {
+                    case 'play':
+                        action.play();
                         break;
-                    case false:
-                    case 'false':
-                        action.setLoop(THREE.LoopOnce, 1);
+                    case 'pause':
+                        action.pause();
+                        break;
+                    case 'stop':
+                        action.stop();
                         break;
                     default:
-                        // loopMode doesnt exist so we hit an unexpected value
+                        mrjsUtils.error.err('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                        return;
+                }
+            }
+
+            let hasLoop = comp.hasOwnProperty('loop');
+            let hasLoopMode = comp.hasOwnProperty('loopMode');
+            if (hasLoop || hasLoopMode) {
+                if (hasLoop && !hasLoopMode) {
+                    switch (comp.loop) {
+                        case true:
+                        case 'true':
+                            action.setLoop(THREE.LoopRepeat, Infinity);
+                            break;
+                        case false:
+                        case 'false':
+                            action.setLoop(THREE.LoopOnce, 1);
+                            break;
+                        default:
+                            // loopMode doesnt exist so we hit an unexpected value
+                            mrjsUtils.error.err(
+                                'Bad configuration for loop. It isnt set to true/false (did you mean to pair it with loopMode?) specified in the AnimationSystem from entity:',
+                                entity,
+                                ' Comp:',
+                                comp
+                            );
+                            return;
+                    }
+                } else if (hasLoopMode && !hasLoop) {
+                    // The only time where loop doesnt need to exist but loopMode does is for 'once'. Additionally, note that we also
+                    // handle this version of loopMode even in the case where loop count exists.
+                    if (comp.loopMode === 'once') {
+                        action.setLoop(THREE.LoopOnce, 1);
+                    } else {
                         mrjsUtils.error.err(
-                            'Bad configuration for loop. It isnt set to true/false (did you mean to pair it with loopMode?) specified in the AnimationSystem from entity:',
+                            'Bad configuration, loopMode isnt `once`, but loop isnt set (did you mean to pair it with loop?) specified in the AnimationSystem from entity:',
                             entity,
                             ' Comp:',
                             comp
                         );
                         return;
-                }
-            } else if (hasLoopMode && !hasLoop) {
-                // The only time where loop doesnt need to exist but loopMode does is for 'once'. Additionally, note that we also
-                // handle this version of loopMode even in the case where loop count exists.
-                if (comp.loopMode === 'once') {
-                    action.setLoop(THREE.LoopOnce, 1);
+                    }
+                } else if (hasLoop && hasLoopMode) {
+                    // Convert comp.loop to a number, and check if it's a valid normal number or Infinity
+                    let loopCount = Number(comp.loop);
+                    if (!((Number.isInteger(loopCount) && loopCount >= 0) || loopCount === Infinity)) {
+                        mrjsUtils.error.err('loop must be a non-negative integer or Infinity when using loop as count. Entity:', entity, ' Comp:', comp);
+                        return;
+                    }
+                    // Use the appropriate looping based on loopMode
+                    switch (comp.loopMode) {
+                        case 'repeat':
+                            action.setLoop(THREE.LoopRepeat, loopCount);
+                            break;
+                        case 'pingpong':
+                            action.setLoop(THREE.LoopPingPong, loopCount);
+                            break;
+                        case 'once':
+                            action.setLoop(THREE.LoopOnce, 1);
+                            break;
+                        default:
+                            mrjsUtils.error.err('Unknown loopMode specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
+                            break;
+                    }
                 } else {
-                    mrjsUtils.error.err(
-                        'Bad configuration, loopMode isnt `once`, but loop isnt set (did you mean to pair it with loop?) specified in the AnimationSystem from entity:',
-                        entity,
-                        ' Comp:',
-                        comp
-                    );
-                    return;
+                    // hasLoop and both hasLoopMode are false, should never reach this case so error as failsafe
+                    mrjsUtils.error.err('Hit unreachable code - major error in AnimationSystem loop handling');
                 }
-            } else if (hasLoop && hasLoopMode) {
-                // Convert comp.loop to a number, and check if it's a valid normal number or Infinity
-                let loopCount = Number(comp.loop);
-                if (!((Number.isInteger(loopCount) && loopCount >= 0) || loopCount === Infinity)) {
-                    mrjsUtils.error.err('loop must be a non-negative integer or Infinity when using loop as count. Entity:', entity, ' Comp:', comp);
-                    return;
-                }
-                // Use the appropriate looping based on loopMode
-                switch (comp.loopMode) {
-                    case 'repeat':
-                        action.setLoop(THREE.LoopRepeat, loopCount);
-                        break;
-                    case 'pingpong':
-                        action.setLoop(THREE.LoopPingPong, loopCount);
-                        break;
-                    case 'once':
-                        action.setLoop(THREE.LoopOnce, 1);
-                        break;
-                    default:
-                        mrjsUtils.error.err('Unknown loopMode specified in the AnimationSystem from entity:', entity, ' Comp:', comp);
-                        break;
-                }
-            } else {
-                // hasLoop and both hasLoopMode are false, should never reach this case so error as failsafe
-                mrjsUtils.error.err('Hit unreachable code - major error in AnimationSystem loop handling');
             }
-        }
+        });
     }
 }
