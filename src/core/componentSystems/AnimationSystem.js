@@ -112,6 +112,10 @@ export class AnimationSystem extends MRSystem {
         let clip = entity.animations[comp.clip];
         let action = entity.mixer.clipAction(clip);
 
+        // Handle ending position.
+        // Threejs defaults to the starting position. `clampWhenFinished` being true, makes it default to the ending position.
+        action.clampWhenFinished = comp.clampWhenFinished ?? false;
+
         if (comp.hasOwnProperty('action')) {
             switch (comp.action) {
                 case 'play':
