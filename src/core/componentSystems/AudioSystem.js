@@ -46,9 +46,7 @@ export class AudioSystem extends MRSystem {
             entity.sound.setBuffer(buffer);
             entity.sound.setRefDistance(comp.distance ?? 1);
 
-            this.setAudioState(entity, comp.state);
-
-            entity.sound.setLoop(comp.loop ?? false);
+            this.setAudioState(entity, comp);
         });
     }
 
@@ -60,8 +58,7 @@ export class AudioSystem extends MRSystem {
     updatedComponent(entity) {
         let comp = entity.components.get('audio');
         entity.sound.setRefDistance(comp.distance ?? 1);
-        this.setAudioState(entity, comp.state);
-        entity.sound.setLoop(comp.loop ?? false);
+        this.setAudioState(entity, comp);
     }
 
     /**
@@ -81,8 +78,9 @@ export class AudioSystem extends MRSystem {
      * @param {object} entity - the entity being updated based on the component being detached.
      * @param {string} action - represents a parameter for the state of the sound 'play', 'pause', 'stop', etc
      */
-    setAudioState(entity, action) {
-        switch (action) {
+    setAudioState(entity, comp) {
+        entity.sound.setLoop(comp.loop ?? false);
+        switch (comp.action) {
             case 'play':
                 if (entity.sound.isPlaying) {
                     entity.sound.stop();

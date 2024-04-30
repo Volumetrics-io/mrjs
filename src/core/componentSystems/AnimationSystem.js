@@ -101,27 +101,32 @@ export class AnimationSystem extends MRSystem {
 
     /**
      * @function
-     * @description Sets the Animation of the entity object based on the component value associated with it.
+     * @description Sets the Animation of the entity object based on the component value associated with it. Otherwise lets those
+     * be handled by the threejs default setup. (Always looping, always playing based on browser type, etc).
      * @param {object} entity - the entity being updated based on the component being detached.
      * @param {object} comp - component that contains a string value of 'play', 'pause', 'stop'
      */
     setAnimation(entity, comp) {
         let clip = entity.animations[comp.clip];
         let action =  entity.mixer.clipAction(clip);
-        switch (comp.action) {
-            case 'play':
-                action.play();
-                break;
-            case 'pause':
-                action.pause();
-                break;
-            case 'stop':
-                action.stop();
-                break;
-            default:
-                mrjsUtils.err.error('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
-                break;
+
+        if (comp.hasOwnProperty('action')) {
+            switch (comp.action) {
+                case 'play':
+                    action.play();
+                    break;
+                case 'pause':
+                    action.pause();
+                    break;
+                case 'stop':
+                    action.stop();
+                    break;
+                default:
+                    mrjsUtils.err.error('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                    break;
+            }
         }
+        
         if (comp.hasOwnProperty('loop')) {
             switch (comp.loop) {
                 case 'true':
@@ -131,12 +136,14 @@ export class AnimationSystem extends MRSystem {
                     action.setLoop(THREE.LoopOnce, 1);
                     break;
                 default:
-                     if (!comp.hasOwnProperty('loopMode')) {
-                        mrjsUtils.err.error('loopMode must be set when using loop as count instead of true/false. entity:', entity, ' comp:', comp);
+                    if (! comp.hasOwnProperty('loopMode')) {
+                        mrjsUtils.err.error('loopMode must be set when using loop as count. entity:', entity, ' comp:', comp);
+                        return;
                     }
                     let loopCount = +comp.loop;
                     if (! mrjsUtils.math.isNormalNumber(comp.loop)) {
-                        mrjsUtils.err.error('Trying to use an invalid number value for loop with loopMode in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                        mrjsUtils.err.error('Trying to use an invalid number value for loop with loopMode in the AnimationSystem from entity:', entity, '. comp is:', comp);
+                        return;
                     }
                     switch (comp.loopMode) {
                         case 'repeat':
@@ -145,17 +152,14 @@ export class AnimationSystem extends MRSystem {
                         case 'once':
                             action.setLoop(THREE.LoopOnce, 1);
                             break;
-                        case 'pingpong'
+                        case 'pingpong':
                             action.setLoop(THREE.LoopPingPong, loopCount);
                             break;
                         default:
-                            mrjsUtils.err.error('Unknown case hit for loopMode in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                            mrjsUtils.err.error('Unknown case hit for loopMode in the AnimationSystem from entity:', entity, '. comp is:', comp);
                             break;
                     }
-                    let val = +comp.loop;
-                    if (mrjsUtils.math.isNormalNumber(comp.loop)) {
-                        entity.mixer.clipAction(clip).
-                    }
+            }
         }
     }
 }
