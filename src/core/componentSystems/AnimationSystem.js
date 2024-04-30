@@ -107,18 +107,55 @@ export class AnimationSystem extends MRSystem {
      */
     setAnimation(entity, comp) {
         let clip = entity.animations[comp.clip];
+        let action =  entity.mixer.clipAction(clip);
         switch (comp.action) {
             case 'play':
-                entity.mixer.clipAction(clip).play();
+                action.play();
                 break;
             case 'pause':
-                entity.mixer.clipAction(clip).pause();
+                action.pause();
                 break;
             case 'stop':
-                entity.mixer.clipAction(clip).stop();
+                action.stop();
                 break;
             default:
+                mrjsUtils.err.error('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
                 break;
+        }
+        if (comp.hasOwnProperty('loop')) {
+            switch (comp.loop) {
+                case 'true':
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                    break;
+                case 'false':
+                    action.setLoop(THREE.LoopOnce, 1);
+                    break;
+                default:
+                     if (!comp.hasOwnProperty('loopMode')) {
+                        mrjsUtils.err.error('loopMode must be set when using loop as count instead of true/false. entity:', entity, ' comp:', comp);
+                    }
+                    let loopCount = +comp.loop;
+                    if (! mrjsUtils.math.isNormalNumber(comp.loop)) {
+                        mrjsUtils.err.error('Trying to use an invalid number value for loop with loopMode in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                    }
+                    switch (comp.loopMode) {
+                        case 'repeat':
+                            action.setLoop(THREE.LoopRepeat, loopCount);
+                            break;
+                        case 'once':
+                            action.setLoop(THREE.LoopOnce, 1);
+                            break;
+                        case 'pingpong'
+                            action.setLoop(THREE.LoopPingPong, loopCount);
+                            break;
+                        default:
+                            mrjsUtils.err.error('Unknown case hit for loopMode in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                            break;
+                    }
+                    let val = +comp.loop;
+                    if (mrjsUtils.math.isNormalNumber(comp.loop)) {
+                        entity.mixer.clipAction(clip).
+                    }
         }
     }
 }

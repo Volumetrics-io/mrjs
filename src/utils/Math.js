@@ -49,6 +49,15 @@ math.radToDeg = function (val) {
     return (val * Math.PI) / 180;
 };
 
+math.isNormalNumber = function (val) {
+    // Check if val is a number, is not NaN, is not Infinity, and is non-negative
+    return typeof val === 'number' && isFinite(val) && val >= 0;
+}
+
+math.isNumber = function (val) {
+    return typeof value === 'number' && isFinite(value);
+}
+
 /*******************/
 /***** 3D MATH *****/
 /*******************/
