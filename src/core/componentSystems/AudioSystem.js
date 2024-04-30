@@ -76,7 +76,7 @@ export class AudioSystem extends MRSystem {
      * @function
      * @description Updates the Audio State based on the user passed 'state' variable.
      * @param {object} entity - the entity being updated based on the component being detached.
-     * @param {string} action - represents a parameter for the state of the sound 'play', 'pause', 'stop', etc
+     * @param {object} comp - component that contains the value of 'action'
      */
     setAudioState(entity, comp) {
         entity.sound.setLoop(comp.loop ?? false);

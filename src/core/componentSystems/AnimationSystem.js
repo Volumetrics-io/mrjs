@@ -106,7 +106,7 @@ export class AnimationSystem extends MRSystem {
      * @description Sets the Animation of the entity object based on the component value associated with it. Otherwise lets those
      * be handled by the threejs default setup. (Always looping, always playing based on browser type, etc).
      * @param {object} entity - the entity being updated based on the component being detached.
-     * @param {object} comp - component that contains a string value of 'play', 'pause', 'stop'
+     * @param {object} comp - component that contains the values of 'action', 'loop', and/or 'loopMode'
      */
     setAnimation(entity, comp) {
         let clip = entity.animations[comp.clip];
