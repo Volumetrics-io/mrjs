@@ -109,7 +109,6 @@ export class AnimationSystem extends MRSystem {
      * @param {object} comp - component that contains the values of 'action', 'loop', and/or 'loopMode'
      */
     setAnimation(entity, comp) {
-
         // XXX in future - add conditions to play specific animations based on names
         // or other properties.
         // For now, just looping through all existing ones to update as needed.
