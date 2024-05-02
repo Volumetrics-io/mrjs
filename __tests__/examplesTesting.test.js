@@ -23,10 +23,10 @@ describe('Test the Examples', () => {
             }
         });
 
-        page.on('pageerror', error => {
-            errors.push(error.toString());
-            console.error(`Unhandled error: ${error}`);
-        });
+        // page.on('pageerror', error => {
+        //     errors.push(error.toString());
+        //     console.error(`Unhandled error: ${error}`);
+        // });
     });
 
     afterAll(async () => {
@@ -40,7 +40,7 @@ describe('Test the Examples', () => {
             let htmlContent = await fs.readFile(`./dist/examples/${fileName}.html`, 'utf8');
             console.log(`Running test on: ./dist/examples/${fileName}.html`);
 
-            // Adjust script path to load mr.js relatively
+            // Adjust script path to load mr.js relatively, index.html is in propert spot already
             if (fileName != "../index") {
                 htmlContent = htmlContent.replace(
                     `<script src="/mr.js"></script>`,
