@@ -67,7 +67,7 @@ export class MRTextEntity extends MRDivEntity {
      * @description (async) sets up the textObject of the text item.
      */
     async connected() {
-        // await super.connected();
+        await super.connected();
         this._textWasManuallyUpdated();
     }
 
