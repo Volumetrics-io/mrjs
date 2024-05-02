@@ -48,10 +48,10 @@ color.hexToRgba = function (hex) {
     return { r, g, b, a };
 };
 
-color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', default_color = '#000') {
-    const setColor = (object3D, color, compStyle_opacity, default_color) => {
-        if (color.startsWith('rgba')) {
-            const rgba = color
+color.setObject3DColor = function (object3D, new_color, compStyle_opacity = '1', default_color = '#000') {
+    const setColor = (object3D, new_color, compStyle_opacity, default_color) => {
+        if (new_color.startsWith('rgba')) {
+            const rgba = new_color
                 .match(/rgba?\(([^)]+)\)/)[1]
                 .split(',')
                 .map((n) => parseFloat(n.trim()));
@@ -59,20 +59,20 @@ color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', def
             object3D.material.transparent = rgba.length === 4 && rgba[3] < 1;
             object3D.material.opacity = rgba.length === 4 ? rgba[3] : 1;
             object3D.visible = !(rgba.length === 4 && rgba[3] === 0);
-        } else if (color.startsWith('rgb')) {
+        } else if (new_color.startsWith('rgb')) {
             // RGB colors are treated as fully opaque
-            object3D.material.color.setStyle(color);
+            object3D.material.color.setStyle(new_color);
             object3D.material.transparent = false;
             object3D.visible = true;
-        } else if (color.startsWith('#')) {
-            const { r, g, b, a } = mrjsUtils.color.hexToRgba(color);
+        } else if (new_color.startsWith('#')) {
+            const { r, g, b, a } = mrjsUtils.color.hexToRgba(new_color);
             object3D.material.color.setStyle(`rgb(${r}, ${g}, ${b})`);
             object3D.material.transparent = a < 1;
             object3D.material.opacity = a;
             object3D.visible = a !== 0;
         } else {
             // This assumes the color is a CSS color word or another valid CSS color value
-            object3D.material.color.setStyle(color ?? default_color);
+            object3D.material.color.setStyle(new_color ?? default_color);
             object3D.material.transparent = false;
             object3D.visible = true;
         }
@@ -85,7 +85,7 @@ color.setObject3DColor = function (object3D, color, compStyle_opacity = '1', def
     if (object3D.isGroup) {
         mrjsUtils.warn.warn("setObject3DColor will not handle groups as expected, please use 'setEntityColor' instead.");
     } else {
-        setColor(object3D, color, compStyle_opacity, default_color);
+        setColor(object3D, new_color, compStyle_opacity, default_color);
     }
 };
 
@@ -112,10 +112,10 @@ color.setObject3DOpacity = function (object3D, compStyle_opacity) {
     }
 };
 
-color.setEntityColor = function (entity, color, compStyle_opacity = '1', default_color = '#000') {
+color.setEntityColor = function (entity, new_color, compStyle_opacity = '1', default_color = '#000') {
     entity.traverseObjects((object) => {
         if (object.isMesh) {
-            mrjsUtils.color.setObject3DColor(object, color, compStyle_opacity, default_color);
+            mrjsUtils.color.setObject3DColor(object, new_color, compStyle_opacity, default_color);
         }
     });
 };
