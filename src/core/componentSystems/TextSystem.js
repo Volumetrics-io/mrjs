@@ -200,6 +200,8 @@ export class TextSystem extends MRSystem {
         const { textObj } = entity;
 
         // Font
+        // console.log('on entity:', entity);
+        // console.log(entity.textObj);
         textObj.font = textObj.text.trim().length != 0 ? this.preloadedFonts[entity.compStyle.fontFamily] : null;
         textObj.fontSize = this.parseFontSize(entity.compStyle.fontSize, entity);
         textObj.fontWeight = this.parseFontWeight(entity.compStyle.fontWeight);
