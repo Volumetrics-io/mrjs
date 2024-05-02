@@ -74,7 +74,7 @@ export class MRTextInputEntity extends MRTextEntity {
      * @description (async) Handles setting up this textarea once it is connected to run as an entity component.
      */
     async connected() {
-        // await super.connected();
+        // await super.connected(); // TODO - uncomment this in the textfield pr if this is actually needed, but atm it's not since not exposed.
 
         // Cursor Setup
         this.cursorWidth = 0.002;

@@ -17,10 +17,6 @@ export default {
         path: path.resolve(__dirname, 'dist'),
         publicPath: 'auto',
         libraryTarget: 'window',
-        // library: {
-        //     // name: 'MRJS',  // This is the namespace under which your exports will be accessible.
-        //     type: 'assign-properties',  // This will assign each export to the window object.
-        // },
     },
 
     devServer: {
