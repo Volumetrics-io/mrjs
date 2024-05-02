@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
 
 /**
  * @class MRSkyBoxEntity
