@@ -44,7 +44,7 @@ describe('Test the Examples', () => {
             // Adjust script and link paths
             htmlContent = htmlContent.replace(
                 `<script src="/mr.js"></script>`,
-                `<script src="../dist/mr.js"></script>`);
+                `<script src="./dist/mr.js"></script>`);
             htmlContent = htmlContent.replace(
                 `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
                 `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
