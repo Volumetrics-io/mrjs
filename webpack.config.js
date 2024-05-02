@@ -11,13 +11,16 @@ const isTesting = process.env.NODE_ENV === 'development';
 export default {
     entry: {
         main: './src/index.js',
-        // sample0: './samples/sample.js',
     },
     output: {
         filename: 'mr.js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: 'auto',
         libraryTarget: 'window',
+        // library: {
+        //     // name: 'MRJS',  // This is the namespace under which your exports will be accessible.
+        //     type: 'assign-properties',  // This will assign each export to the window object.
+        // },
     },
 
     devServer: {
