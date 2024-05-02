@@ -74,8 +74,11 @@ replaceEveryOccurenceInFile() {
 # samples && testing sequence nicely
 
 ## update the submodule if necessary
+echo "HI"
 SUBMODULE_DIR="samples/mrjsio"
+echo "HI2"
 ./scripts/check-and-update-submodule.sh "$SUBMODULE_DIR"
+echo "HI3"
 script_exit_code=$?
 
 ## If the script exit code is 2, it means updates were made

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
 
 /**
  * @class MRSkyBoxEntity
@@ -58,7 +59,6 @@ export class MRSkyBoxEntity extends MREntity {
      *              This method initializes and starts the texture loading process.
      */
     async connected() {
-        await super.connected();
         // you can have texturesList be all individual textures
         // or you can store them in a specified path and just
         // load them up solely by filename in that path.

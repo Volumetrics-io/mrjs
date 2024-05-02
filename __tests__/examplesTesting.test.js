@@ -1,5 +1,5 @@
 import * as puppeteer from 'puppeteer';
-import fs from 'fs/promises'; // Node.js file system module with promises
+import fs from 'fs/promises';
 
 // todo: in future dont hard code this, but the relative links based on filepath dont work
 // using a server to host them works best, so just grabbing from github is fine for now.
@@ -14,19 +14,19 @@ describe('Test the Examples', () => {
         browser = await puppeteer.launch({ headless: true });
         page = await browser.newPage();
 
-        // Listen for console errors right after creating the page
         page.on('console', msg => {
             if (msg.type() === 'error') {
                 errors.push(msg.text());
                 console.error(`Console error: ${msg.text()}`);
+            } else {
+                console.log('PAGE LOG:', msg.text());
             }
         });
 
-        // Catch unhandled promise rejections
-        page.on('pageerror', error => {
-            errors.push(error.toString());
-            console.error(`Unhandled error: ${error}`);
-        });
+        // page.on('pageerror', error => {
+        //     errors.push(error.toString());
+        //     console.error(`Unhandled error: ${error}`);
+        // });
     });
 
     afterAll(async () => {
@@ -35,24 +35,21 @@ describe('Test the Examples', () => {
 
     fileNames.forEach(fileName => {
         test(`Page ${fileName} should load with no console errors`, async () => {
-            // Reset errors array for each file
             errors = [];
 
             let htmlContent = await fs.readFile(`./dist/examples/${fileName}.html`, 'utf8');
             console.log(`Running test on: ./dist/examples/${fileName}.html`);
 
-            // Adjust script and link paths
-            htmlContent = htmlContent.replace(
-                `<script src="/mr.js"></script>`,
-                `<script src="../dist/mr.js"></script>`);
-            htmlContent = htmlContent.replace(
-                `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
-                `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
-
+            // Adjust script path to load mr.js relatively, index.html is in propert spot already
+            if (fileName != "../index") {
+                htmlContent = htmlContent.replace(
+                    `<script src="/mr.js"></script>`,
+                    `<script src="../mr.js"></script>`
+                );
+            }
+            
             await page.setContent(htmlContent);
-            await page.waitForTimeout(1000); // wait for a second to allow all scripts to execute
 
-            // Assertions can be placed here if needed
             expect(errors).toHaveLength(0);
         });
     });

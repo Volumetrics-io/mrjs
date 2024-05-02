@@ -64,12 +64,10 @@ import './core/componentSystems/StatsSystem';
 import './core/componentSystems/TextSystem';
 
 // EXPORTS
-// UTILS
-export { mrjsUtils } from './utils/index.js';
-// EXTRAS
-export * from './extras/index.js';
+
 // THREE - So users dont need a separate versioning import for it.
 export * as THREE from 'three';
+
 // MRJS - Exporting only necessary items for users to overwrite as they use MRjs.
 export * from 'mrjs/core/MRSystem';
 export * from 'mrjs/core/MREntity';
@@ -87,3 +85,9 @@ export * from 'mrjs/core/entities/MRTextEntity';
 export * from 'mrjs/core/entities/MRTextFieldEntity';
 export * from 'mrjs/core/entities/MRVideoEntity';
 export * from 'mrjs/core/entities/MRVolumeEntity';
+
+// EXTRAS
+export * from './extras/index.js';
+
+// UTILS - exporting as a named group since it's a submodule of this js module
+export { mrjsUtils } from './utils/index.js';
