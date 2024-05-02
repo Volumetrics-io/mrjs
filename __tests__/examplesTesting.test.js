@@ -8,6 +8,7 @@ const fileNames = ['../index', 'anchors', 'audio', 'debug', 'embed', 'images', '
 describe('Test the Examples', () => {
     let browser;
     let page;
+    let errors = [];
 
     beforeAll(async () => {
         browser = await puppeteer.launch({ headless: true });
@@ -16,12 +17,14 @@ describe('Test the Examples', () => {
         // Listen for console errors right after creating the page
         page.on('console', msg => {
             if (msg.type() === 'error') {
+                errors.push(msg.text());
                 console.error(`Console error: ${msg.text()}`);
             }
         });
 
         // Catch unhandled promise rejections
         page.on('pageerror', error => {
+            errors.push(error.toString());
             console.error(`Unhandled error: ${error}`);
         });
     });
@@ -32,6 +35,9 @@ describe('Test the Examples', () => {
 
     fileNames.forEach(fileName => {
         test(`Page ${fileName} should load with no console errors`, async () => {
+            // Reset errors array for each file
+            errors = [];
+
             let htmlContent = await fs.readFile(`./dist/examples/${fileName}.html`, 'utf8');
             console.log(`Running test on: ./dist/examples/${fileName}.html`);
 
@@ -47,6 +53,7 @@ describe('Test the Examples', () => {
             await page.waitForTimeout(1000); // wait for a second to allow all scripts to execute
 
             // Assertions can be placed here if needed
+            expect(errors).toHaveLength(0);
         });
     });
 });
