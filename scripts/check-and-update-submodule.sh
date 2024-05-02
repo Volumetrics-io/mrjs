@@ -46,18 +46,26 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
+echo "HI4"
 SUBMODULE_DIR="$1"
+echo "HI5"
 REPO_DIR=$(pwd)
+echo "HI6"
 
 trap error_handler ERR
+echo "HI6_0"
 trap cleanup_success EXIT
+echo "HI6_1"
 
 STASH_OUTPUT=$(git stash push -m "Auto-stashed by submodule update script")
+echo "HI6_2"
 if [[ "$STASH_OUTPUT" == *"No local changes to save"* ]]; then
     STASH_APPLIED=false
 else
     STASH_APPLIED=true
 fi
+
+echo "HI7"
 
 cd "$SUBMODULE_DIR" || exit 1
 
@@ -65,6 +73,8 @@ git fetch origin
 
 LATEST_COMMIT=$(git rev-parse origin/main)
 CURRENT_COMMIT=$(git rev-parse HEAD)
+
+echo "HI8"
 
 if [ "$LATEST_COMMIT" == "$CURRENT_COMMIT" ]; then
     echo "Submodule $SUBMODULE_DIR is up to date."
