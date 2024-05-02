@@ -40,16 +40,34 @@ describe('Test the Examples', () => {
             let htmlContent = await fs.readFile(`./dist/examples/${fileName}.html`, 'utf8');
             console.log(`Running test on: ./dist/examples/${fileName}.html`);
 
+<<<<<<< Updated upstream
             // Adjust script path to load mr.js relatively, index.html is in propert spot already
             if (fileName != "../index") {
                 htmlContent = htmlContent.replace(
                     `<script src="/mr.js"></script>`,
                     `<script src="../mr.js"></script>`
                 );
+=======
+            // Adjust script and link paths
+            if (fileName == "../index") {
+                htmlContent = htmlContent.replace(
+                    `<script src="/mr.js"></script>`,
+                    `<script src="./dist/mr.js"></script>`);
+                htmlContent = htmlContent.replace(
+                    `<link rel="stylesheet" type="text/css" href="${fileName}-style.css" />`,
+                    `<link rel="stylesheet" type="text/css" href="./dist/examples/${fileName}-style.css" />`);
+>>>>>>> Stashed changes
             }
             
             await page.setContent(htmlContent);
 
+<<<<<<< Updated upstream
+=======
+            // Assertions can be placed here if needed
+            if (errors.length > 0) {
+                console.log(`Console Errors in ${fileName}:`, errors);
+            }
+>>>>>>> Stashed changes
             expect(errors).toHaveLength(0);
         });
     });
