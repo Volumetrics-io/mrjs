@@ -446,6 +446,8 @@ export class MREntity extends MRElement {
         this.observer.disconnect();
 
         this.disconnected();
+
+        mrjsUtils.model.disposeObject3D(this.object3D);
     }
 
     /**
