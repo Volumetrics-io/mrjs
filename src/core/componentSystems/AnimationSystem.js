@@ -109,10 +109,7 @@ export class AnimationSystem extends MRSystem {
      * @param {object} comp - component that contains the values of 'action', 'loop', and/or 'loopMode'
      */
     setAnimation(entity, comp) {
-        // XXX in future - add conditions to play specific animations based on names
-        // or other properties.
-        // For now, just looping through all existing ones to update as needed.
-        entity.animations.forEach((clip, index) => {
+        const _perform = (clip, comp) => {
             let action = entity.mixer.clipAction(clip);
 
             // Handle ending position. Threejs defaults to the starting position; when
@@ -201,6 +198,20 @@ export class AnimationSystem extends MRSystem {
                     mrjsUtils.error.err('Hit unreachable code - major error in AnimationSystem loop handling');
                 }
             }
-        });
+        }
+
+        // XXX in future - add conditions to play specific animations based on names
+        // or other properties.
+        // For now, just looping through all existing ones to update as needed.
+        // if (comp.hasOwnProperty('clip')) {
+        //     let clip = entity.animations[comp.clip];
+        //     _perform(clip, comp);
+        // } else {
+            entity.animations.forEach((clip, index) => {
+                _perform(clip, comp);
+            });
+        // }
+
+        
     }
 }
