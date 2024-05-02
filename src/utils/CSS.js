@@ -12,14 +12,14 @@ css.getVarFromRoot = function (str) {
         const root = document.documentElement;
         rootStyle = getComputedStyle(root);
         if (!rootStyle) {
-            mrjsUtils.warning.warn("Bad var value. Tracked as css-variable, but no `:root` setup found:", str);
+            mrjsUtils.warning.warn('Bad var value. Tracked as css-variable, but no `:root` setup found:', str);
             return;
         }
     }
 
     console.log(rootStyle.getPropertyValue(str).trim());
     return rootStyle.getPropertyValue(str).trim();
-}
+};
 
 css.extractNumFromPixelStr = function (str) {
     const result = str.match(/(\d+)px/);
