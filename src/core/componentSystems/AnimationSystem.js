@@ -109,8 +109,7 @@ export class AnimationSystem extends MRSystem {
      * @param {object} comp - component that contains the values of 'action', 'loop', and/or 'loopMode'
      */
     setAnimation(entity, comp) {
-        const _perform = (clip, comp) => {
-            let action = entity.mixer.clipAction(clip);
+        const _perform = (clip, comp, action, entity) => {
 
             // Handle ending position. Threejs defaults to the starting position; when
             // `clampWhenFinished` is true, it defaults the stop position as the ending
@@ -200,18 +199,29 @@ export class AnimationSystem extends MRSystem {
             }
         }
 
-        // XXX in future - add conditions to play specific animations based on names
-        // or other properties.
-        // For now, just looping through all existing ones to update as needed.
-        // if (comp.hasOwnProperty('clip')) {
-        //     let clip = entity.animations[comp.clip];
-        //     _perform(clip, comp);
-        // } else {
-            entity.animations.forEach((clip, index) => {
-                _perform(clip, comp);
-            });
-        // }
+        // XXX in future - add conditions to play specific animations based on names/properties/etc.
+        //
+        // For now, just hitting the user-specific clip or looping through all existing ones to
+        // update as needed.
+        if (comp.hasOwnProperty('clip')) {
+            let clip = entity.animations[comp.clip];
 
+            entity.traverseObjects((object) => {
+                if (object.isMesh) {
+                    // Check if there are any animation clips associated with the child object3D
+                    if (clip && clip.duration !== undefined && clip.duration > 0) {
+                        // If an animation clip is found and it has a valid duration, play it
+                        let action = entity.mixer.clipAction(clip);
+                        _perform(clip, comp, action, entity);
+                    }
+                }
+            });
+        } else {
+            entity.animations.forEach((clip, index) => {
+                let action = entity.mixer.clipAction(clip);
+                _perform(clip, comp, action, entity);
+            });
+        }
         
     }
 }
