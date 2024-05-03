@@ -110,7 +110,6 @@ export class AnimationSystem extends MRSystem {
      */
     setAnimation(entity, comp) {
         const _perform = (clip, comp, action, entity) => {
-
             // Handle ending position. Threejs defaults to the starting position; when
             // `clampWhenFinished` is true, it defaults the stop position as the ending
             // clip of the animation.
@@ -197,7 +196,7 @@ export class AnimationSystem extends MRSystem {
                     mrjsUtils.error.err('Hit unreachable code - major error in AnimationSystem loop handling');
                 }
             }
-        }
+        };
 
         // XXX in future - add conditions to play specific animations based on names/properties/etc.
         //
@@ -222,6 +221,5 @@ export class AnimationSystem extends MRSystem {
                 _perform(clip, comp, action, entity);
             });
         }
-        
     }
 }
