@@ -324,6 +324,28 @@
             </mr-model>
         </mr-div>
 
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop: false, plays once, and play again by button push
+                </mr-text>
+                <mr-button onclick="playAnimation()">Play animation</mr-button>
+            </mr-div>
+            <mr-model 
+                id="play-animation"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="action: stop; loop:false;"
+                src="../examples-assets/models/poof1.glb">
+            </mr-model>
+        </mr-div>
+
+        <!-- <mr-model id='animation' class="poof"
+                  data-comp-animation="action: stop; loop: false;"
+                  src="https://assets.codepen.io/686746/poof1.glb">              
+        </mr-model> -->
+
+        
+
 
         <mr-text class="col-2 subtitle" >
         model
@@ -403,6 +425,13 @@
 
             isShark = !isShark
         }
+
+        function playAnimation() {
+            document.querySelector("#play-animation").components.set("animation", {
+                action: "play"
+            });
+        }
+
         
 
     </script>
