@@ -58,7 +58,10 @@ export class AnimationSystem extends MRSystem {
 
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
-            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            if (!entity.mixer) {
+                // set it only if not yet set by onNewEntity
+                entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            }
             this.setAnimation(entity, comp);
         }
     }
@@ -96,7 +99,10 @@ export class AnimationSystem extends MRSystem {
                 return;
             }
             this.registry.add(entity);
-            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            if (!entity.mixer) {
+                // set it only if not yet set by attachedComponent
+                entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            }
             this.setAnimation(entity, comp);
         }
     }
@@ -118,7 +124,7 @@ export class AnimationSystem extends MRSystem {
             if (comp.hasOwnProperty('action')) {
                 switch (comp.action) {
                     case 'play':
-                        action.play();
+                        action.reset().play();
                         break;
                     case 'pause':
                         action.pause();
