@@ -58,7 +58,10 @@ export class AnimationSystem extends MRSystem {
 
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
-            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            if (!entity.mixer) {
+                // set it only if not yet set by onNewEntity
+                entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            }
             this.setAnimation(entity, comp);
         }
     }
@@ -96,7 +99,10 @@ export class AnimationSystem extends MRSystem {
                 return;
             }
             this.registry.add(entity);
-            entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            if (!entity.mixer) {
+                // set it only if not yet set by attachedComponent
+                entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            }
             this.setAnimation(entity, comp);
         }
     }
@@ -110,27 +116,12 @@ export class AnimationSystem extends MRSystem {
      */
     setAnimation(entity, comp) {
         const _perform = (clip, comp, action, entity) => {
+            /* ----- Handle all the settings for the animation ----- */
+
             // Handle ending position. Threejs defaults to the starting position; when
             // `clampWhenFinished` is true, it defaults the stop position as the ending
             // clip of the animation.
             action.clampWhenFinished = comp.clampWhenFinished ?? false;
-
-            if (comp.hasOwnProperty('action')) {
-                switch (comp.action) {
-                    case 'play':
-                        action.play();
-                        break;
-                    case 'pause':
-                        action.pause();
-                        break;
-                    case 'stop':
-                        action.stop();
-                        break;
-                    default:
-                        mrjsUtils.error.err('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
-                        return;
-                }
-            }
 
             let hasLoop = comp.hasOwnProperty('loop');
             let hasLoopMode = comp.hasOwnProperty('loopMode');
@@ -194,6 +185,25 @@ export class AnimationSystem extends MRSystem {
                 } else {
                     // hasLoop and both hasLoopMode are false, should never reach this case so error as failsafe
                     mrjsUtils.error.err('Hit unreachable code - major error in AnimationSystem loop handling');
+                }
+            }
+
+            /* ----- Now actually handle playing the animation ----- */
+
+            if (comp.hasOwnProperty('action')) {
+                switch (comp.action) {
+                    case 'play':
+                        action.reset().play();
+                        break;
+                    case 'pause':
+                        action.pause();
+                        break;
+                    case 'stop':
+                        action.stop();
+                        break;
+                    default:
+                        mrjsUtils.error.err('Unknown case hit for action in the AnimationSystem from entity:', entity, '. Comp is:', comp);
+                        return;
                 }
             }
         };
