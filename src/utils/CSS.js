@@ -17,7 +17,6 @@ css.getVarFromRoot = function (str) {
         }
     }
 
-    console.log(rootStyle.getPropertyValue(str).trim());
     return rootStyle.getPropertyValue(str).trim();
 };
 
