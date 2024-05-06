@@ -116,7 +116,6 @@ export class AnimationSystem extends MRSystem {
      */
     setAnimation(entity, comp) {
         const _perform = (clip, comp, action, entity) => {
-
             /* ----- Handle all the settings for the animation ----- */
 
             // Handle ending position. Threejs defaults to the starting position; when
