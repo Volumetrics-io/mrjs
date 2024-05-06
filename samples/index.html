@@ -53,7 +53,6 @@
                     spend less time on the basics and more time on their app.</mr-text>
                 <mr-a target="_blank" href="https://github.com/Volumetrics-io/mrjs">See on GitHub</mr-a>
                 <mr-a target="_blank" href="https://discord.gg/volumetrics">Join us on Discord</mr-a>
-                            <mr-button id="button" onclick="changeColor()">Change color!</mr-button>
 
                 <mr-button class="documentation" onclick="redirectToDocumentation()">Documentation</mr-button>
             </mr-div>
@@ -184,13 +183,6 @@
     </mr-app>
 
     <script>
-
-        function changeColor() {
-            let hue = Math.floor(Math.random() * 360);
-            let color = 'hsl(' + hue + ', 100%, 80%)';
-            document.querySelector("#button").style.backgroundColor = mrjsUtils.css.getVarFromRoot('--accent');
-        }
-        // changeColor();
 
         function redirectToDocumentation() {
           window.location.href = "https://docs.mrjs.io";
