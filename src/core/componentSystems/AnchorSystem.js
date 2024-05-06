@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import { mrjsUtils } from 'mrjs';
 
+import { MREntity } from 'mrjs/core/MREntity';
 import { MRSystem } from 'mrjs/core/MRSystem';
 import { MRPlaneManager } from 'mrjs/dataManagers/MRPlaneManager';
 

@@ -11,7 +11,6 @@ const isTesting = process.env.NODE_ENV === 'development';
 export default {
     entry: {
         main: './src/index.js',
-        // sample0: './samples/sample.js',
     },
     output: {
         filename: 'mr.js',

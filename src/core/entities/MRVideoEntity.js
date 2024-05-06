@@ -60,11 +60,10 @@ export class MRVideoEntity extends MRMediaEntity {
      * @description (async) handles setting up this video and associated 3D geometry style (from css) once it is connected to run as an entity component.
      */
     async connected() {
-        await super.connected();
         this.media = document.createElement('video');
         this.media.setAttribute('crossorigin', 'anonymous');
 
-        super.connected();
+        await super.connected();
     }
 
     /**

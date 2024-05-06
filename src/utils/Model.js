@@ -312,10 +312,7 @@ model.disposeObject3D = function (parentObject3D) {
 };
 
 model.removeObject3DFromScene = function (object3D, scene) {
-    // Recursively dispose of node (object3D) materials and geometries
-    disposeNode(object3D);
-
-    // Remove the object from the scene
+    model.disposeObject3D(object3D);
     scene.remove(object3D);
 
     // Optional: Clean up references for GC if necessary

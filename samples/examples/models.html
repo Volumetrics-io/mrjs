@@ -87,6 +87,35 @@
         <mr-div class="links col-2">
             <mr-div class="text-section">
                 <mr-text class=" label-2">
+                    glb - play all clips
+                </mr-text>
+                <mr-text>With multiple Animations as part of the file format.</mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.0085; z-index: 12;"
+                data-comp-animation="action: play;"
+                src="../examples-assets/models/poof1.glb">
+            </mr-model>
+        </mr-div>
+         <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    glb - play just one clip
+                </mr-text>
+                <mr-text>With multiple Animations as part of the file format.</mr-text>
+            </mr-div>
+            <mr-model 
+                id="glb_anim"
+                style="scale: 0.0085; z-index: 12;"
+                data-comp-animation="clip:1; action: play;"
+                src="../examples-assets/models/poof1.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
                     fbx
                 </mr-text>
                 <mr-text>
@@ -276,7 +305,7 @@
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12;"
-                data-comp-animation="clip: 1; action: play; loopMode: once;"
+                data-comp-animation="action: play; loopMode: once;"
                 src="../examples-assets/models/door1.glb">
             </mr-model>
         </mr-div>
@@ -290,7 +319,37 @@
             <mr-model 
                 id="glb_anim"
                 style="scale: 0.025; z-index: 12;"
-                data-comp-animation="clip: 1; action: play; loopMode: once; clampWhenFinished: true"
+                data-comp-animation="action: play; loopMode: once; clampWhenFinished: true"
+                src="../examples-assets/models/door1.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop: false, plays once, and play again by button push
+                </mr-text>
+                <mr-button onclick="playAnimation0()">Play animation</mr-button>
+            </mr-div>
+            <mr-model 
+                id="play-animation0"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="action: stop; loop:false;"
+                src="../examples-assets/models/door1.glb">
+            </mr-model>
+        </mr-div>
+
+        <mr-div class="links col-2">
+            <mr-div class="text-section">
+                <mr-text class=" label-2">
+                    loop: false, plays once, and play again by button push, freeze at final position
+                </mr-text>
+                <mr-button onclick="playAnimation1()">Play animation</mr-button>
+            </mr-div>
+            <mr-model 
+                id="play-animation1"
+                style="scale: 0.025; z-index: 12;"
+                data-comp-animation="action: stop; loop:false; clampWhenFinished: true"
                 src="../examples-assets/models/door1.glb">
             </mr-model>
         </mr-div>
@@ -374,6 +433,18 @@
 
             isShark = !isShark
         }
+
+        function playAnimation0() {
+            document.querySelector("#play-animation0").components.set("animation", {
+                action: "play"
+            });
+        }
+        function playAnimation1() {
+            document.querySelector("#play-animation1").components.set("animation", {
+                action: "play"
+            });
+        }
+
         
 
     </script>

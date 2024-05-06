@@ -1,6 +1,6 @@
 {
   "name": "mrjs",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "type": "module",
   "description": "an MR first webXR framework",
   "engines": {
@@ -17,6 +17,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test-serially": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
     "test-randomized": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --random",
+    "clear-testing-cache": "npx jest --clearCache",
     "docs": "./scripts/create-docs.sh",
     "prettier-check": "prettier --check \"src/**/*.js\" \"*.js\"",
     "prettier-fix": "prettier --write \"src/**/*.js\" \"*.js\"",
