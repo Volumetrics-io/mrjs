@@ -39,11 +39,21 @@
 
 <body>
     <!-- <mr-app debug="true"> -->
-    <mr-app>
+    <mr-app orbital="true">
         <mr-light color="white" intensity="2" data-position="0 0.5 0.5"></mr-light>
         <mr-light id="mouselight" color="white" intensity="0.25" data-position="0 0 0.5"></mr-light>
 
-        <mr-panel>
+        <!-- Left one -->
+        <mr-div data-position='-0.3 0 0'>
+            <mr-model src='https://assets.codepen.io/686746/koi_fish.glb' style="scale: 0.1"></model>
+        </mr-div>
+        
+        <!-- Right one -->
+        <mr-foo data-position='0.3 0 0'>
+            <mr-model src='https://assets.codepen.io/686746/koi_fish.glb' style="scale: 0.1"></model>
+        </mr-foo>
+
+        <!-- <mr-panel>
             <mr-div class="gapped padded section">
                 <mr-model style="height: 100px; width: 220px; scale: 0.07; z-index: 10;"
                     src="./index-assets/mrjs_logo_large.glb"></mr-model>
@@ -124,7 +134,7 @@
                             data-comp-animation="clip: 0; action: play;"></mr-model>
                     </mr-div>
                 </mr-div>
-            </mr-div> -->
+            </mr-div> --
 
             <mr-div class="gapped padded section">
                 <mr-text class="h1">Examples</mr-text>
@@ -179,38 +189,59 @@
                 </mr-div>
             </mr-div>
 
-        </mr-panel>
+        </mr-panel> -->
     </mr-app>
 
     <script>
+
+        class MRFoo extends MREntity {
+            constructor() {
+                super();
+            }
+
+            connected() {
+                super.connected();
+                this.boxMesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.2, 0.2, 0.2),
+                    new THREE.MeshPhongMaterial({
+                        color: "#ff9900",
+                        transparent: true,
+                        opacity: 0.4,
+                    }));
+                this.object3D.add(this.boxMesh);
+            }
+            
+        }
+        customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
+        // customElements.define('mr-foo', MRFoo);
 
         function redirectToDocumentation() {
           window.location.href = "https://docs.mrjs.io";
         }
 
-        window.requestAnimationFrame(function rotate_extendable(timestamp) {
-            let rx = Math.cos(timestamp / 2000) * 5 + 50;
-            let ry = Math.cos(timestamp / 2000) * 5 - 40;
-            let rz = Math.sin(timestamp / 2000) * 5;
-            document.querySelector("#extendable").dataset.rotation = rx + " " + ry + " " + rz;
-            window.requestAnimationFrame(rotate_extendable);
-        });
+        // window.requestAnimationFrame(function rotate_extendable(timestamp) {
+        //     let rx = Math.cos(timestamp / 2000) * 5 + 50;
+        //     let ry = Math.cos(timestamp / 2000) * 5 - 40;
+        //     let rz = Math.sin(timestamp / 2000) * 5;
+        //     document.querySelector("#extendable").dataset.rotation = rx + " " + ry + " " + rz;
+        //     window.requestAnimationFrame(rotate_extendable);
+        // });
 
-        window.requestAnimationFrame(function rotate_familiar(timestamp) {
-            let rx = Math.cos(timestamp / 2000) * 10 + 25;
-            let ry = Math.cos(timestamp / 2000) * 10 + 230;
-            let rz = Math.sin(timestamp / 2000) * 10 + 5;
-            document.querySelector("#familiar").dataset.rotation = rx + " " + ry + " " + rz;
-            window.requestAnimationFrame(rotate_familiar);
-        });
+        // window.requestAnimationFrame(function rotate_familiar(timestamp) {
+        //     let rx = Math.cos(timestamp / 2000) * 10 + 25;
+        //     let ry = Math.cos(timestamp / 2000) * 10 + 230;
+        //     let rz = Math.sin(timestamp / 2000) * 10 + 5;
+        //     document.querySelector("#familiar").dataset.rotation = rx + " " + ry + " " + rz;
+        //     window.requestAnimationFrame(rotate_familiar);
+        // });
 
-        window.requestAnimationFrame(function rotate_allInOne(timestamp) {
-            let rx = Math.cos(timestamp / 2000) * -10 + 25;
-            let ry = Math.cos(timestamp / 2000) * -10 + 50;
-            let rz = Math.sin(timestamp / 2000) * -10 + 5;
-            document.querySelector("#all-in-one").dataset.rotation = rx + " " + ry + " " + rz;
-            window.requestAnimationFrame(rotate_allInOne);
-        });
+        // window.requestAnimationFrame(function rotate_allInOne(timestamp) {
+        //     let rx = Math.cos(timestamp / 2000) * -10 + 25;
+        //     let ry = Math.cos(timestamp / 2000) * -10 + 50;
+        //     let rz = Math.sin(timestamp / 2000) * -10 + 5;
+        //     document.querySelector("#all-in-one").dataset.rotation = rx + " " + ry + " " + rz;
+        //     window.requestAnimationFrame(rotate_allInOne);
+        // });
 
 
         // Light follow mouse
