@@ -103,6 +103,7 @@ export class AnimationSystem extends MRSystem {
                 // set it only if not yet set by attachedComponent
                 entity.mixer = new THREE.AnimationMixer(entity.object3D);
             }
+            console.log('on entity:', entity, 'with animations:', entity.animations);
             this.setAnimation(entity, comp);
         }
     }

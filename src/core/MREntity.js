@@ -327,9 +327,13 @@ export class MREntity extends MRElement {
     async connectedCallback() {
         this.compStyle = window.getComputedStyle(this);
 
+        console.log('this:', this, 'in connectedCallback:');
+        console.log('this.parentElement:', this.parentElement, 'instanceof MRElement:', this.parentElement instanceof MRElement);
         if (!(this.parentElement instanceof MRElement)) {
+            console.log('SKIPPING');
             return;
         }
+        console.log('ADDED');
         this.parentElement.add(this);
 
         if (this.parentElement.user) {
