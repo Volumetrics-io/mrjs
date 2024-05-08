@@ -93,6 +93,7 @@ export class AnimationSystem extends MRSystem {
      * @param {object} entity - given entity that might be handled by the system.
      */
     onNewEntity(entity) {
+        console.log('in animatino sys: hit new entity: ', entity);
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             let comp = entity.components.get('animation');
             if (!comp) {
@@ -103,8 +104,10 @@ export class AnimationSystem extends MRSystem {
                 // set it only if not yet set by attachedComponent
                 entity.mixer = new THREE.AnimationMixer(entity.object3D);
             }
-            console.log('on entity:', entity, 'with animations:', entity.animations);
+            console.log('is added in animation sys: on entity:', entity, 'with animations:', entity.animations);
             this.setAnimation(entity, comp);
+        } else {
+            console.log('SKIPPED IN ANIMATION SYSTEM');
         }
     }
 

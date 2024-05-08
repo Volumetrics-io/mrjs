@@ -330,7 +330,7 @@ export class MREntity extends MRElement {
         console.log('this:', this, 'in connectedCallback:');
         console.log('this.parentElement:', this.parentElement, 'instanceof MRElement:', this.parentElement instanceof MRElement);
         if (!(this.parentElement instanceof MRElement)) {
-            console.log('SKIPPING');
+            console.log('SKIPPING connecting parent elem to this');
             return;
         }
         console.log('ADDED');
