@@ -320,12 +320,12 @@ model.removeObject3DFromScene = function (object3D, scene) {
 
 model.currentRunningAnimationClip = function (entity) {
     if (!entity.mixer) {
-        console.log("No mixer found for :", entity);
+        console.log('No mixer found for :', entity);
         return;
     }
     // If no animation is currently playing
-    if (!entity.mixer._actions.some(action => action.isRunning())) {
-        console.log("No animation is currently playing");
+    if (!entity.mixer._actions.some((action) => action.isRunning())) {
+        console.log('No animation is currently playing');
         return;
     }
 
@@ -339,6 +339,6 @@ model.currentRunningAnimationClip = function (entity) {
             // break; // Break the loop if you only want to know the first running animation
         }
     }
-}
+};
 
 export { model };
