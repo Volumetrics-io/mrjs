@@ -396,11 +396,15 @@ export class MRApp extends MRElement {
             if (startPosArray.length === 3) {
                 const [x, y, z] = startPosArray;
                 this.camera.position.set(x, y, z);
+                console.log('set camera pos by cameraStartingPos');
+                console.log(this.camera);
             } else {
                 console.error('Invalid camera starting position format. Please provide "x y z".');
             }
         } else {
             this.camera.position.set(0, 0, 1);
+            console.log('set camera pos by default');
+            console.log(this.camera);
         }
     };
 
