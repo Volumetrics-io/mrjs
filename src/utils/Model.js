@@ -330,10 +330,10 @@ model.currentRunningAnimationClip = function (entity) {
     }
 
     // Iterate over all clip actions in the mixer
-    for (var i = 0; i < entity.mixer._actions.length; i++) {
-        var clipAction = entity._actions[i];
+    for (let i = 0; i < entity.mixer._actions.length; i++) {
+        let clipAction = entity._actions[i];
         if (clipAction.isRunning()) {
-            var clipName = clipAction.getClip().name;
+            let clipName = clipAction.getClip().name;
             console.log("Animation '" + clipName + "' is currently playing");
             // You can do whatever you need with this information
             // break; // Break the loop if you only want to know the first running animation
