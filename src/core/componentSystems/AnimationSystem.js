@@ -219,7 +219,7 @@ export class AnimationSystem extends MRSystem {
             if (typeof comp.clip === 'number') {
                 clips = [entity.animations[comp.clip]].filter(Boolean);
             } else if (typeof comp.clip === 'string') {
-                clips = animations.filter(clip => clip.name === comp.clip);
+                clips = entity.animations.filter(clip => clip.name === comp.clip);
             } else {
                 console.warn('On Entity in AnimationSystem. Could not find designated comp clip so using all animations:', entity, comp.clip);
                 clips = entity.animations;
@@ -227,6 +227,14 @@ export class AnimationSystem extends MRSystem {
         } else {
             clips = entity.animations;
         }
+
+        // Make sure we're only running the actions we want to run. That is,
+        // if there's others currently playing in the mixer, stop them.
+        //
+        // If any of the clips are the same, we assume the user is handling
+        // the comp.action as theyre expecting, so we do not manually stop those.
+        const currentActions = entity.mixer._actions.filter(currentAction => !clips.includes(currentAction._clip));
+        currentActions.forEach(currentAction => currentAction.stop());
 
         // Handle running the clips with normal and multi-layer meshes.
         clips.forEach(clip => {
