@@ -388,7 +388,7 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-        const cameraOptionsString = this.getAttribute('camera') ?? "";
+        const cameraOptionsString = this.getAttribute('camera') ?? '';
         if (cameraOptionsString) {
             Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(this.cameraOptionString) ?? {});
         }
