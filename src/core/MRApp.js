@@ -389,7 +389,19 @@ export class MRApp extends MRElement {
         }
 
         this.camera.matrixWorldAutoUpdate = false;
-        this.camera.position.set(0, 0, 1);
+
+        const startPosString = this.getAttribute('cameraStartingPos');
+        if (startPosString) {
+            const startPosArray = startPosString.split(' ').map(parseFloat);
+            if (startPosArray.length === 3) {
+                const [x, y, z] = startPosArray;
+                this.camera.position.set(x, y, z);
+            } else {
+                console.error('Invalid camera starting position format. Please provide "x y z".');
+            }
+        } else {
+            this.camera.position.set(0, 0, 1);
+        }
     };
 
     /**
