@@ -390,13 +390,13 @@ export class MRApp extends MRElement {
 
         this.camera.matrixWorldAutoUpdate = false;
 
-        const startPosString = this.getAttribute('cameraStartingPos');
+        const startPosString = this.getAttribute('userPos');
         if (startPosString) {
             const startPosArray = startPosString.split(' ').map(parseFloat);
             if (startPosArray.length === 3) {
                 const [x, y, z] = startPosArray;
                 this.camera.position.set(x, y, z);
-                console.log('set camera pos by cameraStartingPos');
+                console.log('set camera pos by userPos');
                 console.log(this.camera);
             } else {
                 console.error('Invalid camera starting position format. Please provide "x y z".');
