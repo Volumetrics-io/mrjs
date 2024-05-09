@@ -79,7 +79,7 @@ export class MRApp extends MRElement {
         };
 
         this.cameraOptions = {
-            camera: 'orthographic',
+            mode: 'orthographic',
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
@@ -231,7 +231,13 @@ export class MRApp extends MRElement {
      */
     init() {
         this.debug = this.getAttribute('debug') ?? false;
-        this.orbital = this.getAttribute('orbital') ?? false;
+
+        const orbitalOptionsString = this.getAttribute('orbital');
+        let orbitalOptions = {};
+        if (orbitalOptionsString) {
+            orbitalOptions = mrjsUtils.string.stringToJson(orbitalOptionsString);
+        }
+        this.orbital = orbitalOptions.mode ?? false;
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -258,7 +264,6 @@ export class MRApp extends MRElement {
         this.initCamera();
 
         const layersString = this.getAttribute('layers');
-
         if (layersString) {
             this.layers = mrjsUtils.string.stringToVector(layersString);
 
@@ -281,6 +286,14 @@ export class MRApp extends MRElement {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
+
+            // set target location if requested
+            if (orbitalOptions.targetPos) {
+                if (orbitalOptions.targetPos.length !== 3) {
+                    console.error('Invalid orbital target position format. Please provide "x y z".');
+                }
+                orbitControls.target.set(orbitalOptions.targetPos[0], orbitalOptions.targetPos[1], orbitalOptions.targetPos[2]);
+            }
 
             // Note: order of the two below if-statements matter.
             // Want if debug=true and orbital=true for orbital to take priority.
@@ -362,14 +375,12 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-        this.cameraOptionString = this.getAttribute('camera');
-        if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.string.stringToJson(this.cameraOptionString);
-        }
+        Object.assign(this.cameraOptions, (this.dataset.camera ?? {}));
 
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
-        switch (this.cameraOptions.camera) {
+
+        switch (this.cameraOptions.mode) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
                 global.viewPortHeight = this.appHeight / 1000;
@@ -387,25 +398,27 @@ export class MRApp extends MRElement {
                 global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
                 break;
         }
-
         this.camera.matrixWorldAutoUpdate = false;
 
-        const startPosString = this.getAttribute('userPos');
-        if (startPosString) {
-            const startPosArray = startPosString.split(' ').map(parseFloat);
-            if (startPosArray.length === 3) {
-                const [x, y, z] = startPosArray;
-                this.camera.position.set(x, y, z);
-                console.log('set camera pos by userPos');
-                console.log(this.camera);
-            } else {
-                console.error('Invalid camera starting position format. Please provide "x y z".');
+        let posUpdated = false;
+        if (this.cameraOptions.hasOwnProperty('startPos')) {
+            const startPosString = comp.startPos;
+            if (startPosString) {
+                const startPosArray = startPosString.split(' ').map(parseFloat);
+                if (startPosArray.length === 3) {
+                    const [x, y, z] = startPosArray;
+                    this.camera.position.set(x, y, z);
+                    posUpdated = true;
+                } else {
+                    console.error('Invalid camera starting position format. Please provide "x y z".');
+                }
             }
-        } else {
-            this.camera.position.set(0, 0, 1);
-            console.log('set camera pos by default');
-            console.log(this.camera);
         }
+        if (!posUpdated) {
+            // default
+            this.camera.position.set(0, 0, 1);
+        }
+        
     };
 
     /**
