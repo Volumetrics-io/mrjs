@@ -57,7 +57,7 @@ export class MRApp extends MRElement {
         this.xrsupport = false;
         this.isMobile = window.mobileCheck(); // resolves true/false
 
-        this.inspect = false
+        this.inspect = false;
 
         this.clock = new THREE.Clock();
         this.systems = new Set();
