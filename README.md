@@ -51,7 +51,7 @@ __*CLONE AND BUILD*__
 
 You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
 
-Then, [clone this repository](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories)
+Then, [clone this repository](https://github.com/Volumetrics-io/mrjs) ([github's how-to-clone](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories))
 
 > If you are planning to contribute to this repo instead of just using is as a source you will need its submodules for proper samples and testing `git clone --recurse-submodules the.cloning.url `. If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:git submodule update --init --recursive`
 
