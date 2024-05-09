@@ -318,4 +318,27 @@ model.removeObject3DFromScene = function (object3D, scene) {
     // Optional: Clean up references for GC if necessary
 };
 
+model.currentRunningAnimationClip = function (entity) {
+    if (!entity.mixer) {
+        console.log('No mixer found for :', entity);
+        return;
+    }
+    // If no animation is currently playing
+    if (!entity.mixer._actions.some((action) => action.isRunning())) {
+        console.log('No animation is currently playing');
+        return;
+    }
+
+    // Iterate over all clip actions in the mixer
+    for (let i = 0; i < entity.mixer._actions.length; i++) {
+        let clipAction = entity._actions[i];
+        if (clipAction.isRunning()) {
+            let clipName = clipAction.getClip().name;
+            console.log("Animation '" + clipName + "' is currently playing");
+            // You can do whatever you need with this information
+            // break; // Break the loop if you only want to know the first running animation
+        }
+    }
+};
+
 export { model };
