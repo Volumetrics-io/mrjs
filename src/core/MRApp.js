@@ -375,7 +375,7 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-        Object.assign(this.cameraOptions, (this.dataset.camera ?? {}));
+        Object.assign(this.cameraOptions, this.dataset.camera ?? {});
 
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
@@ -418,7 +418,6 @@ export class MRApp extends MRElement {
             // default
             this.camera.position.set(0, 0, 1);
         }
-        
     };
 
     /**
