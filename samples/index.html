@@ -29,7 +29,7 @@
     <meta content="MRjs" property="og:site_name" class="next-head" />
 
     <!-- CSS Styles -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="index-style.css"/>
 
     <!-- MRjs -->
     <script src="https://cdn.jsdelivr.net/npm/mrjs@latest/dist/mr.js"></script>
@@ -45,7 +45,7 @@
         <mr-panel>
             <mr-div class="gapped padded section">
                 <mr-model style="height: 100px; width: 220px; scale: 0.07; z-index: 10;"
-                    src="./assets/mrjs_logo_large.glb"></mr-model>
+                    src="./index-assets/mrjs_logo_large.glb"></mr-model>
                 <mr-text class="h1">An extensible library of Web Components for the spatial web.</mr-text>
                 <mr-text class="chapeau">MRjs is a mixed-reality-first, WebXR interface library meant to bootstrap
                     spatial web app development. It implements much of the foundational work so that developers can
@@ -59,7 +59,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="extendable" data-position="0.01 0.01 5"
                         style="height: 120px; width: 140px; scale: 2.7; z-index: 50 ;"
-                        src="./assets/jigsaw.glb"></mr-model>
+                        src="./index-assets/jigsaw.glb"></mr-model>
                     <mr-text class="h2">Extensible</mr-text>
                     <mr-text class="narrow">Being open-source and built on top of web standards, you can easily
                         implement custom elements and contribute to the ecosystem.</mr-text>
@@ -67,7 +67,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="familiar" data-position="0 0 5"
                         style="height: 120px; width: 140px; scale: 1.7; z-index: 50 ;"
-                        src="./assets/familiar.glb"></mr-model>
+                        src="./index-assets/familiar.glb"></mr-model>
                     <mr-text class="h2">Familiar</mr-text>
                     <mr-text class="narrow">Looks and feels like native HTML and CSS, but designed from the ground up
                         for mixed-reality. Start with 2D and ease your way into creating 3D content.</mr-text>
@@ -75,7 +75,7 @@
                 <mr-div class="gapped padded section">
                     <mr-model id="all-in-one" data-position="0 0 0"
                         style="height: 120px; width: 140px; scale: 1.7; z-index: 30;"
-                        src="./assets/all-in-one.glb"></mr-model>
+                        src="./index-assets/all-in-one.glb"></mr-model>
                     <mr-text class="h2">All-in-one</mr-text>
                     <mr-text class="narrow">Asset management, physics, and user interaction come built in, so you can
                         spend less time laying the foundation and more time building your app.</mr-text>
@@ -90,7 +90,7 @@
                 </mr-div>
                 <mr-div class="section">
                     <mr-div class="illustration">
-                        <mr-model style="scale: 0.03; z-index: 20" src="./assets/koifish.glb"
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
                             data-comp-animation="clip: 0; action: play;"></mr-model>
                     </mr-div>
                 </mr-div>
@@ -99,7 +99,7 @@
             <mr-div class="diptych">
                 <mr-div class="section">
                     <mr-div class="illustration">
-                        <mr-model style="scale: 0.03; z-index: 20" src="./assets/koifish.glb"
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
                             data-comp-animation="clip: 0; action: play;"></mr-model>
                     </mr-div>
                 </mr-div>
@@ -118,7 +118,7 @@
                 </mr-div>
                 <mr-div class="section">
                     <mr-div class="illustration">
-                        <mr-model style="scale: 0.03; z-index: 20" src="./assets/koifish.glb"
+                        <mr-model style="scale: 0.03; z-index: 20" src="./index-assets/koifish.glb"
                             data-comp-animation="clip: 0; action: play;"></mr-model>
                     </mr-div>
                 </mr-div>
@@ -131,42 +131,47 @@
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/anchors.html">Anchoring</mr-a>
+                            href="/examples/anchors.html">Anchoring</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/audio.html">Audio</mr-a>
+                            href="/examples/audio.html">Audio</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/debug.html">Debugging</mr-a>
+                            href="/examples/camera.html">Camera</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/embed.html">Embed</mr-a>
+                            href="/examples/debug.html">Debugging</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/images.html">Images</mr-a>
+                            href="/examples/embed.html">Embed</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/models.html">Models</mr-a>
+                            href="/examples/images.html">Images</mr-a>
                     </mr-div>
 
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                            href="https://examples.mrjs.io/examples/skybox.html">Skybox</mr-a>
+                            href="/examples/models.html">Models</mr-a>
+                    </mr-div>
+
+                    <mr-div class="illustration">
+                        <mr-a target="_blank" class="example-link"
+                            href="/examples/skybox.html">Skybox</mr-a>
                     </mr-div>
                     
                     <mr-div class="illustration">
                         <mr-a target="_blank" class="example-link"
-                             href="https://examples.mrjs.io/examples/video.html">Video</mr-a>
+                             href="/examples/video.html">Video</mr-a>
                     </mr-div>
 
                 </mr-div>
