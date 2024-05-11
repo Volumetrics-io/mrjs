@@ -1,12 +1,13 @@
+/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
 @font-face {
     font-family: 'Onest';
-    src: url('/assets/Onest-Regular.ttf') format('truetype');
+    src: url('/index-assets/Onest-Regular.ttf') format('truetype');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Bricolage';
-    src: url('/assets/BricolageGrotesque96pt-SemiBold.ttf') format('truetype');
+    src: url('/index-assets/BricolageGrotesque96pt-SemiBold.ttf') format('truetype');
     font-weight: 700;
 }
 
@@ -193,3 +194,4 @@ mr-button.hover {
         order: -1;
     }
 }
+/* THIS IS AUTO GENERATED FROM scripts/update-all-submodules.sh ANY DIRECT EDITS WILL NOT BE SAVED */
