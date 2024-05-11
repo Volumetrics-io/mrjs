@@ -33,7 +33,31 @@
     <link rel="stylesheet" type="text/css" href="index-style.css"/>
 
     <!-- MRjs -->
-    <script src="./mr.js"></script>
+    <script>
+    function defineMRFoo() {
+            class MRFoo extends MREntity {
+                constructor() {
+                    super();
+                }
+
+                connected() {
+                    super.connected();
+                    this.boxMesh = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.2, 0.2, 0.2),
+                        new THREE.MeshPhongMaterial({
+                            color: "#ff9900",
+                            transparent: true,
+                            opacity: 0.4,
+                        }));
+                    this.object3D.add(this.boxMesh);
+                }
+            }
+            
+            // Define custom element
+            customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
+        }
+    </script>
+    <script src="./mr.js" onload="defineMRFoo()"></script>
 
 </head>
 
@@ -191,31 +215,16 @@
         </mr-panel> -->
     </mr-app>
 
-    <script src="./index-assets/mr-foo.js"></script>
+    <!-- <script src="./index-assets/mr-foo.js"></script> -->
     <script>
 
-        /*
-        class MRFoo extends MREntity {
-            constructor() {
-                super();
-            }
+        // Check if MREntity is defined
+        console.log('MREntity defined:', typeof MREntity !== 'undefined');
 
-            connected() {
-                super.connected();
-                this.boxMesh = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.2, 0.2, 0.2),
-                    new THREE.MeshPhongMaterial({
-                        color: "#ff9900",
-                        transparent: true,
-                        opacity: 0.4,
-                    }));
-                this.object3D.add(this.boxMesh);
-            }
-            
-        }
-        customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
-        // customElements.define('mr-foo', MRFoo);
-        */
+        // Log the loading state of the script
+        document.querySelector('script[src="./mr.js"]').onload = () => console.log('mr.js loaded');
+        document.querySelector('script[src="./mr.js"]').onerror = () => console.error('Failed to load mr.js');
+        
 
         function redirectToDocumentation() {
           window.location.href = "https://docs.mrjs.io";
