@@ -113,6 +113,13 @@ if [ $script_exit_code -eq 2 ]; then
     REPLACE_WITH="./index-assets/"
     replaceEveryOccurenceInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH";
     replaceEveryOccurenceInFile "samples/index-style.css" $TO_REPLACE "$REPLACE_WITH";
+    ### overwrite https://examples.mrjs.io link with nothing so that on main mrjs.io site
+    ### we can keep the full url, and in this repo we can just have it direct to our own
+    ### files so we can test localhost and live examples without needing to 'magic' the link.
+    TO_REPLACE="https://examples.mrjs.io"
+    REPLACE_WITH=""
+    replaceEveryOccurenceInFile "samples/index.html" "$TO_REPLACE" "$REPLACE_WITH";
+    replaceEveryOccurenceInFile "samples/index-style.css" $TO_REPLACE "$REPLACE_WITH";
 
     ### commit and save replacement changes
     git add samples/index-assets samples/index.html samples/index-style.css

@@ -57,6 +57,8 @@ export class MRApp extends MRElement {
         this.xrsupport = false;
         this.isMobile = window.mobileCheck(); // resolves true/false
 
+        this.inspect = false;
+
         this.clock = new THREE.Clock();
         this.systems = new Set();
         this.scene = new THREE.Scene();
@@ -79,7 +81,7 @@ export class MRApp extends MRElement {
         };
 
         this.cameraOptions = {
-            camera: 'orthographic',
+            mode: 'orthographic',
         };
         this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
@@ -230,8 +232,11 @@ export class MRApp extends MRElement {
      * @description Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
      */
     init() {
+        window.addEventListener('resize', this.onWindowResize);
+
         this.debug = this.getAttribute('debug') ?? false;
-        this.orbital = this.getAttribute('orbital') ?? false;
+
+        /* --- Renderer Setup --- */
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -255,10 +260,15 @@ export class MRApp extends MRElement {
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
 
+        this.appendChild(this.renderer.domElement);
+
+        this.renderer.setAnimationLoop(this.render);
+
+        /* --- Camera Setup --- */
+
         this.initCamera();
 
         const layersString = this.getAttribute('layers');
-
         if (layersString) {
             this.layers = mrjsUtils.string.stringToVector(layersString);
 
@@ -267,23 +277,28 @@ export class MRApp extends MRElement {
             }
         }
 
-        if (this.getAttribute('stats') ?? false) {
-            // Old version of stats using the Stats.js visual
-            // setup. Leaving to allow for top left quick visual of stats.
-            // Is /not/ performant in headset. Documentation notes this.
-            //
-            this.stats = new Stats();
-            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild(this.stats.dom);
+        const orbitalOptionsString = this.getAttribute('orbital');
+        let orbitalOptions = {};
+        if (orbitalOptionsString) {
+            orbitalOptions = mrjsUtils.string.stringToJson(orbitalOptionsString);
         }
-
+        this.orbital = orbitalOptions.mode ?? false;
         if (this.debug || this.orbital) {
             const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
             orbitControls.minDistance = 1;
             orbitControls.maxDistance = 2;
 
+            // set target location if requested
+            if (orbitalOptions.targetPos) {
+                if (orbitalOptions.targetPos.length !== 3) {
+                    console.error('Invalid orbital target position format. Please provide "x y z".');
+                }
+                orbitControls.target.set(orbitalOptions.targetPos[0], orbitalOptions.targetPos[1], orbitalOptions.targetPos[2]);
+                orbitControls.update();
+            }
+
             // Note: order of the two below if-statements matter.
-            // Want if debug=true and orbital=true for orbital to take priority.
+            // Want if both debug=true and orbital=true for orbital to take priority.
             if (this.orbital) {
                 // always allow orbital controls
                 orbitControls.enabled = true;
@@ -303,7 +318,26 @@ export class MRApp extends MRElement {
             }
         }
 
-        this.appendChild(this.renderer.domElement);
+        /* --- Lighting Setup --- */
+
+        if (this.getAttribute('lighting') ?? false) {
+            this.lighting = mrjsUtils.string.stringToJson(this.lighting);
+        }
+        this.initLights(this.lighting);
+
+        /* --- Stats Setup --- */
+
+        if (this.getAttribute('stats') ?? false) {
+            // Old version of stats using the Stats.js visual
+            // setup. Leaving to allow for top left quick visual of stats.
+            // Is /not/ performant in headset. Documentation notes this.
+            //
+            this.stats = new Stats();
+            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+            document.body.appendChild(this.stats.dom);
+        }
+
+        /* --- Background Setup --- */
 
         // allows for mr-app style to have background:value to set the skybox
         if (this.compStyle.backgroundImage !== 'none') {
@@ -322,6 +356,8 @@ export class MRApp extends MRElement {
             this.style.setProperty('background-image', 'none', 'important');
             this.compStyle = window.getComputedStyle(this);
         }
+
+        /* --- Mobile VS XR Setup --- */
 
         // We don't support mobile XR yet
         if (!this.isMobile) {
@@ -345,16 +381,6 @@ export class MRApp extends MRElement {
                 }
             });
         }
-
-        this.renderer.setAnimationLoop(this.render);
-
-        window.addEventListener('resize', this.onWindowResize);
-
-        if (this.getAttribute('lighting') ?? false) {
-            this.lighting = mrjsUtils.string.stringToJson(this.lighting);
-        }
-
-        this.initLights(this.lighting);
     }
 
     /**
@@ -362,14 +388,15 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-        this.cameraOptionString = this.getAttribute('camera');
-        if (this.cameraOptionString) {
-            this.cameraOptions = mrjsUtils.string.stringToJson(this.cameraOptionString);
+        const cameraOptionsString = this.getAttribute('camera') ?? '';
+        if (cameraOptionsString) {
+            Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(this.cameraOptionString) ?? {});
         }
 
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
-        switch (this.cameraOptions.camera) {
+
+        switch (this.cameraOptions.mode) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
                 global.viewPortHeight = this.appHeight / 1000;
@@ -387,9 +414,26 @@ export class MRApp extends MRElement {
                 global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
                 break;
         }
-
         this.camera.matrixWorldAutoUpdate = false;
-        this.camera.position.set(0, 0, 1);
+
+        let posUpdated = false;
+        if (this.cameraOptions.hasOwnProperty('startPos')) {
+            const startPosString = comp.startPos;
+            if (startPosString) {
+                const startPosArray = startPosString.split(' ').map(parseFloat);
+                if (startPosArray.length === 3) {
+                    const [x, y, z] = startPosArray;
+                    this.camera.position.set(x, y, z);
+                    posUpdated = true;
+                } else {
+                    console.error('Invalid camera starting position format. Please provide "x y z".');
+                }
+            }
+        }
+        if (!posUpdated) {
+            // default
+            this.camera.position.set(0, 0, 1);
+        }
     };
 
     /**

@@ -502,7 +502,7 @@ export class ControlSystem extends MRSystem {
         }
 
         if (this.app.camera instanceof THREE.OrthographicCamera) {
-            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, -1); // z = - 1 important!
+            this.direction.set((x / this.app.appWidth) * 2 - 1, -(y / this.app.appHeight) * 2 + 1, -1); // z = - 1 important!
             this.direction.unproject(this.app.camera);
             const direction = new THREE.Vector3(0, 0, -1);
             direction.transformDirection(this.app.camera.matrixWorld);
@@ -510,7 +510,7 @@ export class ControlSystem extends MRSystem {
             this.ray.origin = { ...this.direction };
             this.ray.dir = { ...direction };
         } else {
-            this.direction.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+            this.direction.set((x / this.app.appWidth) * 2 - 1, -(y / this.app.appHeight) * 2 + 1, 0.5);
             this.direction.unproject(this.app.camera);
             this.direction.sub(this.app.camera.position).normalize();
             this.ray.origin = { ...this.app.camera.position };

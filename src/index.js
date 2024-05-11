@@ -6,9 +6,11 @@
 // TODO - this should auto grab instead of manually be updated as manual updates will create problems.
 // for import and export
 
+import * as THREE from 'three';
+
 // Log the version number
 import { version } from '../package.json';
-console.log('Current ᴍʀjs Version:', version);
+console.log('-- ᴍʀjs Current Versioning --\nᴍʀjs :', version, '( using threejs :', THREE.REVISION, ')');
 
 // STYLE
 import './defaultStyle.css';
