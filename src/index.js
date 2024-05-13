@@ -93,6 +93,3 @@ export * from './extras/index.js';
 
 // UTILS - exporting as a named group since it's a submodule of this js module
 export { mrjsUtils } from './utils/index.js';
-
-console.log('MRJS fully loaded');
-document.dispatchEvent(new Event('mrjsReady'));
