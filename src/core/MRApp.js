@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { XRButton } from 'three/addons/webxr/XRButton.js';
 import Stats from 'stats.js';
+// import * as SPECTOR from 'spectorjs';
+// let spector = new SPECTOR.Spector();
+// spector.displayUI();
 
 import { mrjsUtils } from 'mrjs';
 
@@ -595,7 +598,7 @@ export class MRApp extends MRElement {
         this.renderer.clear();
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined) {
+        if (this.maskingSystem !== undefined && this.maskingSystem.scene.length > 0) {
             this.maskingSystem.sync();
             const currentShadowEnabled = this.renderer.shadowMap.enabled;
             this.renderer.shadowMap.enabled = false;
@@ -603,7 +606,17 @@ export class MRApp extends MRElement {
             this.renderer.shadowMap.enabled = currentShadowEnabled;
         }
 
+        // this.scene.traverse((object) => {
+        //   if (object.isMesh) {
+        //     console.log(`Rendering `, object, `name: ${object.name} with num children: ${object.children.length} with material ${object.material.name}`);
+        //   }
+        // });
+
         this.renderer.render(this.scene, this.camera);
+
+        // Log the number of draw calls
+        // console.log('number of draw calls:', this.renderer.info.render.calls);
+        // console.log(this.renderer.info);
     }
 }
 
