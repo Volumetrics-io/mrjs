@@ -615,8 +615,8 @@ export class MRApp extends MRElement {
         this.renderer.render(this.scene, this.camera);
 
         // Log the number of draw calls
-        // console.log('number of draw calls:', this.renderer.info.render.calls);
-        // console.log(this.renderer.info);
+        console.log('number of draw calls:', this.renderer.info.render.calls);
+        console.log(this.renderer.info);
     }
 }
 
