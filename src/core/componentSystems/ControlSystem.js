@@ -62,7 +62,11 @@ export class ControlSystem extends MRSystem {
 
         this.currentEntity = null;
 
-        this.cursorViz = new THREE.Mesh(new THREE.RingGeometry(0.005, 0.007, 32), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.7, transparent: true }));
+        const cursorMaterial = mrjsUtils.material.MeshBasicMaterial.clone();
+        cursorMaterial.color = 0x000000;
+        cursorMaterial.opacity = 0.7;
+        cursorMaterial.transparent = true;
+        this.cursorViz = new THREE.Mesh(new THREE.RingGeometry(0.005, 0.007, 32), cursorMaterial);
 
         this.app.scene.add(this.cursorViz);
         this.cursorViz.visible = false;

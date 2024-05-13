@@ -120,7 +120,8 @@ export class MRPlaneManager {
         mrPlane.dimensions.setZ(height);
 
         const geometry = new THREE.BoxGeometry(width, 0.01, height);
-        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const material = mrjsUtils.material.MeshBasicMaterial.clone();
+        material.color = 0xffffff;
 
         mrPlane.mesh = new THREE.Mesh(geometry, material);
         mrPlane.mesh.position.setFromMatrixPosition(this.matrix);

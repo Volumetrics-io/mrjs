@@ -34,20 +34,18 @@ export class MRSkyBoxEntity extends MREntity {
                 if (this.skybox.material !== undefined) {
                     this.skybox.material.dispose();
                 }
-                this.skybox.material = new THREE.MeshStandardMaterial({
-                    envMap: texture,
-                    side: THREE.BackSide, // Render only on the inside
-                });
+                this.skybox.material = mrjsUtils.material.MeshStandardMaterial.clone();
+                this.skybox.material.envMap = texture;
+                this.skybox.material.side = THREE.BackSide; // Render only on the inside
             } else {
                 // Handle single texture case
                 if (this.skybox.material !== undefined) {
                     this.skybox.material.dispose();
                 }
-                this.skybox.material = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    side: THREE.BackSide, // Render only on the inside
-                    opacity: 1,
-                });
+                this.skybox.material = mrjsUtils.material.MeshBasicMaterial.clone();
+                this.skybox.material.map = texture;
+                this.skybox.material.side = THREE.BackSide; // Render only on the inside
+                this.skybox.material.opacity = 1;
             }
         }
         this.textureLoadedCallbacks.forEach((callback) => callback(texture));

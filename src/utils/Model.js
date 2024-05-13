@@ -212,8 +212,7 @@ model.loadSTL = async function (filePath) {
         loader.load(
             filePath,
             (geometry) => {
-                const material = new THREE.MeshPhongMaterial();
-                const mesh = new THREE.Mesh(geometry, material);
+                const mesh = new THREE.Mesh(geometry, mrjsUtils.material.MeshPhongMaterial.clone());
 
                 resolve(mesh); // Resolve the promise with the loaded mesh
             },
