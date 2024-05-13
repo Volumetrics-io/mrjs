@@ -331,6 +331,7 @@ export class MREntity extends MRElement {
         console.log('this :', this, ' parentElement: ', this.parentElement);
         console.log('this.parentElement instanceof MRElement:', this.parentElement instanceof MRElement);
         if (!(this.parentElement instanceof MRElement)) {
+            console.log('SKIPPING: ', mrjsUtils.js.getSuperclassNameFromInstance(this.parentElement));
             console.log('SKIPPING');
             return;
         }

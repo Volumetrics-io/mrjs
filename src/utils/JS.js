@@ -20,6 +20,20 @@ js.isInstanceOfBaseClassOnly = function (instance, BaseClass) {
     return instance.constructor === BaseClass;
 };
 
+js.getSuperclassNameFromInstance = function (instance) {
+    console.log('inside getSuperclassNameFromInstance');
+    // Get the prototype of the instance's constructor (i.e., Dog.prototype)
+    const instanceProto = Object.getPrototypeOf(instance);
+    // Get the prototype of the instanceProto (i.e., Animal.prototype)
+    const superProto = Object.getPrototypeOf(instanceProto);
+    console.log('instanceProto:', instanceProto, 'superProto:', superProto);
+    // Check if there's a superclass and return its name
+    if (superProto && superProto.constructor) {
+        return superProto.constructor.name;
+    }
+    return null;  // If no superclass, return null
+}
+
 js.applyAttributes = function (object, attribMap) {
     Object.entries(attributeMap).forEach(([key, value]) => {
         if (key in object) {
