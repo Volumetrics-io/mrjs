@@ -57,7 +57,11 @@
         //     customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
         }
     </script>
-    <script src="./mr.js" onload="defineMRFoo()"></script>
+    <!-- <script src="./mr.js" onload="defineMRFoo()"></script> -->
+    <!-- <link rel="preload" as="script" href="mr.js"> -->
+    <!-- <script src="mr.js" defer onload="defineMRFoo()"></script> -->
+    <script src="mr.js" defer></script>
+
 
 </head>
 
@@ -216,7 +220,7 @@
     </mr-app>
 
     <!-- <script src="./index-assets/mr-foo.js"></script> -->
-    <script>
+    <script defer>
 
         class MRFoo extends MREntity {
             constructor() {
