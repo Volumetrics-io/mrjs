@@ -35,26 +35,26 @@
     <!-- MRjs -->
     <script>
     function defineMRFoo() {
-            class MRFoo extends MREntity {
-                constructor() {
-                    super();
-                }
+        //     class MRFoo extends MREntity {
+        //         constructor() {
+        //             super();
+        //         }
 
-                connected() {
-                    super.connected();
-                    this.boxMesh = new THREE.Mesh(
-                        new THREE.BoxGeometry(0.2, 0.2, 0.2),
-                        new THREE.MeshPhongMaterial({
-                            color: "#ff9900",
-                            transparent: true,
-                            opacity: 0.4,
-                        }));
-                    this.object3D.add(this.boxMesh);
-                }
-            }
+        //         connected() {
+        //             super.connected();
+        //             this.boxMesh = new THREE.Mesh(
+        //                 new THREE.BoxGeometry(0.2, 0.2, 0.2),
+        //                 new THREE.MeshPhongMaterial({
+        //                     color: "#ff9900",
+        //                     transparent: true,
+        //                     opacity: 0.4,
+        //                 }));
+        //             this.object3D.add(this.boxMesh);
+        //         }
+        //     }
             
-            // Define custom element
-            customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
+        //     // Define custom element
+        //     customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
         }
     </script>
     <script src="./mr.js" onload="defineMRFoo()"></script>
@@ -217,6 +217,26 @@
 
     <!-- <script src="./index-assets/mr-foo.js"></script> -->
     <script>
+
+        class MRFoo extends MREntity {
+            constructor() {
+                super();
+            }
+
+            async connected() {
+                await super.connected();
+                this.boxMesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.2, 0.2, 0.2),
+                    new THREE.MeshPhongMaterial({
+                        color: "#ff9900",
+                        transparent: true,
+                        opacity: 0.4,
+                    }));
+                this.object3D.add(this.boxMesh);
+            }
+        }
+        // Define custom element
+        customElements.get('mr-foo') || customElements.define('mr-foo', MRFoo);
 
         // Check if MREntity is defined
         console.log('MREntity defined:', typeof MREntity !== 'undefined');
