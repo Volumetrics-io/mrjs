@@ -121,12 +121,13 @@ export class MRPlaneManager {
 
         const geometry = new THREE.BoxGeometry(width, 0.01, height);
         const material = mrjsUtils.material.MeshBasicMaterial.clone();
-        material.color = 0xffffff;
+        material.color.set(0xffffff);
+        material.colorWrite = false;
+        material.programName = "planeMeshMaterial";
 
         mrPlane.mesh = new THREE.Mesh(geometry, material);
         mrPlane.mesh.position.setFromMatrixPosition(this.matrix);
         mrPlane.mesh.quaternion.setFromRotationMatrix(this.matrix);
-        mrPlane.mesh.material.colorWrite = false;
         mrPlane.mesh.renderOrder = 2;
         this.scene.add(mrPlane.mesh);
 

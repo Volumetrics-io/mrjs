@@ -81,7 +81,8 @@ export class InstancingSystem extends MRSystem {
         // ----- add instances to scene -----
 
         // Create an InstancedMesh using the instanced geometry and matrices
-        const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        const material = mrjsUtils.material.MeshBasicMaterial.clone();
+        material.color.set(0xffff00);
         const instancedMesh = new THREE.InstancedMesh(instancedGeometry, material, this.instanceCount);
         instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 

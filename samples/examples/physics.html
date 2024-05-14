@@ -122,14 +122,16 @@
             let geometry = new THREE.BoxGeometry(...tempSize)
 
             let hoverMaterial = mrjsUtils.material.MeshPhongMaterial.clone();
-            hoverMaterial.color = 0x00ff00;
+            hoverMaterial.color.set(0x00ff00);
             hoverMaterial.transparent = true;
             hoverMaterial.opacity = 0.5;
+            hoverMaterial.name = "hoverMaterial";
 
             let touchMaterial = mrjsUtils.material.MeshPhongMaterial.clone();
-            touchMaterial.color = 0xff0000;
+            touchMaterial.color.set(0xff0000);
             touchMaterial.transparent = true;
             touchMaterial.opacity = 0.5;
+            touchMaterial.name = "touchMaterial";
 
             let hoverMesh = new THREE.Mesh(geometry, hoverMaterial)
             let touchMesh = new THREE.Mesh(geometry, touchMaterial)

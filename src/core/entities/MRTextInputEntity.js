@@ -129,10 +129,11 @@ export class MRTextInputEntity extends MRTextEntity {
         if (!this.cursor) {
             // Setup basic cursor info and material for if it was reset.
             this.cursor = new THREE.Mesh();
-            
+
             const material = mrjsUtils.material.MeshBasicMaterial.clone();
-            material.color = 0x000000;
+            material.color.set(0x000000);
             material.side = THREE.DoubleSide;
+            material.programName = "text:cursorMaterial";
 
             this.cursor.material = material;
         }

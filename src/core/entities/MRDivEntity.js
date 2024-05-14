@@ -21,12 +21,11 @@ export class MRDivEntity extends MREntity {
         this.physics.type = 'ui';
 
         const geometry = mrjsUtils.geometry.UIPlane(1, 1, [0], 18);
-        const material = new THREE.MeshStandardMaterial({
-            color: 0xfff,
-            roughness: 0.7,
-            metalness: 0.0,
-            side: THREE.DoubleSide,
-        });
+        const material = mrjsUtils.material.MeshStandardMaterial.clone();
+        material.color.set(0xfff);
+        material.color.roughness = 0.7;
+        material.color.metalness = 0.0;
+        material.side = THREE.DoubleSide;
 
         this.background = new THREE.Mesh(geometry, material);
         this.background.receiveShadow = true;
