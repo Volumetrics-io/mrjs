@@ -2,20 +2,13 @@
 
 An extensible library of Web Components for the spatial web.
 
-[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
+[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE) [![examples](https://img.shields.io/badge/examples-ee99ff)](https://examples.mrjs.io)) [![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io)
 
 ## Overview
  
 MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
 Designed to be extensible, MRjs provides a familiar interface via [THREE.js](https://github.com/mrdoob/three.js), the [Custom Elements API](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), [Rapier.js](https://github.com/dimforge/rapier), and our own built-in ECS (Entity Component System) setup.
-
-## Main Reference Links
-
-- [landing-page](https://mrjs.io) - includes about, info, and high def and community-created samples
-- [docs](https://docs.mrjs.io) - includes onboarding information, engine setup (ECS, Contributing, etc.), HTML tag helpers, and JavaScript API documentation
-- [dev-examples](https://examples.mrjs.io) - the examples from the main MRjs repository used as development explainers and for testing purposes.
-- [getting-started](https://docs.mrjs.io/getting-started)
 
 ## Getting started
 
