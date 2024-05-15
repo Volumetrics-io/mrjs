@@ -100,6 +100,16 @@ npm run server
 npm run test
 ```
 
+### Updating Documentation:
+
+Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
+
+For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
+
+```sh
+npm run docs
+```
+
 ### HTTPS Requirement
 
 To test in headset, WebXR requires that your project be served using an HTTPS server. If you're using Webpack, you can achieve this by utilizing the [Dev Server webpack plugin](https://webpack.js.org/configuration/dev-server/) with `https: true`. 
@@ -113,16 +123,6 @@ Both options require you generate an SSL certificate and a key via OpenSSL:
 
 ```sh
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
-```
-
-## Documentation:
-
-Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
-
-For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
-
-```sh
-npm run docs
 ```
 
 # Features
