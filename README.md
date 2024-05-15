@@ -2,7 +2,7 @@
 
 An extensible library of Web Components for the spatial web.
 
-[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE) [![examples](https://img.shields.io/badge/examples-ee99ff)](https://examples.mrjs.io)) [![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io)
+[![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE) [![examples](https://img.shields.io/badge/examples-ee99ff)](https://examples.mrjs.io) [![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io)
 
 ## Overview
  
@@ -80,22 +80,23 @@ npm run build
 
 ### Samples
 
-> This only works if you're setting this up [via github source](#via-github-source); otherwise, go to [mrjs.io](https://mrjs.io) to try out the samples there.
-
-> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this unless the test fails and tells you to do so): `npm run update-submodules`
+> This only works if you're setting this up [via github source](#via-github-source); otherwise, go to [examples.mrjs.io](https://examples.mrjs.io) to try out the samples there.
 
 You are able to try the samples locally and in headset by running the following:
 
- <sub><i>(note for in headset testing: [https requirement](https://github.com/Volumetrics-io/mrjs#https-requirement))</i></sub>
-
+ <sub><i>(note for in headset testing: [https requirement](#https-requirement))</i></sub>
 ```sh
 npm run server
 ```
 
+> We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update. Run the following to stay up to date:
+> ```sh
+> npm run update-submodules
+> ```
+
 ### Tests
 
- <sub><i>(this follows the need for the same `update-submodules` note as the 'running the samples' section)</i></sub>
-
+ <sub><i>(note for in headset testing: [https requirement](#https-requirement))</i></sub>
 ```sh
 npm run test
 ```
@@ -104,7 +105,9 @@ npm run test
 
 Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
 
-For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
+For local documentation or to check the local output when writing your own PR to see how it will update, run the below command.
+
+> As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
 
 ```sh
 npm run docs
