@@ -8,15 +8,18 @@ An extensible library of Web Components for the spatial web.
  
 MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
 
-## Main Links
+Designed to be extensible, MRjs provides a familiar interface via [THREE.js](https://github.com/mrdoob/three.js), the [Custom Elements API](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), [Rapier.js](https://github.com/dimforge/rapier), and our own built-in ECS (Entity Component System) setup.
+
+## Main Reference Links
 
 - [landing-page](https://mrjs.io) - includes about, info, and high def and community-created samples
 - [docs](https://docs.mrjs.io) - includes onboarding information, engine setup (ECS, Contributing, etc.), HTML tag helpers, and JavaScript API documentation
 - [dev-examples](https://examples.mrjs.io) - the examples from the main MRjs repository used as development explainers and for testing purposes.
- 
+- [getting-started](https://docs.mrjs.io/getting-started)
+
 ## Getting started
- 
-### Via a script tag in the `<head>` of your HTML file:
+
+### Via HTML Script Tag:
 
 For the latest stable version:
 
@@ -28,7 +31,7 @@ For the latest stable version:
 </head>
 ```
 
-for the daily build. No guarantee of stability.
+For the daily build. No guarantee of stability:
 
 ```html
 <head>
@@ -38,46 +41,41 @@ for the daily build. No guarantee of stability.
 </head>
 ```
 
-
 ### Via NPM:
 
 ```sh
 npm i mrjs
 ```
 
-### From source:
+### Via Github Source:
 
-__*CLONE AND BUILD*__
+1)
 
-You will need Node [installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your computer
-
-Then, [clone this repository](https://github.com/Volumetrics-io/mrjs) ([github's how-to-clone](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories))
+[Clone this repository](https://github.com/Volumetrics-io/mrjs) ([github's how-to-clone](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories))
 
 ```sh
 git clone the.cloning.url
 ```
 
-### Submodules
+> If you are planning to contribute to this repo instead of just using is as a source you will need its submodules for proper samples and testing:
+> ```sh
+> git clone --recurse-submodules the.cloning.url
+> ```
+> 
+> If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:
+> ```sh
+> git submodule update --init --recursive
+> ```
 
-If you are planning to contribute to this repo instead of just using is as a source you will need its submodules for proper samples and testing:
-```sh
-git clone --recurse-submodules the.cloning.url
-```
+2)
 
-If you've already cloned the repo the normal way (`git clone the.cloning.url`) you can update for the submodule as follows:
-```sh
-git submodule update --init --recursive
-```
-
-### Node
-
-Next, setup your node environment:
+Next, setup your node environment ([make sure node is setup properly](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)):
 
 ```sh
 npm install
 ```
 
-### Build
+3)
 
 and now build:
 
@@ -85,7 +83,11 @@ and now build:
 npm run build
 ```
 
-__*RUNNING THE SAMPLES*__
+## Running the samples and tests
+
+### Samples
+
+> This only works if you're setting this up [via github source](#via-github-source); otherwise, go to [mrjs.io](https://mrjs.io) to try out the samples there.
 
 > We serve some of our examples and testing files from submodules, if you are planning to contribute, there will be times when the submodule for your work might be out of date. Since we run scripts along with our submodule update, make sure to run the following in that case (note, we wont have to do this that often, so you probably wont need to do this unless the test fails and tells you to do so): `npm run update-submodules`
 
@@ -97,7 +99,7 @@ You are able to try the samples locally and in headset by running the following:
 npm run server
 ```
 
-__*RUNNING THE TESTING*__
+### Tests
 
  <sub><i>(this follows the need for the same `update-submodules` note as the 'running the samples' section)</i></sub>
 
@@ -105,17 +107,7 @@ __*RUNNING THE TESTING*__
 npm run test
 ```
 
-### Documentation:
-
-Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
-
-For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
-
-```sh
-npm run docs
-```
-
-## HTTPS Requirement
+### HTTPS Requirement
 
 To test in headset, WebXR requires that your project be served using an HTTPS server. If you're using Webpack, you can achieve this by utilizing the [Dev Server webpack plugin](https://webpack.js.org/configuration/dev-server/) with `https: true`. 
 
@@ -128,6 +120,16 @@ Both options require you generate an SSL certificate and a key via OpenSSL:
 
 ```sh
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
+```
+
+## Documentation:
+
+Check [docs.mrjs.io](https://docs.mrjs.io) or our [repository](https://github.com/Volumetrics-io/documentation) for the full documentation.
+
+For local documentation or to check the local output when writing your own PR to see how it will update, run the below command. As a heads-up, the order of creation of docs depends on your operating system, so if when you run this and the order looks different, no worries - in the repository itself our action will handle that for you and default to use the right version for these automatically generated docs.
+
+```sh
+npm run docs
 ```
 
 # Features
@@ -179,26 +181,11 @@ mr-img {
 </mr-app>
 ```
 
-## Built-in Physics Engine
-
-Rapier.js is fully integrated out of the box. It is used to power collision-based hand interactions, but also to support other common features such as:
-
-- Gravity
-- Rag doll physics
-- Joint constraints
-- Vehicles
-- Complex collision shapes
-- Kinematics
-
-## Extensible
-
-Designed to be extensible, MRjs provides a familiar interface via THREE.js, the Custom Elements API, and is leveled up with a built-in ECS (Entity Component System).
-
-### Entity Component System
+## Entity Component System
 
 MRjs is designed from the ground up using the Entity-Component-System Architecture. This is a common architecture implemented by Game Engines such as Unity, Unreal, and RealityKit.
 
-#### Entity
+### Entity
 
 An Entity is an object. It stores only the most fundamental data, such as a unique identifier, a THREE.js Object3D, a physics body, and dimension data such as width and scale.
 
@@ -223,7 +210,7 @@ class Spacecraft extends MREntity {
 customElements.get('mr-spacecraft') || customElements.define('mr-spacecraft', Spacecraft)
 ```
 
-#### Systems
+### Systems
 
 A System contains logic that is applied to all entities that have a corresponding Component, using the data stored by the component. Unlike Entities & Components, Systems have no HTML representation and are implemented entirely in JavaScript.
 
