@@ -518,7 +518,7 @@ export class MRApp extends MRElement {
     onWindowResize() {
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
-        switch (this.cameraOptions.camera) {
+        switch (this.cameraOptions.mode) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
                 global.viewPortHeight = this.appHeight / 1000;
