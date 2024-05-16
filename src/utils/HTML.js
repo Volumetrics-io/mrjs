@@ -15,21 +15,19 @@ let html = {};
  * @description Given the path returns an absolute path resolved so relative linking works as expected.
  * @returns {string} a.href - the absolute path (or paths)
  */
-html.resolvePath = function (path, baseUrl) {
+html.resolvePath = function (path, baseUrl = window.location.origin) {
     const fixPath = (path, baseUrl) => {
         let a = document.createElement('a');
         a.href = html.removeUrlQueries(path, baseUrl);
         return a.href;
     };
 
-    // multiple paths
+    // Handle multiple paths separated by commas
     if (path.includes(',')) {
-        let returnedPathStr = '';
-        let pathList = path.split(',');
-        for (let i = 0; i < pathList.length; ++i) {
-            returnedPathStr += fixPath(pathList[i], baseUrl) + (i != pathList.length - 1 ? ',' : '');
-        }
-        return returnedPathStr;
+        return path
+            .split(',')
+            .map((p) => fixPath(p.trim()))
+            .join(',');
     }
 
     // singular path
@@ -45,17 +43,11 @@ html.resolvePath = function (path, baseUrl) {
  * For ex: 'https://example.com/images/photo.png?version=2' becomes 'https://example.com/images/photo.png'
  * @returns {string} a.href - the absolute path
  */
-html.removeUrlQueries = function (path, baseUrl) {
+html.removeUrlQueries = function (path, baseUrl = window.location.origin) {
     try {
         // Check if path is absolute. If not, use baseUrl as the second parameter
-        let urlObj;
-        if (baseUrl) {
-            urlObj = new URL(path, baseUrl);
-        } else {
-            urlObj = new URL(path);
-        }
-        let cleanUrl = urlObj.origin + urlObj.pathname;
-        return cleanUrl;
+        let urlObj = new URL(path, baseUrl);
+        return urlObj.origin + urlObj.pathname;
     } catch (error) {
         console.warn('Error processing URL:', error.message);
         return path; // Return the original path if there's an error

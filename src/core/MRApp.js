@@ -133,7 +133,7 @@ export class MRApp extends MRElement {
         document.addEventListener('engine-started', (event) => {
             this.user = new MRUser(this.camera, this.scene);
 
-            if (this.getAttribute('occlusion') == 'spotlight') {
+            if (this.dataset.occlusion == 'spotlight') {
                 this.scene.add(this.user.initSpotlight());
             }
 
@@ -237,7 +237,7 @@ export class MRApp extends MRElement {
     init() {
         window.addEventListener('resize', this.onWindowResize);
 
-        this.debug = this.getAttribute('debug') ?? false;
+        this.debug = this.dataset.debug ?? false;
 
         /* --- Renderer Setup --- */
 
@@ -251,7 +251,7 @@ export class MRApp extends MRElement {
             // References:
             // https://stackoverflow.com/questions/15558418/how-do-you-save-an-image-from-a-three-js-canvas
             // https://stackoverflow.com/questions/30628064/how-to-toggle-preservedrawingbuffer-in-three-js
-            preserveDrawingBuffer: this.getAttribute('preserve-drawing-buffer') ?? false,
+            preserveDrawingBuffer: this.dataset.preserveDrawingBuffer ?? false,
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.appWidth, this.appHeight);
@@ -271,7 +271,7 @@ export class MRApp extends MRElement {
 
         this.initCamera();
 
-        const layersString = this.getAttribute('layers');
+        const layersString = this.dataset.layers;
         if (layersString) {
             this.layers = mrjsUtils.string.stringToVector(layersString);
 
@@ -280,7 +280,7 @@ export class MRApp extends MRElement {
             }
         }
 
-        const orbitalOptionsString = this.getAttribute('orbital');
+        const orbitalOptionsString = this.dataset.orbital;
         let orbitalOptions = {};
         if (orbitalOptionsString) {
             orbitalOptions = mrjsUtils.string.stringToJson(orbitalOptionsString);
@@ -323,14 +323,14 @@ export class MRApp extends MRElement {
 
         /* --- Lighting Setup --- */
 
-        if (this.getAttribute('lighting') ?? false) {
-            this.lighting = mrjsUtils.string.stringToJson(this.lighting);
+        if (this.dataset.lighting ?? false) {
+            this.lighting = mrjsUtils.string.stringToJson(this.dataset.lighting);
         }
         this.initLights(this.lighting);
 
         /* --- Stats Setup --- */
 
-        if (this.getAttribute('stats') ?? false) {
+        if (this.dataset.stats ?? false) {
             // Old version of stats using the Stats.js visual
             // setup. Leaving to allow for top left quick visual of stats.
             // Is /not/ performant in headset. Documentation notes this.
@@ -391,7 +391,7 @@ export class MRApp extends MRElement {
      * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
      */
     initCamera = () => {
-        const cameraOptionsString = this.getAttribute('camera') ?? '';
+        const cameraOptionsString = this.dataset.camera ?? '';
         if (cameraOptionsString) {
             Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(this.cameraOptionString) ?? {});
         }
@@ -521,7 +521,7 @@ export class MRApp extends MRElement {
     onWindowResize() {
         global.appWidth = this.appWidth;
         global.appHeight = this.appHeight;
-        switch (this.cameraOptions.camera) {
+        switch (this.cameraOptions.mode) {
             case 'orthographic':
                 global.viewPortWidth = this.appWidth / 1000;
                 global.viewPortHeight = this.appHeight / 1000;

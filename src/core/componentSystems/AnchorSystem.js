@@ -23,7 +23,7 @@ export class AnchorSystem extends MRSystem {
         this.currentEntity = null;
         this.tempMatrix = new THREE.Matrix4();
 
-        this.planeManager = new MRPlaneManager(this.app.scene, this.app.getAttribute('occlusion'));
+        this.planeManager = new MRPlaneManager(this.app.scene, this.app.dataset.occlusion);
         this.anchoringQueue = new Set();
 
         this.hitResults;
