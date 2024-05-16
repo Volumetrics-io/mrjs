@@ -4,7 +4,7 @@ An extensible library of Web Components for the spatial web.
 
 [![npm run build](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/build.yml) [![npm run test](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml/badge.svg)](https://github.com/Volumetrics-io/mrjs/actions/workflows/test.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Volumetrics-io/mrjs/blob/main/LICENSE)
 
-[![dev-examples](https://img.shields.io/badge/examples-ee99ff)](https://examples.mrjs.io) [![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io)
+[![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io) [![dev-examples](https://img.shields.io/badge/examples-ee99ff?color=white)](https://examples.mrjs.io)
 
 ## Overview
  
