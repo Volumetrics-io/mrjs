@@ -12,7 +12,7 @@ MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap s
 
 Designed to be extensible, MRjs provides a familiar interface via [THREE.js](https://github.com/mrdoob/three.js), the [Custom Elements API](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), [Rapier.js](https://github.com/dimforge/rapier), and our own built-in ECS (Entity Component System) setup.
 
-[[ECS - what is it?](https://docs.mrjs.io/ecs/what-is-it/)] - [[ECS - how we use it](https://docs.mrjs.io/ecs/how-we-use-it/)] - [[creating custom entities, components, systems](https://docs.mrjs.io/ecs/how-we-use-it/#defining-custom-components--systems-in-mrjs)]
+[[ECS - what is it?](https://docs.mrjs.io/ecs/what-is-it/)] - [[ECS - how we use it](https://docs.mrjs.io/ecs/how-we-use-it/)] - [[MRjs - Creating custom entities, components, &&  systems](https://docs.mrjs.io/ecs/how-we-use-it/#defining-custom-components--systems-in-mrjs)]
 
 ## Getting started
 
@@ -46,9 +46,7 @@ npm i mrjs
 
 ### Via Github Source:
 
-1)
-
-[Clone this repository](https://github.com/Volumetrics-io/mrjs) ([github's how-to-clone](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories))
+1) [Clone this repository](https://github.com/Volumetrics-io/mrjs) ([github's how-to-clone](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories))
 
 ```sh
 git clone the.cloning.url
@@ -64,17 +62,13 @@ git clone the.cloning.url
 > git submodule update --init --recursive
 > ```
 
-2)
-
-Next, setup your node environment ([make sure node is setup properly](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)):
+2) Next, setup your node environment ([make sure node is setup properly](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)):
 
 ```sh
 npm install
 ```
 
-3)
-
-and now build:
+3) and now build:
 
 ```sh
 npm run build
@@ -82,7 +76,7 @@ npm run build
 
 ## Running the samples and tests
 
-<i>Note for in-headset testing: [https requirement](#https-requirement)</i>
+<i>Note for in-headset testing / running of samples: [https requirement](#https-requirement)</i>
 
 ### Samples
 
