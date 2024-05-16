@@ -59,7 +59,7 @@ export class AnimationSystem extends MRSystem {
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
             // Create a mixer for each Model instance with animations
             if (!entity.mixer) {
-                // set it only if not yet set by onNewEntity
+                // set it only if not yet set by onNewEntity/updatedComponent
                 entity.mixer = new THREE.AnimationMixer(entity.object3D);
             }
             this.setAnimation(entity, comp);
@@ -74,6 +74,10 @@ export class AnimationSystem extends MRSystem {
     updatedComponent(entity) {
         let comp = entity.components.get('animation');
         if (entity instanceof MRModelEntity && entity.animations.length > 0) {
+            if (!entity.mixer) {
+                // set it only if not yet set by attachedComponent/updatedComponent
+                entity.mixer = new THREE.AnimationMixer(entity.object3D);
+            }
             this.setAnimation(entity, comp);
         }
     }
@@ -100,7 +104,7 @@ export class AnimationSystem extends MRSystem {
             }
             this.registry.add(entity);
             if (!entity.mixer) {
-                // set it only if not yet set by attachedComponent
+                // set it only if not yet set by attachedComponent/updatedComponent
                 entity.mixer = new THREE.AnimationMixer(entity.object3D);
             }
             this.setAnimation(entity, comp);
