@@ -12,7 +12,7 @@ MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap s
 
 Designed to be extensible, MRjs provides a familiar interface via [THREE.js](https://github.com/mrdoob/three.js), the [Custom Elements API](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), [Rapier.js](https://github.com/dimforge/rapier), and our own built-in ECS (Entity Component System) setup.
 
-- [...](link) - [...](link) - [...](link) - [...](link) -
+[[ECS - what is it?](https://docs.mrjs.io/ecs/what-is-it/)] - [[ECS - how we use it](https://docs.mrjs.io/ecs/how-we-use-it/)] - [[creating custom entities, components, systems](https://docs.mrjs.io/ecs/how-we-use-it/#defining-custom-components--systems-in-mrjs)]
 
 ## Getting started
 
