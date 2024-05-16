@@ -24,7 +24,10 @@ html.resolvePath = function (path, baseUrl = window.location.origin) {
 
     // Handle multiple paths separated by commas
     if (path.includes(',')) {
-        return path.split(',').map(p => fixPath(p.trim())).join(',');
+        return path
+            .split(',')
+            .map((p) => fixPath(p.trim()))
+            .join(',');
     }
 
     // singular path
