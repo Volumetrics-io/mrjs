@@ -20,6 +20,44 @@ material.MeshBasicMaterial = new THREE.MeshBasicMaterial();
 material.MeshPhongMaterial = new THREE.MeshPhongMaterial();
 material.MeshStandardMaterial = new THREE.MeshStandardMaterial();
 
+// // Singleton material pool for reuse
+// const materialPool = {};
+
+// /**
+//  * @function getMaterialKey
+//  * @description Generates a unique key for a material based on its properties
+//  * @param {THREE.Material} material - The material to generate a key for
+//  * @returns {string} - The generated key
+//  */
+// function getMaterialKey(material) {
+//     let key = material.type;
+//     for (const [property, value] of Object.entries(material)) {
+//         if (value instanceof THREE.Color || value instanceof THREE.Texture) {
+//             key += `|${property}:${value.uuid}`;
+//         } else if (typeof value !== 'object') {
+//             key += `|${property}:${value}`;
+//         }
+//     }
+//     return key;
+// };
+
+// /**
+//  * @function getOrCreateMaterial
+//  * @description Reuses or creates a new material based on its properties
+//  * @param {THREE.Material} material - The material to reuse or create
+//  * @returns {THREE.Material} - The reused or newly created material
+//  */
+// material.getOrCreateMaterial = (material) => {
+//     const key = getMaterialKey(material);
+//     if (materialPool[key]) {
+//         return materialPool[key];
+//     } else {
+//         const newMaterial = material.clone();
+//         materialPool[key] = newMaterial;
+//         return newMaterial;
+//     }
+// };
+
 /**
  * @function
  * @memberof material
