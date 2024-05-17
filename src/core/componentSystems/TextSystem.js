@@ -27,23 +27,15 @@ export class TextSystem extends MRSystem {
         this.preloadedFonts = {};
         const styleSheets = Array.from(document.styleSheets);
         styleSheets.forEach((styleSheet) => {
-            const cssRules = Array.from(styleSheet.cssRules);
-            // all the font-faces rules
-            const rulesFontFace = cssRules.filter((rule) => rule.cssText.startsWith('@font-face'));
-
-            rulesFontFace.forEach((fontFace) => {
-                const fontData = this.parseFontFace(fontFace.cssText);
-
-                preloadFont(
-                    {
-                        font: fontData.src,
-                    },
-                    () => {
+            Array.from(styleSheet.cssRules)
+                .filter(rule => rule.cssText.startsWith('@font-face'))
+                .forEach((fontFace) => {
+                    const fontData = this.parseFontFace(fontFace.cssText);
+                    preloadFont({ font: fontData.src }, () => {
                         this.preloadedFonts[fontFace.style.getPropertyValue('font-family')] = fontData.src;
                         document.dispatchEvent(new CustomEvent('font-loaded'));
-                    }
-                );
-            });
+                    });
+                });
         });
 
         // Handle text style needs update
@@ -53,6 +45,23 @@ export class TextSystem extends MRSystem {
                 this._updateSpecificEntity(e.detail);
             }
         });
+
+        this.sharedMaterialMap = new Map(); 
+    }
+
+    #getSharedMaterial(options) {
+        const key = this.getMaterialKey(options);
+        if (!this.sharedMaterialMap.has(key)) {
+            const material = new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: options.opacity || 1
+            });
+            this.sharedMaterialMap.set(key, material);
+        }
+        const material = this.materials.get(key);
+        // Set color dynamically
+        this.setTextObject3DColor(material, options.color);
+        return material;
     }
 
     /**
@@ -76,6 +85,7 @@ export class TextSystem extends MRSystem {
     _updateSpecificEntity(entity) {
         this.checkIfTextContentChanged(entity);
         this.handleTextContentUpdate(entity);
+        this.handleTextMaterialUpdate(entity);
     }
 
     /**
@@ -180,6 +190,15 @@ export class TextSystem extends MRSystem {
         });
     }
 
+    handleTextMaterialUpdate(entity) {
+        const options = {
+            font: entity.textObj.font,
+            fontSize: entity.textObj.fontSize,
+            color: this.compStyle.color,
+        };
+        entity.textObj.material = this.getSharedMaterial(options);
+    }
+
     /**
      * @function
      * @description The per global scene event update call. Handles updating all text items including updates for style and cleaning of content for special characters.
@@ -188,6 +207,7 @@ export class TextSystem extends MRSystem {
         for (const entity of this.registry) {
             this.checkIfTextContentChanged(entity);
             this.handleTextContentUpdate(entity);
+            this.handleTextMaterialUpdate(entity);
         }
     };
 
@@ -333,23 +353,24 @@ export class TextSystem extends MRSystem {
     parseFontFace(cssString) {
         const obj = {};
         const match = cssString.match(/@font-face\s*{\s*([^}]*)\s*}/);
-
-        if (match) {
-            const fontFaceAttributes = match[1];
-            const attributes = fontFaceAttributes.split(';');
-
-            attributes.forEach((attribute) => {
-                const [key, value] = attribute.split(':').map((item) => item.trim());
-                if (key === 'src') {
-                    const urlMatch = value.match(/url\("([^"]+)"\)/);
-                    if (urlMatch) {
-                        obj[key] = urlMatch[1];
-                    }
-                } else {
-                    obj[key] = value;
-                }
-            });
+        if (!match) {
+            return;
         }
+
+        const fontFaceAttributes = match[1];
+        const attributes = fontFaceAttributes.split(';');
+
+        attributes.forEach((attribute) => {
+            const [key, value] = attribute.split(':').map((item) => item.trim());
+            if (key === 'src') {
+                const urlMatch = value.match(/url\("([^"]+)"\)/);
+                if (urlMatch) {
+                    obj[key] = urlMatch[1];
+                }
+            } else {
+                obj[key] = value;
+            }
+        });
 
         return obj;
     }
