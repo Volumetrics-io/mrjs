@@ -176,4 +176,82 @@ material.loadVideoTextureAsync = function (video) {
     });
 };
 
+class AdvancedMaterialCache {
+    constructor() {
+        this.cache = new Map();
+    }
+
+    generateKey(material) {
+        // This function generates a key based on several material properties.
+        let key = `${material.type}|${material.color.getHexString()}`;
+        
+        if (material.map) key += `|map:${material.map.uuid}`;
+        if (material.alphaMap) key += `|alphaMap:${material.alphaMap.uuid}`;
+        if (material.bumpMap) key += `|bumpMap:${material.bumpMap.uuid}`;
+        // Add other maps and properties as needed
+
+        return key;
+    }
+
+    getCachedMaterial(material) {
+        const key = this.generateKey(material);
+        if (this.cache.has(key)) {
+            return this.cache.get(key);
+        } else {
+            this.cache.set(key, material);
+            this.watchMaterial(material);
+            return material;
+        }
+    }
+
+    watchMaterial(material) {
+        // This function sets up watchers on the material properties
+        // For example, watching the color property
+        const colorHandler = {
+            set: (target, prop, value) => {
+                target[prop] = value;
+                // Invalidate the cache entry when a property changes
+                this.cache.delete(this.generateKey(material));
+                // Optionally re-cache the material with new properties
+                this.cache.set(this.generateKey(material), material);
+                return true;
+            }
+        };
+        material.color = new Proxy(material.color, colorHandler);
+        // Extend this to other properties as needed
+    }
+}
+
+// const materialCache = new AdvancedMaterialCache();
+// const scene = new THREE.Scene();
+
+// scene.add = new Proxy(scene.add, {
+//     apply: (target, thisArg, args) => {
+//         const object = args[0];
+//         if (object.material) {
+//             object.material = materialCache.getCachedMaterial(object.material);
+//         }
+//         object.traverse((child) => {
+//             if (child.material && !(child.material instanceof Array)) {
+//                 child.material = materialCache.getCachedMaterial(child.material);
+//             }
+//         });
+//         return Reflect.apply(target, thisArg, args);
+//     }
+// });
+
+// // Example usage
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const material1 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+// const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+// const mesh1 = new THREE.Mesh(geometry, material1);
+// const mesh2 = new THREE.Mesh(geometry, material2);
+
+// scene.add(mesh1);
+// scene.add(mesh2);
+
+// console.log(mesh1.material === mesh2.material); // Should log true if caching works
+
+
 export { material };
