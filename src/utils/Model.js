@@ -39,8 +39,9 @@ const getOrCreateMaterial = (material) => {
     if (materialPool[key]) {
         return materialPool[key];
     } else {
-        materialPool[key] = material;
-        return material;
+        const newMaterial = material.clone();
+        materialPool[key] = newMaterial;
+        return newMaterial;
     }
 };
 
