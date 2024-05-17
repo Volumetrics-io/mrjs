@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Volumetrics — Your Spatial developement companion</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <!-- <script src="https://cdn.jsdelivr.net/gh/volumetrics-io/mrjs/dist/mr.js"></script> -->
+    <script src="/mr.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        mr-app {
+            width: 100vw;
+            height: 100vh;
+            border-radius: unset;
+            background-color: transparent;
+        }
+
+        #logo {
+            width: 300px;
+            height: 300px;
+            z-index: 70;
+        }
+    </style>
+
+</head>
+
+<body>
+    <mr-app data-debug="false">
+        <mr-light color="hsl(340, 100%, 50%)" intensity="5" data-position="-0.3 0.5 0.2"></mr-light>
+        <mr-light color="hsl(180, 100%, 50%)" intensity="2.5" data-position="0 -0.5 0.4"></mr-light>
+        <mr-light color="hsl(40, 100%, 50%)" intensity="5" data-position="0.6 0.25 0.2"></mr-light>
+        <mr-model id="logo" src="/examples-assets/models/logo.glb"></mr-model>
+    </mr-app>
+
+    <script>
+        function rotate(timestamp) {
+            t = timestamp / 200;
+            let rx = (-t) % -360;
+            let ry = (t) % 360;
+            let rz = (t * 2) % 360;
+            document.querySelector("#logo").dataset.rotation = rx + " " + ry + " " + rz;
+
+            let data = {
+                rx: Math.round(rx * 100) / 100,
+                ry: Math.round(ry * 100) / 100,
+                rz: Math.round(rz * 100) / 100
+            }
+            window.top.postMessage(JSON.stringify(data), '*')
+            window.requestAnimationFrame(rotate);
+        };
+        window.requestAnimationFrame(rotate);
+
+        // window.onload = () => {
+        //     document.querySelector("#logo").onclick = () => {
+        //         console.log("clicked");
+        //     }
+        // }
+
+    </script>
+</body>
+
+</html>

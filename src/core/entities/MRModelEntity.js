@@ -121,11 +121,8 @@ export class MRModelEntity extends MRDivEntity {
                 this.animations = animations;
             }
 
-            this.object3D.add(this.modelObj);
-
             this.modelObj.receiveShadow = true;
             this.modelObj.renderOrder = 3;
-
             this.traverseObjects((object) => {
                 if (object.isMesh) {
                     object.renderOrder = 3;
@@ -133,6 +130,9 @@ export class MRModelEntity extends MRDivEntity {
                     object.castShadow = true;
                 }
             });
+
+            this.object3D.add(this.modelObj);
+            this.object3D.name = this.src;
 
             this.onLoad();
 

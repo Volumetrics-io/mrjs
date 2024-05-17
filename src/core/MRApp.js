@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { XRButton } from 'three/addons/webxr/XRButton.js';
 import Stats from 'stats.js';
+// import * as SPECTOR from 'spectorjs';
+// let spector = new SPECTOR.Spector();
+// spector.displayUI();
 
 import { mrjsUtils } from 'mrjs';
 
@@ -259,6 +262,7 @@ export class MRApp extends MRElement {
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
+        // this.renderer.setFrustumCulling(true);
 
         this.appendChild(this.renderer.domElement);
 
@@ -595,7 +599,7 @@ export class MRApp extends MRElement {
         this.renderer.clear();
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined) {
+        if (this.maskingSystem !== undefined) {//} && this.maskingSystem.scene.length > 0) {
             this.maskingSystem.sync();
             const currentShadowEnabled = this.renderer.shadowMap.enabled;
             this.renderer.shadowMap.enabled = false;
@@ -603,7 +607,62 @@ export class MRApp extends MRElement {
             this.renderer.shadowMap.enabled = currentShadowEnabled;
         }
 
+        // this.scene.traverse((object) => {
+        //   if (object.isMesh) {
+        //     console.log(`Rendering `, object, `name: ${object.name} with num children: ${object.children.length} with material ${object.material.name}`);
+        //   }
+        // });
+
         this.renderer.render(this.scene, this.camera);
+
+        // Log the number of draw calls
+        console.log(this.renderer.info);
+        console.log('NumDrawCalls:', this.renderer.info.render.calls, 'should be 2xNumGLPrograms(', this.renderer.info.programs.length, ') = ', 2*this.renderer.info.programs.length);
+        // this.renderer.info.programs.forEach(program => {
+        //     console.log(`Program ID: ${program.id}, Linked Material: ${yourCustomMapping[program.id] || 'Unknown'}`);
+        // });
+        // console.log(this.renderer.info);
+        if (this.renderer.info.programs) {
+            // this.renderer.info.programs.forEach(program => {
+            //     console.log(`Program: `, program, `Used times in last frame: ${program.usedTimes}`);
+            // });
+            // function printSceneObjectsAndMaterials(scene, renderer) {
+            //     let groupedByMaterial = {};
+
+            //     // Traverse the scene and group objects by material UUID
+            //     scene.traverse(function (object) {
+            //         if (object.isMesh && object.material) {
+            //             const uuid = object.material.uuid;
+            //             if (!groupedByMaterial[uuid]) {
+            //                 groupedByMaterial[uuid] = [];  // Initialize array if it doesn't exist
+            //             }
+            //             groupedByMaterial[uuid].push({
+            //                 objectName: object.name,
+            //                 objectType: object.type
+            //             });
+            //         }
+            //     });
+
+                // Log details about each group
+                // Object.keys(groupedByMaterial).forEach(uuid => {
+                //     console.log(`Material UUID: ${uuid}, num items: ${groupedByMaterial[uuid].length}`);
+                //     groupedByMaterial[uuid].forEach(entry => {
+                //         console.log(`Object: ${entry.objectName} | Type: ${entry.objectType}`);
+                //     });
+                // });
+
+                // // Then, log all active WebGL programs separately.
+                // if (renderer.info.programs) {
+                //     renderer.info.programs.forEach(program => {
+                //         console.log(`Program ID: ${program.id}, Program Info:`, program);
+                //     });
+                // }
+            // }
+
+            // Call this function where appropriate in your application
+            // printSceneObjectsAndMaterials(this.scene, this.renderer);
+
+        }
     }
 }
 
