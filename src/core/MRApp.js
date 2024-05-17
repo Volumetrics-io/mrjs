@@ -262,7 +262,7 @@ export class MRApp extends MRElement {
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
-        this.renderer.setFrustumCulling(true);
+        // this.renderer.setFrustumCulling(true);
 
         this.appendChild(this.renderer.domElement);
 
