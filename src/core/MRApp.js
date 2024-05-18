@@ -5,28 +5,29 @@ import Stats from 'stats.js';
 
 import { mrjsUtils } from 'mrjs';
 
-import { MRElement, MREntity, MRSystem } from 'mrjs/core';
+import { MRElement } from 'mrjs/core/MRElement';
+import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
 
-import { MRUser } from 'mrjs/core/user';
+import MRUser from 'mrjs/core/user/MRUser';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
+import { MRStatsEntity } from 'mrjs/core/entities/MRStatsEntity';
 
-import { MRSkyBoxEntity, MRStatsEntity } from 'mrjs/core/entities';
-import {
-    AnchorSystem,
-    AnimationSystem,
-    AudioSystem,
-    BoundaryVisibilitySystem,
-    ClippingSystem,
-    ControlSystem,
-    GeometryStyleSystem,
-    LayoutSystem,
-    MaskingSystem,
-    MaterialStyleSystem,
-    PanelSystem,
-    PhysicsSystem,
-    SkyBoxSystem,
-    StatsSystem,
-    TextSystem,
-} from 'mrjs/core/componentSystems';
+import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
+import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
+import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
+import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
+import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
+import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
+import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
+import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
+import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
 ('use strict');
 window.mobileCheck = function () {
@@ -594,7 +595,7 @@ export class MRApp extends MRElement {
         this.renderer.clear();
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined && this.maskingSystem.scene.length > 0) {
+        if (this.maskingSystem !== undefined) {
             this.maskingSystem.sync();
             const currentShadowEnabled = this.renderer.shadowMap.enabled;
             this.renderer.shadowMap.enabled = false;
