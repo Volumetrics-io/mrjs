@@ -65,13 +65,6 @@ export class MRApp extends MRElement {
         this.systems = new Set();
         this.anchor = null;
         this.originObject3D = new THREE.Object3D();
-        this.lighting = {
-            enabled: true,
-            color: 0xffffff,
-            intensity: 1,
-            radius: 5,
-            shadows: true,
-        };
 
         // Scene:
         this.scene = new THREE.Scene();
@@ -141,11 +134,11 @@ export class MRApp extends MRElement {
         this.renderer.setSize(this.appWidth, this.appHeight);
         this.renderer.autoClear = false;
         this.renderer.shadowMap.enabled = true;
-        this.renderer.xr.enabled = true;
-        mrjsUtils.xr = this.renderer.xr;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
         this.renderer.localClippingEnabled = true;
+        this.renderer.xr.enabled = true;
+        mrjsUtils.xr = this.renderer.xr;
 
         this.appendChild(this.renderer.domElement);
 
@@ -269,88 +262,103 @@ export class MRApp extends MRElement {
     }
 
     #initLighting() {
+        let lighting = {
+            enabled: true,
+            color: 0xffffff,
+            intensity: 1,
+            radius: 5,
+            shadows: true,
+        };
         if (this.dataset.lighting ?? false) {
-            this.lighting = mrjsUtils.string.stringToJson(this.dataset.lighting);
+            lighting = mrjsUtils.string.stringToJson(this.dataset.lighting);
         }
 
-        if (this.lighting.enabled) {
-            this.globalLight = new THREE.AmbientLight(this.lighting.color);
-            this.globalLight.intensity = this.lighting.intensity;
-            this.globalLight.position.set(0, 5, 0);
-            this.scene.add(this.globalLight);
+        if (!lighting.enabled) {
+            return;
+        }
 
-            if (!this.isMobile) {
-                if (this.lighting.shadows) {
-                    this.shadowLight = new THREE.PointLight(this.lighting.color);
-                    this.shadowLight.position.set(-1, 1, 1);
-                    this.shadowLight.intensity = this.lighting.intensity;
-                    this.shadowLight.castShadow = this.lighting.shadows;
-                    this.shadowLight.shadow.radius = this.lighting.radius;
-                    this.shadowLight.shadow.camera.near = 0.01; // default
-                    this.shadowLight.shadow.camera.far = 20; // default
-                    this.shadowLight.shadow.mapSize.set(2048, 2048);
-                    this.scene.add(this.shadowLight);
-                }
+        const globalLight = new THREE.AmbientLight(lighting.color);
+        globalLight.intensity = lighting.intensity;
+        globalLight.position.set(0, 5, 0);
+        this.scene.add(globalLight);
+
+        if (!this.isMobile) {
+            if (lighting.shadows) {
+                const shadowLight = new THREE.PointLight(lighting.color);
+                shadowLight.position.set(-1, 1, 1);
+                shadowLight.intensity = lighting.intensity;
+                shadowLight.castShadow = lighting.shadows;
+                shadowLight.shadow.radius = lighting.radius;
+                shadowLight.shadow.camera.near = 0.01; // default
+                shadowLight.shadow.camera.far = 20; // default
+                shadowLight.shadow.mapSize.set(2048, 2048);
+                this.scene.add(shadowLight);
             }
         }
     }
 
     #initStats() {
-        if (this.dataset.stats ?? false) {
-            // Old version of stats using the Stats.js visual
-            // setup. Leaving to allow for top left quick visual of stats.
-            // Is /not/ performant in headset. Documentation notes this.
-            //
-            this.stats = new Stats();
-            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild(this.stats.dom);
+        if (! (this.dataset.stats ?? false)) {
+            return;
         }
+
+        // Old version of stats using the Stats.js visual
+        // setup. Leaving to allow for top left quick visual of stats.
+        // Is /not/ performant in headset. Documentation notes this.
+        //
+        this.stats = new Stats();
+        this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.body.appendChild(this.stats.dom);
     }
 
     #initInXR() {
-        // We don't support mobile XR yet
-
-        if (!this.isMobile) {
-            navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
-                this.xrsupport = supported;
-
-                if (this.xrsupport) {
-                    this.XRButton = XRButton.createButton(this.renderer, {
-                        requiredFeatures: ['local', 'hand-tracking'],
-                        optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
-                    });
-
-                    this.XRButton.addEventListener('click', () => {
-                        this.classList.add('inXR');
-                        this.XRButton.blur();
-                    });
-                    document.body.appendChild(this.XRButton);
-
-                    this.XRButton.style.position = 'fixed';
-                    this.XRButton.style.zIndex = 10000;
-                }
-            });
+        if (this.isMobile) {
+            // We don't support mobile XR yet
+            return;
         }
+
+        navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
+            this.xrsupport = supported;
+
+            if (this.xrsupport) {
+                this.XRButton = XRButton.createButton(this.renderer, {
+                    requiredFeatures: ['local', 'hand-tracking'],
+                    optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
+                });
+
+                this.XRButton.addEventListener('click', () => {
+                    this.classList.add('inXR');
+                    this.XRButton.blur();
+                });
+                document.body.appendChild(this.XRButton);
+
+                this.XRButton.style.position = 'fixed';
+                this.XRButton.style.zIndex = 10000;
+            }
+        });
     }
 
     #initSkyBox() {
         // allows for mr-app style to have background:value to set the skybox
-        if (this.compStyle.backgroundImage !== 'none') {
-            let skybox = new MRSkyBoxEntity();
-            let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
-            skybox.setAttribute('src', imageUrl);
-            this.appendChild(skybox);
 
-            // Need to zero out the background-image property otherwise
-            // we'll end up with a canvas background as well as the skybox
-            // when the canvas background is not needed in this 3d setup.
-            //
-            // We can do this because panel backgrounds are actual webpage
-            // backgrounds and the app itself's background is separate from
-            // that, being understood as the skybox of the entire app itself.
-            this.style.setProperty('background-image', 'none', 'important');
-            this.compStyle = window.getComputedStyle(this);
+        if (this.compStyle.backgroundImage === 'none') {
+            return;
         }
+
+        let skybox = new MRSkyBoxEntity();
+        let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
+        skybox.setAttribute('src', imageUrl);
+        this.appendChild(skybox);
+
+        // Need to zero out the background-image property otherwise
+        // we'll end up with a canvas background as well as the skybox
+        // when the canvas background is not needed in this 3d setup.
+        //
+        // We can do this because panel backgrounds are actual webpage
+        // backgrounds and the app itself's background is separate from
+        // that, being understood as the skybox of the entire app itself.
+        this.style.setProperty('background-image', 'none', 'important');
+        this.compStyle = window.getComputedStyle(this);
     }
 
     #initSystems() {
@@ -501,12 +509,6 @@ export class MRApp extends MRElement {
         this.observer.disconnect();
     }
 
-    // TODO: These are for toggling debug and app level flags in realtime.
-    //       Currently only 'debug' is implemented. but we should add:
-    //       - stats
-    //       - lighting
-    //       - controllers
-    //       - ?
     /**
      * @function
      * @param {object} mutation - TODO
@@ -585,7 +587,7 @@ export class MRApp extends MRElement {
             this.#initXRSession();
             this.dispatchEvent(new CustomEvent('enterxr', { bubbles: true }));
             mrjsUtils.xr.session.addEventListener('end', () => {
-                this.denitXRSession();
+                this.#denitXRSession();
                 this.dispatchEvent(new CustomEvent('exitxr', { bubbles: true }));
             });
         }
@@ -605,14 +607,15 @@ export class MRApp extends MRElement {
         // TODO (in future) - once this gets more complicated, it will be nice to have a render system separate
         // from the pure loop but it is okay as is here for now.
 
+        // Setup to Render
         this.scene.updateMatrixWorld();
         if (this.camera.parent === null) {
             this.camera.updateMatrixWorld();
         }
         this.renderer.clear();
 
-        // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined && this.maskingSystem.scene.length > 0) {
+        // Masking RenderPass
+        if (this.maskingSystem !== undefined && this.maskingSystem.scene.children.length > 0) {
             this.maskingSystem.sync();
             const currentShadowEnabled = this.renderer.shadowMap.enabled;
             this.renderer.shadowMap.enabled = false;
@@ -620,6 +623,7 @@ export class MRApp extends MRElement {
             this.renderer.shadowMap.enabled = currentShadowEnabled;
         }
 
+        // Main Scene RenderPass
         this.renderer.render(this.scene, this.camera);
     }
 }
