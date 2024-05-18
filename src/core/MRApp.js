@@ -3,41 +3,31 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { XRButton } from 'three/addons/webxr/XRButton.js';
 import Stats from 'stats.js';
 
-import {
-    mrjsUtils
-} from 'mrjs';
+import { mrjsUtils } from 'mrjs';
 
-import {
-    MRElement,
-    MREntity,
-    MRSystem
-} from 'mrjs/core';
+import { MRElement } from 'mrjs/core/MRElement';
+import { MREntity } from 'mrjs/core/MREntity';
+import { MRSystem } from 'mrjs/core/MRSystem';
 
-import {
-    MRUser
-} from 'mrjs/core/user';
+import MRUser from 'mrjs/core/user/MRUser';
+import { MRSkyBoxEntity } from 'mrjs/core/entities/MRSkyBoxEntity';
+import { MRStatsEntity } from 'mrjs/core/entities/MRStatsEntity';
 
-import { 
-    MRSkyBoxEntity,
-    MRStatsEntity 
-} from 'mrjs/core/entities';
-import { 
-    AnchorSystem,
-    AnimationSystem,
-    AudioSystem,
-    BoundaryVisibilitySystem,
-    ClippingSystem,
-    ControlSystem,
-    GeometryStyleSystem,
-    LayoutSystem,
-    MaskingSystem,
-    MaterialStyleSystem,
-    PanelSystem,
-    PhysicsSystem,
-    SkyBoxSystem,
-    StatsSystem,
-    TextSystem
-} from 'mrjs/core/componentSystems';
+import { AnchorSystem } from 'mrjs/core/componentSystems/AnchorSystem';
+import { AnimationSystem } from 'mrjs/core/componentSystems/AnimationSystem';
+import { AudioSystem } from 'mrjs/core/componentSystems/AudioSystem';
+import { BoundaryVisibilitySystem } from 'mrjs/core/componentSystems/BoundaryVisibilitySystem';
+import { ClippingSystem } from 'mrjs/core/componentSystems/ClippingSystem';
+import { ControlSystem } from 'mrjs/core/componentSystems/ControlSystem';
+import { GeometryStyleSystem } from 'mrjs/core/componentSystems/GeometryStyleSystem';
+import { LayoutSystem } from 'mrjs/core/componentSystems/LayoutSystem';
+import { MaskingSystem } from 'mrjs/core/componentSystems/MaskingSystem';
+import { MaterialStyleSystem } from 'mrjs/core/componentSystems/MaterialStyleSystem';
+import { PanelSystem } from 'mrjs/core/componentSystems/PanelSystem';
+import { PhysicsSystem } from 'mrjs/core/componentSystems/PhysicsSystem';
+import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
+import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
+import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
 
 ('use strict');
@@ -45,7 +35,7 @@ window.mobileCheck = function () {
     return mrjsUtils.display.mobileCheckFunction();
 };
 
-// events that trigger the eventUpdate call for all MRSystems
+// Events that trigger the eventUpdate call for all MRSystems.
 const GLOBAL_UPDATE_EVENTS = ['enterxr', 'exitxr', 'load', 'anchored', 'panelupdate', 'engine-started', 'resize'];
 
 /**
@@ -65,25 +55,16 @@ export class MRApp extends MRElement {
             writable: false,
         });
 
+        // State:
         this.xrsupport = false;
         this.isMobile = window.mobileCheck(); // resolves true/false
-
         this.inspect = false;
 
+        // Objects:
         this.clock = new THREE.Clock();
         this.systems = new Set();
-        this.scene = new THREE.Scene();
-        this.scene.matrixWorldAutoUpdate = false;
         this.anchor = null;
-        this.origin = new THREE.Object3D();
-
-        this.scene.add(this.origin);
-
-        // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
-        // the renderer relies on certain component flags attached to the <mr-app> itself.
-        this.renderer = null;
-        this.render = this.render.bind(this);
-
+        this.originObject3D = new THREE.Object3D();
         this.lighting = {
             enabled: true,
             color: 0xffffff,
@@ -92,11 +73,368 @@ export class MRApp extends MRElement {
             shadows: true,
         };
 
-        this.cameraOptions = {
-            mode: 'orthographic',
-        };
+        // Scene:
+        this.scene = new THREE.Scene();
+        this.scene.matrixWorldAutoUpdate = false;
+        this.scene.add(this.originObject3D);
+
+        // Renderer:
+        // The rest of the renderer is filled out in this.connectedCallback()-->this.initRenderer() since
+        // the renderer relies on certain component flags attached to the <mr-app> itself.
+        this.renderer = null;
+        this.render = this.render.bind(this);
+
+        // WindowResize:
         this.onWindowResize = this.onWindowResize.bind(this);
     }
+
+    cleanupForGC() {
+        // Perform cleanup actions here
+
+        // remove event listeners
+        document.removeEventListener('click', this.handleClick);
+
+        // Explicitly nullify or reset properties to aid garbage collection
+        this.data = null;
+    }
+
+    /**
+     * @function
+     * @description De-initializes rendering and MR
+     */
+    denit() {
+        document.body.removeChild(this.renderer.domElement);
+        this.removeChild(this.XRButton);
+        window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    #initXRSession() {
+        mrjsUtils.xr.session = this.renderer.xr.getSession();
+        mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
+    }
+
+    #denitXRSession() {
+        this.camera.position.set(0, 0, 1);
+        this.camera.quaternion.set(0, 0, 0, 1);
+        mrjsUtils.xr.session = undefined;
+        mrjsUtils.xr.referenceSpace = undefined;
+        this.classList.remove('inXR');
+        this.onWindowResize();
+    }
+
+    /* ---------- Initialization Functions ---------- */
+
+    #initRenderer() {
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
+            // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
+            // we're allowing it to be enabled by users when necessary.
+            //
+            // References:
+            // https://stackoverflow.com/questions/15558418/how-do-you-save-an-image-from-a-three-js-canvas
+            // https://stackoverflow.com/questions/30628064/how-to-toggle-preservedrawingbuffer-in-three-js
+            preserveDrawingBuffer: this.dataset.preserveDrawingBuffer ?? false,
+        });
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(this.appWidth, this.appHeight);
+        this.renderer.autoClear = false;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.xr.enabled = true;
+        mrjsUtils.xr = this.renderer.xr;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1;
+        this.renderer.localClippingEnabled = true;
+
+        this.appendChild(this.renderer.domElement);
+
+        this.renderer.setAnimationLoop(this.render);
+    }
+
+    #initCamera() {
+        let cameraOptions = (this.dataset.camera) ? mrjsUtils.string.stringToJson(this.dataset.camera) : {};
+        this.cameraMode = cameraOptions.mode ?? 'orthographic';
+
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
+
+        switch (this.cameraMode) {
+            case 'perspective':
+                this.camera = new THREE.PerspectiveCamera();
+                this.camera.fov = 70;
+                this.camera.near = 0.01;
+                this.camera.far = 20;
+
+                const vFOV = THREE.MathUtils.degToRad(this.camera.fov);
+                global.viewPortHeight = 2 * Math.tan(vFOV / 2);
+
+                this.#updatePerspectiveCamera();
+                break;
+            case 'orthographic':
+                this.camera = new THREE.OrthographicCamera();
+                this.camera.near = 0.01;
+                this.camera.far = 1000;
+
+                this.#updateOrthographicCamera();
+                break;
+            default:
+                
+        }
+        this.camera.matrixWorldAutoUpdate = false;
+        this.camera.updateProjectionMatrix();
+
+        let posUpdated = false;
+        let startPos = cameraOptions.startPos;
+        if (startPos) {
+            const [x, y, z] = startPos.split(' ').map(parseFloat);
+            if (startPosArray.length !== 3) {
+                console.error('Invalid camera starting position format. Please provide "x y z".');
+            } else {
+                this.camera.position.set(x, y, z);
+                posUpdated = true;
+            }
+        }
+        if (!posUpdated) {
+            // default
+            this.camera.position.set(0, 0, 1);
+        }
+
+        if (this.dataset.layers) {
+            this.layers = mrjsUtils.string.stringToVector(this.dataset.layers);
+            for (const layer of this.layers) {
+                this.camera.layers.enable(layer);
+            }
+        }
+
+        const orbitalOptionsString = this.dataset.orbital;
+        let orbitalOptions = {};
+        if (orbitalOptionsString) {
+            orbitalOptions = mrjsUtils.string.stringToJson(orbitalOptionsString);
+        }
+        this.orbital = orbitalOptions.mode ?? false;
+        if (this.debug || this.orbital) {
+            const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+            orbitControls.minDistance = 1;
+            orbitControls.maxDistance = 2;
+
+            // set target location if requested
+            if (orbitalOptions.targetPos) {
+                if (orbitalOptions.targetPos.length !== 3) {
+                    console.error('Invalid orbital target position format. Please provide "x y z".');
+                }
+                orbitControls.target.set(orbitalOptions.targetPos[0], orbitalOptions.targetPos[1], orbitalOptions.targetPos[2]);
+                orbitControls.update();
+            }
+
+            // Note: order of the two below if-statements matter.
+            // Want if both debug=true and orbital=true for orbital to take priority.
+            if (this.orbital) {
+                // always allow orbital controls
+                orbitControls.enabled = true;
+            } else if (this.debug) {
+                // only allow orbital controls on += keypress
+                orbitControls.enabled = false;
+                document.addEventListener('keydown', (event) => {
+                    if (event.key == '=') {
+                        orbitControls.enabled = true;
+                    }
+                });
+                document.addEventListener('keyup', (event) => {
+                    if (event.key == '=') {
+                        orbitControls.enabled = false;
+                    }
+                });
+            }
+        }
+    }
+
+    #updatePerspectiveCamera() {
+        this.camera.aspect = this.appWidth / this.appHeight;
+        
+        global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
+    }
+
+    #updateOrthographicCamera() {
+        global.viewPortWidth = this.appWidth / 1000;
+        global.viewPortHeight = this.appHeight / 1000;
+        
+        // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
+        // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
+        // terms of their distance from the camera, rather than affecting the size of the objects.
+        this.camera.left = global.viewPortWidth / -2;
+        this.camera.right = global.viewPortWidth / 2;
+        this.camera.top = global.viewPortHeight / 2;
+        this.camera.bottom = global.viewPortHeight / -2;
+    }
+
+    #initLighting() {
+        if (this.dataset.lighting ?? false) {
+            this.lighting = mrjsUtils.string.stringToJson(this.dataset.lighting);
+        }
+
+        if (this.lighting.enabled) {
+            this.globalLight = new THREE.AmbientLight(this.lighting.color);
+            this.globalLight.intensity = this.lighting.intensity;
+            this.globalLight.position.set(0, 5, 0);
+            this.scene.add(this.globalLight);
+
+            if (!this.isMobile) {
+                if (this.lighting.shadows) {
+                    this.shadowLight = new THREE.PointLight(this.lighting.color);
+                    this.shadowLight.position.set(-1, 1, 1);
+                    this.shadowLight.intensity = this.lighting.intensity;
+                    this.shadowLight.castShadow = this.lighting.shadows;
+                    this.shadowLight.shadow.radius = this.lighting.radius;
+                    this.shadowLight.shadow.camera.near = 0.01; // default
+                    this.shadowLight.shadow.camera.far = 20; // default
+                    this.shadowLight.shadow.mapSize.set(2048, 2048);
+                    this.scene.add(this.shadowLight);
+                }
+            }
+        }
+    }
+
+    #initStats() {
+        if (this.dataset.stats ?? false) {
+            // Old version of stats using the Stats.js visual
+            // setup. Leaving to allow for top left quick visual of stats.
+            // Is /not/ performant in headset. Documentation notes this.
+            //
+            this.stats = new Stats();
+            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+            document.body.appendChild(this.stats.dom);
+        }
+    }
+
+    #initInXR() {
+        // We don't support mobile XR yet
+
+        if (!this.isMobile) {
+            navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
+                this.xrsupport = supported;
+
+                if (this.xrsupport) {
+                    this.XRButton = XRButton.createButton(this.renderer, {
+                        requiredFeatures: ['local', 'hand-tracking'],
+                        optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
+                    });
+
+                    this.XRButton.addEventListener('click', () => {
+                        this.classList.add('inXR');
+                        this.XRButton.blur();
+                    });
+                    document.body.appendChild(this.XRButton);
+
+                    this.XRButton.style.position = 'fixed';
+                    this.XRButton.style.zIndex = 10000;
+                }
+            });
+        }
+    }
+
+    #initSkyBox() {
+        // allows for mr-app style to have background:value to set the skybox
+        if (this.compStyle.backgroundImage !== 'none') {
+            let skybox = new MRSkyBoxEntity();
+            let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
+            skybox.setAttribute('src', imageUrl);
+            this.appendChild(skybox);
+
+            // Need to zero out the background-image property otherwise
+            // we'll end up with a canvas background as well as the skybox
+            // when the canvas background is not needed in this 3d setup.
+            //
+            // We can do this because panel backgrounds are actual webpage
+            // backgrounds and the app itself's background is separate from
+            // that, being understood as the skybox of the entire app itself.
+            this.style.setProperty('background-image', 'none', 'important');
+            this.compStyle = window.getComputedStyle(this);
+        }
+    }
+
+    #initSystems() {
+        // order matters for all the below system creation items
+        this.panelSystem = new PanelSystem();
+        this.layoutSystem = new LayoutSystem();
+        this.textSystem = new TextSystem();
+        this.geometryStyleSystem = new GeometryStyleSystem();
+        this.materialStyleSystem = new MaterialStyleSystem();
+        this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
+        this.statsSystem = new StatsSystem();
+        this.physicsSystem = new PhysicsSystem();
+        this.controlSystem = new ControlSystem();
+        this.anchorSystem = new AnchorSystem();
+        this.animationSystem = new AnimationSystem();
+        this.skyBoxSystem = new SkyBoxSystem();
+        this.audioSystem = new AudioSystem();
+
+        // These must be the last two systems since
+        // they affect rendering. Clipping must happen
+        // before masking. Rendering must be the last step.
+        this.clippingSystem = new ClippingSystem();
+        this.maskingSystem = new MaskingSystem();
+    }
+
+    #initEventListeners() {
+        // initialize built in Systems
+        document.addEventListener('engine-started', (event) => {
+            this.user = new MRUser(this.camera, this.scene);
+
+            if (this.dataset.occlusion == 'spotlight') {
+                this.scene.add(this.user.initSpotlight());
+            }
+
+            this.#initSystems();
+        });
+
+        this.addEventListener('entityadded', (event) => {
+            for (const system of this.systems) {
+                system._onNewEntity(event.target);
+            }
+        });
+
+        document.addEventListener('entityremoved', async (event) => {
+            for (const system of this.systems) {
+                system._entityRemoved(event.detail.entity);
+            }
+
+            while (event.detail.entity.object3D.parent) {
+                event.detail.entity.object3D.removeFromParent();
+            }
+        });
+
+        for (const eventType of GLOBAL_UPDATE_EVENTS) {
+            // Calls `eventUpdate` on all systems if any of the global events are triggered
+            document.addEventListener(eventType, (event) => {
+                for (const system of this.systems) {
+                    system.eventUpdate();
+                }
+            });
+        }
+    }
+
+    /**
+     * @function
+     * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
+     */
+    onWindowResize() {
+        global.appWidth = this.appWidth;
+        global.appHeight = this.appHeight;
+        switch (this.cameraMode) {
+            case 'perspective':
+                this.#updatePerspectiveCamera();
+                break;
+            case 'orthographic':
+            default:
+                this.#updateOrthographicCamera();
+                break;
+        }
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.appWidth, this.appHeight);
+    }
+
+    /* ---------- Getters ---------- */
 
     /**
      * @function
@@ -124,73 +462,33 @@ export class MRApp extends MRElement {
         return result;
     }
 
+    /* ---------- Overriding Element Functions ---------- */
+
     /**
      * @function Connected
      * @memberof MRApp
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
-        this.compStyle = window.getComputedStyle(this);
+        window.addEventListener('resize', this.onWindowResize);
+
         mrjsUtils.physics.initializePhysics();
-        this.init();
+
+        this.compStyle = window.getComputedStyle(this);
+        
+        this.debug = this.dataset.debug ?? false;
+
+        this.#initRenderer();
+        this.#initCamera();
+        this.#initLighting();
+        this.#initStats();
+        this.#initSkyBox();
+        this.#initInXR();
 
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
 
-        // initialize built in Systems
-        document.addEventListener('engine-started', (event) => {
-            this.user = new MRUser(this.camera, this.scene);
-
-            if (this.dataset.occlusion == 'spotlight') {
-                this.scene.add(this.user.initSpotlight());
-            }
-
-            // order matters for all the below system creation items
-            this.panelSystem = new PanelSystem();
-            this.layoutSystem = new LayoutSystem();
-            this.textSystem = new TextSystem();
-            this.geometryStyleSystem = new GeometryStyleSystem();
-            this.materialStyleSystem = new MaterialStyleSystem();
-            this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
-            this.statsSystem = new StatsSystem();
-            this.physicsSystem = new PhysicsSystem();
-            this.controlSystem = new ControlSystem();
-            this.anchorSystem = new AnchorSystem();
-            this.animationSystem = new AnimationSystem();
-            this.skyBoxSystem = new SkyBoxSystem();
-            this.audioSystem = new AudioSystem();
-
-            // These must be the last three systems since
-            // they affect rendering. Clipping must happen
-            // before masking. Rendering must be the last step.
-            this.clippingSystem = new ClippingSystem();
-            this.maskingSystem = new MaskingSystem();
-        });
-
-        this.addEventListener('entityadded', (event) => {
-            for (const system of this.systems) {
-                system._onNewEntity(event.target);
-            }
-        });
-
-        document.addEventListener('entityremoved', async (event) => {
-            for (const system of this.systems) {
-                system._entityRemoved(event.detail.entity);
-            }
-
-            while (event.detail.entity.object3D.parent) {
-                event.detail.entity.object3D.removeFromParent();
-            }
-        });
-
-        // Call `eventUpdate` on all systems if any of the global events are triggered
-        for (const eventType of GLOBAL_UPDATE_EVENTS) {
-            document.addEventListener(eventType, (event) => {
-                for (const system of this.systems) {
-                    system.eventUpdate();
-                }
-            });
-        }
+        this.#initEventListeners();
     }
 
     /**
@@ -240,254 +538,6 @@ export class MRApp extends MRElement {
 
     /**
      * @function
-     * @description Initializes the engine state for the MRApp. This function is run whenever the MRApp is connected.
-     */
-    init() {
-        window.addEventListener('resize', this.onWindowResize);
-
-        this.debug = this.dataset.debug ?? false;
-
-        /* --- Renderer Setup --- */
-
-        this.renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-            // There's issues in the timing to enable taking screenshots of threejs scenes unless you have direct access to the code.
-            // Using the preserveDrawingBuffer to ignore timing issues is the best approach instead. Though this has a performance hit,
-            // we're allowing it to be enabled by users when necessary.
-            //
-            // References:
-            // https://stackoverflow.com/questions/15558418/how-do-you-save-an-image-from-a-three-js-canvas
-            // https://stackoverflow.com/questions/30628064/how-to-toggle-preservedrawingbuffer-in-three-js
-            preserveDrawingBuffer: this.dataset.preserveDrawingBuffer ?? false,
-        });
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(this.appWidth, this.appHeight);
-        this.renderer.autoClear = false;
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.xr.enabled = true;
-        mrjsUtils.xr = this.renderer.xr;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1;
-        this.renderer.localClippingEnabled = true;
-
-        this.appendChild(this.renderer.domElement);
-
-        this.renderer.setAnimationLoop(this.render);
-
-        /* --- Camera Setup --- */
-
-        this.initCamera();
-
-        const layersString = this.dataset.layers;
-        if (layersString) {
-            this.layers = mrjsUtils.string.stringToVector(layersString);
-
-            for (const layer of this.layers) {
-                this.camera.layers.enable(layer);
-            }
-        }
-
-        const orbitalOptionsString = this.dataset.orbital;
-        let orbitalOptions = {};
-        if (orbitalOptionsString) {
-            orbitalOptions = mrjsUtils.string.stringToJson(orbitalOptionsString);
-        }
-        this.orbital = orbitalOptions.mode ?? false;
-        if (this.debug || this.orbital) {
-            const orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-            orbitControls.minDistance = 1;
-            orbitControls.maxDistance = 2;
-
-            // set target location if requested
-            if (orbitalOptions.targetPos) {
-                if (orbitalOptions.targetPos.length !== 3) {
-                    console.error('Invalid orbital target position format. Please provide "x y z".');
-                }
-                orbitControls.target.set(orbitalOptions.targetPos[0], orbitalOptions.targetPos[1], orbitalOptions.targetPos[2]);
-                orbitControls.update();
-            }
-
-            // Note: order of the two below if-statements matter.
-            // Want if both debug=true and orbital=true for orbital to take priority.
-            if (this.orbital) {
-                // always allow orbital controls
-                orbitControls.enabled = true;
-            } else if (this.debug) {
-                // only allow orbital controls on += keypress
-                orbitControls.enabled = false;
-                document.addEventListener('keydown', (event) => {
-                    if (event.key == '=') {
-                        orbitControls.enabled = true;
-                    }
-                });
-                document.addEventListener('keyup', (event) => {
-                    if (event.key == '=') {
-                        orbitControls.enabled = false;
-                    }
-                });
-            }
-        }
-
-        /* --- Lighting Setup --- */
-
-        if (this.dataset.lighting ?? false) {
-            this.lighting = mrjsUtils.string.stringToJson(this.dataset.lighting);
-        }
-        this.initLights(this.lighting);
-
-        /* --- Stats Setup --- */
-
-        if (this.dataset.stats ?? false) {
-            // Old version of stats using the Stats.js visual
-            // setup. Leaving to allow for top left quick visual of stats.
-            // Is /not/ performant in headset. Documentation notes this.
-            //
-            this.stats = new Stats();
-            this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild(this.stats.dom);
-        }
-
-        /* --- Background Setup --- */
-
-        // allows for mr-app style to have background:value to set the skybox
-        if (this.compStyle.backgroundImage !== 'none') {
-            let skybox = new MRSkyBoxEntity();
-            let imageUrl = this.compStyle.backgroundImage.match(/url\("?(.+?)"?\)/)[1];
-            skybox.setAttribute('src', imageUrl);
-            this.appendChild(skybox);
-
-            // Need to zero out the background-image property otherwise
-            // we'll end up with a canvas background as well as the skybox
-            // when the canvas background is not needed in this 3d setup.
-            //
-            // We can do this because panel backgrounds are actual webpage
-            // backgrounds and the app itself's background is separate from
-            // that, being understood as the skybox of the entire app itself.
-            this.style.setProperty('background-image', 'none', 'important');
-            this.compStyle = window.getComputedStyle(this);
-        }
-
-        /* --- Mobile VS XR Setup --- */
-
-        // We don't support mobile XR yet
-        if (!this.isMobile) {
-            navigator.xr?.isSessionSupported('immersive-ar').then((supported) => {
-                this.xrsupport = supported;
-
-                if (this.xrsupport) {
-                    this.XRButton = XRButton.createButton(this.renderer, {
-                        requiredFeatures: ['local', 'hand-tracking'],
-                        optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
-                    });
-
-                    this.XRButton.addEventListener('click', () => {
-                        this.classList.add('inXR');
-                        this.XRButton.blur();
-                    });
-                    document.body.appendChild(this.XRButton);
-
-                    this.XRButton.style.position = 'fixed';
-                    this.XRButton.style.zIndex = 10000;
-                }
-            });
-        }
-    }
-
-    /**
-     * @function
-     * @description Initializes the user information for the MRApp including appropriate HMD direction and camera information and the default scene anchor location.
-     */
-    initCamera = () => {
-        const cameraOptionsString = this.dataset.camera ?? '';
-        if (cameraOptionsString) {
-            Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(this.cameraOptionString) ?? {});
-        }
-
-        global.appWidth = this.appWidth;
-        global.appHeight = this.appHeight;
-
-        switch (this.cameraOptions.mode) {
-            case 'orthographic':
-                global.viewPortWidth = this.appWidth / 1000;
-                global.viewPortHeight = this.appHeight / 1000;
-
-                // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
-                // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
-                // terms of their distance from the camera, rather than affecting the size of the objects.
-                this.camera = new THREE.OrthographicCamera(global.viewPortWidth / -2, global.viewPortWidth / 2, global.viewPortHeight / 2, global.viewPortHeight / -2, 0.01, 1000);
-                break;
-            case 'perspective':
-            default:
-                this.camera = new THREE.PerspectiveCamera(70, this.appWidth / this.appHeight, 0.01, 20);
-                this.vFOV = THREE.MathUtils.degToRad(this.camera.fov);
-                global.viewPortHeight = 2 * Math.tan(this.vFOV / 2);
-                global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
-                break;
-        }
-        this.camera.matrixWorldAutoUpdate = false;
-
-        let posUpdated = false;
-        if (this.cameraOptions.hasOwnProperty('startPos')) {
-            const startPosString = comp.startPos;
-            if (startPosString) {
-                const startPosArray = startPosString.split(' ').map(parseFloat);
-                if (startPosArray.length === 3) {
-                    const [x, y, z] = startPosArray;
-                    this.camera.position.set(x, y, z);
-                    posUpdated = true;
-                } else {
-                    console.error('Invalid camera starting position format. Please provide "x y z".');
-                }
-            }
-        }
-        if (!posUpdated) {
-            // default
-            this.camera.position.set(0, 0, 1);
-        }
-    };
-
-    /**
-     * @function
-     * @description Initializes default lighting and shadows for the main scene.
-     * @param {object} data - the lights data (color, intensity, shadows, etc)
-     */
-    initLights = (data) => {
-        if (!data.enabled) {
-            return;
-        }
-        this.globalLight = new THREE.AmbientLight(data.color);
-        this.globalLight.intensity = data.intensity;
-        this.globalLight.position.set(0, 5, 0);
-        this.scene.add(this.globalLight);
-
-        if (!this.isMobile) {
-            if (data.shadows) {
-                this.shadowLight = new THREE.PointLight(data.color);
-                this.shadowLight.position.set(-1, 1, 1);
-                this.shadowLight.intensity = data.intensity;
-                this.shadowLight.castShadow = data.shadows;
-                this.shadowLight.shadow.radius = data.radius;
-                this.shadowLight.shadow.camera.near = 0.01; // default
-                this.shadowLight.shadow.camera.far = 20; // default
-                this.shadowLight.shadow.mapSize.set(2048, 2048);
-                this.scene.add(this.shadowLight);
-            }
-        }
-    };
-
-    /**
-     * @function
-     * @description De-initializes rendering and MR
-     */
-    denit() {
-        document.body.removeChild(this.renderer.domElement);
-        this.removeChild(this.XRButton);
-        window.removeEventListener('resize', this.onWindowResize);
-    }
-
-    /**
-     * @function
      * @description Registers a new system addition to the MRApp engine.
      * @param {MRSystem} system - the system to be added.
      */
@@ -510,7 +560,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be added.
      */
     add(entity) {
-        this.origin.add(entity.object3D);
+        this.originObject3D.add(entity.object3D);
     }
 
     /**
@@ -519,34 +569,7 @@ export class MRApp extends MRElement {
      * @param {MREntity} entity - the entity to be removed.
      */
     removeEntity(entity) {
-        this.origin.remove(entity.object3D);
-    }
-
-    /**
-     * @function
-     * @description Handles what is necessary rendering, camera, and user-wise when the viewing window is resized.
-     */
-    onWindowResize() {
-        global.appWidth = this.appWidth;
-        global.appHeight = this.appHeight;
-        switch (this.cameraOptions.mode) {
-            case 'orthographic':
-                global.viewPortWidth = this.appWidth / 1000;
-                global.viewPortHeight = this.appHeight / 1000;
-
-                this.camera.left = global.viewPortWidth / -2;
-                this.camera.right = global.viewPortWidth / 2;
-                this.camera.top = global.viewPortHeight / 2;
-                this.camera.bottom = global.viewPortHeight / -2;
-                break;
-            case 'perspective':
-            default:
-                this.camera.aspect = this.appWidth / this.appHeight;
-                global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
-                break;
-        }
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(this.appWidth, this.appHeight);
+        this.originObject3D.remove(entity.object3D);
     }
 
     /**
@@ -556,40 +579,23 @@ export class MRApp extends MRElement {
      * @param {object} frame - given frame information to be used for any feature changes
      */
     render(timeStamp, frame) {
-        // ----- grab important vars ----- //
-
-        const deltaTime = this.clock.getDelta();
-
-        // ----- If using the threejs stats for 'stats=true' ---- //
-
-        if (this.stats) {
-            this.stats.update();
-        }
-
         // ----- Update needed items ----- //
 
         if (mrjsUtils.xr.isPresenting && !mrjsUtils.xr.session) {
-            mrjsUtils.xr.session = this.renderer.xr.getSession();
-            mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
-
+            this.#initXRSession();
             this.dispatchEvent(new CustomEvent('enterxr', { bubbles: true }));
-
             mrjsUtils.xr.session.addEventListener('end', () => {
-                this.camera.position.set(0, 0, 1);
-                this.camera.quaternion.set(0, 0, 0, 1);
-                mrjsUtils.xr.session = undefined;
-                mrjsUtils.xr.referenceSpace = undefined;
-                this.classList.remove('inXR');
-
-                this.onWindowResize();
+                this.denitXRSession();
                 this.dispatchEvent(new CustomEvent('exitxr', { bubbles: true }));
             });
         }
 
+        this.stats?.update();
         this.user?.update();
 
         // ----- System Updates ----- //
 
+        const deltaTime = this.clock.getDelta();
         for (const system of this.systems) {
             system._update(deltaTime, frame);
         }
