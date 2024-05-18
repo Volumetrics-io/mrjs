@@ -20,9 +20,8 @@ export class MRMediaEntity extends MRDivEntity {
 
         // Create the object3D. Dont need default value for geometry
         // until the connected call since this will get overwritten anyways.
-        const material = new THREE.MeshStandardMaterial({
-            side: THREE.FrontSide,
-        });
+        const material = mrjsUtils.material.MeshStandardMaterial.clone();
+        material.side = THREE.FrontSide;
         // Object3D for MRMediaEntity (mrimage,mrvideo,etc) is the actual image/video/etc itself in 3D space
         this.object3D = new THREE.Mesh(undefined, material);
         this.object3D.receiveShadow = true;
@@ -211,9 +210,9 @@ export class MRMediaEntity extends MRDivEntity {
                 }
 
                 const mediaGeometry = new THREE.PlaneGeometry(mediaWidth, mediaHeight);
-                const mediaMaterial = new THREE.MeshStandardMaterial({
-                    map: this.texture,
-                });
+                const mediaMaterial = mrjsUtils.material.MeshStandardMaterial.clone();
+                mediaMaterial.map = this.texture;
+                mediaMaterial.name = "mediaMaterial";
                 _oldSubMediaMeshNotNeeded();
                 this.subMediaMesh.geometry = mediaGeometry;
                 this.subMediaMesh.material = mediaMaterial;

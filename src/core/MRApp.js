@@ -606,7 +606,7 @@ export class MRApp extends MRElement {
         this.renderer.clear();
 
         // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined) {
+        if (this.maskingSystem !== undefined && this.maskingSystem.scene.length > 0) {
             this.maskingSystem.sync();
             const currentShadowEnabled = this.renderer.shadowMap.enabled;
             this.renderer.shadowMap.enabled = false;
