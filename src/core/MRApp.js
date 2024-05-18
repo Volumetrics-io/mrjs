@@ -29,7 +29,6 @@ import { SkyBoxSystem } from 'mrjs/core/componentSystems/SkyBoxSystem';
 import { StatsSystem } from 'mrjs/core/componentSystems/StatsSystem';
 import { TextSystem } from 'mrjs/core/componentSystems/TextSystem';
 
-
 ('use strict');
 window.mobileCheck = function () {
     return mrjsUtils.display.mobileCheckFunction();
@@ -139,7 +138,7 @@ export class MRApp extends MRElement {
     }
 
     #initCamera() {
-        let cameraOptions = (this.dataset.camera) ? mrjsUtils.string.stringToJson(this.dataset.camera) : {};
+        let cameraOptions = this.dataset.camera ? mrjsUtils.string.stringToJson(this.dataset.camera) : {};
         this.cameraMode = cameraOptions.mode ?? 'orthographic';
 
         global.appWidth = this.appWidth;
@@ -165,7 +164,6 @@ export class MRApp extends MRElement {
                 this.#updateOrthographicCamera();
                 break;
             default:
-                
         }
         this.camera.matrixWorldAutoUpdate = false;
         this.camera.updateProjectionMatrix();
@@ -243,14 +241,14 @@ export class MRApp extends MRElement {
 
     #updatePerspectiveCamera() {
         this.camera.aspect = this.appWidth / this.appHeight;
-        
+
         global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
     }
 
     #updateOrthographicCamera() {
         global.viewPortWidth = this.appWidth / 1000;
         global.viewPortHeight = this.appHeight / 1000;
-        
+
         // In an orthographic camera, unlike perspective, objects are rendered at the same scale regardless of their
         // distance from the camera, meaning near and far clipping planes are more about what objects are visible in
         // terms of their distance from the camera, rather than affecting the size of the objects.
@@ -297,7 +295,7 @@ export class MRApp extends MRElement {
     }
 
     #initStats() {
-        if (! (this.dataset.stats ?? false)) {
+        if (!(this.dataset.stats ?? false)) {
             return;
         }
 
@@ -482,7 +480,7 @@ export class MRApp extends MRElement {
         mrjsUtils.physics.initializePhysics();
 
         this.compStyle = window.getComputedStyle(this);
-        
+
         this.debug = this.dataset.debug ?? false;
 
         this.#initRenderer();

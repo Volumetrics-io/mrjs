@@ -132,7 +132,7 @@ export class MRTextInputEntity extends MRTextEntity {
             const material = mrjsUtils.material.MeshBasicMaterial.clone();
             material.color.set(0x000000);
             material.side = THREE.DoubleSide;
-            material.programName = "text:cursorMaterial";
+            material.programName = 'text:cursorMaterial';
             this.cursor.material = material;
         }
         if (this.cursor.geometry !== undefined) {
