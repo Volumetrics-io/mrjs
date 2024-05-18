@@ -81,23 +81,16 @@ export class MRApp extends MRElement {
         this.onWindowResize = this.onWindowResize.bind(this);
     }
 
-    cleanupForGC() {
-        // Perform cleanup actions here
-
-        // remove event listeners
-        document.removeEventListener('click', this.handleClick);
-
-        // Explicitly nullify or reset properties to aid garbage collection
-        this.data = null;
-    }
-
     /**
      * @function
      * @description De-initializes rendering and MR
      */
     denit() {
+        // remove specific children from body
         document.body.removeChild(this.renderer.domElement);
+        // clear out the scene
         this.removeChild(this.XRButton);
+        // remove eventlisteners
         window.removeEventListener('resize', this.onWindowResize);
     }
 
@@ -177,6 +170,8 @@ export class MRApp extends MRElement {
         this.camera.matrixWorldAutoUpdate = false;
         this.camera.updateProjectionMatrix();
 
+        /* ----- Set based on startPos data-attribute ----- */
+
         let posUpdated = false;
         let startPos = cameraOptions.startPos;
         if (startPos) {
@@ -193,12 +188,16 @@ export class MRApp extends MRElement {
             this.camera.position.set(0, 0, 1);
         }
 
+        /* ----- Set based on layers data-attribute ----- */
+
         if (this.dataset.layers) {
             this.layers = mrjsUtils.string.stringToVector(this.dataset.layers);
             for (const layer of this.layers) {
                 this.camera.layers.enable(layer);
             }
         }
+
+        /* ----- Set based on orbitals data-attribute ----- */
 
         const orbitalOptionsString = this.dataset.orbital;
         let orbitalOptions = {};
@@ -321,19 +320,19 @@ export class MRApp extends MRElement {
             this.xrsupport = supported;
 
             if (this.xrsupport) {
-                this.XRButton = XRButton.createButton(this.renderer, {
+                const XRButton = XRButton.createButton(this.renderer, {
                     requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
 
-                this.XRButton.addEventListener('click', () => {
+                XRButton.addEventListener('click', () => {
                     this.classList.add('inXR');
-                    this.XRButton.blur();
+                    XRButton.blur();
                 });
-                document.body.appendChild(this.XRButton);
+                document.body.appendChild(XRButton);
 
-                this.XRButton.style.position = 'fixed';
-                this.XRButton.style.zIndex = 10000;
+                XRButton.style.position = 'fixed';
+                XRButton.style.zIndex = 10000;
             }
         });
     }
