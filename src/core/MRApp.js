@@ -3,25 +3,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { XRButton } from 'three/addons/webxr/XRButton.js';
 import Stats from 'stats.js';
 
-import {
-    mrjsUtils
-} from 'mrjs';
+import { mrjsUtils } from 'mrjs';
 
-import {
-    MRElement,
-    MREntity,
-    MRSystem
-} from 'mrjs/core';
+import { MRElement, MREntity, MRSystem } from 'mrjs/core';
 
-import {
-    MRUser
-} from 'mrjs/core/user';
+import { MRUser } from 'mrjs/core/user';
 
-import { 
-    MRSkyBoxEntity,
-    MRStatsEntity 
-} from 'mrjs/core/entities';
-import { 
+import { MRSkyBoxEntity, MRStatsEntity } from 'mrjs/core/entities';
+import {
     AnchorSystem,
     AnimationSystem,
     AudioSystem,
@@ -36,9 +25,8 @@ import {
     PhysicsSystem,
     SkyBoxSystem,
     StatsSystem,
-    TextSystem
+    TextSystem,
 } from 'mrjs/core/componentSystems';
-
 
 ('use strict');
 window.mobileCheck = function () {

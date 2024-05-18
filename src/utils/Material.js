@@ -10,7 +10,7 @@ let material = {};
 /**
  * Defining materials here to only need to create them once
  * since render calls are proportional to the number of gl Materials.
- * 
+ *
  * An issue creating a large number of render calls per frame
  * is that we have multiple normal THREEjs materials that we're reusing
  * in places. Since these all just modify the base threejs with uniforms

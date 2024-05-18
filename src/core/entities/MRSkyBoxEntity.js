@@ -37,7 +37,7 @@ export class MRSkyBoxEntity extends MREntity {
                 const material = mrjsUtils.material.MeshStandardMaterial.clone();
                 material.envMap = texture;
                 material.side = THREE.BackSide;
-                material.programName = "skyboxMaterial-1";
+                material.programName = 'skyboxMaterial-1';
                 this.skybox.material = material;
             } else {
                 // Handle single texture case
@@ -48,7 +48,7 @@ export class MRSkyBoxEntity extends MREntity {
                 material.envMap = texture;
                 material.side = THREE.BackSide;
                 material.opacity = 1;
-                material.programName = "skyboxMaterial-2";
+                material.programName = 'skyboxMaterial-2';
                 this.skybox.material = material;
             }
         }

@@ -123,7 +123,7 @@ export class MRPlaneManager {
         const material = mrjsUtils.material.MeshBasicMaterial.clone();
         material.color.set(0xffffff);
         material.colorWrite = false;
-        material.programName = "planeMeshMaterial";
+        material.programName = 'planeMeshMaterial';
 
         mrPlane.mesh = new THREE.Mesh(geometry, material);
         mrPlane.mesh.position.setFromMatrixPosition(this.matrix);

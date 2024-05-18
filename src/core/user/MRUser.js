@@ -47,11 +47,11 @@ export default class MRUser {
      * @returns {object} spotlight - the spotlight to be used.
      */
     initSpotlight() {
-        const material =  mrjsUtils.material.MeshBasicMaterial.clone();
+        const material = mrjsUtils.material.MeshBasicMaterial.clone();
         material.colorWrite = false;
-        material.programName = "spotlightMaterial"
+        material.programName = 'spotlightMaterial';
         this.spotlight = new THREE.Mesh(new THREE.CircleGeometry(1.3, 64), material);
-        
+
         this.spotlight.renderOrder = 2;
         this.spotlight.rotation.x = -Math.PI / 2;
 

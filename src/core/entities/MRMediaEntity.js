@@ -212,7 +212,7 @@ export class MRMediaEntity extends MRDivEntity {
                 const mediaGeometry = new THREE.PlaneGeometry(mediaWidth, mediaHeight);
                 const mediaMaterial = mrjsUtils.material.MeshStandardMaterial.clone();
                 mediaMaterial.map = this.texture;
-                mediaMaterial.name = "mediaMaterial";
+                mediaMaterial.name = 'mediaMaterial';
                 _oldSubMediaMeshNotNeeded();
                 this.subMediaMesh.geometry = mediaGeometry;
                 this.subMediaMesh.material = mediaMaterial;

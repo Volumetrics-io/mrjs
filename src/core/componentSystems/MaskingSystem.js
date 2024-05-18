@@ -169,7 +169,7 @@ export class MaskingSystem extends MRSystem {
             // therefore, we can use a simpler material than MeshBasicMaterial. Should we use
             // ShaderMaterial?
             const material = mrjsUtils.material.MeshBasicMaterial.clone();
-            material.programName = "maskingMaterial";
+            material.programName = 'maskingMaterial';
             const mesh = new THREE.Mesh(sourceObj.geometry, material);
             setupMaskingMaterial(mesh.material, stencilRefShift, this.app.debug);
 
