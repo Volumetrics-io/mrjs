@@ -6,6 +6,11 @@ An extensible library of Web Components for the spatial web.
 
 [![docs](https://img.shields.io/badge/documentation-8A2BE2)](https://docs.mrjs.io) [![dev-examples](https://img.shields.io/badge/examples-ee99ff?logoColor=white)](https://examples.mrjs.io)
 
+## Branches
+
+- Large refactor of MRjs happening on ![sub-main](https://img.shields.io/badge/sub--main-orange) branch, stay tuned!
+- ![main](https://img.shields.io/badge/main-gray) branch still being used for dependabots and quick fix cleanups
+
 ## Overview
  
 MRjs is a mixed-reality-first, WebXR user interface library meant to bootstrap spatial web development. It implements much of the foundational work so that developers can spend less time on the basics and more time on their app.
