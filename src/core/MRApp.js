@@ -93,11 +93,23 @@ export class MRApp extends MRElement {
         window.removeEventListener('resize', this.onWindowResize);
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes the XR session to manage the rendering and tracking environment for VR/AR capabilities.
+     */
     #initXRSession() {
         mrjsUtils.xr.session = this.renderer.xr.getSession();
         mrjsUtils.xr.referenceSpace = mrjsUtils.xr.getReferenceSpace();
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Deinitializes the XR session and resets the camera to its default position.
+     */
     #denitXRSession() {
         this.camera.position.set(0, 0, 1);
         this.camera.quaternion.set(0, 0, 0, 1);
@@ -109,6 +121,12 @@ export class MRApp extends MRElement {
 
     /* ---------- Initialization Functions ---------- */
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Sets up the WebGL renderer with specific properties for visual quality and performance.
+     */
     #initRenderer() {
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -137,6 +155,12 @@ export class MRApp extends MRElement {
         this.renderer.setAnimationLoop(this.render);
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Configures the camera based on JSON options provided through the dataset, supporting various modes.
+     */
     #initCamera() {
         let cameraOptions = this.dataset.camera ? mrjsUtils.string.stringToJson(this.dataset.camera) : {};
         this.cameraMode = cameraOptions.mode ?? 'orthographic';
@@ -239,12 +263,24 @@ export class MRApp extends MRElement {
         }
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Updates the camera for perspective viewing mode, updating its aspect ratio based on the application dimensions.
+     */
     #updatePerspectiveCamera() {
         this.camera.aspect = this.appWidth / this.appHeight;
 
         global.viewPortWidth = global.viewPortHeight * this.camera.aspect;
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Updates the camera for orthographic viewing mode, adjusting the camera's scale based on the application dimensions.
+     */
     #updateOrthographicCamera() {
         global.viewPortWidth = this.appWidth / 1000;
         global.viewPortHeight = this.appHeight / 1000;
@@ -258,6 +294,12 @@ export class MRApp extends MRElement {
         this.camera.bottom = global.viewPortHeight / -2;
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Sets up lighting in the scene, adding ambient and point lights based on configuration options.
+     */
     #initLighting() {
         let lighting = {
             enabled: true,
@@ -294,6 +336,12 @@ export class MRApp extends MRElement {
         }
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes statistics monitoring for the application, primarily for debugging and performance tracking.
+     */
     #initStats() {
         if (!(this.dataset.stats ?? false)) {
             return;
@@ -308,6 +356,12 @@ export class MRApp extends MRElement {
         document.body.appendChild(this.stats.dom);
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes XR capabilities for the application, checking device support and setting up XR button interactions.
+     */
     #initInXR() {
         if (this.isMobile) {
             // We don't support mobile XR yet
@@ -335,6 +389,12 @@ export class MRApp extends MRElement {
         });
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes a skybox for the application based on the background-image style property.
+     */
     #initSkyBox() {
         // allows for mr-app style to have background:value to set the skybox
 
@@ -358,6 +418,12 @@ export class MRApp extends MRElement {
         this.compStyle = window.getComputedStyle(this);
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes and adds various systems to the MRApp for managing different aspects of the MR environment.
+     */
     #initSystems() {
         // order matters for all the below system creation items
         this.panelSystem = new PanelSystem();
@@ -381,6 +447,12 @@ export class MRApp extends MRElement {
         this.maskingSystem = new MaskingSystem();
     }
 
+    /**
+     * @private
+     * @function
+     * @memberof MRApp
+     * @description Initializes event listeners for various global and component-specific events.
+     */
     #initEventListeners() {
         // initialize built in Systems
         document.addEventListener('engine-started', (event) => {
