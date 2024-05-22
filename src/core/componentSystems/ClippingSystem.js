@@ -38,7 +38,9 @@ export class ClippingSystem extends MRSystem {
      */
     update(deltaTime, frame) {
         for (const entity of this.registry) {
-            this.updatePlanes(entity);
+            if (entity.visible) {
+                this.updatePlanes(entity);
+            }
         }
     }
 

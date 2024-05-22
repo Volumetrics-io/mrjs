@@ -6,6 +6,8 @@ import { MREntity } from 'mrjs/core/MREntity';
 import { MRPanelEntity } from 'mrjs/core/entities/MRPanelEntity';
 import { MRTextEntity } from 'mrjs/core/entities/MRTextEntity';
 
+import { mrjsUtils } from 'mrjs';
+
 /*
  * A system that handles elements that mask other elements by using stencil.
  * Eg: A Panel does not display child elements if the elements are positioned
@@ -166,7 +168,9 @@ export class MaskingSystem extends MRSystem {
             // Since only needs to write to the stencil buffer, no need to write to the color buffer,
             // therefore, we can use a simpler material than MeshBasicMaterial. Should we use
             // ShaderMaterial?
-            const mesh = new THREE.Mesh(sourceObj.geometry, new THREE.MeshBasicMaterial());
+            const material = mrjsUtils.material.MeshBasicMaterial.clone();
+            material.programName = 'maskingMaterial';
+            const mesh = new THREE.Mesh(sourceObj.geometry, material);
             setupMaskingMaterial(mesh.material, stencilRefShift, this.app.debug);
 
             // No automatic matrices update because world matrices are updated in sync().

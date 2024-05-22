@@ -71,6 +71,7 @@ export class MRApp extends MRElement {
         // The rest of the renderer is filled out in this.connectedCallback()-->this.init() since
         // the renderer relies on certain component flags attached to the <mr-app> itself.
         this.renderer = null;
+        this.render = this.render.bind(this);
 
         this.lighting = {
             enabled: true,
@@ -83,7 +84,6 @@ export class MRApp extends MRElement {
         this.cameraOptions = {
             mode: 'orthographic',
         };
-        this.render = this.render.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
     }
 
