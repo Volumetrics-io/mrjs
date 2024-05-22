@@ -85,12 +85,61 @@ export class MRApp extends MRElement {
      * @description De-initializes rendering and MR
      */
     denit() {
-        // remove specific children from body
-        document.body.removeChild(this.renderer.domElement);
-        // clear out the scene
-        this.removeChild(this.XRButton);
-        // remove eventlisteners
+        // Stop the rendering loop and dispose of renderer resources
+        if (this.renderer) {
+            this.renderer.setAnimationLoop(null);
+            this.renderer.dispose();
+
+            if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+                this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+            }
+            this.renderer = null;
+        }
+
+        // Dispose XRButton if added
+        if (this.XRButton && this.XRButton.parentNode) {
+            this.XRButton.parentNode.removeChild(this.XRButton);
+        }
+
+        // Clear the scene
+        if (this.scene) {
+            while (this.scene.children.length > 0) {
+                const object = this.scene.children[0];
+                if (object.dispose) {
+                    object.dispose(); // Custom dispose for loaded models or geometries
+                }
+                this.scene.remove(object);
+            }
+        }
+
+        // Remove all systems, calling their dispose methods if available
+        if (this.systems) {
+            this.systems.forEach(system => {
+                if (system.dispose) {
+                    system.dispose();
+                }
+            });
+            this.systems.clear();
+        }
+
+        // Remove window-specific event listeners
         window.removeEventListener('resize', this.onWindowResize);
+
+        // Remove global event listeners
+        GLOBAL_UPDATE_EVENTS.forEach(eventType => {
+            document.removeEventListener(eventType, this.handleGlobalEvents);
+        });
+
+        // Assuming there's an observer for monitoring DOM changes
+        if (this.observer) {
+            this.observer.disconnect();
+        }
+
+        // Additional custom cleanup logic here
+        // For example, if you have external connections like WebSockets:
+        if (this.webSocket) {
+            this.webSocket.close();
+        }
     }
 
     /**
@@ -362,7 +411,7 @@ export class MRApp extends MRElement {
      * @memberof MRApp
      * @description Initializes XR capabilities for the application, checking device support and setting up XR button interactions.
      */
-    #initInXR() {
+    #initXRSetup() {
         if (this.isMobile) {
             // We don't support mobile XR yet
             return;
@@ -372,7 +421,7 @@ export class MRApp extends MRElement {
             this.xrsupport = supported;
 
             if (this.xrsupport) {
-                const XRButton = XRButton.createButton(this.renderer, {
+                this.XRButton = XRButton.createButton(this.renderer, {
                     requiredFeatures: ['local', 'hand-tracking'],
                     optionalFeatures: ['hit-test', 'anchors', 'plane-detection'],
                 });
@@ -560,7 +609,7 @@ export class MRApp extends MRElement {
         this.#initLighting();
         this.#initStats();
         this.#initSkyBox();
-        this.#initInXR();
+        this.#initXRSetup();
 
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(this, { attributes: true, childList: true });
@@ -575,7 +624,6 @@ export class MRApp extends MRElement {
      */
     disconnectedCallback() {
         this.denit();
-        this.observer.disconnect();
     }
 
     /**
