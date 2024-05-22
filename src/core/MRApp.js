@@ -80,9 +80,39 @@ export class MRApp extends MRElement {
         this.onWindowResize = this.onWindowResize.bind(this);
     }
 
+    /* ---------- The Main init/denit Calls ---------- */
+
     /**
      * @function
-     * @description De-initializes rendering and MR
+     * @memberof MRApp
+     * @description Initializes the MRApp by setting up all necessary systems, event listeners, and rendering components.
+     */
+    init() {
+        window.addEventListener('resize', this.onWindowResize);
+
+        mrjsUtils.physics.initializePhysics();
+
+        this.compStyle = window.getComputedStyle(this);
+
+        this.debug = this.dataset.debug ?? false;
+
+        this.#initRenderer();
+        this.#initCamera();
+        this.#initLighting();
+        this.#initStats();
+        this.#initSkyBox();
+        this.#initXRSetup();
+
+        this.observer = new MutationObserver(this.mutationCallback);
+        this.observer.observe(this, { attributes: true, childList: true });
+
+        this.#initEventListeners();
+    }
+
+    /**
+     * @function
+     * @memberof MRApp
+     * @description Destructor for the MRApp by tearing down all necessary systems, event listeners, and rendering components.
      */
     denit() {
         // Stop the rendering loop and dispose of renderer resources
@@ -134,12 +164,6 @@ export class MRApp extends MRElement {
         if (this.observer) {
             this.observer.disconnect();
         }
-
-        // Additional custom cleanup logic here
-        // For example, if you have external connections like WebSockets:
-        if (this.webSocket) {
-            this.webSocket.close();
-        }
     }
 
     /**
@@ -168,7 +192,7 @@ export class MRApp extends MRElement {
         this.onWindowResize();
     }
 
-    /* ---------- Initialization Functions ---------- */
+    /* ---------- init: Helper Functions ---------- */
 
     /**
      * @private
@@ -596,25 +620,7 @@ export class MRApp extends MRElement {
      * @description The connectedCallback function that runs whenever this entity component becomes connected to something else.
      */
     connectedCallback() {
-        window.addEventListener('resize', this.onWindowResize);
-
-        mrjsUtils.physics.initializePhysics();
-
-        this.compStyle = window.getComputedStyle(this);
-
-        this.debug = this.dataset.debug ?? false;
-
-        this.#initRenderer();
-        this.#initCamera();
-        this.#initLighting();
-        this.#initStats();
-        this.#initSkyBox();
-        this.#initXRSetup();
-
-        this.observer = new MutationObserver(this.mutationCallback);
-        this.observer.observe(this, { attributes: true, childList: true });
-
-        this.#initEventListeners();
+        this.init();
     }
 
     /**
@@ -690,6 +696,8 @@ export class MRApp extends MRElement {
     removeEntity(entity) {
         this.originObject3D.remove(entity.object3D);
     }
+
+    /* ---------- !!! Rendering !!! ---------- */
 
     /**
      * @function
