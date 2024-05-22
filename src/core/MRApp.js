@@ -135,12 +135,8 @@ export class MRApp extends MRElement {
             }
 
             // order matters for all the below system creation items
-            this.panelSystem = new PanelSystem();
-            this.layoutSystem = new LayoutSystem();
-            this.textSystem = new TextSystem();
             this.geometryStyleSystem = new GeometryStyleSystem();
             this.materialStyleSystem = new MaterialStyleSystem();
-            this.boundaryVisibilitySystem = new BoundaryVisibilitySystem();
             this.statsSystem = new StatsSystem();
             this.physicsSystem = new PhysicsSystem();
             this.controlSystem = new ControlSystem();
@@ -148,12 +144,6 @@ export class MRApp extends MRElement {
             this.animationSystem = new AnimationSystem();
             this.skyBoxSystem = new SkyBoxSystem();
             this.audioSystem = new AudioSystem();
-
-            // These must be the last three systems since
-            // they affect rendering. Clipping must happen
-            // before masking. Rendering must be the last step.
-            this.clippingSystem = new ClippingSystem();
-            this.maskingSystem = new MaskingSystem();
         });
 
         this.addEventListener('entityadded', (event) => {
@@ -593,16 +583,6 @@ export class MRApp extends MRElement {
             this.camera.updateMatrixWorld();
         }
         this.renderer.clear();
-
-        // Need to wait until we have all needed rendering-associated systems loaded.
-        if (this.maskingSystem !== undefined) {
-            this.maskingSystem.sync();
-            const currentShadowEnabled = this.renderer.shadowMap.enabled;
-            this.renderer.shadowMap.enabled = false;
-            this.renderer.render(this.maskingSystem.scene, this.camera);
-            this.renderer.shadowMap.enabled = currentShadowEnabled;
-        }
-
         this.renderer.render(this.scene, this.camera);
     }
 }
