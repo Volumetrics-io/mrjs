@@ -390,7 +390,7 @@ export class MRApp extends MRElement {
     initCamera = () => {
         const cameraOptionsString = this.dataset.camera ?? '';
         if (cameraOptionsString) {
-            Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(this.cameraOptionString) ?? {});
+            Object.assign(this.cameraOptions, mrjsUtils.string.stringToJson(cameraOptionsString) ?? {});
         }
 
         global.appWidth = this.appWidth;
@@ -418,16 +418,13 @@ export class MRApp extends MRElement {
 
         let posUpdated = false;
         if (this.cameraOptions.hasOwnProperty('startPos')) {
-            const startPosString = comp.startPos;
-            if (startPosString) {
-                const startPosArray = startPosString.split(' ').map(parseFloat);
-                if (startPosArray.length === 3) {
-                    const [x, y, z] = startPosArray;
-                    this.camera.position.set(x, y, z);
-                    posUpdated = true;
-                } else {
-                    console.error('Invalid camera starting position format. Please provide "x y z".');
-                }
+            const startPos = this.cameraOptions.startPos;
+            if (startPos.length === 3) {
+                const [x, y, z] = startPos;
+                this.camera.position.set(x, y, z);
+                posUpdated = true;
+            } else {
+                console.error('Invalid camera starting position format. Please provide "x y z".');
             }
         }
         if (!posUpdated) {
