@@ -7,22 +7,6 @@ import { USDZLoader } from 'three/examples/jsm/loaders/USDZLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
-// Keeping the below imports in as reference for future items we can add.
-// import { AMFLoader } from 'three/addons/loaders/AMFLoader.js';
-// import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
-// import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-// import { GCodeLoader } from 'three/addons/loaders/GCodeLoader.js';
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-// // import { IFCLoader }        from 'web-ifc-three';
-// // import { IFCSPACE }         from 'web-ifc';
-// import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
-// import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
-// import { PDBLoader } from 'three/addons/loaders/PDBLoader.js';
-// import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
-// import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
-// import { TDSLoader } from 'three/addons/loaders/TDSLoader.js';
-// import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
-
 /**
  * @namespace model
  * @description Useful namespace for helping with Model utility functions
@@ -315,7 +299,12 @@ model.removeObject3DFromScene = function (object3D, scene) {
     model.disposeObject3D(object3D);
     scene.remove(object3D);
 
-    // Optional: Clean up references for GC if necessary
+    // Clean up references for garbage collection
+    object3D.traverse(function (node) {
+        node.geometry = null;
+        node.material = null;
+    });
+    object3D = null;
 };
 
 model.currentRunningAnimationClip = function (entity) {
