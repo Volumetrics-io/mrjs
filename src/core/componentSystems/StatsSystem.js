@@ -43,7 +43,7 @@ export class StatsSystem extends MRSystem {
                 // as that will fill it in as an html value on the screen in 2D. We only
                 // want to update the stats.textObj.text here directly for the 3D element
                 // to update.
-                stats.textObj.text = (stats.frame / stats.elapsedTime).toFixed(2) + 'fps';
+                stats.textObj.text = (stats.frame / stats.elapsedTime).toFixed(2) + ' fps';
 
                 stats.frame = 0;
                 stats.elapsedTime = 0.0;
