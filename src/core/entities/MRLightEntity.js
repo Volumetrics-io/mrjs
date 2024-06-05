@@ -23,7 +23,7 @@ export class MRLightEntity extends MREntity {
      * @description (async) handles setting up this Light once it is connected to run as an entity component.
      */
     async connected() {
-        this.object3D.color.setStyle(this.getAttribute('color'));
+        mrjsUtils.color.setObject3DColor(this.object3D, this.getAttribute('color'));
         this.object3D.intensity = parseFloat(this.getAttribute('intensity')) ?? 1;
     }
 
@@ -39,7 +39,7 @@ export class MRLightEntity extends MREntity {
         switch (mutation.attributeName) {
             case 'color':
                 // TODO - set via css
-                this.object3D.color.setStyle(this.getAttribute('color'));
+                mrjsUtils.color.setObject3DColor(this.object3D, this.getAttribute('color'));
                 break;
 
             case 'intensity':
