@@ -88,7 +88,7 @@
     "prettier": "^3.2.4",
     "prettier-eslint-cli": "^8.0.1",
     "stats.js": "^0.17.0",
-    "three": "^0.161.0",
+    "three": "^0.167.1",
     "troika-three-text": "^0.48.1"
   }
 }
